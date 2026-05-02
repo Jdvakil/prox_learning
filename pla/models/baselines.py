@@ -1,65 +1,42 @@
 """Baseline models for the ablation ladder.
 
-VLMOnlyACT — primary comparison: identical to PLA but with proximity tokens
-removed. The delta on the near-contact task is the paper's headline result.
-
-PropOnlyMLP — sanity floor. Maps qpos directly to actions through a small MLP.
+This file is now thin: ``VLMOnlyACT`` is just ``PLA(vlm_only=True)``, so we
+re-export it as a named alias for clarity in scripts and configs. We keep
+``PropOnlyMLP`` here as the absolute floor — qpos -> action chunk through a
+small MLP, with no vision and no proximity. Its number tells reviewers how
+hard the task actually is.
 """
 from __future__ import annotations
-
-from typing import Protocol
 
 import torch
 import torch.nn as nn
 
-
-class _VLBackbone(Protocol):
-    def __call__(
-        self, rgb: torch.Tensor, language_tokens: torch.Tensor
-    ) -> torch.Tensor: ...
+from pla.models.pla import PLA
 
 
-class VLMOnlyACT(nn.Module):
-    """PLA minus the ProximityEncoder. Same backbone, same ACT decoder."""
+def VLMOnlyACT(**kwargs) -> PLA:  # noqa: N802 (ScreamingSnake intentional alias)
+    """Construct PLA with the proximity stream disabled.
 
-    def __init__(
-        self,
-        *,
-        d_model: int = 512,
-        proprio_dim: int = 7,
-        action_dim: int = 7,
-        chunk_size: int = 100,
-        vision_language_backbone: _VLBackbone | None = None,
-        act_decoder: nn.Module | None = None,
-    ) -> None:
-        super().__init__()
-        self.vl = vision_language_backbone
-        self.proprio_proj = nn.Linear(proprio_dim, d_model)
-        self.fusion_norm = nn.LayerNorm(d_model)
-        self.act_decoder = act_decoder
-        self.action_dim = action_dim
-        self.chunk_size = chunk_size
-
-    def forward(
-        self,
-        rgb: torch.Tensor,
-        language_tokens: torch.Tensor,
-        qpos: torch.Tensor,
-        actions: torch.Tensor | None = None,
-    ) -> dict:
-        if self.vl is None or self.act_decoder is None:
-            raise RuntimeError("backbone or decoder not configured")
-        vis = self.vl(rgb, language_tokens)
-        prop = self.proprio_proj(qpos).unsqueeze(1)
-        tokens = self.fusion_norm(torch.cat([vis, prop], dim=1))
-        return self.act_decoder(tokens=tokens, actions=actions)
+    Identical to PLA in every other respect (same backbone, same ACT decoder,
+    same chunk_size, same hyperparams). The *only* difference is
+    ``vlm_only=True`` -- this is the headline comparison of the paper.
+    """
+    kwargs["vlm_only"] = True
+    return PLA(**kwargs)
 
 
 class PropOnlyMLP(nn.Module):
-    """7-dim qpos → action chunk. Floor baseline."""
+    """qpos -> action chunk through a small MLP. No vision, no proximity.
+
+    This is the "is the task even reasonable?" floor baseline. If PropOnlyMLP
+    solves it, the task is trivial and the proximity claim is unfalsifiable.
+    """
 
     def __init__(
-        self, proprio_dim: int = 7, action_dim: int = 7, chunk_size: int = 100,
+        self,
+        proprio_dim: int = 7,
+        action_dim: int = 7,
+        chunk_size: int = 100,
         hidden: int = 256,
     ) -> None:
         super().__init__()

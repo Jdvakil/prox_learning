@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-# Train both baselines (VLM-only ACT and prop-only MLP).
+# Train the VLM-only ACT baseline. PropOnlyMLP is a sanity floor only and
+# is invoked separately (it does not use the train_loop pipeline).
 set -euo pipefail
 cd "$(dirname "$0")/.."
-
-python -m pla.train.train_baseline \
-  --variant vlm_only \
-  --config configs/train/act_baseline.yaml "$@"
-
-python -m pla.train.train_baseline \
-  --variant prop_only \
-  --config configs/train/act_baseline.yaml "$@"
+python -m pla.train.train --config configs/train/act_baseline.yaml "$@"

@@ -1,0 +1,36 @@
+# Ablation: only the wrist sensors (link6 + EE) contribute. Tests whether
+# whole-body coverage matters or if the wrist alone is enough.
+#
+# sensor_mask zeros OUT non-wrist sensors. Indices below assume the build
+# pipeline orders sensors as link6 (0..7) then link5/3/2 (8..31). Adjust if
+# your build emits a different order.
+
+run_name: ablation_wrist_only_v1
+output_dir: runs/ablation_wrist_only_v1
+
+data_dir: data/raw/near_contact
+stats_path: stats.json
+val_frac: 0.10
+split_seed: 0
+num_workers: 4
+
+n_sensors: 32
+d_model: 512
+chunk_size: 100
+encoder_type: shared_mlp
+fusion_type: concat
+vlm_only: false
+sensor_mask: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+beta_kl: 10.0
+
+vlm_model_name: allenai/Molmo-4B-D-0924
+dummy_vlm: false
+
+batch_size: 8
+lr: 1.0e-5
+n_epochs: 2000
+grad_clip: 1.0
+log_every: 100
+
+wandb_project: pla-corl
+no_wandb: false

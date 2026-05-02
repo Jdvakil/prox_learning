@@ -1,0 +1,32 @@
+# Ablation: replace concat fusion with cross-attention (ToF queries VLM).
+# Tests the inductive bias "given what I see, which sensors are relevant?".
+
+run_name: ablation_cross_attn_v1
+output_dir: runs/ablation_cross_attn_v1
+
+data_dir: data/raw/near_contact
+stats_path: stats.json
+val_frac: 0.10
+split_seed: 0
+num_workers: 4
+
+n_sensors: 32
+d_model: 512
+chunk_size: 100
+encoder_type: shared_mlp
+fusion_type: cross_attn      # <-- ablation switch
+vlm_only: false
+sensor_mask: null
+beta_kl: 10.0
+
+vlm_model_name: allenai/Molmo-4B-D-0924
+dummy_vlm: false
+
+batch_size: 8
+lr: 1.0e-5
+n_epochs: 2000
+grad_clip: 1.0
+log_every: 100
+
+wandb_project: pla-corl
+no_wandb: false

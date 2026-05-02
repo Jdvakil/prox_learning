@@ -1,27 +1,33 @@
 # VLM-only ACT baseline — identical to PLA with proximity tokens removed.
-# This is the most critical experiment (PROJECT.md §4.3).
+# THE one-line difference is `vlm_only: true`. Everything else MUST stay
+# the same as configs/train/pla.yaml so the comparison is controlled.
 
-model:
-  d_model: 512
-  proprio_dim: 7
-  action_dim: 7
-  chunk_size: 100
-  vl_backbone: molmo2-4b
-  freeze_vl: true
-  use_proximity: false     # the one-line difference vs configs/train/pla.yaml
+run_name: vlm_only_baseline_v1
+output_dir: runs/vlm_only_baseline_v1
 
-optim:
-  lr: 1.0e-5
-  batch_size: 8
-  optimizer: adam
-  beta_kl: 10.0
-  max_steps: 200000
-  grad_clip_norm: 1.0
+data_dir: data/raw/near_contact
+stats_path: stats.json
+val_frac: 0.10
+split_seed: 0
+num_workers: 4
 
-data:
-  root: data/raw
-  train_split: 0.95
+n_sensors: 32
+d_model: 512
+chunk_size: 100
+encoder_type: shared_mlp     # unused when vlm_only=true
+fusion_type: concat
+vlm_only: true               # <-- this is the only line that differs
+sensor_mask: null
+beta_kl: 10.0
 
-logging:
-  run_dir: runs/baseline_vlm_only
-  wandb_project: pla-corl
+vlm_model_name: allenai/Molmo-4B-D-0924
+dummy_vlm: false
+
+batch_size: 8
+lr: 1.0e-5
+n_epochs: 2000
+grad_clip: 1.0
+log_every: 100
+
+wandb_project: pla-corl
+no_wandb: false

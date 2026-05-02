@@ -1,0 +1,33 @@
+# Ablation: per-sensor 2D ConvNet over the 8x8 SPAD grid. Tests whether the
+# spatial structure inside each grid (e.g. direction of approach within the
+# zone) carries useful information beyond a flat MLP.
+
+run_name: ablation_conv2d_v1
+output_dir: runs/ablation_conv2d_v1
+
+data_dir: data/raw/near_contact
+stats_path: stats.json
+val_frac: 0.10
+split_seed: 0
+num_workers: 4
+
+n_sensors: 32
+d_model: 512
+chunk_size: 100
+encoder_type: conv2d
+fusion_type: concat
+vlm_only: false
+sensor_mask: null
+beta_kl: 10.0
+
+vlm_model_name: allenai/Molmo-4B-D-0924
+dummy_vlm: false
+
+batch_size: 8
+lr: 1.0e-5
+n_epochs: 2000
+grad_clip: 1.0
+log_every: 100
+
+wandb_project: pla-corl
+no_wandb: false
