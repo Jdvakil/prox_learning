@@ -11,6 +11,11 @@ specific claims see [SANITY_CHECKS.md](SANITY_CHECKS.md).
 ## 2026-05-02 (Day 1)
 
 ### Added
+- **Paper draft (`paper/`)**: `main.tex` (full CoRL-style LaTeX with TikZ
+  architecture figure + bibliography), `references.bib` (15 entries),
+  `Makefile` (pdflatex + bibtex pipeline), `main.md` (markdown mirror),
+  `paper/README.md`. Methods + protocol locked; results table is
+  pre-registered placeholder pending Day-14 numbers.
 - **Full model layer**: ProximityEncoder (shared MLP), HandcraftedToFEncoder,
   Conv2DToFEncoder, ModalityFusion (concat + cross_attn), full ACTDecoder
   (Zhao 2023), FrozenMolmo2 + DummyVLBackbone, unified PLA class with

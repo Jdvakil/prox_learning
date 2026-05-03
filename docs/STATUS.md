@@ -46,6 +46,7 @@ training, evaluating) — not *writing* it.
 | Failure-mode categorizer                     | Code complete + verified  | all 5 categories verified                     |
 | Ablation orchestration (4 ablations)         | Code complete + smoke-tested | grad-norm pass for each variant               |
 | Per-folder scientific READMEs (12 files)     | Complete        | every subfolder has its own README                        |
+| Paper draft (LaTeX + bib + md mirror)        | Methods locked, results pre-registered | `paper/main.tex`, `paper/main.md`, `paper/references.bib` |
 
 ---
 

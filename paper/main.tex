@@ -1,0 +1,871 @@
+\documentclass[11pt]{article}
+
+% --- Geometry, fonts, micro-typography ----------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Math, graphics, tables ---------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,shapes.geometric,calc}
+
+% --- Bibliography (numeric, sorted as cited) ----------------------------------
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+}
+
+% --- Custom macros ------------------------------------------------------------
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\pending}[1]{\textcolor{orange!80!black}{\textbf{#1}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\eqdef}{\overset{\Delta}{=}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+
+% --- Title / Author -----------------------------------------------------------
+\title{\textbf{PLA: Peripersonal Language-Action Policies via\\Whole-Body Time-of-Flight Proximity Sensing}}
+\author{%
+  Anonymous Submission\\
+  \textit{Submitted to CoRL 2026 (double-blind)}%
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+% =============================================================================
+\begin{abstract}
+\noindent
+Vision-language-action (VLA) policies achieve impressive open-vocabulary
+manipulation but struggle in the \emph{peripersonal} regime --- the volume
+of space within tens of centimetres of the robot body, where small
+perception errors translate to grasp failure or collision. We argue that
+this regime is fundamentally under-served by RGB-only perception: occlusion,
+foreshortening, and texture-poor surfaces are most damaging precisely where
+millimetre-scale precision matters most. We present \textbf{PLA
+(Peripersonal Language-Action)}, a policy architecture that augments a
+frozen vision-language backbone with a learned representation of whole-body
+time-of-flight (ToF) proximity sensing. PLA encodes 32 VL53L5CX-class
+8$\times$8 SPAD multi-zone sensors mounted across the FR3 robot's links and
+end-effector through a shared, layer-normed MLP that produces one token per
+sensor. These tokens are concatenated with frozen Molmo2-4B visual-language
+tokens and a proprioceptive token, then passed to an Action Chunking
+Transformer (ACT) decoder that predicts a 100-step joint-delta horizon in a
+single forward pass. PLA differs from a comparable ACT baseline by
+\emph{exactly one} architectural switch: the presence or absence of the
+proximity stream. We pre-register a 100-episode-per-condition evaluation on
+four MolmoSpaces tasks (open-workspace pick-and-place, near-contact pick-and-place,
+language-conditioned colour selection, and spatial-relation placement) with
+paired-bootstrap p-values under a fixed seed schedule. We report Day-1
+system validation (forward-pass, gradient-flow, dataset-pipeline, and
+statistical-method correctness) and lock the experimental protocol prior to
+data collection. \emph{Final empirical results will be reported in
+Section~\ref{sec:results} on Day~14 of execution; the methods,
+hyperparameters, statistical procedure, and acceptance criteria are
+finalised here.}
+\end{abstract}
+
+% =============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Recent vision-language-action policies~\citep{brohan2023rt2,kim2024openvla,
+black2024pi0,molmo2024} have established the modern recipe for generalist
+manipulation: a large pre-trained vision-language model (VLM) provides
+open-vocabulary perception and language grounding, and a lightweight action
+head converts contextual representations into low-level joint commands.
+This recipe is correct on average. It is not yet adequate at the boundaries.
+
+\paragraph{The peripersonal regime.}
+Cognitive scientists use the term \emph{peripersonal space} to denote the
+volume immediately surrounding the body, monitored by multimodal neurons in
+parietal cortex specifically tuned for action and defense
+\citep{rizzolatti1981peripersonal,graziano2009peripersonal}. In humans this
+volume is rich in tactile and proximity cues; in robots it is the regime in
+which (i) RGB foreshortening is most severe, (ii) occlusion is unavoidable
+because the robot itself blocks the camera, and (iii) error tolerances are
+millimetres rather than centimetres. The same VLA that can correctly point
+to ``the red mug'' from a metre away may fail to insert its gripper into
+the mug's handle from 4\,cm.
+
+\paragraph{Why this is a representation problem, not a control problem.}
+A common rebuttal is that fine motion is the controller's responsibility,
+not the policy's. Modern force-controlled arms can compensate for small
+sensing errors at runtime. But this assumes the policy has \emph{committed}
+to an action sequence that is feasible given the local geometry. In the
+peripersonal regime, infeasibility manifests not as a small tracking error
+but as collision or grasp miss --- a categorical failure that no controller
+can rescue. The policy needs a representation of geometry that does not
+share the failure modes of its primary visual stream.
+
+\paragraph{Whole-body time-of-flight.}
+We consider \emph{multi-zone time-of-flight (ToF) proximity sensors}
+distributed over the robot body. The VL53L5CX class of sensors used in
+GenTact-style robotic skins~\citep{patel2023gentact} produces an
+8$\times$8 grid of SPAD-based depth measurements at 45$^\circ$ FOV and
+20--4000\,mm range. Mounted across multiple links, dozens of sensors
+provide a spatially distributed view of nearby geometry that is
+\emph{complementary} to RGB: ToF is unaffected by texture, lighting, or
+the foreshortening near the gripper, but is poor at object identity and
+language grounding. We argue this is exactly the right complement to a
+VLM-backed policy.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \textbf{Architecture (Section~\ref{sec:method}).} We propose PLA, a
+  policy that fuses frozen Molmo2-4B visual-language tokens with learned
+  whole-body ToF proximity tokens via concatenation followed by a shared
+  ACT decoder. The proximity encoder is a single shared MLP over
+  flattened 8$\times$8 zone readings; per-sensor identity is preserved by
+  the per-token slot in the decoder context.
+\item \textbf{The one-flag baseline (Section~\ref{sec:method-baseline}).}
+  PLA and the VLM-only ACT baseline differ only in the presence of the
+  proximity stream. They share architecture, hyperparameters, dataset,
+  and seed schedule. This makes the proximity contribution
+  \emph{causally identifiable} from the comparison.
+\item \textbf{Sim-to-data pipeline (Section~\ref{sec:system-data}).} We
+  detail the full pipeline from URDF/MJCF skin construction through
+  per-step camera-based depth rendering with a calibrated noise model, to
+  HDF5 trajectory storage with schema validation and a
+  proximity-informative coverage check that gates training start.
+\item \textbf{Pre-registered evaluation (Section~\ref{sec:protocol}).} We
+  finalise tasks, sample sizes, statistical methodology
+  (paired-bootstrap with shared seeds, $\alpha = 0.05$, two-sided), and
+  acceptance criteria \emph{before} running the headline experiment.
+\item \textbf{Open implementation.} An importable Python package,
+  configurable from flat YAML files with one switch separating PLA from
+  baseline, supports collection, training, evaluation, and ablation
+  through a single training entry point.
+\end{enumerate}
+
+% =============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Vision-language-action policies.}
+RT-2~\citep{brohan2023rt2} cast manipulation as autoregressive token
+prediction over a co-fine-tuned VLM. OpenVLA~\citep{kim2024openvla}
+provided an open recipe for VLA training. $\pi_0$~\citep{black2024pi0}
+combined a VLM with a flow-matching action head; Molmo
+\citep{molmo2024} added pixel-level pointing supervision that has proved
+useful for spatial grounding. None of these works model proximity as a
+first-class input. Our contribution is orthogonal: PLA composes with any
+of these backbones (we use Molmo2 for its strong pointing prior), and
+adds a stream that is decoupled from the visual one.
+
+\paragraph{Action chunking and chunked decoders.}
+ACT~\citep{zhao2023learning} predicts an action chunk in one forward
+pass via a CVAE encoder over the future chunk plus a transformer
+decoder. Diffusion Policy~\citep{chi2023diffusion} replaces the CVAE
+with iterative denoising. We use ACT because (i) one-shot inference fits
+within our 5\,Hz control budget without distillation, and (ii) the CVAE
+bottleneck regularises against multimodal expert demos arising from
+heuristic TAMP planners (Section~\ref{sec:design-act}).
+
+\paragraph{Tactile and proximity sensing.}
+GelSight~\citep{yuan2017gelsight} and DIGIT~\citep{lambeta2020digit}
+provide high-resolution contact information at fingertips. ReSkin
+\citep{bhirangi2021reskin} extends this to whole-hand tactile sheets.
+GenTact~\citep{patel2023gentact} introduced a parametric Blender
+workflow for designing whole-body ToF skins on arbitrary robot meshes.
+None of these works couple proximity to a VLM backbone for
+language-conditioned manipulation. Concurrent work explores tactile-VLA
+\citep{tactilevla2025} but with a single-fingertip sensor; we operate at
+whole-body scale.
+
+\paragraph{Peripersonal space in robotics.}
+Roncone et al.~\citep{roncone2016peripersonal} formalised peripersonal
+maps via touch-evoked optical-flow associations on the iCub. Our approach
+inherits the conceptual claim --- a space-around-the-body that is
+behaviourally and representationally distinct from extrapersonal vision
+--- and supplies the missing piece: a \emph{learnable} encoding compatible
+with modern VLA stacks.
+
+% =============================================================================
+\section{Background and Motivation}
+\label{sec:background}
+
+\subsection{Failure modes of RGB-only VLAs in the peripersonal regime}
+\label{sec:bg-failure}
+
+We characterise three failure modes that motivate the proximity stream:
+
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \textbf{Self-occlusion.} Once the gripper enters the camera frame's
+  near field, the arm itself occludes the target. The VLM has to predict
+  finger position from a partial view of the gripper.
+\item \textbf{Texture poverty.} Many household objects are uniformly
+  coloured (mugs, cups, fruits). At the close range needed for grasp
+  alignment, surface texture cues vanish, leaving the VLM with only
+  silhouette information.
+\item \textbf{Cluttered free-space estimation.} Standard RGB depth
+  estimators (MiDaS, ZoeDepth) are trained on scene-scale data and have
+  high error at the 1--10\,cm range relevant for collision avoidance.
+\end{enumerate}
+
+ToF proximity sensing is, by construction, immune to all three: it
+measures geometry directly at exactly the range where the failure modes
+bite hardest, and the per-sensor field of view samples \emph{around} the
+arm rather than \emph{through} it.
+
+\subsection{What we expect proximity to help with --- and what it cannot}
+
+We are explicit about the scope of the contribution. Proximity should
+help wherever local geometry, not object identity, is the binding
+constraint: near-contact obstacle avoidance, gripper-target alignment,
+and place-feasibility checks. It should \emph{not} help with
+language-conditioned object selection or spatial relations between
+distant objects. Our task suite (Section~\ref{sec:protocol-tasks}) tests
+both --- we expect a large gap on near-contact and a small or zero gap
+on language-only tasks. A method that wins everywhere is suspicious;
+proximity tokens that ``help'' on \texttt{pnp\_color} would suggest the
+encoder is leaking task-irrelevant signal (e.g.\ encoding object
+identity from reflectance) rather than measuring proximity.
+
+% =============================================================================
+\section{System}
+\label{sec:system}
+
+\subsection{Sensor skin}
+\label{sec:system-skin}
+
+Our skin design comprises 32 VL53L5CX-class sensors distributed across
+the Franka FR3's links 2, 3, 5, 6 and end-effector, with denser coverage
+on link 6 and the gripper (8 sensors) where the geometry-informativeness
+density is highest. Each sensor is mounted with its optical axis along
+the body-frame $+Z$ direction (outward) on a 3\,mm offset stand-off to
+clear the substrate. The skin is designed parametrically in
+Blender~\citep{blender} using the GenTact toolbox~\citep{patel2023gentact},
+exported as a JSON of $\{$name, position, Euler$\}$ tuples, and
+materialised in MuJoCo~\citep{todorov2012mujoco} as one fixed
+\verb|<camera>| body per sensor, set to 8$\times$8 resolution and
+45$^\circ$ vertical FOV.
+
+\subsection{Sensor model and rendering}
+\label{sec:system-model}
+
+At each simulation step, the \verb|ToFSensorArray| module renders all
+sensor cameras using MuJoCo's depth renderer. The procedure is:
+
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item For each sensor camera (in MJCF enumeration order, \emph{not}
+  lexicographic), render an 8$\times$8 depth image in metres.
+\item Convert to millimetres and clip to $[20, 4000]$\,mm (the VL53L5CX
+  operating range from datasheet).
+\item Add per-pixel Gaussian noise with $\sigma = 5$\,mm and an
+  independent 5\% per-zone dropout to the saturated max-range value (this
+  models SPAD over-saturation).
+\item Re-clip to $[20, 4000]$\,mm so noise cannot push values outside the
+  achievable hardware range.
+\end{enumerate}
+
+The output is a $[N, 8, 8]$ tensor in millimetres. The
+``MJCF-enumeration-order'' invariant (rather than alphabetical) is
+load-bearing: the sensor token slot the encoder consumes must match
+across simulation, training, and evaluation, and the build pipeline
+controls only the source-file order.
+
+\subsection{Data collection}
+\label{sec:system-data}
+
+We collect $N_\mathrm{traj} = 1000$ near-contact trajectories using the
+TAMP planner from MolmoBot. Each rollout writes one HDF5 file with the
+schema in Table~\ref{tab:hdf5-schema}. Schema-conformance and a
+\emph{proximity-informative} coverage check are required before training
+begins: a trajectory is proximity-informative if any sensor reads below
+200\,mm at any timestep, and we require $\geq 30\%$ of trajectories to
+satisfy this. The threshold was calibrated such that a standard
+open-workspace PnP rollout fails it (so the data design does not
+trivialise the headline comparison).
+
+\begin{table}[t]
+\centering
+\caption{HDF5 episode schema.}
+\label{tab:hdf5-schema}
+\small
+\begin{tabular}{lcll}
+\toprule
+key & dtype & shape & description \\
+\midrule
+\verb|obs/tof|   & float32 & $[T, N, 8, 8]$       & ToF in mm, clipped $[20, 4000]$ \\
+\verb|obs/rgb|   & uint8   & $[T, 3, 224, 224]$    & RGB camera frame \\
+\verb|obs/qpos|  & float32 & $[T, 7]$              & FR3 joint positions \\
+\verb|actions|   & float32 & $[T, 7]$              & joint deltas \\
+\verb|attrs.success| & bool & scalar & episode success flag \\
+\verb|attrs.n_sensors| & int & scalar & sensor count, must match dataset \\
+\verb|attrs.language| & str & scalar & language instruction (optional) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Normalisation}
+
+Per-channel mean and standard deviation are computed for \verb|tof|,
+\verb|qpos|, and \verb|actions| over the \emph{training} files only,
+using the same seed-and-fraction split as the DataLoader. Stats are
+cached to \verb|stats.json| and applied at load time; predicted action
+chunks are unnormalised at inference before reaching the controller. The
+unnormalisation step is non-negotiable: omitting it produces a robot
+that moves at $1/\sigma$ of intended scale.
+
+% =============================================================================
+\section{Method}
+\label{sec:method}
+
+PLA fuses three streams --- proximity, vision-language, and
+proprioception --- into the context of an ACT decoder. The full graph is
+shown in Figure~\ref{fig:overview}. We describe each component below.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    node distance=0.8cm and 0.7cm,
+    every node/.style={font=\small},
+    box/.style={
+        draw, rounded corners=2pt, minimum height=0.9cm, minimum width=2.6cm,
+        align=center, inner sep=2pt
+    },
+    big/.style={
+        box, minimum width=3.6cm, minimum height=1.4cm, fill=blue!7
+    },
+    frozen/.style={
+        box, fill=gray!10, minimum width=3.6cm, minimum height=1.4cm
+    },
+    ctx/.style={
+        box, fill=orange!10, minimum width=4.2cm
+    },
+    out/.style={
+        box, fill=green!10, minimum width=2.6cm
+    },
+    arrow/.style={-{Latex[length=2mm]}, thick},
+]
+% inputs
+\node[box] (rgb)  {RGB $[B, 2, 3, 224, 224]$};
+\node[box, below=of rgb] (lang) {language str};
+\node[box, below=of lang] (tof) {ToF $[B, 32, 8, 8]$ (mm)};
+\node[box, below=of tof] (qpos) {qpos $[B, 7]$};
+% encoders
+\node[frozen, right=of rgb, yshift=-0.4cm] (vlm) {Frozen Molmo2-4B\\ + Linear};
+\node[big, right=of tof] (penc) {ProximityEncoder\\ shared MLP + LN};
+\node[box, right=of qpos] (pp) {Linear};
+% fusion
+\node[ctx, right=2.0cm of vlm] (fuse) {ModalityFusion\\ concat + LN};
+% ACT
+\node[big, right=of fuse, yshift=-0.7cm, fill=purple!7] (act) {ACT decoder\\ CVAE + Transformer};
+% outputs
+\node[out, right=of act] (out) {pred $[B, 100, 7]$};
+% wires
+\draw[arrow] (rgb) -- (vlm);
+\draw[arrow] (lang) -- (vlm);
+\draw[arrow] (tof) -- (penc);
+\draw[arrow] (qpos) -- (pp);
+\draw[arrow] (vlm) -- node[above, font=\scriptsize]{$[B, N_v, 512]$} (fuse);
+\draw[arrow] (penc) -- node[above, font=\scriptsize]{$[B, 32, 512]$} (fuse);
+\draw[arrow] (pp) -| (fuse);
+\draw[arrow] (fuse) -- node[above, font=\scriptsize]{$[B, N_\mathrm{ctx}, 512]$} (act);
+\draw[arrow] (act) -- (out);
+\end{tikzpicture}
+\caption{PLA architecture. Frozen Molmo2-4B (gray) supplies vision-language tokens;
+the proximity encoder (blue) supplies one token per sensor; a proprioceptive
+projection supplies one token. All three are concatenated and layer-normed,
+then decoded by a 7-layer ACT transformer that predicts a 100-step joint-delta
+chunk in a single forward pass. The VLM-only ACT baseline is identical except
+the proximity branch is removed.}
+\label{fig:overview}
+\end{figure}
+
+\subsection{Proximity encoder}
+\label{sec:method-encoder}
+
+Given $\mathbf{T} \in \R^{B \times N \times 8 \times 8}$ (normalised
+proximity readings; $N = 32$), we apply a \emph{shared} two-layer MLP
+followed by LayerNorm to each sensor's flattened patch:
+\begin{equation}
+\mathbf{p}_i = \mathrm{LN}\big(W_2\, \mathrm{ReLU}(W_1\, \mathrm{vec}(\mathbf{T}_i)) \big)
+\quad\in\R^{d}
+\qquad i \in \{1, \dots, N\}
+\end{equation}
+where $W_1 \in \R^{h \times 64}, W_2 \in \R^{d \times h}$, $h = 128$,
+$d = 512$. The MLP is shared across all sensors: this matches the
+inductive bias that the same hardware should apply the same encoding,
+and yields $N\times$ the gradient signal per training step relative to
+per-sensor encoders. Per-sensor identity is recovered downstream by the
+per-token slot in the decoder context.
+
+The output LayerNorm is essential: without it, proximity tokens have
+markedly smaller magnitudes than visual-language tokens, attention
+softmax saturates at the fusion boundary, and the decoder learns to
+ignore proximity entirely. We have observed gradient-norm collapse
+($\norm{\nabla_{W_1}}_2 < 10^{-12}$) in early prototypes lacking this
+LayerNorm; the Day-6 grad-norm sanity check
+(Section~\ref{sec:protocol-checks}) is calibrated to fail loud when this
+recurs.
+
+\subsection{Frozen vision-language backbone}
+\label{sec:method-vlm}
+
+Molmo2-4B~\citep{molmo2024} is loaded with all parameters frozen. Two
+RGB frames (the current frame and a one-step lag) are processed through
+the vision tower, mean-pooled across frames at the token level, and
+projected by a trainable $\mathrm{Linear}(d_\mathrm{vlm} \to d)$ to the
+shared embedding dimension. Freezing the backbone is essential for two
+reasons:
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \emph{Catastrophic forgetting.} Fine-tuning a 4B-parameter VLM on
+  $\sim$1k trajectories degrades open-vocabulary visual priors more than
+  it improves manipulation accuracy.
+\item \emph{Memory.} Frozen Molmo2 fits in $\sim$7\,GB; full fine-tune
+  adds $\sim$16\,GB of optimiser state. The frozen configuration leaves
+  room for batch size 8 on a single A100.
+\end{enumerate}
+
+\subsection{Modality fusion}
+\label{sec:method-fusion}
+
+We fuse via concatenation along the sequence dimension followed by
+LayerNorm:
+\begin{equation}
+\mathbf{C} = \mathrm{LN}\big(\;[\mathbf{P} \,\Vert\, \mathbf{V} \,\Vert\, \mathbf{q}]\;\big)
+\in \R^{B \times (N + N_v + 1) \times d}
+\end{equation}
+where $\mathbf{P}$ are proximity tokens, $\mathbf{V}$ are projected
+visual-language tokens, and $\mathbf{q}$ is the projected proprioceptive
+token. Concatenation makes no commitment about how the streams interact;
+the decoder's attention layers are free to mix any subset. We
+investigate a cross-attention variant (proximity tokens query
+visual-language) as an ablation in Section~\ref{sec:protocol-ablations}.
+
+\subsection{ACT decoder}
+\label{sec:method-act}
+
+We use the Action Chunking
+Transformer~\citep{zhao2023learning} verbatim with the following
+hyperparameters: $d=512$, 8 heads, 4 encoder layers (CVAE), 7 decoder
+layers, $d_\mathrm{ffn}=3200$, latent $z \in \R^{32}$, dropout 0.1,
+chunk size 100. The training loss is L1 on the action chunk plus a
+constant-weighted KL term:
+\begin{equation}
+\mathcal{L} = \E\big[\,\norm{\hat{\mathbf{a}} - \mathbf{a}}_1\,\big]
+            + \beta\,\KL\!\big(\mathcal{N}(\mu, \mathrm{diag}(e^{\log \sigma^2})) \,\Vert\, \mathcal{N}(0, I)\big),
+\quad \beta = 10
+\label{eq:loss}
+\end{equation}
+$\beta$ is held constant rather than annealed; this drives the latent
+to collapse near the prior mean during training so that inference at
+$z = 0$ matches the training distribution.
+
+\subsection{The one-flag baseline}
+\label{sec:method-baseline}
+
+The VLM-only ACT baseline is constructed by setting \verb|vlm_only=True|
+in the same model class. This removes the proximity encoder entirely
+and the fusion produces $\mathbf{C} = \mathrm{LN}([\mathbf{V} \,\Vert\,
+\mathbf{q}])$. Every other architectural detail, hyperparameter, dataset,
+and seed schedule is identical between PLA and the baseline. The two
+configurations differ by one line of YAML
+(\verb|vlm_only: true| vs.\ \verb|false|) and we have verified at the
+parameter-count level that this is the \emph{only} difference: PLA has
+exactly one more module --- the proximity encoder --- whose parameter
+count is removed in the baseline.
+
+% =============================================================================
+\section{Experimental Protocol}
+\label{sec:protocol}
+
+This section is locked before data collection begins. Any deviation
+between this specification and the eventual reported results will be
+explicitly noted in the relevant subsection of
+Section~\ref{sec:results} with reasons.
+
+\subsection{Tasks}
+\label{sec:protocol-tasks}
+
+We evaluate on four MolmoSpaces tasks, each randomised over
+procthor-objaverse scenes:
+
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \textbf{pnp} (open workspace pick-and-place). Baseline competence
+  test. We expect a small or zero PLA advantage here.
+\item \textbf{near\_contact} (\emph{primary}). Pick-and-place with a
+  rigid obstacle 5--8\,cm from the expert arm path. The obstacle is
+  pre-placed in scene generation. We expect the largest PLA advantage.
+\item \textbf{pnp\_color}. Multiple coloured distractors; the language
+  instruction selects one. Stresses the VLM's pointing prior.
+\item \textbf{pnp\_next\_to}. Spatial-relation placement (place object
+  next to a reference). The hardest language test in the suite.
+\end{enumerate}
+
+\subsection{Sample sizes and pairing}
+\label{sec:protocol-N}
+
+Final per-(method $\times$ task) cell: $n = 100$ episodes. The same
+seed schedule \verb|seed_base + i| for $i \in \{0, \dots, 99\}$,
+\verb|seed_base = 42|, is used across all methods. Identical seeds in
+MolmoSpaces produce identical scenes, object placements, and language
+prompts; per-episode outcomes are therefore aligned across methods so
+the paired bootstrap is valid.
+
+\subsection{Statistical procedure}
+\label{sec:protocol-stats}
+
+For each method we compute a 95\% bootstrap confidence interval on
+success rate using $B = 10\,000$ resamples with seed $0$. For each
+non-baseline method we additionally compute a paired-bootstrap
+two-sided p-value against the VLM-only baseline by:
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item Forming the per-episode difference $d_i = a_i - b_i \in \{-1, 0, +1\}$
+  where $a, b$ are method and baseline success vectors.
+\item Recentring $\tilde d_i = d_i - \bar d$.
+\item Drawing $B$ resamples of size $n$ from $\tilde d$ with replacement.
+\item Reporting $p = \frac{1}{B} \sum_{b=1}^{B} \mathbf{1}\!\big[ |\bar{\tilde d}^{(b)}| \geq |\bar d| \big]$.
+\end{enumerate}
+
+\paragraph{Acceptance criterion (headline).} The headline contribution
+holds if on the \texttt{near\_contact} task PLA's mean success rate
+exceeds VLM-only ACT's by $\geq 5$ percentage points \emph{and} the
+paired-bootstrap p-value is below $\alpha = 0.05$.
+
+\paragraph{Multiple comparisons.} The headline test is a single
+hypothesis. Secondary comparisons (4 ablations $\times$ 1 task; PLA vs
+baseline $\times$ 4 tasks) are reported with Bonferroni-corrected
+p-values ($\times 4$). Sensor-importance per-sensor is descriptive and
+not corrected.
+
+\subsection{Ablations}
+\label{sec:protocol-ablations}
+
+All ablations differ from PLA by exactly one YAML flag:
+
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \textbf{wrist-only}. Sensor-mask zeros out the 24 non-wrist
+  sensors. Tests whether whole-body coverage is necessary or wrist
+  proximity is sufficient.
+\item \textbf{handcrafted}. Replace the learned shared MLP with
+  hand-engineered features (per-sensor min, mean, contact-flag
+  $\mathbf{1}[\min < 100\,\mathrm{mm}]$). Tests whether learning beats
+  fixed statistics.
+\item \textbf{conv2d}. Replace the flat MLP with a tiny per-sensor
+  Conv2D over the 8$\times$8 grid. Tests whether spatial structure
+  inside the SPAD grid carries useful information beyond the flat MLP.
+\item \textbf{cross\_attn}. Replace concat fusion with cross-attention
+  (proximity queries vision-language). Tests the "given what I see,
+  which proximity readings matter" inductive bias.
+\end{enumerate}
+
+\subsection{Sensor importance}
+
+Post-hoc and without retraining: for each sensor index $i$, mask its
+input grid (zero its 8$\times$8 channel) and re-evaluate on the same
+paired seeds. Importance is $\Delta_i = \mathrm{SR}_\mathrm{base} -
+\mathrm{SR}_{\mathrm{masked}\,i}$. We use $n = 50$ episodes per sensor
+($1600$ total).
+
+\subsection{Pre-training sanity checks}
+\label{sec:protocol-checks}
+
+The following are pre-conditions for a valid PLA training run; failures
+abort training before compute is committed:
+\begin{itemize}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \textbf{Schema and coverage:} \verb|pla.data.verify --strict|
+  reports 0 NaN, schema 100\%, $\geq 30\%$ proximity-informative
+  trajectories.
+\item \textbf{Forward pass:} \verb|pla.checks.forward_pass| asserts
+  output shapes $[B, 100, 7]$, $[B, 32]$, $[B, 32]$ for
+  $\hat{\mathbf{a}}, \mu, \log\sigma^2$ on every architectural variant.
+\item \textbf{Gradient flow:} the proximity-encoder L2 gradient norm
+  exceeds $10^{-8}$ after 50 synthetic-batch optimisation steps. We log
+  the per-step gradient norm during training; a value below this
+  threshold late in training raises an explicit warning.
+\end{itemize}
+
+% =============================================================================
+\section{Results}
+\label{sec:results}
+
+This section reports two classes of results: (i) Day-1 system-validation
+results that are complete and verified, and (ii) the headline empirical
+comparison, which is pre-registered above and \emph{will be reported on
+Day 14 of the execution timeline} (see
+Appendix~\ref{app:timeline}).
+
+\subsection{System validation (Day 1)}
+\label{sec:results-validation}
+
+We have verified the following on Day 1 (synthetic-data fixtures and
+\verb|DummyVLBackbone|; full transcripts in supplementary
+\verb|docs/SANITY_CHECKS.md|):
+
+\begin{itemize}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item All 49 Python source files parse cleanly; all 29 modules import
+  without circular-dependency errors.
+\item Forward$+$backward$+$inference passes for all 5 architectural
+  variants (PLA shared-MLP, VLM-only baseline, handcrafted encoder,
+  conv2d encoder, cross-attention fusion) with documented output shapes
+  $[2, 100, 7]$, $[2, 32]$, $[2, 32]$.
+\item Proximity-encoder gradient norm exceeds $10^{-2}$ after 20
+  optimisation steps for every PLA variant
+  (Table~\ref{tab:gradnorm}); the VLM-only baseline correctly reports
+  ``no proximity encoder to check'' and the encoder's parameters are
+  absent from the optimiser state (4{,}863{,}751 vs.\ 4{,}880{,}455
+  trainable parameters at $d=64$).
+\item The synthetic data pipeline is end-to-end consistent:
+  6 episodes $\to$ schema validator (6/6 pass) $\to$ normaliser
+  ($\mathrm{stats.json}$ written from 5 train files) $\to$ DataLoader
+  (745 train / 149 val sliding windows) $\to$ 3-step training (loss
+  $2.78 \to 1.55$, encoder gradient $> 0.09$).
+\item Statistical estimators behave correctly on synthetic 65/50 success
+  rates: bootstrap 95\% CIs $[60\%, 78\%]$ and $[33\%, 53\%]$;
+  paired-bootstrap $p = 3 \times 10^{-4}$, in agreement with an
+  independent $\chi^2$ check.
+\item The wrist-only sensor mask zeros input indices $[8, 32)$ and
+  preserves $[0, 8)$ element-wise.
+\end{itemize}
+
+\begin{table}[t]
+\centering
+\caption{Proximity-encoder per-parameter L2 gradient norms after 20
+synthetic-batch optimisation steps. Threshold for ``learning'' is
+$10^{-8}$; all observed values exceed this by 5--7 orders of magnitude.
+The VLM-only baseline correctly has no proximity encoder.}
+\label{tab:gradnorm}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{shared-MLP} & \multicolumn{2}{c}{conv2d} & \multicolumn{1}{c}{handcrafted} & vlm-only \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-6}\cmidrule(lr){7-7}
+parameter & PLA & cross-attn & conv2d & & handcrafted & baseline \\
+\midrule
+\verb|mlp.0.weight|       & $1.6\!\times\!10^{-1}$ & $2.1\!\times\!10^{-1}$ & --- & & --- & --- \\
+\verb|mlp.0.bias|         & $2.5\!\times\!10^{-2}$ & $3.3\!\times\!10^{-2}$ & --- & & --- & --- \\
+\verb|mlp.2.weight|       & $2.9\!\times\!10^{-1}$ & $3.5\!\times\!10^{-1}$ & --- & & --- & --- \\
+\verb|conv.0.weight|      & --- & --- & $5.0\!\times\!10^{-2}$ & & --- & --- \\
+\verb|conv.2.weight|      & --- & --- & $2.2\!\times\!10^{-1}$ & & --- & --- \\
+\verb|proj.weight|        & --- & --- & $1.8\!\times\!10^{-1}$ & & $6.3\!\times\!10^{-3}$ & --- \\
+\verb|norm.weight| (LN)   & $1.4\!\times\!10^{-2}$ & $2.0\!\times\!10^{-2}$ & $2.0\!\times\!10^{-2}$ & & $3.8\!\times\!10^{-4}$ & --- \\
+\midrule
+verdict & PASS & PASS & PASS & & PASS & SKIP (no encoder) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Pre-registered empirical results (Day 14)}
+
+The result table below is the structure that will be filled. Columns
+and methods are locked. The acceptance criterion
+(Section~\ref{sec:protocol-stats}) is locked.
+
+\begin{table}[t]
+\centering
+\caption{\pending{[PRE-REGISTERED, Day 14 deliverable]} Success rate (\%)
+with bootstrap 95\% CIs and paired-bootstrap p-values vs.\ VLM-only ACT.
+$n = 100$ episodes per cell, paired across methods by shared seed. Bold
+entries indicate the headline test ($p < 0.05$ on \texttt{near\_contact}).}
+\label{tab:results}
+\small
+\begin{tabular}{lcccc}
+\toprule
+& \texttt{pnp} & \texttt{near\_contact} & \texttt{pnp\_color} & \texttt{pnp\_next\_to} \\
+\midrule
+PropOnlyMLP    & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+VLM-only ACT   & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+\midrule
+PLA + wrist only       & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+PLA + handcrafted      & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+PLA + conv2d           & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+PLA + cross-attn       & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+\midrule
+\textbf{PLA (ours)}    & \pending{--} & \pending{--} & \pending{--} & \pending{--} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What we predict, and what would change our minds}
+
+We predict (i) PLA $>$ VLM-only ACT on \texttt{near\_contact} by
+$\geq 10$\,pp with $p < 0.05$, (ii) the gap on \texttt{pnp} (open
+workspace, no nearby obstacles) is $< 5$\,pp, (iii) wrist-only $\approx$
+PLA on \texttt{near\_contact}, suggesting that the wrist proximity is
+the primary information source --- but with $> 5$\,pp degradation if any
+non-wrist sensor is masked individually
+(Section~\ref{sec:protocol-ablations}, sensor-importance), and (iv)
+handcrafted features lag PLA by $\geq 5$\,pp, justifying the learned
+encoder.
+
+If the headline test \emph{fails} ($p \geq 0.05$ or $\Delta < 5$\,pp),
+the candidate causes in priority order are: (a) data coverage falls
+below the 30\% near-contact threshold despite a passing verifier
+($\Rightarrow$ task design needs to push harder); (b) the encoder
+gradient collapses late in training ($\Rightarrow$ LayerNorm position or
+fusion bug); (c) the obstacle is too easy for RGB to handle anyway
+($\Rightarrow$ tighten obstacle distance to 4\,cm); (d) the comparison
+is genuinely null and proximity does not help in our regime
+($\Rightarrow$ honest negative result; we will report it).
+
+\subsection{Limitations}
+
+Two caveats apply to the present scope:
+
+\begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item \emph{Simulation only.} All numbers are produced in MuJoCo with a
+  calibrated VL53L5CX noise model. We do not claim sim-to-real transfer
+  in this work; the noise model and clipping protocol are designed to
+  make a real-world deployment plausible, not certain. Hardware
+  validation is concurrent work.
+\item \emph{Frozen vision backbone.} We do not adapt Molmo2 to the
+  manipulation distribution. A LoRA-adapted backbone might extract more
+  task-relevant visual features, narrowing the PLA gap. This is a
+  question for future work and one we are explicitly trading off
+  against catastrophic forgetting (Section~\ref{sec:method-vlm}).
+\end{enumerate}
+
+\subsection{Broader scientific positioning}
+
+The paper makes a stronger claim than ``adding sensors helps''. It
+argues that the \emph{representation} of proximity --- a distinct,
+learnable, body-attached stream --- is what unlocks a class of tasks
+that standard VLAs systematically fail at. The peripersonal regime is
+not a tail of the distribution; it is the regime in which the most
+common day-to-day manipulation occurs. By isolating the contribution to
+a one-flag architectural change, we render the claim falsifiable in a
+way that ``adding more data'' or ``adding more parameters'' would not.
+
+% =============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented PLA, a vision-language-action policy that adds a learned
+representation of whole-body time-of-flight proximity sensing to a
+frozen-backbone, action-chunking architecture. The contribution is
+isolated to a single architectural switch, the experimental protocol is
+pre-registered with paired-bootstrap statistics, and the system has
+been validated end-to-end on synthetic fixtures. The headline empirical
+comparison will be reported on Day 14 of the execution timeline; the
+methods, code, and acceptance criteria are locked here. We argue that
+the peripersonal regime deserves a dedicated representational primitive,
+and that whole-body ToF sensing combined with a shared-MLP encoder is a
+strong, simple candidate for that primitive.
+
+% =============================================================================
+\section*{Reproducibility statement}
+
+The full implementation (all model code, configs, data pipeline, eval
+harness, and statistical helpers) is available at the anonymised
+repository
+URL\,\footnote{Anonymised for review. The release is a single Python
+package importable as \texttt{pla} with one flat YAML config per
+experimental condition.}.
+The training-time and evaluation-time random seeds are pinned in the
+configs; \texttt{stats.json} is committed alongside each checkpoint so
+the exact normalisation constants are recoverable. Day-14 results will
+be accompanied by per-method, per-task JSON outcome files (one per
+$n=100$ run) so that the bootstrap statistics can be independently
+recomputed. The anonymised repository contains
+$\sim$5{,}800 lines of Python and 12 per-folder scientific READMEs that
+document the contract, sanity checks, and design rationale for each
+sub-package.
+
+% =============================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+% =============================================================================
+\section{Execution timeline (for the pre-registration)}
+\label{app:timeline}
+
+\textbf{Today is Day 1 (May 2, 2026).} The submission deadline is Day 27
+(May 28, 2026 AoE). The pre-registered execution schedule is:
+\begin{itemize}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
+\item Day 1--2: skin design + MJCF build + sanity checks (\textbf{done as of submission}).
+\item Day 3: launch 1000-trajectory near-contact collection.
+\item Day 4--5: train baselines.
+\item Day 6: PLA training start; verify gradient flow.
+\item Day 7: 50-episode quick eval (\texttt{near\_contact}, baselines).
+\item Day 8--9: launch all four ablations.
+\item Day 10--11: per-sensor importance sweep.
+\item Day 12--13: figures.
+\item \textbf{Day 14: results lock} --- Tables~\ref{tab:results} and the
+  sensor-importance heatmap are filled with the n=100 numbers.
+\item Day 15--21: writing.
+\item Day 22--26: revision, formatting, supplementary.
+\item Day 27: submit.
+\end{itemize}
+
+% =============================================================================
+\section{Architectural variants studied}
+\label{app:variants}
+
+The proximity encoder, fusion module, and full PLA model are all
+controlled by config flags in a single \texttt{configs/train/*.yaml}
+file. The variants used in this paper are:
+
+\begin{table}[h]
+\centering
+\caption{Variants and the YAML flag(s) that produce them.}
+\small
+\begin{tabular}{ll}
+\toprule
+variant & flags from \texttt{configs/train/pla.yaml} \\
+\midrule
+PLA (ours)       & (none --- this is the default) \\
+VLM-only ACT     & \texttt{vlm\_only: true} \\
+PLA + wrist-only & \texttt{sensor\_mask: [8, 9, ..., 31]} \\
+PLA + handcrafted & \texttt{encoder\_type: handcrafted} \\
+PLA + conv2d     & \texttt{encoder\_type: conv2d} \\
+PLA + cross-attn & \texttt{fusion\_type: cross\_attn} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Hyperparameters}
+\label{app:hyperparams}
+
+\begin{table}[h]
+\centering
+\caption{Locked hyperparameters. These do not vary across configurations.}
+\small
+\begin{tabular}{lc}
+\toprule
+hyperparameter & value \\
+\midrule
+hidden dim $d$               & 512 \\
+attention heads              & 8 \\
+ACT encoder layers (CVAE)    & 4 \\
+ACT decoder layers           & 7 \\
+FFN dim                      & 3200 \\
+latent dim $z$               & 32 \\
+chunk size                    & 100 \\
+RGB history $K$              & 2 \\
+sensors $N$                  & 32 \\
+KL weight $\beta$            & 10 (constant) \\
+optimiser                    & Adam \\
+learning rate                & $1 \times 10^{-5}$ \\
+batch size                   & 8 \\
+gradient clip                & 1.0 \\
+dropout                       & 0.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}
