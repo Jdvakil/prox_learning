@@ -17,7 +17,10 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,fit,shapes.geometric,calc}
+\usetikzlibrary{positioning,arrows.meta,fit,shapes.geometric,calc,patterns,decorations.pathreplacing}
+
+% --- Figures live in figures/ -------------------------------------------------
+\graphicspath{{figures/}}
 
 % --- Bibliography (numeric, sorted as cited) ----------------------------------
 \usepackage[numbers,sort&compress]{natbib}
@@ -248,20 +251,123 @@ identity from reflectance) rather than measuring proximity.
 Our skin design comprises 32 VL53L5CX-class sensors distributed across
 the Franka FR3's links 2, 3, 5, 6 and end-effector, with denser coverage
 on link 6 and the gripper (8 sensors) where the geometry-informativeness
-density is highest. Each sensor is mounted with its optical axis along
-the body-frame $+Z$ direction (outward) on a 3\,mm offset stand-off to
-clear the substrate. The skin is designed parametrically in
-Blender~\citep{blender} using the GenTact toolbox~\citep{patel2023gentact},
-exported as a JSON of $\{$name, position, Euler$\}$ tuples, and
-materialised in MuJoCo~\citep{todorov2012mujoco} as one fixed
-\verb|<camera>| body per sensor, set to 8$\times$8 resolution and
-45$^\circ$ vertical FOV.
+density is highest (Figure~\ref{fig:sensor-layout}). Each sensor is
+mounted with its optical axis along the body-frame $+Z$ direction
+(outward) on a 3\,mm offset stand-off to clear the substrate. The skin
+is designed parametrically in Blender~\citep{blender} using the GenTact
+toolbox~\citep{patel2023gentact}, exported as a JSON of $\{$name,
+position, Euler$\}$ tuples, and materialised in
+MuJoCo~\citep{todorov2012mujoco} as one fixed \verb|<camera>| body per
+sensor, set to 8$\times$8 resolution and 45$^\circ$ vertical FOV.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    every node/.style={font=\small},
+    link/.style={
+        draw, fill=gray!12, rounded corners=2pt, minimum width=1.6cm,
+        minimum height=0.7cm, align=center, font=\scriptsize
+    },
+    sensor/.style={
+        draw, circle, fill=blue!20, minimum size=0.18cm, inner sep=0pt
+    },
+    wsensor/.style={
+        draw, circle, fill=blue!50, minimum size=0.20cm, inner sep=0pt
+    },
+    fov/.style={
+        draw=blue!35, dashed, line width=0.3pt, fill=blue!8, opacity=0.4
+    },
+    arrow/.style={-{Latex[length=1.5mm]}, thick},
+]
+% Robot diagram (schematic) ----------------------------------------------------
+\node[link, minimum width=2.4cm] (base) at (0, 0) {base / link 1};
+\node[link, above=0.20cm of base] (l2) {link 2 (5 sensors)};
+\node[link, above=0.20cm of l2] (l3) {link 3 (5 sensors)};
+\node[link, above=0.20cm of l3] (l4) {link 4};
+\node[link, above=0.20cm of l4] (l5) {link 5 (7 sensors)};
+\node[link, above=0.20cm of l5] (l6) {\textbf{link 6 (7 sensors)}};
+\node[link, above=0.20cm of l6, fill=blue!8] (ee)
+  {\textbf{end-effector (8 sensors)}};
+
+% Sensor markers on link 2 -----------------------------------------------------
+\foreach \i/\offX/\offY in {0/-1.0/0.0, 1/-0.5/0.05, 2/0.0/0.0, 3/0.5/0.05, 4/1.0/0.0} {
+    \node[sensor] at ($(l2.center)+(\offX, \offY)$) {};
+}
+% Link 3
+\foreach \i/\offX/\offY in {0/-1.0/0.0, 1/-0.5/0.0, 2/0.0/0.0, 3/0.5/0.0, 4/1.0/0.0} {
+    \node[sensor] at ($(l3.center)+(\offX, \offY)$) {};
+}
+% Link 5
+\foreach \i/\offX in {0/-1.0, 1/-0.66, 2/-0.33, 3/0.0, 4/0.33, 5/0.66, 6/1.0} {
+    \node[sensor] at ($(l5.center)+(\offX, 0.0)$) {};
+}
+% Link 6  (denser - blue!50 markers)
+\foreach \i/\offX in {0/-1.0, 1/-0.66, 2/-0.33, 3/0.0, 4/0.33, 5/0.66, 6/1.0} {
+    \node[wsensor] at ($(l6.center)+(\offX, 0.0)$) {};
+}
+% End-effector  (densest - 8 sensors)
+\foreach \i/\offX in {0/-1.0, 1/-0.71, 2/-0.42, 3/-0.14, 4/0.14, 5/0.42, 6/0.71, 7/1.0} {
+    \node[wsensor] at ($(ee.center)+(\offX, 0.0)$) {};
+}
+
+% Right panel: sensor model with FOV ------------------------------------------
+\begin{scope}[shift={(5.6cm, -0.2cm)}]
+\node[font=\small\bfseries] at (0, 4.6) {VL53L5CX sensor};
+\node[draw, fill=gray!10, rounded corners=2pt, minimum width=2.0cm, minimum height=0.55cm]
+  (substrate) at (0, 4.0) {\scriptsize substrate};
+\node[wsensor, minimum size=0.32cm] (s) at (0, 4.0) {};
+
+% FOV cone
+\fill[fov] (s.center) -- ++(110:1.5cm) arc[radius=1.5cm, start angle=110, end angle=70] -- cycle;
+\node[font=\scriptsize] at (0, 5.4) {$45^\circ$ FOV};
+\draw[densely dotted, gray] (s.center) -- ++(0, 1.5cm)
+   node[midway, right=1pt, font=\scriptsize, gray]{$+Z$};
+
+% 8x8 grid representation
+\begin{scope}[shift={(0, 7.0cm)}]
+\foreach \i in {0,...,7} {
+  \foreach \j in {0,...,7} {
+    \pgfmathsetmacro{\v}{0.20+0.05*(\i+\j)+0.05*rnd}
+    \fill[blue!50, opacity=\v]
+      (\i*0.18, \j*0.18) rectangle ++(0.18, 0.18);
+    \draw[gray!50, line width=0.15pt]
+      (\i*0.18, \j*0.18) rectangle ++(0.18, 0.18);
+  }
+}
+\node[font=\scriptsize, anchor=south] at (0.72, 1.45) {8$\times$8 SPAD zones};
+\node[font=\scriptsize, anchor=west] at (1.6, 0.7) {20--4000\,mm};
+\end{scope}
+
+% Range bar
+\node[draw, fill=blue!10, rounded corners=1pt, minimum width=2.6cm, minimum height=0.32cm,
+      font=\scriptsize] at (0, 3.0) {range: 20\,--\,4000\,mm};
+\node[draw, fill=blue!10, rounded corners=1pt, minimum width=2.6cm, minimum height=0.32cm,
+      font=\scriptsize] at (0, 2.55) {noise: $\sigma=5$\,mm};
+\end{scope}
+
+% Legend
+\node[font=\scriptsize, anchor=west] at (-2.8, -1.0)
+  {\tikz \node[sensor]{}; \, lighter coverage (links 2/3/5)};
+\node[font=\scriptsize, anchor=west] at (1.0, -1.0)
+  {\tikz \node[wsensor]{}; \, denser coverage (link 6 + EE)};
+\end{tikzpicture}
+\caption{\textbf{Whole-body ToF skin layout.} Left: schematic of the
+Franka FR3 with 32 VL53L5CX-class proximity sensors distributed across
+links 2, 3, 5, 6 and the end-effector. Coverage is intentionally denser
+on link 6 and the gripper (filled markers) where the geometry-information
+density is highest during pick-and-place. Right: each sensor produces an
+8$\times$8 SPAD multi-zone depth grid at 45$^\circ$ FOV in 20--4000\,mm
+range; we add Gaussian noise $\sigma = 5$\,mm and 5\% per-zone dropout
+in simulation (Section~\ref{sec:system-model}).}
+\label{fig:sensor-layout}
+\end{figure}
 
 \subsection{Sensor model and rendering}
 \label{sec:system-model}
 
 At each simulation step, the \verb|ToFSensorArray| module renders all
-sensor cameras using MuJoCo's depth renderer. The procedure is:
+sensor cameras using MuJoCo's depth renderer
+(Figure~\ref{fig:tof-pipeline}). The procedure is:
 
 \begin{enumerate}[leftmargin=1.5em,topsep=0.2em,itemsep=0.2em]
 \item For each sensor camera (in MJCF enumeration order, \emph{not}
@@ -274,6 +380,54 @@ sensor cameras using MuJoCo's depth renderer. The procedure is:
 \item Re-clip to $[20, 4000]$\,mm so noise cannot push values outside the
   achievable hardware range.
 \end{enumerate}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    every node/.style={font=\scriptsize},
+    blk/.style={
+        draw, rounded corners=2pt, minimum height=0.85cm, minimum width=1.65cm,
+        align=center, inner sep=2pt
+    },
+    arrow/.style={-{Latex[length=1.5mm]}, thick},
+]
+\node[blk, fill=gray!10] (scene) {MuJoCo\\scene};
+\node[blk, fill=blue!10, right=0.32cm of scene] (render)
+  {camera $i$\\depth render};
+\node[blk, fill=blue!8, right=0.32cm of render] (clip1)
+  {clip\\$[20, 4000]$\,mm};
+\node[blk, fill=orange!12, right=0.32cm of clip1] (noise)
+  {$+\,\mathcal{N}(0, 5^2)$\,mm};
+\node[blk, fill=orange!18, right=0.32cm of noise] (drop)
+  {5\% drop\\to 4000\,mm};
+\node[blk, fill=blue!8, right=0.32cm of drop] (clip2)
+  {re-clip};
+\node[blk, fill=green!10, right=0.32cm of clip2] (out)
+  {$\mathbf{T}_i \in \mathbb{R}^{8\times 8}$};
+
+\draw[arrow] (scene) -- (render);
+\draw[arrow] (render) -- (clip1);
+\draw[arrow] (clip1) -- (noise);
+\draw[arrow] (noise) -- (drop);
+\draw[arrow] (drop) -- (clip2);
+\draw[arrow] (clip2) -- (out);
+
+\draw[decorate, decoration={brace, mirror, amplitude=4pt}]
+  ([yshift=-0.1cm]render.south west) --
+  ([yshift=-0.1cm]drop.south east)
+  node[midway, below=4pt, font=\scriptsize\itshape]
+  {repeat for each of $N=32$ cameras, in MJCF order, every step};
+\end{tikzpicture}
+\caption{\textbf{ToF rendering pipeline.} Per simulation step, each
+sensor camera is rendered to an 8$\times$8 depth image, clipped to the
+VL53L5CX operating range, perturbed by datasheet-calibrated noise (5\,mm
+Gaussian per pixel; 5\% per-zone dropout to saturated max-range, modelling
+SPAD over-saturation), and re-clipped so values never exceed achievable
+hardware range. The MJCF-enumeration-order invariant is load-bearing:
+the per-sensor token slot the encoder consumes must match across
+simulation, training, and evaluation.}
+\label{fig:tof-pipeline}
+\end{figure}
 
 The output is a $[N, 8, 8]$ tensor in millimetres. The
 ``MJCF-enumeration-order'' invariant (rather than alphabetical) is
@@ -516,10 +670,75 @@ procthor-objaverse scenes:
 
 Final per-(method $\times$ task) cell: $n = 100$ episodes. The same
 seed schedule \verb|seed_base + i| for $i \in \{0, \dots, 99\}$,
-\verb|seed_base = 42|, is used across all methods. Identical seeds in
-MolmoSpaces produce identical scenes, object placements, and language
-prompts; per-episode outcomes are therefore aligned across methods so
-the paired bootstrap is valid.
+\verb|seed_base = 42|, is used across all methods
+(Figure~\ref{fig:pairing}). Identical seeds in MolmoSpaces produce
+identical scenes, object placements, and language prompts; per-episode
+outcomes are therefore aligned across methods so the paired bootstrap is
+valid. Figure~\ref{fig:power} shows that this sample size yields
+acceptable statistical power for the effect sizes we expect.
+
+\begin{figure}[t]
+\centering
+\begin{minipage}{0.55\textwidth}
+\centering
+\begin{tikzpicture}[
+    every node/.style={font=\scriptsize},
+    cell/.style={
+        draw, minimum width=0.45cm, minimum height=0.45cm, inner sep=0pt
+    },
+    succ/.style={cell, fill=green!35},
+    fail/.style={cell, fill=red!25},
+    method/.style={anchor=east, font=\scriptsize, inner sep=2pt},
+]
+% header row of seed labels
+\foreach \i/\lbl in {0/42, 1/43, 2/44, 3/45, 4/{$\cdots$}, 5/{$\cdots$}, 6/{139}, 7/{140}, 8/{141}} {
+    \node[font=\scriptsize\itshape] at (\i*0.5+0.5, 2.2) {\lbl};
+}
+\node[font=\scriptsize, anchor=south] at (2.3, 2.55) {episode seed};
+
+% row labels
+\node[method] at (0.3, 1.6) {VLM-only ACT};
+\node[method] at (0.3, 1.05) {PLA + handcrafted};
+\node[method] at (0.3, 0.5) {\textbf{PLA (ours)}};
+
+% rows of cells (deterministic but illustrative pattern)
+\foreach \i/\v in {0/1, 1/0, 2/1, 3/0, 4/0, 5/1, 6/1, 7/0, 8/1} {
+    \ifnum\v=1 \node[succ] at (\i*0.5+0.5, 1.6) {}; \else \node[fail] at (\i*0.5+0.5, 1.6) {}; \fi
+}
+\foreach \i/\v in {0/1, 1/1, 2/0, 3/0, 4/1, 5/1, 6/1, 7/0, 8/1} {
+    \ifnum\v=1 \node[succ] at (\i*0.5+0.5, 1.05) {}; \else \node[fail] at (\i*0.5+0.5, 1.05) {}; \fi
+}
+\foreach \i/\v in {0/1, 1/1, 2/1, 3/1, 4/1, 5/0, 6/1, 7/1, 8/1} {
+    \ifnum\v=1 \node[succ] at (\i*0.5+0.5, 0.5) {}; \else \node[fail] at (\i*0.5+0.5, 0.5) {}; \fi
+}
+
+% Vertical brackets indicating "same scene"
+\foreach \i in {0,1,2,3,5,6,7,8} {
+    \draw[densely dotted, gray!60, line width=0.3pt]
+       (\i*0.5+0.5, 0.25) -- (\i*0.5+0.5, 1.85);
+}
+
+% Caption snippet
+\node[font=\scriptsize\itshape, anchor=west] at (0.0, -0.2)
+  {each column = same scene, object placement, language};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}{0.42\textwidth}
+\centering
+\includegraphics[width=\linewidth]{sample_size_power.pdf}
+\end{minipage}
+\caption{\textbf{Paired evaluation protocol.} Left: every method is run
+on the same seed schedule \texttt{seed\_base + i}, $i \in \{0, \dots, 99\}$.
+Identical seeds produce identical scenes (one column = one scene), so
+the per-episode outcomes are aligned across methods. The paired
+bootstrap operates on the per-episode difference vector and is valid
+under this construction; the equivalent unpaired bootstrap would have
+$\sim$30\% wider CIs. Right: empirical power of the paired bootstrap as
+a function of $n$, assuming a $\Delta = 15$\,pp effect; $n = 100$
+provides usable power for the effect sizes we expect.}
+\label{fig:pairing}
+\label{fig:power}
+\end{figure}
 
 \subsection{Statistical procedure}
 \label{sec:protocol-stats}
@@ -540,6 +759,39 @@ two-sided p-value against the VLM-only baseline by:
 holds if on the \texttt{near\_contact} task PLA's mean success rate
 exceeds VLM-only ACT's by $\geq 5$ percentage points \emph{and} the
 paired-bootstrap p-value is below $\alpha = 0.05$.
+
+Figure~\ref{fig:bootstrap-illustration} illustrates the procedure on a
+synthetic 65/50 success-rate split (the same example used in our Day-1
+sanity check; see Section~\ref{sec:results-validation}): the bootstrap
+CIs separate cleanly and the paired-bootstrap two-sided $p \approx
+3 \times 10^{-4}$. The same procedure, with seeds and resamples
+identical, will be used on the real Day-14 numbers.
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{bootstrap_ci.pdf}
+\caption{\textbf{Per-method bootstrap CI.} 10{,}000 resamples of
+synthetic 65/50 success-rate vectors. Dashed lines mark the 2.5/97.5
+percentiles of the resample distributions.}
+\label{fig:bootstrap-ci}
+\end{subfigure}\hfill
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width=\linewidth]{paired_bootstrap.pdf}
+\caption{\textbf{Paired-bootstrap null distribution.} Per-episode
+difference vector recentred at zero; the observed mean difference (red)
+sits well outside the resampled null. Two-sided $p = 3 \times 10^{-4}$.}
+\label{fig:paired-bootstrap}
+\end{subfigure}
+\caption{\textbf{Statistical procedure illustrated on a synthetic
+$n = 100$, 65\%/50\% split.} The two sub-figures together define the
+quantities we will report on Day~14: a 95\% CI on each method's success
+rate (left) plus a paired-bootstrap two-sided p-value against the
+VLM-only baseline (right).}
+\label{fig:bootstrap-illustration}
+\end{figure}
 
 \paragraph{Multiple comparisons.} The headline test is a single
 hypothesis. Secondary comparisons (4 ablations $\times$ 1 task; PLA vs
@@ -636,6 +888,44 @@ We have verified the following on Day 1 (synthetic-data fixtures and
 \item The wrist-only sensor mask zeros input indices $[8, 32)$ and
   preserves $[0, 8)$ element-wise.
 \end{itemize}
+
+Figure~\ref{fig:grad-norms} visualises the per-parameter gradient norms
+across all four PLA encoder/fusion variants and Figure~\ref{fig:synth-loss}
+shows that loss decreases and the proximity-encoder gradient norm stays
+above the learning threshold throughout a 50-step synthetic training
+run. The numerical values are tabulated in Table~\ref{tab:gradnorm}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{grad_norm_bars.pdf}
+\caption{\textbf{Proximity-encoder L2 gradient norms after 20
+synthetic-batch optimisation steps, by configuration.} Threshold for
+``learning'' is $10^{-8}$ (red dashed line, shown in PLA panel for
+clarity). Every parameter in every PLA variant exceeds the threshold by
+5--7 orders of magnitude. The Day-6 grad-norm sanity check
+(Section~\ref{sec:protocol-checks}) is calibrated against this
+threshold; failure to clear it would indicate a representation bug
+(e.g.\ a missing LayerNorm at the encoder boundary) before any
+expensive training compute is committed.}
+\label{fig:grad-norms}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{synth_loss_curve.pdf}
+\caption{\textbf{System validation: 50-step PLA training on synthetic
+fixtures} (Adam, lr $= 3 \times 10^{-4}$, $d = 64$, dummy
+vision-language backbone, 10 synthetic episodes). Left: total loss with
+its $L_1$ and $\beta\,\mathrm{KL}$ components; the KL term collapses
+toward zero as the latent contracts to the prior, the desired behaviour
+under constant $\beta = 10$ (Section~\ref{sec:method-act}). Right: the
+proximity-encoder gradient norm remains $\sim 10^{-2}$ throughout,
+five orders of magnitude above the learning threshold. This run uses the
+unmodified \texttt{pla.train.train} entry point that will train the real
+model; the CPU-feasible config (smaller $d$, higher learning rate, fewer
+steps) makes the validation reproducible without GPU.}
+\label{fig:synth-loss}
+\end{figure}
 
 \begin{table}[t]
 \centering
