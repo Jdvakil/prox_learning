@@ -302,34 +302,232 @@ analytical verifiers (`verify_synthetic_scenes.py`,
 
 ## 6. Production data collection
 
-To kick off a data-collection run with the franka_skin robot:
+Two registered configs in
+`submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py`
+drive the franka_skin pick-and-place pipeline:
+
+| Config name | Purpose | Scope |
+|-------------|---------|-------|
+| `FrankaSkinPickAndPlaceDataGenConfig` | Production class. | iTHOR / train, defaults from `PickAndPlaceTaskSamplerConfig` (`samples_per_house=20`, `house_inds=range(0,4)`). Subclass or override at the call site for the full sweep. |
+| `FrankaSkinPickAndPlacePilotConfig` | 10-house pilot. Subclass of the prod config. | iTHOR / train, `house_inds=1..10`, `samples_per_house=4`, `seed=2026`. |
+
+Both wire `FrankaSkinRobotConfig` + `FrankaSkinCameraSystem` (the 29 SPAD
+sensors plus the standard exo / wrist RGB cameras) and use the planner
+policy via the `PickAndPlaceDataGenConfig` base class.
+
+Canonical invocation (named-config style — same entry point as the rest of
+molmospaces):
 
 ```bash
-cd submodules/molmospaces
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+
 PYTHONPATH=. \
   /home/jaydv/code/prox_learning/submodules/MolmoBot/MolmoBot/.venv/bin/python \
-  scripts/datagen/run_pipeline.py \
-    --robot skin \
-    --policy planner \
-    --task_type pick \
-    --scene_dataset ithor \
-    --data_split train \
-    --house_inds <list> \
-    --samples_per_house <N> \
-    --seed <S> \
-    --run_name_prefix <name>
+  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlaceDataGenConfig
 ```
 
-The output trajectory bundles will contain, per timestep:
+Output trajectory bundles contain, per timestep:
 
-- The standard exo / wrist RGB streams (as before).
+- Exo / wrist RGB streams.
 - For each of the 29 proximity sensors, a list of 8×8 float32 depth frames
   recorded at 60 Hz across the policy step
   (`ProximityDepthBufferSensor`).
 - The usual proprioception / action / language / object channels.
 
-Trajectories are converted to a single training H5 with
+Trajectories land under
+`assets/experiment_output/datagen/pick_and_place_skin_v1/house_<i>/` and are
+combined into a training H5 with
 `scripts/datagen/combine_trajs_into_h5.py`.
+
+> **Legacy CLI alternative.** The flag-driven entry point still works:
+> `scripts/datagen/run_pipeline.py --robot skin --task_type pick_and_place
+> --scene_dataset ithor --data_split train --house_inds <int>
+> --samples_per_house <N> --seed <S> --run_name_prefix <name>`.
+> Use it when you need quick CLI overrides; otherwise prefer the named
+> config.
+
+### 6.1. Pilot run (10 iTHOR houses, pick-and-place)
+
+Before committing compute to the full sweep, run the 10-house pilot to
+surface any scene-dependent failures (sensor clipping into thin walls,
+iTHOR geometry edge cases, planner timeouts on the new task family). Task
+matches the molmobot evaluation task: **pick_and_place**.
+
+Pilot parameters (baked into `FrankaSkinPickAndPlacePilotConfig`):
+
+| Field | Value | Why |
+|-------|-------|-----|
+| `robot_config` | `FrankaSkinRobotConfig` | franka_skin (29 SPAD sensors). |
+| `camera_config` | `FrankaSkinCameraSystem` | Skin proximity + exo/wrist RGB. |
+| `task_type` | `pick_and_place` | Matches the molmobot evaluation task. |
+| `scene_dataset` | `ithor` | iTHOR train kitchens (verified scene_1). |
+| `data_split` | `train` | Train split, disjoint from eval. |
+| `task_sampler_config.house_inds` | `1..10` | 10-house pilot. |
+| `task_sampler_config.samples_per_house` | `4` | ≈40 successful episodes target. |
+| `seed` | `2026` | Reproducible. Bump per re-run. |
+| `output_dir` | `assets/experiment_output/datagen/pick_and_place_skin_pilot_v1` | Tagged so it doesn't collide with prod runs. |
+
+Launch:
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+
+mkdir -p logs
+
+PYTHONPATH=. \
+  /home/jaydv/code/prox_learning/submodules/MolmoBot/MolmoBot/.venv/bin/python \
+  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlacePilotConfig \
+  2>&1 | tee logs/pilot_skin_pickplace_v1.log
+```
+
+The pipeline iterates the 10 houses internally (no bash loop needed) and
+writes per-house subdirs under
+`assets/experiment_output/datagen/pick_and_place_skin_pilot_v1/house_<i>/`.
+
+Pilot acceptance checklist (before scaling up):
+
+- [ ] Per-house success rate ≥ ~50 % (planner solving pick-and-place in the
+      kitchen). Below that, debug the planner on iTHOR pick-and-place before
+      scaling.
+- [ ] No crashes from the proximity render path (grep
+      `logs/pilot_skin_pickplace_v1.log` for `native 8x8 render failed` —
+      should be zero).
+- [ ] Spot-check 1–2 trajectories with `scripts/datagen/visualize_proximity.py`
+      / `analyze_sample_episode.py` to confirm depth streams look sane on
+      different houses (different geometry from house_1).
+- [ ] Combined H5 builds cleanly via `combine_trajs_into_h5.py`.
+
+If all four pass, the full sweep is just running
+`FrankaSkinPickAndPlaceDataGenConfig` directly (or registering a wider-house
+subclass — same pattern as the pilot).
+
+### 6.2. Low-surface pick-and-place collection (proximity-skin showcase)
+
+The first pilot ran cleanly but the resulting dataset is dominated by
+**tabletop** episodes: the default `PickAndPlaceTaskSampler` picks any
+object on any supporting surface, and procthor-objaverse / iTHOR scenes are
+saturated with `CounterTop` and `DiningTable` candidates. That distribution
+under-exercises the proximity skin — the wrist sensors see open space the
+whole way to the grasp.
+
+To bias collection toward the cases where the skin actually pays off
+(reaching down into a sink, into a low shelf, onto a chair / stool /
+sofa / bed / bathtub / toilet / dresser / chest-of-drawers), three things
+landed in the molmospaces submodule:
+
+1. A new sampler config field
+   `PickAndPlaceTaskSamplerConfig.source_surface_types` (case-insensitive
+   prefix tuple, default `()`).
+2. An override of `_get_scene_objects` on
+   `PickAndPlaceReceptacleTaskSampler` that filters candidate pickups by
+   walking the supporting geom's body parent chain (up to 3 ancestors) and
+   keeping only objects whose support body name starts with one of the
+   requested prefixes. Logs `[source_surface_types] kept N/M candidates by
+   prefix; counts={...}` per scene so per-prefix yield is visible. When
+   the filter empties the candidate list it raises `HouseInvalidForTask`,
+   not an assertion, so the worker advances cleanly to the next house.
+3. Two registered configs in `object_manipulation_datagen_configs.py`
+   that wire the filter:
+
+| Config name | Purpose | Scope |
+|-------------|---------|-------|
+| `FrankaSkinLowSurfacePickAndPlaceDataGenConfig` | Production class with the low-surface filter. | procthor-objaverse / train, `house_inds=range(1999)`, `samples_per_house=5`, `num_workers=4`, `source_surface_types=LOW_SURFACE_PREFIXES`. |
+| `FrankaSkinLowSurfacePickAndPlacePilotConfig` | Quick pilot subclass. | Same dataset, `house_inds=range(200)`, `samples_per_house=3`. |
+
+`LOW_SURFACE_PREFIXES = ("sink", "shelf", "bookshelf", "chair", "armchair",
+"stool", "sofa", "bed", "bathtub", "toilet", "crapper", "dresser",
+"chestofdrawers")`. `crapper` and `chestofdrawers` are included because
+that's how the procthor-objaverse XMLs name those bodies.
+
+Output goes to
+`assets/datagen/pick_and_place_skin_low_surface_v1/` (prod) and
+`assets/datagen/pick_and_place_skin_low_surface_pilot_v1/` (pilot), kept
+separate from the tabletop-dominated v1 dataset.
+
+#### Robustness fixes that also landed
+
+These came out of the first low-surface pilot run and apply to any
+pick-and-place datagen, not just the low-surface variant:
+
+- **Worker self-termination guard relaxed.** `max_allowed_sequential_irrecoverable_failures=10000`
+  on both pilot and prod skin configs. The default of 5 was treating
+  "house exhausted its candidate pool after some successes" as
+  irrecoverable and exiting workers after only 5 productive houses each.
+  The first 47-episode pilot was actually a 2-worker × 5-house = 10-house
+  cap, not a real `samples_per_house` cap.
+- **`_configure_pick_and_place` assertion → raise.** The base
+  `assert self.candidate_objects is not None and len(self.candidate_objects) > 0`
+  in `pick_and_place_object_target_task_sampler.py` now raises
+  `HouseInvalidForTask` instead, so a drained pool advances to the next
+  house instead of crashing the worker.
+- **Worker tracebacks logged to file.** All three
+  `traceback.print_exc()` calls in
+  `molmo_spaces/data_generation/pipeline.py` were going to stderr only
+  (the `worker_stdout_context` redirect is a no-op in this build) and so
+  worker errors never reached `running_log.log`. Replaced with
+  `worker_logger.error/warning(... + traceback.format_exc())` so every
+  task-sampling, rollout, and save error now shows up in the per-run
+  `running_log.log`. Critical for after-the-fact debugging — without it,
+  rerun-and-pray was the only diagnostic loop.
+
+#### How to launch
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+/opt/conda/envs/mlspaces/bin/python molmo_spaces/data_generation/main.py FrankaSkinLowSurfacePickAndPlacePilotConfig
+# once the pilot looks healthy:
+/opt/conda/envs/mlspaces/bin/python molmo_spaces/data_generation/main.py FrankaSkinLowSurfacePickAndPlaceDataGenConfig
+```
+
+Watch for `[source_surface_types] kept N/M ...` lines in the per-worker
+log to gauge how many scenes have qualifying surfaces. If yield is too
+low, narrow or widen `LOW_SURFACE_PREFIXES`.
+
+#### Pre-flight: scene cache must be populated
+
+`assets/scenes/<dataset>/*.xml` are symlinks into
+`~/.cache/molmo-spaces-resources/scenes/...`. If the cache is wiped (e.g.
+disk pressure cleanup) the symlinks dangle silently and **every house
+fails with `ParseXML: Error opening file`**. Symptom: a healthy-looking
+log dump followed by hundreds of
+`HouseInvalidForTask: Scene setup failed during compilation` warnings
+and `Completed 0 houses, skipped N houses` at the end.
+
+Verify before launching a long run:
+
+```bash
+ls -L /home/jaydv/code/prox_learning/assets/scenes/procthor-objaverse-train/train_0.xml
+# should print a non-zero file size, NOT "No such file or directory"
+```
+
+If the cache is gone, repopulate via the molmospaces HF download:
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+/opt/conda/envs/mlspaces/bin/python scripts/assets/hf_download.py
+```
+
+Or fetch a specific scene/variant:
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/datagen/fetch_assets.py \
+    scene procthor-objaverse <idx> --variant ceiling
+```
+
+Note that `task_sampler.sample_task` defaults to `variant="ceiling"`, so
+both the base and ceiling XMLs need to be present for the scene to load.
+
+#### Why per-house yield varies
+
+`samples_per_house=N` is a target ceiling, not a quota. The pick-and-place
+sampler keeps trying tasks in a house until it collects `N` successes or
+the candidate pool is exhausted via `_remove_candidate_object` (called on
+supporting-geom failure, robot-placement error, ≥2 grasp failures, or
+`_on_candidate_selected` ValueError). Houses with few qualifying objects
+will produce fewer episodes than houses with many — this is the data
+distribution, not a bug. The first pilot's
+`{house_4: 1, house_5: 10, house_8: 2, ...}` spread was natural variance
+in candidate-pool size after filtering.
 
 ---
 
@@ -367,6 +565,11 @@ prox_learning/
 - [x] Visual verification (per-sensor hi-res RGB inspection of a full
       house_1 pick episode).
 - [x] Production cleanup (inspection-mode code removed from `env.py`).
+- [x] Pilot data run (procthor-objaverse, pick-and-place) — 47 successful
+      episodes across 10 houses; revealed worker self-termination guard
+      and tabletop bias (see §6.1, §6.2).
+- [ ] **Low-surface pick-and-place collection (skin-showcase scenes) —
+      see §6.2. Blocked on scene cache repopulation.**
 - [ ] Large-scale data collection across iTHOR / ProcTHOR scenes.
 - [ ] VLM-only ACT baseline.
 - [ ] Train PLA policy on the same scene/task split.
