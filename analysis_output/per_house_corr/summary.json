@@ -1,0 +1,23 @@
+{
+  "n_trajectories_total": 343,
+  "n_trajectories_with_close": 343,
+  "pooled_pearson_r": -0.179143074961624,
+  "within_house": {
+    "n_houses_above_threshold": 66,
+    "min_traj_per_house_threshold": 3,
+    "r_mean": -0.07624344307547093,
+    "r_median": -0.16001951324730668,
+    "r_std": 0.5476977016641201,
+    "r_min": -0.965378140992515,
+    "r_max": 0.9891740822595624,
+    "frac_r_lt_neg_03": 0.3939393939393939,
+    "frac_r_gt_pos_03": 0.3181818181818182,
+    "fisher_z_mean_r": -0.08202689553924018
+  },
+  "interpretation": "If within-house r is strongly negative on average while pooled r ~0, the demonstrator does close earlier when EE is closer per-house, but the intercepts vary across houses, so dataset-wide pooling washes the signal out.",
+  "plots": {
+    "per_house_corr_hist": "analysis_output/per_house_corr/per_house_corr_hist.png",
+    "per_house_corr_vs_n": "analysis_output/per_house_corr/per_house_corr_vs_n.png",
+    "top_houses_scatter": "analysis_output/per_house_corr/top_houses_scatter.png"
+  }
+}
