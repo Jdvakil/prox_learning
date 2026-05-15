@@ -1,0 +1,1403 @@
+05/13 19:33:41 INFO: WandB logging disabled (environment variables not set)	[pipeline.py: 601]
+05/13 19:33:41 INFO: Starting house-by-house rollout of 10 houses with 2 episodes each (20 total episodes) using 1 worker processes	[pipeline.py: 1201]
+05/13 19:33:41 INFO: Evaluation configuration:	[pipeline.py: 1208]
+05/13 19:33:41 INFO: {'benchmark_path': None,
+ 'camera_config': {'cameras': [{'fov': 56.74,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': False,
+                                'is_warped': False,
+                                'mjcf_name': 'gripper/wrist_camera',
+                                'name': 'wrist_camera',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'camera_offset': [0.1, 0.57, 0.66],
+                                'camera_quaternion': [-0.3633,
+                                                      -0.1241,
+                                                      0.4263,
+                                                      0.8191],
+                                'fov': 71.0,
+                                'is_proximity_sensor': False,
+                                'is_warped': False,
+                                'lookat_noise_range': None,
+                                'lookat_offset': [0.0, 0.0, 0.08],
+                                'name': 'exo_camera_1',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'reference_body_names': ['robot_0/fr3_link0'],
+                                'skip_erosion': False,
+                                'up_axis': 'z',
+                                'visibility_constraints': {'__task_objects__': 0.001}},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_0',
+                                'name': 'link2_sensor_0',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_1',
+                                'name': 'link2_sensor_1',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_2',
+                                'name': 'link2_sensor_2',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_3',
+                                'name': 'link2_sensor_3',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_4',
+                                'name': 'link2_sensor_4',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_5',
+                                'name': 'link2_sensor_5',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link2_sensor_6',
+                                'name': 'link2_sensor_6',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_0',
+                                'name': 'link3_sensor_0',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_1',
+                                'name': 'link3_sensor_1',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_2',
+                                'name': 'link3_sensor_2',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_3',
+                                'name': 'link3_sensor_3',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_4',
+                                'name': 'link3_sensor_4',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_5',
+                                'name': 'link3_sensor_5',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_6',
+                                'name': 'link3_sensor_6',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link3_sensor_7',
+                                'name': 'link3_sensor_7',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_0',
+                                'name': 'link5_sensor_0',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_1',
+                                'name': 'link5_sensor_1',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_2',
+                                'name': 'link5_sensor_2',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_3',
+                                'name': 'link5_sensor_3',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_4',
+                                'name': 'link5_sensor_4',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link5_sensor_5',
+                                'name': 'link5_sensor_5',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_0',
+                                'name': 'link6_sensor_0',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_1',
+                                'name': 'link6_sensor_1',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_2',
+                                'name': 'link6_sensor_2',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_3',
+                                'name': 'link6_sensor_3',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_4',
+                                'name': 'link6_sensor_4',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_5',
+                                'name': 'link6_sensor_5',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_6',
+                                'name': 'link6_sensor_6',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None},
+                               {'fov': 45.0,
+                                'fov_noise_degrees': None,
+                                'is_proximity_sensor': True,
+                                'is_warped': False,
+                                'mjcf_name': 'link6_sensor_7',
+                                'name': 'link6_sensor_7',
+                                'orientation_noise_degrees': None,
+                                'pos_noise_range': None,
+                                'record_depth': True,
+                                'robot_namespace': 'robot_0/',
+                                'skip_erosion': False,
+                                'visibility_constraints': None}],
+                   'img_resolution': (624, 352)},
+ 'collision_free_pose_limit': 3,
+ 'config_version': '0.1',
+ 'ctrl_dt_ms': 2.0,
+ 'data_split': 'train',
+ 'datagen_profiler': True,
+ 'end_on_success': False,
+ 'environment_light_intensity': 15000.0,
+ 'eval_runtime_params': None,
+ 'filter_for_successful_trajectories': False,
+ 'log_level': 'info',
+ 'num_envs': 1,
+ 'num_workers': 1,
+ 'output_dir': PosixPath('analysis_output/eval_mvp_pla_vlm_20260513_193257/pla_seed2028/datagen_raw/FrankaSkinPLARolloutConfig/20260513_193341'),
+ 'policy_config': {'policy_cls': <class 'pla.eval_policy.PLAInferencePolicy'>,
+                   'policy_type': 'learned'},
+ 'policy_dt_ms': 66.0,
+ 'profile': True,
+ 'profiler': None,
+ 'proximity_sensor_period_ms': 16.6667,
+ 'robot_config': {'K_damping': None,
+                  'K_stiffness': None,
+                  'action_noise_config': {'action_scale_factor': 0.1,
+                                          'base_action_scale_factor': 0.1,
+                                          'enabled': False,
+                                          'max_base_position_noise': 0.02,
+                                          'max_base_rotation_noise': 0.05,
+                                          'max_tcp_position_noise': 0.02,
+                                          'max_tcp_rotation_noise': 0.1,
+                                          'rotation_noise_scale': 0.1},
+                  'command_mode': {'arm': 'joint_position',
+                                   'gripper': 'joint_position'},
+                  'default_world_pose': [0, 0, 0, 1, 0, 0, 0],
+                  'force_limit': None,
+                  'gravcomp': True,
+                  'init_qpos': {'arm': [0,
+                                        -0.7853,
+                                        0,
+                                        -2.35619,
+                                        0,
+                                        1.57079,
+                                        0.0],
+                                'gripper': [0.00296, 0.00296]},
+                  'init_qpos_noise_range': {'arm': [0.025,
+                                                    0.05,
+                                                    0.075,
+                                                    0.1,
+                                                    0.125,
+                                                    0.15,
+                                                    0.175]},
+                  'name': 'franka_skin',
+                  'robot_cls': <class 'molmo_spaces.robots.franka.FrankaRobot'>,
+                  'robot_factory': <class 'molmo_spaces.robots.franka.FrankaRobot'>,
+                  'robot_namespace': 'robot_0/',
+                  'robot_view_factory': <class 'molmo_spaces.robots.robot_views.franka_droid_view.FrankaDroidRobotView'>,
+                  'robot_xml_path': PosixPath('model.xml')},
+ 'scene_dataset': 'procthor-objaverse',
+ 'seed': 2028,
+ 'sim_dt_ms': 2.0,
+ 'task_config': {'action_dtype': 'float32',
+                 'added_objects': {},
+                 'carry_forward_rel_pos_threshold': 0.005,
+                 'carry_forward_rel_rot_threshold': np.float64(0.17453292519943295),
+                 'enable_rendering': True,
+                 'max_place_receptacle_pos_displacement': 0.1,
+                 'max_place_receptacle_rot_displacement': np.float64(0.7853981633974483),
+                 'object_poses': None,
+                 'pickup_obj_goal_pose': None,
+                 'pickup_obj_name': None,
+                 'pickup_obj_start_pose': None,
+                 'place_receptacle_name': None,
+                 'place_receptacle_start_pose': None,
+                 'place_target_name': None,
+                 'receptacle_name': None,
+                 'receptacle_supported_weight_frac': 0.5,
+                 'referral_expressions': {},
+                 'referral_expressions_priority': {},
+                 'robot_base_pose': None,
+                 'succ_pos_threshold': inf,
+                 'task_cls': <class 'molmo_spaces.tasks.pick_and_place_task.PickAndPlaceTask'>,
+                 'tracked_object_names': None,
+                 'use_sensors': True},
+ 'task_config_preset': None,
+ 'task_config_preset_exp': None,
+ 'task_config_preset_scn': None,
+ 'task_horizon': 300,
+ 'task_sampler_config': {'added_pickup_class_max_uids': None,
+                         'added_pickup_class_rank': None,
+                         'added_pickup_namespace': 'pickup/',
+                         'added_pickup_objects': None,
+                         'base_pose_sampling_radius_range': (0.0, 0.7),
+                         'check_robot_placement_visibility': True,
+                         'dataset_name': 'procthor-10k',
+                         'enable_texture_randomization': False,
+                         'episodes_per_added_pickup': 1,
+                         'episodes_per_receptacle': 2,
+                         'house_inds': [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                         'load_robot_from_file': True,
+                         'max_added_pickup_placement_attempts': 100,
+                         'max_allowed_sequential_irrecoverable_failures': 10000,
+                         'max_allowed_sequential_rollout_failures': 10,
+                         'max_allowed_sequential_task_sampler_failures': 10,
+                         'max_asset_failures': 10,
+                         'max_object_placement_attempts': 200,
+                         'max_object_to_receptacle_dist': 0.5,
+                         'max_place_receptacle_sampling_attempts': 100,
+                         'max_receptacle_attempts': 10,
+                         'max_reference_to_added_pickup_dist': 0.5,
+                         'max_robot_placement_attempts': 10,
+                         'max_robot_to_added_pickup_dist': 0.7,
+                         'max_robot_to_obj_dist': 0.6,
+                         'max_robot_to_place_receptacle_dist': 0.7,
+                         'max_robot_to_target_dist': 0.6,
+                         'max_tasks': inf,
+                         'max_total_attempts_multiplier': 6,
+                         'min_object_separation': 0.05,
+                         'min_object_to_receptacle_dist': 0.15,
+                         'min_reference_to_added_pickup_dist': 0.15,
+                         'num_added_pickups': 30,
+                         'num_place_receptacles': 3,
+                         'objaverse_oversampling_factor': 30,
+                         'object_placement_radius_range': (0.1, 0.8),
+                         'pickup_obj_name': None,
+                         'pickup_types': ['alarm_clock',
+                                          'aluminum_foil',
+                                          'apple',
+                                          'bottle',
+                                          'bread',
+                                          'butterknife',
+                                          'candle',
+                                          'cd',
+                                          'cellphone',
+                                          'cloth',
+                                          'creditcard',
+                                          'cup',
+                                          'dish_sponge',
+                                          'egg',
+                                          'egg_cracked',
+                                          'fork',
+                                          'hand_towel',
+                                          'keychain',
+                                          'knife',
+                                          'ladle',
+                                          'mug',
+                                          'newspaper',
+                                          'paper_towel',
+                                          'pen',
+                                          'pencil',
+                                          'pepper_shaker',
+                                          'potato',
+                                          'remote',
+                                          'salt_shaker',
+                                          'scrub_brush',
+                                          'soap_bar',
+                                          'soap_bottle',
+                                          'spatula',
+                                          'spoon',
+                                          'spray_bottle',
+                                          'tissue_box',
+                                          'toilet_paper',
+                                          'toilet_paper_used_up',
+                                          'tomato',
+                                          'towel_statue',
+                                          'watch'],
+                         'place_receptacle_namespace': 'place_receptacle/',
+                         'place_receptacle_types': [],
+                         'place_target_name': None,
+                         'placement_volume_name': None,
+                         'randomize_dynamics': False,
+                         'randomize_lighting': False,
+                         'randomize_robot_textures': False,
+                         'randomize_textures': False,
+                         'randomize_textures_all': False,
+                         'receptacle_name': None,
+                         'receptacle_types': ('ArmChair',
+                                              'Bed',
+                                              'Chair',
+                                              'CoffeeTable',
+                                              'CounterTop',
+                                              'Desk',
+                                              'DiningTable',
+                                              'Dresser',
+                                              'Shelf',
+                                              'SideTable',
+                                              'Sofa',
+                                              'Stool',
+                                              'TVStand'),
+                         'robot_object_z_offset': -0.75,
+                         'robot_object_z_offset_random_max': 0.25,
+                         'robot_object_z_offset_random_min': -0.3,
+                         'robot_placement_exclusion_threshold': 0.15,
+                         'robot_placement_rotation_range_rad': 0.7853981633974483,
+                         'robot_safety_radius': 0.15,
+                         'samples_per_house': 2,
+                         'scene_xml_paths': None,
+                         'sim_settle_timesteps': 500,
+                         'source_surface_types': (),
+                         'task_batch_size': 1,
+                         'task_sampler_class': <class 'molmo_spaces.tasks.pick_and_place_task_sampler.PickAndPlaceTaskSampler'>,
+                         'verbose': False},
+ 'task_type': 'pick_and_place',
+ 'use_passive_viewer': False,
+ 'use_wandb': False,
+ 'viewer_cam_dict': {'azimuth': 45.0,
+                     'distance': 5.0,
+                     'elevation': -30.0,
+                     'lookat': [0.0, 0.0, 0.5]},
+ 'viewer_camera': None,
+ 'wandb_name': None,
+ 'wandb_project': 'molmo-spaces-data-generation'}	[pipeline.py: 1209]
+05/13 19:33:41 INFO: [Worker 0] Data versions in use: {'robots': {'rby1': '20251224', 'rby1m': '20251224', 'franka_droid': '20260127', 'franka_cap': '20260213', 'floating_rum': '20251110', 'floating_robotiq': '20260208_retry4', 'franka_fr3': '20260303', 'i2rt_yam': '20260223'}, 'scenes': {'ithor': '20251217', 'refs': '20250923', 'procthor-10k-train': '20251122', 'procthor-10k-val': '20251217', 'procthor-10k-test': '20251121', 'holodeck-objaverse-train': '20251217', 'holodeck-objaverse-val': '20251217', 'procthor-objaverse-train': '20251205', 'procthor-objaverse-val': '20251205'}, 'objects': {'thor': '20251117', 'objaverse': '20260131', 'objathor_metadata': '20260129'}, 'grasps': {'droid': '20251116', 'droid_objaverse': '20251218'}, 'test_data': {'franka_pick': '20260209', 'franka_pick_and_place': '20260305', 'rby1_door_opening': '20260228', 'rby1_pnp': '20260305', 'rum_open_close': '20260305', 'rum_pick': '20260209', 'test_randomized_data': '20251209', 'thormap': '20251209'}, 'benchmarks': {'molmospaces-bench-v1': '20260408', 'molmospaces-bench-v2': '20260415'}}	[task_sampler.py: 318]
+05/13 19:33:41 INFO: [Worker 0] Worker 0 starting house 11 (index 0/10)	[pipeline.py: 418]
+05/13 19:34:04 INFO: [Worker 0] Added 3 (x 1) receptacles to scene: [np.str_('e12c29eb1cee488498343a20c503ed21'), np.str_('45bb173c0384450487421b687bf3bf5b'), np.str_('03f1185ff6d4428fa81f6fc9db589338')]	[pick_and_place_task_sampler.py: 264]
+05/13 19:34:04 INFO: [Worker 0] Loaded 7 assets from static blacklist	[task_sampler.py: 114]
+05/13 19:34:16 INFO: [Worker 0] Using MuJoCo renderer: classic	[env.py: 230]
+05/13 19:34:16 INFO: [Worker 0] Scene updated: /home/jaydv/code/prox_learning/assets/scenes/procthor-objaverse-train/train_11_ceiling.xml	[task_sampler.py: 801]
+05/13 19:34:16 INFO: [Worker 0] Setting up scene for house 11, task None...	[pick_task_sampler.py: 197]
+05/13 19:34:17 INFO: [Worker 0] Found 47 candidate pickup objects in the scene	[pick_task_sampler.py: 842]
+05/13 19:34:17 INFO: [Worker 0] Skipping keyring_5b7cb9f15634b4ffa0e223d1dd04616d_1_0_6 (uid=Keychain_3) - no grasp file available	[pick_task_sampler.py: 908]
+05/13 19:34:17 INFO: [Worker 0] Skipping objamotorcyclepart_8339f9fdaa4e4bfe920990d8d62231f8_1_0_5 (uid=8339f9fdaa4e4bfe920990d8d62231f8) - no grasp file available	[pick_task_sampler.py: 908]
+05/13 19:34:17 INFO: [Worker 0] Skipping toilettissue_70c8bb14fc5c58f1a931676d6a7870b7_1_0_9 (uid=Toilet_Paper) - grasp file exists but has no valid transforms	[pick_task_sampler.py: 912]
+05/13 19:34:17 INFO: [Worker 0] Filtered to 44 valid candidate pickup objects, 93.6 %	[pick_task_sampler.py: 926]
+05/13 19:34:17 INFO: [Worker 0] Scene setup completed.
+	[pick_task_sampler.py: 260]
+05/13 19:34:17 INFO: [Worker 0] Attempting object objatoiletpaperroll_afb1da51bd2046a2964742b53eb1b270_1_0_5 0/218	[pick_task_sampler.py: 614]
+05/13 19:34:18 INFO: [Worker 0] Failed to place receptacle place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21 near pickup object	[pick_and_place_task_sampler.py: 352]
+05/13 19:34:18 INFO: [Worker 0] No valid place target found for objatoiletpaperroll_afb1da51bd2046a2964742b53eb1b270_1_0_5	[pick_and_place_object_target_task_sampler.py: 90]
+05/13 19:34:18 INFO: [Worker 0] Attempting object pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6 1/218	[pick_task_sampler.py: 614]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:18 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:34:18 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:34:18 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6': (3.199, 3.721, 0.708)	[env.py: 885]
+05/13 19:34:18 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.016991m	[env.py: 902]
+05/13 19:34:18 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:34:18 INFO: [Worker 0] [THORMAP] Creating occupancy map (agent_radius=0.15, px_per_m=200)	[env.py: 782]
+05/13 19:34:38 INFO: [Worker 0] [THORMAP] Occupancy map created and cached	[env.py: 824]
+05/13 19:34:38 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 14891 free points within sampling radius	[env.py: 930]
+05/13 19:34:39 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[ 2.66853196  3.98152715 -0.01699088] yaw=-12.7deg	[env.py: 1016]
+05/13 19:34:39 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #1	[env.py: 1026]
+05/13 19:34:39 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[ 2.78682211  3.2336707  -0.01699088] yaw=58.2deg	[env.py: 1016]
+05/13 19:34:39 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #2	[env.py: 1026]
+05/13 19:34:39 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[ 2.79501226  3.63585851 -0.01699088] yaw=16.1deg	[env.py: 1016]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #3	[env.py: 1026]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6' visibility 0.00039 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21' visibility 0.00000 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 1/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6' visibility 0.00022 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21' visibility 0.00000 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 2/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6' visibility 0.00053 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21' visibility 0.00000 < threshold 0.00100	[env.py: 673]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 3/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 3 collision-free poses but none satisfied visibility	[env.py: 1087]
+05/13 19:34:40 INFO: [Worker 0] [PLACE_ROBOT_NEAR] ❌ Failed after 3 attempts | map=19417.8ms, retries=2052.0ms, total=21469.7ms	[env.py: 1102]
+05/13 19:34:40 INFO: [Worker 0] [TASK SAMPLING] Failed to place robot near 'pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6'	[pick_task_sampler.py: 994]
+05/13 19:34:40 INFO: [Worker 0] Robot placement failed for pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6: Failed to place robot near object: pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6	[pick_task_sampler.py: 664]
+05/13 19:34:40 INFO: [Worker 0] Removed pencil_76052b82a49d08b2444d82d34c95a8dd_1_0_6 from candidates, 217 remaining	[pick_task_sampler.py: 170]
+05/13 19:34:40 INFO: [Worker 0] Attempting object creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7 2/217	[pick_task_sampler.py: 614]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:40 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7': (2.650, 11.055, 0.642)	[env.py: 885]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.027007m	[env.py: 902]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:34:40 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:34:40 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 14 free points within sampling radius	[env.py: 930]
+05/13 19:34:41 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[ 3.12483422 10.56384923 -0.02700671] yaw=156.7deg	[env.py: 1016]
+05/13 19:34:41 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:34:41 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[ 3.12483422 10.56384923 -0.02700671] yaw=105.3deg	[env.py: 1016]
+05/13 19:34:41 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:34:41 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[ 3.12983483 10.55384802 -0.02700671] yaw=92.0deg	[env.py: 1016]
+05/13 19:34:41 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:41 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:34:42 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:42 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 4: pos=[ 3.12983483 10.55384802 -0.02700671] yaw=102.1deg	[env.py: 1016]
+05/13 19:34:42 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:42 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:34:42 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:42 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 5: pos=[ 3.13483543 10.55384802 -0.02700671] yaw=118.8deg	[env.py: 1016]
+05/13 19:34:42 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:42 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:34:43 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:43 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 6: pos=[ 3.12483422 10.55884862 -0.02700671] yaw=139.2deg	[env.py: 1016]
+05/13 19:34:43 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:43 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:43 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 7: pos=[ 3.13983603 10.56384923 -0.02700671] yaw=168.2deg	[env.py: 1016]
+05/13 19:34:43 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:43 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:43 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 8: pos=[ 3.14483663 10.56384923 -0.02700671] yaw=119.5deg	[env.py: 1016]
+05/13 19:34:44 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:44 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 9: pos=[ 3.13983603 10.55884862 -0.02700671] yaw=176.5deg	[env.py: 1016]
+05/13 19:34:44 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:44 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 10: pos=[ 3.13983603 10.55884862 -0.02700671] yaw=152.4deg	[env.py: 1016]
+05/13 19:34:44 DEBUG: [Worker 0] Collision is between robot_0/base and objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7 (roots: robot_0/base, objawallsculpture_aecdae3d17e74256a3536510d58b30d2_1_0_7)	[env.py: 746]
+05/13 19:34:44 INFO: [Worker 0] [PLACE_ROBOT_NEAR] ❌ Failed after 10 attempts | map=0.1ms, retries=4511.4ms, total=4511.4ms	[env.py: 1102]
+05/13 19:34:44 INFO: [Worker 0] [TASK SAMPLING] Failed to place robot near 'creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7'	[pick_task_sampler.py: 994]
+05/13 19:34:44 INFO: [Worker 0] Robot placement failed for creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7: Failed to place robot near object: creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7	[pick_task_sampler.py: 664]
+05/13 19:34:44 INFO: [Worker 0] Removed creditcard_bd8996d4ac98cc33f4279fe938d44735_1_0_7 from candidates, 216 remaining	[pick_task_sampler.py: 170]
+05/13 19:34:44 INFO: [Worker 0] Attempting object objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2 3/216	[pick_task_sampler.py: 614]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:44 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2': (3.122, 16.164, 0.607)	[env.py: 885]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.231553m	[env.py: 902]
+05/13 19:34:44 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:34:44 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:34:45 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 31839 free points within sampling radius	[env.py: 930]
+05/13 19:34:45 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[ 3.26696077 15.55192174 -0.23155278] yaw=80.4deg	[env.py: 1016]
+05/13 19:34:45 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #1	[env.py: 1026]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[ 3.2105342  15.66645698 -0.23155278] yaw=67.2deg	[env.py: 1016]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #2	[env.py: 1026]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[ 2.70287949 15.80065446 -0.23155278] yaw=43.4deg	[env.py: 1016]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #3	[env.py: 1026]
+05/13 19:34:46 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2' visibility 0.00096 < threshold 0.00100	[env.py: 673]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 1/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:34:46 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2' visibility 0.00049 < threshold 0.00100	[env.py: 673]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 2/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Visibility constraints satisfied: {'exo_camera_1': {'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2': 0.002708879662004662, 'place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21': 0.009456038752913752}}	[env.py: 1065]
+05/13 19:34:46 INFO: [Worker 0] [PLACE_ROBOT_NEAR] Success after 3 samples, 3 collision-free, 3 visibility checks | map=0.1ms, retries=1796.3ms, total=1796.4ms	[env.py: 1072]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final position: (2.703, 15.801, -0.232)	[env.py: 1076]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final orientation: 43.4 deg	[env.py: 1079]
+05/13 19:34:46 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Distance to target: 0.555m	[env.py: 1083]
+05/13 19:34:46 INFO: [Worker 0] Supporting receptacle: None	[pick_task_sampler.py: 1007]
+05/13 19:34:46 INFO: [Worker 0] Loading grasps from: /home/jaydv/code/prox_learning/assets/grasps/droid_objaverse/0c74700b13e74cde9c43ad6c7ed41c93/0c74700b13e74cde9c43ad6c7ed41c93_grasps_filtered.npz got 492	[grasp_sample.py: 140]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:34:46 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:34:56 INFO: [Worker 0] Sampled task 'Pick up the brown pinecone keychain with charm and place it in or on the round dark stone bowl'	[task_sampler.py: 1141]
+05/13 19:34:56 INFO: [Worker 0] Worker 0 house 11 episode 0/12 collected=0/2	[pipeline.py: 974]
+05/13 19:34:56 WARNING: [Worker 0] Policy <class 'pla.eval_policy.PLAInferencePolicy'> does not support tracking retries.	[sensors.py: 1072]
+05/13 19:42:48 INFO: [Worker 0] Worker 0 house 11 episode 0 object objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2 completed with success=False	[pipeline.py: 1036]
+05/13 19:42:48 INFO: [Worker 0] [PROFILE] Episode 0 house 11 success=False episode_total=547.06s:
+  episode_total: mean=547.08s, total=547.08s, count=1, min=547083.8ms, max=547083.8ms
+  rollout_total: mean=472.70s, total=472.70s, count=1, min=472703.3ms, max=472703.3ms
+  task_step: mean=1.55s, total=465.03s, count=300, min=1263.7ms, max=4699.3ms
+  sensor_polling: mean=974.4ms, total=292.31s, count=300, min=780.2ms, max=1752.7ms
+  physics_step: mean=572.3ms, total=171.70s, count=300, min=453.4ms, max=2783.6ms
+  task_sampling: mean=74.36s, total=74.36s, count=1, min=74355.6ms, max=74355.6ms
+  task_specific_sample: mean=38.57s, total=38.57s, count=1, min=38567.2ms, max=38567.2ms
+  robot_place_near: mean=9.28s, total=27.83s, count=3, min=1816.2ms, max=21485.2ms
+  scene_load: mean=25.60s, total=25.60s, count=1, min=25598.8ms, max=25598.8ms
+  scene_compile: mean=14.38s, total=14.38s, count=1, min=14384.2ms, max=14384.2ms
+  scene_env_create: mean=10.70s, total=10.70s, count=1, min=10703.1ms, max=10703.1ms
+  generate_context_expressions: mean=4.50s, total=9.00s, count=2, min=541.3ms, max=8461.5ms
+  compile_aux_objects: mean=8.55s, total=8.55s, count=1, min=8551.3ms, max=8551.3ms
+  compile_aux_policy_objects: mean=8.55s, total=8.55s, count=1, min=8551.3ms, max=8551.3ms
+  policy_get_action: mean=21.3ms, total=6.38s, count=300, min=0.0ms, max=5976.9ms
+  compile_xml_load: mean=4.12s, total=4.12s, count=1, min=4115.3ms, max=4115.3ms
+  sample_place_robot: mean=1.82s, total=1.82s, count=1, min=1818.2ms, max=1818.2ms
+  compile_mujoco: mean=1.62s, total=1.62s, count=1, min=1616.2ms, max=1616.2ms
+  rollout_reset: mean=1.28s, total=1.28s, count=1, min=1275.3ms, max=1275.3ms
+  scene_init: mean=507.2ms, total=507.2ms, count=1, min=507.2ms, max=507.2ms
+  step_count_indicator: mean=300.0ms, total=300.0ms, count=1, min=300.0ms, max=300.0ms
+  sample_cameras_initial: mean=20.2ms, total=60.5ms, count=3, min=17.6ms, max=22.0ms
+  scene_randomize: mean=25.4ms, total=25.4ms, count=1, min=25.4ms, max=25.4ms
+  mj_forward_sync: mean=21.9ms, total=21.9ms, count=1, min=21.9ms, max=21.9ms
+  sample_cameras_final: mean=21.0ms, total=21.0ms, count=1, min=21.0ms, max=21.0ms
+  compile_robot_add: mean=17.2ms, total=17.2ms, count=1, min=17.2ms, max=17.2ms
+  sample_check_grasps: mean=2.4ms, total=2.4ms, count=1, min=2.4ms, max=2.4ms
+  sample_select_object: mean=135.5us, total=0.5ms, count=4, min=0.1ms, max=0.3ms
+  policy_setup: mean=100.1us, total=0.1ms, count=1, min=0.1ms, max=0.1ms	[profiler_utils.py: 380]
+05/13 19:42:50 INFO: [Worker 0] [HOUSE] Reusing loaded scene for house index 11	[task_sampler.py: 1091]
+05/13 19:42:50 INFO: [Worker 0] Scene setup completed.
+	[pick_task_sampler.py: 260]
+05/13 19:42:50 INFO: [Worker 0] Attempting object objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2 4/216	[pick_task_sampler.py: 614]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:42:51 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:42:51 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:42:51 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2': (3.122, 16.164, 0.607)	[env.py: 885]
+05/13 19:42:51 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.267122m	[env.py: 902]
+05/13 19:42:51 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:42:51 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:42:51 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 31839 free points within sampling radius	[env.py: 930]
+05/13 19:42:52 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[ 3.62513    15.9299035  -0.26712227] yaw=180.4deg	[env.py: 1016]
+05/13 19:42:52 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #1	[env.py: 1026]
+05/13 19:42:52 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[ 2.81914552 15.96648799 -0.26712227] yaw=76.1deg	[env.py: 1016]
+05/13 19:42:52 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #2	[env.py: 1026]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[ 2.68839496 16.27013284 -0.26712227] yaw=25.3deg	[env.py: 1016]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #3	[env.py: 1026]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Visibility constraints satisfied: {'exo_camera_1': {'objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2': 0.0013976908508158508, 'place_receptacle/0_0/e12c29eb1cee488498343a20c503ed21': 0.0024402680652680655}}	[env.py: 1065]
+05/13 19:42:53 INFO: [Worker 0] [PLACE_ROBOT_NEAR] Success after 3 samples, 3 collision-free, 1 visibility checks | map=0.1ms, retries=2639.6ms, total=2639.7ms	[env.py: 1072]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final position: (3.625, 15.930, -0.267)	[env.py: 1076]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final orientation: 180.4 deg	[env.py: 1079]
+05/13 19:42:53 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Distance to target: 0.555m	[env.py: 1083]
+05/13 19:42:53 INFO: [Worker 0] Supporting receptacle: None	[pick_task_sampler.py: 1007]
+05/13 19:42:53 INFO: [Worker 0] Loading grasps from: /home/jaydv/code/prox_learning/assets/grasps/droid_objaverse/0c74700b13e74cde9c43ad6c7ed41c93/0c74700b13e74cde9c43ad6c7ed41c93_grasps_filtered.npz got 492	[grasp_sample.py: 140]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:42:53 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:42:55 INFO: [Worker 0] Sampled task 'Pick up the brown pinecone keychain with charm and place it in or on the round dark stone bowl with rim'	[task_sampler.py: 1141]
+05/13 19:42:55 INFO: [Worker 0] Worker 0 house 11 episode 1/12 collected=1/2	[pipeline.py: 974]
+05/13 19:42:55 WARNING: [Worker 0] Policy <class 'pla.eval_policy.PLAInferencePolicy'> does not support tracking retries.	[sensors.py: 1072]
+05/13 19:49:42 INFO: [Worker 0] Worker 0 house 11 episode 1 object objakeychain_0c74700b13e74cde9c43ad6c7ed41c93_1_0_2 completed with success=False	[pipeline.py: 1036]
+05/13 19:49:42 INFO: [Worker 0] [PROFILE] Episode 1 house 11 success=False episode_total=411.13s:
+  episode_total: mean=411.16s, total=411.16s, count=1, min=411155.7ms, max=411155.7ms
+  rollout_total: mean=407.02s, total=407.02s, count=1, min=407020.3ms, max=407020.3ms
+  task_step: mean=1.34s, total=401.69s, count=300, min=1259.4ms, max=2307.1ms
+  sensor_polling: mean=843.8ms, total=253.13s, count=300, min=774.5ms, max=891.4ms
+  physics_step: mean=492.6ms, total=147.79s, count=300, min=464.2ms, max=744.8ms
+  policy_get_action: mean=14.7ms, total=4.40s, count=300, min=0.0ms, max=4326.2ms
+  task_sampling: mean=4.11s, total=4.11s, count=1, min=4113.1ms, max=4113.1ms
+  task_specific_sample: mean=4.08s, total=4.08s, count=1, min=4075.8ms, max=4075.8ms
+  sample_place_robot: mean=2.66s, total=2.66s, count=1, min=2662.1ms, max=2662.1ms
+  robot_place_near: mean=2.66s, total=2.66s, count=1, min=2660.9ms, max=2660.9ms
+  generate_context_expressions: mean=574.5ms, total=1.15s, count=2, min=412.2ms, max=736.8ms
+  rollout_reset: mean=912.3ms, total=912.3ms, count=1, min=912.3ms, max=912.3ms
+  step_count_indicator: mean=300.0ms, total=300.0ms, count=1, min=300.0ms, max=300.0ms
+  scene_randomize: mean=18.9ms, total=18.9ms, count=1, min=18.9ms, max=18.9ms
+  mj_forward_sync: mean=15.0ms, total=15.0ms, count=1, min=15.0ms, max=15.0ms
+  sample_cameras_final: mean=14.8ms, total=14.8ms, count=1, min=14.8ms, max=14.8ms
+  sample_cameras_initial: mean=13.5ms, total=13.5ms, count=1, min=13.5ms, max=13.5ms
+  sample_check_grasps: mean=1.9ms, total=1.9ms, count=1, min=1.9ms, max=1.9ms
+  sample_select_object: mean=208.8us, total=0.2ms, count=1, min=0.2ms, max=0.2ms
+  policy_setup: mean=62.5us, total=0.1ms, count=1, min=0.1ms, max=0.1ms
+  scene_reuse: mean=0.0us, total=0.0ms, count=1, min=0.0ms, max=0.0ms	[profiler_utils.py: 380]
+05/13 19:49:44 INFO: [Worker 0] Batching and saving trajectory data for house_11: 2 episodes	[pipeline.py: 210]
+05/13 19:49:44 INFO: [Worker 0] Preparing episode data: 301 timesteps	[save_utils.py: 270]
+05/13 19:49:47 WARNING: [Worker 0] Warning: 48.3% of pixels will be set to 0 (invalid) (outside 0.05m-0.55m range). Actual range: [0.043m, 3.748m]. Consider adjusting DEPTH_MIN/DEPTH_MAX or checking your depth data.	[depth_utils.py: 607]
+05/13 19:49:51 WARNING: [Worker 0] Warning: 80.3% of pixels will be set to 0 (invalid) (outside 0.05m-0.55m range). Actual range: [0.190m, 6.864m]. Consider adjusting DEPTH_MIN/DEPTH_MAX or checking your depth data.	[depth_utils.py: 607]
+05/13 19:49:55 INFO: [Worker 0] Preparing episode data: 301 timesteps	[save_utils.py: 270]
+05/13 19:49:57 WARNING: [Worker 0] Warning: 57.3% of pixels will be set to 0 (invalid) (outside 0.05m-0.55m range). Actual range: [0.043m, 1.376m]. Consider adjusting DEPTH_MIN/DEPTH_MAX or checking your depth data.	[depth_utils.py: 607]
+05/13 19:50:01 WARNING: [Worker 0] Depth range [0.07m, 2130.74m] seems large. Are you sure values are in meters (not mm or cm)? Encoding range is 0.05m-0.55m for D405 camera.	[depth_utils.py: 595]
+05/13 19:50:01 WARNING: [Worker 0] Warning: 90.7% of pixels will be set to 0 (invalid) (outside 0.05m-0.55m range). Actual range: [0.073m, 2130.740m]. Consider adjusting DEPTH_MIN/DEPTH_MAX or checking your depth data.	[depth_utils.py: 607]
+05/13 19:50:05 WARNING: [Worker 0] No terminated recorded, assuming episode ended	[save_utils.py: 648]
+05/13 19:50:06 WARNING: [Worker 0] No terminated recorded, assuming episode ended	[save_utils.py: 648]
+05/13 19:50:06 INFO: [Worker 0] Saved 2 episodes to: /home/jaydv/code/prox_learning/analysis_output/eval_mvp_pla_vlm_20260513_193257/pla_seed2028/datagen_raw/FrankaSkinPLARolloutConfig/20260513_193341/house_11	[save_utils.py: 692]
+05/13 19:50:06 INFO: [Worker 0] Successfully saved trajectory data for house_11 in 21.87s (batch: 21.27s, save: 0.59s)	[pipeline.py: 257]
+05/13 19:50:06 WARNING: [Worker 0] No trajectory data to save for house_11	[pipeline.py: 206]
+05/13 19:50:06 INFO: [Worker 0] Worker 0 completed house 11: 0/2 successful episodes	[pipeline.py: 1165]
+05/13 19:50:06 INFO: [Worker 0] [PROFILE] House 11 complete: 0/2 successful, 2 episodes, total_time=3845.53s
+  House averages:
+  episode_total: mean=479.12s, total=958.24s, count=2, min=411155.7ms, max=547083.8ms
+  rollout_total: mean=439.86s, total=879.72s, count=2, min=407020.3ms, max=472703.3ms
+  task_step: mean=1.44s, total=866.73s, count=600, min=1259.4ms, max=4699.3ms
+  sensor_polling: mean=909.1ms, total=545.43s, count=600, min=774.5ms, max=1752.7ms
+  physics_step: mean=532.5ms, total=319.50s, count=600, min=453.4ms, max=2783.6ms
+  task_sampling: mean=39.23s, total=78.47s, count=2, min=4113.1ms, max=74355.6ms
+  task_specific_sample: mean=21.32s, total=42.64s, count=2, min=4075.8ms, max=38567.2ms
+  robot_place_near: mean=7.62s, total=30.49s, count=4, min=1816.2ms, max=21485.2ms
+  scene_load: mean=25.60s, total=25.60s, count=1, min=25598.8ms, max=25598.8ms
+  save_batch_prep: mean=21.27s, total=21.27s, count=1, min=21271.4ms, max=21271.4ms
+  scene_compile: mean=14.38s, total=14.38s, count=1, min=14384.2ms, max=14384.2ms
+  policy_get_action: mean=18.0ms, total=10.78s, count=600, min=0.0ms, max=5976.9ms
+  scene_env_create: mean=10.70s, total=10.70s, count=1, min=10703.1ms, max=10703.1ms
+  generate_context_expressions: mean=2.54s, total=10.15s, count=4, min=412.2ms, max=8461.5ms
+  compile_aux_objects: mean=8.55s, total=8.55s, count=1, min=8551.3ms, max=8551.3ms
+  compile_aux_policy_objects: mean=8.55s, total=8.55s, count=1, min=8551.3ms, max=8551.3ms
+  sample_place_robot: mean=2.24s, total=4.48s, count=2, min=1818.2ms, max=2662.1ms
+  compile_xml_load: mean=4.12s, total=4.12s, count=1, min=4115.3ms, max=4115.3ms
+  rollout_reset: mean=1.09s, total=2.19s, count=2, min=912.3ms, max=1275.3ms
+  compile_mujoco: mean=1.62s, total=1.62s, count=1, min=1616.2ms, max=1616.2ms
+  step_count_indicator: mean=300.0ms, total=600.0ms, count=2, min=300.0ms, max=300.0ms
+  save_trajectories: mean=593.9ms, total=593.9ms, count=1, min=593.9ms, max=593.9ms
+  scene_init: mean=507.2ms, total=507.2ms, count=1, min=507.2ms, max=507.2ms
+  sample_cameras_initial: mean=18.5ms, total=74.0ms, count=4, min=13.5ms, max=22.0ms
+  scene_randomize: mean=22.1ms, total=44.2ms, count=2, min=18.9ms, max=25.4ms
+  mj_forward_sync: mean=18.5ms, total=36.9ms, count=2, min=15.0ms, max=21.9ms
+  sample_cameras_final: mean=17.9ms, total=35.8ms, count=2, min=14.8ms, max=21.0ms
+  compile_robot_add: mean=17.2ms, total=17.2ms, count=1, min=17.2ms, max=17.2ms
+  sample_check_grasps: mean=2.2ms, total=4.3ms, count=2, min=1.9ms, max=2.4ms
+  sample_select_object: mean=150.2us, total=0.8ms, count=5, min=0.1ms, max=0.3ms
+  policy_setup: mean=81.3us, total=0.2ms, count=2, min=0.1ms, max=0.1ms
+  scene_reuse: mean=0.0us, total=0.0ms, count=1, min=0.0ms, max=0.0ms	[profiler_utils.py: 407]
+05/13 19:50:06 INFO: [Worker 0] Worker 0 starting house 12 (index 1/10)	[pipeline.py: 418]
+05/13 19:50:12 INFO: [Worker 0] Added 3 (x 1) receptacles to scene: [np.str_('2b5fd8656f2b43cba43cb0e25a2cb838'), np.str_('42f50ecee3da4df498c0e1b4319366a4'), np.str_('bf83213efac34b3cb2ad6ac5ddaf05d9')]	[pick_and_place_task_sampler.py: 264]
+05/13 19:50:19 INFO: [Worker 0] Using MuJoCo renderer: classic	[env.py: 230]
+05/13 19:50:20 INFO: [Worker 0] Scene updated: /home/jaydv/code/prox_learning/assets/scenes/procthor-objaverse-train/train_12_ceiling.xml	[task_sampler.py: 801]
+05/13 19:50:20 INFO: [Worker 0] Setting up scene for house 12, task 5...	[pick_task_sampler.py: 197]
+05/13 19:50:20 INFO: [Worker 0] Found 37 candidate pickup objects in the scene	[pick_task_sampler.py: 842]
+05/13 19:50:20 INFO: [Worker 0] Skipping alarmclock_aeaa8688740de7793897653762c5fc08_1_0_4 (uid=Alarm_Clock_17) - grasp file exists but has no valid transforms	[pick_task_sampler.py: 912]
+05/13 19:50:20 INFO: [Worker 0] Skipping alarmclock_d6864716b101d22a930d6570db642731_1_0_6 (uid=Alarm_Clock_6) - grasp file exists but has no valid transforms	[pick_task_sampler.py: 912]
+05/13 19:50:20 INFO: [Worker 0] Skipping sponge_41cc9aa65073b4cd1fc4d9871335148d_1_0_5 (uid=Dish_Sponge_1) - no grasp file available	[pick_task_sampler.py: 908]
+05/13 19:50:20 INFO: [Worker 0] Skipping toilettissue_70c8bb14fc5c58f1a931676d6a7870b7_1_0_5 (uid=Toilet_Paper) - grasp file exists but has no valid transforms	[pick_task_sampler.py: 912]
+05/13 19:50:20 INFO: [Worker 0] Filtered to 33 valid candidate pickup objects, 89.2 %	[pick_task_sampler.py: 926]
+05/13 19:50:20 INFO: [Worker 0] Scene setup completed.
+	[pick_task_sampler.py: 260]
+05/13 19:50:20 INFO: [Worker 0] Advanced to receptacle 2/3: 42f50ecee3da4df498c0e1b4319366a4	[pick_and_place_task_sampler.py: 279]
+05/13 19:50:20 INFO: [Worker 0] Attempting object tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6 0/62	[pick_task_sampler.py: 614]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:20 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:50:20 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:50:20 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6': (13.110, 2.227, 1.365)	[env.py: 885]
+05/13 19:50:20 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: 0.786930m	[env.py: 902]
+05/13 19:50:20 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:50:20 INFO: [Worker 0] [THORMAP] Creating occupancy map (agent_radius=0.15, px_per_m=200)	[env.py: 782]
+05/13 19:50:29 INFO: [Worker 0] [THORMAP] Occupancy map created and cached	[env.py: 824]
+05/13 19:50:30 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 1944 free points within sampling radius	[env.py: 930]
+05/13 19:50:30 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:30 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[12.47285437  2.41334995  0.78692999] yaw=-31.5deg	[env.py: 1016]
+05/13 19:50:30 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:30 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:50:30 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:30 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[12.50785733  2.39334826  0.78692999] yaw=-7.7deg	[env.py: 1016]
+05/13 19:50:30 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:30 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:50:31 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[12.49785649  2.56336263  0.78692999] yaw=-67.7deg	[env.py: 1016]
+05/13 19:50:31 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:50:31 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 4: pos=[12.4778548   2.25833684  0.78692999] yaw=8.9deg	[env.py: 1016]
+05/13 19:50:31 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:50:31 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 5: pos=[12.50785733  2.32334234  0.78692999] yaw=-23.1deg	[env.py: 1016]
+05/13 19:50:31 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR]   Collision detected, trying another point...	[env.py: 1037]
+05/13 19:50:31 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:31 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 6: pos=[12.48285522  2.47835545  0.78692999] yaw=13.3deg	[env.py: 1016]
+05/13 19:50:31 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:32 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:32 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 7: pos=[12.52785903  2.15332797  0.78692999] yaw=34.2deg	[env.py: 1016]
+05/13 19:50:32 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:32 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:32 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 8: pos=[12.50785733  2.34834445  0.78692999] yaw=-40.8deg	[env.py: 1016]
+05/13 19:50:32 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:32 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:32 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 9: pos=[12.45785311  2.19333135  0.78692999] yaw=18.8deg	[env.py: 1016]
+05/13 19:50:32 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:33 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 10: pos=[12.45785311  2.34334403  0.78692999] yaw=-45.2deg	[env.py: 1016]
+05/13 19:50:33 DEBUG: [Worker 0] Collision is between chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_2_6 and robot_0/base (roots: chestofdrawers_7a2e462b2666d3558113b2d84da9dc74_1_0_6, robot_0/base)	[env.py: 746]
+05/13 19:50:33 INFO: [Worker 0] [PLACE_ROBOT_NEAR] ❌ Failed after 10 attempts | map=9506.5ms, retries=3201.1ms, total=12707.6ms	[env.py: 1102]
+05/13 19:50:33 INFO: [Worker 0] [TASK SAMPLING] Failed to place robot near 'tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6'	[pick_task_sampler.py: 994]
+05/13 19:50:33 INFO: [Worker 0] Robot placement failed for tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6: Failed to place robot near object: tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6	[pick_task_sampler.py: 664]
+05/13 19:50:33 INFO: [Worker 0] Removed tissuepaper_1f28299e6e99a63de7abb400051cb351_1_0_6 from candidates, 61 remaining	[pick_task_sampler.py: 170]
+05/13 19:50:33 INFO: [Worker 0] Attempting object objacandle_0a074433f30d4e819c19fa7fc01f3211_1_0_7 1/61	[pick_task_sampler.py: 614]
+05/13 19:50:33 INFO: [Worker 0] Failed to get a valid supporting geom_id for objacandle_0a074433f30d4e819c19fa7fc01f3211_1_0_7	[pick_task_sampler.py: 634]
+05/13 19:50:33 INFO: [Worker 0] Removed objacandle_0a074433f30d4e819c19fa7fc01f3211_1_0_7 from candidates, 31 remaining	[pick_task_sampler.py: 170]
+05/13 19:50:33 INFO: [Worker 0] Attempting object remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6 2/31	[pick_task_sampler.py: 614]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6': (3.984, 2.383, 0.518)	[env.py: 885]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.410363m	[env.py: 902]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:50:33 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] No free points found within sampling radius, trying fallback...	[env.py: 1091]
+05/13 19:50:33 INFO: [Worker 0] [PLACE_ROBOT_NEAR] ❌ Failed after 0 attempts | map=0.0ms, retries=245.4ms, total=245.4ms	[env.py: 1102]
+05/13 19:50:33 INFO: [Worker 0] [TASK SAMPLING] Failed to place robot near 'remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6'	[pick_task_sampler.py: 994]
+05/13 19:50:33 INFO: [Worker 0] Robot placement failed for remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6: Failed to place robot near object: remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6	[pick_task_sampler.py: 664]
+05/13 19:50:33 INFO: [Worker 0] Removed remotecontrol_9e0a946ebd9862fe7ffbf14025fdf9f9_1_0_6 from candidates, 30 remaining	[pick_task_sampler.py: 170]
+05/13 19:50:33 INFO: [Worker 0] Attempting object pen_87844056a87c69a9087174e164e7ff40_1_0_6 3/30	[pick_task_sampler.py: 614]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:33 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'pen_87844056a87c69a9087174e164e7ff40_1_0_6': (12.773, 2.680, 1.295)	[env.py: 885]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: 0.698865m	[env.py: 902]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:50:33 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:50:33 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 18546 free points within sampling radius	[env.py: 930]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[12.39738723  3.15917292  0.69886503] yaw=-48.2deg	[env.py: 1016]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #1	[env.py: 1026]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[12.10564029  2.49806509  0.69886503] yaw=16.1deg	[env.py: 1016]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #2	[env.py: 1026]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[12.24879828  3.09777087  0.69886503] yaw=-67.2deg	[env.py: 1016]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #3	[env.py: 1026]
+05/13 19:50:34 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pen_87844056a87c69a9087174e164e7ff40_1_0_6' visibility 0.00026 < threshold 0.00100	[env.py: 673]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 1/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:50:34 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pen_87844056a87c69a9087174e164e7ff40_1_0_6' visibility 0.00036 < threshold 0.00100	[env.py: 673]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 2/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:50:34 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'pen_87844056a87c69a9087174e164e7ff40_1_0_6' visibility 0.00056 < threshold 0.00100	[env.py: 673]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 3/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 3 collision-free poses but none satisfied visibility	[env.py: 1087]
+05/13 19:50:34 INFO: [Worker 0] [PLACE_ROBOT_NEAR] ❌ Failed after 3 attempts | map=0.0ms, retries=1275.1ms, total=1275.2ms	[env.py: 1102]
+05/13 19:50:34 INFO: [Worker 0] [TASK SAMPLING] Failed to place robot near 'pen_87844056a87c69a9087174e164e7ff40_1_0_6'	[pick_task_sampler.py: 994]
+05/13 19:50:34 INFO: [Worker 0] Robot placement failed for pen_87844056a87c69a9087174e164e7ff40_1_0_6: Failed to place robot near object: pen_87844056a87c69a9087174e164e7ff40_1_0_6	[pick_task_sampler.py: 664]
+05/13 19:50:34 INFO: [Worker 0] Removed pen_87844056a87c69a9087174e164e7ff40_1_0_6 from candidates, 29 remaining	[pick_task_sampler.py: 170]
+05/13 19:50:34 INFO: [Worker 0] Attempting object fork_a17d780ca6a79038b069eb7768c962c4_1_0_8 4/29	[pick_task_sampler.py: 614]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:34 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Starting robot placement near target (max_tries=10)	[env.py: 868]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Target object 'fork_a17d780ca6a79038b069eb7768c962c4_1_0_8': (5.807, 9.090, 0.948)	[env.py: 885]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Robot Z height to preserve: -0.067164m	[env.py: 902]
+05/13 19:50:34 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Sampling radius range: 0.000m - 0.700m	[env.py: 903]
+05/13 19:50:34 DEBUG: [Worker 0] [THORMAP] Using cached occupancy map	[env.py: 778]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found 1084 free points within sampling radius	[env.py: 930]
+05/13 19:50:35 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 1: pos=[ 6.4823479   9.14891942 -0.06716449] yaw=-162.0deg	[env.py: 1016]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #1	[env.py: 1026]
+05/13 19:50:35 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 2: pos=[ 6.46234621  9.11891688 -0.06716449] yaw=-201.9deg	[env.py: 1016]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #2	[env.py: 1026]
+05/13 19:50:35 WARNING: [Worker 0] Less than 5% of the sampling area is free, sampling specific pixel. This is less robust to cross-platform variation.	[scene_maps.py: 297]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Attempt 3: pos=[ 6.45734578  8.94390209 -0.06716449] yaw=133.3deg	[env.py: 1016]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Found collision-free pose #3	[env.py: 1026]
+05/13 19:50:35 DEBUG: [Worker 0] [VISIBILITY CHECK] Camera 'exo_camera_1': object 'fork_a17d780ca6a79038b069eb7768c962c4_1_0_8' visibility 0.00057 < threshold 0.00100	[env.py: 673]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Candidate 1/3: Visibility constraints not met	[env.py: 1060]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Visibility constraints satisfied: {'exo_camera_1': {'fork_a17d780ca6a79038b069eb7768c962c4_1_0_8': 0.001693618881118881, 'place_receptacle/1_0/42f50ecee3da4df498c0e1b4319366a4': 0.018078926282051284}}	[env.py: 1065]
+05/13 19:50:35 INFO: [Worker 0] [PLACE_ROBOT_NEAR] Success after 3 samples, 3 collision-free, 2 visibility checks | map=0.1ms, retries=1136.3ms, total=1136.3ms	[env.py: 1072]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final position: (6.462, 9.119, -0.067)	[env.py: 1076]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Final orientation: -201.9 deg	[env.py: 1079]
+05/13 19:50:35 DEBUG: [Worker 0] [PLACE_ROBOT_NEAR] Distance to target: 0.656m	[env.py: 1083]
+05/13 19:50:35 INFO: [Worker 0] Supporting receptacle: None	[pick_task_sampler.py: 1007]
+05/13 19:50:35 INFO: [Worker 0] Loading grasps from: /home/jaydv/code/prox_learning/assets/grasps/droid/Fork_1/Fork_1_grasps_filtered.npz got 1000	[grasp_sample.py: 140]
+05/13 19:50:35 INFO: [Worker 0] [CAMERA SETUP] Setting up 31 cameras	[camera_manager.py: 300]
+05/13 19:50:35 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'wrist_camera' (MJCF: robot_0/gripper/wrist_camera)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up robot-mounted camera 'exo_camera_1'	[camera_manager.py: 510]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_0' (MJCF: robot_0/link2_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_1' (MJCF: robot_0/link2_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_2' (MJCF: robot_0/link2_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_3' (MJCF: robot_0/link2_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_4' (MJCF: robot_0/link2_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_5' (MJCF: robot_0/link2_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link2_sensor_6' (MJCF: robot_0/link2_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_0' (MJCF: robot_0/link3_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_1' (MJCF: robot_0/link3_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_2' (MJCF: robot_0/link3_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_3' (MJCF: robot_0/link3_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_4' (MJCF: robot_0/link3_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_5' (MJCF: robot_0/link3_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_6' (MJCF: robot_0/link3_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link3_sensor_7' (MJCF: robot_0/link3_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_0' (MJCF: robot_0/link5_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_1' (MJCF: robot_0/link5_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_2' (MJCF: robot_0/link5_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_3' (MJCF: robot_0/link5_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_4' (MJCF: robot_0/link5_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link5_sensor_5' (MJCF: robot_0/link5_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_0' (MJCF: robot_0/link6_sensor_0)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_1' (MJCF: robot_0/link6_sensor_1)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_2' (MJCF: robot_0/link6_sensor_2)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_3' (MJCF: robot_0/link6_sensor_3)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_4' (MJCF: robot_0/link6_sensor_4)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_5' (MJCF: robot_0/link6_sensor_5)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_6' (MJCF: robot_0/link6_sensor_6)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Set up MJCF camera 'link6_sensor_7' (MJCF: robot_0/link6_sensor_7)	[camera_manager.py: 438]
+05/13 19:50:36 INFO: [Worker 0] [CAMERA SETUP] Successfully set up 31 cameras	[camera_manager.py: 326]
+05/13 19:50:36 INFO: [Worker 0] No filtered expression priorities for fork_a17d780ca6a79038b069eb7768c962c4_1_0_8, using unfiltered (8 expressions)	[pick_task_sampler.py: 761]
+05/13 19:50:36 INFO: [Worker 0] Sampled task 'Pick up the polished metal fork with curve and place it in or on the brown shallow rectangular basin with edges'	[task_sampler.py: 1141]
+05/13 19:50:36 INFO: [Worker 0] Worker 0 house 12 episode 0/12 collected=0/2	[pipeline.py: 974]
+05/13 19:50:37 WARNING: [Worker 0] Policy <class 'pla.eval_policy.PLAInferencePolicy'> does not support tracking retries.	[sensors.py: 1072]
+05/13 19:56:11 INFO: Received SIGTERM. Initiating graceful shutdown...	[pipeline.py: 1182]
+05/13 19:56:12 INFO: [Worker 0] Worker 0 house 12 episode 0 object fork_a17d780ca6a79038b069eb7768c962c4_1_0_8 completed with success=False	[pipeline.py: 1036]
+05/13 19:56:12 INFO: [Worker 0] [PROFILE] Episode 0 house 12 success=False episode_total=365.24s:
+  episode_total: mean=365.24s, total=365.24s, count=1, min=365237.8ms, max=365237.8ms
+  rollout_total: mean=335.10s, total=335.10s, count=1, min=335100.4ms, max=335100.4ms
+  task_step: mean=1.40s, total=331.44s, count=237, min=1274.5ms, max=3040.6ms
+  sensor_polling: mean=899.2ms, total=213.11s, count=237, min=849.6ms, max=956.6ms
+  physics_step: mean=495.8ms, total=117.50s, count=237, min=389.1ms, max=1305.1ms
+  task_sampling: mean=30.14s, total=30.14s, count=1, min=30136.7ms, max=30136.7ms
+  save_batch_prep: mean=21.27s, total=21.27s, count=1, min=21271.4ms, max=21271.4ms
+  task_specific_sample: mean=16.59s, total=16.59s, count=1, min=16593.0ms, max=16593.0ms
+  robot_place_near: mean=3.84s, total=15.37s, count=4, min=245.8ms, max=12708.0ms
+  scene_load: mean=13.52s, total=13.52s, count=1, min=13516.5ms, max=13516.5ms
+  scene_compile: mean=6.41s, total=6.41s, count=1, min=6406.5ms, max=6406.5ms
+  scene_env_create: mean=5.98s, total=5.98s, count=1, min=5982.0ms, max=5982.0ms
+  compile_aux_objects: mean=3.11s, total=3.11s, count=1, min=3114.9ms, max=3114.9ms
+  compile_aux_policy_objects: mean=3.11s, total=3.11s, count=1, min=3114.9ms, max=3114.9ms
+  policy_get_action: mean=11.4ms, total=2.71s, count=237, min=0.0ms, max=2635.9ms
+  compile_xml_load: mean=2.08s, total=2.08s, count=1, min=2076.6ms, max=2076.6ms
+  sample_place_robot: mean=1.14s, total=1.14s, count=1, min=1137.8ms, max=1137.8ms
+  compile_mujoco: mean=1.13s, total=1.13s, count=1, min=1133.5ms, max=1133.5ms
+  rollout_reset: mean=933.9ms, total=933.9ms, count=1, min=933.9ms, max=933.9ms
+  generate_context_expressions: mean=420.7ms, total=841.3ms, count=2, min=402.0ms, max=439.4ms
+  save_trajectories: mean=593.9ms, total=593.9ms, count=1, min=593.9ms, max=593.9ms
+  scene_init: mean=353.8ms, total=353.8ms, count=1, min=353.8ms, max=353.8ms
+  sample_cameras_initial: mean=12.8ms, total=51.1ms, count=4, min=12.5ms, max=13.3ms
+  compile_robot_add: mean=13.6ms, total=13.6ms, count=1, min=13.6ms, max=13.6ms
+  scene_randomize: mean=13.1ms, total=13.1ms, count=1, min=13.1ms, max=13.1ms
+  sample_cameras_final: mean=12.6ms, total=12.6ms, count=1, min=12.6ms, max=12.6ms
+  mj_forward_sync: mean=10.7ms, total=10.7ms, count=1, min=10.7ms, max=10.7ms
+  sample_check_grasps: mean=1.9ms, total=1.9ms, count=1, min=1.9ms, max=1.9ms
+  sample_select_object: mean=58.1us, total=0.3ms, count=5, min=0.1ms, max=0.1ms
+  policy_setup: mean=50.8us, total=0.1ms, count=1, min=0.1ms, max=0.1ms	[profiler_utils.py: 380]
+05/13 19:56:14 INFO: [Worker 0] Worker 0 house 12 received shutdown signal	[pipeline.py: 897]
+05/13 19:56:14 INFO: [Worker 0] Worker 0 house 12 shutdown requested, skipping save	[pipeline.py: 1136]
+05/13 19:56:14 INFO: [Worker 0] Worker 0 received shutdown signal, cleaning up...	[pipeline.py: 405]
+05/13 19:56:14 INFO: [Worker 0] Worker 0 completed processing assigned houses	[pipeline.py: 466]
+05/13 19:56:14 INFO: [Worker 0] [PROFILE] Worker complete: 1 houses, 3 episodes, total_time=5311.44s
+  Worker averages:
+  episode_total: mean=441.16s, total=1323.48s, count=3, min=365237.8ms, max=547083.8ms
+  rollout_total: mean=404.94s, total=1214.82s, count=3, min=335100.4ms, max=472703.3ms
+  task_step: mean=1.43s, total=1198.17s, count=837, min=1259.4ms, max=4699.3ms
+  sensor_polling: mean=906.3ms, total=758.54s, count=837, min=774.5ms, max=1752.7ms
+  physics_step: mean=522.1ms, total=436.99s, count=837, min=389.1ms, max=2783.6ms
+  task_sampling: mean=36.20s, total=108.61s, count=3, min=4113.1ms, max=74355.6ms
+  task_specific_sample: mean=19.75s, total=59.24s, count=3, min=4075.8ms, max=38567.2ms
+  robot_place_near: mean=5.73s, total=45.86s, count=8, min=245.8ms, max=21485.2ms
+  scene_load: mean=19.56s, total=39.12s, count=2, min=13516.5ms, max=25598.8ms
+  save_batch_prep: mean=21.27s, total=21.27s, count=1, min=21271.4ms, max=21271.4ms
+  scene_compile: mean=10.40s, total=20.79s, count=2, min=6406.5ms, max=14384.2ms
+  scene_env_create: mean=8.34s, total=16.69s, count=2, min=5982.0ms, max=10703.1ms
+  policy_get_action: mean=16.1ms, total=13.49s, count=837, min=0.0ms, max=5976.9ms
+  compile_aux_objects: mean=5.83s, total=11.67s, count=2, min=3114.9ms, max=8551.3ms
+  compile_aux_policy_objects: mean=5.83s, total=11.67s, count=2, min=3114.9ms, max=8551.3ms
+  generate_context_expressions: mean=1.83s, total=10.99s, count=6, min=402.0ms, max=8461.5ms
+  compile_xml_load: mean=3.10s, total=6.19s, count=2, min=2076.6ms, max=4115.3ms
+  sample_place_robot: mean=1.87s, total=5.62s, count=3, min=1137.8ms, max=2662.1ms
+  rollout_reset: mean=1.04s, total=3.12s, count=3, min=912.3ms, max=1275.3ms
+  compile_mujoco: mean=1.37s, total=2.75s, count=2, min=1133.5ms, max=1616.2ms
+  scene_init: mean=430.5ms, total=861.0ms, count=2, min=353.8ms, max=507.2ms
+  step_count_indicator: mean=300.0ms, total=600.0ms, count=2, min=300.0ms, max=300.0ms
+  save_trajectories: mean=593.9ms, total=593.9ms, count=1, min=593.9ms, max=593.9ms
+  sample_cameras_initial: mean=15.6ms, total=125.1ms, count=8, min=12.5ms, max=22.0ms
+  scene_randomize: mean=19.1ms, total=57.4ms, count=3, min=13.1ms, max=25.4ms
+  sample_cameras_final: mean=16.1ms, total=48.4ms, count=3, min=12.6ms, max=21.0ms
+  mj_forward_sync: mean=15.9ms, total=47.6ms, count=3, min=10.7ms, max=21.9ms
+  compile_robot_add: mean=15.4ms, total=30.8ms, count=2, min=13.6ms, max=17.2ms
+  sample_check_grasps: mean=2.1ms, total=6.2ms, count=3, min=1.9ms, max=2.4ms
+  sample_select_object: mean=104.1us, total=1.0ms, count=10, min=0.1ms, max=0.3ms
+  policy_setup: mean=71.1us, total=0.2ms, count=3, min=0.1ms, max=0.1ms
+  scene_reuse: mean=0.0us, total=0.0ms, count=1, min=0.0ms, max=0.0ms	[profiler_utils.py: 429]
+05/13 19:56:16 INFO: Completed 2 houses, skipped 0 houses	[pipeline.py: 1330]
+05/13 19:56:16 INFO: Success count: 0, Total count: 3	[pipeline.py: 1333]
+05/13 19:56:16 INFO: Success rate: 0.00%	[pipeline.py: 1334]

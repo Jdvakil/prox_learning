@@ -1,0 +1,45 @@
+{
+  "run_name": "pla_seed2028",
+  "checkpoint": "runs/medium_pla_v1_20260512_234252/latest.pt",
+  "use_proximity": true,
+  "house_inds": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "samples_per_house": 2,
+  "seed": 2028,
+  "n_episodes": 2,
+  "n_success": 0,
+  "success_rate": 0.0,
+  "wilson_95_ci": [
+    0.0,
+    0.6576280471103807
+  ],
+  "rollout_duration_s": 1354.383422613144,
+  "per_episode": [
+    {
+      "house": 11,
+      "traj": "traj_0",
+      "n_steps": 301,
+      "success": false,
+      "fail": true,
+      "task_description": "Pick up the brown pinecone keychain with charm and place it in or on the round dark stone bowl"
+    },
+    {
+      "house": 11,
+      "traj": "traj_1",
+      "n_steps": 301,
+      "success": false,
+      "fail": true,
+      "task_description": "Pick up the brown pinecone keychain with charm and place it in or on the round dark stone bowl with rim"
+    }
+  ]
+}

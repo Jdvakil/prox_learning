@@ -1,0 +1,30 @@
+{
+  "n_trajectories": 343,
+  "n_trajectories_with_grip_close": 343,
+  "n_trajectories_never_close": 0,
+  "grip_close_frame": {
+    "mean": 48.924198250728864,
+    "median": 50.0,
+    "std": 9.275823485013508,
+    "p10": 37.0,
+    "p90": 60.0
+  },
+  "tcp_at_close_m": {
+    "mean": 0.04326661352894403,
+    "median": 0.03882664618478411,
+    "std": 0.026554823067792947,
+    "p10": 0.00983450338017138,
+    "p90": 0.0797824316097741,
+    "frac_lt_5cm": 0.6472303206997084
+  },
+  "pearson_close_frame_vs_tcp_at_close": -0.17914307496162404,
+  "plots": {
+    "gripper_close_frame_hist": "analysis_output/training_data_diagnostics/gripper_close_frame_hist.png",
+    "tcp_at_grip_close_hist": "analysis_output/training_data_diagnostics/tcp_at_grip_close_hist.png",
+    "close_frame_vs_tcp_scatter": "analysis_output/training_data_diagnostics/close_frame_vs_tcp_scatter.png",
+    "per_house_close_frame_heatmap": "analysis_output/training_data_diagnostics/per_house_close_frame_heatmap.png",
+    "action_variance_over_frame": "analysis_output/training_data_diagnostics/action_variance_over_frame.png",
+    "action_std_per_frame": "analysis_output/training_data_diagnostics/action_std_per_frame.png",
+    "proximity_activation_per_link": "analysis_output/training_data_diagnostics/proximity_activation_per_link.png"
+  }
+}
