@@ -1,0 +1,27 @@
+episodes loaded: 24
+
+[1] speed vs min-skin-distance: n=11467  pearson r=+0.059  slope=+0.039 (m/s per m)
+    expert moves slower when closer -> expect r strongly POSITIVE (speed grows with distance)
+    VERDICT: FAIL — expert is not modulating speed on clearance
+
+[2] deflection-side probe: insufficient deflect episodes (0) — collect more
+
+[3] decorrelation (hidden x visible), n=24:
+    corr(protr_present,clearance  ) = -0.027
+    corr(protr_present,depth      ) = +0.354
+    corr(protr_present,light      ) = -0.055
+    corr(protr_present,target_frac) = +0.332
+    corr(intrusion    ,clearance  ) = +0.413
+    corr(intrusion    ,depth      ) = +0.227
+    corr(intrusion    ,light      ) = +0.143
+    corr(intrusion    ,target_frac) = +0.193
+    corr(protr_pos    ,clearance  ) = +0.155
+    corr(protr_pos    ,depth      ) = +0.140
+    corr(protr_pos    ,light      ) = -0.093
+    corr(protr_pos    ,target_frac) = +0.272
+    max |corr| = 0.413  VERDICT: FAIL — visual shortcut risk
+
+[4] signal distribution: mean fraction of steps with any zone < 8cm = 0.17
+    VERDICT: TOO GENEROUS — clearance distribution gives the skin little to say
+
+cell x behavior composition: {('free', 'free'): 11, ('visible', 'free'): 13}

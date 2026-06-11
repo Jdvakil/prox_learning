@@ -1,0 +1,43 @@
+{
+  "configById": {
+    "3D!prox": {
+      "followMode": "follow-pose",
+      "followTf": "robot_0/base",
+      "scene": { "transforms": { "axisScale": 0.08 } },
+      "cameraState": {
+        "distance": 2.2,
+        "perspective": true,
+        "phi": 65,
+        "thetaOffset": 45,
+        "targetOffset": [0.4, 0, 0.9],
+        "fovy": 45,
+        "near": 0.01,
+        "far": 100
+      },
+      "topics": {
+        "/robot": { "visible": true },
+        "/proximity": { "visible": true, "pointSize": 4, "colorMode": "rgba-fields" },
+        "/proximity_by_link": { "visible": false, "pointSize": 4, "colorMode": "rgba-fields" },
+        "/tcp": { "visible": true }
+      },
+      "layers": {}
+    },
+    "Image!wrist": { "imageMode": { "imageTopic": "/camera/wrist" }, "cameraTopic": "/camera/wrist" },
+    "Image!exo": { "imageMode": { "imageTopic": "/camera/exo" }, "cameraTopic": "/camera/exo" },
+    "Log!task": { "topicToRender": "/task", "searchTerms": [], "minLogLevel": 1 }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": { "speed": 1 },
+  "layout": {
+    "direction": "row",
+    "first": "3D!prox",
+    "second": {
+      "direction": "column",
+      "first": "Image!wrist",
+      "second": { "direction": "column", "first": "Image!exo", "second": "Log!task", "splitPercentage": 60 },
+      "splitPercentage": 40
+    },
+    "splitPercentage": 62
+  }
+}

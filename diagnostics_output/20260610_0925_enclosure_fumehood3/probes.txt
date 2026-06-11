@@ -1,0 +1,28 @@
+episodes loaded: 24
+
+[1] speed vs min-skin-distance: n=5012  pearson r=+0.088  slope=+0.083 (m/s per m)
+    expert moves slower when closer -> expect r strongly POSITIVE (speed grows with distance)
+    VERDICT: FAIL — expert is not modulating speed on clearance
+
+[2] deflection-side probe: n=11  train-acc=1.00 (chance 0.5)
+    VERDICT: PASS
+
+[3] decorrelation (hidden x visible), n=24:
+    corr(protr_present,clearance  ) = +0.002  (n=24)
+    corr(protr_present,depth      ) = -0.052  (n=24)
+    corr(protr_present,light      ) = +0.140  (n=24)
+    corr(protr_present,target_frac) = -0.360  (n=24)
+    corr(residual     ,clearance  ) = +0.177  (n=18)
+    corr(residual     ,depth      ) = +0.306  (n=18)
+    corr(residual     ,light      ) = +0.086  (n=18)
+    corr(residual     ,target_frac) = -0.123  (n=18)
+    corr(protr_pos    ,clearance  ) = +0.071  (n=18)
+    corr(protr_pos    ,depth      ) = +0.195  (n=18)
+    corr(protr_pos    ,light      ) = -0.021  (n=18)
+    corr(protr_pos    ,target_frac) = +0.431  (n=18)
+    max |corr| = 0.431 (n_eff=18, noise band ±0.51)  VERDICT: PASS
+
+[4] signal distribution: mean fraction of steps with any zone < 8cm = 0.44
+    VERDICT: PASS
+
+cell x behavior composition: {('abort', 'abort'): 6, ('free', 'free'): 6, ('hidden', 'deflect'): 4, ('visible', 'deflect'): 8}

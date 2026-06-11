@@ -1,0 +1,31 @@
+episodes loaded: 24
+
+[1] speed vs min-skin-distance: n=8271  pearson r=+0.272  slope=+0.257 (m/s per m)
+    expert moves slower when closer -> expect r strongly POSITIVE (speed grows with distance)
+    VERDICT: FAIL — expert is not modulating speed on clearance
+
+[2] deflection-side probe: insufficient deflect episodes (0) — collect more
+
+[3] decorrelation (hidden x visible), n=24:
+    corr(protr_present,clearance  ) = +nan
+    corr(protr_present,depth      ) = +nan
+    corr(protr_present,light      ) = +nan
+    corr(protr_present,target_frac) = +nan
+    corr(intrusion    ,clearance  ) = +nan
+    corr(intrusion    ,depth      ) = +nan
+    corr(intrusion    ,light      ) = +nan
+    corr(intrusion    ,target_frac) = +nan
+    corr(protr_pos    ,clearance  ) = +nan
+    corr(protr_pos    ,depth      ) = +nan
+    corr(protr_pos    ,light      ) = +nan
+    corr(protr_pos    ,target_frac) = +nan
+    max |corr| = 0.000  VERDICT: PASS
+
+[4] signal distribution: mean fraction of steps with any zone < 8cm = 0.52
+    VERDICT: PASS
+
+cell x behavior composition: {('free', 'free'): 23, ('free', 'abort'): 1}
+/opt/conda/envs/mlspaces/lib/python3.11/site-packages/numpy/lib/_function_base_impl.py:3023: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/opt/conda/envs/mlspaces/lib/python3.11/site-packages/numpy/lib/_function_base_impl.py:3024: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]

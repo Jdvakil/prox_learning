@@ -1,0 +1,13 @@
+A. PLACEMENT (40 sensors)
+   not-buried (self-hit, 3 poses): 40/40
+   outward-facing:                 40/40
+   plate@0.15m reads 0.145+-0.012: 38/40
+
+B. PRIMITIVE RECONSTRUCTION (box+sphere+cylinder+corner; GT = all surfaces)
+   points: 495 | median 0.0mm RMS 4.0mm p95 11.7mm | within 1cm: 95%
+
+C. CLUTTER RECONSTRUCTION (3 objects + table; GT = all surfaces)
+   active sensors: 14/40 | points 295 | median 0.0mm RMS 4.7mm | within 1cm: 91%
+
+D. MULTI-POSE ACCUMULATION (14 poses through the clutter)
+   accumulated points: 4200

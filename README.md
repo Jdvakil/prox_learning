@@ -811,3 +811,105 @@ Most are **gitignored** (`.gitignore` excludes `assets/**`, `runs/**`,
 scientific argument for why P+ACT works, read **[`pact/README.md`](pact/README.md)**.
 Per-project memory lives under
 `.claude/projects/-home-jaydv-code-prox-learning/memory/`.*
+
+
+---
+
+# FR3 Hybrid Proximity Skin
+
+Franka FR3 + Robotiq with the **gentact hybrid skin**: 40 SPAD proximity sensors (8×8 depth,
+45° FOV, 1.5–50 cm range) tiled on links 1–6. RGB is blurred at policy-training time, so this
+skin is the robot's contact-range perception.
+
+## Models
+| file | what |
+|---|---|
+| `assets/robots/franka_skin/model_hybrid.xml` | **functional** model — 40 working 8×8 depth cameras |
+| `assets/robots/franka_skin/model_photoshoot.xml` | **visual** model — 40 SPAD markers at the URDF poses (paper figures) |
+| `assets/robots/franka_skin/model.xml` | original 29-sensor skin (unchanged) |
+| `assets/urdf/fr3_hybrid_skin.urdf` | source URDF (gentact) |
+
+Built from the proven `model.xml` (real FR3 meshes + Robotiq), swapping the old skin for the
+hybrid dermis + sensors. Scripts: `build_hybrid_on_franka_skin.py`, `build_photoshoot_skin.py`.
+
+## Sensors (40)
+link1:7, link2:7, link3:5, link4:5, link5_front:4, link5_back:6, link6:6.
+- **Aim:** radial out of each arm-link axis (outward + surface-perpendicular); a few cramped
+  sensors are raycast-repaired. URDF `<axis>` and dermis mesh normals are unreliable (wrong
+  winding) — do not use them. Cameras sit 9 mm proud of the skin so they clear the dermis shell.
+- **Near-field fix:** MuJoCo depth clip = `vis.map.znear × stat.extent`; with a big scene this
+  silently erased every return < ~10 cm. Pinned `znear=0.0002` (clip ~2 mm). Same render path is
+  used by datagen (`renderer/opengl_rendering.py`), so this matters for collected data too.
+
+## Verification (`scripts/verify_hybrid_skin_sensors.py`)
+| check | result |
+|---|---|
+| not buried in own arm (3 poses) | **40/40** |
+| outward-facing | **40/40** |
+| plate @ 0.15 m reads 0.145±0.012 m | **38/40** (2 link5-front legitimately see the wrist link) |
+| range linearity | slope **1.0**, R² **0.9999999**, error sub-µm |
+| back-projected cloud vs ground truth | **~4 mm** median |
+
+## Reconstruction (back-project all 40 sensors → point cloud vs every real surface)
+| scene | active | RMS | within 1 cm | script |
+|---|---|---|---|---|
+| primitives (box+sphere+cyl+corner) | – | 4.0 mm | 95% | `test_and_reconstruct_hybrid.py` |
+| open clutter (3 obj + table) | 14/40 | 4.7 mm | 91% | `test_and_reconstruct_hybrid.py` |
+| clutter, accumulated (14 poses) | – | – | 4200 pts | `test_and_reconstruct_hybrid.py` |
+| **fumehood** (1 frame) | 22/40 | 4.7 mm | 91% | `test_reconstruct_fumehood.py` |
+| **fumehood**, accumulated (14 poses) | – | 5.0 mm | 93% (10366 pts) | `test_reconstruct_fumehood.py` |
+
+Every back-projected return lands on a real surface to **millimetre** accuracy → sensors are in
+the right place **and** looking at the right thing.
+
+## Datagen wiring (40 sensors flow end-to-end, verified)
+- `FrankaSkinHybridRobotConfig` (→ `model_hybrid.xml`), `FrankaSkinHybridCameraSystem` (40 cams),
+  `FrankaSkinHybridFumehoodSmokeConfig`.
+- Run: `python -m molmo_spaces.data_generation.main FrankaSkinHybridFumehoodSmokeConfig`
+- Skin geoms set to **group 2** (env hides them in proximity render).
+- Fixed `save_utils.py` regex that was dropping the `link5_front/back` sensors (saved 30/40 → now
+  **40/40** proximity keys in the h5).
+- Not yet done: house-embedded hybrid (set `znear` in the mixin), full-scale collection, probe
+  re-tuning for 40-sensor stats.
+
+### Fumehood variations (advisor: "variate it a lot... motions that need the robot to get in more")
+`diagnostics_output/20260611_fumehood_variations/` — 6 hood geometries x verified deep-insertion motions
+(FK-checked hand depth, per-frame skin cloud + clearance telemetry):
+
+| variant | interior (WxHxD, sash) | insertion (hand / TCP) | active sensors @ deep | min clearance |
+|---|---|---|---|---|
+| standard | 64x46x55, 30cm | 31.6cm (57% D) | 28/40 | 3.4cm |
+| tall | 68x85x55, 55cm | 35cm + high-interior sweep | 29/40 | 3.5cm |
+| short low-sash | 68x34x50, **17cm** | 29.3cm hand / 44.8cm TCP | 26/40 | **0.3cm** (ducks flat) |
+| narrow | **32**x50x55, 32cm | 33.5cm | 25/40 | 0.4cm lateral |
+| wide big | 110x65x70, 45cm | 39cm + lateral sweep +-24cm | 31/40 | 0.5cm |
+| deep tunnel | 52x42x**95**, 28cm | 38cm hand / **52.6cm TCP** (whole forearm inside) | 26/40 | 0.9cm |
+
+Note: deep-tunnel 60cm hand target is beyond the FR3's 855mm reach envelope — 52.6cm TCP is the
+physical ceiling with the elbow resting on the bench lip. All motions collision-checked.
+
+### Foxglove fumehood tour
+One playable trajectory chaining all 6 hood variants (22.7s, 190 frames): 3D robot + per-chapter
+hood + live 40-sensor skin cloud, exo RGB, sensor-tile mosaic, insertion-depth & skin plots,
+chapter log. Build: `python scripts/foxglove_fumehood_tour.py` -> `diagnostics_output/20260611_fumehood_tour/fumehood_tour.mcap`
+(open at app.foxglove.dev, import `scripts/foxglove_fumehood_tour_layout.json`).
+
+## Photoshoot (`scripts/photoshoot_sweep.py`)
+`diagnostics_output/20260611_skin_photoshoot/`: hero, sensor close-up, 360° turntable (sheet +
+mp4), pose sweep. Studio lighting, dark background; uses `model_photoshoot.xml`.
+
+## Reproduce
+```
+# build
+python scripts/build_hybrid_on_franka_skin.py        # functional model
+python scripts/build_photoshoot_skin.py              # visual model
+# verify + reconstruct
+python scripts/verify_hybrid_skin_sensors.py
+python scripts/test_and_reconstruct_hybrid.py
+python scripts/test_reconstruct_fumehood.py
+# render
+python scripts/render_hybrid_skin_viz.py             # 3D + exo + wrist + 40 tiles
+python scripts/photoshoot_sweep.py                   # paper turntable
+```
+All renders need EGL (handled in-script via the default-display patch).
+Outputs land in `diagnostics_output/2026*`. wandb gallery: `jayluvsgeography/prox-skin-dataset`.
