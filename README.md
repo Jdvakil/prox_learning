@@ -892,7 +892,7 @@ physical ceiling with the elbow resting on the bench lip. All motions collision-
 One playable trajectory chaining all 6 hood variants (22.7s, 190 frames): 3D robot + per-chapter
 hood + live 40-sensor skin cloud, exo RGB, sensor-tile mosaic, insertion-depth & skin plots,
 chapter log. Build: `python scripts/foxglove_fumehood_tour.py` -> `diagnostics_output/20260611_fumehood_tour/fumehood_tour.mcap`
-(open at app.foxglove.dev, import `scripts/foxglove_fumehood_tour_layout.json`).
+(open at app.foxglove.dev, import `scripts/foxglove_unified_layout.json`).
 
 ## Photoshoot (`scripts/photoshoot_sweep.py`)
 `diagnostics_output/20260611_skin_photoshoot/`: hero, sensor close-up, 360° turntable (sheet +

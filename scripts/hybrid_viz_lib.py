@@ -113,8 +113,15 @@ def cam_pose(model, data, name):
     return data.cam_xpos[cid].copy(), data.cam_xmat[cid].reshape(3, 3).copy()
 
 
+# proximity renders hide geom group 2 (cosmetic skin + robot visual meshes) — the DATAGEN
+# convention (env.record_proximity_depths). Without this, link5-front sensors stare at their
+# own dermis/arm at a constant 3.5-5.8cm and never vary.
+_PROX_OPT = mujoco.MjvOption()
+_PROX_OPT.geomgroup[2] = 0
+
+
 def depth8(renderer, data, name):
-    renderer.update_scene(data, name)
+    renderer.update_scene(data, name, scene_option=_PROX_OPT)
     return renderer.render().copy()
 
 
