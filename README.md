@@ -1,90 +1,91 @@
-# P+ACT — Proximity-conditioned Action Chunking Transformer
+# P+ACT — Proximity-Conditioned Manipulation & Reactive Safety on a Sensorized Franka FR3
 
-**Peripersonal Language-Action policies via whole-body time-of-flight proximity sensing.**
+This repo wraps a Franka FR3 in a **body-distributed proximity skin** (8×8 time-of-flight depth
+sensors tiled over the arm links) inside the MuJoCo / MolmoSpaces simulator, and uses that skin for
+two things:
 
-`prox_learning` is the research repo for **P+ACT**: a manipulation policy that
-augments the standard [ACT](https://tonyzhaozh.github.io/aloha/) (Action
-Chunking Transformer) with **body-distributed proximity sensing**. A Franka FR3
-is wrapped in a sensor *skin* carrying **29 SPAD-style 8×8 time-of-flight depth
-sensors** (on links 2, 3, 5, 6). A small transformer encoder — trained offline
-to map each sensor's short depth-frame history into the **3-D position of the
-manipulated object in that sensor's local frame** — is **frozen** and inserted
-into ACT as 29 extra encoder tokens.
+1. **P+ACT** — a manipulation policy that fuses the proximity stream into Action Chunking
+   Transformer (ACT). On a household pick-and-place task it roughly **doubles success vs vanilla
+   ACT (80% vs 40%)** while using less training compute, and the policy is shown to *actually read*
+   the proximity tokens.
+2. **Safety-CVAE** — a reactive collision-avoidance layer that turns the raw skin reading into a
+   joint-space retreat, with **no scene geometry or object poses at runtime**. It bolts onto any
+   nominal trajectory: the arm bows around an obstacle and rejoins its path.
 
-The headline experiment is **P+ACT vs vanilla ACT** on Franka pick-and-place in
-[MolmoSpaces](https://molmospaces.allen.ai/) (iTHOR / ProcTHOR-Objaverse)
-household scenes: the same ACT backbone, with and without the proximity tokens.
+Both ride on a custom **proximity skin** for the FR3 that back-projects to ground-truth geometry at
+**millimetre accuracy**.
 
-| Headline number                          | Value                                  |
-| ---------------------------------------- | -------------------------------------- |
-| Prox-encoder val mean Euclidean error    | **0.020 m** (per-axis ≈ 0.8 / 1.0 / 1.2 cm) |
-| Vanilla ACT success rate (n = 10)        | **4 / 10 = 40 %**                      |
-| P+ACT success rate (n = 10)              | **8 / 10 = 80 %**                      |
-| Δ                                        | **+ 40 pp** (Fisher one-sided p ≈ 0.057–0.085) |
-| Decoder cross-attention on prox tokens   | **21.7 % of mass on 15.2 % of tokens** (1.55× per-token vs image) |
+![FR3 hybrid proximity skin — hero render](diagnostics_output/20260611_skin_photoshoot/hero.png)
 
-> The deep dive on *why* P+ACT works, the full results, the attention analysis,
-> and the masking ablations live in **[`pact/README.md`](pact/README.md)** — the
-> single source of truth for the P+ACT model. This top-level README is the
-> **operational guide**: install, what every file does, and how to run the
-> whole pipeline end to end.
+*FR3 wrapped in the 40-sensor hybrid proximity skin (red SPAD cells over the conformal dermis).*
+
+> **Two skin generations live in this repo — do not conflate them.**
+> The **29-sensor** skin (`model.xml`, links 2/3/5/6) produced the published **P+ACT** results.
+> The newer **40-sensor hybrid** skin (`model_hybrid.xml`, links 1–6) produced the millimetre
+> reconstruction validation and the **Safety-CVAE**. Sensor counts differ on purpose.
+
+---
+
+## Headline results
+
+| Result | Number | Where |
+|---|---|---|
+| **P+ACT vs vanilla ACT** success (n=10) | **8/10 (80%) vs 4/10 (40%)**, +40 pp | [§5](#5-system-a--pact-proximity-conditioned-act) |
+| Significance | Fisher one-sided p = 0.085, Barnard p = 0.057, odds ratio 6.0 (a prior rerun: 9/10, p = 0.029) | §5 |
+| Training compute | P+ACT wins at **2.5× less** (2000 vs 5000 epochs) | §5 |
+| Decoder reads the skin | prox tokens take **21.7% of attention on 15.2% of tokens** → **1.55× per-token vs image** | §5 |
+| Proximity encoder accuracy | **2.0 cm** mean / 1.4 cm median Euclidean (per-axis 0.84/1.02/1.16 cm) | §5 |
+| Extra parameters for proximity | **~22 k** (0.03% of an ~84 M model) | §5 |
+| Skin geometric accuracy | back-projected returns land on real surfaces to **~4 mm** median | [§4](#4-the-proximity-skin) |
+| **Safety-CVAE** direction accuracy | retreat points the right way **89%** of the time near obstacles, near-silent when clear | [§6](#6-system-b--reactive-proximity-safety-safety-cvae) |
+| Obstacle dataset | **151 episodes, 122 success (80.8%)**, clean avoidance signal | §6 |
+
+<table>
+<tr>
+<td><img src="analysis_output/eval_quick_v1/contacts_by_link.png" width="100%"></td>
+<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/scatter_xyz.png" width="100%"></td>
+<td><img src="pact/analysis/attention_outputs/temporal_per_sensor.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Per-link contact events: P+ACT (pla) vs ACT (vlm).</em></td>
+<td align="center"><em>Encoder predicts contact-point XYZ to ~1 cm, R²&gt;0.99.</em></td>
+<td align="center"><em>Decoder attention to each prox sensor over the approach.</em></td>
+</tr>
+</table>
 
 ---
 
 ## Table of contents
 
-1. [Architecture in one diagram](#1-architecture-in-one-diagram)
+1. [What's in this repo](#1-whats-in-this-repo)
 2. [Repository layout](#2-repository-layout)
 3. [Installation](#3-installation)
-4. [The end-to-end pipeline](#4-the-end-to-end-pipeline)
-5. [Stage A — Data collection (MolmoSpaces)](#5-stage-a--data-collection-molmospaces)
-6. [Stage B — Verification & sanity checks](#6-stage-b--verification--sanity-checks)
-7. [Stage C — Convert to ACT format](#7-stage-c--convert-to-act-format)
-8. [Stage D — Train the proximity encoder](#8-stage-d--train-the-proximity-encoder)
-9. [Stage E — Train P+ACT and the ACT baseline](#9-stage-e--train-pact-and-the-act-baseline)
-10. [Stage F — Rollout evaluation](#10-stage-f--rollout-evaluation)
-11. [Stage G — Ablations, analysis & figures](#11-stage-g--ablations-analysis--figures)
-12. [File reference — `pact/`](#12-file-reference--pact)
-13. [File reference — `scripts/`](#13-file-reference--scripts)
-14. [The `submodules/act` modifications](#14-the-submodulesact-modifications)
-15. [Top-level output directories](#15-top-level-output-directories)
-16. [Conventions, gotchas & troubleshooting](#16-conventions-gotchas--troubleshooting)
+4. [The proximity skin](#4-the-proximity-skin)
+5. [System A — P+ACT (proximity-conditioned ACT)](#5-system-a--pact-proximity-conditioned-act)
+6. [System B — Reactive Proximity Safety (Safety-CVAE)](#6-system-b--reactive-proximity-safety-safety-cvae)
+7. [Data generation: configs, collision probe, enclosure design](#7-data-generation-configs-collision-probe-enclosure-design)
+8. [File reference](#8-file-reference)
+9. [Output directories & conventions](#9-output-directories--conventions)
+10. [Troubleshooting & gotchas](#10-troubleshooting--gotchas)
+11. [Project history (superseded)](#11-project-history-superseded)
 
 ---
 
-## 1. Architecture in one diagram
+## 1. What's in this repo
 
-```
-                 ┌──────────────────────────────────────────────┐
-                 │  29 body-mounted proximity sensors           │
-                 │  (link2×7, link3×8, link5×6, link6×8)        │
-                 │  each: 8×8 ToF depth @ 60 Hz                 │
-                 │  trailing window: W=8 control steps × 4 sub  │
-                 └────────────────────┬─────────────────────────┘
-                                      │ (B, 29, W·4=32, 8, 8)
-                                      ▼
-              ┌──────────────────────────────────────────────┐
-              │  FROZEN prox-encoder  (~0.82 M params)        │
-              │  transformer encoder, 8×8 depth → 3-D pos     │
-              │  ckpt: pact/outputs_prox/runs/.../ckpt_best.pt│
-              └────────────────────┬─────────────────────────┘
-                                   │ (B, 29, 3)  object pos per sensor, metres
-                                   ▼
-   ┌──────────────────────────────────────────────────────────────┐
-   │                       ACT encoder memory                       │
-   │  [ latent(1) | proprio(1) | prox(29) | image(160) ] = 191      │
-   │                              │                                 │
-   │                              ▼                                 │
-   │   ACT decoder cross-attention into the 191 memory tokens       │
-   │            ↳ 100 action queries → 8-d action chunk             │
-   └──────────────────────────────────────────────────────────────┘
-```
+- **A sensorized FR3 in simulation.** The arm carries 8×8 ToF depth sensors (SPAD-style, 45° FOV,
+  1.5–50 cm range). RGB is blurred at policy-training time, so the skin is the robot's
+  contact-range perception.
+- **System A — P+ACT.** A *frozen* proximity encoder maps each sensor's recent depth history to a
+  predicted 3-D object position; those positions enter ACT as extra encoder tokens. The policy
+  gets cleaner, lower-dimensional spatial cues than raw depth and improves pick-and-place success.
+- **System B — Safety-CVAE.** A small conditional VAE distilled from an analytic potential field
+  turns the live skin reading into a 7-DoF joint retreat. It is policy-agnostic: add it as a
+  residual on any trajectory for reactive obstacle avoidance.
+- **The simulator** is MolmoSpaces (iTHOR / ProcTHOR-Objaverse houses), vendored under
+  `submodules/molmospaces`. ACT is vendored under `submodules/act`.
 
-Vanilla ACT is the same minus the `prox(29)` tokens (memory length 162). The
-proximity branch adds only ~22 k params (`Linear(3→512)` + 29 positional
-embeddings), so the success-rate gap is attributable to the *signal*, not model
-capacity. The integration is gated behind `n_proximity_sensors=0`, so vanilla
-ACT remains bit-identical when the flag is unset.
+The two systems share the skin but are independent — you can run either alone.
 
 ---
 
@@ -92,824 +93,690 @@ ACT remains bit-identical when the flag is unset.
 
 ```
 prox_learning/
-├── pact/                     # ← the P+ACT pipeline (the code you run)
-│   ├── prox_encoder/         #   proximity encoder: model + cache builder + dataset
-│   ├── act_prox/             #   ACT↔proximity integration: mapping, dataset, trainer, eval
-│   ├── scripts/              #   encoder CLIs (build_cache / train / evaluate)
-│   ├── analysis/             #   attention visualisation + outputs
-│   ├── outputs_prox/         #   encoder caches + checkpoints (gitignored)
-│   └── README.md             #   the P+ACT deep dive (model, results, science)
-├── scripts/                  # ← ~60 helper scripts: datagen launchers, conversion,
-│                             #   eval orchestration, statistics, analysis, W&B push
+├── pact/                  # System A: P+ACT (canonical pipeline)
+│   ├── prox_encoder/      #   encoder model + windowed cache + dataset
+│   ├── act_prox/          #   ACT × proximity integration, training, eval, masking
+│   ├── scripts/           #   encoder CLIs (build_cache, train, evaluate)
+│   ├── analysis/          #   attention visualisation
+│   └── outputs_prox/      #   encoder caches + checkpoints (gitignored)
+├── scripts/               # ~60 helpers: datagen launch, ACT conversion, eval, analysis,
+│                          #   the hybrid-skin build/verify tools, and the Safety-CVAE scripts
 ├── submodules/
-│   ├── act/                  #   ACT policy (forked; proximity-gated edits)
-│   ├── molmospaces/          #   data-gen + sim + rendering + benchmarks
-│   └── MolmoBot/             #   Molmo VLM + policy integration (pinned)
-├── assets/                   #   robot MJCF (incl. franka_skin), scenes, objects, benchmarks
-├── franka_assets/fr3_skin/   #   FR3 + skin meshes
-├── analysis_output/          #   plots/stats from eval runs (gitignored)
-├── diagnostics_output/       #   proximity audits + smoke diagnostics (gitignored)
-├── synthetic_verify/         #   empty-room / flat-plane GT verification artifacts
-├── logs/ wandb/              #   run logs and W&B run dirs (gitignored)
-├── pointcloud.ipynb          #   interactive proximity point-cloud notebook
-├── pyproject.toml            #   the `pla` package metadata (name kept for history)
-└── README.md                 #   this file
+│   ├── molmospaces/       #   the simulator + datagen (forked, with our task/config edits)
+│   ├── act/               #   ACT model (forked, 4 backward-compatible edits)
+│   └── MolmoBot/          #   (auxiliary)
+├── assets/                # robot MJCF + scenes + collected datasets (most gitignored)
+│   ├── robots/franka_skin/#   model.xml (29-sensor), model_hybrid.xml (40-sensor), ...
+│   ├── datagen/           #   collected trajectory h5 + camera MP4s
+│   └── safety/            #   Safety-CVAE data, checkpoints, demo outputs
+├── franka_assets/fr3_skin/# self-contained 29-sensor skin model tree (bundled meshes)
+├── analysis_output/       # result plots (P+ACT vs ACT, dataset coverage, ...)
+├── diagnostics_output/    # skin verification, reconstruction, photoshoot, fumehood, obstacle
+├── synthetic_verify/      # empty-room / flat-plane ground-truth checks
+└── pyproject.toml         # package name "pla" (kept for history)
 ```
 
-> **History note.** An earlier all-in-one stack lived in `pla/` (documented in
-> `README_OLD.md`). The current, canonical pipeline is **`pact/`** (P+ACT). The
-> `pyproject.toml` package name is still `pla` for continuity.
+Two Python interpreters are used:
+
+- **`/opt/conda/envs/mlspaces/bin/python`** — everything: datagen, sim, the encoder, P+ACT,
+  the Safety-CVAE. Referred to below as `$PY`.
+- **`/opt/conda/envs/aloha/bin/python`** — *optional*, only for the original vanilla-ACT scripts.
 
 ---
 
 ## 3. Installation
 
-The pipeline uses **two Python environments** because the policy code (ACT) and
-the simulator (MolmoSpaces) have different, conflicting dependency pins.
-
-### 3.0 Clone with submodules
-
 ```bash
-git clone <this-repo> prox_learning
-cd prox_learning
+# 3.0 clone with submodules
 git submodule update --init --recursive
-```
 
-### 3.1 MolmoSpaces env (`mlspaces`) — datagen, sim, P+ACT training/eval
-
-This is the **primary** environment; the entire `pact/` pipeline and all
-MolmoSpaces datagen/rollouts run in it. (Existing setups expose it at
-`/opt/conda/envs/mlspaces/bin/python`.)
-
-```bash
+# 3.1 primary env: datagen + sim + encoder + P+ACT + safety
 conda create -n mlspaces python=3.11
 conda activate mlspaces
-
-# MolmoSpaces (data-gen + sim + rendering)
 cd submodules/molmospaces
 pip install -e ".[mujoco]"          # or ".[mujoco-filament]" for the Filament renderer
 cd ../..
+pip install -e .                    # numpy, torch, h5py, mujoco, matplotlib, scipy, trimesh, ...
 
-# The pact package (this repo)
-pip install -e .                    # numpy, torch, h5py, mujoco, matplotlib, scipy, ...
-```
-
-Optional MolmoSpaces extras: `dev` (linting/tests), `grasp` (grasp generation),
-`housegen` (iTHOR/ProcTHOR/Holodeck house generation), `curobo`
-(GPU-accelerated planning — only needed for RB-Y1 tasks). See
-`submodules/molmospaces/README.md` for the CuRobo CUDA build recipe.
-
-**Headless rendering** (servers without a display) — set before any sim run:
-
-```bash
+# headless rendering — required for every sim/render command in this repo
 export MUJOCO_GL=egl
 export PYOPENGL_PLATFORM=egl
-```
 
-### 3.2 ACT env (`aloha`) — optional, for vanilla-ACT-only workflows
-
-The ACT submodule ships its own conda spec. The P+ACT run-book runs ACT *inside*
-`mlspaces`, but the original ACT scripts and some baselines (e.g.
-`scripts/train_houses13_seeds.sh`) use the `aloha` env:
-
-```bash
+# 3.2 optional: vanilla-ACT-only env (skip if you only run P+ACT)
 conda env create -f submodules/act/conda_env.yaml   # creates env "aloha"
 conda activate aloha
-cd submodules/act/detr && pip install -e .          # install the DETR/ACT model package
-```
+cd submodules/act/detr && pip install -e .          # the DETR/ACT model package
+conda activate mlspaces
 
-Installs Python 3.9, PyTorch 2.0 (CUDA 11.8), `mujoco==2.3.3`, `dm_control`,
-`einops`, `h5py`, etc. (See `submodules/act/README.md`.)
-
-### 3.3 Assets & scene cache
-
-MolmoSpaces auto-downloads assets on first run. To pre-install / repair the
-cache (robots incl. `franka_skin`, scenes, objects, grasps, benchmarks):
-
-```bash
-cd submodules/molmospaces
-export MLSPACES_ASSETS_DIR=/path/to/resources     # where symlinks live
-python -m molmo_spaces.molmo_spaces_constants      # download + symlink everything
-```
-
-| Env var | Effect | Default |
-|---|---|---|
-| `MLSPACES_ASSETS_DIR` | Where downloaded assets are placed | `~/.cache/molmospaces/assets/<hash>` |
-| `MLSPACES_FORCE_INSTALL` | Overwrite existing assets | `True` |
-| `MLSPACES_PINNED_ASSETS_FILE` | JSON pinning per-asset versions | — |
-
-Fetch a single scene/variant:
-
-```bash
+# 3.3 assets & scene cache
+export MLSPACES_ASSETS_DIR=$PWD/assets              # where symlinks live
+python -m molmo_spaces.molmo_spaces_constants       # download + symlink everything
 python scripts/datagen/fetch_assets.py scene procthor-objaverse 0 --split train
-python scripts/datagen/fetch_assets.py default      # all default robots/objects/grasps
+python scripts/datagen/fetch_assets.py default      # default robots/objects/grasps
+ls -L assets/scenes/procthor-objaverse-train/train_0.xml   # verify the symlink resolves
 ```
 
-> **Dangling-symlink gotcha.** `assets/scenes/<dataset>/*.xml` are symlinks into
-> the cache. If the cache is wiped, the symlinks dangle silently and **every
-> house fails with `ParseXML: Error opening file`** (symptom: hundreds of
-> `HouseInvalidForTask: Scene setup failed during compilation`). Verify before a
-> long run: `ls -L assets/scenes/procthor-objaverse-train/train_0.xml` should
-> print a non-zero size. Repair by re-running the install above with
-> `MLSPACES_FORCE_INSTALL=True`.
+**Mesh files are not in git.** STL/DAE meshes for the skin resolve at build time from the upstream
+`gentact_ros_tools`; the vendored FR3 derives from `mujoco_menagerie` (needs MuJoCo ≥ 3.1.3).
+
+**Dangling-symlink gotcha:** a wiped asset cache makes `assets/scenes/*.xml` dangle silently →
+`HouseInvalidForTask` / `ParseXML` errors. Verify with `ls -L`; repair by re-running the fetch with
+`MLSPACES_FORCE_INSTALL=True`.
 
 ---
 
-## 4. The end-to-end pipeline
+## 4. The proximity skin
 
-```
- A. Collect demos in sim            molmo_spaces.data_generation.main  →  per-house *.h5 + MP4s
- B. Verify the proximity stream     scripts/datagen/verify_*.py, visualize_proximity.py
- C. Convert to ACT format           scripts/convert_*.py                →  act_style_data/<set>/episode_*.hdf5
- D. Train the proximity encoder     pact/scripts/{build_cache,train,evaluate}.py  →  ckpt_best.pt (FROZEN)
- E. Map ACT episodes ↔ source h5    pact.act_prox.build_mapping        →  prox_mapping.json
- F. Train P+ACT  +  ACT baseline    pact.act_prox.imitate_episodes_with_prox
- G. Rollout eval + ablations        pact.act_prox.eval_act_with_prox_encoder + scripts/*
- H. Analysis & paper figures        scripts/*figure*.py, pact/analysis/, scripts/push_*_to_wandb.py
-```
+The robot's contact-range sense. Two generations exist; both are MJCF FR3 + Robotiq models where
+each sensor is a fixed `<camera fovy="45" resolution="8 8">` rendering planar-z depth.
 
-Every command below assumes `cd /home/jaydv/code/prox_learning` and uses the
-`mlspaces` interpreter unless noted. For brevity, `PY=/opt/conda/envs/mlspaces/bin/python`.
+| model | sensors | links | used by |
+|---|---|---|---|
+| `assets/robots/franka_skin/model.xml` | **29** | 2 (×7), 3 (×8), 5 (×6), 6 (×8) | **P+ACT** (§5) |
+| `assets/robots/franka_skin/model_hybrid.xml` | **40** | 1 (×7), 2 (×7), 3 (×5), 4 (×5), 5-front (×4), 5-back (×6), 6 (×6) | **Safety-CVAE** (§6), reconstruction |
+| `assets/robots/franka_skin/model_photoshoot.xml` | 40 markers | — | paper figures (visual only) |
+| `franka_assets/fr3_skin/` | 29 (bundled meshes) | 2/3/5/6 | self-contained standalone model |
 
----
+**Sensor optics & aiming.** 8×8 depth, 45° FOV (focal ≈ 10.86 mm, h-aperture 9.0 mm), clip
+0.05–4.0 m. Sensors aim radially out of each link axis (outward + surface-perpendicular). The URDF
+`<axis>` and dermis mesh normals are unreliable (wrong winding) — do **not** use them for aiming; a
+few cramped sensors are raycast-repaired. Cameras sit **9 mm proud** of the skin so they clear the
+dermis shell.
 
-## 5. Stage A — Data collection (MolmoSpaces)
+**Near-field fix (critical).** MuJoCo's depth clip is `vis.map.znear × stat.extent`; with a big
+scene this silently erased every return below ~10 cm. Pinned `znear = 0.0002` (clip ≈ 2 mm). The same
+render path is used by datagen, so this affects collected data too.
 
-Demonstrations are generated by a scripted planner in MolmoSpaces using the
-`franka_skin` robot (`FrankaSkinRobotConfig`) and camera system
-(`FrankaSkinCameraSystem` = 2 RGB cameras `exo_camera_1` + `wrist_camera`, plus
-the 29 SPAD proximity sensors). Configs live in
-`submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py`.
+**Render hygiene.** Skin geoms are group 2 and hidden in the proximity render (`geomgroup[2] = 0`) so
+the shell does not occlude the sensors — without this ~33% of empty-room returns came back as
+self-hits.
 
-### 5.1 The `franka_skin` datagen configs
+### Verification & reconstruction
 
-| Config name | Purpose | Scene set | Houses | Samples/house |
-|---|---|---|---|---|
-| `FrankaSkinPickAndPlaceDataGenConfig` | Base production class (iTHOR pick-and-place) | ithor | `range(0,4)` | 20 |
-| `FrankaSkinPickAndPlacePilotConfig` | Full pilot | procthor-objaverse | up to 1999 | 5 |
-| `FrankaSkinPickAndPlacePilotSmokeConfig` | 10-house smoke (validate the whole path) | procthor-objaverse | 1–10 | 4 |
-| `FrankaSkinPickAndPlacePilotEvalHoldoutConfig` | Held-out eval set (builds a JsonBench) | procthor-objaverse | 11–20 | 4 |
-| `FrankaSkinPickAndPlaceOneHouseMugConfig` | Single-house mug-only (the main P+ACT dataset) | ithor | `[1]` | 250 |
-| `FrankaSkinLowSurfacePickAndPlaceDataGenConfig` | Bias to low/enclosed surfaces (sinks, shelves, seats) | procthor-objaverse | up to 1999 | 5 |
-| `FrankaSkinLowSurfacePickAndPlacePilotConfig` | Low-surface pilot | procthor-objaverse | ~200 | 3 |
-| `PACT` | Medium ~500-ep pre-pilot (subclass of pilot); `disable_collision_checks=True` (collision probe) | procthor-objaverse | 11–20 | 1 |
-| `PACT_LowSurface` | `PACT` on low/enclosed surfaces | procthor-objaverse | — | 2 |
-| `FrankaSkinProxNecessityPilotConfig` | **Proximity-necessity regime** (vision fails, skin must carry the task) — see [§5.3](#53-collision-probe--the-proximity-necessity-regime) | procthor-objaverse | 1–50 | 3 |
+`scripts/verify_hybrid_skin_sensors.py`:
 
-`LOW_SURFACE_PREFIXES = ("sink", "shelf", "bookshelf", "chair", "armchair",
-"stool", "sofa", "bed", "bathtub", "toilet", "crapper", "dresser",
-"chestofdrawers")` — these bias collection toward poses where the skin actually
-pays off. `crapper`/`chestofdrawers` are the procthor-objaverse body names.
-
-> **Critical field — `proximity_sensor_period_ms`.** Must be `16.6667` (≈ 60 Hz,
-> 4 substeps/policy step). Setting it to `0` **silently disables proximity
-> recording entirely** (the substep dim collapses to 1 and pixels read zero).
-> This is fixed in the `FrankaSkin*` configs; double-check it if you subclass.
-
-### 5.2 Launching datagen
-
-Canonical invocation (named-config entry point):
-
-```bash
-cd submodules/molmospaces
-PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-  /opt/conda/envs/mlspaces/bin/python -m molmo_spaces.data_generation.main \
-  FrankaSkinPickAndPlacePilotSmokeConfig 2>&1 | tee ../../logs/datagen_smoke.log
-```
-
-Swap the config name for any from the table (the pipeline iterates houses
-internally — no bash loop needed). Output lands under
-`<MLSPACES_ASSETS_DIR>/datagen/<output_dir>/<timestamp>/house_<i>/` as
-`trajectories_batch_*.h5` + sibling `episode_*_<cam>_batch_1_of_1.mp4`.
-
-**Parallel single-house collection.** Single-house configs need
-`num_workers=1` (workers collide on scene setup). To parallelise, launch N
-processes with disjoint output dirs and merge afterward — wrappers do this:
-
-```bash
-# 4 workers × 63 samples of the house-1 mug task (the v3 dataset)
-PY=$(echo /opt/conda/envs/mlspaces/bin/python)
-source /opt/conda/etc/profile.d/conda.sh && conda activate mlspaces
-export MLSPACES_ASSETS_DIR=$PWD/assets MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
-python scripts/run_v3_parallel.py        --jobs 4 --samples_per_job 63   # mug, house 1
-python scripts/run_house10_cup_parallel.py --jobs 4 --samples_per_job 63 # cup, house 10
-python scripts/_bench_one_house_mug.py   --n 5 --workers 4               # throughput probe
-```
-
-**Legacy CLI alternative** (quick flag overrides): `scripts/datagen/run_pipeline.py
---robot skin --task_type pick_and_place --scene_dataset ithor --house_inds <i>
---samples_per_house <N> --seed <S>`.
-
-### 5.3 Collision probe & the proximity-necessity regime
-
-The default pick-and-place pipeline is a **bad** showcase for proximity: the task
-sampler's `check_robot_placement_visibility=True` only places the robot where
-`exo_camera_1` already sees the target, so vision never fails and the skin is
-redundant. Measured on the `PACT` data, `vision_blind_frac = 0.000` and
-proximity-necessity `= 0.000` across every house. To make proximity *load-bearing*
-you have to break that guarantee and force the arm to work among surfaces.
-
-Two pieces landed for this:
-
-**(a) Collision probe** — `disable_collision_checks` (new field on
-`MlSpacesExpConfig`, default `False`; **`True` on `PACT`**). When set, the
-task-sampler's robot-placement collision rejection is bypassed (the `PLACE_ROBOT_NEAR`
-loop accepts any pose) so the robot can operate in collision-prone configurations.
-MuJoCo contact *detection* stays on, and a per-step **collision metric** is recorded
-into every trajectory's `obs_scene["collision_metrics"]`:
-`{collided, n_collision_steps, total_contacts, per_step_contacts, n_steps}`
-(robot↔environment contacts, excluding the floor and the grasped object — the latter
-gets welded to the robot root on grasp). Code: `env.py::count_robot_environment_contacts`,
-threaded through `tasks/task.py`.
-
-**(b) Proximity-necessity regime** — `FrankaSkinProxNecessityPilotConfig` flips three
-levers vs `PACT`: `check_robot_placement_visibility=False` (drop the camera guarantee),
-`source_surface_types=LOW_SURFACE_PREFIXES` (recessed targets — sink basins, shelf
-interiors — where even the wrist cam loses the object), and heavy clutter packed
-close (`num_added_pickups=60`, small `base_pose_sampling_radius_range`). Collisions are
-left **on** so a vision-only policy must collide at rollout (the intended P+ACT-vs-ACT
-contrast).
-
-This **over-generates** candidates rather than hand-designing scenes. Curate it with
-the necessity metric and keep trajectories where the skin is provably required:
-
-```bash
-# 1. collect
-cd submodules/molmospaces
-PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-  /opt/conda/envs/mlspaces/bin/python -m molmo_spaces.data_generation.main \
-  FrankaSkinProxNecessityPilotConfig 2>&1 | tee ../../logs/prox_necessity_pilot.log
-
-# 2. measure / curate (keep prox_active_frac >= 0.8 AND high vision_blind_frac)
-cd /home/jaydv/code/prox_learning
-/opt/conda/envs/mlspaces/bin/python scripts/proximity_necessity.py \
-  --glob 'assets/datagen/pick_and_place_skin_prox_necessity_pilot_v1/**/house_*/trajectories_batch_*.h5' \
-  --near_m 0.15 --out diagnostics_output/prox_necessity_pilot
-```
-
-`scripts/proximity_necessity.py` reports, per trajectory and as dataset means:
-`vision_blind_frac` (neither RGB cam sees the target), `prox_active_frac` (≥1 skin
-sensor reads a surface < `--near_m`), and `necessity` (`vision_blind ∧ prox_active`).
-A dataset is only useful for the thesis when `necessity` and `frac_meeting_prox_active_0.8`
-are well above zero. Inspect any single trajectory with
-`scripts/inspect_pact_trajectory.py` (qpos / actions / TCP / 29-sensor heatmaps /
-collision probability — see [§13](#13-file-reference--scripts)).
-
----
-
-## 6. Stage B — Verification & sanity checks
-
-Never start a big collection without a quantitative **and** visual sign-off that
-the 29 sensors see the world correctly. Verifiers live in
-`submodules/molmospaces/scripts/datagen/` (run from inside `submodules/molmospaces`):
-
-| Script | What it checks | Example |
-|---|---|---|
-| `verify_proximity_gt.py` | Renders native 8×8 depth at a timestep, compares to recorded values; writes `analysis/gt_compare_t<T>/grid.png` + `summary.md` | `python scripts/datagen/verify_proximity_gt.py <H5> --t 10` |
-| `verify_synthetic_scenes.py` | Places the robot in an empty room / flat plane, reconstructs a point cloud from proximity, compares to known geometry | `python scripts/datagen/verify_synthetic_scenes.py` |
-| `visualize_proximity.py` | Renders the 29-sensor grid as an MP4 + PNG from a trajectory | `python scripts/datagen/visualize_proximity.py <H5> --traj traj_0` |
-| `analyze_sample_episode.py` | Per-episode kinematics, object tracking, success/fail, plots | `python scripts/datagen/analyze_sample_episode.py <H5> --episode 0` |
-| `print_configs.py` / `compare_configs.py` | List all registered configs / diff two config JSONs | `python scripts/datagen/print_configs.py` |
-
-Quantitative results from this protocol are checked into
-[`synthetic_verify/`](synthetic_verify/) (empty-room + flat-plane error
-histograms, the documented −44.6 mm 8×8 floor bias, and `summary.md`).
-
-**Pilot acceptance checklist** before scaling up: per-house success rate
-≥ ~50 %; zero `native 8x8 render failed` in the log; spot-check 1–2 trajectories
-with `visualize_proximity.py`; the combined H5 builds cleanly.
-
-Repo-side diagnostics: [`diagnostics_output/`](diagnostics_output/) holds
-proximity audits and the `act_inference_probe.py` model-probe;
-[`pointcloud.ipynb`](pointcloud.ipynb) is an interactive point-cloud
-reconstruction notebook.
-
----
-
-## 7. Stage C — Convert to ACT format
-
-ACT consumes per-episode `episode_<idx>.hdf5` files (decoded float32 arrays +
-resampled camera frames). The `scripts/convert_*` family transforms MolmoSpaces
-output into `act_style_data/<set>/`:
-
-```bash
-PY=/opt/conda/envs/mlspaces/bin/python
-
-# Single source h5 → per-episode ACT hdf5s
-$PY -m scripts.convert_pla_to_act --src <…/trajectories_batch_1_of_1.h5> \
-    --dst act_style_data/<set> --image_h 240 --image_w 320
-
-# Whole mug_random_everything run (356 per-timestamp folders) → global episode indices
-$PY scripts/convert_mug_random_to_act.py \
-    --dst act_style_data/mug_house1_random_everything --image_h 240 --image_w 320 --resume
-
-# Smoke (10 houses) → ACT + a mapping.json provenance sidecar
-$PY -m scripts.convert_smoke_to_act --src_run_dir <…/20260510_124831> --dst act_style_data/smoke
-
-# Merge parallel v3 worker outputs (run_w0, run_w1, …) into one ACT dataset
-$PY scripts/merge_v3_to_act_style.py --src_base <…/parallel_2026…> --dst act_style_data/pla_house1_mug_v3
-
-# Combine two ACT datasets (house 1 + house 3 → 488 eps via symlinks)
-$PY scripts/build_combined_h1_h3.py
-```
-
-Other helpers: `duplicate_one_trajectory.py` (replicate one demo N× with noise
-for overfit tests), `merge_chunks.py` / `merge_n20_chunks.py` (merge eval
-chunks), `append_rand_object_to_ep0.py`, `lock_clutter_bins.py` (freeze clutter
-bins from planner data for stratified eval). See [§13](#13-file-reference--scripts).
-
----
-
-## 8. Stage D — Train the proximity encoder
-
-The encoder is trained **once**, then frozen and reused by every P+ACT run. Each
-training sample is one `(trajectory, sensor, t)` tuple, kept only when the object
-is **visible** to the sensor, the gripper is **not holding** it
-(`grasp_state.held == False`), and W real control steps precede `t`. Labels are
-the object position in the sensor's local frame.
-
-```bash
-PY=/opt/conda/envs/mlspaces/bin/python
-
-# 1. Build the windowed cache from source h5s (one sample = one window).
-$PY pact/scripts/build_cache.py \
-    --data_glob 'assets/datagen/mug_house_1_random_everything/**/trajectories_batch_*.h5' \
-    --out pact/outputs_prox/cache_full.npz --window 8 --keep_every 1
-
-# 2. Train (~30 min on a 4090). Best-by-Euclidean checkpoint is saved.
-$PY pact/scripts/train.py \
-    --cache pact/outputs_prox/cache_full.npz \
-    --out_dir pact/outputs_prox/runs --run_name prox_encoder_v1 \
-    --steps 10000 --batch_size 256 --use_wandb --wandb_project prox-encoder
-
-# 3. Evaluate + plots (scatter, error/euclidean hists, per-sensor MAE, 3-D).
-$PY pact/scripts/evaluate.py \
-    --checkpoint pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-    --cache pact/outputs_prox/cache_full.npz --split val
-```
-
-`train.py` writes `evaluation_metrics.json` + `predictions.npz`; `evaluate.py`
-adds the plots. The shipped `ckpt_best.pt` reaches **2.0 cm mean Euclidean**
-error on held-out trajectories. Use `--smoke` for a 200-step CPU/GPU sanity run.
-
----
-
-## 9. Stage E — Train P+ACT and the ACT baseline
-
-### 9.1 Build the ACT-episode ↔ source-h5 mapping (one-time per dataset)
-
-P+ACT reads proximity from the original h5 (no re-conversion). `build_mapping.py`
-links each ACT episode to its source trajectory using a **qpos signature at
-timesteps {5, 10, 15, 20, 25}** (45 floats — robot init is deterministic so
-t<5 is identical across trajectories). It aborts on any zero- or multi-match.
-
-```bash
-/opt/conda/envs/mlspaces/bin/python -m pact.act_prox.build_mapping \
-    --act_dataset_dir act_style_data/mug_house1_random_everything
-# → writes act_style_data/mug_house1_random_everything/prox_mapping.json
-```
-
-### 9.2 Train both arms (matched hyperparameters)
-
-```bash
-PY=/opt/conda/envs/mlspaces/bin/python
-
-# Vanilla ACT baseline (no proximity).
-$PY -m pact.act_prox.imitate_episodes_with_prox \
-    --task_name pla_house1_mug_random --policy_class ACT \
-    --ckpt_dir runs/act_mug_v1_baseline \
-    --batch_size 8 --num_epochs 5000 --lr 1e-4 --seed 0 \
-    --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200 \
-    --use_wandb --wandb_project pact --wandb_run_name act_mug_v1_baseline
-
-# P+ACT (frozen prox-encoder ON).
-$PY -m pact.act_prox.imitate_episodes_with_prox \
-    --task_name pla_house1_mug_random --policy_class ACT \
-    --ckpt_dir runs/act_prox_mug_v1 \
-    --batch_size 8 --num_epochs 2000 --lr 1e-4 --seed 0 \
-    --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200 \
-    --use_proximity \
-    --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-    --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json \
-    --use_wandb --wandb_project pact --wandb_run_name act_prox_mug_v1
-```
-
-The trainer **asserts at every step** that all encoder params have
-`requires_grad == False` and that none received a gradient. It logs the standard
-ACT metrics plus `prox/pred_pos_{x,y,z}_mean` and `prox/finite_frac`. Without
-`--use_proximity` it runs as plain ACT (regression-tested identical to upstream).
-
-Multi-seed baseline+P+ACT on the house-3 dataset (uses the `aloha` env):
-`bash scripts/train_houses13_seeds.sh`. Medium-dataset ablation pipelines:
-`scripts/launch_medium_v1.sh`, `scripts/launch_medium_ablations.sh`.
-
----
-
-## 10. Stage F — Rollout evaluation
-
-Rollouts run the trained policy inside a fresh MolmoSpaces process (so each draws
-a new task — that's why absolute success counts wiggle ±10 pp; read the Wilson
-95 % CIs, not point estimates). The inference policy
-(`eval_act_with_prox_encoder.py`) maintains a per-sensor **ring buffer** of the
-last W control steps, z-scores it with the encoder's stats, and feeds the 3-D
-positions to ACT.
-
-```bash
-# 10 P+ACT rollouts, one shell command:
-CKPT_DIR=runs/act_prox_mug_v1 \
-PROX_ENC=pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-PROX_MAP=act_style_data/mug_house1_random_everything/prox_mapping.json \
-N_ROLLOUTS=10 \
-  bash scripts/eval_act_prox_aggregate.sh
-
-# 10 vanilla ACT rollouts (parallel wrapper around the ACT eval entry point):
-/opt/conda/envs/mlspaces/bin/python scripts/run_act_mug_random_10x.py \
-    --n_runs 10 --output_dir eval_output/act_house1_mug_random_v1_aggregate
-
-# Build the summary + comparison + significance:
-PY=/opt/conda/envs/mlspaces/bin/python
-$PY scripts/aggregate_pact_eval.py --root eval_output/act_prox_mug_v1_aggregate \
-    --baseline_summary eval_output/act_house1_mug_random_v1_aggregate/summary.json
-$PY scripts/plot_pact_vs_baseline.py \
-    --baseline_root eval_output/act_house1_mug_random_v1_aggregate \
-    --pact_root     eval_output/act_prox_mug_v1_aggregate \
-    --out           eval_output/act_prox_mug_v1_aggregate/comparison_plot.png
-$PY scripts/significance_pact_vs_baseline.py \
-    --baseline_root eval_output/act_house1_mug_random_v1_aggregate \
-    --pact_root     eval_output/act_prox_mug_v1_aggregate
-```
-
-`run_act_prox_mug_10x.py` is the Python equivalent of the bash loop (wipes
-per-run dirs to force re-randomisation). Other entry points in
-`submodules/act/`: `eval_act_house1.py`, `eval_act_house1_dup250.py`,
-`eval_act_mug_random.py`, `eval_act_house10_cup.py`, `eval_act_with_prox.py`
-(see [§14](#14-the-submodulesact-modifications)). `scripts/watch_progress.sh`
-prints live progress of running evals.
-
----
-
-## 11. Stage G — Ablations, analysis & figures
-
-### 11.1 Proximity masking ablations (is ACT *using* the prox tokens?)
-
-`eval_act_with_prox_encoder.py` supports `--mask_proximity
-{none,zero,mean,noise,shuffle}` and phase-localised masking `--mask_phase
-{approach,pregrasp,grasp_lift,transit,place}`. The orchestrators:
-
-```bash
-PY=/opt/conda/envs/mlspaces/bin/python
-# Precompute the mean-position baseline used by --mask_proximity mean:
-$PY pact/act_prox/precompute_prox_mean.py --act_dataset_dir act_style_data/mug_house1_random_everything \
-    --prox_mapping_json <…/prox_mapping.json> --prox_encoder_ckpt <…/ckpt_best.pt> --output prox_pos_mean.npy
-
-# One masking condition (N rollouts, K parallel):
-$PY scripts/run_pact_mask_experiment.py --n_runs 50 --parallel 4 \
-    --mask_proximity zero --mask_phase none --output_dir eval_output/exp1_mask_zero_n50
-
-# All masking experiments (Exp 1 prox masks + Exp 2 phase masks):
-N=50 PARALLEL=3 bash scripts/run_pact_exp1_exp2_all.sh
-
-# Which checkpoint epoch rolls out best:
-$PY scripts/run_pact_epoch_sweep.py --ckpt_dir runs/act_prox_mug_v1 \
-    --epochs 1500,1700,1900,best,last --n_runs 12 --parallel 2 --output_dir eval_output/epoch_sweep
-```
-
-`test_masking.py` is the fast unit test for the masking branches.
-
-### 11.2 Attention & sensor analysis
-
-```bash
-# Decoder cross-attention over the 29 prox tokens (4 PNGs + raw_stats.json):
-PYTHONPATH="submodules/act:.:${PYTHONPATH:-}" /opt/conda/envs/mlspaces/bin/python \
-  pact/analysis/visualize_prox_attention.py \
-    --ckpt_dir runs/act_prox_mug_v1 \
-    --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-    --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json \
-    --dataset_dir act_style_data/mug_house1_random_everything \
-    --out_dir pact/analysis/attention_outputs --n_batches 20
-```
-
-Sensor-usage and failure analyses (all in `scripts/`): `sensor_usage_timeline.py`,
-`sensor_success_vs_fail.py`, `joint_sensor_ranking.py`, `attention_vs_activity.py`,
-`temporal_attention_plot.py`, `failure_taxonomy.py`, `phase_duration_analysis.py`,
-`phase_transitions.py`, `action_variance_per_phase.py`, `tcp_path_visualisation.py`,
-`modality_weight_comparison.py`, `plot_weight_usage.py`.
-
-### 11.3 Paper figures & W&B push
-
-Composite figures: `paper_figure.py`, `paper_figure_v2.py`,
-`paper_master_figure.py`, `sensor_characterization_figure.py`,
-`plot_three_way_act_prox_comparison.py`, `plot_visrand_ablation.py`,
-`plot_mask_experiments.py`. Push results to Weights & Biases:
-`push_pact_n50_to_wandb.py`, `push_exp_aggregate_to_wandb.py`,
-`push_paper_analysis_to_wandb.py`, `push_taxonomy_to_wandb.py`,
-`push_visrand_ablation_summary.py`, and `backfill_wandb_from_log.py` (replay a
-log into W&B when a run was trained with `use_wandb=false`).
-
----
-
-## 12. File reference — `pact/`
-
-### `pact/prox_encoder/` — the proximity encoder
-| File | What it does |
-|---|---|
-| `model.py` | `ProxEncoder` + `ProxEncoderConfig`: CNN `FrameTokenizer` per 8×8 frame → transformer encoder (d_model=128, 4 heads, 4 layers) + sinusoidal PE → 3-D position. Input `(B, T, 8, 8)` → output `(B, 3)`. |
-| `cache.py` | Preprocesses source h5 trajectories into a flat windowed `.npz` cache (one sample = one `(traj, sensor, t)`). Filters on visible/not-held/full-window; stores raw fp16 windows, fp32 labels, metadata, channel-wise norm stats. CLI: `--data_glob --out --window --keep_every --max_trajs --label_clip_m`. |
-| `dataset.py` | `ProxWindowDataset` over the cache (per-channel z-scoring) + `split_by_trajectory` (deterministic 90/10 hold-out by whole trajectory). |
-
-### `pact/scripts/` — encoder CLIs
-| File | What it does |
-|---|---|
-| `build_cache.py` | Thin CLI wrapper → `prox_encoder.cache.main`. |
-| `train.py` | Trains `ProxEncoder` (MSE, cosine LR + warmup, per-eval validation in metres, best-MAE checkpoint, optional W&B, `--smoke`). |
-| `evaluate.py` | Loads a checkpoint, computes per-axis/per-sensor MAE/RMSE/R²/Euclidean, writes `evaluation_metrics.json` + `predictions.npz` + 6 plots. |
-
-### `pact/act_prox/` — ACT ⨉ proximity integration
-| File | What it does |
-|---|---|
-| `build_mapping.py` | Builds `prox_mapping.json` (ACT episode → source h5 + traj key) via the qpos signature; self-tests; aborts on ambiguous matches. |
-| `dataset.py` | `ProxAugmentedEpisodicDataset` — wraps ACT's `EpisodicDataset`, yields `(image, qpos, action, is_pad, proximity_window)`; z-scores with encoder stats; left-pads early timesteps. `make_prox_dataloaders()` factory. |
-| `prox_features.py` | `FrozenProxFeatureExtractor` — wraps the ~0.82 M frozen encoder; `(B, 29, W·4, 8, 8) → (B, 29, 3)` under `no_grad`, params frozen by construction. |
-| `precompute_prox_mean.py` | Samples the dataset through the frozen encoder → `(29, 3)` mean positions for the `--mask_proximity mean` baseline. |
-| `imitate_episodes_with_prox.py` | ACT trainer forked from `imitate_episodes.py`; `--use_proximity` adds the frozen encoder + prox tokens; encoder-frozen assertions; W&B prox metrics. |
-| `eval_act_with_prox_encoder.py` | Rollout inference policy with the per-sensor ring buffer + masking experiments (`--mask_proximity`, `--mask_phase`, phase classifier); sets `MUJOCO_GL=egl`. |
-| `test_masking.py` | Fast unit tests for the masking branches and phase classifier (no external files needed). |
-
-### `pact/analysis/`
-| File | What it does |
-|---|---|
-| `visualize_prox_attention.py` | Hooks decoder `multihead_attn`, aggregates cross-attention over the 191 memory tokens; writes `per_sensor_attention.png`, `group_attention.png`, `per_layer_per_sensor_heatmap.png`, `temporal_per_sensor.png`, `raw_stats.json` (committed under `attention_outputs/`). |
-
----
-
-## 13. File reference — `scripts/`
-
-### Data collection, conversion & dataset building
-| File | What it does |
-|---|---|
-| `run_v3_parallel.py` | Launch N parallel datagen workers for the house-1 mug task (disjoint dirs/seeds, staggered start). |
-| `run_house10_cup_parallel.py` | Same, for the house-10 cup task. |
-| `_bench_one_house_mug.py` | Throughput probe for `FrankaSkinPickAndPlaceOneHouseMugConfig` (per-success wall-clock, extrapolation). |
-| `convert_pla_to_act.py` | Convert one MolmoSpaces h5 (+ sibling MP4s) → per-episode ACT `episode_<i>.hdf5`. |
-| `convert_mug_random_to_act.py` | Batch-convert the 356-folder `mug_house_1_random_everything` run with global indexing (`--resume`). |
-| `convert_smoke_to_act.py` | Convert the 10-house smoke run to ACT + a `mapping.json` provenance sidecar. |
-| `merge_v3_to_act_style.py` | Merge `run_w*` parallel worker outputs into one ACT dataset. |
-| `build_combined_h1_h3.py` | Symlink-merge house-1 + house-3 ACT datasets (488 eps) and remap `prox_mapping.json`. |
-| `duplicate_one_trajectory.py` | Replicate one trajectory N× with optional per-copy noise (overfit experiments). |
-| `merge_chunks.py` / `merge_n20_chunks.py` | Merge evaluation chunks → unified `results.csv` + `summary.json` (Wilson CI). |
-| `append_rand_object_to_ep0.py` | Re-render episode-0 plots overlaying extra experimental runs. |
-| `lock_clutter_bins.py` | Bin eval houses into low/medium/high clutter from planner data (stable stratification). |
-| `build_mug_random_everything_videos.py` | First/last-frame summary MP4s of a dataset (+ optional W&B). |
-
-### Training launchers & orchestration
-| File | What it does |
-|---|---|
-| `train_houses13_seeds.sh` | Train vanilla ACT + P+ACT on house-3 across seeds {42, 1337, 2026} (`aloha` env). |
-| `launch_medium_v1.sh` | End-to-end medium-dataset train → rollout (houses 21–30) → compare. |
-| `launch_medium_ablations.sh` | Train 4 PLA/VLM ablation variants, then multi-seed eval across houses 11–20. |
-| `automation_after_epoch_sweep.sh` / `automation_after_mask_mean.sh` | Post-sweep automation: re-eval best ckpt at n=50, regenerate figures, push to W&B. |
-| `restart_epoch_sweep_wider.sh` | Kill a narrow epoch sweep and relaunch wider at higher parallelism. |
-| `watch_progress.sh` | Live progress dashboard for running experiments (subprocess count, RAM/GPU, per-condition bars). |
-
-### Evaluation, rollout & aggregation
-| File | What it does |
-|---|---|
-| `eval_act_prox_aggregate.sh` | Bash loop: N sequential P+ACT rollouts → `run_NN/` layout. |
-| `run_act_prox_mug_10x.py` | Python parallel wrapper for N P+ACT rollouts (+ CSV/summary/plot, Wilson CI). |
-| `run_act_mug_random_10x.py` | Same for vanilla ACT (`eval_act_mug_random.py`). |
-| `run_act_dup250_evals.sh` | Evaluate dup250-trained ACT checkpoints (10 rollouts each). |
-| `run_vanilla_act_n50.sh` | Re-evaluate vanilla ACT at n=50 with fresh sampling. |
-| `run_pact_mask_experiment.py` | Parallel runner for one mask / phase-mask condition (+ aggregation, plot, phase log). |
-| `run_pact_exp1_exp2_all.sh` | Master orchestrator: Exp 1 (prox masks) + Exp 2 (phase masks). |
-| `run_pact_epoch_sweep.py` | Sweep P+ACT eval across checkpoint epochs → `best_epoch.json`. |
-| `run_noise_ablation.sh` | `mask_proximity=noise` and `=shuffle` fallbacks. |
-| `aggregate_pact_eval.py` | Aggregate per-rollout logs → `summary.json` + `results.csv` (Wilson CI). |
-| `significance_pact_vs_baseline.py` | Full stats suite: two-proportion z, Fisher exact, Newcombe CI, 20k-bootstrap. |
-
-### Trajectory diagnostics & proximity-necessity ([§5.3](#53-collision-probe--the-proximity-necessity-regime))
-| File | What it does |
-|---|---|
-| `inspect_pact_trajectory.py` | Full single-trajectory diagnostic report (13 PNGs + `summary.json` + `report.md`): qpos/qvel, commanded-vs-realized actions, world-frame TCP + distance-to-object, 29-sensor proximity heatmaps + 8×8 montage, manipulation phases, reward/success, and **collision probability** (`--h5 <path> [--traj traj_0] [--out <dir>]`). |
-| `proximity_necessity.py` | Dataset-level metric & curation filter: per trajectory computes `vision_blind_frac`, `prox_active_frac`, and `necessity` (vision-blind ∧ prox-active); ranks trajectories, writes CSV/JSON/scatter, prints a verdict. Use to prove an environment is in the proximity-necessary regime and to select trajectories (`--glob '…/house_*/…h5'` or `--h5`, `--near_m`). |
-
-### Analysis & plotting
-| File | What it does |
-|---|---|
-| `sensor_usage_timeline.py` | Per-sensor activity by phase + time-normalised heatmaps + example trajectories. |
-| `sensor_success_vs_fail.py` | Per-sensor activity heatmaps for success vs fail (+ difference matrix). |
-| `joint_sensor_ranking.py` | Rank sensors by activity / attention / success-fail diff; rank-correlation matrix. |
-| `attention_vs_activity.py` | Correlate decoder attention with physical sensor activity (Pearson/Spearman). |
-| `temporal_attention_plot.py` | Attention to each sensor over normalised episode time. |
-| `failure_taxonomy.py` | Classify every failed trajectory into 5 modes; χ² baseline vs P+ACT. |
-| `phase_duration_analysis.py` / `phase_transitions.py` | Phase durations and Gantt-style entry-time distributions (success vs fail). |
-| `action_variance_per_phase.py` | Per-phase action-delta magnitude (motion commitment), success vs fail. |
-| `tcp_path_visualisation.py` | World-frame TCP paths coloured by phase (xy/xz projections). |
-| `modality_weight_comparison.py` / `plot_weight_usage.py` | Input-projection weight magnitudes per modality, per layer, per sensor. |
-| `plot_pact_vs_baseline.py` | Headline P+ACT vs ACT bars (per-run dots, Wilson CI, Fisher p, odds ratio). |
-| `plot_mask_experiments.py` | Aggregate Exp 1/2 mask conditions → bars + significance + `all_rates.json`. |
-| `plot_three_way_act_prox_comparison.py` | Vanilla vs prox-K=1 vs prox-K=6 success bars. |
-| `plot_visrand_ablation.py` | Vanilla vs P+ACT across 3 visual-randomisation conditions. |
-| `paper_figure.py` / `paper_figure_v2.py` / `paper_master_figure.py` | 3- / 6- / multi-panel composite paper figures. |
-| `sensor_characterization_figure.py` | Single comprehensive sensor-use-case figure. |
-| `visualize_mug_random_everything.py` / `visualize_skin_test_data.py` | Dataset visualisation (+ optional W&B watch mode). |
-
-### Weights & Biases push
-| File | What it does |
-|---|---|
-| `backfill_wandb_from_log.py` | Replay a training stdout log into a W&B run. |
-| `push_pact_n50_to_wandb.py` | Log the final n=50 headline numbers + full stats suite. |
-| `push_exp_aggregate_to_wandb.py` | Push Exp 1/2/3 aggregate (bars + taxonomy + rate table). |
-| `push_paper_analysis_to_wandb.py` | Push the CoRL paper analysis (4 conditions, figures, markdown). |
-| `push_taxonomy_to_wandb.py` | Push failure taxonomy (χ², counts, per-trajectory table). |
-| `push_visrand_ablation_summary.py` | Push the visual-randomisation ablation matrix. |
-
----
-
-## 14. The `submodules/act` modifications
-
-ACT (Action Chunking Transformer) is a CVAE + DETR-style transformer that
-predicts action *chunks*. Four files received small, **backwards-compatible**
-additions, all gated behind `n_proximity_sensors=0` (default) so vanilla ACT is
-bit-identical when proximity is off:
-
-| File | Edit |
-|---|---|
-| `detr/models/detr_vae.py` | Adds `input_proj_proximity = Linear(3, hidden_dim)` and extends `additional_pos_embed` to `(2 + n_proximity_sensors·K, hidden_dim)`; `forward` accepts `proximity_positions` and raises if it's `None` when sensors are enabled. |
-| `detr/models/transformer.py` | `forward` accepts `proximity_input`; concatenates the prox tokens after `[latent, proprio]` and before image tokens. |
-| `policy.py` | `ACTPolicy.__call__` threads `proximity_positions` through to the DETRVAE. |
-| `detr/main.py` | Declares `--n_proximity_sensors`, `--prox_tokens_per_sensor` (+ trainer flags) so the nested argparse accepts them. |
-
-ACT rollout entry points (used by the eval wrappers; run with
-`PYTHONPATH=$PWD:… MUJOCO_GL=egl`):
-
-| Script | Evaluates |
-|---|---|
-| `eval_act_mug_random.py` | Randomised house-1 mug pickup (matches training distribution). |
-| `eval_act_house1.py` | Standard single-house mug pickup. |
-| `eval_act_house1_dup250.py` | dup250 dataset with all randomisation disabled (deterministic). |
-| `eval_act_house10_cup.py` | House-10 cup pickup (different house/object). |
-| `eval_act_with_prox.py` | ACT + an optional `ProximityResidualHead` action-correction. |
-
-Upstream files: `imitate_episodes.py` (vanilla trainer), `policy.py`,
-`utils.py` (data loading), `constants.py` (task/robot constants, `DT`).
-
----
-
-## 15. Top-level output directories
-
-Most are **gitignored** (`.gitignore` excludes `assets/**`, `runs/**`,
-`wandb/**`, `logs/**`, `act_style_data/**`, `eval_output/**`).
-
-| Directory | Contents |
-|---|---|
-| `assets/` | Robot MJCF (incl. `franka_skin`), scenes, objects, benchmarks, `eval_subsets/`, grasps, reference renders. Has its own `assets/README.md`. |
-| `franka_assets/fr3_skin/` | FR3 + skin meshes (STL/OBJ) + MJCF used at compile time. |
-| `analysis_output/` | Plots/stats from eval runs (`eval_medium_v1`, `rollout_compare_v1`, `per_house_corr`, `training_data_diagnostics`, …). |
-| `diagnostics_output/` | Proximity audits, smoke diagnostics, `act_inference_probe.py`. |
-| `synthetic_verify/` | Empty-room / flat-plane GT verification artifacts + `summary.md`. |
-| `pact/outputs_prox/` | Encoder caches (`cache_*.npz`), checkpoints (`runs/`, `runs_smoke/`), `train_v1.log`. |
-| `logs/` | Timestamped datagen/training/eval/rollout logs. |
-| `wandb/` | Local W&B run directories. |
-| `pointcloud.ipynb` | Interactive proximity point-cloud reconstruction notebook. |
-
----
-
-## 16. Conventions, gotchas & troubleshooting
-
-- **Two interpreters.** Use `/opt/conda/envs/mlspaces/bin/python` for everything
-  in `pact/`, `scripts/`, and MolmoSpaces datagen/eval. The `aloha` env is only
-  for the original ACT scripts / a couple of baselines.
-- **Headless rendering.** Export `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl` for any
-  sim run on a server. `eval_act_with_prox_encoder.py` sets it itself.
-- **`PYTHONPATH`.** Run MolmoSpaces from inside `submodules/molmospaces` with
-  `PYTHONPATH=.` so the in-tree copy wins over any stale site-packages install.
-  Attention/eval scripts that import ACT need `PYTHONPATH=submodules/act:.`.
-- **`proximity_sensor_period_ms` must be 16.6667**, never 0 (0 silently disables
-  proximity recording — see [§5.1](#51-the-franka_skin-datagen-configs)).
-- **Proximity is decorative unless vision fails.** The task sampler's
-  `check_robot_placement_visibility=True` guarantees the camera sees the target, so
-  the proximity-necessity metric is 0 on the default/`PACT` data. Use
-  `FrankaSkinProxNecessityPilotConfig` + curation to get a useful regime
-  ([§5.3](#53-collision-probe--the-proximity-necessity-regime)).
-- **`disable_collision_checks`** (default `False`; `True` on `PACT`) only bypasses the
-  task-sampler placement rejection — MuJoCo contact detection stays on, and the
-  per-episode collision metric is written to `obs_scene["collision_metrics"]`.
-- **Worker memory.** Each datagen worker spawns a ~6–7 GB MuJoCo sim; keep
-  `num_workers` at 2–4 on a 64 GB box. Single-house configs require
-  `num_workers=1` (parallelise with the `run_*_parallel.py` wrappers instead).
-- **Eval noise.** MolmoSpaces draws a fresh task per process, so re-running a
-  10-rollout eval gives different absolute counts. Read the Wilson 95 % CIs and
-  the significance tests, not point estimates.
-- **The frozen encoder is OOD post-grasp** (trained only on `held == False`).
-  v1 feeds post-grasp frames through unchanged and lets ACT discount them via
-  attention; the masking ablations ([§11.1](#111-proximity-masking-ablations-is-act-using-the-prox-tokens))
-  quantify the effect.
-
----
-
-*For the model design, the full results, the attention/ablation evidence, and the
-scientific argument for why P+ACT works, read **[`pact/README.md`](pact/README.md)**.
-Per-project memory lives under
-`.claude/projects/-home-jaydv-code-prox-learning/memory/`.*
-
-
----
-
-# FR3 Hybrid Proximity Skin
-
-Franka FR3 + Robotiq with the **gentact hybrid skin**: 40 SPAD proximity sensors (8×8 depth,
-45° FOV, 1.5–50 cm range) tiled on links 1–6. RGB is blurred at policy-training time, so this
-skin is the robot's contact-range perception.
-
-## Models
-| file | what |
-|---|---|
-| `assets/robots/franka_skin/model_hybrid.xml` | **functional** model — 40 working 8×8 depth cameras |
-| `assets/robots/franka_skin/model_photoshoot.xml` | **visual** model — 40 SPAD markers at the URDF poses (paper figures) |
-| `assets/robots/franka_skin/model.xml` | original 29-sensor skin (unchanged) |
-| `assets/urdf/fr3_hybrid_skin.urdf` | source URDF (gentact) |
-
-Built from the proven `model.xml` (real FR3 meshes + Robotiq), swapping the old skin for the
-hybrid dermis + sensors. Scripts: `build_hybrid_on_franka_skin.py`, `build_photoshoot_skin.py`.
-
-## Sensors (40)
-link1:7, link2:7, link3:5, link4:5, link5_front:4, link5_back:6, link6:6.
-- **Aim:** radial out of each arm-link axis (outward + surface-perpendicular); a few cramped
-  sensors are raycast-repaired. URDF `<axis>` and dermis mesh normals are unreliable (wrong
-  winding) — do not use them. Cameras sit 9 mm proud of the skin so they clear the dermis shell.
-- **Near-field fix:** MuJoCo depth clip = `vis.map.znear × stat.extent`; with a big scene this
-  silently erased every return < ~10 cm. Pinned `znear=0.0002` (clip ~2 mm). Same render path is
-  used by datagen (`renderer/opengl_rendering.py`), so this matters for collected data too.
-
-## Verification (`scripts/verify_hybrid_skin_sensors.py`)
 | check | result |
 |---|---|
 | not buried in own arm (3 poses) | **40/40** |
 | outward-facing | **40/40** |
-| plate @ 0.15 m reads 0.145±0.012 m | **38/40** (2 link5-front legitimately see the wrist link) |
-| range linearity | slope **1.0**, R² **0.9999999**, error sub-µm |
+| plate @ 0.15 m reads 0.145 ± 0.012 m | 38/40 (2 link5-front legitimately see the wrist) |
+| range linearity | slope 1.0, R² 0.9999999, sub-µm error |
 | back-projected cloud vs ground truth | **~4 mm** median |
 
-## Reconstruction (back-project all 40 sensors → point cloud vs every real surface)
-| scene | active | RMS | within 1 cm | script |
+Back-project all sensors → point cloud, compare to every real surface:
+
+| scene | active | RMS | within 1 cm |
+|---|---|---|---|
+| primitives (box+sphere+cyl+corner) | – | **4.0 mm** | 95% |
+| open clutter (3 obj + table) | 14/40 | 4.7 mm | 91% |
+| fumehood (1 frame) | 22/40 | 4.7 mm | 91% |
+| fumehood, accumulated (14 poses) | – | 5.0 mm | 93% (10366 pts) |
+
+<table>
+<tr>
+<td><img src="diagnostics_output/20260611_hybrid_skin_REPORT/04_verification.png" width="100%"></td>
+<td><img src="diagnostics_output/20260611_hybrid_fumehood_reconstruct/fumehood_reconstruction.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Back-projected SPAD returns vs ground truth + 40-sensor gallery.</em></td>
+<td align="center"><em>Reconstructing fumehood interior: single frame + accumulated cloud.</em></td>
+</tr>
+</table>
+
+Every return lands on a real surface to millimetre accuracy → sensors are in the right place **and**
+looking at the right thing.
+
+### Fumehood reach variations
+
+`diagnostics_output/20260611_fumehood_variations/` — 6 hood geometries × verified deep-insertion
+motions (FK-checked hand depth, per-frame skin cloud + clearance telemetry):
+
+| variant | interior (W×H×D, sash) | insertion (hand / TCP) | active @ deep | min clearance |
 |---|---|---|---|---|
-| primitives (box+sphere+cyl+corner) | – | 4.0 mm | 95% | `test_and_reconstruct_hybrid.py` |
-| open clutter (3 obj + table) | 14/40 | 4.7 mm | 91% | `test_and_reconstruct_hybrid.py` |
-| clutter, accumulated (14 poses) | – | – | 4200 pts | `test_and_reconstruct_hybrid.py` |
-| **fumehood** (1 frame) | 22/40 | 4.7 mm | 91% | `test_reconstruct_fumehood.py` |
-| **fumehood**, accumulated (14 poses) | – | 5.0 mm | 93% (10366 pts) | `test_reconstruct_fumehood.py` |
+| standard | 64×46×55, 30 cm | 31.6 cm (57% D) | 28/40 | 3.4 cm |
+| tall | 68×85×55, 55 cm | 35 cm + high sweep | 29/40 | 3.5 cm |
+| short low-sash | 68×34×50, **17 cm** | 29.3 cm hand / 44.8 cm TCP | 26/40 | **0.3 cm** |
+| narrow | **32**×50×55, 32 cm | 33.5 cm | 25/40 | 0.4 cm |
+| wide big | 110×65×70, 45 cm | 39 cm + lateral ±24 cm | 31/40 | 0.5 cm |
+| deep tunnel | 52×42×**95**, 28 cm | 38 cm hand / **52.6 cm TCP** | 26/40 | 0.9 cm |
 
-Every back-projected return lands on a real surface to **millimetre** accuracy → sensors are in
-the right place **and** looking at the right thing.
+![Fumehood standard reach with skin telemetry](diagnostics_output/20260611_fumehood_variations/hood_standard.png)
 
-## Datagen wiring (40 sensors flow end-to-end, verified)
-- `FrankaSkinHybridRobotConfig` (→ `model_hybrid.xml`), `FrankaSkinHybridCameraSystem` (40 cams),
-  `FrankaSkinHybridFumehoodSmokeConfig`.
-- Run: `python -m molmo_spaces.data_generation.main FrankaSkinHybridFumehoodSmokeConfig`
-- Skin geoms set to **group 2** (env hides them in proximity render).
-- Fixed `save_utils.py` regex that was dropping the `link5_front/back` sensors (saved 30/40 → now
-  **40/40** proximity keys in the h5).
-- Not yet done: house-embedded hybrid (set `znear` in the mixin), full-scale collection, probe
-  re-tuning for 40-sensor stats.
+*Deep-tunnel's 60 cm hand target is beyond the FR3's 855 mm reach; 52.6 cm TCP is the physical
+ceiling with the elbow on the bench lip. All motions are collision-checked.*
 
-### Fumehood variations (advisor: "variate it a lot... motions that need the robot to get in more")
-`diagnostics_output/20260611_fumehood_variations/` — 6 hood geometries x verified deep-insertion motions
-(FK-checked hand depth, per-frame skin cloud + clearance telemetry):
+### Build / verify / render the skin
 
-| variant | interior (WxHxD, sash) | insertion (hand / TCP) | active sensors @ deep | min clearance |
-|---|---|---|---|---|
-| standard | 64x46x55, 30cm | 31.6cm (57% D) | 28/40 | 3.4cm |
-| tall | 68x85x55, 55cm | 35cm + high-interior sweep | 29/40 | 3.5cm |
-| short low-sash | 68x34x50, **17cm** | 29.3cm hand / 44.8cm TCP | 26/40 | **0.3cm** (ducks flat) |
-| narrow | **32**x50x55, 32cm | 33.5cm | 25/40 | 0.4cm lateral |
-| wide big | 110x65x70, 45cm | 39cm + lateral sweep +-24cm | 31/40 | 0.5cm |
-| deep tunnel | 52x42x**95**, 28cm | 38cm hand / **52.6cm TCP** (whole forearm inside) | 26/40 | 0.9cm |
-
-Note: deep-tunnel 60cm hand target is beyond the FR3's 855mm reach envelope — 52.6cm TCP is the
-physical ceiling with the elbow resting on the bench lip. All motions collision-checked.
-
-### Foxglove fumehood tour
-One playable trajectory chaining all 6 hood variants (22.7s, 190 frames): 3D robot + per-chapter
-hood + live 40-sensor skin cloud, exo RGB, sensor-tile mosaic, insertion-depth & skin plots,
-chapter log. Build: `python scripts/foxglove_fumehood_tour.py` -> `diagnostics_output/20260611_fumehood_tour/fumehood_tour.mcap`
-(open at app.foxglove.dev, import `scripts/foxglove_unified_layout.json`).
-
-## Photoshoot (`scripts/photoshoot_sweep.py`)
-`diagnostics_output/20260611_skin_photoshoot/`: hero, sensor close-up, 360° turntable (sheet +
-mp4), pose sweep. Studio lighting, dark background; uses `model_photoshoot.xml`.
-
-## Reproduce
-```
-# build
-python scripts/build_hybrid_on_franka_skin.py        # functional model
-python scripts/build_photoshoot_skin.py              # visual model
-# verify + reconstruct
+```bash
+python scripts/build_hybrid_on_franka_skin.py        # functional 40-sensor model
+python scripts/build_photoshoot_skin.py              # visual model for figures
 python scripts/verify_hybrid_skin_sensors.py
 python scripts/test_and_reconstruct_hybrid.py
 python scripts/test_reconstruct_fumehood.py
-# render
 python scripts/render_hybrid_skin_viz.py             # 3D + exo + wrist + 40 tiles
 python scripts/photoshoot_sweep.py                   # paper turntable
+python scripts/foxglove_fumehood_tour.py             # 6-hood Foxglove tour (22.7 s, 190 frames)
 ```
-All renders need EGL (handled in-script via the default-display patch).
-Outputs land in `diagnostics_output/2026*`. wandb gallery: `jayluvsgeography/prox-skin-dataset`.
+
+All renders need EGL (handled in-script via the default-display patch). Open `.mcap` outputs at
+[app.foxglove.dev](https://app.foxglove.dev) and import `scripts/foxglove_unified_layout.json`.
+
+### Per-sensor MJCF construction
+
+Each sensor is a body posed just above the collision mesh with two children: a
+`<site class="skin_sensor_site">` marker (red sphere, group 2) and a
+`<camera mode="fixed" pos="0 0 0" quat="0 0 1 0" fovy="45.0" resolution="8 8"/>`. Skin geoms are
+`class="skin" group=2 contype=0 conaffinity=0 mass=0` (visual only — no collision, no inertia).
+Sensor poses were imported from the original Isaac Sim USD placements. The camera quaternion is
+`0 0 1 0` (180° about local Y): this keeps the view direction (+Z out of the body) while giving the
+correct, right-side-up ToF image convention — an earlier `0 1 0 0` flipped the image vertically.
+
+---
+
+## 5. System A — P+ACT (proximity-conditioned ACT)
+
+### Architecture & data flow
+
+```
+29 ToF sensors, 8×8 depth @ 60 Hz
+   └─ trailing window W = 8 control steps × 4 substeps → (B, 29, 32, 8, 8)
+        └─ FROZEN proximity encoder (~0.82 M params)  →  (B, 29, 3)   predicted object pos
+             per sensor's local frame
+                  └─ Linear(3 → hidden) → 29 extra tokens inserted into ACT encoder memory:
+                       [ latent(1) | proprio(1) | prox(29) | image(160) ] = 191 tokens
+                            └─ DETR decoder, 100 action queries → 8-D action chunk
+```
+
+Vanilla ACT is the same minus the 29 prox tokens (memory = 162). Image tokens are 160 (8×20 from two
+480×640 RGB cameras via ResNet-18). The proximity branch adds only **~22 k** parameters and is
+**gated behind `n_proximity_sensors = 0`**, so vanilla ACT stays bit-identical to upstream.
+
+**Why predict 3-D position (not raw depth) and freeze it?** The position is interpretable (plot vs
+ground truth), low-dimensional (29×3 = 87 numbers, minimal arch change), and matches the encoder's
+exact training objective so ACT doesn't re-learn a readout. Freezing is safer (can't degrade a
+validated encoder), faster (no backprop), and reversible — the trainer asserts
+`requires_grad == False` on every encoder param at each step.
+
+**The four ACT edits** (`submodules/act`, all gated on `n_proximity_sensors = 0`):
+`detr_vae.py` adds `input_proj_proximity = Linear(3, hidden)` and extends `additional_pos_embed`;
+`transformer.py` concatenates the proximity input after `[latent, proprio]`; `policy.py` threads
+`proximity_positions`; `detr/main.py` declares the new flags.
+
+### Results
+
+| | Vanilla ACT | P+ACT |
+|---|---|---|
+| Success (n=10) | 4/10 = **40%** | 8/10 = **80%** |
+| Wilson 95% CI | 16.8–68.7% | 49.0–94.3% |
+| Train epochs / best val loss | 5000 / 0.022 | 2000 / 0.086 |
+| Per-rollout | 1,0,0,0,0,1,1,1,0,0 | 1,1,1,1,1,1,1,0,1,0 |
+
++40 pp at **2.5× less** training compute (despite higher val loss → the gain is better-conditioned
+input, not more compute). Fisher one-sided p = 0.085, Barnard p = 0.057, odds ratio 6.0; a prior
+independent rerun gave 9/10 (Fisher p = 0.029).
+
+**Proximity encoder accuracy** (held-out trajectories): **2.0 cm mean / 1.4 cm median** Euclidean,
+per-axis 0.84 / 1.02 / 1.16 cm; per-sensor range 1.25 cm (link2_sensor_6) to 4.80 cm (link5_sensor_3).
+
+<table>
+<tr>
+<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/euclidean_hist.png" width="100%"></td>
+<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/per_sensor_mae.png" width="100%"></td>
+<td><img src="analysis_output/eval_quick_v1/contact_events_total.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Encoder Euclidean error (mean 2.0 cm).</em></td>
+<td align="center"><em>Per-sensor MAE across the skin.</em></td>
+<td align="center"><em>Contact events per episode by clutter bin.</em></td>
+</tr>
+</table>
+
+**Does the policy actually use the skin?** Yes. From 160 batched forward passes capturing the
+`(B, 100, 191)` decoder cross-attention across 7 layers: prox tokens take **21.7%** of attention mass
+on only **15.2%** of the token budget. Per-token, prox = 0.00748 (1.43× uniform) vs image = 0.00481
+(0.92×) → **1.55× more per token than image**. All 29 sensors are above uniform; the top-5 includes 3
+wrist (link6) sensors as physically expected; per-link spread is only ~6%. Attention is spread across
+all 7 layers (no single "proximity layer"), with a mild mid-rollout bump at episode fraction ~0.56.
+
+![Per-layer per-sensor attention](pact/analysis/attention_outputs/per_layer_per_sensor_heatmap.png)
+
+**Alternatives ruled out.** More params (+22 k = 0.03%, no). Seed luck (two reruns 8/10 and 9/10,
+both seed 0, largely no). Encoder as mere regulariser (1.55× per-token attention says it's actively
+read, no). Under-trained vision (baseline had 2.5× more training and still lost). Future-leakage
+(window `[t-W+1, t]` is strictly causal). 
+
+**Limitations / not yet claimed.** n = 10 is small (p straddles 0.05; n = 30 would stabilise). All
+evals are house-1-only (no cross-house). Single object class (mug). The frozen encoder is **OOD
+post-grasp** (trained only on `held == False` frames) and is fed unchanged in v1 — ACT discounts it
+via attention, but a learned per-sensor "is-valid" gate is the proposed fix. MolmoSpaces draws a
+fresh task per process, so 10-rollout counts wiggle ±10 pp — read Wilson CIs, not point estimates.
+
+### Reproduce P+ACT end-to-end
+
+`$PY = /opt/conda/envs/mlspaces/bin/python`, run from the repo root with EGL exported.
+
+```bash
+PY=/opt/conda/envs/mlspaces/bin/python
+
+# A. Collect demonstrations (see §7 for configs). Main P+ACT dataset = house-1 mug ×250.
+cd submodules/molmospaces
+PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl $PY \
+  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlacePilotSmokeConfig \
+  2>&1 | tee ../../logs/datagen_smoke.log
+cd ../..
+
+# B. Verify the proximity stream
+$PY scripts/datagen/verify_proximity_gt.py <H5> --t 10
+$PY scripts/datagen/visualize_proximity.py <H5> --traj traj_0
+
+# C. Convert to ACT per-episode format → act_style_data/<set>/
+$PY scripts/convert_mug_random_to_act.py --dst act_style_data/mug_house1_random_everything \
+  --image_h 240 --image_w 320 --resume
+
+# D. Train the proximity encoder (~30 min on a 4090), then evaluate
+$PY pact/scripts/build_cache.py \
+  --data_glob 'assets/datagen/mug_house_1_random_everything/**/trajectories_batch_*.h5' \
+  --out pact/outputs_prox/cache_full.npz --window 8 --keep_every 1
+$PY pact/scripts/train.py --cache pact/outputs_prox/cache_full.npz \
+  --out_dir pact/outputs_prox/runs --run_name prox_encoder_v1 --steps 10000 --batch_size 256
+$PY pact/scripts/evaluate.py \
+  --checkpoint pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt --split val
+
+# E. Map ACT episodes → source h5 (qpos signature; one-time per dataset)
+$PY -m pact.act_prox.build_mapping --act_dataset_dir act_style_data/mug_house1_random_everything
+
+# F. Train both arms with matched hyperparameters
+#    baseline (no prox)
+$PY -m pact.act_prox.imitate_episodes_with_prox --task_name pla_house1_mug_random \
+  --policy_class ACT --ckpt_dir runs/act_mug_v1_baseline --batch_size 8 --num_epochs 5000 \
+  --lr 1e-4 --seed 0 --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200
+#    P+ACT (frozen encoder ON)
+$PY -m pact.act_prox.imitate_episodes_with_prox --task_name pla_house1_mug_random \
+  --policy_class ACT --ckpt_dir runs/act_prox_mug_v1 --batch_size 8 --num_epochs 2000 \
+  --lr 1e-4 --seed 0 --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200 \
+  --use_proximity --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
+  --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json
+
+# G. Rollout eval (fresh sim process per rollout) + significance
+CKPT_DIR=runs/act_prox_mug_v1 \
+  PROX_ENC=pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
+  PROX_MAP=act_style_data/mug_house1_random_everything/prox_mapping.json \
+  N_ROLLOUTS=10 bash scripts/eval_act_prox_aggregate.sh
+$PY scripts/run_act_mug_random_10x.py --n_runs 10 \
+  --output_dir eval_output/act_house1_mug_random_v1_aggregate
+$PY scripts/significance_pact_vs_baseline.py \
+  --baseline_root eval_output/act_house1_mug_random_v1_aggregate \
+  --pact_root eval_output/act_prox_mug_v1_aggregate
+
+# H. Attention analysis (4 PNGs + raw_stats.json)
+PYTHONPATH="submodules/act:.:${PYTHONPATH:-}" $PY pact/analysis/visualize_prox_attention.py \
+  --ckpt_dir runs/act_prox_mug_v1 \
+  --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
+  --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json \
+  --dataset_dir act_style_data/mug_house1_random_everything \
+  --out_dir pact/analysis/attention_outputs --n_batches 20
+```
+
+**Masking ablations** (is ACT *causally* using the prox tokens?):
+`--mask_proximity {none,zero,mean,noise,shuffle}` and `--mask_phase {approach,pregrasp,grasp_lift,
+transit,place}`. Precompute the mean baseline with `pact/act_prox/precompute_prox_mean.py`; run one
+condition with `scripts/run_pact_mask_experiment.py`; run the full grid with
+`scripts/run_pact_exp1_exp2_all.sh`.
+
+> **Why a custom rollout instead of the cached JsonBenchmark?** The benchmark `CameraSpec` schema
+> (`molmo_spaces/evaluation/benchmark_schema.py:58-83`) has no per-camera resolution and no
+> `is_proximity_sensor` flag — a single global `img_resolution` makes all 31 cameras render RGB, so a
+> SPAD sensor comes back `(352,624,3)` instead of `(8,8)` and broadcasting fails. The custom rollout
+> in `pact/` bypasses this; extending the schema upstream is the alternative.
+
+---
+
+## 6. System B — Reactive Proximity Safety (Safety-CVAE)
+
+A reactive collision-avoidance layer built on the **40-sensor** hybrid skin. It turns the raw skin
+reading into a joint-space retreat with **no scene geometry or object poses at runtime**, and adds as
+a smooth residual on any nominal trajectory — the arm bows around an obstacle and rejoins ("deviate
+and rejoin").
+
+```
+datagen run (real arm postures)
+ └─ safety_sweep.py        synthesize near-contact samples + analytic labels   → sweep_*.h5
+     └─ train_safety_cvae.py   distill the head (proximity → 7-DoF retreat)     → cvae_*/
+         └─ safety_*_demo.py   residual avoidance on a trajectory               → *.mcap + *.mp4
+
+analyze_obstacle_dataset.py    validate the hybrid_obstacle_v1 ACT dataset (independent chain)
+```
+
+### The obstacle dataset (`hybrid_obstacle_v1`)
+
+Single-env red-cup pick with 0–2 orange hazard bars standing in the fumehood. 2 timestamped runs,
+7 house-files, 906 camera MP4s, 1.2 GB. Validated by `scripts/analyze_obstacle_dataset.py`.
+
+| check | result |
+|---|---|
+| episodes | **151** (2 runs × 7 house-files) |
+| task success | **122 / 151 = 80.8%** (train ACT on these 122) |
+| single object | yes — 1 `target_uid` (red cup) |
+| bar present | 74.8% (113 bar / 38 no-bar) |
+| behavior split | 49 deflect / 102 free (deflect = 43.4% of bar eps) |
+| avoidance bow (lateral TCP) | **deflect 38 mm** vs no-bar 6 mm vs bar-free 5 mm (~6–7×) |
+| do bars hurt success? | **no** — no-bar 76.3% succ < bar 82.3% succ |
+| approach proximity | min depth ≈ 20 mm; close-return in 85.8% of bar eps vs 73.7% no-bar |
+| integrity | 40 sensors consistent, dead-pixel frac 6.6e-5, 0 empty episodes, len 53–167 |
+
+<table>
+<tr>
+<td><img src="diagnostics_output/obstacle_analysis/02_min_approach_depth_by_group.png" width="100%"></td>
+<td><img src="diagnostics_output/obstacle_analysis/03_tcp_paths_by_group.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Min skin-to-obstacle depth by group vs the 0.1 m threshold.</em></td>
+<td align="center"><em>Top-down TCP paths: bar-deflect bows around, no-bar goes straight.</em></td>
+</tr>
+</table>
+
+*Assessment (a read of the metrics — `summary.json` has no PASS/FAIL field): usable for ACT. Bars
+produce a strong, clean avoidance signal without degrading success; failures concentrate in the
+no-bar group, so the bars are not the failure driver.*
+
+### Synthetic training data (`safety_sweep.py`)
+
+Builds the fumehood as 14 analytic box geoms + mocap sash/jambs + 3 hazard-bar sizes, with the
+`model_hybrid.xml` FR3 at z = 0.35 m. It replays real arm postures sampled from datagen and, per
+sample, stands 1–2 bars (80% of samples) on the bench along a random sensor's view ray at 5–25 cm to
+fill the 3–15 cm depth band.
+
+- **Render:** dedicated `mujoco.Renderer(model, 8, 8)`, `enable_depth_rendering()`, FOVY 45°
+  (f ≈ 9.66, cx = cy = 3.5), skybox off, `geomgroup[2] = 0`.
+- **Label** (whole-arm analytic potential field, *unscaled*): for each sensor whose nearest env hit
+  is closer than `D_ACT = 0.18 m`, `dq += Jₚᵀ · unit(sensor − hit) · (1/d − 1/D_ACT)`, summed and
+  projected onto the 7 arm DoFs. A back-projected hit must lie within `HIT_TOL = 0.025 m` of a scene
+  surface, else it is a **self-hit** (arm seeing itself) — excluded from the label but **kept in the
+  input** so the head learns to cope with it.
+- **Stores** one h5: `prox (N,40,8,8) f16` raw depths + `label_dq (N,7) f32` + `qpos/grip/base_pose/
+  min_depth/bar_*`.
+
+### The head (`train_safety_cvae.py`)
+
+Maps the 40×8×8 skin to a 7-DoF joint retreat; runtime needs only raw skin.
+
+- **Featurize:** closeness `c = clip(1 − d/D_MAX, 0, 1)` with `D_MAX = 0.5 m`, zero pixels
+  `d < 0.005`, flatten 40×8×8 → **2560**. Labels scaled to unit RMS (`label_scale` stored,
+  re-multiplied at inference).
+- **CVAE:** encoder `Linear(2560+7 → 512 → 256 → 2·8)`, decoder `Linear(2560+8 → 512 → 256 → 7)`,
+  SiLU. Loss = MSE-recon + β·KL (β = 1e-2, warmed over 10 epochs), AdamW lr 1e-3 cosine, 60 epochs,
+  batch 512, checkpoint on best val MSE.
+- **Inference:** `SafetyHead.load(dir)(prox)` → deterministic decode at **z = 0** × `label_scale` →
+  `(7,)` joint delta.
+
+| head | data | val_mse ↓ | close_cos ↑ | far_quiet ↓ | label_scale |
+|---|---|---|---|---|---|
+| `cvae_v1` | `sweep_v1.h5` | **0.0111** | **0.891** | **0.0326** | 16.74 |
+| `cvae_v2` | `sweep_v2.h5` (obstacle-aware) | 0.0146 | 0.865 | 0.0360 | 14.68 |
+
+- **close_cos** — cosine between predicted retreat and the analytic label on *close* samples
+  (`min_depth < 0.12 m`): does it push the right way? 1.0 ideal.
+- **far_quiet** — L2 of the prediction on *far* samples (`min_depth > 0.25 m`): silent when clear?
+  0 ideal.
+- **val_mse** — recon MSE on the held-out split (scaled label space).
+
+`v1` edges `v2` on all three held-out metrics (differences small); `v2` is the demo default,
+trained on the obstacle-aware sweep.
+
+### Demos
+
+All default to `--ckpt cvae_v2`, render 960×540 @ 30 fps, and log a Foxglove `.mcap` plus an MP4.
+
+| demo | shows | duration | reaction law | video |
+|---|---|---|---|---|
+| `safety_flinch_demo.py` | bar marches down a forearm-sensor axis; arm flinches, relaxes | bar schedule | spring-return single pose: `q += (gain·dq − spring·(q−q0))·dt` | mp4v |
+| `safety_react_demo.py` | bars on a planned trajectory; arm bulges around each, rejoins | `--traj-secs 10` | leaky integrator: `corr += (gain·dq − decay·corr)·dt` | mp4v |
+| `safety_moving_demo.py` | 1 bar patrols the whole arm wrist→shoulder; per-link skin lights up | `--secs 18` | leaky integrator | H.264 |
+| `safety_orbit_demo.py` | 1 bar circles the forearm; the lean rotates with the orbit | `--secs 14` | leaky integrator | H.264 |
+
+Defaults — flinch `gain 4.5 / spring 1.5 / max-dev 0.35`; react `gain 4.0 / decay 2.2 / ema 0.75 /
+max-dev 0.35 / standoff 0.10`; moving `gain 3.0 / decay 2.2 / ema 0.7 / max-dev 0.30 / standoff
+0.14`; orbit `gain 3.5 / decay 2.2 / ema 0.75 / max-dev 0.30 / radius 0.18`. All demos do a per-frame
+double render (bars placed, then parked) and subtract the parked baseline, so the head reacts only to
+the obstacle's marginal push. Hood/walls are retagged to geom group 3 — hidden in the RGB video but
+kept in the depth render so the head still sees the full scene.
+
+### Reproduce the Safety-CVAE
+
+```bash
+ENV="OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl"
+PY=/opt/conda/envs/mlspaces/bin/python
+
+# validate the obstacle dataset (no EGL needed)
+$PY scripts/analyze_obstacle_dataset.py --root assets/datagen/hybrid_obstacle_v1
+
+# synthesize near-contact training data from real postures (EGL)
+env $ENV $PY scripts/safety_sweep.py \
+  --runs assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855 \
+  --n 15000 --out assets/safety/sweep_v2.h5
+
+# distill the head (CUDA, no EGL)
+$PY scripts/train_safety_cvae.py --data assets/safety/sweep_v2.h5 --out assets/safety/cvae_v2
+
+# demos (EGL) — each writes assets/safety/<name>_demo.{mcap,mp4}
+env $ENV $PY scripts/safety_flinch_demo.py --ckpt assets/safety/cvae_v2
+env $ENV $PY scripts/safety_react_demo.py  --ckpt assets/safety/cvae_v2 --mode sweep
+env $ENV $PY scripts/safety_moving_demo.py --ckpt assets/safety/cvae_v2
+env $ENV $PY scripts/safety_orbit_demo.py  --ckpt assets/safety/cvae_v2
+```
+
+**Gotchas.** `flinch` & `react` write raw **mp4v** (stutters in some players); `moving` & `orbit`
+re-encode to **H.264** via ffmpeg. `min_depth` in the demos is self-dominated (the arm sees its own
+gripper at 1–4 cm) — not a bar-collision metric. link1 (base) sensors face the mount and never see
+workspace obstacles. Three distances are intentionally different: `D_ACT = 0.18 m` (label activation)
+≠ `D_MAX = 0.5 m` (input closeness norm) ≠ `0.12 / 0.25 m` (close/far metric thresholds).
+
+**Artifacts.** `assets/datagen/hybrid_obstacle_v1/` (1.2 G); `assets/safety/` holds `sweep_v1.h5`
+(55 M), `sweep_v2.h5` (56 M), `cvae_v1/` + `cvae_v2/` (12 M each), and `flinch/react/moving/orbit_demo.
+{mcap,mp4}`. Submodule edits (unstaged): `molmo_spaces/tasks/enclosure_reach.py` (+164) and
+`object_manipulation_datagen_configs.py` (`FrankaSkinHybridObstacleConfig`, +75).
+
+**Next.** The head is policy-agnostic. To deploy on a learned policy, wrap the ACT action output with
+the same leaky-integrator residual the demos use (`corr += (gain·head(prox) − decay·corr)·dt`,
+clamped to `max-dev`) so the arm avoids obstacles the policy was never trained on, then rejoins.
+
+---
+
+## 7. Data generation: configs, collision probe, enclosure design
+
+Demonstrations are produced by a scripted privileged planner using the `franka_skin` robot +
+`FrankaSkinCameraSystem` (2 RGB cameras + the proximity sensors). Canonical launch:
+
+```bash
+cd submodules/molmospaces
+PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+  /opt/conda/envs/mlspaces/bin/python -m molmo_spaces.data_generation.main <ConfigName>
+```
+
+Parallel single-house and the new hybrid/obstacle/cavity configs are launched the same way (swap
+`<ConfigName>`). Throughput probe: `scripts/_bench_one_house_mug.py`.
+
+> **Critical:** `proximity_sensor_period_ms` must be **16.6667** (60 Hz, 4 substeps/policy step).
+> Setting it to 0 silently disables proximity recording (the substep dimension collapses to 1 and
+> reads zero). Within a step, `record_proximity_depths()` appends one 8×8 frame per sensor per
+> substep; `reset_proximity_depth_buffer()` clears at step start.
+
+### Making proximity *necessary*
+
+Default pick-and-place is a poor showcase: `check_robot_placement_visibility = True` means vision
+never fails (`vision_blind_frac ≈ 0`), so the skin is decorative. Two levers:
+
+1. `disable_collision_checks` (True on the PACT collision-probe config) bypasses placement rejection
+   and records `collision_metrics` into `obs_scene` — over-generate, then curate.
+2. `FrankaSkinProxNecessityPilotConfig` drops the visibility guarantee, targets low surfaces, and
+   adds heavy clutter (`num_added_pickups = 60`). Curate with:
+
+```bash
+$PY scripts/proximity_necessity.py \
+  --glob 'assets/datagen/pick_and_place_skin_prox_necessity_pilot_v1/**/house_*/trajectories_batch_*.h5' \
+  --near_m 0.15 --out diagnostics_output/prox_necessity_pilot
+```
+
+`samples_per_house` is a **ceiling, not a quota** — the candidate pool drains on supporting-geom
+failure, placement error, ≥2 grasp failures, etc., so uneven per-house yield is data distribution,
+not a bug. (`max_allowed_sequential_irrecoverable_failures` is raised to 10000 on skin configs; the
+default of 5 was killing workers after a few productive houses.)
+
+<table>
+<tr>
+<td><img src="analysis_output/dataset_generalisability/dataset_coverage_bars.png" width="100%"></td>
+<td><img src="analysis_output/dataset_generalisability/pickup_x_place_heatmap.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Coverage: 343 trajectories, 82 houses, 326 task descriptions.</em></td>
+<td align="center"><em>Pickup × place category coverage across the demos.</em></td>
+</tr>
+</table>
+
+### Enclosure-reach generator (the obstacle-avoidance task design)
+
+The advisor spec (2026-06-09) is **one parameterized scene generator**, not bespoke envs: a single
+MJCF whose enclosure is oversized slabs on mocap bodies, re-posed per episode (no recompile).
+Aperture = gap between slabs; protrusion = a slab inserted vs parked away.
+
+- **Per-episode parameters (all logged):** `clearance_cm = 0.7·U(1,5) + 0.3·U(5,8)` (keeps mass in
+  the 1–5 cm regime where proximity drives behaviour); `depth_m = U(0.25,0.55)`;
+  `target_depth_frac = U(0.5,0.9)`; `interior_margin_cm = U(0,6)`; `protrusion_present` Bernoulli per
+  mixture cell; `protrusion_wall ∈ {left,right,top}`; `protrusion_pos_frac = U(0.25,0.75)`;
+  `protrusion_size_cm = U(3.5,7)` (≥ a few SPAD zones at decision distance: a zone is ~45°/8 ≈ 5.6°
+  ≈ 1.2 cm at 12 cm); `light_scale = log-U(0.02,1.0)`; `target_uid` from the graspable pool. The
+  derived `cam_visible` flag is **logged at t=0** (raycast from exo+wrist) because it is unrecoverable
+  later and needed for stratified eval.
+- **Decorrelation by construction:** protrusion params are drawn independently of clearance / depth /
+  lighting / object id, and tight-but-clear episodes are included, so a narrow aperture never implies
+  an obstacle. Verified post-hoc by a correlation-matrix probe.
+- **Observation-realizable expert:** a privileged planner reacting to hidden geometry at t=0 is
+  unlearnable from student observations (and early deflection leaks the obstacle into RGB via robot
+  pose). The expert instead reacts only **after** geometry enters the skin's FOV/range. Three behaviour
+  classes double as measurable sensor-use signatures: (1) graded speed modulation (continuous),
+  (2) deflection-side selection (discrete, large divergence), (3) abort/retreat when the residual gap
+  is too small — which counts as success for its cell, so abort-class episodes must survive
+  `filter_for_successful_trajectories`.
+- **Mixture & scale:** ~28% obstacle-free / ~33% hidden obstacle / ~28% visible obstacle / ~11%
+  abort-infeasible; 2–5k episodes; holdouts on logged params (e.g. train ≥2.5 cm clearance, test
+  1.5–2.5 cm).
+- **Go/no-go probes BEFORE training:** (1) regress expert EE speed on min skin reading → expect a
+  strong negative slope; (2) logistic probe of deflection side from left/right zone asymmetry → ≫
+  chance; (3) hidden-obstacle × visible params correlation ≈ 0; (4) fraction of timesteps with any
+  zone < 8 cm (too small ⇒ clearances too generous).
+
+A secondary bin/drawer-descent generator (gripper self-occlusion in the last 5–10 cm + sub-cm wall
+proximity RGB can't judge) provides the two-mechanism generality claim. As shipped, an early
+hand-authored cavity env (`FrankaSkinCabinetCavityConfig`) reuses the stock pick planner: 25/29
+sensors active, median proximity 0.19 m in-cavity vs ~0.53 m in open houses, 74% of returns within
+30 cm on a real trajectory.
+
+### Foxglove visualizer
+
+`scripts/foxglove_export.py` converts any trajectory `.h5` to a scrubbable `.mcap`. It replays the
+saved joints through the MJCF and reads each sensor pose from forward kinematics (it does **not** trust
+stored extrinsics), so the world point cloud is geometrically exact (validated sub-cm against
+`verify_synthetic_scenes.py`). Topics: `/tf`, `/robot`, `/proximity` (all sensors back-projected to
+one cloud, red=near→blue=far), `/camera/{wrist,exo}`, `/tcp`, `/task`.
+
+```bash
+env MUJOCO_GL=egl PYOPENGL_PLATFORM=egl /opt/conda/envs/mlspaces/bin/python \
+  scripts/foxglove_export.py --h5 PATH.h5 --traj all --out-dir mcaps/
+```
+
+---
+
+## 8. File reference
+
+### `pact/` — System A
+| path | what |
+|---|---|
+| `prox_encoder/model.py` | `ProxEncoder` transformer (d_model 128, 4 heads, 4 layers, ~0.82 M) |
+| `prox_encoder/cache.py` | windowed `.npz` cache builder (one sample = one window) |
+| `prox_encoder/dataset.py` | 90/10 split *by trajectory* |
+| `scripts/{build_cache,train,evaluate}.py` | encoder pipeline |
+| `act_prox/build_mapping.py` | ACT-episode → source-h5 map via qpos signature (t={5,10,15,20,25}=45 floats) |
+| `act_prox/prox_features.py` | `FrozenProxFeatureExtractor` (~0.82 M, frozen) |
+| `act_prox/imitate_episodes_with_prox.py` | the P+ACT / baseline trainer |
+| `act_prox/eval_act_with_prox_encoder.py` | rollout eval (per-sensor ring buffer, z-scored) |
+| `act_prox/precompute_prox_mean.py`, `test_masking.py` | masking-ablation support |
+| `analysis/visualize_prox_attention.py` | writes 4 attention PNGs + `raw_stats.json` |
+
+### `scripts/` — helpers (~60)
+Grouped: **data collection / conversion** (`convert_*`, `merge_*`, `build_combined_h1_h3.py`);
+**training launchers** (`train_houses13_seeds.sh`, `launch_medium_*.sh`); **eval & aggregation**
+(`eval_act_prox_aggregate.sh`, `run_act_mug_random_10x.py`, `aggregate_pact_eval.py`,
+`plot_pact_vs_baseline.py`, `significance_pact_vs_baseline.py`); **diagnostics**
+(`inspect_pact_trajectory.py`, `proximity_necessity.py`); **hybrid skin**
+(`build_hybrid_on_franka_skin.py`, `verify_hybrid_skin_sensors.py`, `test_reconstruct_fumehood.py`,
+`photoshoot_sweep.py`, `foxglove_fumehood_tour.py`); **Safety-CVAE** (`safety_sweep.py`,
+`train_safety_cvae.py`, `safety_{flinch,react,moving,orbit}_demo.py`,
+`analyze_obstacle_dataset.py`); **Foxglove** (`foxglove_export.py`, `foxglove_viz.py`).
+
+### Models & assets
+| path | what |
+|---|---|
+| `assets/robots/franka_skin/model.xml` / `model_hybrid.xml` | 29- / 40-sensor skinned FR3 |
+| `assets/urdf/`, `assets/mjcf/` | URDF source of truth → `pla.sim.build_mjcf` output |
+| `assets/robots/franka_fr3/` | vendored FR3 (from `mujoco_menagerie`, Apache-2.0, MuJoCo ≥ 3.1.3) |
+| `franka_assets/fr3_skin/` | self-contained 29-sensor model that **bundles** its meshes |
+
+### `submodules/act` modifications
+ACT = CVAE + DETR-style transformer predicting action chunks. Four backward-compatible edits gated on
+`n_proximity_sensors = 0` (see §5): `detr_vae.py`, `transformer.py`, `policy.py`, `detr/main.py`.
+
+---
+
+## 9. Output directories & conventions
+
+Most outputs are gitignored.
+
+| dir | contents |
+|---|---|
+| `assets/datagen/` | collected trajectory h5 + camera MP4s |
+| `assets/safety/` | Safety-CVAE data, checkpoints, demo `.mcap`/`.mp4` |
+| `act_style_data/` | per-episode ACT datasets + `prox_mapping.json` |
+| `pact/outputs_prox/` | encoder caches + checkpoints |
+| `runs/`, `eval_output/` | P+ACT/baseline checkpoints + rollout results |
+| `analysis_output/`, `diagnostics_output/` | result plots, skin verification, photoshoot, obstacle |
+| `synthetic_verify/` | empty-room / flat-plane ground-truth checks (incl. documented −44.6 mm 8×8 floor bias) |
+| `logs/`, `wandb/` | run logs; W&B gallery `jayluvsgeography/prox-skin-dataset` |
+
+**Conventions:** run everything from the repo root; export `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl` for
+any sim/render command; use `$PY = /opt/conda/envs/mlspaces/bin/python` (the `aloha` env is only for
+the original ACT scripts).
+
+---
+
+## 10. Troubleshooting & gotchas
+
+- **No proximity in the data** → `proximity_sensor_period_ms` was 0; must be 16.6667 (§7).
+- **`HouseInvalidForTask` / `ParseXML`** → dangling scene symlinks; `ls -L` to confirm, refetch with
+  `MLSPACES_FORCE_INSTALL=True` (§3).
+- **Returns below ~10 cm missing** → MuJoCo depth clip `znear × extent`; pin `znear = 0.0002` (§4).
+- **~33% self-hit depths** → skin shell visible to the proximity renderer; hide group 2
+  (`geomgroup[2] = 0`) (§4).
+- **Eval numbers wiggle ±10 pp** → MolmoSpaces draws a fresh task per process; read Wilson CIs and
+  significance tests, not point estimates (§5).
+- **Frozen encoder is OOD post-grasp** → trained on `held == False` only; fed unchanged in v1, ACT
+  discounts via attention; a per-sensor validity gate is the proposed fix (§5).
+- **Worker memory** ~6–7 GB each → `num_workers` 2–4 on a 64 GB box; single-house jobs need
+  `num_workers = 1`.
+- **Safety demo MP4 stutters** → `flinch`/`react` are raw mp4v; re-encode to H.264 like
+  `moving`/`orbit` do (§6).
+
+---
+
+## 11. Project history (superseded)
+
+Earlier work used a **29-sensor** skin and an all-in-one "pla" stack (the package name `pla` in
+`pyproject.toml` is a leftover). That stack's first validation round (2026-05-10/11) is kept only as
+a historical baseline and does **not** reflect the current architecture: a 36-trajectory smoke
+dataset trained to memorization (PLA 96.37 M params, loss 0.0619 vs baseline 96.28 M / 0.0689) and
+failed every held-out rollout (0/18 vs 0/20) — root cause was training scale + missing language
+conditioning, since fixed by the P+ACT redesign (§5), which adds only ~22 k proximity parameters.
+
+Skin-engineering notes worth keeping: an independent `mj_ray` placement check found 24/29 sensors
+correctly placed (5 inward-pointing on link2/link3, still usable after skin-culling + back-face
+culling); the −44.6 mm flat-plane floor bias is rasterization quantization scaling as 1/H (a tried
+`cx` shift made self-hits worse and was reverted), small versus the SPAD noise floor.

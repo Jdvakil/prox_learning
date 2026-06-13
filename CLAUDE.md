@@ -11,11 +11,11 @@ Carve-outs (stay normal English — caveman breaks these):
 # Workflow constraint
 
 Do NOT run datagen/heavy shells or spawn subagents. Prepare code edits, then tell
-the user the exact commands to run. The user runs them and reports back.
+the user the exact commands to run. The user runs them and reports back. Unless user requests to do so. 
 
 ## Datagen run recipe
 ```
+conda activate mlspaces
 cd submodules/molmospaces
-OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-  /opt/conda/envs/mlspaces/bin/python -m molmo_spaces.data_generation.main <ConfigName>
+python -m molmo_spaces.data_generation.main <ConfigName>
 ```

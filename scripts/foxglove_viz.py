@@ -245,9 +245,13 @@ def backproject(d8: np.ndarray, c2w: np.ndarray, d_min: float, d_max: float):
     if not m.any():
         return np.zeros((0, 3)), np.zeros((0,))
     d = d8[m].astype(np.float64)
+    # OpenCV camera convention: +x right, +y down, +z forward. Despite its name,
+    # the h5's cam2world_gl matrix maps CV-frame points to world (verified
+    # empirically: CV puts 99%+ of far returns on real room surfaces, the GL
+    # interpretation mirrors ~20% of them outside the room).
     x_c = (u[m] - cx) * d / f
-    y_c = -(v[m] - cy) * d / f
-    p_cam = np.stack([x_c, y_c, -d, np.ones_like(d)], axis=1)
+    y_c = (v[m] - cy) * d / f
+    p_cam = np.stack([x_c, y_c, d, np.ones_like(d)], axis=1)
     return (c2w @ p_cam.T).T[:, :3], d
 
 
@@ -399,7 +403,9 @@ def export_episode(f: h5py.File, key: str, h5_dir: Path, vid_id: int, ep_label: 
             else:
                 c2w = np.eye(4)
                 cid = cam_id[name]
-                c2w[:3, :3] = data.cam_xmat[cid].reshape(3, 3)
+                # MuJoCo cam_xmat is GL (camera looks along -z); flip y/z axes
+                # to the CV convention that backproject() expects.
+                c2w[:3, :3] = data.cam_xmat[cid].reshape(3, 3) @ np.diag([1.0, -1.0, -1.0])
                 c2w[:3, 3] = data.cam_xpos[cid]
             pts, d = backproject(d8, c2w, near, d_max)
             if len(pts):
