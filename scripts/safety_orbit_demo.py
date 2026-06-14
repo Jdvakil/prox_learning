@@ -1,12 +1,17 @@
-"""One hazard bar ORBITS the arm in a circle; the arm avoids it with the learned layer.
+"""One hazard bar SWEEPS a half-circle over the arm and slides along it; the arm avoids it
+with the learned layer, and different sensors light up in turn.
 
-The arm holds an extended posture. A single bar travels a circular orbit around the
-forearm (a ring perpendicular to the forearm axis, fixed radius). As the bar comes around
-each side, the skin senses it and the proximity CVAE (skin-only) pushes the arm away —
-added as a residual correction — so the arm leans away from wherever the bar is and the
-lean rotates with the orbit. The bar never contacts the arm (fixed safe radius).
+The arm holds an extended posture. A single bar arcs across the OUTWARD face of the arm
+(a half-circle in the plane perpendicular to the arm axis, on the side away from the base)
+while sliding from the elbow (link4) to the wrist (link6). Because the arc only covers the
+outward hemisphere and the arm leans AWAY from the bar, the bar stays outside the arm — it
+never encircles or passes through it (the earlier full-circle version did, because a ring
+centred on the arm has no escape direction). As the bar visits each link/sensor patch the
+skin senses it and the proximity CVAE (skin-only) pushes that part of the arm away.
 
-    bar(t)     = C + R*(cos t * u + sin t * v)        # circle around the forearm axis
+    center(t)  = lerp(elbow, wrist, frac(t))                  # slide along the arm
+    alpha(t)   = (arc/2) * sin(2*pi*passes*t)                 # oscillate across the half-circle
+    bar(t)     = center + R*(cos alpha * r_hat + sin alpha * t_hat)   # r_hat = outward, in-plane
     executed_q = q0 + correction
     correction += (gain * dq - decay * correction) * dt
     dq          = head(skin_with_bar) - head(skin_bar_parked)
@@ -59,14 +64,24 @@ def main() -> None:
     ap.add_argument("--runs", nargs="+", type=Path,
                     default=[Path("/home/jaydv/code/prox_learning/assets/datagen/"
                                   "hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855")])
-    ap.add_argument("--radius", type=float, default=0.18, help="orbit radius from the forearm axis (m)")
-    ap.add_argument("--loops", type=float, default=2.0, help="number of full circles")
-    ap.add_argument("--secs", type=float, default=14.0)
+    ap.add_argument("--radius", type=float, default=0.20,
+                    help="bar distance from the arm axis (m); kept on the OUTWARD side so the bar "
+                         "stays outside the arm (never penetrates) while still inside sensing range")
+    ap.add_argument("--arc", type=float, default=180.0,
+                    help="angular span of the sweep around the arm (deg); <360 so the bar arcs over "
+                         "one outward face instead of encircling the arm")
+    ap.add_argument("--passes", type=float, default=3.0, help="number of arc sweeps across the face")
+    ap.add_argument("--secs", type=float, default=16.0)
     ap.add_argument("--gain", type=float, default=3.5)
     ap.add_argument("--decay", type=float, default=2.2)
     ap.add_argument("--ema", type=float, default=0.75)
     ap.add_argument("--max-dev", type=float, default=0.30)
     ap.add_argument("--bar", default="bar_m", choices=list(sw.BARS))
+    ap.add_argument("--obstacle", choices=["bar", "sphere"], default="bar")
+    ap.add_argument("--clean", action="store_true",
+                    help="minimal overlay: only min skin depth, obstacle distance, deviation")
+    ap.add_argument("--sphere-radius", type=float, default=0.045,
+                    help="sphere radius when --obstacle sphere (distinct from the orbit --radius)")
     args = ap.parse_args()
 
     head = SafetyHead.load(args.ckpt)
@@ -75,6 +90,8 @@ def main() -> None:
     for gid in range(model.ngeom):
         if model.body(model.geom_bodyid[gid]).name in hood_names:
             model.geom_group[gid] = 3
+    if args.obstacle == "sphere":
+        sw.bars_to_spheres(model, args.sphere_radius)
     data = mujoco.MjData(model)
 
     sensors = sorted(model.camera(i).name.removeprefix(NS) for i in range(model.ncam)
@@ -94,6 +111,7 @@ def main() -> None:
     l4 = model.body(f"{NS}fr3_link4").id
     l5 = model.body(f"{NS}fr3_link5").id
     l6 = model.body(f"{NS}fr3_link6").id
+    link_bids = [model.body(f"{NS}fr3_link{i}").id for i in range(2, 8)]
 
     geoms_of_link = {ln: [] for ln in LINKS}
     for gid in range(model.ngeom):
@@ -129,21 +147,26 @@ def main() -> None:
 
     pose(q0)
     mujoco.mj_forward(model, data)
-    # orbit frame: centre on the forearm (link5); ring lies in the plane perpendicular to
-    # the forearm axis (link4 -> link6), so the bar circles the forearm at a fixed radius.
-    center = data.xpos[l5].copy()
-    axis = data.xpos[l6] - data.xpos[l4]
-    axis = axis / (np.linalg.norm(axis) + 1e-9)
-    u = np.cross(axis, [0, 0, 1.0])
-    u = u / (np.linalg.norm(u) + 1e-9)
-    v = np.cross(axis, u)
+    # arm skeleton at rest (fixed reference): the bar sweeps a half-circle over the OUTWARD
+    # face of the arm, sliding from the elbow (link4) to the wrist (link6). Because the arc
+    # only covers the outward hemisphere and the arm leans AWAY from the bar, the bar stays
+    # outside the arm — it never encircles or passes through it — while different link/sensor
+    # patches light up in turn as it slides along.
+    p4 = data.xpos[l4].copy()
+    p5 = data.xpos[l5].copy()
+    p6 = data.xpos[l6].copy()
+    span = p6 - p4
+    axis = span / (np.linalg.norm(span) + 1e-9)
+    base_pos = data.xpos[model.body(f"{NS}base").id].copy()
+    arc = np.deg2rad(args.arc)
     T = int(args.secs * FPS)
-    print(f"orbit: centre {center.round(2)}, radius {args.radius} m, {args.loops} loops, {T} frames")
+    print(f"sweep: elbow {p4.round(2)} -> wrist {p6.round(2)}, radius {args.radius} m, "
+          f"arc {args.arc} deg, {args.passes} passes, {T} frames")
 
     rgb = mujoco.Renderer(model, 540, 960)
     vcam = mujoco.MjvCamera()
     vcam.type = mujoco.mjtCamera.mjCAMERA_FREE
-    vcam.lookat[:] = center
+    vcam.lookat[:] = p5
     vcam.distance, vcam.azimuth, vcam.elevation = 1.6, 120.0, -8.0
     vopt = mujoco.MjvOption()
     mujoco.mjv_defaultOption(vopt)
@@ -172,8 +195,18 @@ def main() -> None:
     min_clear = np.inf
 
     for t in range(T):
-        theta = 2 * np.pi * args.loops * t / max(T - 1, 1)
-        bar_pos = center + args.radius * (np.cos(theta) * u + np.sin(theta) * v)
+        tau = t / max(T - 1, 1)
+        frac = 0.5 * (1 - np.cos(np.pi * tau))                 # 0->1 once: slide elbow -> wrist
+        center = p4 + frac * span
+        alpha = 0.5 * arc * np.sin(2 * np.pi * args.passes * tau)   # oscillate across the half-circle
+        # outward, in the plane perpendicular to the arm axis (points away from the base)
+        out = center - base_pos
+        out = out - axis * float(np.dot(out, axis))
+        r_hat = out / (np.linalg.norm(out) + 1e-9)
+        t_hat = np.cross(axis, r_hat)
+        t_hat = t_hat / (np.linalg.norm(t_hat) + 1e-9)
+        bar_dir = np.cos(alpha) * r_hat + np.sin(alpha) * t_hat    # outward hemisphere only
+        bar_pos = center + args.radius * bar_dir
         pose(q0 + correction)
         data.mocap_pos[mid[bar_name]] = bar_pos
         mujoco.mj_forward(model, data)
@@ -259,21 +292,26 @@ def main() -> None:
 
         md = float(depths[depths >= 0.005].min()) if (depths >= 0.005).any() else float("inf")
         ch_json.log({"dev_norm": dev, "dq_norm": float(np.linalg.norm(dq)), "min_depth": md,
-                     "theta_deg": float(np.degrees(theta) % 360),
+                     "alpha_deg": float(np.degrees(alpha)), "along_frac": float(frac),
                      "heat": {ln: heat[ln] for ln in LINKS}}, log_time=ns)
 
         rgb.update_scene(data, camera=vcam, scene_option=vopt)
         frame = cv2.cvtColor(rgb.render(), cv2.COLOR_RGB2BGR)
-        cv2.putText(frame, "obstacle orbiting the arm", (20, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (240, 240, 240), 2, cv2.LINE_AA)
-        cv2.putText(frame, f"learned avoidance: {dev:4.2f} rad", (20, 74),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.8,
-                    (40, 40, 240) if dev > 0.05 else (200, 200, 200), 2, cv2.LINE_AA)
+        if args.clean:
+            gap = sw.min_obstacle_gap(model, data, mid, [bar_name], link_bids)
+            sw.clean_hud(frame, md, gap, dev)
+        else:
+            cv2.putText(frame, "obstacle sweeping the arm", (20, 40),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (240, 240, 240), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"learned avoidance: {dev:4.2f} rad", (20, 74),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+                        (40, 40, 240) if dev > 0.05 else (200, 200, 200), 2, cv2.LINE_AA)
         vw.write(frame)
         model.geom_rgba[:] = orig_rgba
 
         if (t + 1) % 100 == 0:
-            print(f"frame {t+1}/{T}  theta {np.degrees(theta) % 360:3.0f}  dev {dev:.3f}  min_clear {min_clear:.3f}")
+            print(f"frame {t+1}/{T}  alpha {np.degrees(alpha):+4.0f}  along {frac:.2f}  "
+                  f"dev {dev:.3f}  min_clear {min_clear:.3f}")
 
     writer.close()
     vw.release()

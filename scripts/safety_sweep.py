@@ -83,6 +83,7 @@ SASH_HALF = [0.015, 0.44, 0.025]
 JAMB_HALF = [0.012, 0.18, 0.20]
 BARS = {"bar_s": [0.0175, 0.0175, 0.10], "bar_m": [0.025, 0.025, 0.11],
         "bar_l": [0.035, 0.035, 0.12]}
+SPHERE_R = 0.05      # blue spherical obstacle (sphere demo); proves depth sensing is shape/colour agnostic
 PARK = [0.0, 0.0, -3.0]
 BENCH_REGION = dict(x=(0.62, 1.32), y=(-0.40, 0.40))
 
@@ -117,12 +118,61 @@ def build_model() -> mujoco.MjModel:
         g.rgba = [1.0, 0.45, 0.05, 1.0] if name.startswith("bar") else [0.7, 0.72, 0.75, 1.0]
         g.contype = 0
         g.conaffinity = 0
+    # blue spherical obstacle, parked by default (inert for the sweep + other demos). The skin
+    # senses DEPTH only, so the head — trained on box bars — reacts to this sphere all the same;
+    # the sphere demo drives it to show the head is shape- and colour-agnostic.
+    sb = spec.worldbody.add_body(name="sphere", pos=PARK, mocap=True)
+    sg = sb.add_geom()
+    sg.type = mujoco.mjtGeom.mjGEOM_SPHERE
+    sg.size = [SPHERE_R, SPHERE_R, SPHERE_R]
+    sg.rgba = [0.10, 0.35, 0.95, 1.0]
+    sg.contype = 0
+    sg.conaffinity = 0
     base = spec.worldbody.add_body(name=f"{NS}base", pos=[0, 0, 0], quat=[1, 0, 0, 0],
                                    mocap=True)
     frame = base.add_frame(pos=[0, 0, MOUNT_Z])
     robot = mujoco.MjSpec.from_file(str(ROBOT_XML))
     frame.attach_body(robot.worldbody.first_body(), NS, "")
     return spec.compile()
+
+
+def bars_to_spheres(model, radius: float = 0.045, rgba=(0.10, 0.35, 0.95, 1.0)) -> None:
+    """Convert the box hazard-bar geoms into blue spheres in place. Depth sensing is
+    shape/colour-agnostic, so any bar-driven demo becomes a sphere demo with IDENTICAL
+    motion — only the rendered obstacle changes (proves the head ignores appearance)."""
+    for gid in range(model.ngeom):
+        if model.body(model.geom_bodyid[gid]).name in BARS:
+            model.geom_type[gid] = mujoco.mjtGeom.mjGEOM_SPHERE
+            model.geom_size[gid] = [radius, radius, radius]
+            model.geom_rgba[gid] = list(rgba)
+
+
+def min_obstacle_gap(model, data, mid, names, link_bids) -> float:
+    """Min distance from any active (un-parked) obstacle mocap to the nearest arm link body."""
+    best = float("inf")
+    for n in names:
+        c = data.mocap_pos[mid[n]]
+        if c[2] <= -1.0:        # parked
+            continue
+        for b in link_bids:
+            best = min(best, float(np.linalg.norm(c - data.xpos[b])))
+    return best
+
+
+def clean_hud(frame, md, gap, dev):
+    """Minimal evaluation overlay: only min skin depth, distance to obstacle, deviation."""
+    import cv2
+
+    def line(s, y):
+        cv2.putText(frame, s, (20, y), cv2.FONT_HERSHEY_SIMPLEX, 0.85,
+                    (245, 245, 245), 2, cv2.LINE_AA)
+
+    mdcm = md * 100 if np.isfinite(md) else 999.0
+    gcm = gap * 100 if np.isfinite(gap) else 999.0
+    line(f"min skin depth    {mdcm:5.1f} cm", 44)
+    line(f"sphere distance   {gcm:5.1f} cm", 80)
+    line(f"deviation         {dev:4.2f} rad", 116)
+    return frame
 
 
 def load_postures(run_dirs: list[Path]) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:

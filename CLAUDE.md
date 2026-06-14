@@ -13,6 +13,8 @@ Carve-outs (stay normal English — caveman breaks these):
 Do NOT run datagen/heavy shells or spawn subagents. Prepare code edits, then tell
 the user the exact commands to run. The user runs them and reports back. Unless user requests to do so. 
 
+ALWAYS USE `/effort` TO ULTRACODE ALL THE TIME. HARD CONSTRAINT. NEVER USE ANYTHING LESS.
+
 ## Datagen run recipe
 ```
 conda activate mlspaces

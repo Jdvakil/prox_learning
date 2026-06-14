@@ -175,6 +175,10 @@ def main() -> None:
     ap.add_argument("--max-dev", type=float, default=0.35, help="per-joint correction clamp (rad)")
     ap.add_argument("--traj-secs", type=float, default=10.0, help="nominal trajectory duration")
     ap.add_argument("--standoff", type=float, default=0.10, help="bar FACE distance from the skin (m)")
+    ap.add_argument("--obstacle", choices=["bar", "sphere"], default="bar")
+    ap.add_argument("--clean", action="store_true",
+                    help="minimal overlay: only min skin depth, obstacle distance, deviation")
+    ap.add_argument("--radius", type=float, default=0.045, help="sphere radius when --obstacle sphere")
     args = ap.parse_args()
 
     head = SafetyHead.load(args.ckpt)
@@ -186,6 +190,8 @@ def main() -> None:
     for gid in range(model.ngeom):
         if model.body(model.geom_bodyid[gid]).name in hood_names:
             model.geom_group[gid] = 3
+    if args.obstacle == "sphere":
+        sw.bars_to_spheres(model, args.radius)
     data = mujoco.MjData(model)
     sensors = sorted(model.camera(i).name.removeprefix(NS) for i in range(model.ncam)
                      if "_sensor_" in model.camera(i).name)
@@ -200,6 +206,7 @@ def main() -> None:
            for n in ("sash", "jamb_l", "jamb_r", *sw.BARS, f"{NS}base")}
     base_mid = mid[f"{NS}base"]
     hand_bid = model.body(f"{NS}fr3_link7").id
+    link_bids = [model.body(f"{NS}fr3_link{i}").id for i in range(2, 8)]
     bar_mocaps = list(sw.BARS)   # bar_s, bar_m, bar_l (3 available)
     ap_w, ap_h = 0.675, 0.535
 
@@ -455,17 +462,20 @@ def main() -> None:
         rgb.update_scene(data, camera=vcam, scene_option=vopt)
         frame = cv2.cvtColor(rgb.render(), cv2.COLOR_RGB2BGR)
         avoiding = status == "AVOIDING"
-
-        def txt(strg, y, col, sc=0.8):
-            cv2.putText(frame, strg, (20, y), cv2.FONT_HERSHEY_SIMPLEX, sc, col, 2, cv2.LINE_AA)
-        txt(f"trajectory: {s*100:3.0f}%   obstacles: {len(placed)}", 42, (40, 40, 40))
-        txt(f"min skin depth: {md*100:4.1f} cm", 76, (40, 40, 40))
-        txt(f"joint deviation: {dev:4.2f} rad", 110, (40, 40, 40))
-        if avoiding:
-            cv2.rectangle(frame, (0, 0), (frame.shape[1], 6), (0, 0, 255), -1)
-            txt("AVOIDING OBSTACLE", 146, (0, 0, 220))
+        if args.clean:
+            gap = sw.min_obstacle_gap(model, data, mid, [n for n, _, _ in placed], link_bids)
+            sw.clean_hud(frame, md, gap, dev)
         else:
-            txt("FOLLOWING TRAJECTORY" if s < 1.0 else "TRAJECTORY COMPLETE", 146, (150, 90, 0))
+            def txt(strg, y, col, sc=0.8):
+                cv2.putText(frame, strg, (20, y), cv2.FONT_HERSHEY_SIMPLEX, sc, col, 2, cv2.LINE_AA)
+            txt(f"trajectory: {s*100:3.0f}%   obstacles: {len(placed)}", 42, (40, 40, 40))
+            txt(f"min skin depth: {md*100:4.1f} cm", 76, (40, 40, 40))
+            txt(f"joint deviation: {dev:4.2f} rad", 110, (40, 40, 40))
+            if avoiding:
+                cv2.rectangle(frame, (0, 0), (frame.shape[1], 6), (0, 0, 255), -1)
+                txt("AVOIDING OBSTACLE", 146, (0, 0, 220))
+            else:
+                txt("FOLLOWING TRAJECTORY" if s < 1.0 else "TRAJECTORY COMPLETE", 146, (150, 90, 0))
         vw.write(frame)
 
         if (t + 1) % 100 == 0:

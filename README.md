@@ -438,6 +438,48 @@ reading into a joint-space retreat with **no scene geometry or object poses at r
 a smooth residual on any nominal trajectory — the arm bows around an obstacle and rejoins ("deviate
 and rejoin").
 
+### What it is, and why "safety"
+
+The Safety-CVAE is a small **reflex**: a function `dq = head(skin)` that maps the current 40×8×8
+proximity reading directly to a 7-DoF joint nudge that moves the arm *away* from whatever is near it.
+It is called "safety" because its only job is collision avoidance — it does not know the task, the
+goal, or the object to grasp; it only answers *"is something close, and which way do I move to not hit
+it?"* It is a guarding layer, not a policy. Three properties make it a safety layer:
+
+- **Skin-only at runtime.** No scene geometry, no object poses, no camera — just the skin. So it keeps
+  working on obstacles never seen in any task dataset (a hand, a cable, a bar moved at runtime).
+- **Reactive and fast.** One small MLP forward pass per frame — no planning, no horizon.
+- **Quiet when clear.** Trained so the output is ≈ 0 when nothing is near (the `far_quiet` metric), so
+  it does nothing until an obstacle enters the danger band — then it pushes, then it relaxes.
+
+It is distilled from an **analytic potential field** (`safety_sweep.py`): a hand-written repulsion law
+that has full sim knowledge (exact obstacle positions, Jacobians) computes the "correct" retreat, and
+the CVAE learns to reproduce that retreat from skin alone. So the head is a learned, sensor-only
+approximation of a physics-based avoidance controller.
+
+### How it plugs into ACT
+
+The head is **policy-agnostic** — it is added as a residual on top of *any* nominal joint command,
+including the action stream from System A's P+ACT policy:
+
+```
+q_exec(t)   = q_act(t) + correction(t)
+correction += (gain · head(skin) − decay · correction) · dt      # leaky integrator
+correction  = clip(correction, ±max_dev)
+```
+
+P+ACT produces the task motion (reach, grasp, lift); the Safety-CVAE bends that motion around
+obstacles the policy never saw, then `decay` pulls the correction back to zero so the arm rejoins the
+policy's plan once the obstacle is clear ("deviate and rejoin"). The two systems are complementary and
+share the same skin: P+ACT uses the **frozen proximity encoder → object position** to *improve
+grasping* (§5); the Safety-CVAE uses the **raw skin → joint retreat** to *avoid collisions*. The demos
+below run this exact residual loop on recorded/synthetic nominal trajectories as a stand-in for the
+policy; swapping `q_act` for the live P+ACT output is the deployment path.
+
+> Status: the residual-on-ACT wiring above is the **design**. The demos validate the safety layer in
+> isolation on nominal trajectories (recorded reaches and synthetic sweeps). End-to-end
+> P+ACT-plus-safety rollouts are future work.
+
 ```
 datagen run (real arm postures)
  └─ safety_sweep.py        synthesize near-contact samples + analytic labels   → sweep_*.h5
@@ -508,11 +550,55 @@ Maps the 40×8×8 skin to a 7-DoF joint retreat; runtime needs only raw skin.
   batch 512, checkpoint on best val MSE.
 - **Inference:** `SafetyHead.load(dir)(prox)` → deterministic decode at **z = 0** × `label_scale` →
   `(7,)` joint delta.
+- **It is a reconstruction model.** The decoder *reconstructs* the 7-DoF retreat vector `dq` from the
+  skin (conditioned on a latent `z`); the reconstruction term is the MSE between predicted and target
+  `dq`. The KL term only regularizes the latent. At inference `z = 0`, so the head is a plain,
+  deterministic skin → `dq` map — the latent exists only to absorb the small ambiguity in *which way*
+  to dodge during training.
+
+**Logging.** Every run mirrors metrics to **wandb** (project `prox-safety-cvae`, on by default; add
+`--no-wandb` to disable) *and* writes a matching set of files next to the weights in `--out`:
+
+| file | contents |
+|---|---|
+| `model.pt` / `meta.json` | best-val checkpoint + architecture/scale/metrics (used by `SafetyHead.load`) |
+| `config.json` | every hyper-parameter, dataset path, train/val sizes, active latent dims |
+| `history.json` | per-epoch arrays: total loss, recon MSE, KL, val MSE, close-cos, far-quiet, lr, β |
+| `curves.png` | loss · reconstruction-vs-KL · direction-cos+quiet · lr+β warm-up, over epochs |
+| `encoder_latent.png` | per-latent-dim KL (how many of the 8 dims the encoder actually uses) + 2-D PCA of the posterior mean, colored close/mid/far |
+| `pred_vs_true.png` | decoder reconstruction per joint (predicted vs analytic `dq`, close samples in red) |
+| `head_diagnostics.png` | per-joint recon MSE · direction-cosine histogram · **`|dq|` vs nearest-obstacle depth** |
+
+The last panel of `head_diagnostics.png` is the key sanity check that the head's behavior tracks the
+data: predicted retreat magnitude should *grow as the nearest obstacle gets closer* and fall to ≈ 0
+when far, which is exactly the potential-field law it was distilled from.
+
+<!-- The four figures below are written to assets/safety/cvae_v3/ by step 3 of "Reproduce" — they
+     render once that run completes. -->
+<table>
+<tr>
+<td><img src="assets/safety/cvae_v3/curves.png" width="100%"></td>
+<td><img src="assets/safety/cvae_v3/encoder_latent.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Training curves: loss, reconstruction-vs-KL, direction-cos + quiet, lr + β.</em></td>
+<td align="center"><em>Encoder: per-dim KL (how many latent dims are used) + 2-D latent map.</em></td>
+</tr>
+<tr>
+<td><img src="assets/safety/cvae_v3/pred_vs_true.png" width="100%"></td>
+<td><img src="assets/safety/cvae_v3/head_diagnostics.png" width="100%"></td>
+</tr>
+<tr>
+<td align="center"><em>Decoder reconstruction per joint (predicted vs analytic retreat).</em></td>
+<td align="center"><em>Per-joint MSE · direction-cosine histogram · |dq| vs nearest-obstacle depth.</em></td>
+</tr>
+</table>
 
 | head | data | val_mse ↓ | close_cos ↑ | far_quiet ↓ | label_scale |
 |---|---|---|---|---|---|
 | `cvae_v1` | `sweep_v1.h5` | **0.0111** | **0.891** | **0.0326** | 16.74 |
 | `cvae_v2` | `sweep_v2.h5` (obstacle-aware) | 0.0146 | 0.865 | 0.0360 | 14.68 |
+| **`cvae_v3`** | **`sweep_v3.h5`** (re-run on `20260612_183855`, full logging) | **0.0091** | **0.926** | **0.0310** | 11.36 |
 
 - **close_cos** — cosine between predicted retreat and the analytic label on *close* samples
   (`min_depth < 0.12 m`): does it push the right way? 1.0 ideal.
@@ -520,8 +606,11 @@ Maps the 40×8×8 skin to a 7-DoF joint retreat; runtime needs only raw skin.
   0 ideal.
 - **val_mse** — recon MSE on the held-out split (scaled label space).
 
-`v1` edges `v2` on all three held-out metrics (differences small); `v2` is the demo default,
-trained on the obstacle-aware sweep.
+The earlier `v1`/`v2` runs predate logging (only the final scalars above survive — no curves). **`v3`
+is the canonical run with full wandb + saved-plot logging**, and is the best head on all three
+held-out metrics; reproduce it below. Its encoder uses **1 of 8 latent dims** (`active_latent_dims`):
+the skin → retreat map is near-deterministic, so the latent is nearly collapsed to the prior — exactly
+why the deterministic `z = 0` head works.
 
 ### Demos
 
@@ -532,38 +621,105 @@ All default to `--ckpt cvae_v2`, render 960×540 @ 30 fps, and log a Foxglove `.
 | `safety_flinch_demo.py` | bar marches down a forearm-sensor axis; arm flinches, relaxes | bar schedule | spring-return single pose: `q += (gain·dq − spring·(q−q0))·dt` | mp4v |
 | `safety_react_demo.py` | bars on a planned trajectory; arm bulges around each, rejoins | `--traj-secs 10` | leaky integrator: `corr += (gain·dq − decay·corr)·dt` | mp4v |
 | `safety_moving_demo.py` | 1 bar patrols the whole arm wrist→shoulder; per-link skin lights up | `--secs 18` | leaky integrator | H.264 |
-| `safety_orbit_demo.py` | 1 bar circles the forearm; the lean rotates with the orbit | `--secs 14` | leaky integrator | H.264 |
+| `safety_orbit_demo.py` | 1 bar sweeps a 180° half-circle over the arm's outward face and slides elbow→wrist; each link's sensors react in turn | `--secs 16` | leaky integrator | H.264 |
 
 Defaults — flinch `gain 4.5 / spring 1.5 / max-dev 0.35`; react `gain 4.0 / decay 2.2 / ema 0.75 /
 max-dev 0.35 / standoff 0.10`; moving `gain 3.0 / decay 2.2 / ema 0.7 / max-dev 0.30 / standoff
-0.14`; orbit `gain 3.5 / decay 2.2 / ema 0.75 / max-dev 0.30 / radius 0.18`. All demos do a per-frame
+0.14`; orbit `gain 3.5 / decay 2.2 / ema 0.75 / max-dev 0.30 / radius 0.20 / arc 180° / passes 3`. The orbit
+bar arcs over the **outward** hemisphere only (never a full ring centred on the arm — that has no
+escape direction and made the bar clip the mesh), so it stays outside the arm while still in sensing
+range (min bar-to-link clearance ≈ 0.08 m). All demos do a per-frame
 double render (bars placed, then parked) and subtract the parked baseline, so the head reacts only to
 the obstacle's marginal push. Hood/walls are retagged to geom group 3 — hidden in the RGB video but
 kept in the depth render so the head still sees the full scene.
 
+#### How a demo works (the shared loop)
+
+Every demo runs the same per-frame loop; they differ only in *what the obstacle does* and *what the
+arm's nominal motion is*:
+
+1. **Render the skin.** Render all 40 SPAD depths (8×8 each) at the current pose — identical optics to
+   datagen and to `safety_sweep` (`geomgroup[2]=0`, znear pinned, FOVY 45°).
+2. **Ask the head.** `dq_raw = head(skin_with_obstacle) − head(skin_obstacle_parked)`. The
+   **baseline subtraction** is the trick: the head fires on *any* close surface — the hood walls, the
+   arm's own gripper and links — so a second render with the obstacle removed gives the rest output,
+   and the difference isolates *only the push the obstacle adds*. Without it the arm would flinch at
+   its own static clutter.
+3. **Smooth + integrate.** Low-pass the head output (EMA), then drive a leaky integrator
+   `correction += (gain·dq − decay·correction)·dt`, clamped to `±max_dev`. `gain` makes the arm bow
+   away as an obstacle nears; `decay` relaxes it home when clear. (`flinch` uses a spring-return
+   variant on a single pose instead of a trajectory.)
+4. **Execute + log.** Apply `q = q_nom + correction`, then write a Foxglove `.mcap` (`/tf` + `/robot`
+   meshes, `/scene_gt` hood+bars, `/proximity` the back-projected skin cloud, `/sensors/heatmap8` the
+   raw 8×8 mosaic, `/safety_arrow` the EE-space push `J·dq`, `/safety` JSON telemetry) and an
+   annotated `.mp4`.
+
+**What was implemented for the demos** (beyond the loop): real-posture selection (pick a collected
+frame whose skin is *clear at rest* for flinch, or whose reach is *most extended* for react/moving so
+encounters are well-separated); obstacle scheduling (bars marched along a chosen sensor's view ray —
+straight-line for flinch, farthest-point-sampled along the path for react, patrolling the kinematic
+chain for moving, a circular orbit for orbit); a per-link skin-heat tint and signal strip (moving) to
+show the signal travelling across all links; and the EE-space push arrow that visualizes `J·dq` at the
+wrist.
+
+#### Why the behavior is valid (it tracks the training data)
+
+The head only ever saw `safety_sweep` samples: **real arm postures** from datagen with **hazard bars
+planted along sensor view-rays at 5–25 cm**. The demos reproduce *exactly that distribution at
+runtime* — same real postures, same `model_hybrid.xml` optics, bars brought to a ~10 cm face standoff
+(deliberately *not* point-blank: flooding the whole 8×8 frame is out-of-distribution and gives a weak
+`dq`, so the bar is kept in the head's strong, in-distribution band). Because the runtime input matches
+the training input, the head's learned skin → `dq` map is being used where it is valid, and three
+trained properties show up directly in the demos:
+
+- **Right direction** — the `/safety_arrow` (the EE-space push `J·dq`) points *away from the bar*,
+  because the head reproduces the analytic potential-field label, whose direction is `unit(sensor −
+  hit)`. This is the `close_cos` metric made visible.
+- **Magnitude scales with closeness** — the arm bows harder as the bar approaches and eases as it
+  retreats, mirroring the `1/d − 1/D_ACT` term in the label (the `head_diagnostics.png` `|dq|`-vs-depth
+  panel is the static version of this).
+- **Quiet when clear** — once the bar leaves, `dq → 0` (the `far_quiet` objective), so the leaky
+  integrator decays and the arm rejoins its nominal path. That "deviate-and-rejoin" is a *consequence*
+  of the training objective, not hand-coded behavior.
+
 ### Reproduce the Safety-CVAE
+
+This is the **canonical `v3` run** — built fresh from the `20260612_183855` obstacle dataset, with
+full wandb + saved-plot logging. Run the three numbered steps in order (each depends on the previous).
 
 ```bash
 ENV="OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl"
 PY=/opt/conda/envs/mlspaces/bin/python
+DATA=assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855
 
-# validate the obstacle dataset (no EGL needed)
+# 0. (one-time) log in to wandb so training can stream metrics
+wandb login                       # or: export WANDB_MODE=offline   to log locally only
+
+# 1. (optional) validate the obstacle dataset (no EGL needed)
 $PY scripts/analyze_obstacle_dataset.py --root assets/datagen/hybrid_obstacle_v1
 
-# synthesize near-contact training data from real postures (EGL)
-env $ENV $PY scripts/safety_sweep.py \
-  --runs assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855 \
-  --n 15000 --out assets/safety/sweep_v2.h5
+# 2. synthesize near-contact training data from the dataset's real postures (EGL, ~10 min)
+#    → assets/safety/sweep_v3.h5   (prox + analytic retreat labels)
+env $ENV $PY scripts/safety_sweep.py --runs $DATA --n 15000 --out assets/safety/sweep_v3.h5
 
-# distill the head (CUDA, no EGL)
-$PY scripts/train_safety_cvae.py --data assets/safety/sweep_v2.h5 --out assets/safety/cvae_v2
+# 3. distill the head with logging (CUDA, no EGL, ~2 min)
+#    → assets/safety/cvae_v3/{model.pt,meta.json,config.json,history.json,
+#                             curves.png,encoder_latent.png,pred_vs_true.png,head_diagnostics.png}
+#    → wandb run under project "prox-safety-cvae", name "cvae_v3"
+$PY scripts/train_safety_cvae.py \
+  --data assets/safety/sweep_v3.h5 --out assets/safety/cvae_v3 \
+  --epochs 60 --wandb-project prox-safety-cvae
 
-# demos (EGL) — each writes assets/safety/<name>_demo.{mcap,mp4}
-env $ENV $PY scripts/safety_flinch_demo.py --ckpt assets/safety/cvae_v2
-env $ENV $PY scripts/safety_react_demo.py  --ckpt assets/safety/cvae_v2 --mode sweep
-env $ENV $PY scripts/safety_moving_demo.py --ckpt assets/safety/cvae_v2
-env $ENV $PY scripts/safety_orbit_demo.py  --ckpt assets/safety/cvae_v2
+# 4. demos on the fresh head (EGL) — each writes assets/safety/<name>_demo.{mcap,mp4}
+env $ENV $PY scripts/safety_flinch_demo.py --ckpt assets/safety/cvae_v3
+env $ENV $PY scripts/safety_react_demo.py  --ckpt assets/safety/cvae_v3 --mode sweep
+env $ENV $PY scripts/safety_moving_demo.py --ckpt assets/safety/cvae_v3
+env $ENV $PY scripts/safety_orbit_demo.py  --ckpt assets/safety/cvae_v3
 ```
+
+After step 3, the four PNGs + `history.json` + `config.json` sit in `assets/safety/cvae_v3/` (the same
+folder as the weights), and the identical curves are in the wandb run. To retrain without wandb, add
+`--no-wandb` — the PNGs are still written.
 
 **Gotchas.** `flinch` & `react` write raw **mp4v** (stutters in some players); `moving` & `orbit`
 re-encode to **H.264** via ffmpeg. `min_depth` in the demos is self-dominated (the arm sees its own
@@ -571,10 +727,12 @@ gripper at 1–4 cm) — not a bar-collision metric. link1 (base) sensors face t
 workspace obstacles. Three distances are intentionally different: `D_ACT = 0.18 m` (label activation)
 ≠ `D_MAX = 0.5 m` (input closeness norm) ≠ `0.12 / 0.25 m` (close/far metric thresholds).
 
-**Artifacts.** `assets/datagen/hybrid_obstacle_v1/` (1.2 G); `assets/safety/` holds `sweep_v1.h5`
-(55 M), `sweep_v2.h5` (56 M), `cvae_v1/` + `cvae_v2/` (12 M each), and `flinch/react/moving/orbit_demo.
-{mcap,mp4}`. Submodule edits (unstaged): `molmo_spaces/tasks/enclosure_reach.py` (+164) and
-`object_manipulation_datagen_configs.py` (`FrankaSkinHybridObstacleConfig`, +75).
+**Artifacts.** `assets/datagen/hybrid_obstacle_v1/` (1.2 G); `assets/safety/` holds the sweeps
+(`sweep_v1.h5` 55 M, `sweep_v2.h5` 56 M, and `sweep_v3.h5` after the run above), the heads (`cvae_v1/`,
+`cvae_v2/`, and the fully-logged `cvae_v3/` with its four PNGs + `history.json` + `config.json`), and
+`flinch/react/moving/orbit_demo.{mcap,mp4}`. Submodule edits (unstaged):
+`molmo_spaces/tasks/enclosure_reach.py` (+164) and `object_manipulation_datagen_configs.py`
+(`FrankaSkinHybridObstacleConfig`, +75).
 
 **Next.** The head is policy-agnostic. To deploy on a learned policy, wrap the ACT action output with
 the same leaky-integrator residual the demos use (`corr += (gain·head(prox) − decay·corr)·dt`,

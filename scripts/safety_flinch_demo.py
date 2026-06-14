@@ -235,10 +235,16 @@ def main() -> None:
     ap.add_argument("--max-dev", type=float, default=0.35,
                     help="per-joint deviation clamp from the nominal posture (rad)")
     ap.add_argument("--bar", default="bar_m", choices=list(sw.BARS))
+    ap.add_argument("--obstacle", choices=["bar", "sphere"], default="bar")
+    ap.add_argument("--clean", action="store_true",
+                    help="minimal overlay: only min skin depth, obstacle distance, deviation")
+    ap.add_argument("--radius", type=float, default=0.045, help="sphere radius when --obstacle sphere")
     args = ap.parse_args()
 
     head = SafetyHead.load(args.ckpt)
     model = sw.build_model()
+    if args.obstacle == "sphere":
+        sw.bars_to_spheres(model, args.radius)
     data = mujoco.MjData(model)
     sensors = sorted(model.camera(i).name.removeprefix(NS) for i in range(model.ncam)
                      if "_sensor_" in model.camera(i).name)
@@ -296,6 +302,7 @@ def main() -> None:
     print(f"{T} frames ({T / FPS:.1f} s), bar '{args.bar}', {len(targets)} approach(es)")
 
     hand_bid = model.body(f"{NS}fr3_link7").id
+    link_bids = [model.body(f"{NS}fr3_link{i}").id for i in range(2, 8)]
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     ctx = foxglove.Context()
@@ -402,9 +409,14 @@ def main() -> None:
         ch_json.log({"dq": [float(x) for x in dq], "dq_norm": float(np.linalg.norm(dq)),
                      "min_depth": md, "bar_gap": bar_gap, "dev_norm": dev}, log_time=ns)
 
-        # annotated 3rd-person RGB frame for the MP4 (arm now at this frame's pose)
+        # 3rd-person RGB frame for the MP4 (arm now at this frame's pose)
         rgb.update_scene(data, camera=vcam, scene_option=vopt)
-        vw.write(annotate(cv2.cvtColor(rgb.render(), cv2.COLOR_RGB2BGR), md, dev))
+        frame = cv2.cvtColor(rgb.render(), cv2.COLOR_RGB2BGR)
+        if args.clean:
+            sw.clean_hud(frame, md, sw.min_obstacle_gap(model, data, mid, [args.bar], link_bids), dev)
+        else:
+            annotate(frame, md, dev)
+        vw.write(frame)
 
         if (t + 1) % 100 == 0:
             print(f"frame {t + 1}/{T}  min_depth {md:.3f}  |dq| {np.linalg.norm(dq):.2f}  dev {dev:.3f}")

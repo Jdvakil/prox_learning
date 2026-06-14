@@ -98,6 +98,10 @@ def main() -> None:
     ap.add_argument("--max-dev", type=float, default=0.30)
     ap.add_argument("--secs", type=float, default=18.0, help="demo duration")
     ap.add_argument("--standoff", type=float, default=0.14, help="bar FACE stand-off at a link (m)")
+    ap.add_argument("--obstacle", choices=["bar", "sphere"], default="bar")
+    ap.add_argument("--clean", action="store_true",
+                    help="minimal overlay: only min skin depth, obstacle distance, deviation")
+    ap.add_argument("--radius", type=float, default=0.045, help="sphere radius when --obstacle sphere")
     args = ap.parse_args()
 
     head = SafetyHead.load(args.ckpt)
@@ -107,6 +111,8 @@ def main() -> None:
     for gid in range(model.ngeom):
         if model.body(model.geom_bodyid[gid]).name in hood_names:
             model.geom_group[gid] = 3
+    if args.obstacle == "sphere":
+        sw.bars_to_spheres(model, args.radius)
     data = mujoco.MjData(model)
 
     sensors = sorted(model.camera(i).name.removeprefix(NS) for i in range(model.ncam)
@@ -123,6 +129,7 @@ def main() -> None:
            for n in ("sash", "jamb_l", "jamb_r", *sw.BARS, f"{NS}base")}
     base_mid = mid[f"{NS}base"]
     hand_bid = model.body(f"{NS}fr3_link7").id
+    link_bids = [model.body(f"{NS}fr3_link{i}").id for i in range(2, 8)]
 
     # group-2 (visual) geoms by link body, for per-link tinting; keep originals
     geoms_of_link = {ln: [] for ln in LINKS}
@@ -306,20 +313,24 @@ def main() -> None:
         rgb.update_scene(data, camera=vcam, scene_option=vopt)
         frame = cv2.cvtColor(rgb.render(), cv2.COLOR_RGB2BGR)
         hot = max(LINKS, key=lambda ln: heat[ln])
-        noun = "obstacle" if len(bars) == 1 else "obstacles"
-        cv2.putText(frame, f"moving {noun}: {len(bars)}    joint deviation: {dev:4.2f} rad",
-                    (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (240, 240, 240), 2, cv2.LINE_AA)
-        cv2.putText(frame, f"skin active: {hot}" if heat[hot] > 0.05 else "skin clear",
-                    (20, 74), cv2.FONT_HERSHEY_SIMPLEX, 0.75,
-                    (40, 40, 240) if heat[hot] > 0.05 else (200, 200, 200), 2, cv2.LINE_AA)
-        # per-link signal strip (bottom): one square per link, tinted by its heat
-        x0, y0, sq = 20, 500, 34
-        for k, ln in enumerate(LINKS):
-            c = (heat_bgr(heat[ln])[::-1] * 255).astype(int)   # RGB->BGR
-            cv2.rectangle(frame, (x0 + k * (sq + 28), y0), (x0 + k * (sq + 28) + sq, y0 + sq),
-                          (int(c[0]), int(c[1]), int(c[2])), -1)
-            cv2.putText(frame, ln, (x0 + k * (sq + 28) - 6, y0 - 6),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (220, 220, 220), 1, cv2.LINE_AA)
+        if args.clean:
+            gap = sw.min_obstacle_gap(model, data, mid, [name for name, _, _ in bars], link_bids)
+            sw.clean_hud(frame, md, gap, dev)
+        else:
+            noun = "obstacle" if len(bars) == 1 else "obstacles"
+            cv2.putText(frame, f"moving {noun}: {len(bars)}    joint deviation: {dev:4.2f} rad",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (240, 240, 240), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"skin active: {hot}" if heat[hot] > 0.05 else "skin clear",
+                        (20, 74), cv2.FONT_HERSHEY_SIMPLEX, 0.75,
+                        (40, 40, 240) if heat[hot] > 0.05 else (200, 200, 200), 2, cv2.LINE_AA)
+            # per-link signal strip (bottom): one square per link, tinted by its heat
+            x0, y0, sq = 20, 500, 34
+            for k, ln in enumerate(LINKS):
+                c = (heat_bgr(heat[ln])[::-1] * 255).astype(int)   # RGB->BGR
+                cv2.rectangle(frame, (x0 + k * (sq + 28), y0), (x0 + k * (sq + 28) + sq, y0 + sq),
+                              (int(c[0]), int(c[1]), int(c[2])), -1)
+                cv2.putText(frame, ln, (x0 + k * (sq + 28) - 6, y0 - 6),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (220, 220, 220), 1, cv2.LINE_AA)
         vw.write(frame)
         # restore originals so next frame re-tints from a clean base
         model.geom_rgba[:] = orig_rgba
