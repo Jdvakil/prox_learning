@@ -53,7 +53,27 @@ import mujoco  # noqa: E402
 import numpy as np  # noqa: E402
 
 NS = "robot_0/"
-ROBOT_XML = Path("/home/jaydv/code/prox_learning/assets/robots/franka_skin/model_hybrid.xml")
+
+
+def _find_robot_xml() -> Path:
+    """Locate the 40-sensor hybrid-skin FR3 model.
+
+    Override with ``$PROX_ROBOT_XML``; otherwise resolve repo-relative so this works on any
+    checkout (not just the original author's box). Falls through to the canonical path so a
+    missing file produces an error that names where it was expected.
+    """
+    env = os.environ.get("PROX_ROBOT_XML")
+    if env:
+        return Path(env)
+    root = Path(__file__).resolve().parent.parent
+    canonical = root / "assets/robots/franka_skin/model_hybrid.xml"
+    for rel in (canonical, root / "franka_assets/fr3_skin/model_hybrid.xml"):
+        if rel.exists():
+            return rel
+    return canonical
+
+
+ROBOT_XML = _find_robot_xml()
 MOUNT_Z = 0.35
 D_ACT = 0.18          # repulsion activation distance (m)
 HIT_TOL = 0.025       # back-projected point must lie this close to a scene box surface
@@ -212,6 +232,60 @@ def box_surface_dist(p: np.ndarray, boxes: list[tuple[np.ndarray, np.ndarray]]) 
     return best
 
 
+def analytic_retreat(model, data, sensors, cam_ids, depths, boxes, arm_dofadr,
+                     jacp=None, d_act=D_ACT, hit_tol=HIT_TOL):
+    """Whole-arm potential-field joint retreat from already-rendered skin depths.
+
+    Reproduces the analytic label this file distills the safety head from (see the inner
+    loop of main): for each sensor take the nearest valid depth pixel, back-project it to a
+    world hit, reject self-hits (points not lying on any analytic scene box in `boxes`), and
+    accumulate a Jacobian-transpose repulsion (1/r - 1/d_act) in joint space. Returns the
+    UNSCALED 7-DoF retreat (same units as the stored ``label_dq``) and the per-sensor
+    environment-validated hit distance (inf where no actionable return).
+
+    depths : (S, 8, 8) float planar-z depths, same sensor order as ``sensors``/``cam_ids``.
+    boxes  : list of (center(3,), half(3,)) analytic surfaces of THIS frame (static scene +
+             posed mocaps + the obstacle), used ONLY for self-hit rejection.
+
+    Pulled out of main so the closed-loop ablation harness can reuse the exact same label as
+    the ``oracle`` condition and as the per-frame retreat-cosine reference.
+    """
+    f = 4.0 / np.tan(np.deg2rad(FOVY / 2))      # 8x8 pinhole focal length (px)
+    cx = cy = 3.5
+    uu, vv = np.meshgrid(np.arange(8), np.arange(8))
+    if jacp is None:
+        jacp = np.zeros((3, model.nv))
+    tau = np.zeros(model.nv)
+    md = np.full(len(sensors), np.inf, np.float32)
+    for si, s in enumerate(sensors):
+        cid = cam_ids[s]
+        d8 = depths[si]
+        m = d8 >= 0.005
+        if not m.any():
+            continue
+        j = np.argmin(np.where(m, d8, np.inf))
+        u, v = uu.flat[j], vv.flat[j]
+        dz = float(d8.flat[j])
+        if dz >= d_act:
+            continue
+        Rm = data.cam_xmat[cid].reshape(3, 3)
+        pos = data.cam_xpos[cid]
+        # MuJoCo cam frame is GL: +x right, +y up, -z forward
+        p_cam = np.array([(u - cx) * dz / f, -(v - cy) * dz / f, -dz])
+        p_o = Rm @ p_cam + pos
+        if box_surface_dist(p_o, boxes) > hit_tol:
+            continue   # self-hit (own arm): excluded from the label, kept in the input
+        r = float(np.linalg.norm(pos - p_o))
+        if r < 1e-4 or r >= d_act:
+            continue
+        md[si] = r
+        direction = (pos - p_o) / r
+        w = 1.0 / r - 1.0 / d_act
+        mujoco.mj_jac(model, data, jacp, None, pos, int(model.cam_bodyid[cid]))
+        tau += jacp.T @ (direction * w)
+    return tau[arm_dofadr].astype(np.float32), md
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", nargs="+", type=Path, required=True,
@@ -245,9 +319,6 @@ def main() -> None:
     mujoco.mjv_defaultOption(opt)
     opt.geomgroup[2] = 0   # hide cosmetic skin, exactly like datagen
 
-    f = 4.0 / np.tan(np.deg2rad(FOVY / 2))     # 8x8 intrinsics
-    cx = cy = 3.5
-    uu, vv = np.meshgrid(np.arange(8), np.arange(8))
     jacp = np.zeros((3, model.nv))
     bar_names = list(BARS)
 
@@ -318,37 +389,13 @@ def main() -> None:
             if n in active:
                 boxes.append((data.mocap_pos[mid[n]].copy(), np.asarray(BARS[n])))
 
-        tau = np.zeros(model.nv)
+        depths_i = np.zeros((len(sensors), 8, 8), np.float32)
         for si, s in enumerate(sensors):
-            cid = cam_ids[s]
             rd.update_scene(data, camera=f"{NS}{s}", scene_option=opt)
-            d8 = rd.render()
-            X[i, si] = d8.astype(np.float16)
-            m = d8 >= 0.005
-            if not m.any():
-                continue
-            j = np.argmin(np.where(m, d8, np.inf))
-            u, v = uu.flat[j], vv.flat[j]
-            dz = float(d8.flat[j])
-            if dz >= D_ACT:
-                continue
-            Rm = data.cam_xmat[cid].reshape(3, 3)
-            pos = data.cam_xpos[cid]
-            # MuJoCo cam frame is GL: +x right, +y up, -z forward
-            p_cam = np.array([(u - cx) * dz / f, -(v - cy) * dz / f, -dz])
-            p_o = Rm @ p_cam + pos
-            if box_surface_dist(p_o, boxes) > HIT_TOL:
-                continue   # self-hit (own arm): excluded from the label, kept in the input
-            r = float(np.linalg.norm(pos - p_o))
-            if r < 1e-4 or r >= D_ACT:
-                continue
-            MD[i, si] = r
-            direction = (pos - p_o) / r
-            w = 1.0 / r - 1.0 / D_ACT
-            mujoco.mj_jac(model, data, jacp, None, pos, int(model.cam_bodyid[cid]))
-            tau += jacp.T @ (direction * w)
-
-        Y[i] = tau[arm_dofadr].astype(np.float32)
+            depths_i[si] = rd.render()
+        X[i] = depths_i.astype(np.float16)
+        Y[i], MD[i] = analytic_retreat(model, data, sensors, cam_ids, depths_i,
+                                       boxes, arm_dofadr, jacp)
         Q[i] = q_all[row]
         G[i] = grip_all[row]
         B[i] = bp
