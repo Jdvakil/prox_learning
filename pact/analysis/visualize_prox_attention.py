@@ -64,8 +64,7 @@ STATE_DIM, ACTION_DIM = 9, 8
 
 
 @contextmanager
-def _detr_argv(ckpt_dir: str, seed: int, n_proximity_sensors: int,
-               prox_tokens_per_sensor: int = 1):
+def _detr_argv(ckpt_dir: str, seed: int, n_proximity_sensors: int):
     """Hide this script's CLI flags from detr/main.py's nested argparse."""
     orig = sys.argv
     sys.argv = [
@@ -76,7 +75,6 @@ def _detr_argv(ckpt_dir: str, seed: int, n_proximity_sensors: int,
         "--seed", str(seed),
         "--num_epochs", "1",
         "--n_proximity_sensors", str(n_proximity_sensors),
-        "--prox_tokens_per_sensor", str(prox_tokens_per_sensor),
     ]
     try:
         yield
@@ -88,8 +86,7 @@ def _detr_argv(ckpt_dir: str, seed: int, n_proximity_sensors: int,
 
 
 def build_policy(ckpt_dir: str, hidden_dim: int, dim_feedforward: int,
-                 chunk_size: int, n_sensors: int, seed: int,
-                 prox_tokens_per_sensor: int = 1):
+                 chunk_size: int, n_sensors: int, seed: int):
     config = dict(
         lr=1e-4,
         num_queries=chunk_size,
@@ -105,10 +102,8 @@ def build_policy(ckpt_dir: str, hidden_dim: int, dim_feedforward: int,
         state_dim=STATE_DIM,
         action_dim=ACTION_DIM,
         n_proximity_sensors=n_sensors,
-        prox_tokens_per_sensor=prox_tokens_per_sensor,
     )
-    with _detr_argv(ckpt_dir, seed, n_sensors,
-                    prox_tokens_per_sensor=prox_tokens_per_sensor):
+    with _detr_argv(ckpt_dir, seed, n_sensors):
         from policy import ACTPolicy  # noqa: WPS433 - inside argv shim
         policy = ACTPolicy(config)
     state = torch.load(Path(ckpt_dir) / "policy_best.ckpt", map_location="cuda",
@@ -260,33 +255,23 @@ def _stack_layer_weights(captured: Dict[int, List[torch.Tensor]]
     return torch.stack(per_layer, dim=0)                  # (n_layers, B*, L, S)
 
 
-def _summarise(weights: torch.Tensor, n_sensors: int,
-               prox_tokens_per_sensor: int = 1) -> Dict[str, np.ndarray]:
+def _summarise(weights: torch.Tensor, n_sensors: int
+               ) -> Dict[str, np.ndarray]:
     """weights: (n_layers, B, L, S)."""
     n_layers, B, L, S = weights.shape
-    K = int(prox_tokens_per_sensor)
-    n_prox_tokens = n_sensors * K
     # mean over batch & queries — per (layer, src_token)
     per_layer_per_token = weights.mean(dim=(1, 2))         # (n_layers, S)
     per_token = weights.mean(dim=(0, 1, 2))                # (S,)
 
-    prox_slice = slice(2, 2 + n_prox_tokens)
-    # Sum the K tokens belonging to each sensor so per-sensor reporting
-    # stays interpretable when K > 1.
-    prox_per_token = per_token[prox_slice].reshape(n_sensors, K).sum(dim=1)
-    per_sensor = prox_per_token.numpy()                    # (n_sensors,)
-    per_layer_per_sensor = (
-        per_layer_per_token[:, prox_slice]
-        .reshape(n_layers, n_sensors, K)
-        .sum(dim=2)
-        .numpy()
-    )
+    prox_slice = slice(2, 2 + n_sensors)
+    per_sensor = per_token[prox_slice].numpy()             # (n_sensors,)
+    per_layer_per_sensor = per_layer_per_token[:, prox_slice].numpy()
 
     groups = {
         "latent":  float(per_token[0].item()),
         "proprio": float(per_token[1].item()),
         "prox":    float(per_token[prox_slice].sum().item()),
-        "image":   float(per_token[2 + n_prox_tokens:].sum().item()),
+        "image":   float(per_token[2 + n_sensors:].sum().item()),
     }
     # Sanity: should sum to ~1.
     return {
@@ -339,12 +324,9 @@ def plot_per_sensor(per_sensor: np.ndarray, sensor_names: List[str],
 
 
 def plot_groups(groups: Dict[str, float], n_memory_tokens: int,
-                n_sensors: int, out: Path,
-                prox_tokens_per_sensor: int = 1) -> None:
-    K = int(prox_tokens_per_sensor)
-    n_prox_tokens = n_sensors * K
-    image_tokens = n_memory_tokens - 2 - n_prox_tokens
-    sizes = {"latent": 1, "proprio": 1, "prox": n_prox_tokens, "image": image_tokens}
+                n_sensors: int, out: Path) -> None:
+    image_tokens = n_memory_tokens - 2 - n_sensors
+    sizes = {"latent": 1, "proprio": 1, "prox": n_sensors, "image": image_tokens}
     keys = ["latent", "proprio", "prox", "image"]
     totals = [groups[k] for k in keys]
     per_token = [groups[k] / sizes[k] for k in keys]
@@ -439,8 +421,6 @@ def main() -> int:
     p.add_argument("--n_temporal_eps", type=int, default=24,
                    help="Number of episodes pooled into each temporal bucket.")
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--prox_tokens_per_sensor", type=int, default=1,
-                   help="Must match the value the checkpoint was trained with.")
     args = p.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -466,8 +446,7 @@ def main() -> int:
     # ---- build policy + extractor ---------------------------------------
     policy, _cfg = build_policy(args.ckpt_dir, args.hidden_dim,
                                 args.dim_feedforward, args.chunk_size,
-                                n_sensors, args.seed,
-                                prox_tokens_per_sensor=args.prox_tokens_per_sensor)
+                                n_sensors, args.seed)
     extractor = FrozenProxFeatureExtractor(args.prox_encoder_ckpt,
                                            device=torch.device("cuda"))
     recorder = CrossAttnRecorder(policy)
@@ -500,8 +479,7 @@ def main() -> int:
                       f"(seen {seen} samples).")
 
     weights = _stack_layer_weights(recorder.captured)            # (L, B, Q, S)
-    summary = _summarise(weights, n_sensors,
-                         prox_tokens_per_sensor=args.prox_tokens_per_sensor)
+    summary = _summarise(weights, n_sensors)
     print(f"[viz] memory token count = {summary['n_memory_tokens']}")
     print(f"[viz] action query count = {summary['n_action_queries']}")
     print(f"[viz] attention sums to {summary['total_attention_check']:.4f} (≈1)")
@@ -514,8 +492,7 @@ def main() -> int:
     plot_per_sensor(summary["per_sensor"], sensor_names,
                     out_dir / "per_sensor_attention.png")
     plot_groups(summary["groups"], summary["n_memory_tokens"], n_sensors,
-                out_dir / "group_attention.png",
-                prox_tokens_per_sensor=args.prox_tokens_per_sensor)
+                out_dir / "group_attention.png")
     plot_per_layer_heatmap(summary["per_layer_per_sensor"], sensor_names,
                            out_dir / "per_layer_per_sensor_heatmap.png")
 

@@ -1,940 +1,856 @@
-# P+ACT — Proximity-Conditioned Manipulation & Reactive Safety on a Sensorized Franka FR3
+# Proximity Learning Architecture (PLA)
 
-This repo wraps a Franka FR3 in a **body-distributed proximity skin** (8×8 time-of-flight depth
-sensors tiled over the arm links) inside the MuJoCo / MolmoSpaces simulator, and uses that skin for
-two things:
+Sim-and-real pipeline for training a **Proximity Learning Architecture** — a
+manipulation policy that fuses VLM-derived task grounding with low-resolution,
+high-rate, body-distributed time-of-flight depth from a sensor skin on the
+Franka FR3.
 
-1. **P+ACT** — a manipulation policy that fuses the proximity stream into Action Chunking
-   Transformer (ACT). On a household pick-and-place task it roughly **doubles success vs vanilla
-   ACT (80% vs 40%)** while using less training compute, and the policy is shown to *actually read*
-   the proximity tokens.
-2. **Safety-CVAE** — a reactive collision-avoidance layer that turns the raw skin reading into a
-   joint-space retreat, with **no scene geometry or object poses at runtime**. It bolts onto any
-   nominal trajectory: the arm bows around an obstacle and rejoins its path.
+The headline experiment for the CoRL 2026 deadline is **PLA vs VLM-only ACT**:
+the same VLM front-end and ACT policy backbone, with and without the proximity
+skin stream, on a sweep of Franka manipulation tasks across iTHOR /
+ProcTHOR-derived household scenes.
 
-Both ride on a custom **proximity skin** for the FR3 that back-projects to ground-truth geometry at
-**millimetre accuracy**.
+This top-level repo is a thin shell that pins:
 
-![FR3 hybrid proximity skin — hero render](diagnostics_output/20260611_skin_photoshoot/hero.png)
+- `assets/` — robot MJCF and shared scene/object assets.
+- `submodules/molmospaces/` — the data-generation, simulation, and rendering
+  stack (forked / extended).
+- `submodules/MolmoBot/` — the policy / molmo VLM integration (training,
+  inference).
+- `synthetic_verify/`, `proximity_inspect/` — verification artifacts produced
+  while validating the proximity sensor pipeline (kept in-tree for repro).
 
-*FR3 wrapped in the 40-sensor hybrid proximity skin (red SPAD cells over the conformal dermis).*
-
-> **Two skin generations live in this repo — do not conflate them.**
-> The **29-sensor** skin (`model.xml`, links 2/3/5/6) produced the published **P+ACT** results.
-> The newer **40-sensor hybrid** skin (`model_hybrid.xml`, links 1–6) produced the millimetre
-> reconstruction validation and the **Safety-CVAE**. Sensor counts differ on purpose.
-
----
-
-## Headline results
-
-| Result | Number | Where |
-|---|---|---|
-| **P+ACT vs vanilla ACT** success (n=10) | **8/10 (80%) vs 4/10 (40%)**, +40 pp | [§5](#5-system-a--pact-proximity-conditioned-act) |
-| Significance | Fisher one-sided p = 0.085, Barnard p = 0.057, odds ratio 6.0 (a prior rerun: 9/10, p = 0.029) | §5 |
-| Training compute | P+ACT wins at **2.5× less** (2000 vs 5000 epochs) | §5 |
-| Decoder reads the skin | prox tokens take **21.7% of attention on 15.2% of tokens** → **1.55× per-token vs image** | §5 |
-| Proximity encoder accuracy | **2.0 cm** mean / 1.4 cm median Euclidean (per-axis 0.84/1.02/1.16 cm) | §5 |
-| Extra parameters for proximity | **~22 k** (0.03% of an ~84 M model) | §5 |
-| Skin geometric accuracy | back-projected returns land on real surfaces to **~4 mm** median | [§4](#4-the-proximity-skin) |
-| **Safety-CVAE** direction accuracy | retreat points the right way **89%** of the time near obstacles, near-silent when clear | [§6](#6-system-b--reactive-proximity-safety-safety-cvae) |
-| Obstacle dataset | **151 episodes, 122 success (80.8%)**, clean avoidance signal | §6 |
-
-<table>
-<tr>
-<td><img src="analysis_output/eval_quick_v1/contacts_by_link.png" width="100%"></td>
-<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/scatter_xyz.png" width="100%"></td>
-<td><img src="pact/analysis/attention_outputs/temporal_per_sensor.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Per-link contact events: P+ACT (pla) vs ACT (vlm).</em></td>
-<td align="center"><em>Encoder predicts contact-point XYZ to ~1 cm, R²&gt;0.99.</em></td>
-<td align="center"><em>Decoder attention to each prox sensor over the approach.</em></td>
-</tr>
-</table>
+The remainder of this README documents the **proximity sensor stack** end to
+end: model, simulator integration, verification protocol, and the substantive
+fixes that landed during validation.
 
 ---
 
-## Table of contents
+## 1. The franka_skin robot
 
-1. [What's in this repo](#1-whats-in-this-repo)
-2. [Repository layout](#2-repository-layout)
-3. [Installation](#3-installation)
-4. [The proximity skin](#4-the-proximity-skin)
-5. [System A — P+ACT (proximity-conditioned ACT)](#5-system-a--pact-proximity-conditioned-act)
-6. [System B — Reactive Proximity Safety (Safety-CVAE)](#6-system-b--reactive-proximity-safety-safety-cvae)
-7. [Data generation: configs, collision probe, enclosure design](#7-data-generation-configs-collision-probe-enclosure-design)
-8. [File reference](#8-file-reference)
-9. [Output directories & conventions](#9-output-directories--conventions)
-10. [Troubleshooting & gotchas](#10-troubleshooting--gotchas)
-11. [Project history (superseded)](#11-project-history-superseded)
+`assets/robots/franka_skin/model.xml` is a Franka FR3 with:
+
+- The standard FR3 collision and visual meshes (link0 .. link7).
+- A Robotiq 2F-85 gripper (`robotiq_2f85_v4/2f85.xml`).
+- A **sensor skin** wrapping link2, link3, link5, link6 — defined as
+  decorative `class="skin"` geoms (group=2, contype=0, conaffinity=0,
+  mass=0). The skin is purely visual; it does not collide and has no inertia.
+- **29 SPAD-style proximity sensors** distributed across the four skinned
+  links:
+
+| Link | # sensors |
+|------|-----------|
+| link2 | 7 |
+| link3 | 8 |
+| link5 | 6 |
+| link6 | 8 |
+| **Total** | **29** |
+
+Each sensor is realized in MJCF as a body whose pose places it just above the
+collision mesh at the desired skin location, with two children:
+
+- A `<site class="skin_sensor_site">` (red sphere, group=2) — visual marker
+  for the sensor location.
+- A `<camera mode="fixed" pos="0 0 0" quat="0 0 1 0" fovy="45.0"
+  resolution="8 8"/>` — the 8x8 proximity sensor itself.
+
+The `quat="0 0 1 0"` is a 180° rotation about the body's local Y axis, which
+preserves the outward viewing direction (along the body's +Z) while orienting
+the rendered image so "up" in the image corresponds to the conventional ToF
+top edge. (See §5 for why this changed from `0 1 0 0`.)
+
+Sensor body positions and orientations were imported from the original Isaac
+Sim USD placements; the per-sensor `pos` / `quat` on each `<body>` is what
+defines the geometry of the array.
 
 ---
 
-## 1. What's in this repo
+## 2. SPAD proximity sensor model
 
-- **A sensorized FR3 in simulation.** The arm carries 8×8 ToF depth sensors (SPAD-style, 45° FOV,
-  1.5–50 cm range). RGB is blurred at policy-training time, so the skin is the robot's
-  contact-range perception.
-- **System A — P+ACT.** A *frozen* proximity encoder maps each sensor's recent depth history to a
-  predicted 3-D object position; those positions enter ACT as extra encoder tokens. The policy
-  gets cleaner, lower-dimensional spatial cues than raw depth and improves pick-and-place success.
-- **System B — Safety-CVAE.** A small conditional VAE distilled from an analytic potential field
-  turns the live skin reading into a 7-DoF joint retreat. It is policy-agnostic: add it as a
-  residual on any trajectory for reactive obstacle avoidance.
-- **The simulator** is MolmoSpaces (iTHOR / ProcTHOR-Objaverse houses), vendored under
-  `submodules/molmospaces`. ACT is vendored under `submodules/act`.
+A single proximity sensor models an array-style time-of-flight depth chip
+(loosely a VL53L8CX class part):
 
-The two systems share the skin but are independent — you can run either alone.
+| Property | Value |
+|----------|-------|
+| Resolution | 8 × 8 |
+| Field of view | 45° (HFOV = VFOV, square pixel grid) |
+| Range | 0.05 – 4.0 m |
+| Sample rate | 60 Hz (sub-stepped within the policy step) |
+| Output channel | depth only (no RGB at training time) |
+
+Because all 29 sensors share these parameters and only differ in body pose,
+they are generated programmatically in
+`molmo_spaces/configs/camera_configs.py::_skin_sensor_camera_specs()` (29
+`MjcfCameraConfig(..., record_depth=True, is_proximity_sensor=True)` entries).
+
+`is_proximity_sensor=True` is the flag the env layer uses to:
+
+- skip RGB rendering for that camera,
+- record depth at `proximity_sensor_period_ms` (default 16.67 ms ≈ 60 Hz),
+  sub-stepping multiple frames per policy step,
+- route through the dedicated 8x8 depth renderer rather than the global RGB
+  renderer.
 
 ---
 
-## 2. Repository layout
+## 3. How proximity depth is rendered
+
+Implemented in
+`submodules/molmospaces/molmo_spaces/env/env.py::record_proximity_depths`.
+
+Two non-obvious design decisions, both load-bearing:
+
+### 3a. Dedicated 8×8 renderer, not the global one
+
+The global Mujoco renderer is sized at the RGB camera resolution (e.g.
+624 × 352, non-square). If we asked it to render an `fovy=45°` proximity
+camera, the *vertical* FOV is 45° but the *horizontal* FOV is determined by
+the aspect ratio — we'd get HFOV ≈ 72°, ~1.6× wider than the SPAD spec, and
+the depth pattern would be wrong.
+
+The fix is a separate `mujoco.Renderer(model, height=8, width=8)` used only
+for proximity sensors. With a square 8×8 viewport, HFOV = VFOV = 45° as
+intended.
+
+### 3b. Hide the skin during the proximity render
+
+The skin is a decorative shell (group=2) sitting *outside* the collision
+mesh; the proximity sensor bodies are positioned *inside* that shell (above
+the collision mesh, embedded in the skin volume). With the skin visible,
+each sensor sees its own skin at near-zero distance and reports the wrong
+thing.
+
+The fix:
+
+```python
+self._proximity_scene_option = mujoco.MjvOption()
+mujoco.mjv_defaultOption(self._proximity_scene_option)
+self._proximity_scene_option.geomgroup[2] = 0  # hide skin
+```
+
+passed via `update_scene(..., scene_option=self._proximity_scene_option)`.
+With group 2 hidden the renderer only considers the visual+collision links
+of the robot and the surrounding scene — exactly what a real ToF chip
+mounted on the skin would see.
+
+### 3c. Sub-step buffer
+
+Inside one policy control step, `record_proximity_depths(camera_names)` is
+called multiple times (the substep loop), each call appending one 8×8
+depth frame per active sensor to `self._proximity_depth_frames[camera]`.
+`reset_proximity_depth_buffer()` clears the buffer at the start of each
+policy step. `ProximityDepthBufferSensor` consumes the per-step list and
+emits the trajectory time-series.
+
+---
+
+## 4. Verification protocol
+
+We were not willing to start large-scale data collection without a
+quantitative *and* visual sign-off that the 29 sensors see the world
+correctly. The verification suite lives in
+`submodules/molmospaces/scripts/datagen/`:
+
+### 4a. Empty-room and flat-plane geometry tests
+
+`verify_synthetic_scenes.py` and `verify_proximity_gt.py` place the
+franka_skin robot in synthetic rooms (empty box, flat ground plane) and
+compare the rendered 8×8 depth against ground-truth `mj_ray` casts (which
+ignore back-face culling and rasterization quantization).
+
+Per-sensor outputs:
+
+- `synthetic_verify/empty_room/` — point clouds, error histograms, per-axis
+  bias, GT-vs-rendered overlays.
+- `synthetic_verify/flat_plane/` — quantization analysis as a function of
+  sensor resolution; documents the **−44.6 mm floor bias at 8×8**
+  (rasterization-driven, scales as 1/H, expected, not a bug).
+
+### 4b. mj_ray independent classifier
+
+A pure ray-cast diagnostic that bypasses the renderer and reports, per
+sensor, whether the *body name* hit by the central ray is:
+
+- the parent link's collision mesh (sensor pointing inward — placement bug),
+- another robot link (sensor pointing across the arm — usually OK),
+- the world / scene (sensor pointing outward — correct),
+- nothing within range (free space).
+
+Result: 24 / 29 sensors are correctly placed and oriented. 5 sensors
+(link2_1, link2_2, link2_4, link3_0, link3_7) have a nominal viewing
+direction that points toward their parent link's collision geom. With the
+skin culled (§3b) and back-face culling on the collision mesh, the renderer
+recovers an environment-derived depth for those rays anyway, so they are
+usable in the production pipeline. The placement bug is documented and can
+be fixed in a future skin revision without changing any code.
+
+### 4c. Hi-res RGB inspection (one-off)
+
+To go beyond histograms — an actual visual check of what every sensor sees
+during a real episode — we ran a one-shot inspection mode that rendered an
+extra 256×256 RGB frame from each proximity camera at every substep,
+matching the depth render exactly (same camera pose, same skin-hidden scene
+option). Outputs were 29 per-sensor MP4s plus a 29-tile grid MP4 over the
+full episode in `assets/datagen/pick_planner_v1/inspect_prox_*/proximity_rgb/`.
+
+The inspection MP4s confirmed:
+
+- No sensor sees the gripper, its own link, or its own skin in normal
+  motion.
+- Sensor frames track the iTHOR house_1 kitchen geometry as the arm moves
+  (cabinets, countertop, plants, windows visible from the appropriate
+  link6 sensors).
+- Image orientation was correct after the §5 quat fix.
+
+The inspection-mode code was a verification-only path. **It has been
+removed from `env.py` for production** so the env runs the canonical 8×8
+depth path and nothing else (see §6).
+
+---
+
+## 5. Substantive fixes that landed during validation
+
+Documented here so they don't get lost in git archaeology.
+
+### 5a. Skin self-occlusion (the big one)
+
+**Symptom:** in initial verification runs, ~33 % of rendered depths in an
+empty room came back as `~0`, classified as self-hits.
+
+**Root cause:** the skin shell (group=2) was visible to the proximity
+renderer, and sensor bodies sit *inside* the skin volume. Every sensor saw
+its own skin at distance ≈ 0.
+
+**Fix:** hide group 2 via `MjvOption.geomgroup[2] = 0` on the proximity
+renderer's scene option (see §3b). Empty-room self-hit rate dropped to
+near zero for the 24 well-placed sensors.
+
+### 5b. Failed `cx` shift, then reverted
+
+**Symptom:** a residual −44.6 mm floor bias at 8×8 against a flat ground
+plane.
+
+**Hypothesis tried:** off-center principal point — moved `cx` from
+`(W-1)/2 = 3.5` to `3.0` to "compensate" for what looked like a half-pixel
+asymmetry.
+
+**Result:** self-hit classification *increased* from 33.3 % → 36.8 %. The
+shift introduced a lateral misalignment in the back-projected point cloud
+without fixing the bias.
+
+**Resolution:** reverted to `cx = (W-1)/2 = 3.5`. The −44.6 mm floor bias is
+**rasterization quantization** that scales as `1/H` (verified by re-running
+flat-plane tests at multiple resolutions). It is not a calibration bug; it
+is a property of finite-resolution rendering and is small relative to the
+SPAD's depth noise floor.
+
+### 5c. Image orientation flip
+
+**Symptom:** in the hi-res RGB inspection MP4s, scene content appeared
+upside-down relative to the wrist / exo cameras.
+
+**Root cause:** all 29 cameras had `quat="0 1 0 0"` — a 180° rotation about
+local X. That preserves the viewing direction (still down +Z out of the
+body) but flips the image vertically.
+
+**Fix:** changed all 29 camera quats to `quat="0 0 1 0"` — a 180° rotation
+about local Y. Same viewing direction, image right-side-up (and
+horizontally mirrored vs the buggy state, which is the correct ToF
+convention). Backup of the pre-fix model lives at
+`assets/robots/franka_skin/model.xml.bak_before_orientation_fix`.
+
+### 5d. Site-packages vs in-tree `molmo_spaces` resolution
+
+**Symptom:** edits to `submodules/molmospaces/molmo_spaces/env/env.py`
+weren't visible to the data-generation pipeline at runtime.
+
+**Root cause:** the MolmoBot venv had both an old site-packages copy of
+`molmo_spaces` (from a prior install) *and* the in-tree submodule. Python
+was importing the site-packages copy.
+
+**Fix at runtime:** invoke the pipeline with the in-tree path on
+`PYTHONPATH` and the in-tree dir as cwd, e.g.
+
+```bash
+cd submodules/molmospaces \
+  && PYTHONPATH=. \
+       /home/jaydv/code/prox_learning/submodules/MolmoBot/MolmoBot/.venv/bin/python \
+       scripts/datagen/run_pipeline.py [args...]
+```
+
+This is the canonical invocation pattern; the pipeline itself was not the
+problem.
+
+### 5e. Production cleanup
+
+After visual sign-off, the inspection-mode patches were removed from
+`env.py`. The fields `_proximity_inspect_resolution`,
+`_proximity_inspect_renderer`, and `_proximity_rgb_frames`, the method
+`enable_proximity_rgb_inspection`, and the conditional inspection branch
+inside `record_proximity_depths` are all gone. `record_proximity_depths`
+now does exactly one thing: render 8×8 depth from each proximity camera
+with the skin hidden, append to the substep buffer, return.
+
+The standalone helper scripts that were only useful during validation —
+`scripts/datagen/inspect_proximity_rgb.py` and the failed
+`scripts/datagen/fix_sensor_orientations.py` — have been deleted. The
+analytical verifiers (`verify_synthetic_scenes.py`,
+`verify_proximity_gt.py`, `visualize_proximity.py`,
+`analyze_sample_episode.py`) remain.
+
+---
+
+## 6. Production data collection
+
+Two registered configs in
+`submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py`
+drive the franka_skin pick-and-place pipeline:
+
+| Config name | Purpose | Scope |
+|-------------|---------|-------|
+| `FrankaSkinPickAndPlaceDataGenConfig` | Production class. | iTHOR / train, defaults from `PickAndPlaceTaskSamplerConfig` (`samples_per_house=20`, `house_inds=range(0,4)`). Subclass or override at the call site for the full sweep. |
+| `FrankaSkinPickAndPlacePilotConfig` | 10-house pilot. Subclass of the prod config. | iTHOR / train, `house_inds=1..10`, `samples_per_house=4`, `seed=2026`. |
+
+Both wire `FrankaSkinRobotConfig` + `FrankaSkinCameraSystem` (the 29 SPAD
+sensors plus the standard exo / wrist RGB cameras) and use the planner
+policy via the `PickAndPlaceDataGenConfig` base class.
+
+Canonical invocation (named-config style — same entry point as the rest of
+molmospaces):
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+
+PYTHONPATH=. \
+  /home/jaydv/code/prox_learning/submodules/MolmoBot/MolmoBot/.venv/bin/python \
+  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlaceDataGenConfig
+```
+
+Output trajectory bundles contain, per timestep:
+
+- Exo / wrist RGB streams.
+- For each of the 29 proximity sensors, a list of 8×8 float32 depth frames
+  recorded at 60 Hz across the policy step
+  (`ProximityDepthBufferSensor`).
+- The usual proprioception / action / language / object channels.
+
+Trajectories land under
+`assets/experiment_output/datagen/pick_and_place_skin_v1/house_<i>/` and are
+combined into a training H5 with
+`scripts/datagen/combine_trajs_into_h5.py`.
+
+> **Legacy CLI alternative.** The flag-driven entry point still works:
+> `scripts/datagen/run_pipeline.py --robot skin --task_type pick_and_place
+> --scene_dataset ithor --data_split train --house_inds <int>
+> --samples_per_house <N> --seed <S> --run_name_prefix <name>`.
+> Use it when you need quick CLI overrides; otherwise prefer the named
+> config.
+
+### 6.1. Pilot run (10 iTHOR houses, pick-and-place)
+
+Before committing compute to the full sweep, run the 10-house pilot to
+surface any scene-dependent failures (sensor clipping into thin walls,
+iTHOR geometry edge cases, planner timeouts on the new task family). Task
+matches the molmobot evaluation task: **pick_and_place**.
+
+Pilot parameters (baked into `FrankaSkinPickAndPlacePilotConfig`):
+
+| Field | Value | Why |
+|-------|-------|-----|
+| `robot_config` | `FrankaSkinRobotConfig` | franka_skin (29 SPAD sensors). |
+| `camera_config` | `FrankaSkinCameraSystem` | Skin proximity + exo/wrist RGB. |
+| `task_type` | `pick_and_place` | Matches the molmobot evaluation task. |
+| `scene_dataset` | `ithor` | iTHOR train kitchens (verified scene_1). |
+| `data_split` | `train` | Train split, disjoint from eval. |
+| `task_sampler_config.house_inds` | `1..10` | 10-house pilot. |
+| `task_sampler_config.samples_per_house` | `4` | ≈40 successful episodes target. |
+| `seed` | `2026` | Reproducible. Bump per re-run. |
+| `output_dir` | `assets/experiment_output/datagen/pick_and_place_skin_pilot_v1` | Tagged so it doesn't collide with prod runs. |
+
+Launch:
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+
+mkdir -p logs
+
+PYTHONPATH=. \
+  /home/jaydv/code/prox_learning/submodules/MolmoBot/MolmoBot/.venv/bin/python \
+  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlacePilotConfig \
+  2>&1 | tee logs/pilot_skin_pickplace_v1.log
+```
+
+The pipeline iterates the 10 houses internally (no bash loop needed) and
+writes per-house subdirs under
+`assets/experiment_output/datagen/pick_and_place_skin_pilot_v1/house_<i>/`.
+
+Pilot acceptance checklist (before scaling up):
+
+- [ ] Per-house success rate ≥ ~50 % (planner solving pick-and-place in the
+      kitchen). Below that, debug the planner on iTHOR pick-and-place before
+      scaling.
+- [ ] No crashes from the proximity render path (grep
+      `logs/pilot_skin_pickplace_v1.log` for `native 8x8 render failed` —
+      should be zero).
+- [ ] Spot-check 1–2 trajectories with `scripts/datagen/visualize_proximity.py`
+      / `analyze_sample_episode.py` to confirm depth streams look sane on
+      different houses (different geometry from house_1).
+- [ ] Combined H5 builds cleanly via `combine_trajs_into_h5.py`.
+
+If all four pass, the full sweep is just running
+`FrankaSkinPickAndPlaceDataGenConfig` directly (or registering a wider-house
+subclass — same pattern as the pilot).
+
+### 6.2. Low-surface pick-and-place collection (proximity-skin showcase)
+
+The first pilot ran cleanly but the resulting dataset is dominated by
+**tabletop** episodes: the default `PickAndPlaceTaskSampler` picks any
+object on any supporting surface, and procthor-objaverse / iTHOR scenes are
+saturated with `CounterTop` and `DiningTable` candidates. That distribution
+under-exercises the proximity skin — the wrist sensors see open space the
+whole way to the grasp.
+
+To bias collection toward the cases where the skin actually pays off
+(reaching down into a sink, into a low shelf, onto a chair / stool /
+sofa / bed / bathtub / toilet / dresser / chest-of-drawers), three things
+landed in the molmospaces submodule:
+
+1. A new sampler config field
+   `PickAndPlaceTaskSamplerConfig.source_surface_types` (case-insensitive
+   prefix tuple, default `()`).
+2. An override of `_get_scene_objects` on
+   `PickAndPlaceReceptacleTaskSampler` that filters candidate pickups by
+   walking the supporting geom's body parent chain (up to 3 ancestors) and
+   keeping only objects whose support body name starts with one of the
+   requested prefixes. Logs `[source_surface_types] kept N/M candidates by
+   prefix; counts={...}` per scene so per-prefix yield is visible. When
+   the filter empties the candidate list it raises `HouseInvalidForTask`,
+   not an assertion, so the worker advances cleanly to the next house.
+3. Two registered configs in `object_manipulation_datagen_configs.py`
+   that wire the filter:
+
+| Config name | Purpose | Scope |
+|-------------|---------|-------|
+| `FrankaSkinLowSurfacePickAndPlaceDataGenConfig` | Production class with the low-surface filter. | procthor-objaverse / train, `house_inds=range(1999)`, `samples_per_house=5`, `num_workers=4`, `source_surface_types=LOW_SURFACE_PREFIXES`. |
+| `FrankaSkinLowSurfacePickAndPlacePilotConfig` | Quick pilot subclass. | Same dataset, `house_inds=range(200)`, `samples_per_house=3`. |
+
+`LOW_SURFACE_PREFIXES = ("sink", "shelf", "bookshelf", "chair", "armchair",
+"stool", "sofa", "bed", "bathtub", "toilet", "crapper", "dresser",
+"chestofdrawers")`. `crapper` and `chestofdrawers` are included because
+that's how the procthor-objaverse XMLs name those bodies.
+
+Output goes to
+`assets/datagen/pick_and_place_skin_low_surface_v1/` (prod) and
+`assets/datagen/pick_and_place_skin_low_surface_pilot_v1/` (pilot), kept
+separate from the tabletop-dominated v1 dataset.
+
+#### Robustness fixes that also landed
+
+These came out of the first low-surface pilot run and apply to any
+pick-and-place datagen, not just the low-surface variant:
+
+- **Worker self-termination guard relaxed.** `max_allowed_sequential_irrecoverable_failures=10000`
+  on both pilot and prod skin configs. The default of 5 was treating
+  "house exhausted its candidate pool after some successes" as
+  irrecoverable and exiting workers after only 5 productive houses each.
+  The first 47-episode pilot was actually a 2-worker × 5-house = 10-house
+  cap, not a real `samples_per_house` cap.
+- **`_configure_pick_and_place` assertion → raise.** The base
+  `assert self.candidate_objects is not None and len(self.candidate_objects) > 0`
+  in `pick_and_place_object_target_task_sampler.py` now raises
+  `HouseInvalidForTask` instead, so a drained pool advances to the next
+  house instead of crashing the worker.
+- **Worker tracebacks logged to file.** All three
+  `traceback.print_exc()` calls in
+  `molmo_spaces/data_generation/pipeline.py` were going to stderr only
+  (the `worker_stdout_context` redirect is a no-op in this build) and so
+  worker errors never reached `running_log.log`. Replaced with
+  `worker_logger.error/warning(... + traceback.format_exc())` so every
+  task-sampling, rollout, and save error now shows up in the per-run
+  `running_log.log`. Critical for after-the-fact debugging — without it,
+  rerun-and-pray was the only diagnostic loop.
+
+#### How to launch
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+/opt/conda/envs/mlspaces/bin/python molmo_spaces/data_generation/main.py FrankaSkinLowSurfacePickAndPlacePilotConfig
+# once the pilot looks healthy:
+/opt/conda/envs/mlspaces/bin/python molmo_spaces/data_generation/main.py FrankaSkinLowSurfacePickAndPlaceDataGenConfig
+```
+
+Watch for `[source_surface_types] kept N/M ...` lines in the per-worker
+log to gauge how many scenes have qualifying surfaces. If yield is too
+low, narrow or widen `LOW_SURFACE_PREFIXES`.
+
+#### Pre-flight: scene cache must be populated
+
+`assets/scenes/<dataset>/*.xml` are symlinks into
+`~/.cache/molmo-spaces-resources/scenes/...`. If the cache is wiped (e.g.
+disk pressure cleanup) the symlinks dangle silently and **every house
+fails with `ParseXML: Error opening file`**. Symptom: a healthy-looking
+log dump followed by hundreds of
+`HouseInvalidForTask: Scene setup failed during compilation` warnings
+and `Completed 0 houses, skipped N houses` at the end.
+
+Verify before launching a long run:
+
+```bash
+ls -L /home/jaydv/code/prox_learning/assets/scenes/procthor-objaverse-train/train_0.xml
+# should print a non-zero file size, NOT "No such file or directory"
+```
+
+If the cache is gone, repopulate via the molmospaces HF download:
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+/opt/conda/envs/mlspaces/bin/python scripts/assets/hf_download.py
+```
+
+Or fetch a specific scene/variant:
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/datagen/fetch_assets.py \
+    scene procthor-objaverse <idx> --variant ceiling
+```
+
+Note that `task_sampler.sample_task` defaults to `variant="ceiling"`, so
+both the base and ceiling XMLs need to be present for the scene to load.
+
+#### Why per-house yield varies
+
+`samples_per_house=N` is a target ceiling, not a quota. The pick-and-place
+sampler keeps trying tasks in a house until it collects `N` successes or
+the candidate pool is exhausted via `_remove_candidate_object` (called on
+supporting-geom failure, robot-placement error, ≥2 grasp failures, or
+`_on_candidate_selected` ValueError). Houses with few qualifying objects
+will produce fewer episodes than houses with many — this is the data
+distribution, not a bug. The first pilot's
+`{house_4: 1, house_5: 10, house_8: 2, ...}` spread was natural variance
+in candidate-pool size after filtering.
+
+---
+
+## 7. Repo layout (top level)
 
 ```
 prox_learning/
-├── pact/                  # System A: P+ACT (canonical pipeline)
-│   ├── prox_encoder/      #   encoder model + windowed cache + dataset
-│   ├── act_prox/          #   ACT × proximity integration, training, eval, masking
-│   ├── scripts/           #   encoder CLIs (build_cache, train, evaluate)
-│   ├── analysis/          #   attention visualisation
-│   └── outputs_prox/      #   encoder caches + checkpoints (gitignored)
-├── scripts/               # ~60 helpers: datagen launch, ACT conversion, eval, analysis,
-│                          #   the hybrid-skin build/verify tools, and the Safety-CVAE scripts
+├── assets/
+│   ├── robots/franka_skin/        # franka_skin MJCF + skin meshes (the model)
+│   ├── robots/franka_fr3/         # baseline FR3 (no skin)
+│   ├── robots/...                 # other robots (yam, rby1, ...)
+│   └── datagen/                   # rollout outputs + inspection runs
+├── synthetic_verify/              # quantitative GT-vs-render verification
+│   ├── empty_room/
+│   ├── flat_plane/
+│   └── summary.md
+├── proximity_inspect/             # ad hoc proximity inspection artifacts
+├── pointcloud.ipynb               # interactive proximity point-cloud notebook
 ├── submodules/
-│   ├── molmospaces/       #   the simulator + datagen (forked, with our task/config edits)
-│   ├── act/               #   ACT model (forked, 4 backward-compatible edits)
-│   └── MolmoBot/          #   (auxiliary)
-├── assets/                # robot MJCF + scenes + collected datasets (most gitignored)
-│   ├── robots/franka_skin/#   model.xml (29-sensor), model_hybrid.xml (40-sensor), ...
-│   ├── datagen/           #   collected trajectory h5 + camera MP4s
-│   └── safety/            #   Safety-CVAE data, checkpoints, demo outputs
-├── franka_assets/fr3_skin/# self-contained 29-sensor skin model tree (bundled meshes)
-├── analysis_output/       # result plots (P+ACT vs ACT, dataset coverage, ...)
-├── diagnostics_output/    # skin verification, reconstruction, photoshoot, fumehood, obstacle
-├── synthetic_verify/      # empty-room / flat-plane ground-truth checks
-└── pyproject.toml         # package name "pla" (kept for history)
+│   ├── molmospaces/               # data-gen + sim + rendering stack (extended)
+│   └── MolmoBot/                  # VLM + policy training
+├── pyproject.toml
+└── README.md                      # this file
 ```
-
-Two Python interpreters are used:
-
-- **`/opt/conda/envs/mlspaces/bin/python`** — everything: datagen, sim, the encoder, P+ACT,
-  the Safety-CVAE. Referred to below as `$PY`.
-- **`/opt/conda/envs/aloha/bin/python`** — *optional*, only for the original vanilla-ACT scripts.
 
 ---
 
-## 3. Installation
+## 7.5. PLA training pipeline (`pla/`)
+
+The headline CoRL 2026 ablation — **PLA (with proximity) vs VLM-only ACT
+(without proximity)** — is implemented as a thin training/eval stack on top
+of the `submodules/act` ACT model. Both variants share an identical CVAE +
+transformer backbone; the only difference is whether 29 proximity tokens
+are inserted into the transformer encoder context. See `TODO.md` for the
+spec this stack implements.
+
+Layout:
+
+```
+pla/
+├── dataset.py            # PyTorch dataset over HDF5 trajectories + sibling MP4s
+├── proximity_encoder.py  # shared MLP: (B, 29, 8, 8) → (B, 29, 512)
+├── policy.py             # PLA_DETRVAE + PLAPolicy (loss + image normalization)
+├── eval_policy.py        # InferencePolicy wrapper for molmospaces eval
+├── train.py              # CLI entry: training loop with WandB + ckpting
+├── eval.py               # CLI entry: 200-ep benchmark eval, Wilson 95% CI
+└── diagnostics.py        # dataset sanity-check plots + summary.json
+```
+
+### 7.5.a Dataset format
+
+Each `house_<i>/trajectories_batch_*.h5` holds N trajectories under
+`traj_<i>/`. Per-trajectory layout:
+
+| Path | Shape / type | Notes |
+|------|--------------|-------|
+| `obs/proximity/<sensor>` | `(T, n_substeps, 8, 8)` float32 | 29 sensors named `link{2,3,5,6}_sensor_{i}`; mean-pooled over substep dim. **Substep dim ≡ 1 only when `proximity_sensor_period_ms=0`, which silently disables recording (see §6.1 + the dataset bug memory).** |
+| `obs/agent/qpos[t]` | `(T, 2000)` uint8 | JSON `{"arm":[7], "base":[], "gripper":[2]}` rows; we read `arm`. |
+| `actions/joint_pos[t]` | `(T, 2000)` uint8 | JSON `{"arm":[7], "gripper":[1]}` rows; we read `arm`. |
+| `obs_scene` | scalar bytes | JSON+pickle blob; `task_description` is the language string. |
+| `success` / `fail` | `(T,)` bool | Episode is "successful" if `success[-1] == True`. |
+| Sibling MP4s | per-camera | `episode_<00000000+i>_<cam>_batch_1_of_1.mp4` for `exo_camera_1`, `wrist_camera`. Read via `decord` at the chunk-start timestep. |
+
+`pla.dataset.FrankaSkinHDF5Dataset` indexes one sample per timestep (the
+canonical ACT schedule). Items: `proximity (29, 8, 8) ∈ [0,1]`, `qpos (7,)`,
+`action (k=100, 7)`, `is_pad (k,)`, `image (num_cam, 3, H, W)`,
+`language (str)`. The `use_proximity=False` mode zeroes the proximity tensor
+so the same loader feeds both the PLA and the VLM-only baseline.
+
+### 7.5.b Policy
+
+`pla.policy.PLA_DETRVAE` mirrors upstream `detr_vae.DETRVAE` and reuses its
+`Transformer`, `Backbone`, CVAE encoder, and sinusoidal positional tables
+without modification. The single addition is a `ProximityEncoder`
+(`Linear(64→128) → ReLU → Linear(128→512)`, weights shared across the 29
+sensors per TODO §2) and 29 extra slots in `additional_pos_embed`. The
+encoder context becomes `[latent_z, qpos, *29 proximity tokens, *image
+tokens]` when `use_proximity=True`; it falls back to the upstream
+`[latent_z, qpos, *image tokens]` when False.
+
+Default hyperparameters (TODO §3): `chunk_size=100`, `hidden_dim=512`,
+`enc_layers=dec_layers=7`, `kl_weight (β) = 10`. Param counts (verified):
+**PLA 96.37M, baseline 96.28M** — the proximity branch is ~90k params
+(the encoder + 29 extra positional embeddings).
+
+### 7.5.c Train / eval
 
 ```bash
-# 3.0 clone with submodules
-git submodule update --init --recursive
+# Smoke runs (CPU/GPU sanity)
+python -m pla.dataset <dataset_root>            # prints a sample dict
+python -m pla.proximity_encoder                 # prints param count
+python -m pla.policy                            # 1-step forward+backward
 
-# 3.1 primary env: datagen + sim + encoder + P+ACT + safety
-conda create -n mlspaces python=3.11
-conda activate mlspaces
-cd submodules/molmospaces
-pip install -e ".[mujoco]"          # or ".[mujoco-filament]" for the Filament renderer
-cd ../..
-pip install -e .                    # numpy, torch, h5py, mujoco, matplotlib, scipy, trimesh, ...
+# Full training (per TODO §5)
+python -m pla.train --use_proximity false --run_name vlm_only_act
+python -m pla.train --use_proximity true  --run_name pla_v1
 
-# headless rendering — required for every sim/render command in this repo
-export MUJOCO_GL=egl
-export PYOPENGL_PLATFORM=egl
+# Diagnostics on the dataset (gates training)
+python -m pla.diagnostics --root <dataset_root> \
+                          --out pla/diagnostics_output/<run_id>
 
-# 3.2 optional: vanilla-ACT-only env (skip if you only run P+ACT)
-conda env create -f submodules/act/conda_env.yaml   # creates env "aloha"
-conda activate aloha
-cd submodules/act/detr && pip install -e .          # the DETR/ACT model package
-conda activate mlspaces
-
-# 3.3 assets & scene cache
-export MLSPACES_ASSETS_DIR=$PWD/assets              # where symlinks live
-python -m molmo_spaces.molmo_spaces_constants       # download + symlink everything
-python scripts/datagen/fetch_assets.py scene procthor-objaverse 0 --split train
-python scripts/datagen/fetch_assets.py default      # default robots/objects/grasps
-ls -L assets/scenes/procthor-objaverse-train/train_0.xml   # verify the symlink resolves
+# Eval on FrankaPickandPlaceHardBench (200 episodes, procthor-objaverse val)
+BENCH_DIR=~/.cache/molmo-spaces-resources/benchmarks/molmospaces-bench-v2/20260415/procthor-objaverse/FrankaPickandPlaceHardBench/FrankaPickandPlaceHardBench_20260212_200ep_json_benchmark
+python -m pla.eval --checkpoint runs/pla_v1/latest.pt \
+                   --benchmark_dir $BENCH_DIR \
+                   --run_name pla_v1 --max_episodes 200
 ```
 
-**Mesh files are not in git.** STL/DAE meshes for the skin resolve at build time from the upstream
-`gentact_ros_tools`; the vendored FR3 derives from `mujoco_menagerie` (needs MuJoCo ≥ 3.1.3).
+Eval writes `eval_output/<run_name>/results.json` with
+`{success_count, total_count, success_rate, wilson_95_ci}`.
 
-**Dangling-symlink gotcha:** a wiped asset cache makes `assets/scenes/*.xml` dangle silently →
-`HouseInvalidForTask` / `ParseXML` errors. Verify with `ls -L`; repair by re-running the fetch with
-`MLSPACES_FORCE_INSTALL=True`.
+### 7.5.d Open problems
+
+- ~~**Gripper is not predicted by the network.**~~ **Resolved 2026-05-10**:
+  `pla.dataset.FrankaSkinDatasetConfig.action_dim` defaults to 8 (7 arm joints
+  + 1 normalized gripper, where the raw binary command `{0.0, 255.0}` is
+  rescaled to `{0, 1}` for L1 compatibility with arm magnitudes). The eval
+  policy predicts gripper directly and snaps back to `{0, 255}` for the
+  controller via a threshold (`gripper_threshold=0.5`).
+- ~~**Pilot dataset has zero proximity values.**~~ **Resolved 2026-05-10**:
+  `proximity_sensor_period_ms` was fixed in
+  `FrankaSkinPickAndPlaceDataGenConfig` (0.0 → 16.6667 ms ≡ 60 Hz). Smoke
+  re-collection on 10 houses × 4 samples (`FrankaSkinPickAndPlacePilotSmokeConfig`,
+  seed=2026) produced 36/36 successful trajectories with 99.94% nonzero
+  proximity pixels, per-sensor mean ~1-3 m and max ~4 m clipped (see §7.5.e).
+- **Eval is currently blocked: JsonBenchmark schema does not support 8×8
+  proximity sensors.** Two architectural mismatches surfaced this round.
+  - *First:* the cached `FrankaPickandPlaceHardBench_20260212_200ep_json_benchmark`
+    is built for `franka_droid` (DROID-randomized cameras, no SPAD sensors).
+    `camera_config_override` doesn't recover it because per-episode JSON
+    re-installs DROID cameras.
+  - *Second (the deeper blocker):* even after building a `franka_skin`
+    JsonBenchmark from held-out houses 11-20 via
+    `scripts/benchmarks/create_json_benchmark.py` (35 episodes generated, right
+    robot, right camera names), the eval still fails. The benchmark
+    `CameraSpec` schema at
+    `submodules/molmospaces/molmo_spaces/evaluation/benchmark_schema.py:58-83`
+    only stores `name / type / reference_body_names / camera_offset /
+    lookat_offset / camera_quaternion / fov / record_depth`. It has **no
+    per-camera resolution** and **no `is_proximity_sensor` flag**. A single
+    global `img_resolution: tuple[int, int]` governs every camera in the
+    episode. At eval time all 31 cameras (including the 29 SPAD sensors)
+    render RGB at the benchmark's `[624, 352]`, so `obs["link2_sensor_0"]`
+    comes back shaped `(352, 624, 3)` instead of `(8, 8)`. Our policy raises
+    `ValueError: could not broadcast input array from shape (624,3) into shape (8,8)`.
+    Three forward paths, in increasing rigor:
+    1. **Extend the JsonBenchmark schema** (`CameraSpec`) with per-camera
+       `resolution: tuple[int,int] | None` and `is_proximity_sensor: bool`,
+       propagate through `camera_manager.py` setup, and re-run
+       `create_json_benchmark.py`. ~Half-day upstream change.
+    2. **Custom rollout script** that bypasses `JsonEvalRunner`: iterate
+       `benchmark.json` episodes, set up env with the un-clobbered
+       `FrankaSkinCameraSystem`, run policy, check success. Re-uses task
+       specs but reads cameras from our config.
+    3. **Re-train on DROID-camera data** so we can use the cached
+       `FrankaPickandPlaceHardBench` directly. Throws away proximity entirely
+       (DROID datagen has no SPAD sensors), so contradicts the project goal.
+
+  Decision deferred (see README §7.5.e and TODO §6). Held-out 35-episode
+  benchmark is intact at
+  `assets/eval_subsets/FrankaSkinPickAndPlaceHoldout_v1/`; usable once a
+  rollout path is built.
+- **Language conditioning is not yet wired in.** The dataset returns
+  `task_description` per episode; the policy does not consume it. A Molmo
+  VLM token branch is the natural next step, deferred until the held-out
+  eval shows a positive proximity signal.
+
+### 7.5.e First validation round (2026-05-10 / 2026-05-11)
+
+End-to-end run on the 36-trajectory smoke dataset to validate the entire
+pipeline before committing compute to a 100-house+ pilot.
+
+**Smoke dataset (36 trajectories, 9430 timesteps):**
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| Success rate | 36/36 (100%) | data-gen |
+| Episode length | 224-301 steps (μ=262) | `diagnostics_output/.../summary.json` |
+| Proximity nonzero pixel fraction | 99.94% | per-sensor histogram |
+| Per-sensor mean depth | 1-3 m | `02_proximity_per_sensor_stats.png` |
+| Proximity overall max (post-clip to 4 m) | 4.000 m | clipping verified |
+| Unique task descriptions | 35 / 36 episodes | language coverage plot |
+| Q1 plausibility (frac in [0.05, 4.0] m) | 87.2% | `analyze_sample_episode.py` |
+| Q2 temporal variance (per-sensor) | 0.50 m² mean | passes |
+| Q3 phase-correlated signal | 102% variance explained by phase | passes |
+| Q4 schema (29 sensors, 31 cam params, 2 RGB MP4, 2 depth MP4) | all present | passes |
+| Pointcloud reconstructed (one traj) | 1.79M world-frame points | `pointcloud.ply` |
+
+**Diagnostics + pointcloud artifacts**:
+`diagnostics_output/pilot_skin_smoke_v1/episode_house2_traj0/` contains 9 PNGs
+(per-sensor heatmap, sensor-grid panel, 3D pointcloud projections, RGBD samples,
+qpos/action distributions, language coverage, episode-length histogram) +
+`pointcloud.ply` + `report.md`. Run `python submodules/molmospaces/scripts/datagen/analyze_sample_episode.py <h5> --traj traj_0 --out <dir>` to regenerate
+for any other trajectory.
+
+**Training (20 000 steps, batch=8, lr=1e-5, num_workers=2):**
+
+| Run | use_proximity | params | start loss | end loss | end L1 | end KL | throughput |
+|-----|---------------|--------|------------|----------|--------|--------|------------|
+| `smoke_pla_v3_full` | True | 96.37 M | 12.21 (step 50) | **0.0619** | 0.0321 | 0.0030 | 19.3 samp/s |
+| `smoke_vlm_only_act_v3_full` | False | 96.28 M | 12.40 (step 50) | **0.0689** | 0.0390 | 0.0030 | 21.7 samp/s |
+
+PLA's final loss is 10% lower (0.062 vs 0.069) and L1 is 17% lower (0.032 vs
+0.039). At this data scale the CVAE prior collapses (`KL → 0.003`), which is
+expected; the meaningful signal is the L1 gap. Both runs are on WandB
+(`project=pla`, tags `backfill,smoke,validation_round`); backfilled from the
+local logs via `scripts/backfill_wandb_from_log.py`. Direct links:
+- PLA: <https://wandb.ai/jayluvsgeography/pla/runs/731wnt1d>
+- Baseline: <https://wandb.ai/jayluvsgeography/pla/runs/gjl5aijc>
+
+**Eval — JsonBenchmark route blocked, custom rollout completed.**
+
+The `JsonEvalRunner` route was abandoned after discovering that the
+`CameraSpec` schema has no per-camera resolution or `is_proximity_sensor`
+flag, so the 29 SPAD sensors render as 624×352 RGB instead of 8×8 depth.
+See §7.5.d for the three upstream-fix paths.
+
+Instead, `pla/rollout_eval.py` was built: a thin wrapper around the
+data-generation pipeline (`FrankaSkinPLARolloutConfig`) that uses the
+correct `FrankaSkinCameraSystem` (preserving 8×8 SPAD depth) and swaps
+the planner for `PLAInferencePolicy`. Tasks are deterministic given
+(houses, seed), so PLA and baseline attempt the same set of tasks for a
+head-to-head comparison.
+
+Results — 20 episodes each on houses 11-20, seed 2028:
+
+| Run | success | 95% CI | mean approach Δ (m) | gripper open frac | wall |
+|-----|---------|--------|---------------------|-------------------|------|
+| PLA   (`rollout_pla_v3_holdout`) | 0/18 | [0, 17.6%] | +0.020 | 93% | 70 min |
+| Baseline (`rollout_vlm_v3_holdout`) | 0/20 | [0, 16.1%] | +0.037 | 75% | 73 min |
+
+(PLA's `n=18` rather than 20: pipeline skipped one house with a sampling
+error.)
+
+**Both policies fail every held-out task.** Neither approaches the pickup
+object meaningfully — `mean tcp→pickup` shrinks by only 2-4 cm over 301
+steps (vs the >1 m the planner moves on the same tasks). Failure-mode
+analysis at `analysis_output/rollout_compare_v1/comparison.md`:
+
+- Bucket A (`baseline_fail, PLA_success`): **0 of 18**
+- Bucket B (`baseline_success, PLA_fail`): **0 of 18**
+- Bucket C (`both_success`): **0 of 18**
+- Bucket D (`both_fail`): **18 of 18**
+
+**Root cause: training scale + missing language conditioning.** 36
+training trajectories is too few to learn anything that generalizes across
+houses and objects. The training loss drop (12 → 0.06) was memorization
+of those 36 specific demos. On held-out houses the policy outputs
+near-zero action deltas because it has never seen this distribution. The
+fact that PLA's training-loss L1 was 17% lower than baseline's didn't
+translate to any behavioural difference at rollout time — neither policy
+gets close enough to anything for proximity readings to matter.
+
+**Decision (2026-05-11)**: stop here, write up. Next round needs (a)
+**100-house medium pilot data** (`FrankaSkinPickAndPlacePilotMediumConfig`
+already registered, num_workers=2, ~6-8 h wall time) and (b) **language
+conditioning** so the policy can identify the target object. Re-train +
+re-rollout after both. Anything less and we will keep producing 0/N
+results.
+
+Artifacts kept on disk (all reusable for the next round):
+
+- `runs/smoke_pla_v3_full/` + `runs/smoke_vlm_only_act_v3_full/` —
+  ten 1.16 GB checkpoints each.
+- `assets/datagen/pick_and_place_skin_pilot_eval_holdout_v1/.../20260511_021228/`
+  — 35/52 successful held-out trajectories (the planner's solution to
+  these same 40 tasks; useful as a ceiling for future evals).
+- `assets/eval_subsets/FrankaSkinPickAndPlaceHoldout_v1/` —
+  patched 35-episode JsonBenchmark (`object_poses` filter +
+  displacement-threshold fix applied). Useful once the `CameraSpec`
+  schema is extended upstream.
+- `rollout_output/{rollout_pla_v3_holdout, rollout_vlm_v3_holdout}/` —
+  20 episodes each, full h5 trajectories + per-episode `results.json`.
+- `analysis_output/rollout_compare_v1/comparison.{md,json}` — the
+  side-by-side report above.
+
+WandB: <https://wandb.ai/jayluvsgeography/pla> (PLA `731wnt1d`,
+baseline `gjl5aijc`).
 
 ---
 
-## 4. The proximity skin
-
-The robot's contact-range sense. Two generations exist; both are MJCF FR3 + Robotiq models where
-each sensor is a fixed `<camera fovy="45" resolution="8 8">` rendering planar-z depth.
-
-| model | sensors | links | used by |
-|---|---|---|---|
-| `assets/robots/franka_skin/model.xml` | **29** | 2 (×7), 3 (×8), 5 (×6), 6 (×8) | **P+ACT** (§5) |
-| `assets/robots/franka_skin/model_hybrid.xml` | **40** | 1 (×7), 2 (×7), 3 (×5), 4 (×5), 5-front (×4), 5-back (×6), 6 (×6) | **Safety-CVAE** (§6), reconstruction |
-| `assets/robots/franka_skin/model_photoshoot.xml` | 40 markers | — | paper figures (visual only) |
-| `franka_assets/fr3_skin/` | 29 (bundled meshes) | 2/3/5/6 | self-contained standalone model |
-
-**Sensor optics & aiming.** 8×8 depth, 45° FOV (focal ≈ 10.86 mm, h-aperture 9.0 mm), clip
-0.05–4.0 m. Sensors aim radially out of each link axis (outward + surface-perpendicular). The URDF
-`<axis>` and dermis mesh normals are unreliable (wrong winding) — do **not** use them for aiming; a
-few cramped sensors are raycast-repaired. Cameras sit **9 mm proud** of the skin so they clear the
-dermis shell.
-
-**Near-field fix (critical).** MuJoCo's depth clip is `vis.map.znear × stat.extent`; with a big
-scene this silently erased every return below ~10 cm. Pinned `znear = 0.0002` (clip ≈ 2 mm). The same
-render path is used by datagen, so this affects collected data too.
-
-**Render hygiene.** Skin geoms are group 2 and hidden in the proximity render (`geomgroup[2] = 0`) so
-the shell does not occlude the sensors — without this ~33% of empty-room returns came back as
-self-hits.
-
-### Verification & reconstruction
-
-`scripts/verify_hybrid_skin_sensors.py`:
-
-| check | result |
-|---|---|
-| not buried in own arm (3 poses) | **40/40** |
-| outward-facing | **40/40** |
-| plate @ 0.15 m reads 0.145 ± 0.012 m | 38/40 (2 link5-front legitimately see the wrist) |
-| range linearity | slope 1.0, R² 0.9999999, sub-µm error |
-| back-projected cloud vs ground truth | **~4 mm** median |
-
-Back-project all sensors → point cloud, compare to every real surface:
-
-| scene | active | RMS | within 1 cm |
-|---|---|---|---|
-| primitives (box+sphere+cyl+corner) | – | **4.0 mm** | 95% |
-| open clutter (3 obj + table) | 14/40 | 4.7 mm | 91% |
-| fumehood (1 frame) | 22/40 | 4.7 mm | 91% |
-| fumehood, accumulated (14 poses) | – | 5.0 mm | 93% (10366 pts) |
-
-<table>
-<tr>
-<td><img src="diagnostics_output/20260611_hybrid_skin_REPORT/04_verification.png" width="100%"></td>
-<td><img src="diagnostics_output/20260611_hybrid_fumehood_reconstruct/fumehood_reconstruction.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Back-projected SPAD returns vs ground truth + 40-sensor gallery.</em></td>
-<td align="center"><em>Reconstructing fumehood interior: single frame + accumulated cloud.</em></td>
-</tr>
-</table>
-
-Every return lands on a real surface to millimetre accuracy → sensors are in the right place **and**
-looking at the right thing.
-
-### Fumehood reach variations
-
-`diagnostics_output/20260611_fumehood_variations/` — 6 hood geometries × verified deep-insertion
-motions (FK-checked hand depth, per-frame skin cloud + clearance telemetry):
-
-| variant | interior (W×H×D, sash) | insertion (hand / TCP) | active @ deep | min clearance |
-|---|---|---|---|---|
-| standard | 64×46×55, 30 cm | 31.6 cm (57% D) | 28/40 | 3.4 cm |
-| tall | 68×85×55, 55 cm | 35 cm + high sweep | 29/40 | 3.5 cm |
-| short low-sash | 68×34×50, **17 cm** | 29.3 cm hand / 44.8 cm TCP | 26/40 | **0.3 cm** |
-| narrow | **32**×50×55, 32 cm | 33.5 cm | 25/40 | 0.4 cm |
-| wide big | 110×65×70, 45 cm | 39 cm + lateral ±24 cm | 31/40 | 0.5 cm |
-| deep tunnel | 52×42×**95**, 28 cm | 38 cm hand / **52.6 cm TCP** | 26/40 | 0.9 cm |
-
-![Fumehood standard reach with skin telemetry](diagnostics_output/20260611_fumehood_variations/hood_standard.png)
-
-*Deep-tunnel's 60 cm hand target is beyond the FR3's 855 mm reach; 52.6 cm TCP is the physical
-ceiling with the elbow on the bench lip. All motions are collision-checked.*
-
-### Build / verify / render the skin
-
-```bash
-python scripts/build_hybrid_on_franka_skin.py        # functional 40-sensor model
-python scripts/build_photoshoot_skin.py              # visual model for figures
-python scripts/verify_hybrid_skin_sensors.py
-python scripts/test_and_reconstruct_hybrid.py
-python scripts/test_reconstruct_fumehood.py
-python scripts/render_hybrid_skin_viz.py             # 3D + exo + wrist + 40 tiles
-python scripts/photoshoot_sweep.py                   # paper turntable
-python scripts/foxglove_fumehood_tour.py             # 6-hood Foxglove tour (22.7 s, 190 frames)
-```
-
-All renders need EGL (handled in-script via the default-display patch). Open `.mcap` outputs at
-[app.foxglove.dev](https://app.foxglove.dev) and import `scripts/foxglove_unified_layout.json`.
-
-### Per-sensor MJCF construction
-
-Each sensor is a body posed just above the collision mesh with two children: a
-`<site class="skin_sensor_site">` marker (red sphere, group 2) and a
-`<camera mode="fixed" pos="0 0 0" quat="0 0 1 0" fovy="45.0" resolution="8 8"/>`. Skin geoms are
-`class="skin" group=2 contype=0 conaffinity=0 mass=0` (visual only — no collision, no inertia).
-Sensor poses were imported from the original Isaac Sim USD placements. The camera quaternion is
-`0 0 1 0` (180° about local Y): this keeps the view direction (+Z out of the body) while giving the
-correct, right-side-up ToF image convention — an earlier `0 1 0 0` flipped the image vertically.
-
----
-
-## 5. System A — P+ACT (proximity-conditioned ACT)
-
-### Architecture & data flow
-
-```
-29 ToF sensors, 8×8 depth @ 60 Hz
-   └─ trailing window W = 8 control steps × 4 substeps → (B, 29, 32, 8, 8)
-        └─ FROZEN proximity encoder (~0.82 M params)  →  (B, 29, 3)   predicted object pos
-             per sensor's local frame
-                  └─ Linear(3 → hidden) → 29 extra tokens inserted into ACT encoder memory:
-                       [ latent(1) | proprio(1) | prox(29) | image(160) ] = 191 tokens
-                            └─ DETR decoder, 100 action queries → 8-D action chunk
-```
-
-Vanilla ACT is the same minus the 29 prox tokens (memory = 162). Image tokens are 160 (8×20 from two
-480×640 RGB cameras via ResNet-18). The proximity branch adds only **~22 k** parameters and is
-**gated behind `n_proximity_sensors = 0`**, so vanilla ACT stays bit-identical to upstream.
-
-**Why predict 3-D position (not raw depth) and freeze it?** The position is interpretable (plot vs
-ground truth), low-dimensional (29×3 = 87 numbers, minimal arch change), and matches the encoder's
-exact training objective so ACT doesn't re-learn a readout. Freezing is safer (can't degrade a
-validated encoder), faster (no backprop), and reversible — the trainer asserts
-`requires_grad == False` on every encoder param at each step.
-
-**The four ACT edits** (`submodules/act`, all gated on `n_proximity_sensors = 0`):
-`detr_vae.py` adds `input_proj_proximity = Linear(3, hidden)` and extends `additional_pos_embed`;
-`transformer.py` concatenates the proximity input after `[latent, proprio]`; `policy.py` threads
-`proximity_positions`; `detr/main.py` declares the new flags.
-
-### Results
-
-| | Vanilla ACT | P+ACT |
-|---|---|---|
-| Success (n=10) | 4/10 = **40%** | 8/10 = **80%** |
-| Wilson 95% CI | 16.8–68.7% | 49.0–94.3% |
-| Train epochs / best val loss | 5000 / 0.022 | 2000 / 0.086 |
-| Per-rollout | 1,0,0,0,0,1,1,1,0,0 | 1,1,1,1,1,1,1,0,1,0 |
-
-+40 pp at **2.5× less** training compute (despite higher val loss → the gain is better-conditioned
-input, not more compute). Fisher one-sided p = 0.085, Barnard p = 0.057, odds ratio 6.0; a prior
-independent rerun gave 9/10 (Fisher p = 0.029).
-
-**Proximity encoder accuracy** (held-out trajectories): **2.0 cm mean / 1.4 cm median** Euclidean,
-per-axis 0.84 / 1.02 / 1.16 cm; per-sensor range 1.25 cm (link2_sensor_6) to 4.80 cm (link5_sensor_3).
-
-<table>
-<tr>
-<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/euclidean_hist.png" width="100%"></td>
-<td><img src="pact/outputs_prox/runs/prox_encoder_v1/eval/per_sensor_mae.png" width="100%"></td>
-<td><img src="analysis_output/eval_quick_v1/contact_events_total.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Encoder Euclidean error (mean 2.0 cm).</em></td>
-<td align="center"><em>Per-sensor MAE across the skin.</em></td>
-<td align="center"><em>Contact events per episode by clutter bin.</em></td>
-</tr>
-</table>
-
-**Does the policy actually use the skin?** Yes. From 160 batched forward passes capturing the
-`(B, 100, 191)` decoder cross-attention across 7 layers: prox tokens take **21.7%** of attention mass
-on only **15.2%** of the token budget. Per-token, prox = 0.00748 (1.43× uniform) vs image = 0.00481
-(0.92×) → **1.55× more per token than image**. All 29 sensors are above uniform; the top-5 includes 3
-wrist (link6) sensors as physically expected; per-link spread is only ~6%. Attention is spread across
-all 7 layers (no single "proximity layer"), with a mild mid-rollout bump at episode fraction ~0.56.
-
-![Per-layer per-sensor attention](pact/analysis/attention_outputs/per_layer_per_sensor_heatmap.png)
-
-**Alternatives ruled out.** More params (+22 k = 0.03%, no). Seed luck (two reruns 8/10 and 9/10,
-both seed 0, largely no). Encoder as mere regulariser (1.55× per-token attention says it's actively
-read, no). Under-trained vision (baseline had 2.5× more training and still lost). Future-leakage
-(window `[t-W+1, t]` is strictly causal). 
-
-**Limitations / not yet claimed.** n = 10 is small (p straddles 0.05; n = 30 would stabilise). All
-evals are house-1-only (no cross-house). Single object class (mug). The frozen encoder is **OOD
-post-grasp** (trained only on `held == False` frames) and is fed unchanged in v1 — ACT discounts it
-via attention, but a learned per-sensor "is-valid" gate is the proposed fix. MolmoSpaces draws a
-fresh task per process, so 10-rollout counts wiggle ±10 pp — read Wilson CIs, not point estimates.
-
-### Reproduce P+ACT end-to-end
-
-`$PY = /opt/conda/envs/mlspaces/bin/python`, run from the repo root with EGL exported.
-
-```bash
-PY=/opt/conda/envs/mlspaces/bin/python
-
-# A. Collect demonstrations (see §7 for configs). Main P+ACT dataset = house-1 mug ×250.
-cd submodules/molmospaces
-PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl $PY \
-  -m molmo_spaces.data_generation.main FrankaSkinPickAndPlacePilotSmokeConfig \
-  2>&1 | tee ../../logs/datagen_smoke.log
-cd ../..
-
-# B. Verify the proximity stream
-$PY scripts/datagen/verify_proximity_gt.py <H5> --t 10
-$PY scripts/datagen/visualize_proximity.py <H5> --traj traj_0
-
-# C. Convert to ACT per-episode format → act_style_data/<set>/
-$PY scripts/convert_mug_random_to_act.py --dst act_style_data/mug_house1_random_everything \
-  --image_h 240 --image_w 320 --resume
-
-# D. Train the proximity encoder (~30 min on a 4090), then evaluate
-$PY pact/scripts/build_cache.py \
-  --data_glob 'assets/datagen/mug_house_1_random_everything/**/trajectories_batch_*.h5' \
-  --out pact/outputs_prox/cache_full.npz --window 8 --keep_every 1
-$PY pact/scripts/train.py --cache pact/outputs_prox/cache_full.npz \
-  --out_dir pact/outputs_prox/runs --run_name prox_encoder_v1 --steps 10000 --batch_size 256
-$PY pact/scripts/evaluate.py \
-  --checkpoint pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt --split val
-
-# E. Map ACT episodes → source h5 (qpos signature; one-time per dataset)
-$PY -m pact.act_prox.build_mapping --act_dataset_dir act_style_data/mug_house1_random_everything
-
-# F. Train both arms with matched hyperparameters
-#    baseline (no prox)
-$PY -m pact.act_prox.imitate_episodes_with_prox --task_name pla_house1_mug_random \
-  --policy_class ACT --ckpt_dir runs/act_mug_v1_baseline --batch_size 8 --num_epochs 5000 \
-  --lr 1e-4 --seed 0 --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200
-#    P+ACT (frozen encoder ON)
-$PY -m pact.act_prox.imitate_episodes_with_prox --task_name pla_house1_mug_random \
-  --policy_class ACT --ckpt_dir runs/act_prox_mug_v1 --batch_size 8 --num_epochs 2000 \
-  --lr 1e-4 --seed 0 --kl_weight 10 --chunk_size 100 --hidden_dim 512 --dim_feedforward 3200 \
-  --use_proximity --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-  --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json
-
-# G. Rollout eval (fresh sim process per rollout) + significance
-CKPT_DIR=runs/act_prox_mug_v1 \
-  PROX_ENC=pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-  PROX_MAP=act_style_data/mug_house1_random_everything/prox_mapping.json \
-  N_ROLLOUTS=10 bash scripts/eval_act_prox_aggregate.sh
-$PY scripts/run_act_mug_random_10x.py --n_runs 10 \
-  --output_dir eval_output/act_house1_mug_random_v1_aggregate
-$PY scripts/significance_pact_vs_baseline.py \
-  --baseline_root eval_output/act_house1_mug_random_v1_aggregate \
-  --pact_root eval_output/act_prox_mug_v1_aggregate
-
-# H. Attention analysis (4 PNGs + raw_stats.json)
-PYTHONPATH="submodules/act:.:${PYTHONPATH:-}" $PY pact/analysis/visualize_prox_attention.py \
-  --ckpt_dir runs/act_prox_mug_v1 \
-  --prox_encoder_ckpt pact/outputs_prox/runs/prox_encoder_v1/ckpt_best.pt \
-  --prox_mapping_json act_style_data/mug_house1_random_everything/prox_mapping.json \
-  --dataset_dir act_style_data/mug_house1_random_everything \
-  --out_dir pact/analysis/attention_outputs --n_batches 20
-```
-
-**Masking ablations** (is ACT *causally* using the prox tokens?):
-`--mask_proximity {none,zero,mean,noise,shuffle}` and `--mask_phase {approach,pregrasp,grasp_lift,
-transit,place}`. Precompute the mean baseline with `pact/act_prox/precompute_prox_mean.py`; run one
-condition with `scripts/run_pact_mask_experiment.py`; run the full grid with
-`scripts/run_pact_exp1_exp2_all.sh`.
-
-> **Why a custom rollout instead of the cached JsonBenchmark?** The benchmark `CameraSpec` schema
-> (`molmo_spaces/evaluation/benchmark_schema.py:58-83`) has no per-camera resolution and no
-> `is_proximity_sensor` flag — a single global `img_resolution` makes all 31 cameras render RGB, so a
-> SPAD sensor comes back `(352,624,3)` instead of `(8,8)` and broadcasting fails. The custom rollout
-> in `pact/` bypasses this; extending the schema upstream is the alternative.
-
----
-
-## 6. System B — Reactive Proximity Safety (Safety-CVAE)
-
-A reactive collision-avoidance layer built on the **40-sensor** hybrid skin. It turns the raw skin
-reading into a joint-space retreat with **no scene geometry or object poses at runtime**, and adds as
-a smooth residual on any nominal trajectory — the arm bows around an obstacle and rejoins ("deviate
-and rejoin").
-
-### What it is, and why "safety"
-
-The Safety-CVAE is a small **reflex**: a function `dq = head(skin)` that maps the current 40×8×8
-proximity reading directly to a 7-DoF joint nudge that moves the arm *away* from whatever is near it.
-It is called "safety" because its only job is collision avoidance — it does not know the task, the
-goal, or the object to grasp; it only answers *"is something close, and which way do I move to not hit
-it?"* It is a guarding layer, not a policy. Three properties make it a safety layer:
-
-- **Skin-only at runtime.** No scene geometry, no object poses, no camera — just the skin. So it keeps
-  working on obstacles never seen in any task dataset (a hand, a cable, a bar moved at runtime).
-- **Reactive and fast.** One small MLP forward pass per frame — no planning, no horizon.
-- **Quiet when clear.** Trained so the output is ≈ 0 when nothing is near (the `far_quiet` metric), so
-  it does nothing until an obstacle enters the danger band — then it pushes, then it relaxes.
-
-It is distilled from an **analytic potential field** (`safety_sweep.py`): a hand-written repulsion law
-that has full sim knowledge (exact obstacle positions, Jacobians) computes the "correct" retreat, and
-the CVAE learns to reproduce that retreat from skin alone. So the head is a learned, sensor-only
-approximation of a physics-based avoidance controller.
-
-### How it plugs into ACT
-
-The head is **policy-agnostic** — it is added as a residual on top of *any* nominal joint command,
-including the action stream from System A's P+ACT policy:
-
-```
-q_exec(t)   = q_act(t) + correction(t)
-correction += (gain · head(skin) − decay · correction) · dt      # leaky integrator
-correction  = clip(correction, ±max_dev)
-```
-
-P+ACT produces the task motion (reach, grasp, lift); the Safety-CVAE bends that motion around
-obstacles the policy never saw, then `decay` pulls the correction back to zero so the arm rejoins the
-policy's plan once the obstacle is clear ("deviate and rejoin"). The two systems are complementary and
-share the same skin: P+ACT uses the **frozen proximity encoder → object position** to *improve
-grasping* (§5); the Safety-CVAE uses the **raw skin → joint retreat** to *avoid collisions*. The demos
-below run this exact residual loop on recorded/synthetic nominal trajectories as a stand-in for the
-policy; swapping `q_act` for the live P+ACT output is the deployment path.
-
-> Status: the residual-on-ACT wiring above is the **design**. The demos validate the safety layer in
-> isolation on nominal trajectories (recorded reaches and synthetic sweeps). End-to-end
-> P+ACT-plus-safety rollouts are future work.
-
-```
-datagen run (real arm postures)
- └─ safety_sweep.py        synthesize near-contact samples + analytic labels   → sweep_*.h5
-     └─ train_safety_cvae.py   distill the head (proximity → 7-DoF retreat)     → cvae_*/
-         └─ safety_*_demo.py   residual avoidance on a trajectory               → *.mcap + *.mp4
-
-analyze_obstacle_dataset.py    validate the hybrid_obstacle_v1 ACT dataset (independent chain)
-```
-
-### The obstacle dataset (`hybrid_obstacle_v1`)
-
-Single-env red-cup pick with 0–2 orange hazard bars standing in the fumehood. 2 timestamped runs,
-7 house-files, 906 camera MP4s, 1.2 GB. Validated by `scripts/analyze_obstacle_dataset.py`.
-
-| check | result |
-|---|---|
-| episodes | **151** (2 runs × 7 house-files) |
-| task success | **122 / 151 = 80.8%** (train ACT on these 122) |
-| single object | yes — 1 `target_uid` (red cup) |
-| bar present | 74.8% (113 bar / 38 no-bar) |
-| behavior split | 49 deflect / 102 free (deflect = 43.4% of bar eps) |
-| avoidance bow (lateral TCP) | **deflect 38 mm** vs no-bar 6 mm vs bar-free 5 mm (~6–7×) |
-| do bars hurt success? | **no** — no-bar 76.3% succ < bar 82.3% succ |
-| approach proximity | min depth ≈ 20 mm; close-return in 85.8% of bar eps vs 73.7% no-bar |
-| integrity | 40 sensors consistent, dead-pixel frac 6.6e-5, 0 empty episodes, len 53–167 |
-
-<table>
-<tr>
-<td><img src="diagnostics_output/obstacle_analysis/02_min_approach_depth_by_group.png" width="100%"></td>
-<td><img src="diagnostics_output/obstacle_analysis/03_tcp_paths_by_group.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Min skin-to-obstacle depth by group vs the 0.1 m threshold.</em></td>
-<td align="center"><em>Top-down TCP paths: bar-deflect bows around, no-bar goes straight.</em></td>
-</tr>
-</table>
-
-*Assessment (a read of the metrics — `summary.json` has no PASS/FAIL field): usable for ACT. Bars
-produce a strong, clean avoidance signal without degrading success; failures concentrate in the
-no-bar group, so the bars are not the failure driver.*
-
-### Synthetic training data (`safety_sweep.py`)
-
-Builds the fumehood as 14 analytic box geoms + mocap sash/jambs + 3 hazard-bar sizes, with the
-`model_hybrid.xml` FR3 at z = 0.35 m. It replays real arm postures sampled from datagen and, per
-sample, stands 1–2 bars (80% of samples) on the bench along a random sensor's view ray at 5–25 cm to
-fill the 3–15 cm depth band.
-
-- **Render:** dedicated `mujoco.Renderer(model, 8, 8)`, `enable_depth_rendering()`, FOVY 45°
-  (f ≈ 9.66, cx = cy = 3.5), skybox off, `geomgroup[2] = 0`.
-- **Label** (whole-arm analytic potential field, *unscaled*): for each sensor whose nearest env hit
-  is closer than `D_ACT = 0.18 m`, `dq += Jₚᵀ · unit(sensor − hit) · (1/d − 1/D_ACT)`, summed and
-  projected onto the 7 arm DoFs. A back-projected hit must lie within `HIT_TOL = 0.025 m` of a scene
-  surface, else it is a **self-hit** (arm seeing itself) — excluded from the label but **kept in the
-  input** so the head learns to cope with it.
-- **Stores** one h5: `prox (N,40,8,8) f16` raw depths + `label_dq (N,7) f32` + `qpos/grip/base_pose/
-  min_depth/bar_*`.
-
-### The head (`train_safety_cvae.py`)
-
-Maps the 40×8×8 skin to a 7-DoF joint retreat; runtime needs only raw skin.
-
-- **Featurize:** closeness `c = clip(1 − d/D_MAX, 0, 1)` with `D_MAX = 0.5 m`, zero pixels
-  `d < 0.005`, flatten 40×8×8 → **2560**. Labels scaled to unit RMS (`label_scale` stored,
-  re-multiplied at inference).
-- **CVAE:** encoder `Linear(2560+7 → 512 → 256 → 2·8)`, decoder `Linear(2560+8 → 512 → 256 → 7)`,
-  SiLU. Loss = MSE-recon + β·KL (β = 1e-2, warmed over 10 epochs), AdamW lr 1e-3 cosine, 60 epochs,
-  batch 512, checkpoint on best val MSE.
-- **Inference:** `SafetyHead.load(dir)(prox)` → deterministic decode at **z = 0** × `label_scale` →
-  `(7,)` joint delta.
-- **It is a reconstruction model.** The decoder *reconstructs* the 7-DoF retreat vector `dq` from the
-  skin (conditioned on a latent `z`); the reconstruction term is the MSE between predicted and target
-  `dq`. The KL term only regularizes the latent. At inference `z = 0`, so the head is a plain,
-  deterministic skin → `dq` map — the latent exists only to absorb the small ambiguity in *which way*
-  to dodge during training.
-
-**Logging.** Every run mirrors metrics to **wandb** (project `prox-safety-cvae`, on by default; add
-`--no-wandb` to disable) *and* writes a matching set of files next to the weights in `--out`:
-
-| file | contents |
-|---|---|
-| `model.pt` / `meta.json` | best-val checkpoint + architecture/scale/metrics (used by `SafetyHead.load`) |
-| `config.json` | every hyper-parameter, dataset path, train/val sizes, active latent dims |
-| `history.json` | per-epoch arrays: total loss, recon MSE, KL, val MSE, close-cos, far-quiet, lr, β |
-| `curves.png` | loss · reconstruction-vs-KL · direction-cos+quiet · lr+β warm-up, over epochs |
-| `encoder_latent.png` | per-latent-dim KL (how many of the 8 dims the encoder actually uses) + 2-D PCA of the posterior mean, colored close/mid/far |
-| `pred_vs_true.png` | decoder reconstruction per joint (predicted vs analytic `dq`, close samples in red) |
-| `head_diagnostics.png` | per-joint recon MSE · direction-cosine histogram · **`|dq|` vs nearest-obstacle depth** |
-
-The last panel of `head_diagnostics.png` is the key sanity check that the head's behavior tracks the
-data: predicted retreat magnitude should *grow as the nearest obstacle gets closer* and fall to ≈ 0
-when far, which is exactly the potential-field law it was distilled from.
-
-<!-- The four figures below are written to assets/safety/cvae_v3/ by step 3 of "Reproduce" — they
-     render once that run completes. -->
-<table>
-<tr>
-<td><img src="assets/safety/cvae_v3/curves.png" width="100%"></td>
-<td><img src="assets/safety/cvae_v3/encoder_latent.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Training curves: loss, reconstruction-vs-KL, direction-cos + quiet, lr + β.</em></td>
-<td align="center"><em>Encoder: per-dim KL (how many latent dims are used) + 2-D latent map.</em></td>
-</tr>
-<tr>
-<td><img src="assets/safety/cvae_v3/pred_vs_true.png" width="100%"></td>
-<td><img src="assets/safety/cvae_v3/head_diagnostics.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Decoder reconstruction per joint (predicted vs analytic retreat).</em></td>
-<td align="center"><em>Per-joint MSE · direction-cosine histogram · |dq| vs nearest-obstacle depth.</em></td>
-</tr>
-</table>
-
-| head | data | val_mse ↓ | close_cos ↑ | far_quiet ↓ | label_scale |
-|---|---|---|---|---|---|
-| `cvae_v1` | `sweep_v1.h5` | **0.0111** | **0.891** | **0.0326** | 16.74 |
-| `cvae_v2` | `sweep_v2.h5` (obstacle-aware) | 0.0146 | 0.865 | 0.0360 | 14.68 |
-| **`cvae_v3`** | **`sweep_v3.h5`** (re-run on `20260612_183855`, full logging) | **0.0091** | **0.926** | **0.0310** | 11.36 |
-
-- **close_cos** — cosine between predicted retreat and the analytic label on *close* samples
-  (`min_depth < 0.12 m`): does it push the right way? 1.0 ideal.
-- **far_quiet** — L2 of the prediction on *far* samples (`min_depth > 0.25 m`): silent when clear?
-  0 ideal.
-- **val_mse** — recon MSE on the held-out split (scaled label space).
-
-The earlier `v1`/`v2` runs predate logging (only the final scalars above survive — no curves). **`v3`
-is the canonical run with full wandb + saved-plot logging**, and is the best head on all three
-held-out metrics; reproduce it below. Its encoder uses **1 of 8 latent dims** (`active_latent_dims`):
-the skin → retreat map is near-deterministic, so the latent is nearly collapsed to the prior — exactly
-why the deterministic `z = 0` head works.
-
-### Demos
-
-All default to `--ckpt cvae_v2`, render 960×540 @ 30 fps, and log a Foxglove `.mcap` plus an MP4.
-
-| demo | shows | duration | reaction law | video |
-|---|---|---|---|---|
-| `safety_flinch_demo.py` | bar marches down a forearm-sensor axis; arm flinches, relaxes | bar schedule | spring-return single pose: `q += (gain·dq − spring·(q−q0))·dt` | mp4v |
-| `safety_react_demo.py` | bars on a planned trajectory; arm bulges around each, rejoins | `--traj-secs 10` | leaky integrator: `corr += (gain·dq − decay·corr)·dt` | mp4v |
-| `safety_moving_demo.py` | 1 bar patrols the whole arm wrist→shoulder; per-link skin lights up | `--secs 18` | leaky integrator | H.264 |
-| `safety_orbit_demo.py` | 1 bar sweeps a 180° half-circle over the arm's outward face and slides elbow→wrist; each link's sensors react in turn | `--secs 16` | leaky integrator | H.264 |
-
-Defaults — flinch `gain 4.5 / spring 1.5 / max-dev 0.35`; react `gain 4.0 / decay 2.2 / ema 0.75 /
-max-dev 0.35 / standoff 0.10`; moving `gain 3.0 / decay 2.2 / ema 0.7 / max-dev 0.30 / standoff
-0.14`; orbit `gain 3.5 / decay 2.2 / ema 0.75 / max-dev 0.30 / radius 0.20 / arc 180° / passes 3`. The orbit
-bar arcs over the **outward** hemisphere only (never a full ring centred on the arm — that has no
-escape direction and made the bar clip the mesh), so it stays outside the arm while still in sensing
-range (min bar-to-link clearance ≈ 0.08 m). All demos do a per-frame
-double render (bars placed, then parked) and subtract the parked baseline, so the head reacts only to
-the obstacle's marginal push. Hood/walls are retagged to geom group 3 — hidden in the RGB video but
-kept in the depth render so the head still sees the full scene.
-
-#### How a demo works (the shared loop)
-
-Every demo runs the same per-frame loop; they differ only in *what the obstacle does* and *what the
-arm's nominal motion is*:
-
-1. **Render the skin.** Render all 40 SPAD depths (8×8 each) at the current pose — identical optics to
-   datagen and to `safety_sweep` (`geomgroup[2]=0`, znear pinned, FOVY 45°).
-2. **Ask the head.** `dq_raw = head(skin_with_obstacle) − head(skin_obstacle_parked)`. The
-   **baseline subtraction** is the trick: the head fires on *any* close surface — the hood walls, the
-   arm's own gripper and links — so a second render with the obstacle removed gives the rest output,
-   and the difference isolates *only the push the obstacle adds*. Without it the arm would flinch at
-   its own static clutter.
-3. **Smooth + integrate.** Low-pass the head output (EMA), then drive a leaky integrator
-   `correction += (gain·dq − decay·correction)·dt`, clamped to `±max_dev`. `gain` makes the arm bow
-   away as an obstacle nears; `decay` relaxes it home when clear. (`flinch` uses a spring-return
-   variant on a single pose instead of a trajectory.)
-4. **Execute + log.** Apply `q = q_nom + correction`, then write a Foxglove `.mcap` (`/tf` + `/robot`
-   meshes, `/scene_gt` hood+bars, `/proximity` the back-projected skin cloud, `/sensors/heatmap8` the
-   raw 8×8 mosaic, `/safety_arrow` the EE-space push `J·dq`, `/safety` JSON telemetry) and an
-   annotated `.mp4`.
-
-**What was implemented for the demos** (beyond the loop): real-posture selection (pick a collected
-frame whose skin is *clear at rest* for flinch, or whose reach is *most extended* for react/moving so
-encounters are well-separated); obstacle scheduling (bars marched along a chosen sensor's view ray —
-straight-line for flinch, farthest-point-sampled along the path for react, patrolling the kinematic
-chain for moving, a circular orbit for orbit); a per-link skin-heat tint and signal strip (moving) to
-show the signal travelling across all links; and the EE-space push arrow that visualizes `J·dq` at the
-wrist.
-
-#### Why the behavior is valid (it tracks the training data)
-
-The head only ever saw `safety_sweep` samples: **real arm postures** from datagen with **hazard bars
-planted along sensor view-rays at 5–25 cm**. The demos reproduce *exactly that distribution at
-runtime* — same real postures, same `model_hybrid.xml` optics, bars brought to a ~10 cm face standoff
-(deliberately *not* point-blank: flooding the whole 8×8 frame is out-of-distribution and gives a weak
-`dq`, so the bar is kept in the head's strong, in-distribution band). Because the runtime input matches
-the training input, the head's learned skin → `dq` map is being used where it is valid, and three
-trained properties show up directly in the demos:
-
-- **Right direction** — the `/safety_arrow` (the EE-space push `J·dq`) points *away from the bar*,
-  because the head reproduces the analytic potential-field label, whose direction is `unit(sensor −
-  hit)`. This is the `close_cos` metric made visible.
-- **Magnitude scales with closeness** — the arm bows harder as the bar approaches and eases as it
-  retreats, mirroring the `1/d − 1/D_ACT` term in the label (the `head_diagnostics.png` `|dq|`-vs-depth
-  panel is the static version of this).
-- **Quiet when clear** — once the bar leaves, `dq → 0` (the `far_quiet` objective), so the leaky
-  integrator decays and the arm rejoins its nominal path. That "deviate-and-rejoin" is a *consequence*
-  of the training objective, not hand-coded behavior.
-
-### Reproduce the Safety-CVAE
-
-This is the **canonical `v3` run** — built fresh from the `20260612_183855` obstacle dataset, with
-full wandb + saved-plot logging. Run the three numbered steps in order (each depends on the previous).
-
-```bash
-ENV="OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl"
-PY=/opt/conda/envs/mlspaces/bin/python
-DATA=assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855
-
-# 0. (one-time) log in to wandb so training can stream metrics
-wandb login                       # or: export WANDB_MODE=offline   to log locally only
-
-# 1. (optional) validate the obstacle dataset (no EGL needed)
-$PY scripts/analyze_obstacle_dataset.py --root assets/datagen/hybrid_obstacle_v1
-
-# 2. synthesize near-contact training data from the dataset's real postures (EGL, ~10 min)
-#    → assets/safety/sweep_v3.h5   (prox + analytic retreat labels)
-env $ENV $PY scripts/safety_sweep.py --runs $DATA --n 15000 --out assets/safety/sweep_v3.h5
-
-# 3. distill the head with logging (CUDA, no EGL, ~2 min)
-#    → assets/safety/cvae_v3/{model.pt,meta.json,config.json,history.json,
-#                             curves.png,encoder_latent.png,pred_vs_true.png,head_diagnostics.png}
-#    → wandb run under project "prox-safety-cvae", name "cvae_v3"
-$PY scripts/train_safety_cvae.py \
-  --data assets/safety/sweep_v3.h5 --out assets/safety/cvae_v3 \
-  --epochs 60 --wandb-project prox-safety-cvae
-
-# 4. demos on the fresh head (EGL) — each writes assets/safety/<name>_demo.{mcap,mp4}
-env $ENV $PY scripts/safety_flinch_demo.py --ckpt assets/safety/cvae_v3
-env $ENV $PY scripts/safety_react_demo.py  --ckpt assets/safety/cvae_v3 --mode sweep
-env $ENV $PY scripts/safety_moving_demo.py --ckpt assets/safety/cvae_v3
-env $ENV $PY scripts/safety_orbit_demo.py  --ckpt assets/safety/cvae_v3
-```
-
-After step 3, the four PNGs + `history.json` + `config.json` sit in `assets/safety/cvae_v3/` (the same
-folder as the weights), and the identical curves are in the wandb run. To retrain without wandb, add
-`--no-wandb` — the PNGs are still written.
-
-**Gotchas.** `flinch` & `react` write raw **mp4v** (stutters in some players); `moving` & `orbit`
-re-encode to **H.264** via ffmpeg. `min_depth` in the demos is self-dominated (the arm sees its own
-gripper at 1–4 cm) — not a bar-collision metric. link1 (base) sensors face the mount and never see
-workspace obstacles. Three distances are intentionally different: `D_ACT = 0.18 m` (label activation)
-≠ `D_MAX = 0.5 m` (input closeness norm) ≠ `0.12 / 0.25 m` (close/far metric thresholds).
-
-**Artifacts.** `assets/datagen/hybrid_obstacle_v1/` (1.2 G); `assets/safety/` holds the sweeps
-(`sweep_v1.h5` 55 M, `sweep_v2.h5` 56 M, and `sweep_v3.h5` after the run above), the heads (`cvae_v1/`,
-`cvae_v2/`, and the fully-logged `cvae_v3/` with its four PNGs + `history.json` + `config.json`), and
-`flinch/react/moving/orbit_demo.{mcap,mp4}`. Submodule edits (unstaged):
-`molmo_spaces/tasks/enclosure_reach.py` (+164) and `object_manipulation_datagen_configs.py`
-(`FrankaSkinHybridObstacleConfig`, +75).
-
-**Next.** The head is policy-agnostic. To deploy on a learned policy, wrap the ACT action output with
-the same leaky-integrator residual the demos use (`corr += (gain·head(prox) − decay·corr)·dt`,
-clamped to `max-dev`) so the arm avoids obstacles the policy was never trained on, then rejoins.
-
----
-
-## 7. Data generation: configs, collision probe, enclosure design
-
-Demonstrations are produced by a scripted privileged planner using the `franka_skin` robot +
-`FrankaSkinCameraSystem` (2 RGB cameras + the proximity sensors). Canonical launch:
-
-```bash
-cd submodules/molmospaces
-PYTHONPATH=. MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-  /opt/conda/envs/mlspaces/bin/python -m molmo_spaces.data_generation.main <ConfigName>
-```
-
-Parallel single-house and the new hybrid/obstacle/cavity configs are launched the same way (swap
-`<ConfigName>`). Throughput probe: `scripts/_bench_one_house_mug.py`.
-
-> **Critical:** `proximity_sensor_period_ms` must be **16.6667** (60 Hz, 4 substeps/policy step).
-> Setting it to 0 silently disables proximity recording (the substep dimension collapses to 1 and
-> reads zero). Within a step, `record_proximity_depths()` appends one 8×8 frame per sensor per
-> substep; `reset_proximity_depth_buffer()` clears at step start.
-
-### Making proximity *necessary*
-
-Default pick-and-place is a poor showcase: `check_robot_placement_visibility = True` means vision
-never fails (`vision_blind_frac ≈ 0`), so the skin is decorative. Two levers:
-
-1. `disable_collision_checks` (True on the PACT collision-probe config) bypasses placement rejection
-   and records `collision_metrics` into `obs_scene` — over-generate, then curate.
-2. `FrankaSkinProxNecessityPilotConfig` drops the visibility guarantee, targets low surfaces, and
-   adds heavy clutter (`num_added_pickups = 60`). Curate with:
-
-```bash
-$PY scripts/proximity_necessity.py \
-  --glob 'assets/datagen/pick_and_place_skin_prox_necessity_pilot_v1/**/house_*/trajectories_batch_*.h5' \
-  --near_m 0.15 --out diagnostics_output/prox_necessity_pilot
-```
-
-`samples_per_house` is a **ceiling, not a quota** — the candidate pool drains on supporting-geom
-failure, placement error, ≥2 grasp failures, etc., so uneven per-house yield is data distribution,
-not a bug. (`max_allowed_sequential_irrecoverable_failures` is raised to 10000 on skin configs; the
-default of 5 was killing workers after a few productive houses.)
-
-<table>
-<tr>
-<td><img src="analysis_output/dataset_generalisability/dataset_coverage_bars.png" width="100%"></td>
-<td><img src="analysis_output/dataset_generalisability/pickup_x_place_heatmap.png" width="100%"></td>
-</tr>
-<tr>
-<td align="center"><em>Coverage: 343 trajectories, 82 houses, 326 task descriptions.</em></td>
-<td align="center"><em>Pickup × place category coverage across the demos.</em></td>
-</tr>
-</table>
-
-### Enclosure-reach generator (the obstacle-avoidance task design)
-
-The advisor spec (2026-06-09) is **one parameterized scene generator**, not bespoke envs: a single
-MJCF whose enclosure is oversized slabs on mocap bodies, re-posed per episode (no recompile).
-Aperture = gap between slabs; protrusion = a slab inserted vs parked away.
-
-- **Per-episode parameters (all logged):** `clearance_cm = 0.7·U(1,5) + 0.3·U(5,8)` (keeps mass in
-  the 1–5 cm regime where proximity drives behaviour); `depth_m = U(0.25,0.55)`;
-  `target_depth_frac = U(0.5,0.9)`; `interior_margin_cm = U(0,6)`; `protrusion_present` Bernoulli per
-  mixture cell; `protrusion_wall ∈ {left,right,top}`; `protrusion_pos_frac = U(0.25,0.75)`;
-  `protrusion_size_cm = U(3.5,7)` (≥ a few SPAD zones at decision distance: a zone is ~45°/8 ≈ 5.6°
-  ≈ 1.2 cm at 12 cm); `light_scale = log-U(0.02,1.0)`; `target_uid` from the graspable pool. The
-  derived `cam_visible` flag is **logged at t=0** (raycast from exo+wrist) because it is unrecoverable
-  later and needed for stratified eval.
-- **Decorrelation by construction:** protrusion params are drawn independently of clearance / depth /
-  lighting / object id, and tight-but-clear episodes are included, so a narrow aperture never implies
-  an obstacle. Verified post-hoc by a correlation-matrix probe.
-- **Observation-realizable expert:** a privileged planner reacting to hidden geometry at t=0 is
-  unlearnable from student observations (and early deflection leaks the obstacle into RGB via robot
-  pose). The expert instead reacts only **after** geometry enters the skin's FOV/range. Three behaviour
-  classes double as measurable sensor-use signatures: (1) graded speed modulation (continuous),
-  (2) deflection-side selection (discrete, large divergence), (3) abort/retreat when the residual gap
-  is too small — which counts as success for its cell, so abort-class episodes must survive
-  `filter_for_successful_trajectories`.
-- **Mixture & scale:** ~28% obstacle-free / ~33% hidden obstacle / ~28% visible obstacle / ~11%
-  abort-infeasible; 2–5k episodes; holdouts on logged params (e.g. train ≥2.5 cm clearance, test
-  1.5–2.5 cm).
-- **Go/no-go probes BEFORE training:** (1) regress expert EE speed on min skin reading → expect a
-  strong negative slope; (2) logistic probe of deflection side from left/right zone asymmetry → ≫
-  chance; (3) hidden-obstacle × visible params correlation ≈ 0; (4) fraction of timesteps with any
-  zone < 8 cm (too small ⇒ clearances too generous).
-
-A secondary bin/drawer-descent generator (gripper self-occlusion in the last 5–10 cm + sub-cm wall
-proximity RGB can't judge) provides the two-mechanism generality claim. As shipped, an early
-hand-authored cavity env (`FrankaSkinCabinetCavityConfig`) reuses the stock pick planner: 25/29
-sensors active, median proximity 0.19 m in-cavity vs ~0.53 m in open houses, 74% of returns within
-30 cm on a real trajectory.
-
-### Foxglove visualizer
-
-`scripts/foxglove_export.py` converts any trajectory `.h5` to a scrubbable `.mcap`. It replays the
-saved joints through the MJCF and reads each sensor pose from forward kinematics (it does **not** trust
-stored extrinsics), so the world point cloud is geometrically exact (validated sub-cm against
-`verify_synthetic_scenes.py`). Topics: `/tf`, `/robot`, `/proximity` (all sensors back-projected to
-one cloud, red=near→blue=far), `/camera/{wrist,exo}`, `/tcp`, `/task`.
-
-```bash
-env MUJOCO_GL=egl PYOPENGL_PLATFORM=egl /opt/conda/envs/mlspaces/bin/python \
-  scripts/foxglove_export.py --h5 PATH.h5 --traj all --out-dir mcaps/
-```
-
----
-
-## 8. File reference
-
-### `pact/` — System A
-| path | what |
-|---|---|
-| `prox_encoder/model.py` | `ProxEncoder` transformer (d_model 128, 4 heads, 4 layers, ~0.82 M) |
-| `prox_encoder/cache.py` | windowed `.npz` cache builder (one sample = one window) |
-| `prox_encoder/dataset.py` | 90/10 split *by trajectory* |
-| `scripts/{build_cache,train,evaluate}.py` | encoder pipeline |
-| `act_prox/build_mapping.py` | ACT-episode → source-h5 map via qpos signature (t={5,10,15,20,25}=45 floats) |
-| `act_prox/prox_features.py` | `FrozenProxFeatureExtractor` (~0.82 M, frozen) |
-| `act_prox/imitate_episodes_with_prox.py` | the P+ACT / baseline trainer |
-| `act_prox/eval_act_with_prox_encoder.py` | rollout eval (per-sensor ring buffer, z-scored) |
-| `act_prox/precompute_prox_mean.py`, `test_masking.py` | masking-ablation support |
-| `analysis/visualize_prox_attention.py` | writes 4 attention PNGs + `raw_stats.json` |
-
-### `scripts/` — helpers (~60)
-Grouped: **data collection / conversion** (`convert_*`, `merge_*`, `build_combined_h1_h3.py`);
-**training launchers** (`train_houses13_seeds.sh`, `launch_medium_*.sh`); **eval & aggregation**
-(`eval_act_prox_aggregate.sh`, `run_act_mug_random_10x.py`, `aggregate_pact_eval.py`,
-`plot_pact_vs_baseline.py`, `significance_pact_vs_baseline.py`); **diagnostics**
-(`inspect_pact_trajectory.py`, `proximity_necessity.py`); **hybrid skin**
-(`build_hybrid_on_franka_skin.py`, `verify_hybrid_skin_sensors.py`, `test_reconstruct_fumehood.py`,
-`photoshoot_sweep.py`, `foxglove_fumehood_tour.py`); **Safety-CVAE** (`safety_sweep.py`,
-`train_safety_cvae.py`, `safety_{flinch,react,moving,orbit}_demo.py`,
-`analyze_obstacle_dataset.py`); **Foxglove** (`foxglove_export.py`, `foxglove_viz.py`).
-
-### Models & assets
-| path | what |
-|---|---|
-| `assets/robots/franka_skin/model.xml` / `model_hybrid.xml` | 29- / 40-sensor skinned FR3 |
-| `assets/urdf/`, `assets/mjcf/` | URDF source of truth → `pla.sim.build_mjcf` output |
-| `assets/robots/franka_fr3/` | vendored FR3 (from `mujoco_menagerie`, Apache-2.0, MuJoCo ≥ 3.1.3) |
-| `franka_assets/fr3_skin/` | self-contained 29-sensor model that **bundles** its meshes |
-
-### `submodules/act` modifications
-ACT = CVAE + DETR-style transformer predicting action chunks. Four backward-compatible edits gated on
-`n_proximity_sensors = 0` (see §5): `detr_vae.py`, `transformer.py`, `policy.py`, `detr/main.py`.
-
----
-
-## 9. Output directories & conventions
-
-Most outputs are gitignored.
-
-| dir | contents |
-|---|---|
-| `assets/datagen/` | collected trajectory h5 + camera MP4s |
-| `assets/safety/` | Safety-CVAE data, checkpoints, demo `.mcap`/`.mp4` |
-| `act_style_data/` | per-episode ACT datasets + `prox_mapping.json` |
-| `pact/outputs_prox/` | encoder caches + checkpoints |
-| `runs/`, `eval_output/` | P+ACT/baseline checkpoints + rollout results |
-| `analysis_output/`, `diagnostics_output/` | result plots, skin verification, photoshoot, obstacle |
-| `synthetic_verify/` | empty-room / flat-plane ground-truth checks (incl. documented −44.6 mm 8×8 floor bias) |
-| `logs/`, `wandb/` | run logs; W&B gallery `jayluvsgeography/prox-skin-dataset` |
-
-**Conventions:** run everything from the repo root; export `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl` for
-any sim/render command; use `$PY = /opt/conda/envs/mlspaces/bin/python` (the `aloha` env is only for
-the original ACT scripts).
-
----
-
-## 10. Troubleshooting & gotchas
-
-- **No proximity in the data** → `proximity_sensor_period_ms` was 0; must be 16.6667 (§7).
-- **`HouseInvalidForTask` / `ParseXML`** → dangling scene symlinks; `ls -L` to confirm, refetch with
-  `MLSPACES_FORCE_INSTALL=True` (§3).
-- **Returns below ~10 cm missing** → MuJoCo depth clip `znear × extent`; pin `znear = 0.0002` (§4).
-- **~33% self-hit depths** → skin shell visible to the proximity renderer; hide group 2
-  (`geomgroup[2] = 0`) (§4).
-- **Eval numbers wiggle ±10 pp** → MolmoSpaces draws a fresh task per process; read Wilson CIs and
-  significance tests, not point estimates (§5).
-- **Frozen encoder is OOD post-grasp** → trained on `held == False` only; fed unchanged in v1, ACT
-  discounts via attention; a per-sensor validity gate is the proposed fix (§5).
-- **Worker memory** ~6–7 GB each → `num_workers` 2–4 on a 64 GB box; single-house jobs need
-  `num_workers = 1`.
-- **Safety demo MP4 stutters** → `flinch`/`react` are raw mp4v; re-encode to H.264 like
-  `moving`/`orbit` do (§6).
-
----
-
-## 11. Project history (superseded)
-
-Earlier work used a **29-sensor** skin and an all-in-one "pla" stack (the package name `pla` in
-`pyproject.toml` is a leftover). That stack's first validation round (2026-05-10/11) is kept only as
-a historical baseline and does **not** reflect the current architecture: a 36-trajectory smoke
-dataset trained to memorization (PLA 96.37 M params, loss 0.0619 vs baseline 96.28 M / 0.0689) and
-failed every held-out rollout (0/18 vs 0/20) — root cause was training scale + missing language
-conditioning, since fixed by the P+ACT redesign (§5), which adds only ~22 k proximity parameters.
-
-Skin-engineering notes worth keeping: an independent `mj_ray` placement check found 24/29 sensors
-correctly placed (5 inward-pointing on link2/link3, still usable after skin-culling + back-face
-culling); the −44.6 mm flat-plane floor bias is rasterization quantization scaling as 1/H (a tried
-`cx` shift made self-hits worse and was reverted), small versus the SPAD noise floor.
+## 8. Status
+
+- [x] Skin on FR3 (29 SPAD-style 8×8 proximity sensors, link2/3/5/6).
+- [x] 8×8 depth render path with correct HFOV/VFOV (dedicated 8×8 renderer).
+- [x] Skin self-occlusion fix (`geomgroup[2]=0`).
+- [x] Camera image orientation correct (`quat="0 0 1 0"`).
+- [x] Quantitative GT verification (mj_ray, empty room, flat plane).
+- [x] Visual verification (per-sensor hi-res RGB inspection of a full
+      house_1 pick episode).
+- [x] Production cleanup (inspection-mode code removed from `env.py`).
+- [x] Pilot data run (procthor-objaverse, pick-and-place) — 47 successful
+      episodes across 10 houses; revealed worker self-termination guard
+      and tabletop bias (see §6.1, §6.2).
+- [ ] **Low-surface pick-and-place collection (skin-showcase scenes) —
+      see §6.2. Blocked on scene cache repopulation.**
+- [ ] Large-scale data collection across iTHOR / ProcTHOR scenes.
+- [x] **PLA training pipeline (`pla/`) — dataset, encoder, policy wrapper,
+      train/eval/diagnostics scripts. Code-complete; see §7.5.**
+- [x] **Smoke re-collection with the proximity-period fix** — 36/36
+      successful trajectories with 99.94% nonzero proximity pixels
+      (2026-05-10). Full pointcloud + verification report at
+      `diagnostics_output/pilot_skin_smoke_v1/episode_house2_traj0/`.
+- [x] **action_dim 7→8 (gripper now predicted by the network)**,
+      eval_policy wired to snap to `{0, 255}` via threshold (§7.5.d).
+- [x] **Train VLM-only ACT baseline on smoke (20k steps, final loss 0.0689).**
+- [x] **Train PLA on smoke (20k steps, final loss 0.0619, ~10% lower than baseline).**
+- [x] **WandB backfilled** for both runs (`scripts/backfill_wandb_from_log.py`).
+- [⚠️] **JsonBenchmark eval blocked on `CameraSpec` schema** — needs an
+      upstream PR to add per-camera resolution + `is_proximity_sensor` flag
+      (see §7.5.d). Patched 35-episode benchmark is on disk and ready when
+      the schema is extended.
+- [x] **Custom rollout eval (`pla/rollout_eval.py`) — built, ran on 18-20
+      held-out episodes per condition. Result: PLA 0/18, baseline 0/20.**
+      Both policies produce near-stationary actions on held-out tasks;
+      no behavioural gap. Pipeline validated, training scale insufficient.
+- [ ] **100-house medium pilot collection**
+      (`FrankaSkinPickAndPlacePilotMediumConfig`, num_workers=2,
+      ~6-8 h wall time). Now mandatory — 36 trajs is too few to learn
+      generalizable behaviour.
+- [ ] **Language conditioning via Molmo VLM tokens** — without it the
+      policy has no way to identify the target object in a multi-task
+      setting. Also now on the critical path, not a stretch goal.
+- [ ] Re-train PLA + baseline on the medium dataset WITH language.
+- [ ] Re-run `pla.rollout_eval` and `pla.rollout_compare`.
+- [ ] Real-robot transfer evaluation.
