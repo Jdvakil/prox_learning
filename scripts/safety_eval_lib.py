@@ -48,17 +48,28 @@ AP_W, AP_H = 0.675, 0.535
 
 # obstacle approach geometry
 D_FAR = 0.40              # obstacle start distance along the sensor view ray (m)
-PEN_TARGET = 0.02         # collision-course: drive the obstacle this far PAST the link surface (m)
+PEN_TARGET = 0.01         # collision-course: stop the obstacle this far PAST the link surface (m).
+                          # Shallow on purpose: deep penetration floods the 8x8 at point-blank
+                          # (out-of-distribution for the head) and is unavoidable even for the oracle.
+APPROACH_SPEED = 0.10     # obstacle inbound speed (m/s); slower => more in-distribution lead time
 QUIET_CLEAR = 0.30        # quiet set: obstacle's closest approach stays this far OUTSIDE the arm (m)
+REST_QUIET = 0.25         # clean-rest gate: reject postures whose HEAD retreat (scaled) exceeds
+                          # this with no obstacle -> ensures the head is quiet at rest, so the raw
+                          # head response == the obstacle's marginal effect (cf. far_quiet ~0.03)
 D_ACT = sw.D_ACT          # 0.18 m repulsion band (head ~silent beyond it)
 
 # sensor-group membership for the "which sensors matter" ablations
 WRIST_PREFIXES = ("link6", "link7", "gripper")
 FOREARM_PREFIXES = ("link4", "link5")
-LINK_TARGETS = ("link2", "link4", "link5", "link6")   # links an obstacle is aimed at
+LINK_TARGETS = ("link4", "link5", "link6")   # distal links an obstacle is aimed at (reactively
+                                             # controllable; base-near links can't vacate in time)
 
-# residual-controller defaults (the react/orbit demo values)
-GAIN, DECAY, MAX_DEV, EMA = 3.5, 2.2, 0.30, 0.0
+# residual-controller defaults (the react/orbit demo values). EMA low-passes the head output
+# each frame (dq = ema*dq_prev + (1-ema)*dq_raw); the demos use 0.75 to tame head jitter -- the
+# analytic oracle is smooth without it, but the learned head thrashes at ema=0.
+GAIN, DECAY, MAX_DEV, EMA = 3.5, 2.2, 0.35, 0.75
+DQ_CLIP = 1.5             # saturate the reflex: clip ||dq|| (the head over-fires up to ~12x the
+                          # analytic in-band magnitude, slamming the arm; the oracle rarely > 1)
 
 
 # --------------------------------------------------------------------------- small helpers
@@ -244,31 +255,37 @@ class Scenario:
     meta: dict = field(default_factory=dict)
 
 
-def _approach_schedule(pos, fwd, d_end):
-    """Obstacle centre = pos + fwd * d. March in d_far->d_end (0.12 m/s), dwell 1.2 s,
-    retreat d_end->d_far (0.25 m/s), short parked tail. Same cadence as bar_axis_schedule."""
+def _approach_schedule(pos, fwd, d_end, approach_speed=APPROACH_SPEED):
+    """Obstacle centre = pos + fwd * d, floating on the sensor's 3D view ray so the sensor sees
+    it along its axis at any link height. March d_far->d_end (approach_speed), dwell 0.6 s,
+    retreat (0.25 m/s), short parked tail."""
     span = max(D_FAR - d_end, 1e-3)
-    in_n = max(4, int(span / (0.12 * DT)))
+    in_n = max(4, int(span / (approach_speed * DT)))
     out_n = max(4, int(span / (0.25 * DT)))
-    ds_in = np.linspace(D_FAR, d_end, in_n)
-    ds_out = np.linspace(d_end, D_FAR, out_n)
-    legs = [pos[None, :] + np.outer(ds_in, fwd),
-            np.tile(pos + fwd * d_end, (int(1.2 * FPS), 1)),
-            pos[None, :] + np.outer(ds_out, fwd),
+    legs = [pos[None, :] + np.outer(np.linspace(D_FAR, d_end, in_n), fwd),
+            np.tile(pos + fwd * d_end, (int(0.6 * FPS), 1)),
+            pos[None, :] + np.outer(np.linspace(d_end, D_FAR, out_n), fwd),
             np.full((int(0.5 * FPS), 3), np.nan)]
     return np.concatenate(legs, 0)
 
 
 def _sample_one(ctx: Ctx, rng, q_all, grip_all, base_all, obstacle, obs_name, obs_half,
-                obs_gid, ap_w, ap_h, quiet, tries=60) -> Scenario | None:
-    """One collision-course (or quiet) encounter, or None if no good aim was found."""
+                obs_gid, ap_w, ap_h, quiet, scale, head, pen=PEN_TARGET,
+                approach_speed=APPROACH_SPEED, tries=200) -> Scenario | None:
+    """One collision-course (or quiet) encounter, or None if no aim found.
+
+    A rod approaches along a chosen skin sensor's outward view ray toward a distal link (so that
+    sensor sees it along its axis at any link height), sliding in until it threatens the link.
+    The clean-rest gate requires the HEAD to be quiet with no obstacle, so the raw head response
+    isolates the obstacle's effect (the analytic rest can be 0 while the head still fires).
+    """
     model, data, rd, opt = ctx.model, ctx.data, ctx.rd, ctx.opt
     sensors, cam_ids, arm_gids = ctx.sensors, ctx.cam_ids, ctx.arm_gids
     hand_bid = model.body(f"{NS}fr3_link7").id
     fromto = np.zeros(6)
-    target_clr = QUIET_CLEAR if quiet else -PEN_TARGET
-    ds_probe = np.linspace(0.0, D_FAR, 41)
-    best = None        # (abs error to target, scenario kwargs) - kept as a fallback
+    target_clr = QUIET_CLEAR if quiet else -pen
+    ds = np.linspace(0.0, D_FAR, 41)
+    best = None
 
     for _ in range(tries):
         row = int(rng.integers(0, len(q_all)))
@@ -279,58 +296,62 @@ def _sample_one(ctx: Ctx, rng, q_all, grip_all, base_all, obstacle, obs_name, ob
         set_arm(data, ctx.arm_qadr, q_all[row])
         set_grip(data, ctx.finger_qadr, grip_all[row])
         mujoco.mj_forward(model, data)
-        if float(data.xpos[hand_bid][0]) < 0.38:          # must reach forward (skin exposed)
+        if float(data.xpos[hand_bid][0]) < 0.38:           # must reach forward (skin exposed)
             continue
 
-        depths = render_all(model, data, rd, opt, sensors)
-        rest_min = np.array([float(depths[i][depths[i] >= 0.005].min())
-                             if (depths[i] >= 0.005).any() else np.inf
+        # clean-rest gate: the HEAD must be quiet with no obstacle, so the raw head response
+        # isolates the obstacle's effect (analytic rest can be 0 while the head still fires).
+        rest_depths = render_all(model, data, rd, opt, sensors)
+        if float(np.linalg.norm(head(rest_depths))) / max(scale, 1e-6) > REST_QUIET:
+            continue
+        rest_min = np.array([float(rest_depths[i][rest_depths[i] >= 0.005].min())
+                             if (rest_depths[i] >= 0.005).any() else np.inf
                              for i in range(len(sensors))])
 
-        # aim at the most-exposed sensor of a randomly chosen target link
+        # most-exposed sensor on a target link; aim the rod down its outward view ray
         link = LINK_TARGETS[int(rng.integers(0, len(LINK_TARGETS)))]
         cand = [i for i in range(len(sensors))
-                if sensors[i].startswith(link) and np.isfinite(rest_min[i])]
+                if sensors[i].startswith(link) and np.isfinite(rest_min[i]) and rest_min[i] > 0.30]
         if not cand:
             continue
         si = max(cand, key=lambda j: rest_min[j])
         cid = cam_ids[sensors[si]]
         pos = data.cam_xpos[cid].copy()
-        fwd = -data.cam_xmat[cid].reshape(3, 3)[:, 2]     # outward view ray; smaller d = closer to arm
+        fwd = -data.cam_xmat[cid].reshape(3, 3)[:, 2]      # outward ray; smaller d = closer to arm
 
-        # sweep the obstacle in along the ray and read true clearance at each depth
-        clrs = np.empty(len(ds_probe))
-        for k, d in enumerate(ds_probe):
+        clrs = np.empty(len(ds))
+        for k, d in enumerate(ds):
             data.mocap_pos[ctx.mid[obs_name]] = pos + fwd * d
             mujoco.mj_forward(model, data)
             clrs[k] = link_clearance(model, data, obs_gid, arm_gids, fromto)
         park_obstacles(data, ctx.mid)
         mujoco.mj_forward(model, data)
-
         if not quiet and clrs.min() > target_clr:
-            continue   # ray never penetrates -> not a real test; try another aim
+            continue                                       # ray never threatens -> retry
 
         k = int(np.argmin(np.abs(clrs - target_clr)))
-        d_end = float(ds_probe[k])
+        d_end = float(ds[k])
         err = float(abs(clrs[k] - target_clr))
-        kw = dict(seed=0,   # real per-scenario seed assigned by make_scenarios
+        kw = dict(seed=0,
                   q0=q_all[row].copy(), grip=float(grip_all[row]), base=base_all[row].copy(),
                   ap_w=ap_w, ap_h=ap_h, obstacle=obstacle, obstacle_name=obs_name,
                   obstacle_half=obs_half.copy(), target_sensor=sensors[si],
-                  path=_approach_schedule(pos, fwd, d_end), quiet=quiet,
+                  path=_approach_schedule(pos, fwd, d_end, approach_speed), quiet=quiet,
                   meta=dict(link=link, d_end=d_end, end_clear=float(clrs[k]), row=row))
         if best is None or err < best[0]:
             best = (err, kw)
-        if err < (0.05 if quiet else 0.02):
+        if err < (0.05 if quiet else 0.015):
             break
 
     return Scenario(**best[1]) if best is not None else None
 
 
-def make_scenarios(ctx: Ctx, runs, n, seed, obstacle="bar", radius=None,
-                   ap_w=AP_W, ap_h=AP_H, quiet=False) -> list[Scenario]:
+def make_scenarios(ctx: Ctx, runs, n, seed, scale, head, obstacle="bar", radius=None,
+                   ap_w=AP_W, ap_h=AP_H, quiet=False,
+                   pen=PEN_TARGET, approach_speed=APPROACH_SPEED) -> list[Scenario]:
     """``n`` deterministic encounters (seeded by ``seed`` + index). Collision-course unless
-    ``quiet`` (a far-approach control set for measuring false retreat)."""
+    ``quiet`` (a far-approach control set for measuring false retreat). ``scale`` is the head's
+    label_scale and ``head`` is the callable, both used by the clean-rest gate."""
     q_all, grip_all, base_all, _ = sw.load_postures([Path(p) for p in runs])
     obs_name, obs_half = obstacle_spec(obstacle, radius)
     obs_gid = obstacle_geom_id(ctx.model, obs_name)
@@ -338,7 +359,7 @@ def make_scenarios(ctx: Ctx, runs, n, seed, obstacle="bar", radius=None,
     for idx in range(n):
         rng = np.random.default_rng(seed * 100_003 + (1_000_000 if quiet else 0) + idx)
         sc = _sample_one(ctx, rng, q_all, grip_all, base_all, obstacle, obs_name, obs_half,
-                         obs_gid, ap_w, ap_h, quiet)
+                         obs_gid, ap_w, ap_h, quiet, scale, head, pen=pen, approach_speed=approach_speed)
         if sc is None:
             print(f"[scenario {idx}] no valid aim found - skipped")
             continue
@@ -402,11 +423,13 @@ def _cond_rng(seed: int, condition: str) -> np.random.Generator:
 
 # --------------------------------------------------------------------------- rollout
 def rollout(ctx: Ctx, scenario: Scenario, condition: str, head, scale: float,
-            gain=GAIN, decay=DECAY, max_dev=MAX_DEV, ema=EMA, margin=0.0) -> dict:
+            gain=GAIN, decay=DECAY, max_dev=MAX_DEV, ema=EMA, margin=0.0,
+            baseline="raw", dq_clip=DQ_CLIP) -> dict:
     """Run one closed-loop encounter under one ablation condition. Returns metrics.
 
-    head : callable raw (S,8,8) depths -> (7,) retreat (already x label_scale), or None for
-           the zero/oracle conditions.
+    head : callable raw (S,8,8) depths -> (7,) retreat (already x label_scale).
+    baseline : "raw" (react to the current scene; valid because postures are clean-rest gated,
+        and it halves the renders) or "subtract" (demo-style head(obstacle) - head(parked)).
     """
     model, data, rd, opt = ctx.model, ctx.data, ctx.rd, ctx.opt
     sensors, cam_ids, arm_gids = ctx.sensors, ctx.cam_ids, ctx.arm_gids
@@ -440,12 +463,12 @@ def rollout(ctx: Ctx, scenario: Scenario, condition: str, head, scale: float,
     tcp_xy = []
     cos_list = []
 
+    is_zero = spec["kind"] == "zero"   # no-skin floor: arm never moves -> skip all rendering
     for t in range(T):
         active = bool(np.isfinite(path[t]).all())
         data.mocap_pos[ctx.mid[obs_name]] = path[t] if active else sw.PARK
         set_arm(data, ctx.arm_qadr, scenario.q0 + correction)
         mujoco.mj_forward(model, data)
-        depths = render_all(model, data, rd, opt, sensors)
 
         if active:
             clr = link_clearance(model, data, obs_gid, arm_gids, fromto)
@@ -453,45 +476,62 @@ def rollout(ctx: Ctx, scenario: Scenario, condition: str, head, scale: float,
             if clr < margin and not contact:
                 contact, contact_step = True, t
 
-        # per-frame baseline: same arm pose, obstacle parked (isolates the obstacle's push)
-        data.mocap_pos[ctx.mid[obs_name]] = sw.PARK
-        mujoco.mj_forward(model, data)
-        rest_depths = render_all(model, data, rd, opt, sensors)
-        if active:
-            data.mocap_pos[ctx.mid[obs_name]] = path[t]   # restore (cam pose is arm-only, no re-forward needed)
+        if not is_zero:
+            depths = render_all(model, data, rd, opt, sensors)
+            boxes_w = (base_boxes + [(np.asarray(path[t], float), scenario.obstacle_half)]) \
+                if (can_oracle and active) else base_boxes
+            oracle_dq = None
 
-        # analytic oracle, baseline-subtracted exactly like the learned head: the obstacle's
-        # marginal analytic push = retreat(with obstacle) - retreat(obstacle parked). Used both
-        # for the oracle condition and as the per-frame retreat-cosine reference.
-        oracle_dq = None
-        if can_oracle:
-            boxes_w = base_boxes + ([(np.asarray(path[t], float), scenario.obstacle_half)]
-                                    if active else [])
-            o_w, _ = sw.analytic_retreat(model, data, sensors, cam_ids, depths,
-                                         boxes_w, ctx.arm_dofadr, jacp)
-            o_r, _ = sw.analytic_retreat(model, data, sensors, cam_ids, rest_depths,
-                                         base_boxes, ctx.arm_dofadr, jacp)
-            oracle_dq = (o_w - o_r).astype(np.float32)
+            if baseline == "subtract":
+                # demo-style: head(obstacle) - head(parked). Needs a second render of the parked
+                # scene at the current arm pose.
+                data.mocap_pos[ctx.mid[obs_name]] = sw.PARK
+                mujoco.mj_forward(model, data)
+                rest_depths = render_all(model, data, rd, opt, sensors)
+                if active:
+                    data.mocap_pos[ctx.mid[obs_name]] = path[t]   # restore (cam pose is arm-only)
+                if can_oracle:
+                    o_w, _ = sw.analytic_retreat(model, data, sensors, cam_ids, depths,
+                                                 boxes_w, ctx.arm_dofadr, jacp)
+                    o_r, _ = sw.analytic_retreat(model, data, sensors, cam_ids, rest_depths,
+                                                 base_boxes, ctx.arm_dofadr, jacp)
+                    oracle_dq = (o_w - o_r).astype(np.float32)
+                if spec["kind"] == "oracle":
+                    dq_raw = (oracle_dq / max(scale, 1e-6)).astype(np.float32) \
+                        if oracle_dq is not None else np.zeros(7, np.float32)
+                else:
+                    dq_raw = ((head(transform_depths(depths, spec, rng))
+                               - head(transform_depths(rest_depths, spec, rng)))
+                              / max(scale, 1e-6)).astype(np.float32)
+            else:
+                # raw: react to the current scene (the head's training objective). Valid because
+                # postures are clean-rest gated, and it skips the parked render (~2x faster).
+                if can_oracle:
+                    o_w, _ = sw.analytic_retreat(model, data, sensors, cam_ids, depths,
+                                                 boxes_w, ctx.arm_dofadr, jacp)
+                    oracle_dq = o_w.astype(np.float32)
+                if spec["kind"] == "oracle":
+                    dq_raw = (oracle_dq / max(scale, 1e-6)).astype(np.float32) \
+                        if oracle_dq is not None else np.zeros(7, np.float32)
+                else:
+                    dq_raw = (head(transform_depths(depths, spec, rng))
+                              / max(scale, 1e-6)).astype(np.float32)
 
-        if spec["kind"] == "zero":
-            dq_raw = np.zeros(7, np.float32)
-        elif spec["kind"] == "oracle":
-            dq_raw = (oracle_dq / max(scale, 1e-6)).astype(np.float32) \
-                if oracle_dq is not None else np.zeros(7, np.float32)
-        else:
-            d_t = transform_depths(depths, spec, rng)
-            r_t = transform_depths(rest_depths, spec, rng)
-            dq_raw = ((head(d_t) - head(r_t)) / max(scale, 1e-6)).astype(np.float32)
+            if (oracle_dq is not None and np.linalg.norm(oracle_dq) > 1e-6
+                    and np.linalg.norm(dq_raw) > 1e-9):
+                cos_list.append(float(np.dot(dq_raw, oracle_dq)
+                                      / (np.linalg.norm(dq_raw) * np.linalg.norm(oracle_dq))))
 
-        if (oracle_dq is not None and np.linalg.norm(oracle_dq) > 1e-6
-                and np.linalg.norm(dq_raw) > 1e-9):
-            cos_list.append(float(np.dot(dq_raw, oracle_dq)
-                                  / (np.linalg.norm(dq_raw) * np.linalg.norm(oracle_dq))))
+            if dq_clip > 0:                                  # saturate the reflex (tame over-fire)
+                dn = float(np.linalg.norm(dq_raw))
+                if dn > dq_clip:
+                    dq_raw = dq_raw * (dq_clip / dn)
 
-        dq = ema * dq + (1.0 - ema) * dq_raw
-        correction = np.clip(correction + (gain * dq - decay * correction) * DT,
-                             -max_dev, max_dev)
-        peak_dev = max(peak_dev, float(np.linalg.norm(correction)))
+            dq = ema * dq + (1.0 - ema) * dq_raw
+            correction = np.clip(correction + (gain * dq - decay * correction) * DT,
+                                 -max_dev, max_dev)
+            peak_dev = max(peak_dev, float(np.linalg.norm(correction)))
+
         tcp_xy.append(data.xpos[hand_bid][:2].copy())
 
     return dict(

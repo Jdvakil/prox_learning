@@ -67,6 +67,15 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--decay", type=float, default=L.DECAY)
     ap.add_argument("--max-dev", type=float, default=L.MAX_DEV)
     ap.add_argument("--ema", type=float, default=L.EMA)
+    ap.add_argument("--pen", type=float, default=L.PEN_TARGET,
+                    help="collision-course penetration depth at rest (m); shallow stays in-distribution")
+    ap.add_argument("--approach-speed", type=float, default=L.APPROACH_SPEED,
+                    help="obstacle inbound speed (m/s); slower gives the head more reaction lead time")
+    ap.add_argument("--baseline", choices=["raw", "subtract"], default="raw",
+                    help="raw = react to current scene (clean-rest gated, ~2x faster); "
+                         "subtract = demo-style head(obstacle) - head(parked)")
+    ap.add_argument("--dq-clip", type=float, default=L.DQ_CLIP,
+                    help="clip ||dq|| each frame to saturate the reflex (the head over-fires); 0 disables")
     ap.add_argument("--margin", type=float, default=0.0,
                     help="avoid = min surface clearance stays >= this (m); 0 = bare contact")
     ap.add_argument("--out", type=Path, default=Path("eval_output/safety_ablation_v1"))
@@ -95,13 +104,15 @@ def main() -> None:
     print(f"model: {len(ctx.sensors)} skin sensors, {len(ctx.arm_gids)} arm collision geoms")
 
     # build the work list: collision-course (+ optional quiet), each tagged with its conditions
-    scenarios = L.make_scenarios(ctx, args.runs, args.n, args.seed,
-                                 obstacle=args.obstacle, radius=args.radius)
+    scenarios = L.make_scenarios(ctx, args.runs, args.n, args.seed, scale, head,
+                                 obstacle=args.obstacle, radius=args.radius,
+                                 pen=args.pen, approach_speed=args.approach_speed)
     work = [(sc, conditions) for sc in scenarios]
     n_quiet = int(round(args.n * args.quiet_frac))
     if n_quiet > 0 and quiet_conditions:
-        quiet = L.make_scenarios(ctx, args.runs, n_quiet, args.seed,
-                                 obstacle=args.obstacle, radius=args.radius, quiet=True)
+        quiet = L.make_scenarios(ctx, args.runs, n_quiet, args.seed, scale, head,
+                                 obstacle=args.obstacle, radius=args.radius, quiet=True,
+                                 approach_speed=args.approach_speed)
         work += [(sc, quiet_conditions) for sc in quiet]
 
     # shard by global scenario index so parallel runs cover disjoint scenarios
@@ -116,7 +127,8 @@ def main() -> None:
     for i, (sc, conds) in enumerate(work):
         for cond in conds:
             m = L.rollout(ctx, sc, cond, head, scale, gain=args.gain, decay=args.decay,
-                          max_dev=args.max_dev, ema=args.ema, margin=args.margin)
+                          max_dev=args.max_dev, ema=args.ema, margin=args.margin,
+                          baseline=args.baseline, dq_clip=args.dq_clip)
             rows.append({
                 "seed": sc.seed, "idx": i, "quiet": int(sc.quiet), "obstacle": sc.obstacle,
                 "condition": cond, "target_sensor": sc.target_sensor,
