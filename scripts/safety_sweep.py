@@ -218,7 +218,7 @@ def main() -> None:
                     help="datagen run dir(s) containing house_*/trajectories*.h5")
     ap.add_argument("--n", type=int, default=15000)
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/sweep_v1.h5"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/sweep.h5"))
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
     rng = np.random.default_rng(args.seed)

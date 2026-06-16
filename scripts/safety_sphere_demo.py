@@ -99,7 +99,7 @@ def main() -> None:
     ap.add_argument("--ckpt", type=Path,
                     default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v3"))
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/sphere_demo.mcap"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/demos/sphere.mcap"))
     ap.add_argument("--radius", type=float, default=sw.SPHERE_R, help="sphere radius (m)")
     ap.add_argument("--gain", type=float, default=4.5, help="flinch rate (rad/s per unit head output)")
     ap.add_argument("--spring", type=float, default=1.5, help="return-to-nominal rate (1/s)")

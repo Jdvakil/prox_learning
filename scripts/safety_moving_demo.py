@@ -86,9 +86,9 @@ def heat_bgr(h):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v2"))
+                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v3"))
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/moving_demo.mcap"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/demos/moving.mcap"))
     ap.add_argument("--runs", nargs="+", type=Path,
                     default=[Path("/home/jaydv/code/prox_learning/assets/datagen/"
                                   "hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855")])

@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pla"
+name = "prox_learning"
 version = "0.1.0"
-description = "Peripersonal Language-Action policies via whole-body ToF proximity sensing"
+description = "Proximity-skin sensing and a Safety-CVAE avoidance reflex for the Franka FR3 (MuJoCo / MolmoSpaces)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Proprietary" }
@@ -35,9 +35,10 @@ dev = [
     "ruff>=0.4",
 ]
 
-[tool.setuptools.packages.find]
-include = ["pla*"]
-exclude = ["submodules*", "data*", "runs*", "reports*", "paper*", "assets*", "configs*", "scripts*", "docs*"]
+# This repo is a collection of scripts + assets, not an importable package.
+# Declare no packages/modules so `pip install -e .` only installs the dependencies above.
+[tool.setuptools]
+py-modules = []
 
 [tool.ruff]
 line-length = 100
