@@ -14,6 +14,7 @@ Do NOT run datagen/heavy shells or spawn subagents. Prepare code edits, then tel
 the user the exact commands to run. The user runs them and reports back. Unless user requests to do so. 
 
 ALWAYS USE `/effort` TO ULTRACODE ALL THE TIME. HARD CONSTRAINT. NEVER USE ANYTHING LESS.
+ALWAYS DOCUMENT AND REFER TO THE README IN /home/jaydv/code/prox_learning/README.md NO NEW README FILES OR MARKDOWN FILES.
 
 ## Datagen run recipe
 ```
