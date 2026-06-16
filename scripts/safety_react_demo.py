@@ -162,9 +162,9 @@ def main() -> None:
                     default=[Path("/home/jaydv/code/prox_learning/assets/datagen/"
                                   "hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855")])
     ap.add_argument("--ckpt", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v2"))
+                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v3"))
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/react_demo.mcap"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/demos/react.mcap"))
     ap.add_argument("--mode", choices=["sweep", "pick"], default="sweep",
                     help="sweep = smooth wide lateral sweep (clean multi-obstacle weave); "
                          "pick = replay a recorded pick trajectory")

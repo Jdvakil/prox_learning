@@ -225,9 +225,9 @@ def main() -> None:
                                   "hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855")],
                     help="datagen run dir(s) to source the posture from")
     ap.add_argument("--ckpt", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v2"))
+                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v3"))
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/flinch_demo.mcap"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/demos/flinch.mcap"))
     ap.add_argument("--gain", type=float, default=4.5,
                     help="flinch rate (rad/s per unit head output)")
     ap.add_argument("--spring", type=float, default=1.5,

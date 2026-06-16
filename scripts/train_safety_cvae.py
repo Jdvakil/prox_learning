@@ -236,7 +236,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--out", type=Path,
-                    default=Path("/home/jaydv/code/prox_learning/assets/safety/cvae_v3"))
+                    default=Path("/home/jaydv/code/prox_learning/experiments_output/default/cvae"))
     ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--bs", type=int, default=512)
     ap.add_argument("--lr", type=float, default=1e-3)
