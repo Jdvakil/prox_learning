@@ -12,13 +12,22 @@ cavity body with a low-surface prefix (e.g. "chestofdrawers_cavity") so the exis
 PickAndPlaceTaskSampler source_surface_types filter treats objects resting in it as valid pickups.
 """
 from __future__ import annotations
+from pathlib import Path
 import tempfile
 import numpy as np
 import mujoco
 
-ROBOT_XML = "/home/jaydv/code/prox_learning/assets/robots/franka_skin/model.xml"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+ROBOT_XML = str(REPO_ROOT / "assets" / "robots" / "franka_skin" / "model_hybrid.xml")
+CUSTOM_SCENES = (
+    REPO_ROOT / "submodules" / "molmospaces" / "molmo_spaces" / "data_generation" / "custom_scenes"
+)
+FRIDGE_XMLS = {
+    "fridge": CUSTOM_SCENES / "fridge_two_level.xml",
+    "fridge_v2": CUSTOM_SCENES / "fridge_two_level_v2.xml",
+}
 NS = "robot_0/"
-BASE_Z = 0.58
+BASE_Z = 0.35  # Match FridgeTwoLevelPnPConfig's FrankaSkinHybridRobotConfig base height.
 
 
 def _box(name, pos, size, rgba):
@@ -123,6 +132,12 @@ def build_standalone_cavity_scene(reach_pose, open_top=False, with_target=True):
     return model, info
 
 
+def build_standalone_fridge_scene(scene_key="fridge"):
+    spec = mujoco.MjSpec.from_file(str(FRIDGE_XMLS[scene_key]))
+    _attach_robot(spec)
+    return spec.compile()
+
+
 def render_proximity_depths(model, data):
     """8x8 native depth for every proximity sensor (skin meshes hidden)."""
     r = mujoco.Renderer(model, height=8, width=8)
@@ -162,8 +177,21 @@ def encapsulation_report(model, data, near=0.03, far=3.0):
 
 
 if __name__ == "__main__":
-    REACH = [0.0, 0.55, 0.0, -1.4, 0.0, 1.95, 0.0]
-    model, info = build_standalone_cavity_scene(REACH)
+    import sys
+
+    REACH = [0.0, 0.55, 0.0, -1.55, 0.0, 2.05, 0.0]
+    scene_key = sys.argv[1] if len(sys.argv) >= 2 else "fridge"
+    use_fridge = scene_key in FRIDGE_XMLS
+    if use_fridge:
+        model = build_standalone_fridge_scene(scene_key)
+        info = {
+            "scene": scene_key,
+            "robot_xml": ROBOT_XML,
+            "fridge_xml": str(FRIDGE_XMLS[scene_key]),
+            "reach": REACH,
+        }
+    else:
+        model, info = build_standalone_cavity_scene(REACH)
     data = mujoco.MjData(model)
     _set_arm(model, data, REACH)
     print("cavity info:", {k: (np.round(v, 3).tolist() if isinstance(v, (list, tuple, np.ndarray)) else v)
