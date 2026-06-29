@@ -1,0 +1,304 @@
+================================================================================
+PLAN: DEEP-CAVITY (TWO-LEVEL FRIDGE) PICK-AND-PLACE TASK FOR PROXIMITY DATAGEN
+Target: another programming agent working in /root/prox_learning
+Author: research/setup agent. Date: 2026-06-27.
+================================================================================
+
+0. ONE-PARAGRAPH GOAL
+---------------------
+Build a NEW MolmoSpaces datagen task that forces the Franka FR3 (with the 40-sensor
+HYBRID proximity skin) to EXTEND DEEP into an enclosed two-level "fridge", grasp ONE
+object resting at the back of the deep UPPER compartment, retract, and PLACE it onto a
+fixed target zone on the open LOWER shelf. Walls are PHYSICAL and tight, so collision-
+checked planning is required and the whole-body proximity skin is genuinely necessary
+(not decorative). One item only for now (no clutter); clutter is a later extension.
+
+This reconstructs + extends work lost on a dead machine. The lost piece was a config
+named `FrankaSkinOpenFrontClutteredReachPickAndPlacePilotConfig` (imported by
+scratch/run_datagen.py) that never got pushed and does NOT exist in the cloned
+molmospaces. We are rebuilding that lineage, cleaner, as a deep two-level fridge.
+
+DESIGN DECISIONS (locked with the user 2026-06-27):
+  - Walls: PHYSICAL + tight (proximity genuinely necessary; collision-checked planning).
+  - Place target: FIXED ZONE on the lower shelf (deterministic goal pose, not a receptacle).
+  - Geometry: TWO-LEVEL FRIDGE (deep upper compartment = pick; open lower compartment = place).
+
+
+1. WHAT ALREADY EXISTS (REUSE, DO NOT REINVENT)
+-----------------------------------------------
+Repo: /root/prox_learning   (submodules molmospaces + act now cloned via HTTPS).
+
+Robot / skin:
+  - assets/robots/franka_skin/model_hybrid.xml  -> the 40-sensor hybrid skin model.
+  - configs/robot_configs.py:169 FrankaSkinHybridRobotConfig -> loads model_hybrid.xml.
+  - configs/camera_configs.py:474 FrankaSkinHybridCameraSystem -> 40 8x8 depth prox cams.
+    USE THESE TWO in the new config (the cavity configs currently use the 29-sensor
+    FrankaSkinRobotConfig + FrankaSkinCameraSystem -- we must override to the hybrid pair).
+
+Cavity task machinery (THE backbone to subclass):
+  molmo_spaces/tasks/cavity_pick_task_sampler.py
+    - CavityPickTaskSampler(PickTaskSampler): custom hand-authored scene (no ProcTHOR
+      house), injects ONE grasp-validated objaverse object into a cavity, arm reaches IN
+      to grasp. Three custom-scene overrides we MUST inherit:
+        1. add_auxiliary_objects     -> inject the single object (shape/grasp filtered pool)
+        2. _get_dataset_index_map    -> custom "user" scene: map every variant to the XML
+        3. _sample_and_place_robot   -> set robot base pose directly (custom scenes have
+                                        no occupancy map)
+      Key constants: CAVITY_CENTER, CAVITY_INTERIOR, BASE_XYZ/BASE_QUAT, OBJ_XY,
+      OBJ_FLOOR_Z, OBJ_JIT_XY, shape filters (MAX/MIN_OBJ_DIM, MIN_FLATNESS).
+      Also: _settle_injected_object (drops + settles the object onto the support before
+      sampling), _obj_rest (resting spot).
+    - ShelfReachPickTaskSampler: deep variant, object at the BACK so the whole arm is
+      inside and all sensors fire (OBJ_XY=(0.60,0), OBJ_FLOOR_Z=0.44). Good reference for
+      "deep reach" placement of the pick object.
+
+Custom scenes (hand-authored MJCF), molmo_spaces/data_generation/custom_scenes/:
+  - cabinet_cavity.xml: 5-wall PHYSICAL cavity, body "cabinet" at (0.5,0,0.8), interior
+    half-extents (0.26,0.24,0.22), open -x face + open top, low front lip. <- closest
+    geometric template for a PHYSICAL cavity. Copy its <default class="cavity_struct">
+    (contype=8 conaffinity=15) for physical walls.
+  - shelf_reach.xml: deep cupboard, GHOST walls (we will NOT use ghost; reference only for
+    how deep + where the object sits).
+  Each scene needs a sibling <name>_metadata.json (copy an existing one; contents trivial).
+
+Configs: molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py
+  - The whole FrankaSkinCabinetCavity* / FrankaSkinShelfReach* block (lines ~1457-1595) is
+    the template for registering a custom-scene cavity config. Copy that pattern.
+  - FrankaSkinHybridFumehoodSmokeConfig (~2086) shows EXACTLY how to attach the 40-sensor
+    hybrid skin: robot_config=FrankaSkinHybridRobotConfig(base_size=[0.4,0.4,0.35]),
+    camera_config=FrankaSkinHybridCameraSystem(), viz_sensor_rgb=True.
+
+Pick-and-place plumbing (so we don't write a planner):
+  - configs/policy_configs.py:142 PickAndPlacePlannerPolicyConfig -> PickAndPlacePlannerPolicy
+    (solver exists: molmo_spaces/policy/solvers/object_manipulation/pick_and_place_planner_policy.py).
+  - configs/base_pick_and_place_configs.py: PickAndPlaceDataGenConfig wires task_type=
+    "pick_and_place", PickAndPlaceTaskConfig(task_cls=PickAndPlaceTask), the place planner.
+  - tasks/pick_and_place_task.py + tasks/pick_and_place_object_target_task_sampler.py:
+    place-target hooks (_get_place_target_candidates, _prepare_place_target,
+    place_receptacle_name / place_target_name, place_receptacle_start_pose) and the place
+    SUCCESS criterion. READ pick_and_place_task.py FIRST to learn what counts as a
+    successful place (distance threshold of object to target) -- the fixed-zone goal must
+    satisfy it.
+
+Datagen run harness:
+  - scratch/run_datagen.py: the user's custom ParallelRolloutRunner (target_successes,
+    resume-from-disk). It currently imports the LOST config and points base_dir at a dead
+    /mnt/d/... path. We will repoint it at the new config + a local output dir.
+  - Or run directly: `python -m molmo_spaces.data_generation.main <ConfigName>`
+    (main.py auto-imports configs, looks up by @register_config name).
+
+
+2. THE GEOMETRY TO BUILD  (custom_scenes/fridge_two_level.xml)
+--------------------------------------------------------------
+Coordinate convention (inherited from cabinet_cavity.xml): robot base near world origin
+on a pedestal, +x faces the opening; the fridge sits in front at x ~0.3..0.86; world z is
+height. All <size> values are HALF-extents. Walls PHYSICAL (class "cavity_struct" from
+cabinet_cavity.xml: contype=8 conaffinity=15, friction, solref/solimp, density 800).
+
+STARTING dimensions (MUST be validated + tuned in step 4 -- treat as a first cut):
+  Outer envelope: x in [0.34, 0.84] (depth ~0.50), y in [-0.30, 0.30] (width 0.60).
+  - cab_back   : physical wall at x=0.85   (z spanning both levels)
+  - cab_left   : physical wall at y=+0.31
+  - cab_right  : physical wall at y=-0.31
+  - cab_top    : physical wall at z=1.05
+  - cab_floor  : physical bottom at z=0.38  (lower-shelf support surface; object placed here)
+  - cab_mid    : physical horizontal SHELF at z=0.70  (divides upper/lower; UPPER floor)
+  - front: OPEN on -x for BOTH levels so the arm enters. Optional thin lower front lip at
+    z~0.40 so the placed item can't roll out.
+  UPPER compartment (the PICK): interior x in [0.36,0.83], z in [0.72,1.03], y[-0.28,0.28].
+    Item rests DEEP + HIGH at ~(0.64, 0, 0.74) so the arm must fully extend in and up ->
+    the 40 sensors get encapsulated by mid-shelf (below), top (above), back, and sides.
+  LOWER compartment (the PLACE): interior x in [0.36,0.83], z in [0.40,0.68].
+    Fixed place zone = a small STATIC "place pad" BODY near the FRONT-CENTER (NOT a site --
+    the place planner needs a real body whose AABB it can read; see section 3):
+      <geom name="place_pad" type="box" pos="0.50 0 0.39" size="0.06 0.06 0.01"
+            rgba="0.2 0.7 0.2 1" contype="8" conaffinity="15"/>
+    Pad top ~z=0.40. The planner sets the object DOWN centered on this pad. Keep the pad
+    small so the "zone" is well localized but big enough that the object rests stably.
+    The sampler registers this pad as the place receptacle (section 3).
+
+WHY this shape maximizes proximity: the pick pose buries the wrist + forearm inside a
+box bounded on 5 of 6 sides within ~0.15-0.28 m, so nearly all 40 sensors read < 0.5 m
+through the approach/grasp; and because the walls are PHYSICAL the collision-checked
+planner must thread the arm in/out using those clearances -> proximity is causally load-
+bearing for success, not redundant with vision.
+
+Add fridge_two_level_metadata.json next to it (copy cabinet_cavity_metadata.json).
+
+
+3. THE TASK SAMPLER  (tasks/cavity_pick_task_sampler.py, new subclass)
+----------------------------------------------------------------------
+RESOLVED (was an open risk; I read pick_and_place_planner_policy.py end-to-end):
+The place is a CONTROLLED SET-DOWN, not a drop -- exactly what the user wants. The
+PickAndPlacePlannerPolicy trajectory is:
+   open gripper -> pregrasp -> grasp -> CLOSE -> lift -> preplace (hover ABOVE the pad)
+   -> place (lower until the object's BOTTOM is at the pad's TOP surface) -> OPEN gripper
+   -> retreat up -> go home.
+It computes the place height from the place receptacle's AABB top
+(_get_placement_poses: receptacle_top_z = aabb_center.z + aabb_size.z/2; place_pose.z =
+receptacle_top_z + object_clearance) and even shifts the EE so the OBJECT (not the gripper)
+lands centered over the receptacle xy. So it sets the item down gently and centered -- not
+super-precise, exactly the "you get what I mean" the user described.
+
+KEY CONSEQUENCE: the planner needs a real place receptacle BODY (it reads
+task_config.place_receptacle_name from the object manager and takes that body's AABB). It
+does NOT accept a bare xyz goal. That is why the lower-shelf "fixed zone" is the small
+STATIC place_pad BODY from section 2 -- we register that pad as the place receptacle.
+
+So the new sampler combines two existing machineries:
+  (A) custom-scene + single-object injection (from CavityPickTaskSampler), and
+  (B) the pick-AND-place pipeline + place success (from PickAndPlaceTaskSampler).
+
+RECOMMENDED IMPLEMENTATION: new class FridgePickAndPlaceTaskSampler(PickAndPlaceTaskSampler).
+Re-use the THREE short custom-scene overrides from CavityPickTaskSampler (copy them; they
+are ~10 lines each):
+  1. add_auxiliary_objects -> inject the ONE grasp-validated objaverse pickup object DEEP in
+     the upper compartment (reuse CavityPick's _uid_pool + shape filter + install_uid + the
+     metadata_adder registration). THEN also register the place target: the place_pad is a
+     static geom already in the XML -- make sure the object manager knows it (inject it as a
+     static body the same way, or add a metadata entry) and remember its name.
+  2. _get_dataset_index_map -> custom "user" scene: map every variant (base/ceiling/map) to
+     the one fridge XML (verbatim from CavityPick).
+  3. _sample_and_place_robot -> set the robot base pose DIRECTLY (custom scenes have no
+     occupancy map). Verbatim from CavityPick, plus set:
+         task_config.pickup_obj_name      = injected object name
+         task_config.place_receptacle_name = "place_pad" body name   <-- drives place + success
+Disable/skip PickAndPlaceTaskSampler's house-receptacle DISCOVERY (we supply the pad, so
+do not let it search the scene for objaverse receptacles). Check _on_candidate_selected /
+_add_receptacles_to_scene in the PnP sampler and short-circuit them to use our pad.
+
+Constants for the subclass:
+      CAVITY_CENTER  = (0.60, 0.0, 0.87)     # upper compartment center (match XML)
+      CAVITY_INTERIOR= (0.24, 0.27, 0.16)    # upper interior half-extents (match XML)
+      OBJ_XY         = (0.64, 0.0)           # deep + back: full extension on the pick
+      OBJ_FLOOR_Z    = 0.72                  # top of the mid shelf (upper compartment floor)
+      OBJ_JIT_XY     = (0.05, 0.07)
+      PLACE_PAD_NAME = "place_pad"           # the static pad body from the XML (section 2)
+_settle_injected_object must settle the pickup object onto the UPPER mid-shelf
+(OBJ_FLOOR_Z=0.72) -- make _obj_rest() return the upper spot.
+
+Place SUCCESS: scored in tasks/pick_and_place_task.py (object-to-place-target distance under
+task_config.task_success_threshold). Because place_receptacle_name = our pad, success ==
+"object ended up resting on the pad". Read pick_and_place_task.py once to confirm the
+threshold + that filter_for_successful_trajectories keeps only those.
+
+Tuning knobs if the planner stalls in the tight physical box: policy_config.place_z_offset,
+pregrasp_z_offset, grasp filtering (filter_colliding_grasps / filter_feasible_grasps), and a
+V2 scene with a slightly wider mouth. Validate with section 4 after any geometry change.
+
+
+4. VALIDATION BEFORE ANY BIG RUN (cheap, do in order)
+-----------------------------------------------------
+4a. Encapsulation check (no datagen pipeline needed). Adapt scripts/cavity_scene.py:
+    - It already has build_standalone_cavity_scene + encapsulation_report (renders every
+      "_sensor_" cam's 8x8 depth, reports n_sensors_active / median depth / frac<0.30m).
+    - Point ROBOT_XML at assets/robots/franka_skin/model_hybrid.xml (40 sensors; the file
+      currently hardcodes a dead /home/jaydv path AND model.xml -- fix both).
+    - Load fridge_two_level.xml + the robot at a hand-set "deep grasp" pose, run
+      encapsulation_report. TARGET: >=32/40 sensors active and median depth < ~0.25 m at the
+      grasp pose. If too few sensors fire, push the object deeper / tighten the upper box.
+4b. Reachability/feasibility: confirm the collision-checked planner can (i) reach the deep
+    upper grasp and (ii) the lower place zone without an UNAVOIDABLE wall collision. With
+    PHYSICAL tight walls this is the main yield risk. If the planner stalls, widen the mouth
+    a few cm or raise base height -- re-validate 4a after any change.
+4c. SMOKE config: register FridgeTwoLevelPnPSmokeConfig (1 scene, 1 sample, num_workers=1,
+    filter_for_successful_trajectories=True) and run ONE episode. Inspect the saved exo +
+    wrist videos and the per-sensor depth in the h5: object grasped from upper, released on
+    lower zone, success=True, 40 prox channels populated.
+
+
+5. CONFIGS TO REGISTER (object_manipulation_datagen_configs.py)
+---------------------------------------------------------------
+Add near the cavity block. Use @register_config. Pattern (fill from PickAndPlaceDataGenConfig
++ FrankaSkinHybridFumehoodSmokeConfig):
+
+  @register_config("FridgeTwoLevelPnPSmokeConfig")
+  class FridgeTwoLevelPnPSmokeConfig(<PickAndPlace base OR PickBaseConfig>):
+      scene_dataset = "user"; data_split = "train"; num_workers = 1; seed = 2026
+      filter_for_successful_trajectories = True
+      disable_collision_checks = False                 # PHYSICAL walls -> keep checks ON
+      robot_config  = FrankaSkinHybridRobotConfig(base_size=[0.4,0.4,0.35])   # 40 sensors
+      camera_config = FrankaSkinHybridCameraSystem()
+      viz_sensor_rgb = True
+      task_type = "pick_and_place"
+      policy_config = PickAndPlacePlannerPolicyConfig()
+      task_config   = PickAndPlaceTaskConfig(task_cls=PickAndPlaceTask)
+      task_sampler_config = <PnP sampler cfg>(
+          task_sampler_class = FridgePickAndPlaceTaskSampler,
+          scene_xml_paths = [_FRIDGE_XML],            # add _FRIDGE_XML constant next to _CAVITY_XML
+          house_inds = [0], samples_per_house = 1,
+          added_pickup_objects = None, num_added_pickups = 0,
+          check_robot_placement_visibility = False,
+          max_total_attempts_multiplier = 15,
+          max_allowed_sequential_task_sampler_failures = 300,
+          max_allowed_sequential_rollout_failures = 300,
+      )
+      output_dir = ASSETS_DIR / "datagen" / "fridge_two_level_smoke"
+
+  @register_config("FridgeTwoLevelPnPConfig")   # full collection
+  class FridgeTwoLevelPnPConfig(FridgeTwoLevelPnPSmokeConfig):
+      num_workers = 8
+      scene_xml_paths = [_FRIDGE_XML]*16; house_inds=range(16); samples_per_house=10  # ~160
+      output_dir = ASSETS_DIR / "datagen" / "fridge_two_level_v1"
+
+NOTE on the task_sampler_config CLASS: use PickAndPlaceTaskSamplerConfig (resolved in
+section 3 -- we subclass PickAndPlaceTaskSampler, so the place fields + success live there).
+Set task_sampler_class=FridgePickAndPlaceTaskSampler. The base PnP config already defaults
+task_type="pick_and_place", task_config=PickAndPlaceTaskConfig, and
+policy_config=PickAndPlacePlannerPolicyConfig -- so a clean route is to subclass
+PickAndPlaceDataGenConfig and override ONLY: robot_config/camera_config to the hybrid pair,
+scene_dataset="user", scene_xml_paths=[_FRIDGE_XML], the sampler class, and num_workers.
+
+
+6. RUN + OUTPUT
+---------------
+Run env (the user's recipe; conda 'mlspaces' was on the dead box -- see section 7 for the
+fresh env):
+  export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=2 PYTHONUNBUFFERED=1
+  export MLSPACES_ASSETS_DIR=/root/prox_learning/assets
+  export PYTHONPATH=/root/prox_learning/submodules/molmospaces
+  cd /root/prox_learning/submodules/molmospaces
+  python -m molmo_spaces.data_generation.main FridgeTwoLevelPnPSmokeConfig   # smoke first
+  python -m molmo_spaces.data_generation.main FridgeTwoLevelPnPConfig        # full
+
+Or via the user's harness: edit scratch/run_datagen.py -> import FridgeTwoLevelPnPConfig,
+set base_dir to a LOCAL path (assets/datagen/fridge_two_level_v1, git-ignored, or
+.openresearch/artifacts/ to persist), set cfg = FridgeTwoLevelPnPConfig().
+Output: assets/datagen/<name>/ ... house_*/trajectories_batch_1_of_1.h5 (+ videos).
+
+EVAL.md: this is an OpenResearch sandbox -- after a run, write metrics to EVAL.md at the
+experiment root (success rate, n episodes, mean #sensors active in grasp phase, median
+grasp-phase prox depth, place success rate). That file is the cross-variant comparison.
+
+
+7. ENVIRONMENT SETUP (heavy -- user runs; do NOT brute-force)
+-------------------------------------------------------------
+State on this fresh box: submodules molmospaces + act cloned (HTTPS, pinned commits).
+NO python env yet (conda 'mlspaces' and /root/old/.venv were on the destroyed machine).
+molmospaces deps are heavy: jax~=0.6.2, mujoco-warp/mjx~=3.5, torch~=2.7 (CUDA), open_clip,
+prior (ProcTHOR), beaker-py, boto3 (S3 asset pulls), coacd, toppra, curobo, etc.
+The local repo also has its own light pyproject (numpy/torch/mujoco/h5py...) for scripts.
+
+Suggested fresh env (user to run; pick conda OR venv):
+  python3 -m venv /root/prox_learning/.venv && . /root/prox_learning/.venv/bin/activate
+  pip install -e /root/prox_learning                       # repo scripts' light deps
+  pip install -e /root/prox_learning/submodules/molmospaces # heavy; needs CUDA toolchain
+  # objaverse/procthor assets download lazily via prior/boto3 on first datagen run; ensure
+  # MLSPACES_ASSETS_DIR is writable + has network/S3 access.
+For ACT training later: README "ACT baseline" section (pip install ipython, wandb).
+
+Submodule note: .gitmodules uses git@github SSH (no key here). Cloned over HTTPS by
+overriding submodule.<path>.url in .git/config. MolmoBot submodule (allenai) NOT cloned --
+clone only if an import needs it.
+
+
+8. DOWNSTREAM (out of scope now, but the point of the task)
+-----------------------------------------------------------
+Once demos collect: convert to ACT format (scripts/convert_obstacle_to_act.py is the
+template; note act/ has eval_act_with_prox.py + eval_act_mug_random.py already), then train
+PACT (vision+40-prox) vs vision-only ACT on the fridge data and compare -- the paper thesis
+(paper/theory.tex) is that proximity reshapes WHERE/HOW the policy engages + fails. The deep
+physical fridge is chosen to make that contribution maximal.
+
+DO: keep everything in README terms; do NOT add new README/markdown files (project rule).
+================================================================================
