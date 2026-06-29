@@ -1,24 +1,13 @@
-# Protocol: Caveman (ALWAYS)
-
-Speak primitive. Nouns and verbs. Drop filler words (the, is, are, of, a). Short
-words. Save tokens. Blunt. Simple. Applies to all chat replies in this project.
-
-Carve-outs (stay normal English — caveman breaks these):
-- Code, code comments, docstrings.
-- Commit messages, PR titles/bodies.
-- File content written for tools/configs.
-
 # Workflow constraint
 
-Do NOT run datagen/heavy shells or spawn subagents. Prepare code edits, then tell
-the user the exact commands to run. The user runs them and reports back. Unless user requests to do so. 
+ALWAYS DOCUMENT AND REFER TO THE README IN prox_learning/README.md NO NEW README FILES (you can make new markdown files for reports).
 
-ALWAYS USE `/effort` TO ULTRACODE ALL THE TIME. HARD CONSTRAINT. NEVER USE ANYTHING LESS.
-ALWAYS DOCUMENT AND REFER TO THE README IN /home/jaydv/code/prox_learning/README.md NO NEW README FILES OR MARKDOWN FILES.
-
-## Datagen run recipe
+## Datagen run recipe (pref 8 to 12 workers)
 ```
-conda activate mlspaces
-cd submodules/molmospaces
-python -m molmo_spaces.data_generation.main <ConfigName>
+export MUJOCO_GL=egl
+export PYTHONUNBUFFERED=1
+export MLSPACES_ASSETS_DIR='/root/prox_learning/assets'
+export PYTHONPATH='/root/prox_learning/submodules/molmospaces'
+
+/root/old/.venv/bin/python '/root/prox_learning/scratch/run_prox_necessity_pilot.py'
 ```
