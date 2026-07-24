@@ -1,0 +1,146 @@
+{
+  "accepted_theta_draws": {
+    "accepted_theta_draws_logged": 242,
+    "as_written_accepted_theta_hazard_rate": {
+      "k": 168,
+      "lower": 0.6319706428641163,
+      "n": 242,
+      "point": 0.6942148760330579,
+      "upper": 0.7516279514024753
+    },
+    "available": true,
+    "effective_independent_draws_estimate": 104,
+    "hazard_draws_logged": 168,
+    "note": "Logged draws include the replicated worker streams. Because concurrent workers replay an identical RNG sequence, the logged count overstates the number of independent Bernoulli draws by roughly the replica multiplicity, so the as-written interval is narrower than the data justify.",
+    "replica_multiplicity_of_stored_trajectories": 2.3333333333333335
+  },
+  "as_written": {
+    "hazard_present": 120,
+    "label": "as_written (includes exact replicas)",
+    "overall_success_rate": {
+      "k": 165,
+      "lower": 0.8974247575023346,
+      "n": 175,
+      "point": 0.9428571428571428,
+      "upper": 0.9722608173296912
+    },
+    "success_rate_given_hazard_absent": {
+      "k": 51,
+      "lower": 0.8241324647160317,
+      "n": 55,
+      "point": 0.9272727272727272,
+      "upper": 0.97982946664677
+    },
+    "success_rate_given_hazard_present": {
+      "k": 114,
+      "lower": 0.8943461454812877,
+      "n": 120,
+      "point": 0.95,
+      "upper": 0.9814324132173309
+    },
+    "successful": 165,
+    "successful_hazard_absent": 51,
+    "successful_hazard_present": 114,
+    "successful_hazard_rate": {
+      "k": 114,
+      "lower": 0.6143845969104493,
+      "n": 165,
+      "point": 0.6909090909090909,
+      "upper": 0.7604264948115378
+    },
+    "trajectories": 175,
+    "written_hazard_rate": {
+      "k": 120,
+      "lower": 0.6113475605713526,
+      "n": 175,
+      "point": 0.6857142857142857,
+      "upper": 0.7536617720133062
+    }
+  },
+  "config_seed": 2026,
+  "distinct": {
+    "hazard_present": 50,
+    "label": "distinct (one representative per content class)",
+    "overall_success_rate": {
+      "k": 71,
+      "lower": 0.8690391927215253,
+      "n": 75,
+      "point": 0.9466666666666667,
+      "upper": 0.9852792353408218
+    },
+    "success_rate_given_hazard_absent": {
+      "k": 23,
+      "lower": 0.7396941578947858,
+      "n": 25,
+      "point": 0.92,
+      "upper": 0.9901604099812025
+    },
+    "success_rate_given_hazard_present": {
+      "k": 48,
+      "lower": 0.8628623743960326,
+      "n": 50,
+      "point": 0.96,
+      "upper": 0.9951185665738356
+    },
+    "successful": 71,
+    "successful_hazard_absent": 23,
+    "successful_hazard_present": 48,
+    "successful_hazard_rate": {
+      "k": 48,
+      "lower": 0.5545324296371363,
+      "n": 71,
+      "point": 0.676056338028169,
+      "upper": 0.7823656264005718
+    },
+    "trajectories": 75,
+    "written_hazard_rate": {
+      "k": 50,
+      "lower": 0.548348583660696,
+      "n": 75,
+      "point": 0.6666666666666666,
+      "upper": 0.7713679382849695
+    }
+  },
+  "interval_note": "Clopper-Pearson exact 95% intervals. Intervals are reported for the non-nested headline rates: written hazard rate, successful hazard rate, and success conditional on hazard presence/absence.",
+  "replication": {
+    "distinct_content_classes": 75,
+    "multiplicity_histogram": {
+      "1": 25,
+      "3": 50
+    },
+    "stored_trajectories": 175
+  },
+  "sampler_contract": {
+    "check_sampler_obstacle_p": 1.0,
+    "comparison_convention": "np.random.random() < self.OBSTACLE_P",
+    "config_seed_note": "FrankaSkinHybridObstacleConfig inherits a fixed seed; every worker constructs its own task sampler and seeds the global RNG with that same value, so worker RNG streams overlap completely",
+    "configured_obstacle_p": 0.75,
+    "draw_site": "ObstacleFumehoodPickSampler._draw_theta",
+    "hazard_affects_reset_or_rollout_success": "yes \u2014 hazard episodes route through ObstacleAwarePickPlannerPolicy's deflection and can fail IK at pregrasp/lift, so success is not independent of hazard presence; conditional success rates are reported",
+    "hazard_fields_set_on_draw": [
+      "cell='bar'",
+      "protrusion_present=True",
+      "protr_name",
+      "protr_wall",
+      "protr_pos_frac",
+      "bar_face_y",
+      "intrusion",
+      "residual_margin",
+      "obj_gap"
+    ],
+    "hazard_metadata_can_differ_from_rendered_bar": "no \u2014 protrusion_present is set in the same _draw_theta call that emits protr_center/protr_half and the extra obstacle_aabbs entry, and _apply_theta colours that same geom; the integrity audit confirms label and geometry agree on every trajectory",
+    "rejected_attempts_consume_draws": "yes \u2014 a rejected rollout is re-sampled through _draw_theta, so each planner rejection consumes a fresh Bernoulli draw from the same stream",
+    "rng_owner": "global numpy legacy RandomState via np.random.random(), seeded by TaskSampler.seed_task_sampling",
+    "sampler_file": "/root/prox_learning_act_retrain/submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+    "seed_fallback_when_unset": "np.random.randint(0, 100000000)",
+    "seed_function_body": "self.current_seed = seed\n        random.seed(seed)\n        np.random.seed(seed)\n        torch.manual_seed(seed)"
+  },
+  "schema_version": "hybrid_obstacle_hazard_audit_v1",
+  "worker_seed_overlap": {
+    "consequence": "all workers start from the identical RNG state, and because every configured house index is congruent to 1 mod 24 and therefore selects the identical red-cup task, the k-th house processed by any worker replays the same episode sequence",
+    "each_worker_builds_its_own_task_sampler": true,
+    "sampler_seeds_global_rng_at_construction": true,
+    "seed_depends_on_house_index": false,
+    "seed_depends_on_worker_id": false
+  }
+}

@@ -1,0 +1,1580 @@
+{
+  "algorithm": {
+    "excluded_signals": [
+      "clearance",
+      "collisions",
+      "trajectory length or quality",
+      "sensor activation",
+      "action statistics",
+      "any downstream model metric"
+    ],
+    "granularity": "trajectory-level only",
+    "step_1": "drop fail[-1] trajectories",
+    "step_2": "collapse identical-content replica classes to one representative (lexicographically smallest trajectory id)",
+    "step_3": "group by hazard label",
+    "step_4": "order within group by SHA-256(selection_seed || trajectory_id || source_file_hash)",
+    "step_5": "fixed round-robin over houses in sorted order, consuming each house's hash-ordered candidates",
+    "step_6": "take the stratum quota"
+  },
+  "availability": {
+    "allow_replicas": false,
+    "distinct_successful_after_replica_collapse": 71,
+    "eligible_hazard_absent": 23,
+    "eligible_hazard_present": 48,
+    "replicas_suppressed": 94,
+    "stored_trajectories": 175,
+    "successful_trajectories": 165
+  },
+  "excluded": [
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_4"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_7"
+    },
+    {
+      "hazard_present": false,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_121/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_11"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_12"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_121/traj_13"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_23"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_121/traj_24"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_4"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_7"
+    },
+    {
+      "hazard_present": false,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_145/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_11"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_12"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_145/traj_13"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_23"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_145/traj_24"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_1"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_4"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_7"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_8"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_9"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_10"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_11"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_12"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_13"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_16"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_19"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_169/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_22"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_23"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_169/traj_24"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_25/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_4"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_7"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_11"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_12"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_13"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_23"
+    },
+    {
+      "hazard_present": true,
+      "reason": "not drawn within stratum quota",
+      "successful": true,
+      "trajectory_id": "house_25/traj_24"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_49/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_4"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_7"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_11"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_12"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_13"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_23"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_49/traj_24"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_73/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_4"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_7"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_11"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_12"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_13"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_23"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_73/traj_24"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_0"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_1"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_2"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_3"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_4"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_5"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_6"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_7"
+    },
+    {
+      "hazard_present": false,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_97/traj_8"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_9"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_10"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_11"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_12"
+    },
+    {
+      "hazard_present": true,
+      "reason": "failed (fail[-1] set)",
+      "successful": false,
+      "trajectory_id": "house_97/traj_13"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_14"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_15"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_16"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_17"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_18"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_19"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_20"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_21"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_22"
+    },
+    {
+      "hazard_present": true,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_23"
+    },
+    {
+      "hazard_present": false,
+      "reason": "exact replica suppressed",
+      "successful": true,
+      "trajectory_id": "house_97/traj_24"
+    }
+  ],
+  "feasible": false,
+  "integrity_report_sha256": "b62bf6565032ea92f6553be3d73002aa3f81da8369778a9dd19fc0c7c02ba756",
+  "manifest_sha256": "9d8853a260bd3108b6ea97e263444c00f5a2d466a6b72b3d8ded009d59a96317",
+  "replicas_suppressed_detail": [
+    {
+      "content_sha256": "2b32cc500c8650e87c95e928d44eea48f7b2fd10651c76ea8db33d745bb17770",
+      "reason": "exact replica of house_121/traj_0",
+      "trajectory_id": "house_145/traj_0"
+    },
+    {
+      "content_sha256": "2b32cc500c8650e87c95e928d44eea48f7b2fd10651c76ea8db33d745bb17770",
+      "reason": "exact replica of house_121/traj_0",
+      "trajectory_id": "house_97/traj_0"
+    },
+    {
+      "content_sha256": "dd18df2341975350f56635a901b971dcd8d1d817b860a2a0fba15752f55bdf11",
+      "reason": "exact replica of house_121/traj_1",
+      "trajectory_id": "house_145/traj_1"
+    },
+    {
+      "content_sha256": "dd18df2341975350f56635a901b971dcd8d1d817b860a2a0fba15752f55bdf11",
+      "reason": "exact replica of house_121/traj_1",
+      "trajectory_id": "house_97/traj_1"
+    },
+    {
+      "content_sha256": "5c690fba3de1edc21fb6b4fe69719b197e71ae747544d20f6269347cb8444e84",
+      "reason": "exact replica of house_121/traj_2",
+      "trajectory_id": "house_145/traj_2"
+    },
+    {
+      "content_sha256": "5c690fba3de1edc21fb6b4fe69719b197e71ae747544d20f6269347cb8444e84",
+      "reason": "exact replica of house_121/traj_2",
+      "trajectory_id": "house_97/traj_2"
+    },
+    {
+      "content_sha256": "f96b94a7e6dc4e955afca3a3b340d7b63df965fb9e75b35e62e1a1151c392b01",
+      "reason": "exact replica of house_121/traj_3",
+      "trajectory_id": "house_145/traj_3"
+    },
+    {
+      "content_sha256": "f96b94a7e6dc4e955afca3a3b340d7b63df965fb9e75b35e62e1a1151c392b01",
+      "reason": "exact replica of house_121/traj_3",
+      "trajectory_id": "house_97/traj_3"
+    },
+    {
+      "content_sha256": "f3acdbe776f26be133daaf4466bd34bdeb4b6d1175010881cd5c400cec28f177",
+      "reason": "exact replica of house_121/traj_4",
+      "trajectory_id": "house_145/traj_4"
+    },
+    {
+      "content_sha256": "f3acdbe776f26be133daaf4466bd34bdeb4b6d1175010881cd5c400cec28f177",
+      "reason": "exact replica of house_121/traj_4",
+      "trajectory_id": "house_97/traj_4"
+    },
+    {
+      "content_sha256": "3438dde1e09e9056fa30f7adca7b441f203bb98a4c53a862800ec965898b88b6",
+      "reason": "exact replica of house_121/traj_5",
+      "trajectory_id": "house_145/traj_5"
+    },
+    {
+      "content_sha256": "3438dde1e09e9056fa30f7adca7b441f203bb98a4c53a862800ec965898b88b6",
+      "reason": "exact replica of house_121/traj_5",
+      "trajectory_id": "house_97/traj_5"
+    },
+    {
+      "content_sha256": "c3e5f7293b21100003e5eec44e3bcff7db01f28a0030a1e50c199cd6eb714ff7",
+      "reason": "exact replica of house_121/traj_6",
+      "trajectory_id": "house_145/traj_6"
+    },
+    {
+      "content_sha256": "c3e5f7293b21100003e5eec44e3bcff7db01f28a0030a1e50c199cd6eb714ff7",
+      "reason": "exact replica of house_121/traj_6",
+      "trajectory_id": "house_97/traj_6"
+    },
+    {
+      "content_sha256": "962f48f7c3ac7882cbd0bba566953c1cfdaa146f6bbbcd1aa83352e67e8096e1",
+      "reason": "exact replica of house_121/traj_7",
+      "trajectory_id": "house_145/traj_7"
+    },
+    {
+      "content_sha256": "962f48f7c3ac7882cbd0bba566953c1cfdaa146f6bbbcd1aa83352e67e8096e1",
+      "reason": "exact replica of house_121/traj_7",
+      "trajectory_id": "house_97/traj_7"
+    },
+    {
+      "content_sha256": "43784339d44a9dcc21569da956d54fda1a4fde2195d8971fdbec4c45f1674bde",
+      "reason": "exact replica of house_121/traj_9",
+      "trajectory_id": "house_145/traj_9"
+    },
+    {
+      "content_sha256": "43784339d44a9dcc21569da956d54fda1a4fde2195d8971fdbec4c45f1674bde",
+      "reason": "exact replica of house_121/traj_9",
+      "trajectory_id": "house_97/traj_9"
+    },
+    {
+      "content_sha256": "ccd7fae88addcaa1d31bb614a5167c9cb64d5e9cd995ab32f4454c2000603a6e",
+      "reason": "exact replica of house_121/traj_10",
+      "trajectory_id": "house_145/traj_10"
+    },
+    {
+      "content_sha256": "ccd7fae88addcaa1d31bb614a5167c9cb64d5e9cd995ab32f4454c2000603a6e",
+      "reason": "exact replica of house_121/traj_10",
+      "trajectory_id": "house_97/traj_10"
+    },
+    {
+      "content_sha256": "c80e7dd2926d2624ccfa46881fb8ddf47ace3bd2e1483a3b3c35fc38ed55e6b3",
+      "reason": "exact replica of house_121/traj_11",
+      "trajectory_id": "house_145/traj_11"
+    },
+    {
+      "content_sha256": "c80e7dd2926d2624ccfa46881fb8ddf47ace3bd2e1483a3b3c35fc38ed55e6b3",
+      "reason": "exact replica of house_121/traj_11",
+      "trajectory_id": "house_97/traj_11"
+    },
+    {
+      "content_sha256": "25b89a021ad5f303c50c9078de203edf53c2c5cf4c9c54d7600bd30cb5782d9e",
+      "reason": "exact replica of house_121/traj_12",
+      "trajectory_id": "house_145/traj_12"
+    },
+    {
+      "content_sha256": "25b89a021ad5f303c50c9078de203edf53c2c5cf4c9c54d7600bd30cb5782d9e",
+      "reason": "exact replica of house_121/traj_12",
+      "trajectory_id": "house_97/traj_12"
+    },
+    {
+      "content_sha256": "bb01056bb33cb410c1cd3e5d422287288ca8858a5477bd633542c1e63b10f8c3",
+      "reason": "exact replica of house_121/traj_14",
+      "trajectory_id": "house_145/traj_14"
+    },
+    {
+      "content_sha256": "bb01056bb33cb410c1cd3e5d422287288ca8858a5477bd633542c1e63b10f8c3",
+      "reason": "exact replica of house_121/traj_14",
+      "trajectory_id": "house_97/traj_14"
+    },
+    {
+      "content_sha256": "4a5ee4d4bbc2428c80cc37535b7c1b96b62a2ead9b6408ed8ccc3bca1f193012",
+      "reason": "exact replica of house_121/traj_15",
+      "trajectory_id": "house_145/traj_15"
+    },
+    {
+      "content_sha256": "4a5ee4d4bbc2428c80cc37535b7c1b96b62a2ead9b6408ed8ccc3bca1f193012",
+      "reason": "exact replica of house_121/traj_15",
+      "trajectory_id": "house_97/traj_15"
+    },
+    {
+      "content_sha256": "73bbb5f8057b8181ebd95efcb0045b2509d7d4c7c3f789f6dbf1915819d5eb33",
+      "reason": "exact replica of house_121/traj_16",
+      "trajectory_id": "house_145/traj_16"
+    },
+    {
+      "content_sha256": "73bbb5f8057b8181ebd95efcb0045b2509d7d4c7c3f789f6dbf1915819d5eb33",
+      "reason": "exact replica of house_121/traj_16",
+      "trajectory_id": "house_97/traj_16"
+    },
+    {
+      "content_sha256": "6399d50cde3caa0c3c5794c874c4026c60c92f1d12fa947dea1d74dc1600f46a",
+      "reason": "exact replica of house_121/traj_17",
+      "trajectory_id": "house_145/traj_17"
+    },
+    {
+      "content_sha256": "6399d50cde3caa0c3c5794c874c4026c60c92f1d12fa947dea1d74dc1600f46a",
+      "reason": "exact replica of house_121/traj_17",
+      "trajectory_id": "house_97/traj_17"
+    },
+    {
+      "content_sha256": "1b4c13c8a1e1981ac54eacd21eadcac56953df55598b3204fe46495a5e18a0f2",
+      "reason": "exact replica of house_121/traj_18",
+      "trajectory_id": "house_145/traj_18"
+    },
+    {
+      "content_sha256": "1b4c13c8a1e1981ac54eacd21eadcac56953df55598b3204fe46495a5e18a0f2",
+      "reason": "exact replica of house_121/traj_18",
+      "trajectory_id": "house_97/traj_18"
+    },
+    {
+      "content_sha256": "48809b5d094c5a27cf50342941a760bb8384c7cc3827bd3501602b098263654a",
+      "reason": "exact replica of house_121/traj_19",
+      "trajectory_id": "house_145/traj_19"
+    },
+    {
+      "content_sha256": "48809b5d094c5a27cf50342941a760bb8384c7cc3827bd3501602b098263654a",
+      "reason": "exact replica of house_121/traj_19",
+      "trajectory_id": "house_97/traj_19"
+    },
+    {
+      "content_sha256": "1a80f86beb7bff7aa6132397cecb90338c1718a949aa460f00d25edb78a4b80d",
+      "reason": "exact replica of house_121/traj_20",
+      "trajectory_id": "house_145/traj_20"
+    },
+    {
+      "content_sha256": "1a80f86beb7bff7aa6132397cecb90338c1718a949aa460f00d25edb78a4b80d",
+      "reason": "exact replica of house_121/traj_20",
+      "trajectory_id": "house_97/traj_20"
+    },
+    {
+      "content_sha256": "7754ee5571a19f629b49dc28cf676f1ac2875847e88482454eb0074428996437",
+      "reason": "exact replica of house_121/traj_21",
+      "trajectory_id": "house_145/traj_21"
+    },
+    {
+      "content_sha256": "7754ee5571a19f629b49dc28cf676f1ac2875847e88482454eb0074428996437",
+      "reason": "exact replica of house_121/traj_21",
+      "trajectory_id": "house_97/traj_21"
+    },
+    {
+      "content_sha256": "1f9c7ba7a708df2cebdcfef068d63a13483b594593f9dc54b5c168ff7c04fbe3",
+      "reason": "exact replica of house_121/traj_22",
+      "trajectory_id": "house_145/traj_22"
+    },
+    {
+      "content_sha256": "1f9c7ba7a708df2cebdcfef068d63a13483b594593f9dc54b5c168ff7c04fbe3",
+      "reason": "exact replica of house_121/traj_22",
+      "trajectory_id": "house_97/traj_22"
+    },
+    {
+      "content_sha256": "4bdb9fe19177e4ebf8799b1e2e391caad3d5f2eaecb61d689c16e2f714652da3",
+      "reason": "exact replica of house_121/traj_23",
+      "trajectory_id": "house_145/traj_23"
+    },
+    {
+      "content_sha256": "4bdb9fe19177e4ebf8799b1e2e391caad3d5f2eaecb61d689c16e2f714652da3",
+      "reason": "exact replica of house_121/traj_23",
+      "trajectory_id": "house_97/traj_23"
+    },
+    {
+      "content_sha256": "460dbd7a064253d06f348770c5f00c1dbc4be5c8b77971b99164f64452f851f8",
+      "reason": "exact replica of house_121/traj_24",
+      "trajectory_id": "house_145/traj_24"
+    },
+    {
+      "content_sha256": "460dbd7a064253d06f348770c5f00c1dbc4be5c8b77971b99164f64452f851f8",
+      "reason": "exact replica of house_121/traj_24",
+      "trajectory_id": "house_97/traj_24"
+    },
+    {
+      "content_sha256": "afd9d682048dced2417d59b64518cf66cf7bb3afef21e9a88ef7651d97ec2c05",
+      "reason": "exact replica of house_25/traj_0",
+      "trajectory_id": "house_49/traj_0"
+    },
+    {
+      "content_sha256": "afd9d682048dced2417d59b64518cf66cf7bb3afef21e9a88ef7651d97ec2c05",
+      "reason": "exact replica of house_25/traj_0",
+      "trajectory_id": "house_73/traj_0"
+    },
+    {
+      "content_sha256": "eef05098eb8fedfe7d7e66cb6aa12f7a9a10707ad203cb7de3cbda836576fc0b",
+      "reason": "exact replica of house_25/traj_2",
+      "trajectory_id": "house_49/traj_2"
+    },
+    {
+      "content_sha256": "eef05098eb8fedfe7d7e66cb6aa12f7a9a10707ad203cb7de3cbda836576fc0b",
+      "reason": "exact replica of house_25/traj_2",
+      "trajectory_id": "house_73/traj_2"
+    },
+    {
+      "content_sha256": "dca167564a9e81788066f1a11bdd0626e768d54aefe580600e2d326c6de1cfad",
+      "reason": "exact replica of house_25/traj_3",
+      "trajectory_id": "house_49/traj_3"
+    },
+    {
+      "content_sha256": "dca167564a9e81788066f1a11bdd0626e768d54aefe580600e2d326c6de1cfad",
+      "reason": "exact replica of house_25/traj_3",
+      "trajectory_id": "house_73/traj_3"
+    },
+    {
+      "content_sha256": "800c29674230f725a4ca1ee475ceaf22edd969a23c803a77af8864fa1de0671f",
+      "reason": "exact replica of house_25/traj_4",
+      "trajectory_id": "house_49/traj_4"
+    },
+    {
+      "content_sha256": "800c29674230f725a4ca1ee475ceaf22edd969a23c803a77af8864fa1de0671f",
+      "reason": "exact replica of house_25/traj_4",
+      "trajectory_id": "house_73/traj_4"
+    },
+    {
+      "content_sha256": "7de51b036414c25fa096f72beded659be322acbb9180fe4a074169347cd84661",
+      "reason": "exact replica of house_25/traj_5",
+      "trajectory_id": "house_49/traj_5"
+    },
+    {
+      "content_sha256": "7de51b036414c25fa096f72beded659be322acbb9180fe4a074169347cd84661",
+      "reason": "exact replica of house_25/traj_5",
+      "trajectory_id": "house_73/traj_5"
+    },
+    {
+      "content_sha256": "9f093f67352a3d4b1aeda25ea0007837de9b6fb430438e21ba1363df42a16572",
+      "reason": "exact replica of house_25/traj_6",
+      "trajectory_id": "house_49/traj_6"
+    },
+    {
+      "content_sha256": "9f093f67352a3d4b1aeda25ea0007837de9b6fb430438e21ba1363df42a16572",
+      "reason": "exact replica of house_25/traj_6",
+      "trajectory_id": "house_73/traj_6"
+    },
+    {
+      "content_sha256": "7a8d3d69ee5f048ac3f08a53d29fdc6e66e3e6dd966d6d30b3aeb9afd1d08194",
+      "reason": "exact replica of house_25/traj_7",
+      "trajectory_id": "house_49/traj_7"
+    },
+    {
+      "content_sha256": "7a8d3d69ee5f048ac3f08a53d29fdc6e66e3e6dd966d6d30b3aeb9afd1d08194",
+      "reason": "exact replica of house_25/traj_7",
+      "trajectory_id": "house_73/traj_7"
+    },
+    {
+      "content_sha256": "2102e42dddb8ecc8aeb1448d578a32f7276edf77d128b3b4973eaf9eec181866",
+      "reason": "exact replica of house_25/traj_8",
+      "trajectory_id": "house_49/traj_8"
+    },
+    {
+      "content_sha256": "2102e42dddb8ecc8aeb1448d578a32f7276edf77d128b3b4973eaf9eec181866",
+      "reason": "exact replica of house_25/traj_8",
+      "trajectory_id": "house_73/traj_8"
+    },
+    {
+      "content_sha256": "3de1b84623aacb02f04a9b0f73dc0e5aba0c40ae331b65d535d91a9377060e3c",
+      "reason": "exact replica of house_25/traj_9",
+      "trajectory_id": "house_49/traj_9"
+    },
+    {
+      "content_sha256": "3de1b84623aacb02f04a9b0f73dc0e5aba0c40ae331b65d535d91a9377060e3c",
+      "reason": "exact replica of house_25/traj_9",
+      "trajectory_id": "house_73/traj_9"
+    },
+    {
+      "content_sha256": "bbb811bb1a0d8bfc05b5404d7724bda7fc72ae1f087d4a2f69328e7b3641f933",
+      "reason": "exact replica of house_25/traj_10",
+      "trajectory_id": "house_49/traj_10"
+    },
+    {
+      "content_sha256": "bbb811bb1a0d8bfc05b5404d7724bda7fc72ae1f087d4a2f69328e7b3641f933",
+      "reason": "exact replica of house_25/traj_10",
+      "trajectory_id": "house_73/traj_10"
+    },
+    {
+      "content_sha256": "1cc87e3da27a13c97ddf7cc40c074e952de851dad9936a562137d7b868251d45",
+      "reason": "exact replica of house_25/traj_11",
+      "trajectory_id": "house_49/traj_11"
+    },
+    {
+      "content_sha256": "1cc87e3da27a13c97ddf7cc40c074e952de851dad9936a562137d7b868251d45",
+      "reason": "exact replica of house_25/traj_11",
+      "trajectory_id": "house_73/traj_11"
+    },
+    {
+      "content_sha256": "d53d12a513d59181dbb76b86b5548e2909a5fe7bdf90f50c47a42e1daa96106b",
+      "reason": "exact replica of house_25/traj_12",
+      "trajectory_id": "house_49/traj_12"
+    },
+    {
+      "content_sha256": "d53d12a513d59181dbb76b86b5548e2909a5fe7bdf90f50c47a42e1daa96106b",
+      "reason": "exact replica of house_25/traj_12",
+      "trajectory_id": "house_73/traj_12"
+    },
+    {
+      "content_sha256": "f25a40f1d93f75c2547ca160339917e5873891658771b35a485d4f49ffc00994",
+      "reason": "exact replica of house_25/traj_13",
+      "trajectory_id": "house_49/traj_13"
+    },
+    {
+      "content_sha256": "f25a40f1d93f75c2547ca160339917e5873891658771b35a485d4f49ffc00994",
+      "reason": "exact replica of house_25/traj_13",
+      "trajectory_id": "house_73/traj_13"
+    },
+    {
+      "content_sha256": "fb07c076f99cc9a6aa8dd464dc0429c3b8a5427c26a479a5d75b6045e474cd9e",
+      "reason": "exact replica of house_25/traj_14",
+      "trajectory_id": "house_49/traj_14"
+    },
+    {
+      "content_sha256": "fb07c076f99cc9a6aa8dd464dc0429c3b8a5427c26a479a5d75b6045e474cd9e",
+      "reason": "exact replica of house_25/traj_14",
+      "trajectory_id": "house_73/traj_14"
+    },
+    {
+      "content_sha256": "fd39b5da8c8fa4664d0acb7118c2eec202d90fd56145082bc63b3fe964695205",
+      "reason": "exact replica of house_25/traj_15",
+      "trajectory_id": "house_49/traj_15"
+    },
+    {
+      "content_sha256": "fd39b5da8c8fa4664d0acb7118c2eec202d90fd56145082bc63b3fe964695205",
+      "reason": "exact replica of house_25/traj_15",
+      "trajectory_id": "house_73/traj_15"
+    },
+    {
+      "content_sha256": "9c580a39d743810434ab73a02f53b9fa63e7e5f0951bb0b1285ae43c8345fc55",
+      "reason": "exact replica of house_25/traj_16",
+      "trajectory_id": "house_49/traj_16"
+    },
+    {
+      "content_sha256": "9c580a39d743810434ab73a02f53b9fa63e7e5f0951bb0b1285ae43c8345fc55",
+      "reason": "exact replica of house_25/traj_16",
+      "trajectory_id": "house_73/traj_16"
+    },
+    {
+      "content_sha256": "281438d3aed09235a03e180701811db4213e95be8755e958946a2c7ce917b9cd",
+      "reason": "exact replica of house_25/traj_17",
+      "trajectory_id": "house_49/traj_17"
+    },
+    {
+      "content_sha256": "281438d3aed09235a03e180701811db4213e95be8755e958946a2c7ce917b9cd",
+      "reason": "exact replica of house_25/traj_17",
+      "trajectory_id": "house_73/traj_17"
+    },
+    {
+      "content_sha256": "86cf896f58c5fc0e8a837484f5b145a6ddda83e05d5aeda7f4897ad92c49153b",
+      "reason": "exact replica of house_25/traj_18",
+      "trajectory_id": "house_49/traj_18"
+    },
+    {
+      "content_sha256": "86cf896f58c5fc0e8a837484f5b145a6ddda83e05d5aeda7f4897ad92c49153b",
+      "reason": "exact replica of house_25/traj_18",
+      "trajectory_id": "house_73/traj_18"
+    },
+    {
+      "content_sha256": "af122661863de6b99d744f81da829f85d66536093b89ed5f6ca5221b1e41798f",
+      "reason": "exact replica of house_25/traj_19",
+      "trajectory_id": "house_49/traj_19"
+    },
+    {
+      "content_sha256": "af122661863de6b99d744f81da829f85d66536093b89ed5f6ca5221b1e41798f",
+      "reason": "exact replica of house_25/traj_19",
+      "trajectory_id": "house_73/traj_19"
+    },
+    {
+      "content_sha256": "a687a54cf383ce135bf9e3f50a164ec6e00117674a77693b7c8e53bc3391f37d",
+      "reason": "exact replica of house_25/traj_20",
+      "trajectory_id": "house_49/traj_20"
+    },
+    {
+      "content_sha256": "a687a54cf383ce135bf9e3f50a164ec6e00117674a77693b7c8e53bc3391f37d",
+      "reason": "exact replica of house_25/traj_20",
+      "trajectory_id": "house_73/traj_20"
+    },
+    {
+      "content_sha256": "fbc6f4800c282f92ff797d33b48b2a326c14cb24da32c4ffb0f5a6c6d4ef58e9",
+      "reason": "exact replica of house_25/traj_21",
+      "trajectory_id": "house_49/traj_21"
+    },
+    {
+      "content_sha256": "fbc6f4800c282f92ff797d33b48b2a326c14cb24da32c4ffb0f5a6c6d4ef58e9",
+      "reason": "exact replica of house_25/traj_21",
+      "trajectory_id": "house_73/traj_21"
+    },
+    {
+      "content_sha256": "a5621ef504ebd366f2f785bdb27d65205d9b791d3856e189aaab56f9adf1457b",
+      "reason": "exact replica of house_25/traj_22",
+      "trajectory_id": "house_49/traj_22"
+    },
+    {
+      "content_sha256": "a5621ef504ebd366f2f785bdb27d65205d9b791d3856e189aaab56f9adf1457b",
+      "reason": "exact replica of house_25/traj_22",
+      "trajectory_id": "house_73/traj_22"
+    },
+    {
+      "content_sha256": "df9d48f90b53914233ac66131382a69953da2dc84502e13a8414d9b7c7b76903",
+      "reason": "exact replica of house_25/traj_23",
+      "trajectory_id": "house_49/traj_23"
+    },
+    {
+      "content_sha256": "df9d48f90b53914233ac66131382a69953da2dc84502e13a8414d9b7c7b76903",
+      "reason": "exact replica of house_25/traj_23",
+      "trajectory_id": "house_73/traj_23"
+    },
+    {
+      "content_sha256": "2f8ff22ed86c6a861285653f004e7d5c9b9d2035571adc0844037e2b8833392f",
+      "reason": "exact replica of house_25/traj_24",
+      "trajectory_id": "house_49/traj_24"
+    },
+    {
+      "content_sha256": "2f8ff22ed86c6a861285653f004e7d5c9b9d2035571adc0844037e2b8833392f",
+      "reason": "exact replica of house_25/traj_24",
+      "trajectory_id": "house_73/traj_24"
+    }
+  ],
+  "schema_version": "hybrid_obstacle_canonical_selection_v2",
+  "selected": [],
+  "selected_composition": {
+    "by_house": {},
+    "by_worker": {},
+    "hazard_absent": 0,
+    "hazard_present": 0,
+    "total": 0
+  },
+  "selection_seed": "hybrid-obstacle-canonical-v2",
+  "selector_source_sha256": "3932d31690c2e491446b2d20130f13a782b2b184d98c650cb314511163208e5f",
+  "shortfall": {
+    "hazard_absent": 2,
+    "hazard_present": 27,
+    "total": 29
+  },
+  "source_collection_id": "20260724_183407",
+  "source_content_tree_sha256": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+  "source_run_dir": "/root/act_retrain_assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260724_183407",
+  "supersedes": "clean_retraining_manifest.json selection_order (sorted source H5 path, then numeric traj index, first 100 accepted)",
+  "target_composition": {
+    "hazard_absent": 25,
+    "hazard_present": 75,
+    "total": 100
+  }
+}

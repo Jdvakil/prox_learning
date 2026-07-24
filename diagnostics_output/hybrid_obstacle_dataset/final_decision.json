@@ -1,0 +1,812 @@
+{
+  "downstream_toolchain": {
+    "converted_dataset_produced": false,
+    "converter_determinism_evidence": {
+      "identical": true,
+      "input": "the immutable collection, --max_episodes 6, two independent runs into separate temp dirs",
+      "run_a_tree_sha256": "5f14116e75c383d73de2d65c9e63657a28dd9344f68ceca0013a3ad239fd2760",
+      "run_b_tree_sha256": "5f14116e75c383d73de2d65c9e63657a28dd9344f68ceca0013a3ad239fd2760",
+      "temp_outputs_removed": true
+    },
+    "converter_determinism_verified": true,
+    "previous_converted_dataset_overwritten": false,
+    "reason": "a 100-episode canonical dataset cannot be assembled without including replicas; producing one would fabricate independence that the source does not have"
+  },
+  "duplication": {
+    "distinct_content_classes": 75,
+    "distinct_successful": 71,
+    "distinct_successful_hazard_absent": 23,
+    "distinct_successful_hazard_present": 48,
+    "identical_fields_verified": [
+      "qpos",
+      "actions/joint_pos",
+      "all 40 proximity streams",
+      "env_states",
+      "tcp_pose",
+      "obj_start",
+      "scene_params",
+      "frozen_config",
+      "task_description"
+    ],
+    "multiplicity_histogram": {
+      "1": 25,
+      "3": 50
+    },
+    "replica_clusters": [
+      [
+        "house_25",
+        "house_49",
+        "house_73"
+      ],
+      [
+        "house_97",
+        "house_121",
+        "house_145"
+      ]
+    ],
+    "stored_trajectories": 175,
+    "unique_house": "house_169"
+  },
+  "environment": {
+    "compatibility_check": "molmo_spaces/data_generation/runtime_compat.py (assert_supported_runtime, invoked from data_generation/main.py)",
+    "cuda": {
+      "available": true,
+      "cudnn": 90501,
+      "device": "NVIDIA A10",
+      "torch_cuda": "12.6"
+    },
+    "driver": "NVIDIA A10, 570.86.10, 23028 MiB, GPU-d2819383-ae73-0cdd-e9eb-765dea430f07",
+    "environment_specification_sha256": "813742f16399811a45a30861f2ee5a09ce558f27185e2eae36dc985670e95423",
+    "lock_entry_count": 185,
+    "lock_file": "environment/hybrid_obstacle_collection.lock.txt",
+    "lock_file_sha256": "f5568db75aa97055a6e0c28f29c47bfa5fd04b1985c2cd97f2aec95da7d647ef",
+    "pinned_critical": {
+      "h5py": "3.16.0",
+      "mujoco": "3.5.0",
+      "mujoco-mjx": "3.5.0",
+      "mujoco-warp": "3.5.0.2",
+      "numpy": "2.4.6",
+      "torch": "2.7.1+cu126",
+      "warp-lang": "1.11.1"
+    },
+    "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "purpose": "Runtime the completed hybrid-obstacle collection 20260724_183407 ran on, and the only runtime the collection may be reproduced on.",
+    "python": {
+      "executable": "/root/act_retrain_venv/bin/python",
+      "implementation": "CPython",
+      "version": "3.11.15"
+    },
+    "renderer": {
+      "MUJOCO_GL": "egl",
+      "PYOPENGL_PLATFORM": "egl"
+    },
+    "schema_version": "hybrid_obstacle_collection_environment_v1",
+    "why_pinned": {
+      "mujoco": "mujoco-warp 3.5.x reads mjtEnableBit.mjENBL_MULTICCD, removed after MuJoCo 3.5",
+      "warp-lang": "wp.copy dtype strictness after 1.11 makes SimpleWarpKinematics.ik raise 'Incompatible array data types' at task.reset(); every rollout is then rejected and the run yields zero episodes while still exiting 0"
+    }
+  },
+  "final_decision": "COLLECTION_INTEGRITY_BLOCKED",
+  "final_state": {
+    "act_unchanged": true,
+    "committed_on_training_branch": false,
+    "molmospaces_branch": "repair/datagen-worker-completeness",
+    "molmospaces_commit": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+    "root_branch": "repair/hybrid-obstacle-canonical-selection",
+    "root_commit": "2a47691c5d08f223e249942621e6f6a1a3bf29c5"
+  },
+  "hazard_audit": {
+    "accepted_theta_draws": {
+      "accepted_theta_draws_logged": 242,
+      "as_written_accepted_theta_hazard_rate": {
+        "k": 168,
+        "lower": 0.6319706428641163,
+        "n": 242,
+        "point": 0.6942148760330579,
+        "upper": 0.7516279514024753
+      },
+      "available": true,
+      "effective_independent_draws_estimate": 104,
+      "hazard_draws_logged": 168,
+      "note": "Logged draws include the replicated worker streams. Because concurrent workers replay an identical RNG sequence, the logged count overstates the number of independent Bernoulli draws by roughly the replica multiplicity, so the as-written interval is narrower than the data justify.",
+      "replica_multiplicity_of_stored_trajectories": 2.3333333333333335
+    },
+    "as_written": {
+      "hazard_present": 120,
+      "label": "as_written (includes exact replicas)",
+      "overall_success_rate": {
+        "k": 165,
+        "lower": 0.8974247575023346,
+        "n": 175,
+        "point": 0.9428571428571428,
+        "upper": 0.9722608173296912
+      },
+      "success_rate_given_hazard_absent": {
+        "k": 51,
+        "lower": 0.8241324647160317,
+        "n": 55,
+        "point": 0.9272727272727272,
+        "upper": 0.97982946664677
+      },
+      "success_rate_given_hazard_present": {
+        "k": 114,
+        "lower": 0.8943461454812877,
+        "n": 120,
+        "point": 0.95,
+        "upper": 0.9814324132173309
+      },
+      "successful": 165,
+      "successful_hazard_absent": 51,
+      "successful_hazard_present": 114,
+      "successful_hazard_rate": {
+        "k": 114,
+        "lower": 0.6143845969104493,
+        "n": 165,
+        "point": 0.6909090909090909,
+        "upper": 0.7604264948115378
+      },
+      "trajectories": 175,
+      "written_hazard_rate": {
+        "k": 120,
+        "lower": 0.6113475605713526,
+        "n": 175,
+        "point": 0.6857142857142857,
+        "upper": 0.7536617720133062
+      }
+    },
+    "config_seed": 2026,
+    "distinct": {
+      "hazard_present": 50,
+      "label": "distinct (one representative per content class)",
+      "overall_success_rate": {
+        "k": 71,
+        "lower": 0.8690391927215253,
+        "n": 75,
+        "point": 0.9466666666666667,
+        "upper": 0.9852792353408218
+      },
+      "success_rate_given_hazard_absent": {
+        "k": 23,
+        "lower": 0.7396941578947858,
+        "n": 25,
+        "point": 0.92,
+        "upper": 0.9901604099812025
+      },
+      "success_rate_given_hazard_present": {
+        "k": 48,
+        "lower": 0.8628623743960326,
+        "n": 50,
+        "point": 0.96,
+        "upper": 0.9951185665738356
+      },
+      "successful": 71,
+      "successful_hazard_absent": 23,
+      "successful_hazard_present": 48,
+      "successful_hazard_rate": {
+        "k": 48,
+        "lower": 0.5545324296371363,
+        "n": 71,
+        "point": 0.676056338028169,
+        "upper": 0.7823656264005718
+      },
+      "trajectories": 75,
+      "written_hazard_rate": {
+        "k": 50,
+        "lower": 0.548348583660696,
+        "n": 75,
+        "point": 0.6666666666666666,
+        "upper": 0.7713679382849695
+      }
+    },
+    "interval_note": "Clopper-Pearson exact 95% intervals. Intervals are reported for the non-nested headline rates: written hazard rate, successful hazard rate, and success conditional on hazard presence/absence.",
+    "replication": {
+      "distinct_content_classes": 75,
+      "multiplicity_histogram": {
+        "1": 25,
+        "3": 50
+      },
+      "stored_trajectories": 175
+    },
+    "sampler_contract": {
+      "check_sampler_obstacle_p": 1.0,
+      "comparison_convention": "np.random.random() < self.OBSTACLE_P",
+      "config_seed_note": "FrankaSkinHybridObstacleConfig inherits a fixed seed; every worker constructs its own task sampler and seeds the global RNG with that same value, so worker RNG streams overlap completely",
+      "configured_obstacle_p": 0.75,
+      "draw_site": "ObstacleFumehoodPickSampler._draw_theta",
+      "hazard_affects_reset_or_rollout_success": "yes \u2014 hazard episodes route through ObstacleAwarePickPlannerPolicy's deflection and can fail IK at pregrasp/lift, so success is not independent of hazard presence; conditional success rates are reported",
+      "hazard_fields_set_on_draw": [
+        "cell='bar'",
+        "protrusion_present=True",
+        "protr_name",
+        "protr_wall",
+        "protr_pos_frac",
+        "bar_face_y",
+        "intrusion",
+        "residual_margin",
+        "obj_gap"
+      ],
+      "hazard_metadata_can_differ_from_rendered_bar": "no \u2014 protrusion_present is set in the same _draw_theta call that emits protr_center/protr_half and the extra obstacle_aabbs entry, and _apply_theta colours that same geom; the integrity audit confirms label and geometry agree on every trajectory",
+      "rejected_attempts_consume_draws": "yes \u2014 a rejected rollout is re-sampled through _draw_theta, so each planner rejection consumes a fresh Bernoulli draw from the same stream",
+      "rng_owner": "global numpy legacy RandomState via np.random.random(), seeded by TaskSampler.seed_task_sampling",
+      "sampler_file": "/root/prox_learning_act_retrain/submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+      "seed_fallback_when_unset": "np.random.randint(0, 100000000)",
+      "seed_function_body": "self.current_seed = seed\n        random.seed(seed)\n        np.random.seed(seed)\n        torch.manual_seed(seed)"
+    },
+    "schema_version": "hybrid_obstacle_hazard_audit_v1",
+    "worker_seed_overlap": {
+      "consequence": "all workers start from the identical RNG state, and because every configured house index is congruent to 1 mod 24 and therefore selects the identical red-cup task, the k-th house processed by any worker replays the same episode sequence",
+      "each_worker_builds_its_own_task_sampler": true,
+      "sampler_seeds_global_rng_at_construction": true,
+      "seed_depends_on_house_index": false,
+      "seed_depends_on_worker_id": false
+    }
+  },
+  "immutable_source": {
+    "bytes": 1431940193,
+    "content_tree_sha256": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+    "files": 1059,
+    "gib": 1.334,
+    "modified_by_this_task": false,
+    "path": "/root/act_retrain_assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260724_183407",
+    "read_only": true,
+    "tree_hash_matches_expected": true
+  },
+  "integrity": {
+    "checks": {
+      "all_40_sensor_streams": true,
+      "all_companion_media_present": true,
+      "all_h5_open": true,
+      "duplicate_content_groups": {
+        "1a80f86beb7bff7aa6132397cecb90338c1718a949aa460f00d25edb78a4b80d": [
+          "house_121/traj_20",
+          "house_145/traj_20",
+          "house_97/traj_20"
+        ],
+        "1b4c13c8a1e1981ac54eacd21eadcac56953df55598b3204fe46495a5e18a0f2": [
+          "house_121/traj_18",
+          "house_145/traj_18",
+          "house_97/traj_18"
+        ],
+        "1cc87e3da27a13c97ddf7cc40c074e952de851dad9936a562137d7b868251d45": [
+          "house_25/traj_11",
+          "house_49/traj_11",
+          "house_73/traj_11"
+        ],
+        "1f9c7ba7a708df2cebdcfef068d63a13483b594593f9dc54b5c168ff7c04fbe3": [
+          "house_121/traj_22",
+          "house_145/traj_22",
+          "house_97/traj_22"
+        ],
+        "2102e42dddb8ecc8aeb1448d578a32f7276edf77d128b3b4973eaf9eec181866": [
+          "house_25/traj_8",
+          "house_49/traj_8",
+          "house_73/traj_8"
+        ],
+        "21735a457b7504af5c584ad7faa3dd623883912584e2aacb056809404b364159": [
+          "house_121/traj_8",
+          "house_145/traj_8",
+          "house_97/traj_8"
+        ],
+        "25b89a021ad5f303c50c9078de203edf53c2c5cf4c9c54d7600bd30cb5782d9e": [
+          "house_121/traj_12",
+          "house_145/traj_12",
+          "house_97/traj_12"
+        ],
+        "25e1b74335e664097834269186c6279ca114b1c4cd919fe4ca69adbd6b518de9": [
+          "house_25/traj_1",
+          "house_49/traj_1",
+          "house_73/traj_1"
+        ],
+        "281438d3aed09235a03e180701811db4213e95be8755e958946a2c7ce917b9cd": [
+          "house_25/traj_17",
+          "house_49/traj_17",
+          "house_73/traj_17"
+        ],
+        "2b32cc500c8650e87c95e928d44eea48f7b2fd10651c76ea8db33d745bb17770": [
+          "house_121/traj_0",
+          "house_145/traj_0",
+          "house_97/traj_0"
+        ],
+        "2f8ff22ed86c6a861285653f004e7d5c9b9d2035571adc0844037e2b8833392f": [
+          "house_25/traj_24",
+          "house_49/traj_24",
+          "house_73/traj_24"
+        ],
+        "3438dde1e09e9056fa30f7adca7b441f203bb98a4c53a862800ec965898b88b6": [
+          "house_121/traj_5",
+          "house_145/traj_5",
+          "house_97/traj_5"
+        ],
+        "3de1b84623aacb02f04a9b0f73dc0e5aba0c40ae331b65d535d91a9377060e3c": [
+          "house_25/traj_9",
+          "house_49/traj_9",
+          "house_73/traj_9"
+        ],
+        "43784339d44a9dcc21569da956d54fda1a4fde2195d8971fdbec4c45f1674bde": [
+          "house_121/traj_9",
+          "house_145/traj_9",
+          "house_97/traj_9"
+        ],
+        "460dbd7a064253d06f348770c5f00c1dbc4be5c8b77971b99164f64452f851f8": [
+          "house_121/traj_24",
+          "house_145/traj_24",
+          "house_97/traj_24"
+        ],
+        "48809b5d094c5a27cf50342941a760bb8384c7cc3827bd3501602b098263654a": [
+          "house_121/traj_19",
+          "house_145/traj_19",
+          "house_97/traj_19"
+        ],
+        "4a5ee4d4bbc2428c80cc37535b7c1b96b62a2ead9b6408ed8ccc3bca1f193012": [
+          "house_121/traj_15",
+          "house_145/traj_15",
+          "house_97/traj_15"
+        ],
+        "4bdb9fe19177e4ebf8799b1e2e391caad3d5f2eaecb61d689c16e2f714652da3": [
+          "house_121/traj_23",
+          "house_145/traj_23",
+          "house_97/traj_23"
+        ],
+        "5c690fba3de1edc21fb6b4fe69719b197e71ae747544d20f6269347cb8444e84": [
+          "house_121/traj_2",
+          "house_145/traj_2",
+          "house_97/traj_2"
+        ],
+        "6399d50cde3caa0c3c5794c874c4026c60c92f1d12fa947dea1d74dc1600f46a": [
+          "house_121/traj_17",
+          "house_145/traj_17",
+          "house_97/traj_17"
+        ],
+        "73bbb5f8057b8181ebd95efcb0045b2509d7d4c7c3f789f6dbf1915819d5eb33": [
+          "house_121/traj_16",
+          "house_145/traj_16",
+          "house_97/traj_16"
+        ],
+        "7754ee5571a19f629b49dc28cf676f1ac2875847e88482454eb0074428996437": [
+          "house_121/traj_21",
+          "house_145/traj_21",
+          "house_97/traj_21"
+        ],
+        "7a8d3d69ee5f048ac3f08a53d29fdc6e66e3e6dd966d6d30b3aeb9afd1d08194": [
+          "house_25/traj_7",
+          "house_49/traj_7",
+          "house_73/traj_7"
+        ],
+        "7de51b036414c25fa096f72beded659be322acbb9180fe4a074169347cd84661": [
+          "house_25/traj_5",
+          "house_49/traj_5",
+          "house_73/traj_5"
+        ],
+        "800c29674230f725a4ca1ee475ceaf22edd969a23c803a77af8864fa1de0671f": [
+          "house_25/traj_4",
+          "house_49/traj_4",
+          "house_73/traj_4"
+        ],
+        "86cf896f58c5fc0e8a837484f5b145a6ddda83e05d5aeda7f4897ad92c49153b": [
+          "house_25/traj_18",
+          "house_49/traj_18",
+          "house_73/traj_18"
+        ],
+        "962f48f7c3ac7882cbd0bba566953c1cfdaa146f6bbbcd1aa83352e67e8096e1": [
+          "house_121/traj_7",
+          "house_145/traj_7",
+          "house_97/traj_7"
+        ],
+        "9c580a39d743810434ab73a02f53b9fa63e7e5f0951bb0b1285ae43c8345fc55": [
+          "house_25/traj_16",
+          "house_49/traj_16",
+          "house_73/traj_16"
+        ],
+        "9f093f67352a3d4b1aeda25ea0007837de9b6fb430438e21ba1363df42a16572": [
+          "house_25/traj_6",
+          "house_49/traj_6",
+          "house_73/traj_6"
+        ],
+        "a5621ef504ebd366f2f785bdb27d65205d9b791d3856e189aaab56f9adf1457b": [
+          "house_25/traj_22",
+          "house_49/traj_22",
+          "house_73/traj_22"
+        ],
+        "a687a54cf383ce135bf9e3f50a164ec6e00117674a77693b7c8e53bc3391f37d": [
+          "house_25/traj_20",
+          "house_49/traj_20",
+          "house_73/traj_20"
+        ],
+        "af122661863de6b99d744f81da829f85d66536093b89ed5f6ca5221b1e41798f": [
+          "house_25/traj_19",
+          "house_49/traj_19",
+          "house_73/traj_19"
+        ],
+        "afd9d682048dced2417d59b64518cf66cf7bb3afef21e9a88ef7651d97ec2c05": [
+          "house_25/traj_0",
+          "house_49/traj_0",
+          "house_73/traj_0"
+        ],
+        "bb01056bb33cb410c1cd3e5d422287288ca8858a5477bd633542c1e63b10f8c3": [
+          "house_121/traj_14",
+          "house_145/traj_14",
+          "house_97/traj_14"
+        ],
+        "bbb811bb1a0d8bfc05b5404d7724bda7fc72ae1f087d4a2f69328e7b3641f933": [
+          "house_25/traj_10",
+          "house_49/traj_10",
+          "house_73/traj_10"
+        ],
+        "c1c5cde15477929d54b182c2cc82744b07039b0e54102c0321f964578850fd90": [
+          "house_121/traj_13",
+          "house_145/traj_13",
+          "house_97/traj_13"
+        ],
+        "c3e5f7293b21100003e5eec44e3bcff7db01f28a0030a1e50c199cd6eb714ff7": [
+          "house_121/traj_6",
+          "house_145/traj_6",
+          "house_97/traj_6"
+        ],
+        "c80e7dd2926d2624ccfa46881fb8ddf47ace3bd2e1483a3b3c35fc38ed55e6b3": [
+          "house_121/traj_11",
+          "house_145/traj_11",
+          "house_97/traj_11"
+        ],
+        "ccd7fae88addcaa1d31bb614a5167c9cb64d5e9cd995ab32f4454c2000603a6e": [
+          "house_121/traj_10",
+          "house_145/traj_10",
+          "house_97/traj_10"
+        ],
+        "d53d12a513d59181dbb76b86b5548e2909a5fe7bdf90f50c47a42e1daa96106b": [
+          "house_25/traj_12",
+          "house_49/traj_12",
+          "house_73/traj_12"
+        ],
+        "dca167564a9e81788066f1a11bdd0626e768d54aefe580600e2d326c6de1cfad": [
+          "house_25/traj_3",
+          "house_49/traj_3",
+          "house_73/traj_3"
+        ],
+        "dd18df2341975350f56635a901b971dcd8d1d817b860a2a0fba15752f55bdf11": [
+          "house_121/traj_1",
+          "house_145/traj_1",
+          "house_97/traj_1"
+        ],
+        "df9d48f90b53914233ac66131382a69953da2dc84502e13a8414d9b7c7b76903": [
+          "house_25/traj_23",
+          "house_49/traj_23",
+          "house_73/traj_23"
+        ],
+        "eef05098eb8fedfe7d7e66cb6aa12f7a9a10707ad203cb7de3cbda836576fc0b": [
+          "house_25/traj_2",
+          "house_49/traj_2",
+          "house_73/traj_2"
+        ],
+        "f25a40f1d93f75c2547ca160339917e5873891658771b35a485d4f49ffc00994": [
+          "house_25/traj_13",
+          "house_49/traj_13",
+          "house_73/traj_13"
+        ],
+        "f3acdbe776f26be133daaf4466bd34bdeb4b6d1175010881cd5c400cec28f177": [
+          "house_121/traj_4",
+          "house_145/traj_4",
+          "house_97/traj_4"
+        ],
+        "f96b94a7e6dc4e955afca3a3b340d7b63df965fb9e75b35e62e1a1151c392b01": [
+          "house_121/traj_3",
+          "house_145/traj_3",
+          "house_97/traj_3"
+        ],
+        "fb07c076f99cc9a6aa8dd464dc0429c3b8a5427c26a479a5d75b6045e474cd9e": [
+          "house_25/traj_14",
+          "house_49/traj_14",
+          "house_73/traj_14"
+        ],
+        "fbc6f4800c282f92ff797d33b48b2a326c14cb24da32c4ffb0f5a6c6d4ef58e9": [
+          "house_25/traj_21",
+          "house_49/traj_21",
+          "house_73/traj_21"
+        ],
+        "fd39b5da8c8fa4664d0acb7118c2eec202d90fd56145082bc63b3fe964695205": [
+          "house_25/traj_15",
+          "house_49/traj_15",
+          "house_73/traj_15"
+        ]
+      },
+      "duplicate_trajectory_ids": [],
+      "episode_ids_unique": true,
+      "episode_sequences": {
+        "house_121": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_145": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_169": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_25": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_49": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_73": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        },
+        "house_97": {
+          "contiguous_from_zero": true,
+          "count": 25,
+          "max": 24,
+          "min": 0,
+          "unique": true
+        }
+      },
+      "episode_sequences_valid": true,
+      "hazard_label_matches_scene_geometry": true,
+      "hazard_label_present_for_every_trajectory": true,
+      "no_duplicate_content": false,
+      "no_missing_required_fields": true,
+      "no_overlapping_worker_episode_ids": true,
+      "no_truncated_trajectories": true,
+      "placement_coupling_max_abs_difference": 0.014812065279498104,
+      "proximity_order_hash": [
+        "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858"
+      ],
+      "sensor_shapes_ok": true,
+      "single_canonical_target_uid": true,
+      "single_policy_dt": [
+        66.0
+      ],
+      "single_proximity_order_hash": true,
+      "success_flags_internally_consistent": true
+    },
+    "counts": {
+      "by_hazard": {
+        "False": 55,
+        "True": 120
+      },
+      "by_house": {
+        "house_121": 25,
+        "house_145": 25,
+        "house_169": 25,
+        "house_25": 25,
+        "house_49": 25,
+        "house_73": 25,
+        "house_97": 25
+      },
+      "by_house_x_hazard": {
+        "house_121|hazard_False": 8,
+        "house_121|hazard_True": 17,
+        "house_145|hazard_False": 8,
+        "house_145|hazard_True": 17,
+        "house_169|hazard_False": 10,
+        "house_169|hazard_True": 15,
+        "house_25|hazard_False": 7,
+        "house_25|hazard_True": 18,
+        "house_49|hazard_False": 7,
+        "house_49|hazard_True": 18,
+        "house_73|hazard_False": 7,
+        "house_73|hazard_True": 18,
+        "house_97|hazard_False": 8,
+        "house_97|hazard_True": 17
+      },
+      "by_success": {
+        "False": 10,
+        "True": 165
+      },
+      "by_worker": {
+        "1": 75,
+        "2": 50,
+        "3": 50
+      },
+      "by_worker_x_hazard": {
+        "worker_1|hazard_False": 25,
+        "worker_1|hazard_True": 50,
+        "worker_2|hazard_False": 15,
+        "worker_2|hazard_True": 35,
+        "worker_3|hazard_False": 15,
+        "worker_3|hazard_True": 35
+      },
+      "by_worker_x_success": {
+        "worker_1|success_False": 4,
+        "worker_1|success_True": 71,
+        "worker_2|success_False": 3,
+        "worker_2|success_True": 47,
+        "worker_3|success_False": 3,
+        "worker_3|success_True": 47
+      }
+    },
+    "failed": 10,
+    "h5_files": 7,
+    "h5_open_failures": [],
+    "hazard_recorded": 120,
+    "passed": false,
+    "problem_trajectories": [],
+    "rendered_pixel_check": {
+      "performed": false,
+      "reason": "disabled"
+    },
+    "successful": 165,
+    "successful_hazard_absent": 51,
+    "successful_hazard_present": 114,
+    "trajectories": 175,
+    "worker_attribution": {
+      "house_to_worker": {
+        "house_1": 0,
+        "house_121": 2,
+        "house_145": 1,
+        "house_169": 1,
+        "house_25": 1,
+        "house_49": 2,
+        "house_73": 3,
+        "house_97": 3
+      },
+      "houses_claimed_by_multiple_workers": [],
+      "notes": [
+        "worker attribution used captured log /root/act_retrain_provenance/logs/collection.stderr"
+      ],
+      "worker_to_houses": {
+        "1": [
+          "house_145",
+          "house_169",
+          "house_25"
+        ],
+        "2": [
+          "house_121",
+          "house_49"
+        ],
+        "3": [
+          "house_73",
+          "house_97"
+        ]
+      }
+    }
+  },
+  "next_recommended_task": "Recollect under a seeding fix, not a selection fix. Derive each worker's task-sampling seed from (config seed, worker id, house index) so concurrent workers explore independent streams, and keep the fixed base seed for reproducibility. That change touches sampler seeding and therefore needs its own approval, since this task forbade modifying sampler behaviour. Re-run the 8x25 collection on the pinned runtime with the new fail-loud completion contract active, confirm 200 distinct content hashes, then apply the v2 selector unchanged to draw the 75/25 canonical set. The v2 selector, the integrity auditor, the hazard auditor and the converter need no further work.",
+  "old_vs_new_manifest": {
+    "new": {
+      "hazard_control": "explicit 75/25 strata quotas",
+      "ordering": "SHA-256(selection_seed || trajectory_id || source_file_hash), round-robin over houses",
+      "replica_awareness": "identical-content classes collapsed to one representative before selection",
+      "result": "refuses: infeasible on this source collection",
+      "schema": "hybrid_obstacle_canonical_selection_v2",
+      "selection_seed": "hybrid-obstacle-canonical-v2",
+      "source": "canonical_selection_v2.json"
+    },
+    "old": {
+      "hazard_control": "none - composition left to the sampler draw",
+      "replica_awareness": "none",
+      "result": "69 hazard / 31 absent out of 100, and 96 of those 100 were replicas of 47 distinct episodes",
+      "selection_order": "sorted source H5 path, then numeric traj index, first 100 accepted",
+      "source": "clean_retraining_manifest.json"
+    }
+  },
+  "reproduction_commands": [
+    "source /root/act_retrain_env.sh",
+    "python scripts/hybrid_obstacle_dataset_audit.py integrity <RUN_DIR> --pixel_sample 0 --worker_log <CAPTURED_STDERR> > integrity_report.json",
+    "python scripts/hybrid_obstacle_hazard_audit.py --integrity_report integrity_report.json --worker_log <CAPTURED_STDERR> --config_seed 2026",
+    "python scripts/hybrid_obstacle_select_canonical.py --integrity_report integrity_report.json --output diagnostics_output/hybrid_obstacle_dataset/canonical_selection_v2.json",
+    "python -m pytest mlspaces_tests/data_generation/test_worker_completeness.py -q",
+    "python molmo_spaces/data_generation/runtime_compat.py"
+  ],
+  "root_cause": {
+    "config_seed": 2026,
+    "mechanism": "FrankaSkinHybridObstacleConfig carries a fixed seed. Each worker constructs its own task sampler (pipeline.py: 'create task sampler once for this worker'), and TaskSampler.__init__ calls seed_task_sampling(seed), which seeds random, np.random and torch globally with that same value. The seed depends on neither worker id nor house index, and every configured house index is congruent to 1 mod 24 so all houses are the identical red-cup task. The k-th house processed by any worker therefore replays the same episode sequence.",
+    "why_house_169_is_unique": "it is worker 1's third house; no other worker processed a third house",
+    "worker_loss_cost_zero_distinct_data": "house_1 was worker 0's first house, so it would have replicated houses 25/49/73; its loss removed no distinct episodes"
+  },
+  "schema_version": "hybrid_obstacle_dataset_final_decision_v1",
+  "selection": {
+    "algorithm": {
+      "excluded_signals": [
+        "clearance",
+        "collisions",
+        "trajectory length or quality",
+        "sensor activation",
+        "action statistics",
+        "any downstream model metric"
+      ],
+      "granularity": "trajectory-level only",
+      "step_1": "drop fail[-1] trajectories",
+      "step_2": "collapse identical-content replica classes to one representative (lexicographically smallest trajectory id)",
+      "step_3": "group by hazard label",
+      "step_4": "order within group by SHA-256(selection_seed || trajectory_id || source_file_hash)",
+      "step_5": "fixed round-robin over houses in sorted order, consuming each house's hash-ordered candidates",
+      "step_6": "take the stratum quota"
+    },
+    "availability": {
+      "allow_replicas": false,
+      "distinct_successful_after_replica_collapse": 71,
+      "eligible_hazard_absent": 23,
+      "eligible_hazard_present": 48,
+      "replicas_suppressed": 94,
+      "stored_trajectories": 175,
+      "successful_trajectories": 165
+    },
+    "feasible": false,
+    "manifest": "/root/prox_learning_act_retrain/diagnostics_output/hybrid_obstacle_dataset/canonical_selection_v2.json",
+    "manifest_sha256": "9d8853a260bd3108b6ea97e263444c00f5a2d466a6b72b3d8ded009d59a96317",
+    "positive_control": {
+      "by_house": {
+        "house_121": 20,
+        "house_169": 20,
+        "house_25": 20
+      },
+      "deterministic_across_two_runs": true,
+      "feasible": true,
+      "manifest_sha256": "28ef5925bb00a34b058c98ca44f328db40149f09b2baf917327f62886853aa87",
+      "quota": "45 hazard + 15 absent",
+      "unique_content_hashes": true,
+      "unique_trajectory_ids": true
+    },
+    "selection_seed": "hybrid-obstacle-canonical-v2",
+    "selector_source_sha256": "3932d31690c2e491446b2d20130f13a782b2b184d98c650cb314511163208e5f",
+    "shortfall": {
+      "hazard_absent": 2,
+      "hazard_present": 27,
+      "total": 29
+    },
+    "target": {
+      "hazard_absent": 25,
+      "hazard_present": 75,
+      "total": 100
+    }
+  },
+  "starting_state": {
+    "act_branch_at_start": "detached HEAD",
+    "act_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "act_stashes": [],
+    "all_worktrees_clean_at_start": true,
+    "molmobot_gitlink": "4ff337dfc60708f46d5831430df807fa90014821",
+    "molmospaces_branch_at_start": "detached HEAD",
+    "molmospaces_commit_at_start": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+    "molmospaces_stashes": [],
+    "root_branch_at_start": "train/hybrid-obstacle-act-clean-v1",
+    "root_commit_at_start": "2a47691c5d08f223e249942621e6f6a1a3bf29c5",
+    "root_stashes": [
+      "575937179ba1a5c596f56d786196331028652e25",
+      "be5b715b05b21f7f98bfe29e8b6d7da4f2993b70"
+    ]
+  },
+  "summary": "The immutable collection cannot yield a canonical 100-episode dataset. It stores 175 trajectories but only 75 distinct episodes: concurrent workers replay an identical RNG stream, so 50 episodes are stored three times each. Only 71 distinct successful trajectories exist (48 hazard-present, 23 hazard-absent) against a 75/25 target, short by 27 and 2. The selection and conversion toolchain was built and proven correct; the source data is the blocker.",
+  "utc": "2026-07-24T21:29:18Z",
+  "worker_loss_fix": {
+    "collection_rerun": false,
+    "defect": "ParallelRolloutRunner joined workers without inspecting Process.exitcode and built its summary from shared counters only; a hung worker incremented neither completed_houses nor skipped_houses, so its houses vanished while the run exited 0 reporting 'skipped 0 houses'. Houses are buffered in memory until completion, so the buffered trajectories were discarded.",
+    "guarantees": [
+      "expected worker IDs declared before launch",
+      "every worker publishes a terminal record, including on exception",
+      "parent records each worker exit code",
+      "missing / crashed / silently terminated workers detected and named",
+      "per-worker attempted/written/successful counts reported",
+      "nonzero exit (WorkerCompletenessError) when any worker is unaccounted for",
+      "final summary published atomically via os.replace",
+      "partial output retained and marked COLLECTION_INCOMPLETE"
+    ],
+    "integrated_in": "molmo_spaces/data_generation/pipeline.py",
+    "module": "molmo_spaces/data_generation/worker_completeness.py",
+    "test_count": 17,
+    "tests": "mlspaces_tests/data_generation/test_worker_completeness.py",
+    "tests_passing": true
+  }
+}
