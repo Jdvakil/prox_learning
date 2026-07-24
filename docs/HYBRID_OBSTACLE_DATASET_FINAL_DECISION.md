@@ -393,4 +393,111 @@ auditor, the hazard auditor and the converter require no further work.
 
 Do not launch training or new data collection on the basis of this report.
 
+## Independent re-verification (second agent, from scratch)
+
+The decision above was re-derived by a second agent that did not reuse the audit
+code behind it. `scripts/hybrid_obstacle_reverify.py` is a separate
+implementation — its own tree hash, its own H5 traversal, its own identity
+hashes, its own Clopper-Pearson routine — so agreement between the two is
+evidence rather than a shared bug. It exits 3 on this collection.
+
+- Verifier source SHA-256: `41390ae5d9b5240693b7b51a1c515f92a536f9c180dc209270af81757436436b`
+- Report: `diagnostics_output/hybrid_obstacle_dataset/independent_reverification.json`,
+  SHA-256 `b4e08baabe79fa808e9f010bfde5fd9177a5c57bf196facf4e20dbd9cef3057f`
+- Re-running the verifier reproduces the report byte-for-byte.
+
+| Claim under test | Independent result | Agrees |
+|---|---|:--:|
+| Full expected tree hash recovered from the committed clean-retrain manifest | `09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24` | ✔ |
+| Recomputed tree hash, 1059 files, 1,431,940,193 bytes | identical | ✔ |
+| All 7 committed per-file H5 SHA-256 values | reproduce exactly | ✔ |
+| Stored trajectories | 175 | ✔ |
+| Distinct episodes | **75** | ✔ |
+| Replica grouping (50 groups of 3) | **set-identical** to the committed grouping, member for member | ✔ |
+| Distinct successful | **71** (48 hazard-present, 23 hazard-absent) | ✔ |
+| Written / successful / failed | 175 / 165 / 10 | ✔ |
+| Hazard split, written | 120 present, 55 absent | ✔ |
+| Hazard split, successful | 114 present, 51 absent | ✔ |
+| Hazard split, failed | 6 present, 4 absent | ✔ |
+| 40 proximity streams, shape `(T, 4, 8, 8)`, order identical on all 175 | ✔ | ✔ |
+| Hazard label vs compiled scene geometry | 0 disagreements / 175 | ✔ |
+| Companion media (1050 files) | none missing, none zero-byte | ✔ |
+| Every exact binomial interval in the hazard audit | reproduces to printed precision | ✔ |
+| Source collection unchanged after the audit | all 1059 per-file hashes identical pre/post, tree still `09c98aee…1cdf24`, still `dr-xr-xr-x` | ✔ |
+
+Source-level confirmation of the root cause, read directly rather than taken
+from the earlier report: `OBSTACLE_P = 0.75` at
+`molmo_spaces/tasks/enclosure_reach.py:1121`; the draw is
+`if np.random.random() < self.OBSTACLE_P:` at line 1134;
+`TaskSampler.seed_task_sampling` (`task_sampler.py:420`) seeds `random`,
+`np.random` and `torch` from one value that depends on neither worker id nor
+house index; `pipeline.py:414` creates one sampler per worker that "persists
+across all houses"; and `get_episode_seed` returns `task_sampler.current_seed`
+unchanged for every episode. Nothing in the path differentiates the workers.
+
+### The shortfall does not depend on how "distinct" is defined
+
+This strengthens the earlier finding. Three independent identity notions were
+computed over the same 175 trajectories:
+
+| Identity | Distinct written | Distinct successful | Hazard-present | Hazard-absent |
+|---|---:|---:|---:|---:|
+| `qpos` + `actions/joint_pos` | 75 | 71 | 48 | 23 |
+| `scene_params` | 75 | 71 | 48 | 23 |
+| **every leaf dataset** (most permissive) | 78 | 74 | **50** | **24** |
+
+The permissive notion counts three replica classes as distinct because they
+differ in `actions/ee_twist`, `actions/joint_pos_rel`, `policy_phase` and
+projected `object_image_points` — all derived quantities — while their `qpos`
+and `actions/joint_pos` are bit-identical. Even granting those, the collection
+supplies at most **50 hazard-present** and **24 hazard-absent** successful
+trajectories against the 75 / 25 target: short by 25 and 1. The 75 / 25 subset
+is infeasible under *every* defensible definition of a distinct trajectory, not
+only the strict one.
+
+### Toolchain re-exercised
+
+| Check | Result |
+|---|---|
+| v2 selector at the 75 / 25 target | exit 3, `feasible: false`, manifest SHA-256 `9d8853a2…a96317` — identical to the committed manifest |
+| v2 selector at a feasible 45 / 15 quota, run twice | byte-identical, SHA-256 `28ef5925…6853aa87` — matches the documented positive control |
+| Positive-control composition | 60 selected, 60 unique trajectory ids, 60 unique content hashes, houses balanced 20 / 20 / 20 |
+| Selector independence | ordering key is `SHA-256(seed ‖ trajectory_id ‖ source_h5_sha256)` only; `frames` is recorded in the manifest but never read by the ordering, and no clearance / collision / sensor / quality / model field is touched |
+| Recorded self-hashes | `manifest_sha256`, `selector_source_sha256`, `lock_file_sha256` and `environment_specification_sha256` all recompute exactly |
+| `mlspaces_tests/data_generation/test_worker_completeness.py` | 17 passed |
+| `runtime_compat.py` on the pinned stack | `runtime compatibility: OK`, exit 0 |
+
+### Correction to the reproduction commands
+
+The integrity-auditor command in the *Reproduction commands* section above
+writes a report whose per-trajectory rows are stripped before committing (see
+`trajectories_detail_note`). Feeding the committed
+`diagnostics_output/hybrid_obstacle_dataset/integrity_report.json` to the
+selector therefore fails with `KeyError: 'trajectories_detail'`. The selector
+needs the full report, which is retained outside the repository as bulk
+provenance:
+
+```bash
+python scripts/hybrid_obstacle_select_canonical.py \
+    --integrity_report /root/act_retrain_provenance/dataset_repair/integrity_report.json \
+    --output diagnostics_output/hybrid_obstacle_dataset/canonical_selection_v2.json
+```
+
+The selector was deliberately **not** edited to work around this, because its
+source SHA-256 is bound into the committed manifest.
+
+### Independent re-verification command
+
+```bash
+source /root/act_retrain_env.sh
+cd /root/prox_learning_act_retrain
+python scripts/hybrid_obstacle_reverify.py \
+    --run_dir /root/act_retrain_assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260724_183407 \
+    --expected_tree_sha256 09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24 \
+    --output diagnostics_output/hybrid_obstacle_dataset/independent_reverification.json
+# exits 3: source verified, canonical 75/25 target infeasible
+```
+
+The decision is unchanged and is now supported by two independent audits.
+
 COLLECTION_INTEGRITY_BLOCKED

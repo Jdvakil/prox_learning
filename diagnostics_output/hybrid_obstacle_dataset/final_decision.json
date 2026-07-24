@@ -1,4 +1,5 @@
 {
+  "decision": "COLLECTION_INTEGRITY_BLOCKED",
   "downstream_toolchain": {
     "converted_dataset_produced": false,
     "converter_determinism_evidence": {
@@ -251,6 +252,127 @@
     "read_only": true,
     "tree_hash_matches_expected": true
   },
+  "independent_reverification": {
+    "agrees_with_primary_audit": true,
+    "confirmed": {
+      "committed_per_file_h5_hashes_reproduce": true,
+      "companion_media_missing": 0,
+      "distinct_episodes": 75,
+      "distinct_successful": 71,
+      "expected_tree_sha256_recovered_from_committed_manifest": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+      "failed": 10,
+      "failed_hazard_absent": 4,
+      "failed_hazard_present": 6,
+      "file_count": 1059,
+      "hazard_label_geometry_disagreements": 0,
+      "proximity_order_consistent": true,
+      "proximity_shape": "(T, 4, 8, 8)",
+      "proximity_streams": 40,
+      "recomputed_tree_sha256": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+      "replica_grouping_set_identical_to_primary_audit": true,
+      "source_unchanged_after_audit": true,
+      "stored_trajectories": 175,
+      "successful": 165,
+      "successful_hazard_absent": 51,
+      "successful_hazard_present": 114,
+      "total_bytes": 1431940193,
+      "tree_hash_matches": true,
+      "written_hazard_absent": 55,
+      "written_hazard_present": 120
+    },
+    "defect_found_in_prior_reproduction_commands": {
+      "cause": "the committed integrity_report.json has its per-trajectory rows stripped (trajectories_detail_note); the selector needs the full report",
+      "correct_integrity_report_path": "/root/act_retrain_provenance/dataset_repair/integrity_report.json",
+      "selector_deliberately_not_edited": "its source SHA-256 is bound into the committed manifest",
+      "symptom": "KeyError: 'trajectories_detail'"
+    },
+    "identity_sensitivity_analysis": {
+      "all_leaf_datasets_most_permissive": {
+        "differing_leaves_in_the_three_split_classes": [
+          "actions/ee_twist",
+          "actions/joint_pos_rel",
+          "obs/extra/policy_phase",
+          "obs/extra/object_image_points/*/points"
+        ],
+        "distinct_successful": 74,
+        "distinct_written": 78,
+        "hazard_absent": 24,
+        "hazard_present": 50,
+        "note": "derived quantities only; qpos and actions/joint_pos are bit-identical"
+      },
+      "note": "The 75/25 target is infeasible under every identity notion tested, including the most permissive one, so the conclusion is not an artifact of a strict definition of a distinct trajectory.",
+      "qpos_plus_joint_pos": {
+        "distinct_successful": 71,
+        "distinct_written": 75,
+        "hazard_absent": 23,
+        "hazard_present": 48
+      },
+      "scene_params": {
+        "distinct_successful": 71,
+        "distinct_written": 75,
+        "hazard_absent": 23,
+        "hazard_present": 48
+      },
+      "shortfall_under_most_permissive_identity": {
+        "hazard_absent": 1,
+        "hazard_present": 25,
+        "total": 26
+      }
+    },
+    "performed_by": "second agent, from-scratch reimplementation sharing no code with scripts/hybrid_obstacle_dataset_audit.py",
+    "report_path": "diagnostics_output/hybrid_obstacle_dataset/independent_reverification.json",
+    "report_sha256": "b4e08baabe79fa808e9f010bfde5fd9177a5c57bf196facf4e20dbd9cef3057f",
+    "rerun_is_byte_identical": true,
+    "root_cause_confirmed_at_source": {
+      "draw": "molmo_spaces/tasks/enclosure_reach.py:1134  if np.random.random() < self.OBSTACLE_P:",
+      "episode_seed": "get_episode_seed returns task_sampler.current_seed unchanged for every episode",
+      "obstacle_p": "molmo_spaces/tasks/enclosure_reach.py:1121  OBSTACLE_P = 0.75",
+      "sampler_per_worker": "molmo_spaces/data_generation/pipeline.py:414 - one sampler per worker, persists across all houses",
+      "seed_depends_on_house_index": false,
+      "seed_depends_on_worker_id": false,
+      "seeding": "molmo_spaces/tasks/task_sampler.py:420  seed_task_sampling seeds random/np.random/torch from one value"
+    },
+    "toolchain_reexercised": {
+      "recorded_self_hashes_recompute": [
+        "manifest_sha256",
+        "selector_source_sha256",
+        "lock_file_sha256",
+        "environment_specification_sha256"
+      ],
+      "runtime_compat_check": {
+        "exit_code": 0,
+        "result": "runtime compatibility: OK"
+      },
+      "selector_at_75_25": {
+        "exit_code": 3,
+        "feasible": false,
+        "manifest_sha256": "9d8853a260bd3108b6ea97e263444c00f5a2d466a6b72b3d8ded009d59a96317",
+        "matches_committed_manifest": true
+      },
+      "selector_positive_control_45_15": {
+        "by_house": {
+          "house_121": 20,
+          "house_169": 20,
+          "house_25": 20
+        },
+        "exit_code": 0,
+        "manifest_sha256": "28ef5925bb00a34b058c98ca44f328db40149f09b2baf917327f62886853aa87",
+        "selected": 60,
+        "two_runs_byte_identical": true,
+        "unique_content_hashes": 60,
+        "unique_trajectory_ids": 60
+      },
+      "selector_reads_no_downstream_metric": true,
+      "worker_completeness_tests": {
+        "failed": 0,
+        "passed": 17
+      }
+    },
+    "verifier_exit_code": 3,
+    "verifier_path": "scripts/hybrid_obstacle_reverify.py",
+    "verifier_source_sha256": "41390ae5d9b5240693b7b51a1c515f92a536f9c180dc209270af81757436436b"
+  },
+  "independent_reverification_utc": "2026-07-24T21:54:11Z",
   "integrity": {
     "checks": {
       "all_40_sensor_streams": true,

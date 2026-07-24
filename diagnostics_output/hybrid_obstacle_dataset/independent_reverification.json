@@ -1,0 +1,986 @@
+{
+  "canonical_target_feasibility": {
+    "available_hazard_absent_most_permissive": 24,
+    "available_hazard_present_most_permissive": 50,
+    "feasible": false,
+    "shortfall_hazard_absent": 1,
+    "shortfall_hazard_present": 25,
+    "target_hazard_absent": 25,
+    "target_hazard_present": 75
+  },
+  "counts": {
+    "by_house": {
+      "house_121": 25,
+      "house_145": 25,
+      "house_169": 25,
+      "house_25": 25,
+      "house_49": 25,
+      "house_73": 25,
+      "house_97": 25
+    },
+    "by_house_x_hazard": {
+      "house_121|hazard_False": 8,
+      "house_121|hazard_True": 17,
+      "house_145|hazard_False": 8,
+      "house_145|hazard_True": 17,
+      "house_169|hazard_False": 10,
+      "house_169|hazard_True": 15,
+      "house_25|hazard_False": 7,
+      "house_25|hazard_True": 18,
+      "house_49|hazard_False": 7,
+      "house_49|hazard_True": 18,
+      "house_73|hazard_False": 7,
+      "house_73|hazard_True": 18,
+      "house_97|hazard_False": 8,
+      "house_97|hazard_True": 17
+    },
+    "by_house_x_success": {
+      "house_121|success_False": 2,
+      "house_121|success_True": 23,
+      "house_145|success_False": 2,
+      "house_145|success_True": 23,
+      "house_169|success_False": 1,
+      "house_169|success_True": 24,
+      "house_25|success_False": 1,
+      "house_25|success_True": 24,
+      "house_49|success_False": 1,
+      "house_49|success_True": 24,
+      "house_73|success_False": 1,
+      "house_73|success_True": 24,
+      "house_97|success_False": 2,
+      "house_97|success_True": 23
+    },
+    "failed": 10,
+    "failed_hazard_absent": 4,
+    "failed_hazard_present": 6,
+    "single_target_uid": [
+      "4afa0cdde045417ab31f98ae7745b039"
+    ],
+    "successful": 165,
+    "successful_hazard_absent": 51,
+    "successful_hazard_present": 114,
+    "written": 175,
+    "written_hazard_absent": 55,
+    "written_hazard_present": 120
+  },
+  "exact_binomial_intervals": {
+    "as_written": {
+      "success_given_hazard_absent": {
+        "k": 51,
+        "lower": 0.8241324647160317,
+        "n": 55,
+        "point": 0.9272727272727272,
+        "upper": 0.97982946664677
+      },
+      "success_given_hazard_present": {
+        "k": 114,
+        "lower": 0.8943461454812877,
+        "n": 120,
+        "point": 0.95,
+        "upper": 0.9814324132173309
+      },
+      "successful_hazard_rate": {
+        "k": 114,
+        "lower": 0.6143845969104493,
+        "n": 165,
+        "point": 0.6909090909090909,
+        "upper": 0.7604264948115378
+      },
+      "written_hazard_rate": {
+        "k": 120,
+        "lower": 0.6113475605713526,
+        "n": 175,
+        "point": 0.6857142857142857,
+        "upper": 0.7536617720133062
+      }
+    },
+    "distinct": {
+      "identity_field": "dynamics_sha256",
+      "n_distinct": 75,
+      "success_given_hazard_absent": {
+        "k": 23,
+        "lower": 0.7396941578947858,
+        "n": 25,
+        "point": 0.92,
+        "upper": 0.9901604099812025
+      },
+      "success_given_hazard_present": {
+        "k": 48,
+        "lower": 0.8628623743960326,
+        "n": 50,
+        "point": 0.96,
+        "upper": 0.9951185665738356
+      },
+      "successful_hazard_rate": {
+        "k": 48,
+        "lower": 0.5545324296371363,
+        "n": 71,
+        "point": 0.676056338028169,
+        "upper": 0.7823656264005718
+      },
+      "written_hazard_rate": {
+        "k": 50,
+        "lower": 0.548348583660696,
+        "n": 75,
+        "point": 0.6666666666666666,
+        "upper": 0.7713679382849695
+      }
+    },
+    "note": "Clopper-Pearson 95%. The as_written rates are inflated by exact replicas and are NOT valid sampling intervals; only the distinct rates carry independent information."
+  },
+  "h5_integrity": {
+    "companion_media_missing": [],
+    "h5_files": 7,
+    "h5_open_failures": [],
+    "trajectories_read": 175,
+    "trajectories_with_missing_required_leaves": [],
+    "unique_trajectory_ids": true
+  },
+  "hazard_label_vs_geometry": {
+    "aabb_count_by_hazard": {
+      "hazard_False_boxes_6": 55,
+      "hazard_True_boxes_7": 120
+    },
+    "checked": 175,
+    "disagreements": []
+  },
+  "identity_analysis": {
+    "all_leaf_datasets": {
+      "classes_with_inconsistent_hazard_label": 0,
+      "distinct_classes_all_written": 78,
+      "distinct_classes_successful": 74,
+      "distinct_successful_hazard_absent": 24,
+      "distinct_successful_hazard_present": 50,
+      "identity_field": "content_sha256",
+      "multiplicity_histogram": {
+        "1": 28,
+        "2": 3,
+        "3": 47
+      },
+      "replica_groups": [
+        [
+          "house_121/traj_0",
+          "house_145/traj_0",
+          "house_97/traj_0"
+        ],
+        [
+          "house_121/traj_1",
+          "house_97/traj_1"
+        ],
+        [
+          "house_121/traj_10",
+          "house_145/traj_10",
+          "house_97/traj_10"
+        ],
+        [
+          "house_121/traj_11",
+          "house_145/traj_11",
+          "house_97/traj_11"
+        ],
+        [
+          "house_121/traj_12",
+          "house_145/traj_12",
+          "house_97/traj_12"
+        ],
+        [
+          "house_121/traj_13",
+          "house_145/traj_13",
+          "house_97/traj_13"
+        ],
+        [
+          "house_121/traj_14",
+          "house_145/traj_14",
+          "house_97/traj_14"
+        ],
+        [
+          "house_121/traj_15",
+          "house_145/traj_15",
+          "house_97/traj_15"
+        ],
+        [
+          "house_121/traj_16",
+          "house_145/traj_16",
+          "house_97/traj_16"
+        ],
+        [
+          "house_121/traj_17",
+          "house_145/traj_17",
+          "house_97/traj_17"
+        ],
+        [
+          "house_121/traj_18",
+          "house_145/traj_18",
+          "house_97/traj_18"
+        ],
+        [
+          "house_121/traj_19",
+          "house_145/traj_19",
+          "house_97/traj_19"
+        ],
+        [
+          "house_121/traj_2",
+          "house_145/traj_2",
+          "house_97/traj_2"
+        ],
+        [
+          "house_121/traj_20",
+          "house_145/traj_20",
+          "house_97/traj_20"
+        ],
+        [
+          "house_121/traj_21",
+          "house_145/traj_21",
+          "house_97/traj_21"
+        ],
+        [
+          "house_121/traj_22",
+          "house_145/traj_22",
+          "house_97/traj_22"
+        ],
+        [
+          "house_121/traj_24",
+          "house_145/traj_24",
+          "house_97/traj_24"
+        ],
+        [
+          "house_121/traj_3",
+          "house_97/traj_3"
+        ],
+        [
+          "house_121/traj_4",
+          "house_145/traj_4",
+          "house_97/traj_4"
+        ],
+        [
+          "house_121/traj_5",
+          "house_145/traj_5",
+          "house_97/traj_5"
+        ],
+        [
+          "house_121/traj_6",
+          "house_145/traj_6",
+          "house_97/traj_6"
+        ],
+        [
+          "house_121/traj_7",
+          "house_145/traj_7",
+          "house_97/traj_7"
+        ],
+        [
+          "house_121/traj_8",
+          "house_145/traj_8",
+          "house_97/traj_8"
+        ],
+        [
+          "house_121/traj_9",
+          "house_145/traj_9",
+          "house_97/traj_9"
+        ],
+        [
+          "house_145/traj_23",
+          "house_97/traj_23"
+        ],
+        [
+          "house_25/traj_0",
+          "house_49/traj_0",
+          "house_73/traj_0"
+        ],
+        [
+          "house_25/traj_1",
+          "house_49/traj_1",
+          "house_73/traj_1"
+        ],
+        [
+          "house_25/traj_10",
+          "house_49/traj_10",
+          "house_73/traj_10"
+        ],
+        [
+          "house_25/traj_11",
+          "house_49/traj_11",
+          "house_73/traj_11"
+        ],
+        [
+          "house_25/traj_12",
+          "house_49/traj_12",
+          "house_73/traj_12"
+        ],
+        [
+          "house_25/traj_13",
+          "house_49/traj_13",
+          "house_73/traj_13"
+        ],
+        [
+          "house_25/traj_14",
+          "house_49/traj_14",
+          "house_73/traj_14"
+        ],
+        [
+          "house_25/traj_15",
+          "house_49/traj_15",
+          "house_73/traj_15"
+        ],
+        [
+          "house_25/traj_16",
+          "house_49/traj_16",
+          "house_73/traj_16"
+        ],
+        [
+          "house_25/traj_17",
+          "house_49/traj_17",
+          "house_73/traj_17"
+        ],
+        [
+          "house_25/traj_18",
+          "house_49/traj_18",
+          "house_73/traj_18"
+        ],
+        [
+          "house_25/traj_19",
+          "house_49/traj_19",
+          "house_73/traj_19"
+        ],
+        [
+          "house_25/traj_2",
+          "house_49/traj_2",
+          "house_73/traj_2"
+        ],
+        [
+          "house_25/traj_20",
+          "house_49/traj_20",
+          "house_73/traj_20"
+        ],
+        [
+          "house_25/traj_21",
+          "house_49/traj_21",
+          "house_73/traj_21"
+        ],
+        [
+          "house_25/traj_22",
+          "house_49/traj_22",
+          "house_73/traj_22"
+        ],
+        [
+          "house_25/traj_23",
+          "house_49/traj_23",
+          "house_73/traj_23"
+        ],
+        [
+          "house_25/traj_24",
+          "house_49/traj_24",
+          "house_73/traj_24"
+        ],
+        [
+          "house_25/traj_3",
+          "house_49/traj_3",
+          "house_73/traj_3"
+        ],
+        [
+          "house_25/traj_4",
+          "house_49/traj_4",
+          "house_73/traj_4"
+        ],
+        [
+          "house_25/traj_5",
+          "house_49/traj_5",
+          "house_73/traj_5"
+        ],
+        [
+          "house_25/traj_6",
+          "house_49/traj_6",
+          "house_73/traj_6"
+        ],
+        [
+          "house_25/traj_7",
+          "house_49/traj_7",
+          "house_73/traj_7"
+        ],
+        [
+          "house_25/traj_8",
+          "house_49/traj_8",
+          "house_73/traj_8"
+        ],
+        [
+          "house_25/traj_9",
+          "house_49/traj_9",
+          "house_73/traj_9"
+        ]
+      ]
+    },
+    "dynamics_qpos_and_joint_pos": {
+      "classes_with_inconsistent_hazard_label": 0,
+      "distinct_classes_all_written": 75,
+      "distinct_classes_successful": 71,
+      "distinct_successful_hazard_absent": 23,
+      "distinct_successful_hazard_present": 48,
+      "identity_field": "dynamics_sha256",
+      "multiplicity_histogram": {
+        "1": 25,
+        "3": 50
+      },
+      "replica_groups": [
+        [
+          "house_121/traj_0",
+          "house_145/traj_0",
+          "house_97/traj_0"
+        ],
+        [
+          "house_121/traj_1",
+          "house_145/traj_1",
+          "house_97/traj_1"
+        ],
+        [
+          "house_121/traj_10",
+          "house_145/traj_10",
+          "house_97/traj_10"
+        ],
+        [
+          "house_121/traj_11",
+          "house_145/traj_11",
+          "house_97/traj_11"
+        ],
+        [
+          "house_121/traj_12",
+          "house_145/traj_12",
+          "house_97/traj_12"
+        ],
+        [
+          "house_121/traj_13",
+          "house_145/traj_13",
+          "house_97/traj_13"
+        ],
+        [
+          "house_121/traj_14",
+          "house_145/traj_14",
+          "house_97/traj_14"
+        ],
+        [
+          "house_121/traj_15",
+          "house_145/traj_15",
+          "house_97/traj_15"
+        ],
+        [
+          "house_121/traj_16",
+          "house_145/traj_16",
+          "house_97/traj_16"
+        ],
+        [
+          "house_121/traj_17",
+          "house_145/traj_17",
+          "house_97/traj_17"
+        ],
+        [
+          "house_121/traj_18",
+          "house_145/traj_18",
+          "house_97/traj_18"
+        ],
+        [
+          "house_121/traj_19",
+          "house_145/traj_19",
+          "house_97/traj_19"
+        ],
+        [
+          "house_121/traj_2",
+          "house_145/traj_2",
+          "house_97/traj_2"
+        ],
+        [
+          "house_121/traj_20",
+          "house_145/traj_20",
+          "house_97/traj_20"
+        ],
+        [
+          "house_121/traj_21",
+          "house_145/traj_21",
+          "house_97/traj_21"
+        ],
+        [
+          "house_121/traj_22",
+          "house_145/traj_22",
+          "house_97/traj_22"
+        ],
+        [
+          "house_121/traj_23",
+          "house_145/traj_23",
+          "house_97/traj_23"
+        ],
+        [
+          "house_121/traj_24",
+          "house_145/traj_24",
+          "house_97/traj_24"
+        ],
+        [
+          "house_121/traj_3",
+          "house_145/traj_3",
+          "house_97/traj_3"
+        ],
+        [
+          "house_121/traj_4",
+          "house_145/traj_4",
+          "house_97/traj_4"
+        ],
+        [
+          "house_121/traj_5",
+          "house_145/traj_5",
+          "house_97/traj_5"
+        ],
+        [
+          "house_121/traj_6",
+          "house_145/traj_6",
+          "house_97/traj_6"
+        ],
+        [
+          "house_121/traj_7",
+          "house_145/traj_7",
+          "house_97/traj_7"
+        ],
+        [
+          "house_121/traj_8",
+          "house_145/traj_8",
+          "house_97/traj_8"
+        ],
+        [
+          "house_121/traj_9",
+          "house_145/traj_9",
+          "house_97/traj_9"
+        ],
+        [
+          "house_25/traj_0",
+          "house_49/traj_0",
+          "house_73/traj_0"
+        ],
+        [
+          "house_25/traj_1",
+          "house_49/traj_1",
+          "house_73/traj_1"
+        ],
+        [
+          "house_25/traj_10",
+          "house_49/traj_10",
+          "house_73/traj_10"
+        ],
+        [
+          "house_25/traj_11",
+          "house_49/traj_11",
+          "house_73/traj_11"
+        ],
+        [
+          "house_25/traj_12",
+          "house_49/traj_12",
+          "house_73/traj_12"
+        ],
+        [
+          "house_25/traj_13",
+          "house_49/traj_13",
+          "house_73/traj_13"
+        ],
+        [
+          "house_25/traj_14",
+          "house_49/traj_14",
+          "house_73/traj_14"
+        ],
+        [
+          "house_25/traj_15",
+          "house_49/traj_15",
+          "house_73/traj_15"
+        ],
+        [
+          "house_25/traj_16",
+          "house_49/traj_16",
+          "house_73/traj_16"
+        ],
+        [
+          "house_25/traj_17",
+          "house_49/traj_17",
+          "house_73/traj_17"
+        ],
+        [
+          "house_25/traj_18",
+          "house_49/traj_18",
+          "house_73/traj_18"
+        ],
+        [
+          "house_25/traj_19",
+          "house_49/traj_19",
+          "house_73/traj_19"
+        ],
+        [
+          "house_25/traj_2",
+          "house_49/traj_2",
+          "house_73/traj_2"
+        ],
+        [
+          "house_25/traj_20",
+          "house_49/traj_20",
+          "house_73/traj_20"
+        ],
+        [
+          "house_25/traj_21",
+          "house_49/traj_21",
+          "house_73/traj_21"
+        ],
+        [
+          "house_25/traj_22",
+          "house_49/traj_22",
+          "house_73/traj_22"
+        ],
+        [
+          "house_25/traj_23",
+          "house_49/traj_23",
+          "house_73/traj_23"
+        ],
+        [
+          "house_25/traj_24",
+          "house_49/traj_24",
+          "house_73/traj_24"
+        ],
+        [
+          "house_25/traj_3",
+          "house_49/traj_3",
+          "house_73/traj_3"
+        ],
+        [
+          "house_25/traj_4",
+          "house_49/traj_4",
+          "house_73/traj_4"
+        ],
+        [
+          "house_25/traj_5",
+          "house_49/traj_5",
+          "house_73/traj_5"
+        ],
+        [
+          "house_25/traj_6",
+          "house_49/traj_6",
+          "house_73/traj_6"
+        ],
+        [
+          "house_25/traj_7",
+          "house_49/traj_7",
+          "house_73/traj_7"
+        ],
+        [
+          "house_25/traj_8",
+          "house_49/traj_8",
+          "house_73/traj_8"
+        ],
+        [
+          "house_25/traj_9",
+          "house_49/traj_9",
+          "house_73/traj_9"
+        ]
+      ]
+    },
+    "scene_params": {
+      "classes_with_inconsistent_hazard_label": 0,
+      "distinct_classes_all_written": 75,
+      "distinct_classes_successful": 71,
+      "distinct_successful_hazard_absent": 23,
+      "distinct_successful_hazard_present": 48,
+      "identity_field": "scene_params_sha256",
+      "multiplicity_histogram": {
+        "1": 25,
+        "3": 50
+      },
+      "replica_groups": [
+        [
+          "house_121/traj_0",
+          "house_145/traj_0",
+          "house_97/traj_0"
+        ],
+        [
+          "house_121/traj_1",
+          "house_145/traj_1",
+          "house_97/traj_1"
+        ],
+        [
+          "house_121/traj_10",
+          "house_145/traj_10",
+          "house_97/traj_10"
+        ],
+        [
+          "house_121/traj_11",
+          "house_145/traj_11",
+          "house_97/traj_11"
+        ],
+        [
+          "house_121/traj_12",
+          "house_145/traj_12",
+          "house_97/traj_12"
+        ],
+        [
+          "house_121/traj_13",
+          "house_145/traj_13",
+          "house_97/traj_13"
+        ],
+        [
+          "house_121/traj_14",
+          "house_145/traj_14",
+          "house_97/traj_14"
+        ],
+        [
+          "house_121/traj_15",
+          "house_145/traj_15",
+          "house_97/traj_15"
+        ],
+        [
+          "house_121/traj_16",
+          "house_145/traj_16",
+          "house_97/traj_16"
+        ],
+        [
+          "house_121/traj_17",
+          "house_145/traj_17",
+          "house_97/traj_17"
+        ],
+        [
+          "house_121/traj_18",
+          "house_145/traj_18",
+          "house_97/traj_18"
+        ],
+        [
+          "house_121/traj_19",
+          "house_145/traj_19",
+          "house_97/traj_19"
+        ],
+        [
+          "house_121/traj_2",
+          "house_145/traj_2",
+          "house_97/traj_2"
+        ],
+        [
+          "house_121/traj_20",
+          "house_145/traj_20",
+          "house_97/traj_20"
+        ],
+        [
+          "house_121/traj_21",
+          "house_145/traj_21",
+          "house_97/traj_21"
+        ],
+        [
+          "house_121/traj_22",
+          "house_145/traj_22",
+          "house_97/traj_22"
+        ],
+        [
+          "house_121/traj_23",
+          "house_145/traj_23",
+          "house_97/traj_23"
+        ],
+        [
+          "house_121/traj_24",
+          "house_145/traj_24",
+          "house_97/traj_24"
+        ],
+        [
+          "house_121/traj_3",
+          "house_145/traj_3",
+          "house_97/traj_3"
+        ],
+        [
+          "house_121/traj_4",
+          "house_145/traj_4",
+          "house_97/traj_4"
+        ],
+        [
+          "house_121/traj_5",
+          "house_145/traj_5",
+          "house_97/traj_5"
+        ],
+        [
+          "house_121/traj_6",
+          "house_145/traj_6",
+          "house_97/traj_6"
+        ],
+        [
+          "house_121/traj_7",
+          "house_145/traj_7",
+          "house_97/traj_7"
+        ],
+        [
+          "house_121/traj_8",
+          "house_145/traj_8",
+          "house_97/traj_8"
+        ],
+        [
+          "house_121/traj_9",
+          "house_145/traj_9",
+          "house_97/traj_9"
+        ],
+        [
+          "house_25/traj_0",
+          "house_49/traj_0",
+          "house_73/traj_0"
+        ],
+        [
+          "house_25/traj_1",
+          "house_49/traj_1",
+          "house_73/traj_1"
+        ],
+        [
+          "house_25/traj_10",
+          "house_49/traj_10",
+          "house_73/traj_10"
+        ],
+        [
+          "house_25/traj_11",
+          "house_49/traj_11",
+          "house_73/traj_11"
+        ],
+        [
+          "house_25/traj_12",
+          "house_49/traj_12",
+          "house_73/traj_12"
+        ],
+        [
+          "house_25/traj_13",
+          "house_49/traj_13",
+          "house_73/traj_13"
+        ],
+        [
+          "house_25/traj_14",
+          "house_49/traj_14",
+          "house_73/traj_14"
+        ],
+        [
+          "house_25/traj_15",
+          "house_49/traj_15",
+          "house_73/traj_15"
+        ],
+        [
+          "house_25/traj_16",
+          "house_49/traj_16",
+          "house_73/traj_16"
+        ],
+        [
+          "house_25/traj_17",
+          "house_49/traj_17",
+          "house_73/traj_17"
+        ],
+        [
+          "house_25/traj_18",
+          "house_49/traj_18",
+          "house_73/traj_18"
+        ],
+        [
+          "house_25/traj_19",
+          "house_49/traj_19",
+          "house_73/traj_19"
+        ],
+        [
+          "house_25/traj_2",
+          "house_49/traj_2",
+          "house_73/traj_2"
+        ],
+        [
+          "house_25/traj_20",
+          "house_49/traj_20",
+          "house_73/traj_20"
+        ],
+        [
+          "house_25/traj_21",
+          "house_49/traj_21",
+          "house_73/traj_21"
+        ],
+        [
+          "house_25/traj_22",
+          "house_49/traj_22",
+          "house_73/traj_22"
+        ],
+        [
+          "house_25/traj_23",
+          "house_49/traj_23",
+          "house_73/traj_23"
+        ],
+        [
+          "house_25/traj_24",
+          "house_49/traj_24",
+          "house_73/traj_24"
+        ],
+        [
+          "house_25/traj_3",
+          "house_49/traj_3",
+          "house_73/traj_3"
+        ],
+        [
+          "house_25/traj_4",
+          "house_49/traj_4",
+          "house_73/traj_4"
+        ],
+        [
+          "house_25/traj_5",
+          "house_49/traj_5",
+          "house_73/traj_5"
+        ],
+        [
+          "house_25/traj_6",
+          "house_49/traj_6",
+          "house_73/traj_6"
+        ],
+        [
+          "house_25/traj_7",
+          "house_49/traj_7",
+          "house_73/traj_7"
+        ],
+        [
+          "house_25/traj_8",
+          "house_49/traj_8",
+          "house_73/traj_8"
+        ],
+        [
+          "house_25/traj_9",
+          "house_49/traj_9",
+          "house_73/traj_9"
+        ]
+      ]
+    }
+  },
+  "proximity": {
+    "distinct_stream_counts": [
+      40
+    ],
+    "distinct_trailing_shapes": [
+      "(4, 8, 8)"
+    ],
+    "expected_per_link": {
+      "link1": 7,
+      "link2": 7,
+      "link3": 5,
+      "link4": 5,
+      "link5_back": 6,
+      "link5_front": 4,
+      "link6": 6
+    },
+    "expected_total": 40,
+    "stream_order_consistent": true,
+    "stream_order_sha256": "cd8c55a0a7e4074c5152fc4618b4551a2e86152d634f916e55f96cf29692768e"
+  },
+  "run_dir": "/root/act_retrain_assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260724_183407",
+  "schema_version": "hybrid_obstacle_independent_reverification_v1",
+  "source_collection": {
+    "expected_content_tree_sha256": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+    "file_count": 1059,
+    "h5_sha256_by_house": {
+      "house_121": "31a679be9795d3290966e9e93c55705b243bab29e8a3642e56c18595867097f5",
+      "house_145": "2d5bca7c12a6beaacdcd9fa574859573eea621f227148498c8ee3213f856d21a",
+      "house_169": "44f1d3c335f739d667e3de0ceb7c16a888e04b276b76d3fb4d141b7e378e1549",
+      "house_25": "396002cfd32063090dbc602e3d8a87f37e680d328b92354cc5cb9c8ea7a7c353",
+      "house_49": "268330b46c81602ef40cc87a85a146244f7a169fdb8feb76856f1930498c7766",
+      "house_73": "7eec413160b0dcb47b52cd302be89aa64c37bdacb8e208a32eb58eb84e5aae7e",
+      "house_97": "8f4eeae35ef88fc34d8981243247fd553b75c75a165dfab0d619d6c16e93aa41"
+    },
+    "matches": true,
+    "recomputed_content_tree_sha256": "09c98aee08d015b3a561b08674415df9a4ed398186940207f41ef384251cdf24",
+    "total_bytes": 1431940193
+  },
+  "verifier": {
+    "h5py": "3.16.0",
+    "hash_algorithm": "SHA-256",
+    "independent_of": "scripts/hybrid_obstacle_dataset_audit.py",
+    "numpy": "2.4.6",
+    "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "tree_hash_construction": "sha256 over sorted 'relpath\\0sha256\\n' records"
+  }
+}
