@@ -1,0 +1,274 @@
+{
+  "schema_version": "hybrid_safety_stack_final_decision_v1",
+  "decision": "MISSING_CANONICAL_ARTIFACTS",
+  "decision_date_utc": "2026-07-24",
+  "executive_summary": "The canonical 40-sensor contract and Safety-CVAE pass static and artifact-integrity checks, and the previously missing live ACT residual adapter was implemented and unit-tested. A paired live smoke was not run because the canonical obstacle ACT checkpoint, its dataset statistics, and the source hybrid_obstacle_v1 dataset cannot be found or authenticated.",
+  "source_state": {
+    "root": {
+      "starting_branch": "deep_cavity_v2",
+      "starting_commit": "37087ef11baa81613430a1f1e9709f205b52f541",
+      "origin_starting_commit": "37087ef11baa81613430a1f1e9709f205b52f541",
+      "final_branch": "repair/hybrid-safety-act-integration",
+      "implementation_commit": "d396f6f044cfc813c866279f31b0980cc5dac22b",
+      "decision_artifact_commit": "commit_containing_this_file; resolve exactly with git rev-parse HEAD"
+    },
+    "act": {
+      "starting_commit": "526dd8f475a5195dd6e238d489f16dbfcfcbf541",
+      "final_branch": "repair/live-safety-residual-eval",
+      "final_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92"
+    },
+    "molmospaces": {
+      "starting_commit": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+      "final_commit": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+      "source_changed": false,
+      "branch_created": false
+    },
+    "molmobot": {
+      "starting_commit": "4ff337dfc60708f46d5831430df807fa90014821",
+      "final_commit": "4ff337dfc60708f46d5831430df807fa90014821"
+    }
+  },
+  "authentication": {
+    "gh_authenticated": true,
+    "gh_account": "Lundii1",
+    "git_protocol": "https",
+    "ssh_authentication": "Permission denied (publickey)",
+    "https_fallback_succeeded": true,
+    "gitmodules_modified": false
+  },
+  "artifact_inventory": {
+    "required_code_and_safety_assets_present": true,
+    "model_hybrid_xml": {
+      "exists": true,
+      "sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6"
+    },
+    "safety_cvae_model": {
+      "exists": true,
+      "sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405"
+    },
+    "safety_cvae_meta": {
+      "exists": true,
+      "sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81"
+    },
+    "safety_sweep": {
+      "exists": true,
+      "sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8"
+    },
+    "canonical_act_checkpoint": {
+      "exists": false,
+      "historical_path": "/home/jaydv/code/prox_learning/submodules/act/ckpts/act_obstacle_baseline_v1/obstacle_baseline/20260616_002504_obstacle_baseline_2000_100_1e-05_0/policy_best.ckpt"
+    },
+    "canonical_act_dataset_stats": {
+      "exists": false,
+      "historical_path": "/home/jaydv/code/prox_learning/submodules/act/ckpts/act_obstacle_baseline_v1/obstacle_baseline/20260616_002504_obstacle_baseline_2000_100_1e-05_0/dataset_stats.pkl"
+    },
+    "hybrid_obstacle_v1_source_dataset": {
+      "exists": false,
+      "historical_path": "assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855"
+    },
+    "recovery_audit": "diagnostics_output/hybrid_safety_stack/artifact_recovery_audit.json"
+  },
+  "sensor_contract": {
+    "passed": true,
+    "sensor_count": 40,
+    "unique_sensor_count": 40,
+    "safety_input_shape": [
+      40,
+      8,
+      8
+    ],
+    "live_emitted_shape_per_sensor": [
+      4,
+      8,
+      8
+    ],
+    "live_substep_rule": "latest substep",
+    "sensor_order_hash": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "model_hash": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "camera_config_hash": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+    "manifest": "diagnostics_output/hybrid_safety_stack/sensor_order_manifest.json",
+    "physical_geometry_verifier": {
+      "result": "PASS 38/40",
+      "failed_sensors": [
+        "link5_front_sensor_1",
+        "link5_front_sensor_2"
+      ],
+      "finding": "Both sensors encounter self geometry before the 0.145 m test plate.",
+      "historical_csv_identical": true,
+      "geometry_changed": false
+    }
+  },
+  "safety_cvae": {
+    "passed": true,
+    "load_api": "SafetyHead.load(\"assets/safety/cvae_v3\")",
+    "input_shape": [
+      40,
+      8,
+      8
+    ],
+    "output_shape": [
+      7
+    ],
+    "deterministic_z_zero": true,
+    "preprocessing": {
+      "formula": "closeness = clip(1 - depth / 0.5, 0, 1)",
+      "dead_pixel_rule": "depth < 0.005 m becomes zero",
+      "far_or_no_return_rule": "depth >= 0.5 m maps to zero closeness"
+    },
+    "label_scale": 11.359346389770508,
+    "far_physical_output_norm": 0.3840002715587616,
+    "far_normalized_output_norm": 0.03380478546023369,
+    "close_minus_far_physical_norm": 78.86090087890625,
+    "validation_metrics": {
+      "best_val_mse_metadata": 0.00906934030354023,
+      "best_val_mse_recomputed": 0.009069339372217655,
+      "close_cos_metadata": 0.9255079030990601,
+      "close_cos_recomputed": 0.9255078434944153,
+      "far_quiet_metadata": 0.03101126104593277,
+      "far_quiet_recomputed": 0.03101126104593277
+    },
+    "audit": "diagnostics_output/hybrid_safety_stack/safety_cvae_audit.json"
+  },
+  "integration": {
+    "react_demo_at_start": "recorded_or_synthetic_nominal_trajectory_not_live_act",
+    "act_evaluator_at_start": "live_vanilla_act_without_safety_residual",
+    "live_adapter_at_start": "missing",
+    "live_adapter_now": "implemented_and_statically_validated",
+    "live_adapter_path": "submodules/act/eval_act_obstacle_safety.py",
+    "paired_launcher_path": "submodules/act/run_paired_hybrid_safety_eval.py",
+    "nominal_policy_unchanged": true,
+    "safety_model_unchanged": true,
+    "arm_joints_modified": 7,
+    "gripper_owner": "ACT",
+    "act_temporal_aggregation_preserved": true,
+    "environment_dt_seconds": 0.066,
+    "controller": {
+      "gain": 4.0,
+      "decay": 2.2,
+      "ema": 0.75,
+      "max_deviation": 0.35,
+      "baseline": "explicit frame-aligned reference H5 when supplied, otherwise first live observation",
+      "label_scale_division": true
+    },
+    "causal_modes": [
+      "act_only",
+      "normal",
+      "zero",
+      "delayed",
+      "shuffled"
+    ],
+    "strict_failures": [
+      "missing sensor",
+      "extra sensor",
+      "sensor-order hash mismatch",
+      "Safety-CVAE hash mismatch",
+      "ACT checkpoint path missing",
+      "ACT checkpoint hash mismatch",
+      "dataset statistics path missing",
+      "dataset statistics hash mismatch"
+    ]
+  },
+  "paired_smoke": {
+    "status": "not_run",
+    "paired_seeds": 0,
+    "act_only_rollouts": 0,
+    "normal_safety_rollouts": 0,
+    "total_live_rollouts": 0,
+    "maximum_allowed_live_rollouts": 8,
+    "reason": "The canonical ACT checkpoint and matching dataset statistics are missing, so strict loading and hash validation cannot pass.",
+    "dry_run": {
+      "status": "pass",
+      "paired_seeds": 4,
+      "planned_commands": 8,
+      "commands_executed": 0
+    },
+    "metrics_claimed": false
+  },
+  "validation": [
+    {
+      "name": "artifact audit",
+      "result": "pass_with_missing_runtime_artifacts_reported"
+    },
+    {
+      "name": "sensor contract",
+      "result": "13/13 passed"
+    },
+    {
+      "name": "Safety-CVAE audit",
+      "result": "15/15 passed"
+    },
+    {
+      "name": "ACT residual tests",
+      "result": "18 passed"
+    },
+    {
+      "name": "Safety demo CLI import/help",
+      "result": "5/5 passed"
+    },
+    {
+      "name": "hybrid sensor verifier",
+      "result": "38/40 passed; two pre-existing physical self-return findings"
+    },
+    {
+      "name": "live evaluator import/help",
+      "result": "passed"
+    },
+    {
+      "name": "paired launcher dry run",
+      "result": "passed; 4 pairs and 8 commands"
+    },
+    {
+      "name": "MolmoSpaces H5 log persistence",
+      "result": "passed"
+    },
+    {
+      "name": "Python byte compilation",
+      "result": "passed"
+    },
+    {
+      "name": "Ruff changed files",
+      "result": "passed"
+    },
+    {
+      "name": "JSON validation",
+      "result": "passed"
+    },
+    {
+      "name": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "name": "strict ACT load",
+      "result": "not run; canonical checkpoint missing"
+    },
+    {
+      "name": "bounded paired live smoke",
+      "result": "not run; canonical checkpoint and statistics missing"
+    }
+  ],
+  "commits": {
+    "act": {
+      "commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+      "message": "Add live ACT Safety-CVAE residual evaluator"
+    },
+    "root_implementation": {
+      "commit": "d396f6f044cfc813c866279f31b0980cc5dac22b",
+      "message": "Audit and pin hybrid safety integration"
+    },
+    "molmospaces": null
+  },
+  "hard_limits": {
+    "act_training_run": false,
+    "safety_cvae_training_run": false,
+    "large_collection_run": false,
+    "model_architecture_changed": false,
+    "safety_weights_changed": false,
+    "geometry_changed": false,
+    "planner_changed": false,
+    "paper_xyz_29_sensor_work_merged": false,
+    "live_rollouts": 0,
+    "branches_or_commits_pushed": false,
+    "preserved_state_deleted_or_rewritten": false
+  },
+  "next_recommended_task": "Recover and authenticate the exact June obstacle ACT policy_best.ckpt and matching dataset_stats.pkl, archive or restore hybrid_obstacle_v1 provenance, review the two link-5 physical verifier findings under explicit geometry authority, then run no more than four predeclared paired seeds with the existing launcher. Do not retrain either model during recovery."
+}
