@@ -29,7 +29,6 @@ if _EGL.eglInitialize(_d, _maj, _min):
     import mujoco.egl as _me
     _me.EGL_DISPLAY = _d
 
-import cv2  # noqa: E402
 import mujoco  # noqa: E402
 import numpy as np  # noqa: E402
 import matplotlib  # noqa: E402
@@ -37,8 +36,9 @@ import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-ROBOT = Path("/home/jaydv/code/prox_learning/assets/robots/franka_skin/model_hybrid.xml")
-OUT = Path("/home/jaydv/code/prox_learning/diagnostics_output/20260611_hybrid_sensor_verify")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+ROBOT = REPO_ROOT / "assets/robots/franka_skin/model_hybrid.xml"
+OUT = REPO_ROOT / "diagnostics_output/hybrid_safety_stack/hybrid_sensor_verify"
 OUT.mkdir(parents=True, exist_ok=True)
 
 POSES = [
@@ -157,7 +157,8 @@ def main():
         # orient plate so its z (thin axis) faces the camera
         z = fwd
         up = np.array([0, 0, 1.0]) if abs(z[2]) < 0.95 else np.array([1.0, 0, 0])
-        x = np.cross(up, z); x /= np.linalg.norm(x)
+        x = np.cross(up, z)
+        x /= np.linalg.norm(x)
         y = np.cross(z, x)
         q = np.zeros(4)
         mujoco.mju_mat2Quat(q, np.stack([x, y, z], 1).reshape(9))
@@ -245,7 +246,9 @@ def main():
                 ax.plot([c[0] - h[0], c[0] + h[0]], [c[1] + sy * h[1]] * 2, [c[2] + sx * h[2]] * 2,
                         "k-", lw=0.5)
     ax.set_title(f"Back-projected SPAD returns vs GT geometry  (n={len(pts)} pts)")
-    ax.set_xlim(0, 1.0); ax.set_ylim(-0.5, 0.6); ax.set_zlim(0, 1.2)
+    ax.set_xlim(0, 1.0)
+    ax.set_ylim(-0.5, 0.6)
+    ax.set_zlim(0, 1.2)
     ax2 = fig.add_subplot(122)
     if all_err:
         errs = np.concatenate(all_err)

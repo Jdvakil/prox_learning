@@ -1,0 +1,160 @@
+{
+  "schema_version": "hybrid_safety_artifact_recovery_audit_v1",
+  "audit_date_utc": "2026-07-24",
+  "github": {
+    "gh_authenticated_account": "Lundii1",
+    "git_operations_protocol": "https",
+    "ssh_test": {
+      "command": "ssh -o BatchMode=yes -T git@github.com",
+      "result": "Permission denied (publickey)",
+      "blocking": false,
+      "reason": "Authenticated HTTPS access succeeds and was used without changing .gitmodules."
+    },
+    "deep_cavity_v2_remote_tip": "37087ef11baa81613430a1f1e9709f205b52f541",
+    "releases": [],
+    "tags": [],
+    "actions_artifacts": [],
+    "code_search": {
+      "policy_best_ckpt_hits": [
+        "README.md",
+        "diagnostics_output/act_inference_probe.py"
+      ],
+      "dataset_stats_pkl_hits": [
+        "README.md",
+        "diagnostics_output/act_inference_probe.py"
+      ],
+      "binary_artifact_hits": []
+    }
+  },
+  "local_search": {
+    "roots": [
+      "/root",
+      "/tmp"
+    ],
+    "canonical_policy_best_ckpt_candidates": [],
+    "canonical_dataset_stats_candidates": [],
+    "canonical_hybrid_obstacle_v1_dataset_candidates": [],
+    "noncanonical_candidates": [
+      {
+        "path": "/tmp/act-526dd8f-inspect.3mL5fu/remote-prox_learning/dataset_stats.pkl",
+        "size_bytes": 28566,
+        "sha256": "c9dae4f7c0062d53cb527c0ea4c86469c8cba3dffdc83b02287cccc026fdc35a",
+        "provenance": "ACT history commit 0a1f7aec4775b5b43a86539c6a9703c0b427fcb2 dated 2026-03-30",
+        "reason_rejected": "Predates the June 2026 hybrid_obstacle_v1 stack and is not paired with the canonical obstacle checkpoint."
+      }
+    ]
+  },
+  "git_history": {
+    "act_checkpoint_candidate": {
+      "commit": "b89fd84332c563b0ffb9f6d6b77634d7e1762870",
+      "date": "2026-04-13T14:13:11-06:00",
+      "path": "ckpt/policy_best.ckpt",
+      "size_bytes": 100341255,
+      "paired_stats_path": "ckpt/dataset_stats.pkl",
+      "paired_stats_size_bytes": 74,
+      "paired_stats_values": {
+        "qpos_mean": 0,
+        "qpos_std": 1,
+        "action_mean": 0,
+        "action_std": 1
+      },
+      "reason_rejected": "Predates the June hybrid obstacle dataset and contains scalar placeholder statistics rather than the required 9-D qpos and 8-D action statistics."
+    },
+    "older_stats_candidate": {
+      "commit": "0a1f7aec4775b5b43a86539c6a9703c0b427fcb2",
+      "date": "2026-03-30T00:59:11-06:00",
+      "path": "dataset_stats.pkl",
+      "size_bytes": 28566,
+      "reason_rejected": "Predates hybrid_obstacle_v1 and has no matching canonical obstacle checkpoint."
+    },
+    "root_eval_output_history": {
+      "added_commit": "a5ffcf4",
+      "removed_commit": "6cfb928e0a56cc68851617f6d2a1006257d5ad7f",
+      "removed_reason": "moved to hf",
+      "contents": "Five ACT obstacle evaluation trajectories and videos; no checkpoint, dataset_stats.pkl, or source training dataset."
+    }
+  },
+  "hugging_face": {
+    "repository": "jdvakil/prox_learning_data",
+    "repository_type": "dataset",
+    "current_revision": "7e5dc04136a1ee516a8ec9b924d04e598118892c",
+    "revision_scan": [
+      {
+        "revision": "7e5dc04136a1ee516a8ec9b924d04e598118892c",
+        "file_count": 1564,
+        "act_obstacle_output_file_count": 34,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "fd0ef1458f6ea00cd4a238ded1372d768f579b01",
+        "file_count": 1530,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "41e831fe42010330ee92d5371e13d36599614376",
+        "file_count": 485,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "913103c13f0e8802a0dddb2a9cb9030e23cff8a3",
+        "file_count": 489,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "3f68707f35aac203f8c9d94ff1b102c7cecbbe89",
+        "file_count": 456,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "c4b2ab0bbae38143c16efd0f3d2aca5cd474482e",
+        "file_count": 259,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "5f0d85fb54b3a4e3215c599062a9c0b059ea4504",
+        "file_count": 166,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      },
+      {
+        "revision": "e3762954a21e9ecbfba7fef10fea2079b0888a2b",
+        "file_count": 1,
+        "act_obstacle_output_file_count": 0,
+        "canonical_artifact_hits": []
+      }
+    ],
+    "current_act_obstacle_contents": {
+      "file_count": 34,
+      "description": "Five evaluation episodes with videos, two experiment config pickles, one trajectory H5, and running_log.log.",
+      "contains_policy_best_ckpt": false,
+      "contains_dataset_stats_pkl": false,
+      "contains_hybrid_obstacle_v1_source_dataset": false
+    },
+    "canonical_path_recovered_from_running_log": "/home/jaydv/code/prox_learning/submodules/act/ckpts/act_obstacle_baseline_v1/obstacle_baseline/20260616_002504_obstacle_baseline_2000_100_1e-05_0",
+    "historical_eval_evidence": {
+      "rollouts": 5,
+      "successful_rollouts": 2,
+      "success_rate": 0.4,
+      "note": "This proves the checkpoint once loaded at that path; it does not recover or authenticate the missing checkpoint or statistics."
+    },
+    "download_manifest_or_command_in_repository": null,
+    "recovery_command": "huggingface_hub.HfApi().list_repo_files('jdvakil/prox_learning_data', repo_type='dataset', revision=<revision>)"
+  },
+  "weights_and_biases": {
+    "local_api_key_available": false,
+    "act_training_project_default": "act-obstacle-baseline",
+    "training_source_uploads_checkpoint_artifacts": false,
+    "note": "The training source logs scalar metrics but contains no wandb.Artifact or wandb.save call for policy_best.ckpt or dataset_stats.pkl."
+  },
+  "result": {
+    "canonical_act_checkpoint_recovered": false,
+    "canonical_dataset_stats_recovered": false,
+    "hybrid_obstacle_v1_source_dataset_recovered": false,
+    "status": "missing_canonical_artifacts"
+  }
+}

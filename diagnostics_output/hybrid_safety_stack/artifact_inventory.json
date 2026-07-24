@@ -1,0 +1,165 @@
+{
+  "schema_version": "hybrid_safety_artifact_inventory_v1",
+  "required_files": [
+    {
+      "path": "assets/robots/franka_skin/model_hybrid.xml",
+      "exists": true,
+      "size_bytes": 35177,
+      "sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6"
+    },
+    {
+      "path": "assets/safety/sweep_v3.h5",
+      "exists": true,
+      "size_bytes": 54556461,
+      "sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8"
+    },
+    {
+      "path": "scripts/train_safety_cvae.py",
+      "exists": true,
+      "size_bytes": 17394,
+      "sha256": "c7e68bd0d20877408b58bbebcfe0394688126eb37220a366b7298c9b477a594a"
+    },
+    {
+      "path": "scripts/safety_sweep.py",
+      "exists": true,
+      "size_bytes": 17160,
+      "sha256": "d8c488cef4aad98f0ccbe521795995a1e678ad8a732b6a1402435cc45d4459f3"
+    },
+    {
+      "path": "scripts/safety_flinch_demo.py",
+      "exists": true,
+      "size_bytes": 20370,
+      "sha256": "20f2e1fbd28d4b55ba0d4726ff233757b55aee8de4e116d0d1490aa68cd0e887"
+    },
+    {
+      "path": "scripts/safety_react_demo.py",
+      "exists": true,
+      "size_bytes": 24276,
+      "sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa"
+    },
+    {
+      "path": "scripts/safety_moving_demo.py",
+      "exists": true,
+      "size_bytes": 17544,
+      "sha256": "327817b8550282f838a3dae01b88a412176760f698ed7f4519c535670db6afeb"
+    },
+    {
+      "path": "scripts/safety_orbit_demo.py",
+      "exists": true,
+      "size_bytes": 16373,
+      "sha256": "537c0ed3a3c44b37a638cb95b5a9aa22b6c1d0d78af25c26428374cadf88ece0"
+    },
+    {
+      "path": "scripts/safety_sphere_demo.py",
+      "exists": true,
+      "size_bytes": 13747,
+      "sha256": "831eabbf7f1ab25187a37711822098a7c9049ddea63ce02f538a3f8458f83c39"
+    },
+    {
+      "path": "scripts/verify_hybrid_skin_sensors.py",
+      "exists": true,
+      "size_bytes": 10806,
+      "sha256": "959a3fd2657420e7354b3bf1c539efdbebc61fe71f73fd6f4eb799b4a2dd2d23"
+    },
+    {
+      "path": "scripts/build_hybrid_on_franka_skin.py",
+      "exists": true,
+      "size_bytes": 9934,
+      "sha256": "9a14f538effe7cae6f3c0a32441b7625d2013b00bf536261ac2841e26a8b87b3"
+    },
+    {
+      "path": "scripts/convert_obstacle_to_act.py",
+      "exists": true,
+      "size_bytes": 10712,
+      "sha256": "74b60458754b782393d65d508174b4168a94dbe6c539ff5d2005076994856695"
+    },
+    {
+      "path": "submodules/act/eval_act_obstacle.py",
+      "exists": true,
+      "size_bytes": 19501,
+      "sha256": "0ac9d766a4ab409bf5345722d8399fd5f98003e94378bca688910b9ce1d48ba1"
+    },
+    {
+      "path": "submodules/act/imitate_episodes.py",
+      "exists": true,
+      "size_bytes": 21422,
+      "sha256": "1299ae6a7678b4b514198a5180270da4536b518f1c8088141bdafa4f508caa72"
+    }
+  ],
+  "canonical_safety_directory": {
+    "path": "assets/safety/cvae_v3",
+    "exists": true,
+    "files": [
+      {
+        "path": "assets/safety/cvae_v3/REPORT.md",
+        "exists": true,
+        "size_bytes": 3767,
+        "sha256": "9bc41bc7ae0219706d3856e334d703f67ab1a546bd488425a8a3f89b36c3eee0"
+      },
+      {
+        "path": "assets/safety/cvae_v3/config.json",
+        "exists": true,
+        "size_bytes": 348,
+        "sha256": "c376f44316e1edfc5c198ad3a8ca64b69e1e8e54c6f3125a082020172ac46060"
+      },
+      {
+        "path": "assets/safety/cvae_v3/curves.png",
+        "exists": true,
+        "size_bytes": 137498,
+        "sha256": "b24b9e286b703fc2ba39458e63b032808bb96974baa8fbc5e2f3b8059adf3673"
+      },
+      {
+        "path": "assets/safety/cvae_v3/encoder_latent.png",
+        "exists": true,
+        "size_bytes": 49756,
+        "sha256": "31bf7201a18eb5258afb7aaa68971fb012f4488e63f41eb607dd13b16eeaefda"
+      },
+      {
+        "path": "assets/safety/cvae_v3/head_diagnostics.png",
+        "exists": true,
+        "size_bytes": 84567,
+        "sha256": "b342689220f52ebff6de66eea688db47d2fc7394477af0f6603f6feb5b626fba"
+      },
+      {
+        "path": "assets/safety/cvae_v3/history.json",
+        "exists": true,
+        "size_bytes": 12014,
+        "sha256": "0bd2910383b46d2ea411bfd1cd8b83b14e108de060b52d432421f6820510489f"
+      },
+      {
+        "path": "assets/safety/cvae_v3/meta.json",
+        "exists": true,
+        "size_bytes": 1207,
+        "sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81"
+      },
+      {
+        "path": "assets/safety/cvae_v3/model.pt",
+        "exists": true,
+        "size_bytes": 11598939,
+        "sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405"
+      },
+      {
+        "path": "assets/safety/cvae_v3/pred_vs_true.png",
+        "exists": true,
+        "size_bytes": 140565,
+        "sha256": "007801a787999d6fe77377399fc2c97c84a1802d44450b8019b5954dd43c43e9"
+      }
+    ]
+  },
+  "canonical_act_obstacle_checkpoint": {
+    "expected_name": "policy_best.ckpt",
+    "candidates": [],
+    "status": "missing"
+  },
+  "canonical_act_dataset_stats": {
+    "expected_name": "dataset_stats.pkl",
+    "candidates": [],
+    "status": "missing"
+  },
+  "hybrid_obstacle_v1_source_dataset": {
+    "expected_path": "assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855",
+    "exists": false,
+    "status": "missing"
+  },
+  "all_required_code_and_safety_files_exist": true
+}

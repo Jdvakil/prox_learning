@@ -1,0 +1,100 @@
+{
+  "schema_version": "hybrid_safety_stack_v1",
+  "system": {
+    "nominal_policy": "vanilla_act_exo_wrist_qpos",
+    "safety_policy": "canonical_40_sensor_safety_cvae",
+    "executed_action": "nominal_act_plus_bounded_filtered_safety_residual",
+    "act_camera_order": [
+      "exo_camera_1",
+      "wrist_camera"
+    ],
+    "act_state_dim": 9,
+    "act_action_dim": 8,
+    "arm_dim": 7
+  },
+  "sensor_contract": {
+    "input_shape": [
+      40,
+      8,
+      8
+    ],
+    "ordered_names": [
+      "link1_sensor_0",
+      "link1_sensor_1",
+      "link1_sensor_2",
+      "link1_sensor_3",
+      "link1_sensor_4",
+      "link1_sensor_5",
+      "link1_sensor_6",
+      "link2_sensor_0",
+      "link2_sensor_1",
+      "link2_sensor_2",
+      "link2_sensor_3",
+      "link2_sensor_4",
+      "link2_sensor_5",
+      "link2_sensor_6",
+      "link3_sensor_0",
+      "link3_sensor_1",
+      "link3_sensor_2",
+      "link3_sensor_3",
+      "link3_sensor_4",
+      "link4_sensor_0",
+      "link4_sensor_1",
+      "link4_sensor_2",
+      "link4_sensor_3",
+      "link4_sensor_4",
+      "link5_back_sensor_0",
+      "link5_back_sensor_1",
+      "link5_back_sensor_2",
+      "link5_back_sensor_3",
+      "link5_back_sensor_4",
+      "link5_back_sensor_5",
+      "link5_front_sensor_0",
+      "link5_front_sensor_1",
+      "link5_front_sensor_2",
+      "link5_front_sensor_3",
+      "link6_sensor_0",
+      "link6_sensor_1",
+      "link6_sensor_2",
+      "link6_sensor_3",
+      "link6_sensor_4",
+      "link6_sensor_5"
+    ],
+    "sensor_order_hash": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "ordering_basis": "Exact assets/safety/sweep_v3.h5 sensors order, identical to cvae_v3/meta.json and the sorted-name inference order used by every Safety-CVAE demo.",
+    "live_substep_rule": "Use the latest 8x8 proximity substep from each MolmoSpaces policy observation."
+  },
+  "preprocessing": {
+    "depth_units": "meters",
+    "d_max_m": 0.5,
+    "dead_pixel_below_m": 0.005,
+    "formula": "closeness = clip(1 - depth / 0.5, 0, 1); depth < 0.005 maps to zero",
+    "far_or_no_return_value": 0.0
+  },
+  "residual_controller": {
+    "gain": 4.0,
+    "decay_per_second": 2.2,
+    "ema": 0.75,
+    "max_deviation_rad_per_joint": 0.35,
+    "dt_rule": "Derive dt from MolmoSpaces policy_dt_ms; FrankaSkinHybridObstacleConfig is 66 ms.",
+    "baseline_rule": "Subtract SafetyHead output on an explicit reference trajectory frame when supplied, otherwise the first live observation.",
+    "label_scale_rule": "Divide the physical SafetyHead difference by meta.json label_scale before applying the demo gain, matching safety_react_demo.py.",
+    "arm_only": true,
+    "gripper_owner": "ACT"
+  },
+  "pinned_hashes": {
+    "model_hybrid_xml_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "molmospaces_camera_config_sha256": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+    "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+    "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+    "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+    "act_checkpoint_sha256": null,
+    "act_dataset_stats_sha256": null
+  },
+  "artifact_status": {
+    "act_checkpoint": "missing_at_audit_start",
+    "act_dataset_stats": "missing_at_audit_start",
+    "hybrid_obstacle_v1_source_dataset": "missing_at_audit_start",
+    "runtime_rule": "A live run must supply explicit expected SHA-256 values for both ACT files; an unpinned checkpoint is rejected."
+  }
+}

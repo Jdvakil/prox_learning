@@ -1,0 +1,38 @@
+{
+  "schema_version": "hybrid_safety_stack_audit_v1",
+  "repository": {
+    "root_branch": "repair/hybrid-safety-act-integration",
+    "root_commit": "37087ef11baa81613430a1f1e9709f205b52f541",
+    "act_branch": "repair/live-safety-residual-eval",
+    "act_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "molmospaces_branch": "",
+    "molmospaces_commit": "c817f07b0fffc55a0dce1577312e0a7afc473b69"
+  },
+  "artifact_inventory_passed": true,
+  "missing_runtime_artifacts": [
+    "canonical_act_obstacle_checkpoint",
+    "canonical_act_dataset_stats",
+    "hybrid_obstacle_v1_source_dataset"
+  ],
+  "sensor_contract_passed": true,
+  "safety_cvae_passed": true,
+  "hybrid_sensor_geometry_verifier": {
+    "status": "completed",
+    "path": "diagnostics_output/hybrid_safety_stack/hybrid_sensor_verify/sensor_verify.csv",
+    "sensor_count": 40,
+    "passed_count": 38,
+    "failed_count": 2,
+    "failed_sensors": [
+      "link5_front_sensor_1",
+      "link5_front_sensor_2"
+    ],
+    "result": "PASS 38/40"
+  },
+  "integration_status": {
+    "safety_react_demo": "recorded_or_synthetic_nominal_trajectory_not_live_act",
+    "eval_act_obstacle": "live_vanilla_act_without_safety_residual",
+    "live_adapter_at_audit_start": "missing",
+    "live_adapter_implemented": true,
+    "paired_launcher_implemented": true
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "schema_version": "canonical_safety_cvae_audit_v1",
+  "load_api": "SafetyHead.load(\"assets/safety/cvae_v3\")",
+  "checkpoint_hashes": {
+    "model_pt": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+    "meta_json": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+    "config_json": "c376f44316e1edfc5c198ad3a8ca64b69e1e8e54c6f3125a082020172ac46060",
+    "history_json": "0bd2910383b46d2ea411bfd1cd8b83b14e108de060b52d432421f6820510489f"
+  },
+  "sweep_hash": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+  "training_shapes": {
+    "prox": [
+      15000,
+      40,
+      8,
+      8
+    ],
+    "label_dq": [
+      15000,
+      7
+    ],
+    "min_depth": [
+      15000,
+      40
+    ],
+    "sensors": [
+      40
+    ]
+  },
+  "training_counts": {
+    "samples": 15000,
+    "close_samples": 5000,
+    "far_samples": 5564,
+    "validation_samples": 1500,
+    "validation_close_samples": 495,
+    "validation_far_samples": 579
+  },
+  "preprocessing": {
+    "formula": "closeness = clip(1 - depth / 0.5, 0, 1)",
+    "dead_pixel_rule": "depth < 0.005 m becomes zero",
+    "boundary_feature_values": [
+      0.0,
+      0.0,
+      0.0,
+      0.9900000095367432,
+      0.0,
+      0.0
+    ]
+  },
+  "outputs": {
+    "far_physical": [
+      0.13159291446208954,
+      0.2778622508049011,
+      0.22087900340557098,
+      -0.051497168838977814,
+      0.03572791442275047,
+      -0.012945680879056454,
+      0.006964287254959345
+    ],
+    "far_physical_norm": 0.3840002715587616,
+    "far_normalized_norm": 0.03380478546023369,
+    "close_sensor_index": 18,
+    "close_depth_m": 0.05,
+    "close_physical": [
+      -24.182188034057617,
+      63.96448516845703,
+      -21.943254470825195,
+      -32.91352081298828,
+      0.7655243277549744,
+      0.05860062316060066,
+      0.4502888321876526
+    ],
+    "close_physical_norm": 79.00526428222656,
+    "close_minus_far_norm": 78.86090087890625
+  },
+  "validation_metrics": {
+    "label_scale_metadata": 11.359346389770508,
+    "label_scale_recomputed": 11.359346389770508,
+    "best_val_mse_metadata": 0.00906934030354023,
+    "best_val_mse_recomputed": 0.009069339372217655,
+    "close_cos_metadata": 0.9255079030990601,
+    "close_cos_recomputed": 0.9255078434944153,
+    "far_quiet_metadata": 0.03101126104593277,
+    "far_quiet_recomputed": 0.03101126104593277,
+    "history_final_val_mse": 0.009140785783529282
+  },
+  "checks": {
+    "loaded_only_via_safety_head_load": true,
+    "input_shape_is_40x8x8": true,
+    "output_shape_is_7": true,
+    "z_zero_inference_is_exactly_deterministic": true,
+    "metadata_sensor_order_matches_contract": true,
+    "sweep_sensor_order_matches_contract": true,
+    "label_scale_recomputes_exactly": true,
+    "best_validation_mse_recomputes": true,
+    "close_cosine_recomputes": true,
+    "far_quiet_recomputes": true,
+    "far_input_is_near_zero_in_normalized_units": true,
+    "close_obstacle_changes_retreat": true,
+    "dead_and_below_range_pixels_map_to_zero": true,
+    "depth_at_activation_max_maps_to_zero": true,
+    "depth_above_activation_max_maps_to_zero": true
+  },
+  "passed": true
+}
