@@ -1,0 +1,43 @@
+{
+  "collection_source_digest_sha256": "d5b41570164244f1b8a52346847cd1b61d7247a3b36b186fdf03fed8f04e94cd",
+  "collection_source_hashes": {
+    "molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py": "3ac38d88d37fbeff419b21850f0c2e125b84ce4c766f09c450b93240d77790f2",
+    "molmospaces/molmo_spaces/data_generation/episode_manifest.py": "237ad97b1870abd548cd9b1699fdae632a169ab79fb393cb823324db089f8edd",
+    "molmospaces/molmo_spaces/data_generation/manifest_runner.py": "36c3d4e3980097864dcbf3a581ddef06708959b1e2522dba3a7ae18a96fc90af",
+    "molmospaces/molmo_spaces/data_generation/pipeline.py": "2386fb6c2140de3c21bb2b5b2cc58fc547116f80f3a827d96198ce9bafba21b0",
+    "molmospaces/molmo_spaces/data_generation/row_ledger.py": "4fe5ed5fa5ac21e994c6081c7ce54d583c0fa9e2480a7a7f57c9b05ee8c42f82",
+    "molmospaces/molmo_spaces/data_generation/runtime_compat.py": "811f1fd39cbef21ae96340bef7287255004fb77861af8951712821ac41637e62",
+    "molmospaces/molmo_spaces/data_generation/worker_completeness.py": "894ae7933d027d710f7935d0bb3ea34e94740c1b2540b42bb8b5b97614157df2",
+    "molmospaces/molmo_spaces/tasks/enclosure_reach.py": "ab52431eea78a74b0e18521613c0ca5eb15414e8dc9b090827a8c9e8675bc1c2",
+    "molmospaces/molmo_spaces/tasks/task_sampler.py": "81bc622ab0b4d5103680ef4fc0308faa7a3ce648829d3a71140b102d0fe94cd7",
+    "root/configs/hybrid_obstacle_candidate_manifest_v2.json": "10e45609162a61371f1bf135b563c76c69787a2be58ce0fb245fd54a3688dff3",
+    "root/configs/hybrid_obstacle_manifest_v2_smoke8.json": "8b7807f7380c5dd4d0732a11c1eb09f91ac317187ad2553fb16d2ecf38473ef7",
+    "root/scripts/run_hybrid_obstacle_manifest_v2.py": "1394149583cb080a054aa32ac96738212d7ef8bd8c31147dc9e335c3ea290263"
+  },
+  "collection_source_unchanged_across_abc": true,
+  "collection_source_verification": "The 12 collection-source files hashed at freeze generation 2 are byte-identical to those recorded in runtime_provenance.json after Run C. Verified programmatically; the only post-freeze edit was the analysis-only audit script.",
+  "freeze_generations": [
+    {
+      "frozen_source_sha256": "37953e0a7a0d370692ad610e7c863c39643097686feca585f9d9032faa01f221",
+      "generation": 1,
+      "reason": "The A-vs-B comparison exposed a stale-_theta carry-over: EnclosureSampler._obj_rest runs during scene setup and branches on the PREVIOUS row theta, so a worker first row consumed one fewer global draw than its later rows. Runs A and B from this generation were discarded and their output directory renamed smoke_runs_invalidated_v1.",
+      "status": "INVALIDATED"
+    },
+    {
+      "frozen_source_sha256": "451b0569db5998794c4aa13ef54993a004f8e91deda316908de32f1f4a4f0c21",
+      "generation": 2,
+      "molmospaces_tree_sha1": "ce1c82f6532c25bb6f99865a6e4d6a14791b30a4",
+      "reason": "stale-_theta fix applied; all of A/B/C executed on this collection source",
+      "root_tree_sha1": "b7a18d1ee69c68a20026b14713be13f82fef1a2d",
+      "status": "AUTHORITATIVE FOR RUNS A, B AND C"
+    },
+    {
+      "generation": 3,
+      "molmospaces_tree_sha1": "ce1c82f6532c25bb6f99865a6e4d6a14791b30a4",
+      "reason": "After A/B/C executed, scripts/hybrid_obstacle_manifest_v2_audit.py was corrected to handle NaN padding: np.array_equal reports NaN != NaN, and max|a-b| over NaN yields NaN, which then slipped through a delta > tolerance test because every NaN comparison is False. The frozen numeric TOLERANCES were not changed. The correction is analysis-only: it reads published output and cannot alter what was simulated. The fix made the verdict STRICTER (it turned silently-passing NaN datasets into a real NaN-pattern equality check) and the runs then compared bit-identical.",
+      "root_tree_sha1": "85686732033f8f2e07909c811bbb2993332936f9",
+      "status": "ANALYSIS-ONLY DELTA"
+    }
+  ],
+  "schema": "hybrid_obstacle_manifest_v2_source_freeze"
+}

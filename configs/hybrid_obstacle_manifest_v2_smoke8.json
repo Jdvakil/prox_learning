@@ -1,0 +1,1207 @@
+{
+  "candidate_indices": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    8,
+    18,
+    24
+  ],
+  "episode_ids": [
+    "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+    "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+    "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+    "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+    "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+    "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+    "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+    "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d"
+  ],
+  "manifest_version": "hybrid_obstacle_independent_v2",
+  "master_seed": 20260725,
+  "parent_manifest_sha256": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+  "per_stratum": 4,
+  "rows": [
+    {
+      "candidate_index": 0,
+      "canonical_rank": 0,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "hazard_present": true,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          0,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          0,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          0,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          0,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          0,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          0,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          0,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          0,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          0,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          0,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "c2fe90efebcb60f3f8a7c1fab65896a87cf6596691d2fb3ee6cdde5a04dc9f29",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 1358332853,
+          "seed_u64": 10477166562073019317,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 19475120,
+          "seed_u64": 7786703745490430640,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 1606316379,
+          "seed_u64": 8845694737827393883,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 3947547658,
+          "seed_u64": 4461616953064868874,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 840923679,
+          "seed_u64": 16997563121799232031,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 82024635,
+          "seed_u64": 13837317830932142267,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 4198896535,
+          "seed_u64": 13660909462184399767,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 872786694,
+          "seed_u64": 13499199018131368710,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 3060375531,
+          "seed_u64": 9165584530552758251,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 231117013,
+          "seed_u64": 5411527564760355029,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 0,
+      "stratum_rank": 0
+    },
+    {
+      "candidate_index": 1,
+      "canonical_rank": 1,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "hazard_present": true,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          1,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          1,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          1,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          1,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          1,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          1,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          1,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          1,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          1,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          1,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "261b55f95c37b589b13c0a7fdc6a9b6bbcd6aac39c133e9bbd476aa776208c3b",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 1971699562,
+          "seed_u64": 17347824217089228650,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 577727250,
+          "seed_u64": 7351131729373915922,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 2496588491,
+          "seed_u64": 7549666671859788491,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 1661758467,
+          "seed_u64": 2742187662101998595,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 4102042749,
+          "seed_u64": 11633599458591126653,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 3422895337,
+          "seed_u64": 9795838893902609641,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 395362296,
+          "seed_u64": 14609940339936509944,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 67022333,
+          "seed_u64": 15510301888716123645,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 1933391453,
+          "seed_u64": 2642695827293550173,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 2218932144,
+          "seed_u64": 16330972271713859504,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 1,
+      "stratum_rank": 1
+    },
+    {
+      "candidate_index": 2,
+      "canonical_rank": 2,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "hazard_present": true,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          2,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          2,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          2,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          2,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          2,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          2,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          2,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          2,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          2,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          2,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "c3552a2ddce156270bc2c4886e3661d8e07dbfb6ddfe7b5bd443da6c04df56f6",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 3382891098,
+          "seed_u64": 14084668166200545882,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 1026882457,
+          "seed_u64": 17894616390929021849,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 3474145303,
+          "seed_u64": 16194343320264327191,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 3324673357,
+          "seed_u64": 16455417077615459661,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 3925258604,
+          "seed_u64": 10072998137652752748,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 3981923240,
+          "seed_u64": 11317614256328233896,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 3298302417,
+          "seed_u64": 6242707308444916177,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 2033167884,
+          "seed_u64": 6533142126835772940,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 645486558,
+          "seed_u64": 5882328857821403102,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 1510700366,
+          "seed_u64": 17248950384392369486,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 2,
+      "stratum_rank": 2
+    },
+    {
+      "candidate_index": 3,
+      "canonical_rank": 3,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "hazard_present": true,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          3,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          3,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          3,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          3,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          3,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          3,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          3,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          3,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          3,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          3,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "bd4ea0adc1df81a2fb65aba4e94f85d407f9f3477561c2e5a91e2a946a8144e6",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 3095745712,
+          "seed_u64": 4550853874269115568,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 3500151470,
+          "seed_u64": 10191356835926119086,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 705522964,
+          "seed_u64": 11085260465118211348,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 2302762002,
+          "seed_u64": 15686585181483916306,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 2259337205,
+          "seed_u64": 9632042300497117173,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 3327737329,
+          "seed_u64": 6994230957827505649,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 1650551103,
+          "seed_u64": 832174134571133247,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 1421368443,
+          "seed_u64": 7181876251722275963,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 1328714147,
+          "seed_u64": 14211433127455396259,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 1586333527,
+          "seed_u64": 10504957899809064791,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 3,
+      "stratum_rank": 3
+    },
+    {
+      "candidate_index": 5,
+      "canonical_rank": 0,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "hazard_present": false,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          5,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          5,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          5,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          5,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          5,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          5,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          5,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          5,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          5,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          5,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "4b8da6704ef93fc7556e222fa5b431d5db0827ce20f835dc516ba0599fc1e87c",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 2382207573,
+          "seed_u64": 270954662859741781,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 2123761100,
+          "seed_u64": 10961566628182361548,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 306234381,
+          "seed_u64": 16754605372609709069,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 1721956082,
+          "seed_u64": 6701743378421446386,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 3206131965,
+          "seed_u64": 6222768429487206653,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 1496852595,
+          "seed_u64": 17380735984067946611,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 988941619,
+          "seed_u64": 1967024932985638195,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 3282721917,
+          "seed_u64": 17578254002719186045,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 4098115448,
+          "seed_u64": 5507762753345177464,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 3884452839,
+          "seed_u64": 1979481745493855207,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 0,
+      "stratum_rank": 0
+    },
+    {
+      "candidate_index": 8,
+      "canonical_rank": 1,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "hazard_present": false,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          8,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          8,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          8,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          8,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          8,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          8,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          8,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          8,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          8,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          8,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "ec1bec0c31aa3043920948d9957367e096be98fc325cb2e5f26b0a4c5b5d7a78",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 171434729,
+          "seed_u64": 2711822645555880681,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 639588372,
+          "seed_u64": 11030068507506071572,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 3222816762,
+          "seed_u64": 14743186175499454458,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 770340478,
+          "seed_u64": 10091980429657273982,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 1357393735,
+          "seed_u64": 4922683274543247175,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 1470327076,
+          "seed_u64": 15595784048686098724,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 713911792,
+          "seed_u64": 12083471432345808368,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 2451036151,
+          "seed_u64": 15494429517335222263,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 688021123,
+          "seed_u64": 11947212022896287363,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 2062840230,
+          "seed_u64": 2557567316463481254,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 1,
+      "stratum_rank": 1
+    },
+    {
+      "candidate_index": 18,
+      "canonical_rank": 2,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "hazard_present": false,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          18,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          18,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          18,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          18,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          18,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          18,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          18,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          18,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          18,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          18,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "782883807420b0520e18e0d2344dc0e348aadf9ac176dcb0c7d07a575c16f4f5",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 47339666,
+          "seed_u64": 1701102199415920786,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 1812554408,
+          "seed_u64": 2993208919948092072,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 21674853,
+          "seed_u64": 3096518532486839141,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 219752137,
+          "seed_u64": 14895876301433415369,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 3125232121,
+          "seed_u64": 15584985914148340217,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 1169867071,
+          "seed_u64": 7045567295304417599,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 965250032,
+          "seed_u64": 16584852962762329072,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 4268703228,
+          "seed_u64": 16057405019039677948,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 4010242432,
+          "seed_u64": 5338209388715274624,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 1288354003,
+          "seed_u64": 459930439651080403,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 2,
+      "stratum_rank": 2
+    },
+    {
+      "candidate_index": 24,
+      "canonical_rank": 3,
+      "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+      "episode_id": "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "hazard_present": false,
+      "manifest_version": "hybrid_obstacle_independent_v2",
+      "master_seed": 20260725,
+      "max_retries": 4,
+      "molmospaces_source_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "root_seed_sequence_entropy": {
+        "action_noise": [
+          20260725,
+          24,
+          5,
+          0
+        ],
+        "camera_light": [
+          20260725,
+          24,
+          6,
+          0
+        ],
+        "global_compat": [
+          20260725,
+          24,
+          0,
+          0
+        ],
+        "obstacle": [
+          20260725,
+          24,
+          3,
+          0
+        ],
+        "placement": [
+          20260725,
+          24,
+          2,
+          0
+        ],
+        "planner_grasp": [
+          20260725,
+          24,
+          4,
+          0
+        ],
+        "py_random": [
+          20260725,
+          24,
+          7,
+          0
+        ],
+        "retry": [
+          20260725,
+          24,
+          9,
+          0
+        ],
+        "task_scene": [
+          20260725,
+          24,
+          1,
+          0
+        ],
+        "torch": [
+          20260725,
+          24,
+          8,
+          0
+        ]
+      },
+      "row_sha256": "6525577f05873aef1fb533347ba26c2ed7019763f6f30cfbaad3f149e3a14b0b",
+      "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+      "safety_cvae_contract": {
+        "note": "Reference only. This task does not train, modify or re-checkpoint the Safety-CVAE; the hashes pin what a future consumer must match.",
+        "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+        "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+        "safety_sweep_sha256": "4161d62eba53320ab83661adb0a1d3e24244f71e24f00b6390cffa794ac783e8",
+        "sensor_input_shape": [
+          40,
+          8,
+          8
+        ],
+        "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+        "stack_schema_version": "hybrid_safety_stack_v1"
+      },
+      "scene_template_house_index": 1,
+      "scene_template_id": "fumehood_red_cup_v1",
+      "seed_map": {
+        "action_noise": {
+          "seed_u32": 304450972,
+          "seed_u64": 18304234954598747548,
+          "stream_id": 5
+        },
+        "camera_light": {
+          "seed_u32": 4260270660,
+          "seed_u64": 9718607205140173380,
+          "stream_id": 6
+        },
+        "global_compat": {
+          "seed_u32": 458055579,
+          "seed_u64": 17070075251843227547,
+          "stream_id": 0
+        },
+        "obstacle": {
+          "seed_u32": 3820819321,
+          "seed_u64": 3973834119812289401,
+          "stream_id": 3
+        },
+        "placement": {
+          "seed_u32": 397483153,
+          "seed_u64": 5637398628008008849,
+          "stream_id": 2
+        },
+        "planner_grasp": {
+          "seed_u32": 1377886327,
+          "seed_u64": 5398407390005616759,
+          "stream_id": 4
+        },
+        "py_random": {
+          "seed_u32": 3646065531,
+          "seed_u64": 11273767853990513531,
+          "stream_id": 7
+        },
+        "retry": {
+          "seed_u32": 1271342741,
+          "seed_u64": 13735397407783855765,
+          "stream_id": 9
+        },
+        "task_scene": {
+          "seed_u32": 3731901874,
+          "seed_u64": 6966878802604477874,
+          "stream_id": 1
+        },
+        "torch": {
+          "seed_u32": 4270551604,
+          "seed_u64": 5313024508205691444,
+          "stream_id": 8
+        }
+      },
+      "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "split": "train",
+      "split_rank": 3,
+      "stratum_rank": 3
+    }
+  ],
+  "schema": "hybrid_obstacle_manifest_v2_smoke_subset",
+  "selection_rule": "the 4 lowest-ranked hazard-present rows and the 4 lowest-ranked hazard-absent rows, by predeclared stratum rank",
+  "subset_sha256": "cb9df6e1f8dabb2e8705f685a8e1a0f9673ca184d1d455995e40e06f6bb4ddbc"
+}

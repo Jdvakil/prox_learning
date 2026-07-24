@@ -320,3 +320,75 @@ eval_output/                                        # ACT in-env rollout MP4s + 
 diagnostics_output/                                 # legacy committed renders (new figures -> experiments_output/)
 paper/                                              # paper draft
 ```
+
+## Hybrid obstacle collection: episode manifest v2 (seeding contract)
+
+The 40-sensor hybrid-obstacle collection is now driven by a **committed candidate
+manifest** rather than by wraparound house indices. Read
+`docs/HYBRID_OBSTACLE_SEEDING_FINAL_DECISION.md` before touching any of it.
+
+Why: the earlier collection wrote 175 trajectories that represented at most 75
+distinct episodes (50 replica classes of three). `seed_task_sampling` seeded
+Python/NumPy/Torch once *per worker*, `get_episode_seed` returned that same
+per-worker constant, houses were claimed dynamically, and hazard presence was a
+runtime `np.random.random() < OBSTACLE_P` off the same shared stream — so an
+episode's content was a function of worker state and execution order. That
+collection is read-only and must never be used as canonical ACT training data.
+
+Contract (`configs/hybrid_obstacle_independent_v2.yaml`): candidate `i`'s content
+depends only on manifest version, master seed **20260725**, candidate index,
+named stream ID, and retry index. Never on worker ID, worker count, scheduling,
+house-claim order, house alias, file ordering, or a resume boundary. Ten named
+streams are derived as `SeedSequence([master_seed, candidate_index, stream_id,
+retry_index])` — order-independent, no `spawn()` chain. Identities are SHA-256;
+Python's `hash()` is never used for a persistent ID or seed.
+
+```
+configs/hybrid_obstacle_independent_v2.yaml          # the frozen contract
+configs/hybrid_obstacle_candidate_manifest_v2.json   # 160 rows, 120 hazard / 40 clear
+                                                     #   sha256 8be804057f3e0710...
+configs/hybrid_obstacle_manifest_v2_smoke8.json      # 8-row bounded smoke subset
+                                                     #   sha256 cb9df6e1f8dabb2e...
+scripts/build_hybrid_obstacle_manifest_v2.py         # regenerate/verify (--check)
+scripts/run_hybrid_obstacle_manifest_v2.py           # THE launcher (ManifestRolloutRunner)
+scripts/hybrid_obstacle_manifest_v2_audit.py         # A/B/C invariance audit, frozen tolerances
+scripts/hybrid_obstacle_manifest_v2_provenance.py    # runtime provenance record
+diagnostics_output/hybrid_obstacle_seeding/          # execution-path audit, RNG inventory,
+                                                     #   invariance report, final_decision.json
+```
+
+Run it (env exactly as the datagen recipe in CLAUDE.md; needs mujoco==3.5.0 and
+warp-lang==1.11.1, enforced at startup by `runtime_compat`):
+
+```bash
+PY=/root/act_retrain_venv/bin/python
+$PY scripts/build_hybrid_obstacle_manifest_v2.py --check      # manifest still frozen?
+$PY scripts/run_hybrid_obstacle_manifest_v2.py \
+    --output-dir <fresh dir> --workers 8                      # full 160 rows
+$PY scripts/run_hybrid_obstacle_manifest_v2.py \
+    --output-dir <fresh dir> --workers 4 --smoke               # 8-row smoke only
+```
+
+Things that will bite you:
+
+- **Every row rebuilds its scene on purpose.** `sample_task`'s scene-reuse branch
+  is not equivalent to its load branch (it skips the `task_config` reset and the
+  `update_scene` RNG draws), so reusing the cache reintroduces a first-row/later-row
+  asymmetry. Roughly 60–90 s per row. Do not "optimise" it away.
+- **Hazard presence is never drawn for this config**; it comes from
+  `row.hazard_present`, and the compiled geometry is checked against the row.
+  `OBSTACLE_P = 0.75` stays as the documented design probability (120/160) and
+  every *legacy* obstacle config keeps its Bernoulli byte for byte.
+- **Episode identity is `episode_id + manifest_row_sha256`**, written into H5
+  metadata — not the `traj_N` buffer index. Resume keys on it. Worker ID and
+  house alias appear only as `*_descriptive` fields.
+- **A failed row is a recorded result**, not a retry opportunity, and rows are
+  never reused to fill a success quota.
+- Selection and split are predeclared: first 75 successful hazard-present and
+  first 25 hazard-absent rows by stratum rank; train 60/20, val 15/5. They never
+  inspect rollout quality.
+
+Proved on a bounded smoke (8 rows, 24 executions): 1 worker vs 4 workers vs a
+SIGKILLed-and-resumed 4-worker run are **bit-identical** by episode ID, with all
+rows reconciling exactly once and no replica classes. See §14–§15 of the decision
+doc. The claim holds for the recorded runtime only.

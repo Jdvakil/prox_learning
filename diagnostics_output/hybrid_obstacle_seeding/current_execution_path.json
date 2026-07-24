@@ -1,0 +1,194 @@
+{
+  "schema": "hybrid_obstacle_current_execution_path_v1",
+  "audited_config": "FrankaSkinHybridObstacleConfig",
+  "audited_molmospaces_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+  "audited_root_commit": "beb125e97607cc34c5f64645a9872ccc78e33911",
+  "purpose": "Trace the real sequence from parent launch through H5 publication for the 40-sensor hybrid-obstacle collection, so that the v2 manifest contract can be attached at provably correct points.",
+
+  "stages": [
+    {
+      "stage": "parent_launch",
+      "file": "molmo_spaces/data_generation/main.py",
+      "detail": "main() calls assert_supported_runtime() (fa8e61f), resolves the config class from config_registry, instantiates ParallelRolloutRunner(config) and calls run().",
+      "randomness_relevant": false
+    },
+    {
+      "stage": "config_import_time_randomness",
+      "file": "molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
+      "lines": "2230-2231 (FrankaSkinHybridObstacleConfig), 2133-2134 (FrankaSkinHybridPnP5Config)",
+      "detail": "robot_object_z_offset_random_min=-np.random.uniform(0.0, 1.0) and robot_object_z_offset_random_max=np.random.uniform(0.0, 1.0) are evaluated AT CLASS-DEFINITION (module import) time, before any seeding whatsoever. Every worker process re-imports the module, so these two config scalars can differ between the parent and each spawned worker and between runs. This is a config-level nondeterminism independent of the episode-seed bug.",
+      "randomness_relevant": true,
+      "v2_treatment": "The manifest config overrides both to fixed constants and records them in the environment/config hash."
+    },
+    {
+      "stage": "parent_assigns_work",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "1284-1315 (WorkerRegistry + process launch), 432-437 (claim)",
+      "detail": "The parent builds WorkerRegistry(range(num_workers)) then spawns num_workers processes running house_processing_worker with the SHARED house_counter and counter_lock. Work is NOT statically partitioned: each worker atomically takes the next index from house_counter under counter_lock. Which worker gets which house is therefore a race decided by process scheduling.",
+      "randomness_relevant": true,
+      "v2_treatment": "Replaced, for the manifest config only, by an atomic manifest-row claim. Row content no longer depends on which worker wins the race."
+    },
+    {
+      "stage": "worker_creates_task_sampler",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "416-418",
+      "detail": "task_sampler = exp_config.task_sampler_config.task_sampler_class(exp_config) is constructed ONCE per worker, BEFORE the house-claim loop, and persists for the worker's entire lifetime across every house it claims.",
+      "sampler_lifetime": "one instance per worker process, spanning all houses that worker claims; closed only in the finally block at worker exit (pipeline.py:525-527)",
+      "randomness_relevant": true,
+      "v2_treatment": "Sampler may still be cached per worker, but episode-scoped mutable state is cleared and the row seed contract is installed before every row."
+    },
+    {
+      "stage": "seed_task_sampling_called",
+      "file": "molmo_spaces/tasks/task_sampler.py",
+      "lines": "313-315 (construction), 420-424 (definition), 527-530 (reset)",
+      "detail": "BaseTaskSampler.__init__ runs seed = config.seed if config.seed is not None else np.random.randint(0, 1e8), then seed_task_sampling(seed). seed_task_sampling sets self.current_seed = seed and calls random.seed(seed), np.random.seed(seed), torch.manual_seed(seed). It is called ONCE per sampler construction, i.e. ONCE PER WORKER, not per episode. reset() re-seeds with the same config.seed but is not invoked in the datagen episode loop.",
+      "root_cause": true,
+      "consequence": "Every worker with the same config.seed starts from the identical global RNG state, and thereafter the state advances only by how many draws that worker has already made. Two workers that have executed the same number of episodes produce byte-identical scenes. This is the mechanism that produced the 50 replica classes of three.",
+      "v2_treatment": "Row-scoped seed installed immediately before task sampling for every row (stream 0/7/8 + explicit component streams)."
+    },
+    {
+      "stage": "house_claimed",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "431-442",
+      "detail": "with counter_lock: house_idx = house_counter.value; current_house_id = house_indices[house_idx]; house_counter.value += 1. house_indices for FrankaSkinHybridObstacleConfig is [1, 25, 49, 73, 97, 121, 145, 169] - eight wraparound aliases of the SAME red-cup task, since the object pool index is house_index % len(uid_pool) with len(uid_pool)=24 and all eight indices are 1 mod 24.",
+      "randomness_relevant": true,
+      "v2_treatment": "House aliases are eliminated as a work-partitioning device. The manifest row is the unit of work; the scene-template identity is a single named constant."
+    },
+    {
+      "stage": "process_single_house_entry",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "850-931",
+      "detail": "setup_house_dirs() computes house_output_dir = output_dir/house_{house_id} and batch_suffix '_batch_1_of_1'; should_skip is TRUE iff trajectories_batch_1_of_1.h5 already exists. load_episodes_for_house returns [None] * (samples_per_house * max_total_attempts_multiplier) = 25*10 = 250 attempt slots. get_max_episode_attempts returns 250.",
+      "randomness_relevant": false
+    },
+    {
+      "stage": "episode_attempt_loop",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "942-1194",
+      "detail": "while episode_idx < max_attempts: should_stop_early breaks as soon as len(house_raw_histories) >= samples_per_house. So the loop is a success-quota loop, not a candidate-identity loop: attempts that fail are simply retried with the next advanced RNG state and never recorded as an identified candidate.",
+      "randomness_relevant": true,
+      "v2_treatment": "Replaced by a bounded, indexed retry sequence per row with an explicit outcome ledger; one row yields at most one accepted trajectory."
+    },
+    {
+      "stage": "task_sampling_starts",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "1004-1013",
+      "detail": "get_episode_task_sampler returns the SHARED per-worker sampler unchanged (base hook, pipeline.py:717-725). sample_task_from_spec calls task_sampler.sample_task(house_index=house_id). NO seeding of any kind happens between the previous episode and this call.",
+      "critical_insertion_point": true,
+      "v2_treatment": "This is where the row seed contract is installed in v2 - inside the overridden get_episode_task_sampler/sample_task_from_spec hooks, before any task-level draw."
+    },
+    {
+      "stage": "scene_and_theta_sampling",
+      "file": "molmo_spaces/tasks/enclosure_reach.py",
+      "lines": "290-323 (EnclosureSampler._sample_task), 1080-1147 (Big/Obstacle _draw_theta)",
+      "detail": "_sample_task calls _draw_theta() (aperture width/height/depth/target_frac/clearance/light_scale, then the hazard branch), then draws base xyz/yaw, then runs a bounded 20-iteration raycast rejection loop that redraws protrusion placement. All draws use the numpy GLOBAL RNG.",
+      "randomness_relevant": true
+    },
+    {
+      "stage": "hazard_presence_sampled",
+      "file": "molmo_spaces/tasks/enclosure_reach.py",
+      "lines": "1134",
+      "detail": "if np.random.random() < self.OBSTACLE_P:  (OBSTACLE_P = 0.75). Hazard presence is a runtime Bernoulli draw off the global RNG, taken AFTER light_scale and AFTER the parent's theta draws, so its outcome depends on how many draws the worker has already consumed.",
+      "root_cause": true,
+      "v2_treatment": "For the manifest config only, hazard presence is read from row.hazard_present and the Bernoulli is bypassed. Legacy configs keep the Bernoulli byte-for-byte."
+    },
+    {
+      "stage": "object_and_robot_placement",
+      "file": "molmo_spaces/tasks/enclosure_reach.py + molmo_spaces/tasks/pick_task_sampler.py",
+      "lines": "enclosure_reach.py:1090-1099 (_obj_rest), 1102-1108 (_sample_and_place_robot), 1166-1172 (obstacle _obj_rest); pick_task_sampler.py:212, 233, 968, 1031, 1062-1063",
+      "detail": "Object rest pose, lateral offset side (np.random.choice([-1,1])), candidate-object shuffle and placement perturbation all draw from the numpy global RNG during sample_task. Target object identity itself is deterministic: th['target_uid'] = self._uid_pool[self.current_house_index % len(self._uid_pool)] (enclosure_reach.py:315).",
+      "randomness_relevant": true
+    },
+    {
+      "stage": "camera_lighting_randomization",
+      "file": "molmo_spaces/tasks/task_sampler.py",
+      "lines": "823-880 (randomizer construction), 985-1004 (invocation)",
+      "detail": "Lighting/texture/dynamics randomizers DO own independent np.random.RandomState objects, but they are seeded from base_seed = self.current_seed + 1 (+1/+2 offsets). current_seed is the once-per-worker sampler seed, so every episode in a worker rebuilds the same RandomState from the same base_seed. Additionally the texture randomizer is gated by a GLOBAL random.random() >= 0.02 draw (line 996). FrankaSkinHybridObstacleConfig sets randomize_textures=True, randomize_lighting=False.",
+      "randomness_relevant": true,
+      "v2_treatment": "Stream 6 supplies an explicit per-row base seed for these owned RandomState objects; stream 7 governs the global random.random() gate."
+    },
+    {
+      "stage": "planner_grasp_randomness",
+      "file": "molmo_spaces/policy/solvers/object_manipulation/pick_planner_policy.py",
+      "lines": "99-104",
+      "detail": "pregrasp_height_offset and postgrasp_height_offset are np.random.uniform draws off the global RNG, consumed at policy construction inside setup_policy (pipeline.py:1073), i.e. AFTER task sampling but before the rollout.",
+      "randomness_relevant": true
+    },
+    {
+      "stage": "episode_seed_read",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "1079-1081; definition at 734-737",
+      "detail": "episode_seed = runner_class.get_episode_seed(episode_idx, episode_spec, episode_task_sampler) whose base implementation is `return task_sampler.current_seed`. current_seed is the constant per-worker sampler seed. It is read AFTER the scene has already been sampled, is identical for every episode of that worker, and is used only as a label written into episode_info['seed']. It does not seed anything.",
+      "root_cause": true,
+      "consequence": "The recorded per-episode 'seed' in the failed collection is a worker-constant, which is why the H5 provenance could not distinguish replicas.",
+      "v2_treatment": "Overridden to return the row's immutable, per-candidate seed; the real seeding happens earlier at the insertion point above."
+    },
+    {
+      "stage": "rollout",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "744-848",
+      "detail": "run_single_rollout accepts episode_seed but never uses it to seed anything. task.reset() then a policy-stepped loop until task.is_done(). Success from task.judge_success().",
+      "randomness_relevant": false
+    },
+    {
+      "stage": "retry_loops",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "958-975 (guards), 1036-1067 (sampler failures), 1152-1169 (rollout failures)",
+      "detail": "Two counters: num_sequential_task_sampler_failures and num_sequential_rollout_failures, both capped at 300 for this config, both RESET TO ZERO on any success (lines 1029, 1095). HouseInvalidForTask is downgraded to a recoverable sampler failure. Retries are unindexed and unlogged as identities: a retry simply advances the global RNG and takes the next episode_idx slot.",
+      "randomness_relevant": true,
+      "v2_treatment": "Bounded retry_index per row, each deriving its own stream; every rejection reason recorded."
+    },
+    {
+      "stage": "asset_blacklist_carryover",
+      "file": "molmo_spaces/tasks/task_sampler.py",
+      "lines": "300-306 (_asset_failure_counts, _dynamic_blacklist), pipeline.py:1136-1142 and 1160-1167 (report_asset_failure)",
+      "detail": "Rollout failures call task_sampler.report_asset_failure, mutating a per-worker Counter and a dynamic blacklist set that persist across houses. Also object_synset_counter and used_robot_positions accumulate across episodes. A row's content therefore depends on which rows that worker previously executed.",
+      "randomness_relevant": true,
+      "v2_treatment": "Cleared per row by the v2 episode-scoped sampler reset."
+    },
+    {
+      "stage": "output_ids_and_filenames",
+      "file": "molmo_spaces/data_generation/pipeline.py + molmo_spaces/utils/save_utils.py",
+      "lines": "pipeline.py:85-115 (setup_house_dirs), 1209-1218 (save_house_trajectories); save_utils.py:617-700 (save_trajectories)",
+      "detail": "Trajectories are buffered in memory for the whole house, then written at house end to output_dir/house_{house_id}/trajectories_batch_1_of_1.h5. Inside the file the group name is traj_{episode_idx} where episode_idx is the ENUMERATION INDEX over the accepted buffer (save_utils.py:679, save_house_trajectories loop at pipeline.py:233), not any stable identity. Video filenames use the same buffer index. Episode identity is therefore purely file-layout-derived.",
+      "randomness_relevant": false,
+      "v2_treatment": "Identity becomes episode_id + manifest_row_sha256, written into H5 metadata; publication is atomic per row."
+    },
+    {
+      "stage": "resume_semantics",
+      "file": "molmo_spaces/data_generation/pipeline.py",
+      "lines": "112-113",
+      "detail": "Resume is exactly `should_skip = batch_file.exists()`. A house is considered complete iff its single aggregate H5 exists. There is no record of which candidate episodes it should have contained, no partial-progress record, and an interrupted house loses its entire in-memory buffer (the run() shutdown path at 1202-1206 returns before saving).",
+      "randomness_relevant": false,
+      "v2_treatment": "Per-row atomic outcome records; resume reclaims only rows with no finalized outcome."
+    },
+    {
+      "stage": "worker_completeness_ledger_fa8e61f",
+      "file": "molmo_spaces/data_generation/worker_completeness.py + pipeline.py",
+      "detail": "Start: parent constructs WorkerRegistry(range(num_workers), reports=self.worker_reports) at pipeline.py:1284 before launching. Exit: parent joins each process and calls registry.record_exit_code(worker_id, p.exitcode) at pipeline.py:1370-1374. Final status: every worker publishes a WorkerReport in a finally block (pipeline.py:507-522) with status completed/shutdown_requested/failed plus houses_assigned, houses_written, episodes_attempted/written/successful and error. build_final_summary composes expected vs written houses and marks COLLECTION_INCOMPLETE; write_summary_atomically publishes collection_summary.json via mkstemp+fsync+os.replace; a run that cannot be shown complete raises WorkerCompletenessError.",
+      "preserved_in_v2": true,
+      "v2_treatment": "Row lifecycle is recorded THROUGH this same mechanism: the manifest runner extends the per-worker report with claimed/finalized row IDs and reuses build_final_summary + write_summary_atomically, so all existing fa8e61f behaviour and tests stay intact."
+    }
+  ],
+
+  "identified_independence_violations": [
+    "config.seed is a single repeated scalar shared by every worker and every episode (task_sampler.py:313-315)",
+    "seed_task_sampling runs once per worker, not once per episode (task_sampler.py:420-424)",
+    "get_episode_seed returns the constant per-worker sampler seed (pipeline.py:735-737)",
+    "hazard presence is a runtime Bernoulli off a shared, order-dependent global RNG (enclosure_reach.py:1134)",
+    "houses are dynamically claimed, so scene content is a function of scheduling (pipeline.py:431-437)",
+    "eight wraparound house aliases denote one underlying task, so the alias carries no scientific meaning (config house_inds [1,25,...,169], uid pool index = house_index % 24)",
+    "lighting/texture RandomState objects are rebuilt each episode from the same worker-constant base_seed (task_sampler.py:823-880)",
+    "sampler mutable state (asset blacklist, synset counter, used robot positions) carries across episodes and houses",
+    "two config scalars are drawn from the unseeded global RNG at module import time (object_manipulation_datagen_configs.py:2230-2231)",
+    "episode identity in the H5 is the buffer enumeration index (save_utils.py traj_{episode_idx})",
+    "resume completeness is file existence only (pipeline.py:112-113)"
+  ],
+
+  "v2_insertion_points": {
+    "seed_install": "overridden get_episode_task_sampler / sample_task_from_spec hooks in the manifest runner, executed before task_sampler.sample_task() and therefore before _draw_theta and every downstream draw",
+    "hazard_force": "explicit manifest-row interface on ObstacleFumehoodPickSampler consulted in _draw_theta in place of the Bernoulli",
+    "identity_write": "manifest metadata attached to each accepted episode and written into the per-row H5",
+    "lifecycle": "existing fa8e61f WorkerReport/registry path, extended with row-level fields"
+  }
+}

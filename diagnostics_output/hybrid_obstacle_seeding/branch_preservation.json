@@ -1,0 +1,103 @@
+{
+  "schema": "hybrid_obstacle_seeding_branch_preservation_v1",
+  "recorded_utc": "2026-07-24T22:28:27Z",
+  "handoff_expected": {
+    "root": {
+      "branch": "repair/hybrid-obstacle-canonical-selection",
+      "head": "beb125e"
+    },
+    "molmospaces": {
+      "branch": "repair/datagen-worker-completeness",
+      "head": "fa8e61f"
+    },
+    "act": "unchanged from Jdvakil branch/version; do not modify"
+  },
+  "observed_at_session_start": {
+    "root": {
+      "branch": "recovery/hybrid-act-canonical-artifacts",
+      "head": "a4d6b6d8015f83bcc273fe9f17119e96e284d20b",
+      "note": "session opened on a DIFFERENT branch than the handoff named; recovery/hybrid-act-canonical-artifacts and repair/hybrid-obstacle-canonical-selection are siblings that diverge at 6a15ac3"
+    },
+    "molmospaces": {
+      "branch": "detached HEAD",
+      "head": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+      "note": "submodule was checked out at main, NOT at the worker-completeness commit; fa8e61f was absent from the local object store until an explicit git fetch --all"
+    },
+    "act": {
+      "branch": "repair/live-safety-residual-eval",
+      "head": "3d25c69edd8d972afa59fec5c3edb9d13a357f92"
+    }
+  },
+  "divergence_resolved": [
+    {
+      "item": "root branch",
+      "finding": "repair/hybrid-obstacle-canonical-selection exists at beb125e exactly as the handoff states, but it is checked out in a separate git worktree (/root/prox_learning_act_retrain), so it could not be checked out here.",
+      "action": "created repair/hybrid-obstacle-episode-manifest-v2 and hard-reset it to beb125e; the sibling worktree was left untouched"
+    },
+    {
+      "item": "molmospaces commit",
+      "finding": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362 was not in the local clone (reflog showed only clone+checkout of c817f07). git ls-remote confirmed refs/heads/repair/datagen-worker-completeness -> fa8e61f on origin.",
+      "action": "git fetch --all recovered it; created repair/hybrid-obstacle-manifest-runner-v2 at fa8e61f"
+    },
+    {
+      "item": "gitlink consistency",
+      "finding": "root beb125e records gitlink submodules/molmospaces = fa8e61f; root a4d6b6d (the session branch) records c817f07. The handoff pair (beb125e, fa8e61f) is internally consistent; the session start state was not.",
+      "action": "working tree now matches beb125e gitlink before edits"
+    },
+    {
+      "item": "intervening commits",
+      "finding": "commits between the shared ancestor 6a15ac3 and beb125e are 2a47691 (CANONICAL_DATA_COLLECTION_FAILED), 108a01f (COLLECTION_INTEGRITY_BLOCKED), beb125e (independent re-verification). The session branch instead carried a86d9eb and a4d6b6d (hybrid ACT artifact recovery). No manifest/seeding work exists on either.",
+      "action": "documented; work proceeds from beb125e per handoff"
+    }
+  ],
+  "worktrees": [
+    "/root/prox_learning                7b06b0f [repair/pact-proximity-data-quality]",
+    "/root/prox_learning_act_retrain    beb125e [repair/hybrid-obstacle-canonical-selection]",
+    "/root/prox_learning_hybrid_safety  beb125e [repair/hybrid-obstacle-episode-manifest-v2]"
+  ],
+  "remotes": {
+    "root": "origin\thttps://github.com/Jdvakil/prox_learning.git (fetch)\norigin\thttps://github.com/Jdvakil/prox_learning.git (push)",
+    "molmospaces": "origin\thttps://github.com/jdvakil/molmospaces.git (fetch)\norigin\thttps://github.com/jdvakil/molmospaces.git (push)",
+    "act": "origin\thttps://github.com/Jdvakil/act.git (fetch)\norigin\thttps://github.com/Jdvakil/act.git (push)"
+  },
+  "stashes": {
+    "root": [
+      "stash@{0}: On repair/pact-proximity-data-quality: preserve interrupted PACT data-quality work before hybrid-safety switch",
+      "stash@{1}: On wip/pact-frontend-recovery: preserve unrelated work before PACT provenance"
+    ],
+    "molmospaces": [],
+    "act": []
+  },
+  "branches_created": {
+    "root": {
+      "name": "repair/hybrid-obstacle-episode-manifest-v2",
+      "base": "beb125e97607cc34c5f64645a9872ccc78e33911"
+    },
+    "molmospaces": {
+      "name": "repair/hybrid-obstacle-manifest-runner-v2",
+      "base": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362"
+    }
+  },
+  "protected_branches_not_committed_on": [
+    "repair/hybrid-obstacle-canonical-selection",
+    "repair/datagen-worker-completeness",
+    "train/hybrid-obstacle-act-clean-v1",
+    "recovery/hybrid-act-canonical-artifacts"
+  ],
+  "act_policy": "ACT submodule is not modified in this task; gitlink stays 3d25c69.",
+  "prior_repair_commits": {
+    "root": [
+      "beb125e Independently re-verify the hybrid obstacle dataset decision",
+      "108a01f Record hybrid obstacle dataset decision: COLLECTION_INTEGRITY_BLOCKED",
+      "2a47691 Record hybrid clean-retrain decision: CANONICAL_DATA_COLLECTION_FAILED",
+      "6a15ac3 Record hybrid safety stack final decision",
+      "d396f6f Audit and pin hybrid safety integration",
+      "37087ef add deep-cavity plan for two-level fridge pick-and-place task in proximity datagen (old)"
+    ],
+    "molmospaces": [
+      "fa8e61f Fail loud when a datagen worker disappears",
+      "c817f07 add mlspaces envs",
+      "5bcafb4 fumehood stuff"
+    ]
+  }
+}

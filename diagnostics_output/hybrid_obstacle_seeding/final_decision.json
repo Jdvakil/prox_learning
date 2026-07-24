@@ -1,0 +1,393 @@
+{
+  "branches": {
+    "act": {
+      "gitlink": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+      "modified": false
+    },
+    "molmospaces": {
+      "base_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+      "branch": "repair/hybrid-obstacle-manifest-runner-v2",
+      "final_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5"
+    },
+    "not_committed_on": [
+      "repair/hybrid-obstacle-canonical-selection",
+      "repair/datagen-worker-completeness",
+      "train/hybrid-obstacle-act-clean-v1",
+      "recovery/hybrid-act-canonical-artifacts"
+    ],
+    "pushed": false,
+    "root": {
+      "base_commit": "beb125e97607cc34c5f64645a9872ccc78e33911",
+      "branch": "repair/hybrid-obstacle-episode-manifest-v2",
+      "final_commit": "created by this commit on repair/hybrid-obstacle-episode-manifest-v2"
+    }
+  },
+  "collection_source_unchanged_across_abc": true,
+  "constraints_observed": {
+    "act_source_modified": false,
+    "act_trained": false,
+    "canonical_safety_cvae_checkpoint_modified": false,
+    "commits_pushed": false,
+    "default_ParallelRolloutRunner_behavior_changed_for_other_configs": false,
+    "duplicate_trajectories_counted_as_episodes": false,
+    "full_160_row_collection_launched": false,
+    "invalid_source_collection_altered": false,
+    "legacy_bernoulli_preserved_for_legacy_configs": true,
+    "obstacle_geometry_changed": false,
+    "python_builtin_hash_used_for_persistent_ids": false,
+    "robot_cameras_planner_grasp_actions_success_conditions_collision_changed": false,
+    "safety_cvae_trained_or_modified": false,
+    "worker_id_or_house_alias_used_as_entropy": false
+  },
+  "date": "2026-07-24",
+  "decision": "SEEDING_CONTRACT_READY_FOR_FULL_COLLECTION",
+  "diagnostic_budget": {
+    "allowed_candidate_row_executions": 4,
+    "note": "Two 2-row runs (1 worker, then 4 workers). They proved the runner reaches task sampling and writes the required metadata, and surfaced the scene-cache asymmetry. Subsequent debugging used non-simulating probes that published no output and finalised no rows.",
+    "used": 4
+  },
+  "first_ab_comparison_failed": {
+    "consequence": "freeze generation 1 invalidated; Runs A/B/C re-executed from scratch on fresh output directories",
+    "fix": "the previous row theta is dropped by the episode-scoped reset before scene setup",
+    "happened": true,
+    "root_cause": "EnclosureSampler._obj_rest (enclosure_reach.py:243-248) runs during scene setup, before the current row's _draw_theta, and branches on a leftover self._theta from the PREVIOUS row: absent => zero global draws, present => one np.random.uniform draw using the previous row aperture width. Global RNG position at _draw_theta entry was 17 on a first row and 19 on later rows. Which rows land first is exactly what the worker count decides.",
+    "symptom": "4 of 8 rows diverged between 1 worker and 4 workers under freeze generation 1",
+    "verification": [
+      "in-process probe: RNG position 17 and identical theta on every attempt",
+      "order-independence probe: candidates [1,5,2,0] then [2,0,1,5] gave identical digests per candidate",
+      "regression test test_episode_scoped_reset_drops_the_previous_rows_theta"
+    ]
+  },
+  "invalid_collection": {
+    "defensibly_distinct_episodes_max": 75,
+    "independent_75_25_recoverable": false,
+    "max_distinct_successful_hazard_absent": 24,
+    "max_distinct_successful_hazard_present": 50,
+    "replica_class_size": 3,
+    "replica_classes": 50,
+    "status": "read-only; never to be used as the canonical ACT training dataset; not read or modified by this task",
+    "trajectories_written": 175
+  },
+  "invariance": {
+    "audit_correction_after_runs": "NaN-padding handling was corrected after A/B/C executed: np.array_equal reports NaN != NaN and max|a-b| over NaN yields NaN, which slipped through a delta > tolerance test because every NaN comparison is False. Analysis-only, tolerances unchanged, and the correction made the verdict stricter.",
+    "compared_by": "episode_id, never file order",
+    "discrete_event_fields": [
+      "selected_grasp",
+      "retry_count",
+      "retry_reasons",
+      "planner_phase_path",
+      "status",
+      "observed_hazard_present",
+      "obstacle_theta",
+      "selected_object"
+    ],
+    "exact_match_fields": [
+      "episode_id",
+      "manifest_row_sha256",
+      "manifest_version",
+      "candidate_index",
+      "hazard_present",
+      "stratum_rank",
+      "split",
+      "scene_template_id",
+      "seed_map",
+      "selected_object",
+      "selected_grasp",
+      "obstacle_theta",
+      "observed_hazard_present",
+      "robot_initial_qpos",
+      "object_initial_pose",
+      "retry_count",
+      "retry_reasons",
+      "planner_phase_path",
+      "behavior_class",
+      "status",
+      "episode_spec_sha256",
+      "sensor_order_sha256"
+    ],
+    "frozen_tolerances": {
+      "actions": 1e-06,
+      "object_pose": 1e-07,
+      "proximity_depth": 1e-05,
+      "qpos": 1e-06,
+      "robot_pose": 1e-07
+    },
+    "pairs": {
+      "A_vs_B": {
+        "all_bit_identical": true,
+        "all_invariant": true,
+        "episode_id_sets_match": true,
+        "episodes_compared": 8
+      },
+      "A_vs_C": {
+        "all_bit_identical": true,
+        "all_invariant": true,
+        "episode_id_sets_match": true,
+        "episodes_compared": 8
+      },
+      "B_vs_C": {
+        "all_bit_identical": true,
+        "all_invariant": true,
+        "episode_id_sets_match": true,
+        "episodes_compared": 8
+      }
+    },
+    "replica_audit": {
+      "A": {
+        "clean": true,
+        "distinct_episode_ids": 8,
+        "distinct_spec_hashes": 8,
+        "distinct_trajectory_hashes": 8,
+        "largest_replica_class": 1,
+        "spec_hash_collisions": {},
+        "trajectory_hash_collisions": {}
+      },
+      "B": {
+        "clean": true,
+        "distinct_episode_ids": 8,
+        "distinct_spec_hashes": 8,
+        "distinct_trajectory_hashes": 8,
+        "largest_replica_class": 1,
+        "spec_hash_collisions": {},
+        "trajectory_hash_collisions": {}
+      },
+      "C": {
+        "clean": true,
+        "distinct_episode_ids": 8,
+        "distinct_spec_hashes": 8,
+        "distinct_trajectory_hashes": 8,
+        "largest_replica_class": 1,
+        "spec_hash_collisions": {},
+        "trajectory_hash_collisions": {}
+      }
+    },
+    "tolerances_changed_after_runs": false,
+    "tolerances_exercised": false,
+    "verdict": {
+      "all_bit_identical": true,
+      "all_pairs_invariant": true,
+      "all_runs_reconcile_exactly_once": true,
+      "no_replica_classes": true,
+      "pass": true,
+      "same_completed_episode_id_set": true
+    },
+    "worker_scheduling_changed_between_runs": true
+  },
+  "manifest": {
+    "canonical_selection_rule": {
+      "basis": "first N successful rows by predeclared stratum rank",
+      "forbidden_inputs": [
+        "clearance",
+        "collision_severity",
+        "trajectory_length",
+        "action_smoothness",
+        "proximity_activation",
+        "image_quality",
+        "planner_retries",
+        "policy_phase_duration",
+        "any model or audit score"
+      ],
+      "hazard_absent": 25,
+      "hazard_present": 75
+    },
+    "design_obstacle_p": 0.75,
+    "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+    "hazard_absent_count": 40,
+    "hazard_present_count": 120,
+    "manifest_sha256": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+    "manifest_version": "hybrid_obstacle_independent_v2",
+    "master_seed": 20260725,
+    "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+    "scene_sha256": "eec36c2ae5d17fc82d1221feaa87a1de2e9bec391902dfb1b46ef27ed7ad716d",
+    "scene_template_house_index": 1,
+    "scene_template_id": "fumehood_red_cup_v1",
+    "seed_derivation": "SeedSequence([master_seed, candidate_index, stream_id, retry_index]).generate_state(2, uint32); seed_u32 = state[0]; seed_u64 = state[0] | state[1] << 32",
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "smoke8_sha256": "cb9df6e1f8dabb2e8705f685a8e1a0f9673ca184d1d455995e40e06f6bb4ddbc",
+    "split_rule": {
+      "train": {
+        "hazard_absent": 20,
+        "hazard_present": 60
+      },
+      "val": {
+        "hazard_absent": 5,
+        "hazard_present": 15
+      }
+    },
+    "stream_ids": {
+      "action_noise": 5,
+      "camera_light": 6,
+      "global_compat": 0,
+      "obstacle": 3,
+      "placement": 2,
+      "planner_grasp": 4,
+      "py_random": 7,
+      "retry": 9,
+      "task_scene": 1,
+      "torch": 8
+    },
+    "total_candidates": 160
+  },
+  "markdown_report": "docs/HYBRID_OBSTACLE_SEEDING_FINAL_DECISION.md",
+  "next_recommended_task": "Launch the full 160-row canonical collection under this contract in an explicitly approved task: scripts/run_hybrid_obstacle_manifest_v2.py --output-dir <fresh> --workers 8. Budget for the per-row scene reload; do not re-run failed rows to improve the success count; apply the predeclared 75/25 selection and fixed 80/20 split only afterwards.",
+  "reproducibility_claim": "This contract is proved for the recorded runtime only. No claim across other software versions or hardware.",
+  "root_cause": [
+    "seed_task_sampling seeds Python/NumPy/Torch once per worker from one repeated config seed",
+    "one task sampler per worker persists across every claimed house",
+    "get_episode_seed returns that repeated per-worker sampler seed",
+    "houses are claimed dynamically from a shared counter, so worker-to-house is a scheduling race",
+    "the eight wraparound house indices are all 1 mod 24 and alias one fumehood/red-cup task",
+    "hazard presence was np.random.random() < OBSTACLE_P off the same order-dependent global stream",
+    "two config scalars were drawn from an unseeded global RNG at module import time"
+  ],
+  "run_c_interrupt": {
+    "interrupt_method": "SIGKILL to the whole process group (job death, not graceful shutdown)",
+    "interrupt_trigger": "four rows had atomically finalized",
+    "phase1_claim_files": 8,
+    "phase1_dangling_claims": 4,
+    "phase1_finalized_rows": 4,
+    "phase1_killed": 1,
+    "phase2": "resumed the same output directory with a fresh run_id",
+    "schema": "hybrid_obstacle_run_c_interrupt_record"
+  },
+  "runs": {
+    "A": {
+      "complete": true,
+      "interrupted": false,
+      "reclaimed_abandoned_claims": 0,
+      "row_reconciliation_ok": true,
+      "rows_already_finalised_on_entry": 0,
+      "rows_failed": 0,
+      "rows_finalized": 8,
+      "rows_succeeded": 8,
+      "workers": 1,
+      "workers_complete": true
+    },
+    "B": {
+      "complete": true,
+      "interrupted": false,
+      "reclaimed_abandoned_claims": 0,
+      "row_reconciliation_ok": true,
+      "rows_already_finalised_on_entry": 0,
+      "rows_failed": 0,
+      "rows_finalized": 8,
+      "rows_succeeded": 8,
+      "workers": 4,
+      "workers_complete": true
+    },
+    "C": {
+      "complete": true,
+      "interrupted": true,
+      "reclaimed_abandoned_claims": 4,
+      "row_reconciliation_ok": true,
+      "rows_already_finalised_on_entry": 4,
+      "rows_failed": 0,
+      "rows_finalized": 8,
+      "rows_succeeded": 8,
+      "workers": 4,
+      "workers_complete": true
+    }
+  },
+  "runtime_provenance": {
+    "act_branch": "repair/live-safety-residual-eval",
+    "act_gitlink": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "act_modified_by_this_task": false,
+    "architecture": "x86_64",
+    "collection_source_digest_sha256": "d5b41570164244f1b8a52346847cd1b61d7247a3b36b186fdf03fed8f04e94cd",
+    "collection_source_hashes": {
+      "molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py": "3ac38d88d37fbeff419b21850f0c2e125b84ce4c766f09c450b93240d77790f2",
+      "molmospaces/molmo_spaces/data_generation/episode_manifest.py": "237ad97b1870abd548cd9b1699fdae632a169ab79fb393cb823324db089f8edd",
+      "molmospaces/molmo_spaces/data_generation/manifest_runner.py": "36c3d4e3980097864dcbf3a581ddef06708959b1e2522dba3a7ae18a96fc90af",
+      "molmospaces/molmo_spaces/data_generation/pipeline.py": "2386fb6c2140de3c21bb2b5b2cc58fc547116f80f3a827d96198ce9bafba21b0",
+      "molmospaces/molmo_spaces/data_generation/row_ledger.py": "4fe5ed5fa5ac21e994c6081c7ce54d583c0fa9e2480a7a7f57c9b05ee8c42f82",
+      "molmospaces/molmo_spaces/data_generation/runtime_compat.py": "811f1fd39cbef21ae96340bef7287255004fb77861af8951712821ac41637e62",
+      "molmospaces/molmo_spaces/data_generation/worker_completeness.py": "894ae7933d027d710f7935d0bb3ea34e94740c1b2540b42bb8b5b97614157df2",
+      "molmospaces/molmo_spaces/tasks/enclosure_reach.py": "ab52431eea78a74b0e18521613c0ca5eb15414e8dc9b090827a8c9e8675bc1c2",
+      "molmospaces/molmo_spaces/tasks/task_sampler.py": "81bc622ab0b4d5103680ef4fc0308faa7a3ce648829d3a71140b102d0fe94cd7",
+      "root/configs/hybrid_obstacle_candidate_manifest_v2.json": "10e45609162a61371f1bf135b563c76c69787a2be58ce0fb245fd54a3688dff3",
+      "root/configs/hybrid_obstacle_manifest_v2_smoke8.json": "8b7807f7380c5dd4d0732a11c1eb09f91ac317187ad2553fb16d2ecf38473ef7",
+      "root/scripts/run_hybrid_obstacle_manifest_v2.py": "1394149583cb080a054aa32ac96738212d7ef8bd8c31147dc9e335c3ea290263"
+    },
+    "cuda_available": true,
+    "cuda_toolkit_torch_build": "12.6",
+    "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+    "fumehood_scene_sha256": "eec36c2ae5d17fc82d1221feaa87a1de2e9bec391902dfb1b46ef27ed7ad716d",
+    "gpu_driver": [
+      "570.86.10"
+    ],
+    "gpu_model": [
+      "NVIDIA A10"
+    ],
+    "h5py": "3.16.0",
+    "kernel": "6.8.0-101-generic",
+    "manifest_sha256": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+    "model_hybrid_xml_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "molmospaces_branch": "repair/hybrid-obstacle-manifest-runner-v2",
+    "molmospaces_commit": "fa8e61f40eb97e27bf3b69480c8bc65b0450f362",
+    "mujoco": "3.5.0",
+    "mujoco_gl": "egl",
+    "numpy": "2.4.6",
+    "operating_system": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "python_executable": "/root/act_retrain_venv/bin/python",
+    "root_branch": "repair/hybrid-obstacle-episode-manifest-v2",
+    "root_commit": "beb125e97607cc34c5f64645a9872ccc78e33911",
+    "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+    "schema": "hybrid_obstacle_manifest_v2_runtime_provenance",
+    "scipy": "1.17.1",
+    "scope": "The tested contract is for this recorded runtime only. No claim is made about reproducibility across different software versions or hardware.",
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "smoke8_sha256": "cb9df6e1f8dabb2e8705f685a8e1a0f9673ca184d1d455995e40e06f6bb4ddbc",
+    "torch": "2.7.1+cu126",
+    "warp": "1.11.1"
+  },
+  "schema": "hybrid_obstacle_seeding_final_decision_v1",
+  "smoke_subset": {
+    "candidate_indices": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      8,
+      18,
+      24
+    ],
+    "recorded_before_simulation": true,
+    "selection_rule": "the 4 lowest-ranked hazard-present rows and the 4 lowest-ranked hazard-absent rows, by predeclared stratum rank",
+    "subset_sha256": "cb9df6e1f8dabb2e8705f685a8e1a0f9673ca184d1d455995e40e06f6bb4ddbc"
+  },
+  "source_freeze": [
+    {
+      "frozen_source_sha256": "37953e0a7a0d370692ad610e7c863c39643097686feca585f9d9032faa01f221",
+      "generation": 1,
+      "reason": "The A-vs-B comparison exposed a stale-_theta carry-over: EnclosureSampler._obj_rest runs during scene setup and branches on the PREVIOUS row theta, so a worker first row consumed one fewer global draw than its later rows. Runs A and B from this generation were discarded and their output directory renamed smoke_runs_invalidated_v1.",
+      "status": "INVALIDATED"
+    },
+    {
+      "frozen_source_sha256": "451b0569db5998794c4aa13ef54993a004f8e91deda316908de32f1f4a4f0c21",
+      "generation": 2,
+      "molmospaces_tree_sha1": "ce1c82f6532c25bb6f99865a6e4d6a14791b30a4",
+      "reason": "stale-_theta fix applied; all of A/B/C executed on this collection source",
+      "root_tree_sha1": "b7a18d1ee69c68a20026b14713be13f82fef1a2d",
+      "status": "AUTHORITATIVE FOR RUNS A, B AND C"
+    },
+    {
+      "generation": 3,
+      "molmospaces_tree_sha1": "ce1c82f6532c25bb6f99865a6e4d6a14791b30a4",
+      "reason": "After A/B/C executed, scripts/hybrid_obstacle_manifest_v2_audit.py was corrected to handle NaN padding: np.array_equal reports NaN != NaN, and max|a-b| over NaN yields NaN, which then slipped through a delta > tolerance test because every NaN comparison is False. The frozen numeric TOLERANCES were not changed. The correction is analysis-only: it reads published output and cannot alter what was simulated. The fix made the verdict STRICTER (it turned silently-passing NaN datasets into a real NaN-pattern equality check) and the runs then compared bit-identical.",
+      "root_tree_sha1": "85686732033f8f2e07909c811bbb2993332936f9",
+      "status": "ANALYSIS-ONLY DELTA"
+    }
+  ],
+  "static_tests": {
+    "failed": 0,
+    "test_episode_manifest": 42,
+    "test_manifest_hazard_isolation": 9,
+    "test_worker_completeness_fa8e61f_preexisting": 17,
+    "total_passed": 68,
+    "worker_completeness_regression": "all green"
+  },
+  "summary": "Immutable 160-row episode manifest and episode-scoped RNG contract implemented for the 40-sensor hybrid-obstacle collection. Worker-count and resume invariance proved on a bounded 8-row smoke test: Runs A (1 worker), B (4 workers) and C (4 workers, SIGKILLed after four rows finalized then resumed) are bit-identical by episode ID. The full 160-row collection was NOT launched."
+}
