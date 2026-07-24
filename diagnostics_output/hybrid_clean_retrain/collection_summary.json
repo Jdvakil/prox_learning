@@ -1,0 +1,151 @@
+{
+  "all_written": {
+    "all_T_max": 195,
+    "all_T_median": 88.0,
+    "all_T_min": 49,
+    "all_collided": 172,
+    "all_count": 175,
+    "all_hazard_fraction": 0.6857142857142857,
+    "all_hazard_present": 120,
+    "all_house_distribution": {
+      "house_121": 25,
+      "house_145": 25,
+      "house_169": 25,
+      "house_25": 25,
+      "house_49": 25,
+      "house_73": 25,
+      "house_97": 25
+    },
+    "all_max_collision_steps": 146,
+    "all_total_contacts": 38166
+  },
+  "collection_id": "20260724_183407",
+  "configured": {
+    "attempt_budget_per_house": 250,
+    "configured_trajectories": 200,
+    "houses": [
+      1,
+      25,
+      49,
+      73,
+      97,
+      121,
+      145,
+      169
+    ],
+    "obstacle_p": 0.75,
+    "samples_per_house": 25
+  },
+  "hazard_diagnosis": {
+    "binomial_check": {
+      "expected_hazard": 181.5,
+      "model": "Binomial(242, 0.75) on accepted theta draws",
+      "observed_hazard": 168,
+      "p_one_sided_lower": 0.028714492924366466,
+      "p_two_sided": 0.05742898584873293,
+      "z": -2.004127971368055
+    },
+    "conclusion": "Every level of aggregation - draws 0.6942, written 0.6857, successful 0.6909, selected 0.6900 - falls below the 0.70 floor required by the approved manifest. The gate is not met and cannot be met without either re-running the frozen collection and keeping the run whose hazard draw passes, or re-selecting the 100 episodes on the gated statistic. Both are forbidden by the task's no-tuning and no-silent-restart constraints.",
+    "config_file_sha256": "cd8891e005ee22e7fd631b5c1077b9e38f1cef72678d4b9dece2a8eeb3b8ff3f",
+    "config_unchanged_verified": true,
+    "configured_obstacle_p": 0.75,
+    "measured_accepted_theta_draws": 242,
+    "measured_draw_rate": 0.6942148760330579,
+    "measured_hazard_draws": 168,
+    "mechanism": "The deficit is present in the sampler's own Bernoulli draw (0.6942 over 242 accepted theta draws), not introduced by planner rejection: of the 67 drawn-but-unwritten episodes, 48 (71.6%) were hazard-present, i.e. close to the overall rate, so the 49 IK rejections are approximately hazard-neutral. The realized rate is a low draw at roughly 2 sigma, not a configuration change.",
+    "required_range": [
+      0.7,
+      0.8
+    ],
+    "selected_100_fraction": 0.69,
+    "shortfall_on_selected_set_episodes": 1,
+    "successful_fraction": 0.6909090909090909,
+    "written_fraction": 0.6857142857142857
+  },
+  "hazard_gate": {
+    "diagnosis_recorded": true,
+    "passes": false,
+    "required_range": [
+      0.7,
+      0.8
+    ],
+    "selected_fraction": 0.69
+  },
+  "infrastructure_event": {
+    "cause": "Worker 0 stopped emitting output at 19:03:53 UTC mid-rollout on house 1 episode 22 (17 trajectories buffered) and never wrote house_1/trajectories_batch_1_of_1.h5; the pipeline reported \"Completed 7 houses, skipped 0 houses\" and exited 0. MolmoSpaces buffers a house in memory and writes it only at house completion, so the buffered trajectories were lost with the worker.",
+    "houses_configured": 8,
+    "houses_written": 7,
+    "missing_house": "house_1",
+    "semantic_impact": "None on task distribution: all eight house indices are congruent to 1 mod 24 and therefore select the identical red-cup task; the committed config docstring states the wrap-around indices exist purely to parallelize.",
+    "settings_changed": false
+  },
+  "integrity": {
+    "missing_field_examples": [],
+    "trajectories_with_missing_required_fields": 0
+  },
+  "proximity": {
+    "all_trajectories_have_40_sensors": true,
+    "distinct_sensor_counts": [
+      40
+    ]
+  },
+  "schema_version": "hybrid_clean_retrain_collection_summary_v1",
+  "selected_first_100": {
+    "selected_T_max": 195,
+    "selected_T_median": 87.0,
+    "selected_T_min": 53,
+    "selected_collided": 100,
+    "selected_count": 100,
+    "selected_hazard_fraction": 0.69,
+    "selected_hazard_present": 69,
+    "selected_house_distribution": {
+      "house_121": 23,
+      "house_145": 23,
+      "house_169": 24,
+      "house_25": 24,
+      "house_49": 6
+    },
+    "selected_max_collision_steps": 146,
+    "selected_total_contacts": 22513
+  },
+  "successful_only": {
+    "successful_T_max": 195,
+    "successful_T_median": 88.0,
+    "successful_T_min": 53,
+    "successful_collided": 165,
+    "successful_count": 165,
+    "successful_hazard_fraction": 0.6909090909090909,
+    "successful_hazard_present": 114,
+    "successful_house_distribution": {
+      "house_121": 23,
+      "house_145": 23,
+      "house_169": 24,
+      "house_25": 24,
+      "house_49": 24,
+      "house_73": 24,
+      "house_97": 23
+    },
+    "successful_max_collision_steps": 146,
+    "successful_total_contacts": 36996
+  },
+  "target_object": {
+    "canonical_uid": "4afa0cdde045417ab31f98ae7745b039",
+    "distinct_uids_all": [
+      "4afa0cdde045417ab31f98ae7745b039"
+    ],
+    "distinct_uids_selected": [
+      "4afa0cdde045417ab31f98ae7745b039"
+    ],
+    "single_canonical_target": true
+  },
+  "totals": {
+    "failed": 10,
+    "manifest_minimum_successes_before_conversion": 100,
+    "minimum_satisfied": true,
+    "success_rate": 0.9428571428571428,
+    "successful": 165,
+    "trajectories_written": 175
+  },
+  "trajectories": [],
+  "trajectories_note": "175 per-trajectory rows retained in /root/act_retrain_provenance/collection_summary.json"
+}

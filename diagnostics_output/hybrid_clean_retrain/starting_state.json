@@ -1,0 +1,150 @@
+{
+  "all_canonical_hashes_match": true,
+  "canonical_hash_checks": {
+    "act_utils": {
+      "actual_sha256": "494ea056bd716fbb939d8d52a4c34edfd1b36c9116869acf1093dbc3060bbf84",
+      "expected_sha256": "494ea056bd716fbb939d8d52a4c34edfd1b36c9116869acf1093dbc3060bbf84",
+      "match": true,
+      "path": "submodules/act/utils.py"
+    },
+    "converter": {
+      "actual_sha256": "74b60458754b782393d65d508174b4168a94dbe6c539ff5d2005076994856695",
+      "expected_sha256": "74b60458754b782393d65d508174b4168a94dbe6c539ff5d2005076994856695",
+      "match": true,
+      "path": "scripts/convert_obstacle_to_act.py"
+    },
+    "hybrid_contract": {
+      "actual_sha256": "aef29d762a909d0ce8610b79b4cb9a89a85c08fbe4d014910f27af44fc90df2b",
+      "expected_sha256": "aef29d762a909d0ce8610b79b4cb9a89a85c08fbe4d014910f27af44fc90df2b",
+      "match": true,
+      "path": "configs/hybrid_safety_stack_v1.json"
+    },
+    "live_adapter": {
+      "actual_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "expected_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "match": true,
+      "path": "submodules/act/eval_act_obstacle_safety.py"
+    },
+    "model_hybrid_xml": {
+      "actual_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "expected_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "match": true,
+      "path": "assets/robots/franka_skin/model_hybrid.xml"
+    },
+    "molmospaces_config": {
+      "actual_sha256": "cd8891e005ee22e7fd631b5c1077b9e38f1cef72678d4b9dece2a8eeb3b8ff3f",
+      "expected_sha256": "cd8891e005ee22e7fd631b5c1077b9e38f1cef72678d4b9dece2a8eeb3b8ff3f",
+      "match": true,
+      "path": "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py"
+    },
+    "paired_launcher": {
+      "actual_sha256": "4623ce5fffc7f9a136ce9b96f7e989942d9190db5074084a5172692a424e3fc2",
+      "expected_sha256": "4623ce5fffc7f9a136ce9b96f7e989942d9190db5074084a5172692a424e3fc2",
+      "match": true,
+      "path": "submodules/act/run_paired_hybrid_safety_eval.py"
+    },
+    "residual_controller": {
+      "actual_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "expected_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "match": true,
+      "path": "submodules/act/hybrid_safety_residual.py"
+    },
+    "safety_cvae_meta": {
+      "actual_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "expected_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "match": true,
+      "path": "assets/safety/cvae_v3/meta.json"
+    },
+    "safety_cvae_model": {
+      "actual_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "expected_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "match": true,
+      "path": "assets/safety/cvae_v3/model.pt"
+    },
+    "sensor_order": {
+      "actual_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "expected_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "match": true,
+      "path": "configs/hybrid_safety_stack_v1.json:sensor_contract.ordered_names",
+      "sensor_count": 40
+    }
+  },
+  "disk_root": {
+    "free_bytes": 215729893376,
+    "total_bytes": 268435456000,
+    "used_bytes": 52705562624
+  },
+  "env": {
+    "MLSPACES_ASSETS_DIR": "/root/act_retrain_assets",
+    "MUJOCO_GL": "egl",
+    "OMP_NUM_THREADS": "2",
+    "PYOPENGL_PLATFORM": "egl",
+    "PYTHONHASHSEED": "0",
+    "PYTHONPATH": "/root/prox_learning_act_retrain/submodules/molmospaces:/root/prox_learning_act_retrain",
+    "TZ": "UTC",
+    "WANDB_MODE": "offline"
+  },
+  "gitlinks": {
+    "submodules/MolmoBot": "4ff337dfc60708f46d5831430df807fa90014821",
+    "submodules/act": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "submodules/molmospaces": "c817f07b0fffc55a0dce1577312e0a7afc473b69"
+  },
+  "gpu": "NVIDIA A10, 570.86.10, 23028 MiB, GPU-d2819383-ae73-0cdd-e9eb-765dea430f07",
+  "host": {
+    "cpu_count": 128,
+    "hostname": "8eb4d38ef8cb",
+    "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15 (main, Mar 20 2026, 00:32:49) [Clang 22.1.1 ]",
+    "python_executable": "/root/act_retrain_venv/bin/python"
+  },
+  "memory": [
+    "total        used        free      shared  buff/cache   available",
+    "Mem:     540635893760 61235822592 192588148736   383856640 291764985856 479400071168"
+  ],
+  "packages": {
+    "cv2": "5.0.0",
+    "einops": "0.8.2",
+    "h5py": "3.16.0",
+    "imageio": "2.37.4",
+    "jax": "0.6.2",
+    "matplotlib": "3.11.1",
+    "mujoco": "3.5.0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "torch": "2.7.1+cu126",
+    "torchvision": "0.22.1+cu126",
+    "trimesh": "4.12.2",
+    "wandb": "0.28.1"
+  },
+  "repositories": {
+    "act": {
+      "branch": "HEAD",
+      "clean": true,
+      "commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+      "path": "/root/prox_learning_act_retrain/submodules/act",
+      "status_porcelain": ""
+    },
+    "molmospaces": {
+      "branch": "HEAD",
+      "clean": true,
+      "commit": "c817f07b0fffc55a0dce1577312e0a7afc473b69",
+      "path": "/root/prox_learning_act_retrain/submodules/molmospaces",
+      "status_porcelain": ""
+    },
+    "root": {
+      "branch": "train/hybrid-obstacle-act-clean-v1",
+      "clean": false,
+      "commit": "6a15ac3b13ea329de5e46fdca80e230efb3a7b03",
+      "path": "/root/prox_learning_act_retrain",
+      "status_porcelain": "?? scripts/clean_retrain_provenance.py"
+    }
+  },
+  "schema_version": "hybrid_clean_retrain_starting_state_v1",
+  "torch_cuda": {
+    "available": true,
+    "cudnn": 90501,
+    "device": "NVIDIA A10",
+    "version": "12.6"
+  },
+  "utc": "2026-07-24T18:33:04Z"
+}

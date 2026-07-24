@@ -1,0 +1,19 @@
+{
+  "schema_version": "hybrid_clean_retrain_space_estimate_v1",
+  "measured_preflight_bytes_per_episode": 9716653.0,
+  "estimates_bytes": {
+    "source_collection_200_attempts": 1943330600.0,
+    "converted_100_episodes": 1370880000.0,
+    "checkpoints_all": 7765887164,
+    "bundle": 875294536.0,
+    "deterministic_archive": 875294536.0,
+    "clean_extraction_check": 875294536.0
+  },
+  "estimated_total_remaining_output_bytes": 13705981372.0,
+  "required_free_bytes_2x": 27411962744.0,
+  "actual_free_bytes": 215598739456,
+  "gate_two_times_estimate_satisfied": true,
+  "revision": "revised after reading imitate_episodes.train_bc: it also snapshots policy_epoch_<N>_seed_0.ckpt every 100 epochs",
+  "single_checkpoint_bytes": 337647268,
+  "checkpoint_files_expected": 23
+}
