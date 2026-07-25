@@ -1,0 +1,206 @@
+{
+  "candidate_index": 106,
+  "consequence": "eval_act_obstacle_safety._minimum_environment_distance takes a MINIMUM over these pairs, so this one geom pins minimum_environment_distance_m -- and hence episode minimum_clearance_m -- at <= 0 on every frame of every rollout in every condition, including the raw-head development task. Those fields remain meaningful as 'deepest penetration observed' (the minimum is still taken over genuine negative distances) but are NOT a clearance margin, and a hazard-only distance built the same way is unusable.",
+  "distance_control_experiment": {
+    "far_pair_5m_distmax_1m": 1.0,
+    "interpretation": "mj_geomDistance returns distmax when the pair is farther than distmax, and the true surface distance otherwise; it does not return 0 for distant pairs",
+    "near_pair_0p3m_distmax_1m": 0.2
+  },
+  "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+  "finding": "1 of 24 robot collision geoms return exactly 0.0 from the hazard box at the reset state. The offender is robot_0/fr3_link7_collision, whose centre is 0.287 m from the bar, while neighbouring geoms at comparable ranges return 0.208-0.632 m. The control experiment shows the call's distmax semantics are correct, so the zero is a per-geom failure of the distance routine, not a far-field convention.",
+  "geoms_returning_exactly_zero": [
+    "robot_0/fr3_link7_collision"
+  ],
+  "hazard_geom": {
+    "half_extents_m": [
+      0.0175,
+      0.0175,
+      0.1
+    ],
+    "id": 17,
+    "name": "protr_s_g",
+    "type": "BOX",
+    "world_position": [
+      0.6344908668465601,
+      -0.2052492081189444,
+      0.82
+    ]
+  },
+  "measurements": [
+    {
+      "centre_to_centre_m": 0.8534449667991667,
+      "geom_id": 20,
+      "mj_geomDistance_m": 0.4927923830591694,
+      "name": "",
+      "type": "BOX"
+    },
+    {
+      "centre_to_centre_m": 0.7180961282910316,
+      "geom_id": 28,
+      "mj_geomDistance_m": 0.534078152906144,
+      "name": "robot_0/fr3_link0_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.5902492498325694,
+      "geom_id": 29,
+      "mj_geomDistance_m": 0.47487198646435946,
+      "name": "robot_0/fr3_link1_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.6201528849621314,
+      "geom_id": 32,
+      "mj_geomDistance_m": 0.48452899158052076,
+      "name": "robot_0/fr3_link2_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.7295764304533447,
+      "geom_id": 35,
+      "mj_geomDistance_m": 0.6315672347856987,
+      "name": "robot_0/fr3_link3_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.6979012355947917,
+      "geom_id": 38,
+      "mj_geomDistance_m": 0.5727644258472853,
+      "name": "robot_0/fr3_link4_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.5068434606499618,
+      "geom_id": 42,
+      "mj_geomDistance_m": 0.29802489782461483,
+      "name": "robot_0/fr3_link5_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.3569459977414131,
+      "geom_id": 51,
+      "mj_geomDistance_m": 0.208377372043206,
+      "name": "robot_0/fr3_link6_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.2865974092115823,
+      "geom_id": 56,
+      "mj_geomDistance_m": 0.0,
+      "name": "robot_0/fr3_link7_collision",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.2944021898065626,
+      "geom_id": 60,
+      "mj_geomDistance_m": 0.22302971523208143,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.32457544768706226,
+      "geom_id": 62,
+      "mj_geomDistance_m": 0.28003448722067714,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.33807087544224235,
+      "geom_id": 64,
+      "mj_geomDistance_m": 0.28949985978870524,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.3180000307676421,
+      "geom_id": 66,
+      "mj_geomDistance_m": 0.2624045875317839,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.3400713911795878,
+      "geom_id": 69,
+      "mj_geomDistance_m": 0.2979724794243153,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.3403707282930196,
+      "geom_id": 70,
+      "mj_geomDistance_m": 0.29828282996828237,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.33590883222566675,
+      "geom_id": 71,
+      "mj_geomDistance_m": 0.29778381966321504,
+      "name": "robot_0/gripper/left_pad1",
+      "type": "BOX"
+    },
+    {
+      "centre_to_centre_m": 0.34184003001237445,
+      "geom_id": 72,
+      "mj_geomDistance_m": 0.30113431142235586,
+      "name": "robot_0/gripper/left_pad2",
+      "type": "BOX"
+    },
+    {
+      "centre_to_centre_m": 0.2729979531586631,
+      "geom_id": 74,
+      "mj_geomDistance_m": 0.23053467228513355,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.26883838474836574,
+      "geom_id": 76,
+      "mj_geomDistance_m": 0.22887900431126754,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.28506049960440827,
+      "geom_id": 78,
+      "mj_geomDistance_m": 0.2430427756779056,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.28964435355613893,
+      "geom_id": 81,
+      "mj_geomDistance_m": 0.24758953931553368,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.2785796373964235,
+      "geom_id": 82,
+      "mj_geomDistance_m": 0.23705666969044548,
+      "name": "",
+      "type": "MESH"
+    },
+    {
+      "centre_to_centre_m": 0.2893798761170993,
+      "geom_id": 83,
+      "mj_geomDistance_m": 0.2502236375947299,
+      "name": "robot_0/gripper/right_pad1",
+      "type": "BOX"
+    },
+    {
+      "centre_to_centre_m": 0.29624462168676924,
+      "geom_id": 84,
+      "mj_geomDistance_m": 0.2536843899642959,
+      "name": "robot_0/gripper/right_pad2",
+      "type": "BOX"
+    }
+  ],
+  "mitigation": "Safety claims in this task rest on contact classification from data.contact, which uses MuJoCo's real collision pipeline and is unaffected. The adapter is not modified: it is the audited file.",
+  "mujoco_version": "3.5.0",
+  "report_sha256": "7e896443b56f46bfada79228bc225903ab536c872ae8cd6cc8af1252dd5d8125",
+  "robot_collision_geoms": 24,
+  "schema": "hybrid_obstacle_geom_distance_defect_v1",
+  "state": "reset state; no policy, no rollout, no stepping",
+  "zero_count": 1
+}

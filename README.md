@@ -522,3 +522,58 @@ Things worth knowing:
 - **Next step is paired evaluation**, in its own approved task: verify
   `checkpoint_manifest.json`, then roll out `policy_best.ckpt` with and without
   the Safety-CVAE residual. Nothing in this task ran a rollout.
+
+## Hybrid obstacle safety residual: what the Safety-CVAE reference must be
+
+Four evaluation tasks have now run against the pinned checkpoint above. Read the
+decision documents before touching the safety stack; each supersedes the last on
+the points it covers.
+
+| task | document | outcome |
+|---|---|---|
+| paired smoke | `docs/HYBRID_OBSTACLE_PAIRED_SMOKE_FINAL_DECISION.md` | adapter validated on four pairs |
+| observation reference | `docs/HYBRID_OBSTACLE_OBSERVATION_REFERENCE_FINAL_DECISION.md` | `first_live_skin` is **not** canonical |
+| raw head | `docs/HYBRID_OBSTACLE_RAW_HEAD_QUALIFICATION_FINAL_DECISION.md` | `RAW_HEAD_CONTROLLER_GROSS_REGRESSION` |
+| parked oracle | `docs/HYBRID_OBSTACLE_ORACLE_REFERENCE_FINAL_DECISION.md` | `ORACLE_REFERENCE_VALID_CONTROLLER_VIABLE` |
+
+The documented reference is `dq = head(skin with obstacle) − head(skin, obstacle
+parked)` (README §"the safety head" above, and `scripts/safety_react_demo.py:369-379`).
+It is now implemented per frame in `submodules/act/parked_obstacle_reference.py`
+and driven by `submodules/act/eval_act_obstacle_oracle.py`.
+
+Things worth knowing before writing another reference:
+
+- **The parked oracle is privileged and is not deployable.** It moves a scene body
+  the robot cannot move. It exists to measure whether the Safety-CVAE carries a
+  hazard-specific differential at all — it does — not to be shipped.
+- **Subtracting nothing does not work.** The raw head fires on any close surface,
+  so unsubtracted it produces a persistent geometry-driven push: pooled
+  hazard-present task success went 11/15 → 0/15 with large hazard-bar contact
+  counts. It was not saturation; the correction never clipped.
+- **Subtracting a step-0 reference does not work either**, and a *recorded*
+  reference is worse: it is indexed by step into a finite array and dies when the
+  recording runs out (candidate 106's demonstration is 109 frames against a
+  200-step horizon). Do not pad or wrap it — that hides the real fault, which is
+  that a recording does not describe the current pose.
+- **Pair the two renders at the same simulator state.** MolmoSpaces' last
+  proximity sub-step render lands one sim sub-step before the policy step ends, so
+  the observation's "latest" proximity is at a slightly earlier pose. Pairing it
+  against a counterfactual taken at the decision state invents a differential of
+  up to 2.5 on a row with *no hazard at all*, where the correct pairing gives
+  exactly zero.
+- **Do not call `mj_forward` before the counterfactual render**, even though the
+  demo does. The demo poses its scene by hand and never integrates; here,
+  `mj_step` integrates `qpos` after the forward dynamics, so every body's `xpos`
+  lags by one sub-step and `mj_forward` would move the whole scene (~2.5e-4 m over
+  23 bodies) before the parked render. Translate the hazard mocap body's render
+  state instead — no dynamics call, so the counterfactual is invisible to the
+  integrator by construction.
+- **`minimum_clearance_m` is not a clearance.** `mj_geomDistance` returns exactly
+  0.0 for `robot_0/fr3_link7_collision`, and the audited adapter takes a minimum
+  over all robot × environment pairs, so that one geom pins the reported figure at
+  ≤ 0 in every condition and every prior task. Use it as "deepest penetration
+  observed" only; safety claims should rest on contact classification from
+  `data.contact`. Evidence:
+  `scripts/hybrid_obstacle_geom_distance_probe.py`.
+- **`confirmatory41` has never been executed.** The oracle evaluator hard-refuses
+  any manifest whose role is `CONFIRMATORY_UNTOUCHED`.

@@ -1,0 +1,325 @@
+{
+  "analytic_teacher": {
+    "activation_distance_m": 0.18,
+    "box_surface_dist": {
+      "file": "scripts/safety_sweep.py",
+      "file_sha256": "d8c488cef4aad98f0ccbe521795995a1e678ad8a732b6a1402435cc45d4459f3",
+      "lines": [
+        205,
+        212
+      ],
+      "text": "def box_surface_dist(p: np.ndarray, boxes: list[tuple[np.ndarray, np.ndarray]]) -> float:\n    best = np.inf\n    for c, h in boxes:\n        q = np.abs(p - c) - h\n        outside = np.linalg.norm(np.maximum(q, 0.0))\n        inside = min(max(q[0], q[1], q[2]), 0.0)\n        best = min(best, abs(outside + inside))\n    return best"
+    },
+    "caveat": "The teacher was authored for safety_sweep's own analytic fumehood, whose STATIC_BOXES are hard-coded world boxes. The live manifest scene poses its enclosure slabs per episode, so the analytic box set has to be rebuilt from the compiled model. Faithfulness is therefore verified separately against the stored sweep_v3 labels.",
+    "formula": {
+      "file": "scripts/safety_sweep.py",
+      "file_sha256": "d8c488cef4aad98f0ccbe521795995a1e678ad8a732b6a1402435cc45d4459f3",
+      "lines": [
+        8,
+        16
+      ],
+      "text": "retreat label:\n\n    dq = sum over sensors with an environment return closer than D_ACT of\n         J_p(sensor)^T * unit(sensor_pos - hit_point) * (1/d - 1/D_ACT)\n\ni.e. a whole-arm potential-field repulsion in joint space, exact from sim state.\nSelf-hits (returns on the robot's own arm) are excluded from the label by checking the\nback-projected point against the analytic scene boxes, but stay in the INPUT \u2014 the\ntrained head must cope with them at runtime."
+    },
+    "hit_tolerance_m": 0.025,
+    "implementation": {
+      "file": "scripts/safety_sweep.py",
+      "file_sha256": "d8c488cef4aad98f0ccbe521795995a1e678ad8a732b6a1402435cc45d4459f3",
+      "lines": [
+        322,
+        350
+      ],
+      "text": "        for si, s in enumerate(sensors):\n            cid = cam_ids[s]\n            rd.update_scene(data, camera=f\"{NS}{s}\", scene_option=opt)\n            d8 = rd.render()\n            X[i, si] = d8.astype(np.float16)\n            m = d8 >= 0.005\n            if not m.any():\n                continue\n            j = np.argmin(np.where(m, d8, np.inf))\n            u, v = uu.flat[j], vv.flat[j]\n            dz = float(d8.flat[j])\n            if dz >= D_ACT:\n                continue\n            Rm = data.cam_xmat[cid].reshape(3, 3)\n            pos = data.cam_xpos[cid]\n            # MuJoCo cam frame is GL: +x right, +y up, -z forward\n            p_cam = np.array([(u - cx) * dz / f, -(v - cy) * dz / f, -dz])\n            p_o = Rm @ p_cam + pos\n            if box_surface_dist(p_o, boxes) > HIT_TOL:\n                continue   # self-hit (own arm): excluded from the label, kept in the input\n            r = float(np.linalg.norm(pos - p_o))\n            if r < 1e-4 or r >= D_ACT:\n                continue\n            MD[i, si] = r\n            direction = (pos - p_o) / r\n            w = 1.0 / r - 1.0 / D_ACT\n            mujoco.mj_jac(model, data, jacp, None, pos, int(model.cam_bodyid[cid]))\n            tau += jacp.T @ (direction * w)\n"
+    },
+    "training_data": "assets/safety/sweep_v3.h5"
+  },
+  "audit_sha256": "bbe3656dceff7ad86f220350a69355f1e304eeeaee1babdd22c63c6b336bb272",
+  "committed_parked_pose": {
+    "hazard_body_names": [
+      "protr_s",
+      "protr_m",
+      "protr_l"
+    ],
+    "hazard_half_cross_sections_m": {
+      "protr_l": 0.035,
+      "protr_m": 0.025,
+      "protr_s": 0.0175
+    },
+    "hazard_placement": {
+      "file": "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+      "file_sha256": "ab52431eea78a74b0e18521613c0ca5eb15414e8dc9b090827a8c9e8675bc1c2",
+      "lines": [
+        205,
+        217
+      ],
+      "text": "        if th[\"protrusion_present\"]:\n            s = PROTR[th[\"protr_name\"]]\n            x = TUBE_X0 + th[\"protr_pos_frac\"] * th[\"depth\"]\n            i = th[\"intrusion\"]\n            if th[\"protr_wall\"] == \"left\":\n                pos = [x, th[\"ap_w\"] / 2 + 0.10 - i, z0 + th[\"ap_h\"] * float(np.random.uniform(0.35, 0.65))]\n            elif th[\"protr_wall\"] == \"right\":\n                pos = [x, -(th[\"ap_w\"] / 2 + 0.10 - i), z0 + th[\"ap_h\"] * float(np.random.uniform(0.35, 0.65))]\n            else:  # top \u2014 bar hangs down; long axis vertical is approximated by same bar lying in y\n                pos = [x, 0.0, z0 + th[\"ap_h\"] + 0.10 - i]\n            self._mocap_set(env, th[\"protr_name\"], pos)\n            th[\"protr_center\"] = list(map(float, pos))\n            th[\"protr_half\"] = [s, 0.10, s]"
+    },
+    "mechanism": "the hazard is a MuJoCo MOCAP body; parking writes data.mocap_pos only -- mocap_quat, qpos, qvel and ctrl are never touched",
+    "mocap_set": {
+      "file": "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+      "file_sha256": "ab52431eea78a74b0e18521613c0ca5eb15414e8dc9b090827a8c9e8675bc1c2",
+      "lines": [
+        180,
+        183
+      ],
+      "text": "    def _mocap_set(self, env, body, pos):\n        m, d = env.current_model, env.current_data\n        mid = int(m.body_mocapid[m.body(body).id])\n        d.mocap_pos[mid] = np.asarray(pos, dtype=float)"
+    },
+    "note": "_apply_theta parks ALL THREE bodies and then re-places only the chosen one, so on a hazard-absent row every bar is already at its committed parked pose and parking is a bitwise no-op.",
+    "parked_position_by_body": {
+      "protr_l": [
+        0.0,
+        1.6,
+        -2.0
+      ],
+      "protr_m": [
+        0.0,
+        1.2,
+        -2.0
+      ],
+      "protr_s": [
+        0.0,
+        0.8,
+        -2.0
+      ]
+    },
+    "parked_z_m": -2.0,
+    "runner_hazard_bodies": [
+      "protr_s",
+      "protr_m",
+      "protr_l"
+    ],
+    "runner_parked_z_threshold": -1.0,
+    "source": {
+      "file": "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+      "file_sha256": "ab52431eea78a74b0e18521613c0ca5eb15414e8dc9b090827a8c9e8675bc1c2",
+      "lines": [
+        202,
+        204
+      ],
+      "text": "        # park all protrusions, then place the chosen one\n        for k, (px, py) in zip(PROTR, ((0.0, 0.8), (0.0, 1.2), (0.0, 1.6))):\n            self._mocap_set(env, k, [px, py, -2.0])"
+    }
+  },
+  "controller": {
+    "adapter_docstring_equation": {
+      "file": "submodules/act/eval_act_obstacle_safety.py",
+      "file_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "lines": [
+        6,
+        12
+      ],
+      "text": "    dq_delta = (head(current_skin) - head(reference_skin)) / label_scale\n    dq_filt = ema * dq_filt + (1 - ema) * dq_delta\n    correction += (gain * dq_filt - decay * correction) * environment_dt\n    q_exec_arm = q_nominal_arm + clip(correction, -max_dev, max_dev)\n\nThe division by ``label_scale`` is present in the executable source demo even though its\ntop-level shorthand omits it.  Logging retains both the physical and normalized deltas."
+    },
+    "arm_only_gripper_preserved": {
+      "file": "submodules/act/hybrid_safety_residual.py",
+      "file_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "lines": [
+        429,
+        437
+      ],
+      "text": "    arm = np.asarray(nominal_action[\"arm\"], dtype=np.float32)\n    residual = np.asarray(correction, dtype=np.float32)\n    if arm.shape != (7,) or residual.shape != (7,):\n        raise ValueError(f\"Expected 7-D arm and correction, got {arm.shape}, {residual.shape}\")\n    gripper = np.asarray(nominal_action[\"gripper\"]).copy()\n    return {\n        \"arm\": (arm + residual).astype(np.float32),\n        \"gripper\": gripper,\n    }"
+    },
+    "constants_source": {
+      "file": "submodules/act/hybrid_safety_residual.py",
+      "file_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "lines": [
+        20,
+        25
+      ],
+      "text": "DEFAULT_GAIN = 4.0\nDEFAULT_DECAY = 2.2\nDEFAULT_EMA = 0.75\nDEFAULT_MAX_DEVIATION = 0.35\nDEFAULT_ACTIVATION_DEPTH_M = 0.5\nDEFAULT_DEAD_PIXEL_BELOW_M = 0.005"
+    },
+    "equation_source": {
+      "file": "submodules/act/hybrid_safety_residual.py",
+      "file_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "lines": [
+        398,
+        411
+      ],
+      "text": "        delta_physical = raw - baseline\n        delta = delta_physical / self.label_scale\n        drive = delta if safety_enabled else np.zeros(7, dtype=np.float32)\n        self.filtered_safety_dq = (\n            self.ema * self.filtered_safety_dq + (1.0 - self.ema) * drive\n        ).astype(np.float32)\n        self.correction = (\n            self.correction\n            + (self.gain * self.filtered_safety_dq - self.decay * self.correction)\n            * self.dt\n        )\n        self.correction = np.clip(\n            self.correction, -self.max_deviation, self.max_deviation\n        ).astype(np.float32)"
+    },
+    "residual_after_temporal_aggregation": {
+      "file": "submodules/act/eval_act_obstacle_safety.py",
+      "file_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "lines": [
+        195,
+        197
+      ],
+      "text": "        nominal_model_output = self.inference_model(obs)\n        nominal_action = self.model_output_to_action(nominal_model_output)\n"
+    },
+    "safety_head_call": {
+      "file": "scripts/train_safety_cvae.py",
+      "file_sha256": "c7e68bd0d20877408b58bbebcfe0394688126eb37220a366b7298c9b477a594a",
+      "lines": [
+        113,
+        118
+      ],
+      "text": "    def __call__(self, prox: np.ndarray) -> np.ndarray:\n        x = torch.from_numpy(featurize(prox[None])).to(self.device)\n        return (self.model.act(x)[0].cpu().numpy() * self.scale).astype(np.float32)\n\n\n# ----------------------------------------------------------------------------- logging"
+    },
+    "scale_applied_once": "SafetyHead multiplies its output by label_scale (train_safety_cvae.SafetyHead.__call__) and the committed controller divides the subtracted delta by the same scale, exactly as safety_react_demo.py:379 does"
+  },
+  "current_observation_capture": {
+    "call_site": {
+      "file": "submodules/molmospaces/molmo_spaces/tasks/task.py",
+      "file_sha256": "450065bd4c49832927480bfbcfe260f0dd327b0c388a18d729d638a1665ce69d",
+      "lines": [
+        376,
+        386
+      ],
+      "text": "        for _ in range(self._n_ctrl_steps_per_policy):\n            for robot in self._env.robots:\n                robot.compute_control()\n            self._env.step(self._n_sim_steps_per_ctrl)\n            sim_steps_in_policy += self._n_sim_steps_per_ctrl\n            if (\n                self._proximity_camera_names\n                and sim_steps_in_policy % self._n_sim_steps_per_proximity == 0\n            ):\n                self._env.record_proximity_depths(self._proximity_camera_names)\n        if self._datagen_profiler is not None:"
+    },
+    "extract_latest_proximity": {
+      "file": "submodules/act/hybrid_safety_residual.py",
+      "file_sha256": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "lines": [
+        224,
+        237
+      ],
+      "text": "    for name in ordered_names:\n        value = np.asarray(obs[name], dtype=np.float32)\n        if value.shape == EXPECTED_PATCH_SHAPE:\n            latest = value\n        elif value.ndim == 3 and value.shape[0] >= 1 and value.shape[1:] == EXPECTED_PATCH_SHAPE:\n            latest = value[-1]\n        else:\n            raise HybridSafetyContractError(\n                f\"Sensor {name} has shape {value.shape}; expected (8, 8) or (N, 8, 8)\"\n            )\n        if not np.isfinite(latest).all():\n            raise HybridSafetyContractError(f\"Sensor {name} contains non-finite depth\")\n        frames.append(latest)\n    return np.stack(frames, axis=0).astype(np.float32, copy=False)"
+    },
+    "producer": {
+      "file": "submodules/molmospaces/molmo_spaces/env/env.py",
+      "file_sha256": "a057d55e51b85a2d010b75a8fcea6ecbcda318aab25b7a81f4e4164a679abb38",
+      "lines": [
+        374,
+        409
+      ],
+      "text": "    def record_proximity_depths(self, camera_names: list[str]) -> None:\n        \"\"\"Render depth at native 8x8 from each proximity sensor and append to buffer.\n\n        Bypasses the global renderer (which is at 624x352, giving HFOV=72deg for\n        our fovy=45 cameras due to non-square aspect). Uses a dedicated 8x8\n        renderer so each proximity sensor gets its true square 45deg FOV.\n\n        Disables visibility of geom group 2 (the cosmetic skin meshes) when\n        rendering: sensors are positioned inside the skin volume, so without\n        this they would see their own skin at ~0 distance instead of the\n        environment.\n        \"\"\"\n        if self._proximity_renderer is None:\n            h, w = self._proximity_camera_resolution\n            self._proximity_renderer = mujoco.Renderer(self.mj_model, height=h, width=w)\n            self._proximity_renderer.scene.flags[mujoco.mjtRndFlag.mjRND_SKYBOX] = 0\n        scene_option = self._get_proximity_scene_option()\n        self._proximity_renderer.enable_depth_rendering()\n        for name in camera_names:\n            if name not in self.camera_manager.registry:\n                continue\n            full = self._proximity_cam_full_name(name)\n            if full is None:\n                continue\n            try:\n                self._proximity_renderer.update_scene(\n                    self.current_data,\n                    camera=full,\n                    scene_option=scene_option,\n                )\n                depth = self._proximity_renderer.render().astype(np.float32, copy=True)\n            except Exception as e:\n                log.warning(f\"native 8x8 render failed for {full}: {e}\")\n                continue\n            self._proximity_depth_frames.setdefault(name, []).append(depth)\n"
+    },
+    "renderer": "dedicated 8x8 mujoco.Renderer, skybox off, MjvOption with geomgroup[2]=0 (cosmetic skin hidden), depth rendering enabled",
+    "substeps": "record_proximity_depths appends one frame per proximity period; the observation stacks them and extract_latest_proximity takes [-1], i.e. the render taken at the final sub-step -- the same simulator state the policy sees at decision time"
+  },
+  "demo_used_prerecorded_nominal_motion": {
+    "answer": true,
+    "detail": "safety_react_demo.pick_episode() loads a recorded successful reach-grasp-lift from datagen H5s, resamples and smooths it, and advances a scalar phase s. The nominal motion is open-loop playback, not a live policy. The PARKED REFERENCE is nevertheless recomputed every frame at the CURRENT executed pose -- the reference is per-frame even though the nominal is prerecorded.",
+    "evidence": {
+      "file": "scripts/safety_react_demo.py",
+      "file_sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa",
+      "lines": [
+        246,
+        249
+      ],
+      "text": "    else:\n        q_raw, grip_raw, base = pick_episode(args.runs)\n        q_nom = smooth(resample(q_raw, Tnom), 9)\n        grip_nom = resample(grip_raw, Tnom)"
+    },
+    "phase_clock": {
+      "file": "scripts/safety_react_demo.py",
+      "file_sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa",
+      "lines": [
+        386,
+        386
+      ],
+      "text": "        s = min(1.0, s + ds_nom)                      # deviate-and-rejoin: clock never stops"
+    }
+  },
+  "documented_oracle": {
+    "canonical_implementation": {
+      "file": "scripts/safety_react_demo.py",
+      "file_sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa",
+      "lines": [
+        369,
+        379
+      ],
+      "text": "        depths = render_all(model, data, rd, opt, sensors)\n        # per-frame baseline: same pose, ALL bars parked -> isolate the bars' marginal push\n        for name in bar_mocaps:\n            data.mocap_pos[mid[name]] = sw.PARK\n        mujoco.mj_forward(model, data)\n        depths_rest = render_all(model, data, rd, opt, sensors)\n        for name, _half, wp in placed:\n            data.mocap_pos[mid[name]] = wp\n        mujoco.mj_forward(model, data)\n\n        dq_raw = (head(depths) - head(depths_rest)) / max(head.scale, 1e-6)"
+    },
+    "flinch_variant": {
+      "difference": "safety_flinch_demo computes ONE rest baseline at the start posture and subtracts it every frame; safety_react_demo re-renders the parked scene at the CURRENT pose every frame. The per-frame form is the one this task implements.",
+      "excerpt": {
+        "file": "scripts/safety_flinch_demo.py",
+        "file_sha256": "20f2e1fbd28d4b55ba0d4726ff233757b55aee8de4e116d0d1490aa68cd0e887",
+        "lines": [
+          292,
+          295
+        ],
+        "text": "\n    # rest baseline: head output with the bar parked (subtracted every frame)\n    rest_depths = render_all(model, data, rd, opt, sensors)\n    dq_rest = head(rest_depths)"
+      }
+    },
+    "headline_formula": {
+      "file": "scripts/safety_react_demo.py",
+      "file_sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa",
+      "lines": [
+        12,
+        15
+      ],
+      "text": "    dq_raw        = head(skin_with_bars) - head(skin_bars_parked)   # per-frame baseline -> the bars' push\n    dq            = ema * dq + (1-ema) * dq_raw                      # low-pass the head -> smooth\n    correction   += (gain * dq - decay * correction) * dt           # grows near a bar, decays when clear\n    correction    = clip(correction, +/- max_dev)"
+    },
+    "privileged": true,
+    "privileged_reason": "requires moving a scene body that the robot cannot move and observing a counterfactual world; not achievable on hardware",
+    "readme": {
+      "file": "README.md",
+      "file_sha256": "c0a7186e4e13c45ad4b65ff2ba53b5c0a7f91c4369521d3564792464984e4f15",
+      "lines": [
+        174,
+        174
+      ],
+      "text": "$$dq = \\mathrm{head}(\\text{skin with obstacle}) - \\mathrm{head}(\\text{skin, obstacle parked})$$"
+    },
+    "renders_per_control_step": 2,
+    "restore_mechanism": "re-write data.mocap_pos for each placed bar, then mujoco.mj_forward -- no mj_step, so simulation time never advances",
+    "subtraction": {
+      "file": "scripts/safety_react_demo.py",
+      "file_sha256": "69364a0157afda36ce0ce000948d289b8f8b8ce1e487f7eafa811f7870585baa",
+      "lines": [
+        379,
+        382
+      ],
+      "text": "        dq_raw = (head(depths) - head(depths_rest)) / max(head.scale, 1e-6)\n        dq = args.ema * dq + (1 - args.ema) * dq_raw\n        correction = correction + (args.gain * dq - args.decay * correction) * DT\n        correction = np.clip(correction, -args.max_dev, args.max_dev)"
+    }
+  },
+  "existing_parked_utilities": {
+    "found": [
+      "scripts/safety_react_demo.py",
+      "scripts/safety_flinch_demo.py",
+      "scripts/safety_moving_demo.py",
+      "scripts/safety_orbit_demo.py",
+      "scripts/safety_sweep.py"
+    ],
+    "reusable_in_the_manifest_scene": false,
+    "sweep_park_constant": [
+      0.0,
+      0.0,
+      -3.0
+    ],
+    "why_not": "Every demo builds its own scene with safety_sweep.build_model() and a hard-coded ROBOT_XML path that does not exist in this checkout; they park 'bar_s/m/l' at PARK=[0,0,-3.0]. The manifest scene's hazard is 'protr_s/m/l' parked by enclosure_reach at z=-2.0 with distinct x,y. The MECHANISM transfers; the coordinates and body names do not."
+  },
+  "finite_reference_defect": {
+    "diagnosis": "The prior oracle attempt subtracted head(reference[step]) with a step index into a finite recorded array. The reference episode for candidate 106 holds 109 real timesteps while the evaluation horizon is 200, so the adapter raised HybridSafetyContractError at step 109. Two independent faults: (a) the reference was a prerecorded trajectory rather than a counterfactual of the CURRENT state, so once the residual moved the arm the reference no longer described the same pose at all; (b) it was indexed by step into a finite array. A per-frame counterfactual has neither -- there is no array and no index.",
+    "indexing": {
+      "file": "submodules/act/eval_act_obstacle_safety.py",
+      "file_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "lines": [
+        211,
+        211
+      ],
+      "text": "                baseline = self._head(self._reference_proximity[self._step])"
+    },
+    "live_task_horizon": 200,
+    "loader": "hybrid_safety_residual.load_proximity_sequence_h5 returns a (T, 40, 8, 8) array whose T is the RECORDED length of the expert demonstration, not the live rollout horizon",
+    "mechanism": {
+      "file": "submodules/act/eval_act_obstacle_safety.py",
+      "file_sha256": "21e8ccbe489cd278e9e946fde4d72a6772de5394aff47d484c882b8699c292ee",
+      "lines": [
+        207,
+        210
+      ],
+      "text": "                if self._step >= len(self._reference_proximity):\n                    raise HybridSafetyContractError(\n                        \"Reference ACT-only proximity ended before the live safety rollout\"\n                    )"
+    },
+    "not_fixable_by_padding": "Padding or wrapping would silence the exception while leaving fault (a) untouched, and is prohibited.",
+    "recorded_lengths": {
+      "cand106": {
+        "hazard_present": true,
+        "recorded_real_timesteps": 109
+      },
+      "cand107": {
+        "hazard_present": true,
+        "recorded_real_timesteps": 110
+      },
+      "cand108": {
+        "hazard_present": true,
+        "recorded_real_timesteps": 63
+      },
+      "cand118": {
+        "hazard_present": false,
+        "recorded_real_timesteps": 60
+      }
+    }
+  },
+  "purpose": "Establish, from committed source only, what the documented parked-obstacle oracle reference is, so the per-frame implementation can be checked against it.",
+  "schema": "hybrid_obstacle_oracle_source_audit_v1"
+}
