@@ -1,0 +1,347 @@
+{
+  "controller": "RAW_HEAD_RESIDUAL_V1",
+  "controller_status": "DEPLOYABLE_CANDIDATE_UNDER_QUALIFICATION",
+  "development_manifest_sha256": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+  "frozen_constants": {
+    "decay": 2.2,
+    "dt": 0.066,
+    "ema": 0.75,
+    "gain": 4.0,
+    "label_scale": 11.359346389770508,
+    "max_dev": 0.35
+  },
+  "gate": {
+    "decision_if_failed": "RAW_HEAD_CONTROLLER_GROSS_REGRESSION",
+    "failed": false,
+    "hazard_absent_predicted_saturation_fraction": 0.36666666666666664,
+    "rule": "fail when the hazard-absent development trajectory predicts correction saturation on more than 50% of its real timesteps",
+    "threshold": 0.5
+  },
+  "hazard_absent_summary": {
+    "predicted_correction_norm_max": [
+      0.7016909122467041
+    ],
+    "predicted_saturation_fraction": [
+      0.36666666666666664
+    ],
+    "raw_output_norm_max": 34.91264238155816,
+    "rows": 1
+  },
+  "hazard_present_summary": {
+    "predicted_correction_norm_max": [
+      0.7039003968238831,
+      0.6913427114486694,
+      0.7021793723106384
+    ],
+    "predicted_saturation_fraction": [
+      0.22018348623853212,
+      0.36363636363636365,
+      0.047619047619047616
+    ],
+    "raw_output_norm_max": 11.149658505955358,
+    "rows": 3
+  },
+  "method_caveat": "Open-loop screening over the stored expert proximity streams. It models the signal path exactly but not the closed-loop feedback that arises once the correction moves the arm, so it predicts a tendency, not the live result.",
+  "prior_first_live_comparison": {
+    "correction_norm_max": 0.2967073137747466,
+    "correction_norm_mean": 0.18570480622523836,
+    "note": "the previously logged first-live controller, development evidence only; shown for descriptive comparison and not used to tune anything",
+    "raw_norm_max": 2.1337606767119817,
+    "reference_mode": "first_live_observation",
+    "reference_norm_constant": 0.8065526525149572,
+    "source": "/root/act_retrain_assets/paired_smoke_v1/r106_safety_live/rollout.json",
+    "task_success": false
+  },
+  "report_sha256": "765b4ecfe11e5ce7e3daeda7d522bd1ceec7e576110bcdb3152c82b9c8c1a00c",
+  "rows": [
+    {
+      "active_sensor_count": {
+        "max": 16,
+        "mean": 13.110091743119266,
+        "min": 8
+      },
+      "candidate_index": 106,
+      "correction_norm_series_downsampled": [
+        0.0046862270683050156,
+        0.044762466102838516,
+        0.06425640732049942,
+        0.15964891016483307,
+        0.40099385380744934,
+        0.6057854890823364,
+        0.7033568620681763,
+        0.6345908045768738,
+        0.28601497411727905,
+        0.16400307416915894,
+        0.15401118993759155
+      ],
+      "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+      "first_saturated_step": 50,
+      "hazard_present": true,
+      "known_self_return_active_frames": 0,
+      "link_activation_counts": {
+        "link1": 109,
+        "link2": 183,
+        "link3": 254,
+        "link4": 178,
+        "link5_back": 316,
+        "link5_front": 36,
+        "link6": 353
+      },
+      "minimum_proximity_depth_m": {
+        "median": 0.10627681761980057,
+        "min": 0.02945197932422161
+      },
+      "predicted_correction_norm": {
+        "final": 0.4591157138347626,
+        "max": 0.7039003968238831,
+        "mean": 0.3104078424410946
+      },
+      "predicted_filtered_norm": {
+        "max": 0.8603209257125854,
+        "mean": 0.24453076788591682
+      },
+      "predicted_saturated_steps": 24,
+      "predicted_saturation_fraction": 0.22018348623853212,
+      "raw_output_norm": {
+        "max": 11.149658505955358,
+        "mean": 2.997779943258079,
+        "median": 1.284218464659856,
+        "min": 0.13034282756839238
+      },
+      "raw_output_per_joint_abs_max": [
+        4.245461940765381,
+        8.444134712219238,
+        3.978113889694214,
+        5.657838821411133,
+        0.6179816126823425,
+        0.11760909855365753,
+        0.05579003319144249
+      ],
+      "raw_output_per_joint_mean": [
+        -0.7409822133737146,
+        1.879677292164586,
+        -0.6753069330861262,
+        -1.5006869201027198,
+        -0.12607489665863403,
+        0.00802012555044328,
+        -0.02286006152200504
+      ],
+      "real_timesteps": 109
+    },
+    {
+      "active_sensor_count": {
+        "max": 17,
+        "mean": 14.472727272727273,
+        "min": 8
+      },
+      "candidate_index": 107,
+      "correction_norm_series_downsampled": [
+        0.002501328010112047,
+        0.01467007678002119,
+        0.0842132419347763,
+        0.05786478519439697,
+        0.16554348170757294,
+        0.26038166880607605,
+        0.4002664089202881,
+        0.4959076941013336,
+        0.5438225865364075,
+        0.5073390007019043,
+        0.5240017771720886
+      ],
+      "episode_id": "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+      "first_saturated_step": 62,
+      "hazard_present": true,
+      "known_self_return_active_frames": 0,
+      "link_activation_counts": {
+        "link1": 330,
+        "link3": 145,
+        "link4": 335,
+        "link5_back": 218,
+        "link5_front": 170,
+        "link6": 394
+      },
+      "minimum_proximity_depth_m": {
+        "median": 0.08060788735747337,
+        "min": 0.04558463394641876
+      },
+      "predicted_correction_norm": {
+        "final": 0.6913427114486694,
+        "max": 0.6913427114486694,
+        "mean": 0.30668537683192304
+      },
+      "predicted_filtered_norm": {
+        "max": 0.635004997253418,
+        "mean": 0.23626353603533723
+      },
+      "predicted_saturated_steps": 40,
+      "predicted_saturation_fraction": 0.36363636363636365,
+      "raw_output_norm": {
+        "max": 8.612087747363104,
+        "mean": 2.972749173747132,
+        "median": 2.9251473365836125,
+        "min": 0.16366379412067322
+      },
+      "raw_output_per_joint_abs_max": [
+        4.021947383880615,
+        6.078463077545166,
+        2.573559284210205,
+        4.354559421539307,
+        0.29027581214904785,
+        0.1472468078136444,
+        0.06370032578706741
+      ],
+      "raw_output_per_joint_mean": [
+        -0.9015134101733565,
+        1.5476658679714257,
+        -0.6873916361226954,
+        -1.300609018382701,
+        0.039013348679344,
+        0.0301500562091612,
+        -0.03236222366924101
+      ],
+      "real_timesteps": 110
+    },
+    {
+      "active_sensor_count": {
+        "max": 15,
+        "mean": 11.365079365079366,
+        "min": 5
+      },
+      "candidate_index": 108,
+      "correction_norm_series_downsampled": [
+        0.001654581050388515,
+        0.03470592945814133,
+        0.03269869089126587,
+        0.294961154460907,
+        0.2733146548271179,
+        0.23513133823871613,
+        0.6584821343421936
+      ],
+      "episode_id": "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+      "first_saturated_step": 60,
+      "hazard_present": true,
+      "known_self_return_active_frames": 0,
+      "link_activation_counts": {
+        "link1": 90,
+        "link2": 15,
+        "link3": 158,
+        "link4": 89,
+        "link5_back": 169,
+        "link5_front": 10,
+        "link6": 185
+      },
+      "minimum_proximity_depth_m": {
+        "median": 0.1401141732931137,
+        "min": 0.051270972937345505
+      },
+      "predicted_correction_norm": {
+        "final": 0.7021793723106384,
+        "max": 0.7021793723106384,
+        "mean": 0.20713189433306634
+      },
+      "predicted_filtered_norm": {
+        "max": 0.7439371347427368,
+        "mean": 0.16084018100555691
+      },
+      "predicted_saturated_steps": 3,
+      "predicted_saturation_fraction": 0.047619047619047616,
+      "raw_output_norm": {
+        "max": 10.197276536321366,
+        "mean": 2.244349533665583,
+        "median": 1.303866042724126,
+        "min": 0.08470573927783637
+      },
+      "raw_output_per_joint_abs_max": [
+        5.173408508300781,
+        5.797696113586426,
+        4.691795349121094,
+        4.59917688369751,
+        0.6633265614509583,
+        0.030594076961278915,
+        0.03778693825006485
+      ],
+      "raw_output_per_joint_mean": [
+        -1.1692313482718808,
+        1.2414711642315581,
+        -1.0135735118732092,
+        -0.9439417535941752,
+        -0.13349730269114915,
+        0.005951994427642416,
+        -0.0217263326048851
+      ],
+      "real_timesteps": 63
+    },
+    {
+      "active_sensor_count": {
+        "max": 15,
+        "mean": 13.1,
+        "min": 10
+      },
+      "candidate_index": 118,
+      "correction_norm_series_downsampled": [
+        0.0018294819165021181,
+        0.07170147448778152,
+        0.6835340261459351,
+        0.5637606978416443,
+        0.5008436441421509,
+        0.5406507253646851
+      ],
+      "episode_id": "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+      "first_saturated_step": 17,
+      "hazard_present": false,
+      "known_self_return_active_frames": 0,
+      "link_activation_counts": {
+        "link1": 60,
+        "link2": 110,
+        "link3": 133,
+        "link4": 90,
+        "link5_back": 176,
+        "link6": 217
+      },
+      "minimum_proximity_depth_m": {
+        "median": 0.09798713773488998,
+        "min": 0.012140302918851376
+      },
+      "predicted_correction_norm": {
+        "final": 0.5197675824165344,
+        "max": 0.7016909122467041,
+        "mean": 0.43404678266573077
+      },
+      "predicted_filtered_norm": {
+        "max": 1.8834935426712036,
+        "mean": 0.4276054845501979
+      },
+      "predicted_saturated_steps": 22,
+      "predicted_saturation_fraction": 0.36666666666666664,
+      "raw_output_norm": {
+        "max": 34.91264238155816,
+        "mean": 5.615658610766981,
+        "median": 3.5599685512377146,
+        "min": 0.2020781440324918
+      },
+      "raw_output_per_joint_abs_max": [
+        21.49054527282715,
+        11.903484344482422,
+        21.409162521362305,
+        14.691258430480957,
+        1.7564632892608643,
+        0.2735197842121124,
+        0.10423789173364639
+      ],
+      "raw_output_per_joint_mean": [
+        0.09096473703781764,
+        1.4127305772155523,
+        -0.11275944234803319,
+        -1.8163052983290982,
+        -0.02551100420144697,
+        -0.01736212903633714,
+        -0.03455889734905213
+      ],
+      "real_timesteps": 60
+    }
+  ],
+  "scale_applied_once": "SafetyHead multiplies by label_scale and the committed controller divides by it, so the net drive is normalized label space",
+  "schema": "hybrid_obstacle_rawhead_offline_preflight_v1",
+  "signal": "dq_raw = SafetyHead(current_skin); reference = none; dq_delta = dq_raw",
+  "tuning_performed": false
+}

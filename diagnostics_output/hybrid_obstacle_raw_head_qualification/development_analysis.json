@@ -1,0 +1,1057 @@
+{
+  "aggregate": {
+    "hazard_absent_rows": 1,
+    "hazard_present_rows": 3,
+    "pooled_hazard_present_act_only_success": "11/15",
+    "pooled_hazard_present_raw_head_success": "0/15",
+    "raw_head_saturation_all": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "raw_head_saturation_median": 0.0
+  },
+  "future_confirmatory_repeat_count": {
+    "confirmatory_manifest": "configs/hybrid_obstacle_confirmatory41_v1.json",
+    "future_rollout_count": 410,
+    "launched_in_this_task": false,
+    "rule_outcome": "1 unstable row(s) -> 5 repeats per condition",
+    "selected": 5
+  },
+  "gross_regression_gates": {
+    "all_passed": false,
+    "hazard_absent_no_universal_new_collision": {
+      "offenders": [
+        118
+      ],
+      "passed": false
+    },
+    "median_raw_head_saturation_below_25pct": {
+      "median": 0.0,
+      "passed": true,
+      "threshold": 0.25,
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "no_rollout_saturated_over_75pct": {
+      "offenders": [],
+      "passed": true,
+      "threshold": 0.75
+    },
+    "no_row_flips_5of5_to_0of5": {
+      "offenders": [
+        106,
+        107
+      ],
+      "passed": false
+    },
+    "pooled_hazard_present_success_gap_within_20pp": {
+      "act_only": "11/15",
+      "gap_percentage_points": 73.33333333333333,
+      "passed": false,
+      "raw_head": "0/15",
+      "threshold": 20.0
+    }
+  },
+  "outcome_stability": {
+    "definition": "ACT_ONLY task-success or collision-free-success count over 5 repeats that is neither 0/5 nor 5/5",
+    "unstable_count": 1,
+    "unstable_rows": [
+      108
+    ]
+  },
+  "report_sha256": "c2ec41078f3261892c909a042d8208e6e28013d3a3d3f13bd05c076184d45400",
+  "rows": [
+    {
+      "act_only": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.0,
+          "median": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.0026409011927842007,
+          "min": -0.0037890704222047888,
+          "values": [
+            -0.0025109406871671003,
+            -0.0021356662067209373,
+            -0.002849115607162742,
+            -0.0026409011927842007,
+            -0.0037890704222047888
+          ]
+        },
+        "other_environment_contact_total": 315,
+        "other_environment_contacts": [
+          61,
+          68,
+          63,
+          68,
+          55
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "5/5",
+        "task_success_count": 5,
+        "task_success_values": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "act_only_outcome_unstable": false,
+      "act_plus_raw_head": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 29,
+        "hazard_bar_contacts": [
+          8,
+          6,
+          5,
+          3,
+          7
+        ],
+        "max_correction_norm": {
+          "max": 0.2198131842712092,
+          "median": 0.2038734242733702,
+          "values": [
+            0.2198131842712092,
+            0.21077337637773483,
+            0.20100474846967425,
+            0.18627623353256662,
+            0.2038734242733702
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.007466098630620302,
+          "min": -0.01026341526242919,
+          "values": [
+            -0.008711733847778732,
+            -0.006864567864287866,
+            -0.007466098630620302,
+            -0.003834557760744259,
+            -0.01026341526242919
+          ]
+        },
+        "other_environment_contact_total": 6,
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          6
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "0/5",
+        "task_success_count": 0,
+        "task_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate_index": 106,
+      "deltas": {
+        "collision_free_success_delta": 0,
+        "hazard_bar_contact_delta": 29,
+        "median_duration_delta": 0,
+        "other_environment_contact_delta": -309,
+        "task_success_delta": -5
+      },
+      "hazard_present": true,
+      "render_induced_variability": {
+        "observation_variation": {
+          "attribution": "RGB hashes vary because offsamples=4 makes the multisample resolve non-reproducible. qpos and all 40 proximity streams start identical, so this is render variation, NOT simulator-state nondeterminism.",
+          "proximity_identical_across_repeats": true,
+          "qpos_identical_across_repeats": true,
+          "unique_step0_exo_hashes": 1,
+          "unique_step0_proximity_hashes": 1,
+          "unique_step0_qpos_hashes": 1,
+          "unique_step0_wrist_hashes": 5
+        },
+        "policy_variation": {
+          "collision_free_success_count": 0,
+          "collision_free_success_values": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "collision_free_success_varies": false,
+          "first10_nominal_action_max_variance": 5.941350300986414e-07,
+          "first10_nominal_action_variance_per_dim": [
+            2.1823799214165994e-09,
+            1.7154550164377724e-07,
+            1.2822663826933534e-08,
+            1.6799300192360535e-07,
+            3.164895261441314e-08,
+            2.552829607793683e-08,
+            3.217316262647818e-08,
+            0.0
+          ],
+          "first_materially_diverging_step": 0,
+          "max_pairwise_nominal_action_delta": 0.024365127086639404,
+          "step0_nominal_action_max_range": 1.0371208190917969e-05,
+          "step0_nominal_action_range_per_dim": [
+            3.394670784473419e-06,
+            1.0371208190917969e-05,
+            3.0510127544403076e-06,
+            8.821487426757812e-06,
+            7.137656211853027e-06,
+            2.0265579223632812e-06,
+            9.201467037200928e-06,
+            0.0
+          ],
+          "success_varies": false,
+          "task_success_count": 5,
+          "task_success_values": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "unique_contact_sequences": 5,
+          "unique_phase_paths": 1
+        },
+        "repeats": 5
+      }
+    },
+    {
+      "act_only": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.0,
+          "median": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.003639084314848314,
+          "min": -0.0156437890232628,
+          "values": [
+            -0.003639084314848314,
+            -0.0037615249767865826,
+            -0.0031818136622327894,
+            -0.0029973077564429827,
+            -0.0156437890232628
+          ]
+        },
+        "other_environment_contact_total": 433,
+        "other_environment_contacts": [
+          87,
+          93,
+          89,
+          89,
+          75
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "5/5",
+        "task_success_count": 5,
+        "task_success_values": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "act_only_outcome_unstable": false,
+      "act_plus_raw_head": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 411,
+        "hazard_bar_contacts": [
+          19,
+          111,
+          140,
+          61,
+          80
+        ],
+        "max_correction_norm": {
+          "max": 0.7112284689896713,
+          "median": 0.4071937288125123,
+          "values": [
+            0.3217830447344472,
+            0.3754363267236683,
+            0.4071937288125123,
+            0.5880396998293904,
+            0.7112284689896713
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.005110008718264614,
+          "min": -0.0076886546058588245,
+          "values": [
+            -0.0038240540773407665,
+            -0.006960179181302513,
+            -0.005041859391101706,
+            -0.0076886546058588245,
+            -0.005110008718264614
+          ]
+        },
+        "other_environment_contact_total": 240,
+        "other_environment_contacts": [
+          14,
+          55,
+          58,
+          38,
+          75
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "0/5",
+        "task_success_count": 0,
+        "task_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate_index": 107,
+      "deltas": {
+        "collision_free_success_delta": 0,
+        "hazard_bar_contact_delta": 411,
+        "median_duration_delta": 0,
+        "other_environment_contact_delta": -193,
+        "task_success_delta": -5
+      },
+      "hazard_present": true,
+      "render_induced_variability": {
+        "observation_variation": {
+          "attribution": "RGB hashes vary because offsamples=4 makes the multisample resolve non-reproducible. qpos and all 40 proximity streams start identical, so this is render variation, NOT simulator-state nondeterminism.",
+          "proximity_identical_across_repeats": true,
+          "qpos_identical_across_repeats": true,
+          "unique_step0_exo_hashes": 1,
+          "unique_step0_proximity_hashes": 1,
+          "unique_step0_qpos_hashes": 1,
+          "unique_step0_wrist_hashes": 5
+        },
+        "policy_variation": {
+          "collision_free_success_count": 0,
+          "collision_free_success_values": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "collision_free_success_varies": false,
+          "first10_nominal_action_max_variance": 2.0546664018183949e-07,
+          "first10_nominal_action_variance_per_dim": [
+            1.8188116903872145e-09,
+            3.093446767366004e-08,
+            1.1137461228466483e-08,
+            4.8784307182359044e-08,
+            5.327572617730425e-09,
+            3.549252960510785e-08,
+            2.141509376585304e-08,
+            0.0
+          ],
+          "first_materially_diverging_step": 0,
+          "max_pairwise_nominal_action_delta": 255.0,
+          "step0_nominal_action_max_range": 1.9311904907226562e-05,
+          "step0_nominal_action_range_per_dim": [
+            7.739290595054626e-07,
+            1.9311904907226562e-05,
+            2.475455403327942e-06,
+            1.8835067749023438e-05,
+            4.246830940246582e-06,
+            2.5033950805664062e-06,
+            9.939074516296387e-06,
+            0.0
+          ],
+          "success_varies": false,
+          "task_success_count": 5,
+          "task_success_values": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "unique_contact_sequences": 5,
+          "unique_phase_paths": 1
+        },
+        "repeats": 5
+      }
+    },
+    {
+      "act_only": {
+        "collision_free_success": "1/5",
+        "collision_free_success_count": 1,
+        "collision_free_success_values": [
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.0,
+          "median": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.0019806883803175253,
+          "min": -0.0037268384027802654,
+          "values": [
+            -0.0037268384027802654,
+            -0.00223519388132564,
+            -0.0019806883803175253,
+            -0.0014187899764768737,
+            -0.001230755086519593
+          ]
+        },
+        "other_environment_contact_total": 0,
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "1/5",
+        "task_success_count": 1,
+        "task_success_values": [
+          false,
+          true,
+          false,
+          false,
+          false
+        ]
+      },
+      "act_only_outcome_unstable": true,
+      "act_plus_raw_head": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 4,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.7376725686265823,
+          "median": 0.28349954855326526,
+          "values": [
+            0.28349954855326526,
+            0.3239261885692981,
+            0.7376725686265823,
+            0.2733434086549899,
+            0.2695764439950855
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.01095458159723396,
+          "min": -0.015293322461378453,
+          "values": [
+            -0.010576957376174657,
+            -0.010772717875359746,
+            -0.01095458159723396,
+            -0.014045368023996868,
+            -0.015293322461378453
+          ]
+        },
+        "other_environment_contact_total": 2,
+        "other_environment_contacts": [
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "0/5",
+        "task_success_count": 0,
+        "task_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate_index": 108,
+      "deltas": {
+        "collision_free_success_delta": -1,
+        "hazard_bar_contact_delta": 4,
+        "median_duration_delta": 0,
+        "other_environment_contact_delta": 2,
+        "task_success_delta": -1
+      },
+      "hazard_present": true,
+      "render_induced_variability": {
+        "observation_variation": {
+          "attribution": "RGB hashes vary because offsamples=4 makes the multisample resolve non-reproducible. qpos and all 40 proximity streams start identical, so this is render variation, NOT simulator-state nondeterminism.",
+          "proximity_identical_across_repeats": true,
+          "qpos_identical_across_repeats": true,
+          "unique_step0_exo_hashes": 1,
+          "unique_step0_proximity_hashes": 1,
+          "unique_step0_qpos_hashes": 1,
+          "unique_step0_wrist_hashes": 5
+        },
+        "policy_variation": {
+          "collision_free_success_count": 1,
+          "collision_free_success_values": [
+            false,
+            true,
+            false,
+            false,
+            false
+          ],
+          "collision_free_success_varies": true,
+          "first10_nominal_action_max_variance": 2.093447483275668e-07,
+          "first10_nominal_action_variance_per_dim": [
+            1.8091245420211095e-09,
+            3.858377436927186e-08,
+            2.382319943217137e-08,
+            5.867635627510026e-08,
+            3.2842556903500686e-08,
+            7.147271162466494e-09,
+            2.0284847426221828e-08,
+            0.0
+          ],
+          "first_materially_diverging_step": 0,
+          "max_pairwise_nominal_action_delta": 0.34773069620132446,
+          "step0_nominal_action_max_range": 4.220008850097656e-05,
+          "step0_nominal_action_range_per_dim": [
+            2.04332172870636e-06,
+            3.743171691894531e-05,
+            5.4426491260528564e-06,
+            4.220008850097656e-05,
+            1.1466443538665771e-05,
+            2.6226043701171875e-06,
+            1.2382864952087402e-05,
+            0.0
+          ],
+          "success_varies": true,
+          "task_success_count": 1,
+          "task_success_values": [
+            false,
+            true,
+            false,
+            false,
+            false
+          ],
+          "unique_contact_sequences": 5,
+          "unique_phase_paths": 1
+        },
+        "repeats": 5
+      }
+    },
+    {
+      "act_only": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.0,
+          "median": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.0012516660559224368,
+          "min": -0.0015667489336127416,
+          "values": [
+            -0.0015667489336127416,
+            -0.0014848400958586564,
+            -0.0011667407936267395,
+            -0.0009286801292647332,
+            -0.0012516660559224368
+          ]
+        },
+        "other_environment_contact_total": 0,
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "0/5",
+        "task_success_count": 0,
+        "task_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "act_only_outcome_unstable": false,
+      "act_plus_raw_head": {
+        "collision_free_success": "0/5",
+        "collision_free_success_count": 0,
+        "collision_free_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "hazard_bar_contact_total": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_correction_norm": {
+          "max": 0.2644561402376502,
+          "median": 0.21801571073076284,
+          "values": [
+            0.21801571073076284,
+            0.2644561402376502,
+            0.22046807448504577,
+            0.21211819326335213,
+            0.2143513018176745
+          ]
+        },
+        "minimum_clearance_m": {
+          "median": -0.002235780652588152,
+          "min": -0.009816629037885187,
+          "values": [
+            -0.0023351159870848657,
+            -0.009816629037885187,
+            -0.002235780652588152,
+            -0.0010882349311907983,
+            -0.0013698559439030377
+          ]
+        },
+        "other_environment_contact_total": 765,
+        "other_environment_contacts": [
+          168,
+          89,
+          170,
+          169,
+          169
+        ],
+        "rollouts": 5,
+        "saturation_fraction": {
+          "max": 0.0,
+          "median": 0.0,
+          "min": 0.0,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "task_duration_steps": {
+          "median": 200,
+          "values": [
+            200,
+            200,
+            200,
+            200,
+            200
+          ]
+        },
+        "task_success": "0/5",
+        "task_success_count": 0,
+        "task_success_values": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate_index": 118,
+      "deltas": {
+        "collision_free_success_delta": 0,
+        "hazard_bar_contact_delta": 0,
+        "median_duration_delta": 0,
+        "other_environment_contact_delta": 765,
+        "task_success_delta": 0
+      },
+      "hazard_present": false,
+      "render_induced_variability": {
+        "observation_variation": {
+          "attribution": "RGB hashes vary because offsamples=4 makes the multisample resolve non-reproducible. qpos and all 40 proximity streams start identical, so this is render variation, NOT simulator-state nondeterminism.",
+          "proximity_identical_across_repeats": true,
+          "qpos_identical_across_repeats": true,
+          "unique_step0_exo_hashes": 1,
+          "unique_step0_proximity_hashes": 1,
+          "unique_step0_qpos_hashes": 1,
+          "unique_step0_wrist_hashes": 5
+        },
+        "policy_variation": {
+          "collision_free_success_count": 0,
+          "collision_free_success_values": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "collision_free_success_varies": false,
+          "first10_nominal_action_max_variance": 1.1495272133288385e-07,
+          "first10_nominal_action_variance_per_dim": [
+            2.097187028297578e-09,
+            1.8132253785552164e-08,
+            1.2348583964921689e-08,
+            1.7306793324678437e-08,
+            2.6107839019157142e-08,
+            3.729306899913354e-08,
+            4.412719427016043e-08,
+            0.0
+          ],
+          "first_materially_diverging_step": 0,
+          "max_pairwise_nominal_action_delta": 0.014010906219482422,
+          "step0_nominal_action_max_range": 6.9141387939453125e-06,
+          "step0_nominal_action_range_per_dim": [
+            1.5285331755876541e-06,
+            2.384185791015625e-06,
+            4.08664345741272e-06,
+            3.337860107421875e-06,
+            4.464760422706604e-06,
+            3.4570693969726562e-06,
+            6.9141387939453125e-06,
+            0.0
+          ],
+          "success_varies": false,
+          "task_success_count": 0,
+          "task_success_values": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "unique_contact_sequences": 5,
+          "unique_phase_paths": 1
+        },
+        "repeats": 5
+      }
+    }
+  ],
+  "schedule_sha256": "f0eb1606a820bdd364353eef61c4c302f0e7557b3a2fe9725694c2d09ef1a0f8",
+  "schema": "hybrid_obstacle_rawhead_development_analysis_v1",
+  "statistical_disclaimer": "Four development rows. Descriptive only: no confirmatory significance test is run here, and none of this is evidence of a safety improvement. The manifest row is the experimental block and the repeat is nested stochastic replication.",
+  "technical_gates": {
+    "all_40_primary_rollouts_finalized": true,
+    "all_passed": true,
+    "controller_reset_between_repeats": true,
+    "gripper_unchanged_every_frame": true,
+    "missing": [],
+    "no_artifact_or_initial_state_mismatch": true,
+    "no_log_corruption": true,
+    "no_nonfinite_action": true,
+    "offenders": {
+      "aggregation": [],
+      "gripper": [],
+      "nonfinite": [],
+      "reset": [],
+      "state": []
+    },
+    "residual_arm_only_and_after_aggregation": true,
+    "rollouts_loaded": 40,
+    "shadow_zero_all_passed": true,
+    "shadow_zero_checked_rollouts": 20,
+    "shadow_zero_gripper_all_equal": true,
+    "shadow_zero_max_arm_delta": 0.0
+  }
+}

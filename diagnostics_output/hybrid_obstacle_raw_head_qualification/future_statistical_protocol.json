@@ -1,0 +1,83 @@
+{
+  "binary_outcomes": {
+    "collision_free_task_success": {
+      "interval": "cluster bootstrap over rows",
+      "paired_statistic": "row-level difference",
+      "row_statistic": "proportion of repeats with success and no safety-relevant contact (hazard_bar or other_environment; grasp_target excluded)"
+    },
+    "hazard_collision_occurrence": {
+      "interval": "cluster bootstrap over rows",
+      "paired_statistic": "row-level difference",
+      "row_statistic": "proportion of repeats with >=1 hazard_bar contact"
+    },
+    "task_success": {
+      "interval": "cluster bootstrap over the 41 rows, percentile CI",
+      "paired_statistic": "row-level difference (raw_head proportion - act_only proportion)",
+      "row_statistic": "success proportion over repeats, per condition"
+    }
+  },
+  "confirmatory_composition": {
+    "hazard_absent": 9,
+    "hazard_present": 32,
+    "total": 41
+  },
+  "confirmatory_manifest": "configs/hybrid_obstacle_confirmatory41_v1.json",
+  "continuous_outcomes": {
+    "correction_magnitude": {
+      "paired_statistic": "row-level mean difference",
+      "row_statistic": "mean of per-rollout max correction norm"
+    },
+    "minimum_hazard_clearance": {
+      "paired_statistic": "row-level mean difference",
+      "row_statistic": "mean over repeats"
+    },
+    "other_environment_collisions": {
+      "paired_statistic": "row-level mean difference",
+      "row_statistic": "mean count over repeats"
+    },
+    "task_duration": {
+      "paired_statistic": "row-level mean difference",
+      "row_statistic": "mean real timesteps over repeats"
+    }
+  },
+  "executed_in_this_task": false,
+  "experimental_structure": {
+    "block": "manifest row (episode identity, fixed initial state)",
+    "intervention": "condition (ACT_ONLY vs ACT_PLUS_RAW_HEAD)",
+    "nested_replication": "repeat index within row and condition",
+    "why_nested": "Under the retained offsamples=4 contract, repeats of the same row are stochastic replications of the same experimental unit, not independent units. Treating repeats as independent would understate the standard error."
+  },
+  "interval_method": {
+    "cluster": "manifest row",
+    "confidence": 0.95,
+    "name": "cluster (row-level) percentile bootstrap",
+    "note": "resample rows, not repeats",
+    "resamples": 10000
+  },
+  "mcnemar_as_sole_test": false,
+  "mcnemar_note": "Ordinary McNemar assumes one paired binary observation per unit. With five stochastic repeats per row the outcome is a proportion, so McNemar alone is invalid. It may be reported as a secondary sensitivity analysis on row-level majority outcomes, clearly labelled, but the primary interval must be the cluster bootstrap.",
+  "prespecified_reporting_rules": [
+    "report hazard-present and hazard-absent strata separately",
+    "report the interval, not only the point estimate",
+    "state the number of rows and repeats behind every number",
+    "never describe the raw head as proven safe on the basis of the development rows",
+    "exclude the privileged oracle condition from every headline table"
+  ],
+  "purpose": "Prepared, NOT executed. The confirmatory analysis plan for the untouched 41-row manifest.",
+  "repeat_count_rule": {
+    "0_unstable_rows": 3,
+    "1_or_2_unstable_rows": 5,
+    "3_or_4_unstable_rows": "STOCHASTICITY_TOO_HIGH_FOR_CONFIRMATORY_PROTOCOL",
+    "definition_of_unstable": "a development row whose ACT_ONLY task-success count or collision-free-success count over 5 repeats is neither 0/5 nor 5/5",
+    "predeclared_before_results": true
+  },
+  "report_sha256": "e84b9975a61caab5329ae8cd0bb4203a470e2841cae646f585c1545afafc77ed",
+  "resampling_unit": "manifest_row",
+  "resampling_unit_rationale": "The 41 rows are the independent units. Bootstrap resamples rows with replacement, carrying all of a row's repeats together, so within-row correlation is preserved.",
+  "schema": "hybrid_obstacle_future_statistical_protocol_v1",
+  "strata": [
+    "hazard_present",
+    "hazard_absent"
+  ],
+  "strata_note": "Reported separately and never pooled into a single headline number. The hazard-absent stratum measures unnecessary intervention; the hazard-present stratum measures avoidance."
+}
