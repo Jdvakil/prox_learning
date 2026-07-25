@@ -1,0 +1,56 @@
+{
+  "all_ok": true,
+  "checks": {
+    "all_losses_finite": {
+      "ok": true
+    },
+    "converted_dataset_unchanged": {
+      "ok": true,
+      "tree": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47"
+    },
+    "epoch_bookkeeping": {
+      "contiguous_0_to_1999": true,
+      "epochs": 2000,
+      "no_repeats": true,
+      "ok": true
+    },
+    "no_proximity_parameters": {
+      "matching_keys": [],
+      "ok": true,
+      "total_keys": 344
+    },
+    "no_safety_cvae_parameters": {
+      "matching_keys": [],
+      "ok": true
+    },
+    "source_collection_intact": {
+      "expected": 1344,
+      "file_count": 1344,
+      "ok": true,
+      "writable": 0
+    },
+    "split_ids_match_committed": {
+      "n_train": 80,
+      "n_val": 20,
+      "ok": true,
+      "overlap": 0,
+      "train_match": true,
+      "val_match": true
+    },
+    "statistics_match": {
+      "contract": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+      "declared": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+      "ok": true,
+      "recomputed": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+      "run_manifest": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+      "train_only": true
+    },
+    "training_log_clean": {
+      "mentions_safety_cvae": false,
+      "mentions_use_proximity": false,
+      "ok": true
+    }
+  },
+  "failed": [],
+  "schema": "hybrid_obstacle_act_baseline_post_training_verification"
+}

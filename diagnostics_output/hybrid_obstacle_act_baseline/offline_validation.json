@@ -1,0 +1,254 @@
+{
+  "arm_joint_mae": {
+    "denormalized": 0.08944111335741183,
+    "normalized": 0.44197613270003616
+  },
+  "checkpoint": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+  "checkpoint_sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+  "dataset_dir": "/root/prox_learning_hybrid_safety/assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A",
+  "dataset_stats_pkl_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+  "denormalized_action_mae": 6.962633248364333,
+  "disclaimer": "Offline teacher-forced imitation metrics only. No simulator rollout, no task-success measurement, and no claim about collision avoidance, safety, or superiority over any other policy.",
+  "gripper_command_mae": {
+    "denormalized": 55.07497819341278,
+    "normalized": 0.44962882132588666
+  },
+  "hazard_absent_denormalized_mae": 6.809570380181628,
+  "hazard_absent_trajectories": 5,
+  "hazard_present_denormalized_mae": 7.010568049651058,
+  "hazard_present_trajectories": 15,
+  "normalized_action_mae": 0.4429327187782674,
+  "per_action_dimension_mae": {
+    "denormalized": [
+      0.04069606844585463,
+      0.09585871050404082,
+      0.03477938108340763,
+      0.16140546886155957,
+      0.08462748302371605,
+      0.1090395895860563,
+      0.09968109199724784,
+      55.07497819341278
+    ],
+    "dimension_names": [
+      "arm_joint_0",
+      "arm_joint_1",
+      "arm_joint_2",
+      "arm_joint_3",
+      "arm_joint_4",
+      "arm_joint_5",
+      "arm_joint_6",
+      "gripper_command"
+    ],
+    "normalized": [
+      0.5782682846539281,
+      0.3294584047529696,
+      0.22739256041130224,
+      0.4654885094148283,
+      0.47712990944066513,
+      0.5712055547481227,
+      0.4448897054784367,
+      0.44962882132588666
+    ]
+  },
+  "per_episode": [
+    {
+      "act_episode_index": 60,
+      "denormalized_action_mae": 9.526940346899604,
+      "hazard_present": true,
+      "normalized_action_mae": 0.37639058081079124,
+      "real_timesteps": 110,
+      "scored_action_elements": 6050,
+      "source_episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+    },
+    {
+      "act_episode_index": 61,
+      "denormalized_action_mae": 7.420713950368694,
+      "hazard_present": true,
+      "normalized_action_mae": 0.30626940443402245,
+      "real_timesteps": 56,
+      "scored_action_elements": 1596,
+      "source_episode_id": "74afc9ab4a9368ff8a5ccecc7306e0274fb624faa328bc17ba3fe43c2dace7b2"
+    },
+    {
+      "act_episode_index": 62,
+      "denormalized_action_mae": 7.82393342589928,
+      "hazard_present": true,
+      "normalized_action_mae": 0.30404451088716755,
+      "real_timesteps": 59,
+      "scored_action_elements": 1770,
+      "source_episode_id": "72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+    },
+    {
+      "act_episode_index": 63,
+      "denormalized_action_mae": 5.13204227730687,
+      "hazard_present": true,
+      "normalized_action_mae": 0.3151706178499743,
+      "real_timesteps": 61,
+      "scored_action_elements": 1891,
+      "source_episode_id": "c8425b548fa62c4652bdc17dc35803018095a69ecf22cdf3419fdf250431e1a9"
+    },
+    {
+      "act_episode_index": 64,
+      "denormalized_action_mae": 5.716598217067997,
+      "hazard_present": true,
+      "normalized_action_mae": 0.25163029305945894,
+      "real_timesteps": 62,
+      "scored_action_elements": 1953,
+      "source_episode_id": "10d698b68ccde0dc9fd40326767f43f3fec7a0bf423bc2c2cabddf6b5c6503f8"
+    },
+    {
+      "act_episode_index": 65,
+      "denormalized_action_mae": 2.63807312659543,
+      "hazard_present": true,
+      "normalized_action_mae": 0.38228524558070537,
+      "real_timesteps": 54,
+      "scored_action_elements": 1485,
+      "source_episode_id": "15b7751135578d34cbf0f5229f2e0e686c923ab02d42737792e8f1d9515dfbb8"
+    },
+    {
+      "act_episode_index": 66,
+      "denormalized_action_mae": 6.521648411100611,
+      "hazard_present": true,
+      "normalized_action_mae": 0.2889894905692515,
+      "real_timesteps": 93,
+      "scored_action_elements": 4371,
+      "source_episode_id": "08e834f65a5d8ba7ce54f57ccf2a5d21329b31fffec67ca08d6dcf264934b1ec"
+    },
+    {
+      "act_episode_index": 67,
+      "denormalized_action_mae": 9.547286483914839,
+      "hazard_present": true,
+      "normalized_action_mae": 0.30644407353158726,
+      "real_timesteps": 59,
+      "scored_action_elements": 1770,
+      "source_episode_id": "cf6f9c259f9b375fe2196109c7f1d964c1eecdb325f21b843fdec7a3b52693b6"
+    },
+    {
+      "act_episode_index": 68,
+      "denormalized_action_mae": 10.937919324097662,
+      "hazard_present": true,
+      "normalized_action_mae": 0.40891857201096704,
+      "real_timesteps": 59,
+      "scored_action_elements": 1770,
+      "source_episode_id": "815db39e841c29340eeaaa8531329a3b020efccfc03b516c6f0c3263793c6d17"
+    },
+    {
+      "act_episode_index": 69,
+      "denormalized_action_mae": 6.763691704250444,
+      "hazard_present": true,
+      "normalized_action_mae": 0.5144762398179169,
+      "real_timesteps": 128,
+      "scored_action_elements": 7850,
+      "source_episode_id": "5fb90f8aed511a979290fbe34c4fdcfc7e4452ecac84f94ac8ef42a390e1fe6f"
+    },
+    {
+      "act_episode_index": 70,
+      "denormalized_action_mae": 5.867980786452168,
+      "hazard_present": true,
+      "normalized_action_mae": 0.4337700632281769,
+      "real_timesteps": 56,
+      "scored_action_elements": 1596,
+      "source_episode_id": "1ce06b5c41b9d7d3f23763621b61a960fdd5dcf1a43f53681c16604a74c7e89e"
+    },
+    {
+      "act_episode_index": 71,
+      "denormalized_action_mae": 6.905700103271894,
+      "hazard_present": true,
+      "normalized_action_mae": 0.3995198855137771,
+      "real_timesteps": 97,
+      "scored_action_elements": 4753,
+      "source_episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+    },
+    {
+      "act_episode_index": 72,
+      "denormalized_action_mae": 3.744566440360065,
+      "hazard_present": true,
+      "normalized_action_mae": 0.3210471236914919,
+      "real_timesteps": 95,
+      "scored_action_elements": 4560,
+      "source_episode_id": "97ba8fa5ca54e4a795514fe1aaf815575fe1fa0e7ba3ebef2d1a5f85271d92bf"
+    },
+    {
+      "act_episode_index": 73,
+      "denormalized_action_mae": 7.601237954204589,
+      "hazard_present": true,
+      "normalized_action_mae": 0.37320419430205254,
+      "real_timesteps": 106,
+      "scored_action_elements": 5650,
+      "source_episode_id": "3dd56c4f5180e28d3d151ad5fd903b6c547e661eaf762feb01542e5ff28ec85c"
+    },
+    {
+      "act_episode_index": 74,
+      "denormalized_action_mae": 7.914613606918487,
+      "hazard_present": true,
+      "normalized_action_mae": 0.42436678508459696,
+      "real_timesteps": 62,
+      "scored_action_elements": 1953,
+      "source_episode_id": "b90df4a7b64c84c127bf15191c7077d5e10e5760d43502b9fbf82a15905e0803"
+    },
+    {
+      "act_episode_index": 95,
+      "denormalized_action_mae": 7.417020013753105,
+      "hazard_present": false,
+      "normalized_action_mae": 0.776634822938739,
+      "real_timesteps": 85,
+      "scored_action_elements": 3655,
+      "source_episode_id": "abea31b28c6fe48aab09248d8293360d508bf15e08f2a640033733e4a9a107ec"
+    },
+    {
+      "act_episode_index": 96,
+      "denormalized_action_mae": 6.4191265818230105,
+      "hazard_present": false,
+      "normalized_action_mae": 0.8852830807449138,
+      "real_timesteps": 88,
+      "scored_action_elements": 3916,
+      "source_episode_id": "10e1cd6d45700f4957ea9382cbb3360d24f7abaee274142c0c5cc655bbfa2326"
+    },
+    {
+      "act_episode_index": 97,
+      "denormalized_action_mae": 7.973582173100345,
+      "hazard_present": false,
+      "normalized_action_mae": 0.4630688534815705,
+      "real_timesteps": 67,
+      "scored_action_elements": 2278,
+      "source_episode_id": "8032fabd9fe0211c19b115c2ede6422c64500dbeb80709a07550fb6bcabe0945"
+    },
+    {
+      "act_episode_index": 98,
+      "denormalized_action_mae": 6.541259731650694,
+      "hazard_present": false,
+      "normalized_action_mae": 0.543904559542513,
+      "real_timesteps": 83,
+      "scored_action_elements": 3486,
+      "source_episode_id": "9312495a27e0bf865c435f8c472e00c1eca18e8a4fdbf1bf97ea75881fbe9f77"
+    },
+    {
+      "act_episode_index": 99,
+      "denormalized_action_mae": 5.61535488423847,
+      "hazard_present": false,
+      "normalized_action_mae": 0.36459170329192325,
+      "real_timesteps": 63,
+      "scored_action_elements": 2016,
+      "source_episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+    }
+  ],
+  "policy_last_sha256": "f952f8f0887bfc5d3b09d9d8c2a6753b40828de10751dfad516294ca09977ebe",
+  "protocol": {
+    "chunk_size": 100,
+    "cvae_mode": "inference (prior sample, no action encoder)",
+    "padding_scored": false,
+    "query_starts": "every real timestep of every validation trajectory",
+    "teacher_forced": true
+  },
+  "reload_deterministic_on_fixed_batch": true,
+  "reload_max_abs_diff": 0.0,
+  "run_dir": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep",
+  "schema": "hybrid_obstacle_act_baseline_offline_validation",
+  "scored_action_elements": 514952,
+  "split_manifest_sha256": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+  "state_dim": 9,
+  "statistics_match_run_manifest": true,
+  "statistics_sha256": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+  "validation_real_timesteps": 1543,
+  "validation_trajectories": 20
+}

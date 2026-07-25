@@ -457,3 +457,68 @@ The exact commands are in §18 of the decision doc. Things worth knowing:
   `obstacle_baseline` at `conversion_A` with `num_episodes=100` and
   `episode_len=132` (max T = 130). Nothing in this task trained ACT or the
   Safety-CVAE, or ran any evaluation.
+
+## Hybrid obstacle ACT baseline: the pinned nominal policy (trained)
+
+The canonical vanilla ACT baseline has been trained on the 100-episode dataset
+above and pinned. Read `docs/HYBRID_OBSTACLE_ACT_BASELINE_FINAL_DECISION.md`
+before using or retraining it.
+
+**This one checkpoint is the nominal policy for BOTH later conditions** — ACT
+alone, and the same checkpoint plus the 40-sensor Safety-CVAE residual. Do not
+train a second nominal ACT for the safety arm; that would confound the
+comparison.
+
+Result: seed 0, 2000 epochs, batch 8, 49m 47s on an A10. Validation loss
+77.84 → **0.171486, best at epoch 1738**. Offline teacher-forced MAE on the fixed
+20 validation trajectories: 0.4429 normalized, arm joints 0.0894 rad,
+gripper 55.07 on the 0–255 actuator scale. Those are imitation metrics only — no
+task success, collision or safety measurement was made.
+
+```
+configs/hybrid_obstacle_act_baseline_v2.yaml                 # frozen training contract
+scripts/run_hybrid_obstacle_act_baseline_v2.py               # builds the command from the contract
+scripts/hybrid_obstacle_act_baseline_offline_eval.py         # teacher-forced offline metrics
+submodules/act/fixed_split_data.py                           # committed-split loader, train-only stats
+submodules/act/tests/test_fixed_split_loader.py              # 38 tests (56 with the existing suite)
+diagnostics_output/hybrid_obstacle_act_baseline/             # audit, smoke, curves, metrics, pin
+/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/
+                                                             # 8.8 GiB of checkpoints, NOT in git
+                                                             #   policy_best.ckpt dd7cd108a64ce10e...
+                                                             #   policy_last.ckpt f952f8f0887bfc5d...
+```
+
+Why the ACT loader had to be repaired first (all five were real, all confirmed by
+reading `3d25c69`):
+
+- **`utils.load_data` generated its own random 80/20 split** with
+  `np.random.permutation`, ignoring the committed split entirely — and seeded it
+  from `set_seed(1)`, not `--seed`.
+- **Normalization statistics were computed over all 100 episodes**, so the 20
+  validation trajectories leaked into the qpos/action mean and std.
+- **The validation loader was shuffled**, so validation loss was not reproducible.
+- **`constants.py` `obstacle_baseline` pointed at `/home/jaydv/...obstacle_v1`**
+  with `episode_len` 169 — a machine-specific path to the superseded collection.
+- **There was no resume**: periodic saves wrote the model state dict only, with no
+  optimizer state, RNG state or epoch counter, and were not atomic.
+
+Things worth knowing:
+
+- **Pass `--split_manifest` to get the fixed path.** Without it, `imitate_episodes.py`
+  keeps its legacy behaviour for every existing task. The manifest path takes
+  `--dataset_dir`, so no machine-specific path is committed to `constants.py`.
+- **The loader fails closed.** It verifies the split manifest's self-hash, every
+  converted file's hash, the converted tree hash, and the on-disk tensor contract
+  (sim flag, qpos 9, action 8, both cameras, horizon) before the first batch.
+- **Validation windows are fixed across epochs**, unlike the fork, which redrew
+  them every epoch. That makes the validation curve comparable epoch to epoch and
+  stops best-checkpoint selection from rewarding a lucky window draw.
+- **Bit-identical weights are not claimed.** Two fresh runs with the same seed
+  already differ by ~1e-4 after two epochs from nondeterministic cuDNN kernels;
+  resume was measured to add nothing beyond that. Epoch-0 validation loss *is*
+  bit-identical across runs, so the data path itself is deterministic.
+- **Training overfits after ~epoch 900** (train 0.068 vs val 0.18 at the end).
+  That is why `policy_best.ckpt` is epoch 1738 and not the last epoch.
+- **Next step is paired evaluation**, in its own approved task: verify
+  `checkpoint_manifest.json`, then roll out `policy_best.ckpt` with and without
+  the Safety-CVAE residual. Nothing in this task ran a rollout.

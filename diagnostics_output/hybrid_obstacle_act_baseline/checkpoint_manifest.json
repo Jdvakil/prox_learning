@@ -1,0 +1,66 @@
+{
+  "act_base_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+  "act_branch": "repair/hybrid-obstacle-fixed-split-loader-v1",
+  "act_commit": "68b73a80746f0165351a80c6e31bbc591f5b11a4",
+  "action_dim": 8,
+  "best_epoch": 1738,
+  "best_validation_loss": 0.17148640751838684,
+  "camera_names": [
+    "exo_camera_1",
+    "wrist_camera"
+  ],
+  "canonical_manifest_sha256": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+  "canonical_source_collection_tree_sha256": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+  "checkpoint_manifest_sha256": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+  "chunk_size": 100,
+  "converted_dataset_dir": "/root/prox_learning_hybrid_safety/assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A",
+  "converted_dataset_tree_sha256": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+  "dataset_statistics_sha256": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+  "dataset_stats_pkl_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+  "episode_horizon": 132,
+  "evaluator_rejection_rule": "Recompute dataset_statistics_sha256 from the training split and compare; compare fixed_split_manifest_sha256 and converted_dataset_tree_sha256; compare policy_best_ckpt sha256. Any mismatch means the checkpoint was not trained on this dataset and split and must be rejected.",
+  "exact_training_command": "cd /root/prox_learning_hybrid_safety/submodules/act && \\\n    /root/act_retrain_venv/bin/python \\\n    imitate_episodes.py \\\n    --task_name obstacle_baseline \\\n    --ckpt_dir /root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep \\\n    --exact_ckpt_dir \\\n    --policy_class ACT \\\n    --batch_size 8 \\\n    --seed 0 \\\n    --num_epochs 2000 \\\n    --lr 1e-05 \\\n    --kl_weight 10 \\\n    --chunk_size 100 \\\n    --hidden_dim 512 \\\n    --dim_feedforward 3200 \\\n    --dataset_dir /root/prox_learning_hybrid_safety/assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A \\\n    --split_manifest /root/prox_learning_hybrid_safety/configs/hybrid_obstacle_canonical_split_v2.json \\\n    --dataset_manifest /root/prox_learning_hybrid_safety/diagnostics_output/hybrid_obstacle_full_collection/conversion_A_manifest.json \\\n    --expect_split_sha256 f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0 \\\n    --expect_dataset_tree_sha256 a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47 \\\n    --episode_horizon 132 \\\n    --state_dim 9 \\\n    --action_dim 8 \\\n    --num_workers 1 \\\n    --ckpt_every 100 \\\n    --no_wandb",
+  "fixed_split_manifest_sha256": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+  "image_size": [
+    240,
+    320
+  ],
+  "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+  "molmospaces_modified": false,
+  "offline_validation": {
+    "arm_joint_mae_denormalized": 0.08944111335741183,
+    "denormalized_action_mae": 6.962633248364333,
+    "gripper_command_mae_denormalized": 55.07497819341278,
+    "normalized_action_mae": 0.4429327187782674,
+    "reload_deterministic": true,
+    "validation_real_timesteps": 1543,
+    "validation_trajectories": 20
+  },
+  "policy_best_ckpt": {
+    "path": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+    "sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36"
+  },
+  "policy_last_ckpt": {
+    "path": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_last.ckpt",
+    "sha256": "f952f8f0887bfc5d3b09d9d8c2a6753b40828de10751dfad516294ca09977ebe"
+  },
+  "proximity_consumed": false,
+  "purpose": "Pins the single nominal ACT policy used by BOTH later conditions: ACT only, and the same checkpoint plus the 40-sensor Safety-CVAE residual. An evaluator must reject any checkpoint whose manifest or statistics do not match these values.",
+  "qpos_dim": 9,
+  "root_branch": "train/hybrid-obstacle-act-baseline-v2",
+  "root_commit": "92371042b41eb792302727f0769a8c5fda0201a5",
+  "run_manifest_sha256": "5ffedb180d4cec1d9c42990909a60cbb246b071c8603fb912e88e4ded3cd6f48",
+  "runtime_environment": {
+    "cuda": "12.6",
+    "gpu": "NVIDIA A10",
+    "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "torch": "2.7.1+cu126"
+  },
+  "runtime_environment_sha256": "db768620a4216e244ad355cbffa4b237a5ed4c698aaae7362c49a784ecc7d412",
+  "safety_cvae_loaded": false,
+  "schema": "hybrid_obstacle_act_baseline_checkpoint_manifest",
+  "training_config": "/root/prox_learning_hybrid_safety/configs/hybrid_obstacle_act_baseline_v2.yaml",
+  "training_config_sha256": "cb774f953fa01077d51131dd9ff2426435014ad7f4f7d179126a9a97a87d69d7",
+  "training_seed": 0
+}
