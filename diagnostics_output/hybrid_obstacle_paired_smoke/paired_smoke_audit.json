@@ -1,0 +1,257 @@
+{
+  "all_pairs_replayed_identically": true,
+  "clearance_metric_caveat": "minimum_environment_clearance_m comes from the adapter's mj_geomDistance sweep over all non-floor environment geoms, which also includes the grasp target, so it goes negative during a successful grasp. Per-geom distances are not logged for non-contacting bodies, so a hazard-bar-only minimum distance cannot be recovered from these logs; hazard-bar proximity is reported via contact entries and the 40-sensor activation depths instead.",
+  "contact_classification_note": "The audited adapter logs every robot contact against a non-floor body, which includes the grasp target cavity_obj_0/<uid>. Touching the target IS the task, so contacts are partitioned here into grasp_target, hazard_bar (body protr_*) and other_environment. collision_free_success counts only the latter two; the raw all-non-floor reading is reported as collision_free_success_including_grasp. The adapter itself is unmodified.",
+  "duplicate_episode_ids": [],
+  "hazard_absent": {
+    "act_only_task_success": 0,
+    "collisions_regressed": [],
+    "correction_norm_max": [],
+    "correction_norm_rms": [],
+    "outcome_regressed": [],
+    "pairs": 0,
+    "raw_safety_output_norm_max": [],
+    "safety_task_success": 0,
+    "subtracted_output_norm_max": []
+  },
+  "hazard_present": {
+    "act_only_collision_frames": 1335,
+    "act_only_hazard_bar_contacts": 0,
+    "act_only_other_env_contacts": 65,
+    "act_only_task_success": 1,
+    "pairs": 1,
+    "safety_collision_frames": 276,
+    "safety_hazard_bar_contacts": 0,
+    "safety_other_env_contacts": 173,
+    "safety_task_success": 0
+  },
+  "integration_all_pairs_ok": true,
+  "known_self_return_note": "Kept in the Safety-CVAE input to match its training contract. Their raw activation is reported separately and is not counted as obstacle-responsive evidence.",
+  "known_self_return_sensors": [
+    "link5_front_sensor_1",
+    "link5_front_sensor_2"
+  ],
+  "ok": false,
+  "pairs": [
+    {
+      "act_only": {
+        "collision_frames": 1335,
+        "collision_free_success": false,
+        "collision_free_success_including_grasp": false,
+        "contact_breakdown": {
+          "example_pairs": {
+            "grasp_target": [
+              "robot_0/gripper/right_pad1 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+              "geom_66 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+              "geom_69 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+              "geom_70 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13"
+            ],
+            "hazard_bar": [],
+            "other_environment": [
+              "sash_g <-> robot_0/fr3_link6_collision"
+            ]
+          },
+          "first_hazard_bar_contact_step": null,
+          "first_other_environment_contact_step": 126,
+          "frames_with_contact": {
+            "grasp_target": 113,
+            "hazard_bar": 0,
+            "other_environment": 65
+          },
+          "maximum_penetration_m": {
+            "grasp_target": 0.002599691216883805,
+            "hazard_bar": 0.0,
+            "other_environment": 0.00028508799029463764
+          },
+          "pair_entries": {
+            "grasp_target": 1270,
+            "hazard_bar": 0,
+            "other_environment": 65
+          },
+          "safety_relevant_contact_entries": 65
+        },
+        "duration_s": 13.200000000000001,
+        "frames": 200,
+        "maximum_penetration_m": 0.002599691216883805,
+        "minimum_environment_clearance_m": -0.002599691216883807,
+        "task_success": true
+      },
+      "act_plus_safety_live": {
+        "collision_frames": 276,
+        "collision_free_success": false,
+        "collision_free_success_including_grasp": false,
+        "contact_breakdown": {
+          "example_pairs": {
+            "grasp_target": [
+              "geom_60 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider11",
+              "geom_60 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider3",
+              "geom_78 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider2",
+              "geom_78 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider3"
+            ],
+            "hazard_bar": [],
+            "other_environment": [
+              "bench_top <-> geom_70",
+              "bench_top <-> robot_0/gripper/left_pad2",
+              "bench_top <-> robot_0/gripper/right_pad2"
+            ]
+          },
+          "first_hazard_bar_contact_step": null,
+          "first_other_environment_contact_step": 31,
+          "frames_with_contact": {
+            "grasp_target": 56,
+            "hazard_bar": 0,
+            "other_environment": 87
+          },
+          "maximum_penetration_m": {
+            "grasp_target": 0.014754291467492603,
+            "hazard_bar": 0.0,
+            "other_environment": 0.0008091304683819356
+          },
+          "pair_entries": {
+            "grasp_target": 103,
+            "hazard_bar": 0,
+            "other_environment": 173
+          },
+          "safety_relevant_contact_entries": 173
+        },
+        "correction_norm_rms": 0.19690546473099219,
+        "duration_s": 13.200000000000001,
+        "frames": 200,
+        "integrated_residual_norm": 1.469143876286443,
+        "maximum_correction_norm": 0.2967073137747466,
+        "maximum_penetration_m": 0.014754291467492603,
+        "minimum_environment_clearance_m": -0.014754291467492603,
+        "raw_safety_output_norm_max": 2.1337606767119817,
+        "raw_safety_output_norm_rms": 0.7871440611725556,
+        "return_to_nominal_error": 0.15075691428215257,
+        "subtracted_output_norm_max": 0.2259571216127066,
+        "subtracted_output_norm_rms": 0.11780179375468007,
+        "task_success": false,
+        "time_to_first_safety_activation_s": 0.066
+      },
+      "candidate_index": 106,
+      "deltas": {
+        "collision_frame_delta": -1059,
+        "hazard_bar_contact_delta": 0,
+        "minimum_clearance_delta_m": -0.012154600250608796,
+        "safety_relevant_contact_delta": 108,
+        "task_duration_delta_s": 0.0
+      },
+      "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+      "hazard_present": true,
+      "initial_reference_minimum_depth_m": 0.15644827485084534,
+      "initial_state_sha256": "a753d751a01d0925e900b844857141d036e3b1a6796987c44dcc3d16e231b064",
+      "integration_checks": {
+        "all_actions_finite": true,
+        "correction_within_max_dev": true,
+        "gripper_bitwise_unchanged_from_nominal": true,
+        "residual_is_arm_only": true
+      },
+      "paired_first_nominal_action_equal": false,
+      "paired_first_observation_equal": false,
+      "paired_initial_state_equal": true,
+      "reference_mode": "first_live_observation",
+      "reference_skin_sha256": "e80cefb15ba316bc6a484c078bcab2057e87ccbdd9c0abb55b3bbdc123f5a5cc",
+      "sensor_attribution": {
+        "distinct_other_sensors_active": 25,
+        "frames_where_only_known_self_return_sensors_active": 0,
+        "frames_with_any_active_sensor": 200,
+        "known_self_return_activation_counts": {
+          "link5_front_sensor_1": 0,
+          "link5_front_sensor_2": 0
+        },
+        "known_sensors_dominate_raw_activation": false,
+        "link_activation_counts": {
+          "link1": 200,
+          "link2": 391,
+          "link3": 459,
+          "link4": 583,
+          "link5_back": 577,
+          "link5_front": 314,
+          "link6": 992
+        },
+        "other_sensor_activation_counts": {
+          "link1_sensor_5": 200,
+          "link2_sensor_3": 200,
+          "link2_sensor_4": 163,
+          "link2_sensor_5": 7,
+          "link2_sensor_6": 21,
+          "link3_sensor_0": 32,
+          "link3_sensor_1": 123,
+          "link3_sensor_2": 172,
+          "link3_sensor_3": 33,
+          "link3_sensor_4": 99,
+          "link4_sensor_0": 172,
+          "link4_sensor_1": 153,
+          "link4_sensor_2": 171,
+          "link4_sensor_3": 87,
+          "link5_back_sensor_2": 177,
+          "link5_back_sensor_4": 200,
+          "link5_back_sensor_5": 200,
+          "link5_front_sensor_0": 169,
+          "link5_front_sensor_3": 145,
+          "link6_sensor_0": 170,
+          "link6_sensor_1": 176,
+          "link6_sensor_2": 200,
+          "link6_sensor_3": 152,
+          "link6_sensor_4": 149,
+          "link6_sensor_5": 145
+        }
+      }
+    }
+  ],
+  "schema": "hybrid_obstacle_paired_smoke_audit",
+  "statistical_disclaimer": "Four pairs. No statistical superiority claim is made or supported. Exact McNemar testing for binary paired outcomes and paired trajectory bootstrap intervals for continuous deltas are prepared for the later 45-row evaluation and are deliberately not applied here.",
+  "totals": {
+    "act_only_collision_free_success": 0,
+    "act_only_task_success": 1,
+    "hazard_absent_pairs": 0,
+    "hazard_present_pairs": 1,
+    "pairs": 1,
+    "safety_collision_free_success": 0,
+    "safety_task_success": 0
+  },
+  "zero_equivalence": {
+    "act_only_frames": 200,
+    "act_plus_zero_frames": 200,
+    "collision_sequence_equal": false,
+    "executed_action_bitwise_equal": false,
+    "executed_mismatch_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "first_observation_fingerprint_equal": false,
+    "frame_counts_equal": true,
+    "gripper_bitwise_equal": true,
+    "initial_state_equal": true,
+    "max_abs_correction_diff": 0.0,
+    "max_abs_executed_action_diff": 0.016476929187774658,
+    "max_abs_nominal_action_diff": 0.016476929187774658,
+    "nominal_action_bitwise_equal": false,
+    "nominal_mismatch_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "ok": false,
+    "phase_sequence_equal": true,
+    "steps_compared": 200,
+    "success_equal": true,
+    "zero_correction_is_identically_zero": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "attribution": "The divergence enters through the wrist_camera RGB observation at step 0. The 40 proximity sensors, the exo_camera_1 RGB, qpos and the replayed initial state are all bit-identical, and the safety correction is identically zero in both arms, so neither the residual controller nor the reference pipeline can be the cause. Both rollouts emit the pre-existing MolmoSpaces warning 'Camera sensor wrist_camera observation mismatch between reset and first step. Overwriting cached observation with current state.', which names exactly the divergent stream. A ~2.5e-05 difference in the ACT nominal action at step 0 then amplifies over 200 closed-loop steps into different contact sequences.",
+  "control_experiment": {
+    "collision_counts": {
+      "act_only": 1335,
+      "act_only_control": 1300,
+      "act_plus_zero": 1427
+    },
+    "conclusion": "Two ACT_ONLY rollouts with byte-identical source diverge in exactly the same way as ACT_ONLY versus ACT_PLUS_ZERO: the wrist_camera RGB at step 0 differs while the replayed initial state, the frozen reference skin, the 40 proximity streams, exo_camera_1 and qpos are all bit-identical. Bitwise zero-equivalence is therefore unattainable in this environment for reasons independent of the safety stack, and the earlier annotation-only source edit is excluded as a cause.",
+    "design": "Two ACT_ONLY rollouts of the same manifest row with byte-identical source, separate processes.",
+    "initial_state_sha256_equal": true,
+    "reference_skin_sha256_equal": true,
+    "run_a": "r106_act_only",
+    "run_b": "r106_act_only_control",
+    "step0_exo_camera_1_equal": true,
+    "step0_proximity_equal": true,
+    "step0_qpos_equal": true,
+    "step0_wrist_camera_equal": false,
+    "task_success": {
+      "act_only": true,
+      "act_only_control": true,
+      "act_plus_zero": true
+    }
+  },
+  "purpose": "Root-cause the ACT_ONLY vs ACT_PLUS_ZERO divergence found in the step-10 preflight.",
+  "row": {
+    "accepted_retry_index": 0,
+    "candidate_index": 106,
+    "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+    "hazard_present": true
+  },
+  "ruled_out": {
+    "checkpoint_or_source": {
+      "all_14_artifact_hashes_matched": true,
+      "verdict": "CHECKPOINT_OR_SOURCE_MISMATCH does not apply"
+    },
+    "nominal_act_live": {
+      "act_only_control_task_success_row106": true,
+      "act_only_task_success_row106": true,
+      "verdict": "ACT-only succeeds on the preflight row, so NOMINAL_ACT_LIVE_FAILED does not apply"
+    },
+    "reference_pipeline": {
+      "baseline_mode": "first_live_observation",
+      "privileged_reference_h5_used": false,
+      "reference_reset_per_episode": true,
+      "reference_skin_sha256": "e80cefb15ba316bc6a484c078bcab2057e87ccbdd9c0abb55b3bbdc123f5a5cc",
+      "reference_skin_sha256_identical_across_all_runs": true,
+      "verdict": "DETERMINISTIC and unprivileged -- REFERENCE_PIPELINE_INVALID does not apply"
+    },
+    "safety_residual_integration": {
+      "all_logged_vectors_finite": true,
+      "controller_equation_replay_max_abs_error": 4.513e-08,
+      "gripper_bitwise_preserved_every_frame": true,
+      "max_abs_correction": 0.27656,
+      "max_deviation_limit": 0.35,
+      "residual_is_arm_only_max_abs_error": 1.173e-07,
+      "verdict": "SOUND -- SAFETY_RESIDUAL_INTEGRATION_FAILED does not apply",
+      "within_clip": true
+    }
+  },
+  "schema": "hybrid_obstacle_paired_smoke_zero_equivalence_diagnosis",
+  "what_diverged": {
+    "act_only_wrist_camera_sha256": "814e9457c8c3761b49e2c0b6f3037a912e3c899d2f7491a437031eb34b82312e",
+    "first_diverging_step": 0,
+    "nominal_action_divergence_at_step0_max_abs": 2.5e-05,
+    "step0_wrist_camera_sha256_equal": false,
+    "zero_wrist_camera_sha256": "a8cf3b37a95281cdea4fa72107afe0b72ece4528549f3b7a2fcd2f4eabc57af1"
+  },
+  "what_matched": {
+    "corrections_identically_zero_act_only": true,
+    "corrections_identically_zero_zero_mode": true,
+    "initial_state_sha256": "a753d751a01d0925e900b844857141d036e3b1a6796987c44dcc3d16e231b064",
+    "reference_skin_sha256": "e80cefb15ba316bc6a484c078bcab2057e87ccbdd9c0abb55b3bbdc123f5a5cc",
+    "reference_skin_sha256_equal": true,
+    "replayed_initial_state_sha256_equal": true,
+    "step0_exo_camera_1_sha256_equal": true,
+    "step0_proximity_sha256_equal": true,
+    "step0_qpos_equal": true
+  }
+}

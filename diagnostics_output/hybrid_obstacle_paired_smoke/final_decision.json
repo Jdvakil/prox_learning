@@ -1,0 +1,455 @@
+{
+  "act_adapter_lineage": {
+    "adapter_files_byte_identical_to_3d25c69": {
+      "eval_act_obstacle_safety.py": true,
+      "hybrid_safety_residual.py": true,
+      "run_paired_hybrid_safety_eval.py": true,
+      "tests/test_hybrid_safety_residual.py": true
+    },
+    "base_is_ancestor_of_head": true,
+    "controller_semantics_unchanged": true,
+    "loader_repair_touched_only": [
+      "fixed_split_data.py",
+      "imitate_episodes.py",
+      "tests/test_fixed_split_loader.py",
+      "utils.py"
+    ]
+  },
+  "artifact_verification": {
+    "act_input_rgb_plus_qpos_only": true,
+    "all_hashes_matched": true,
+    "canonical_manifest_sha256": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+    "checkpoint_manifest_sha256": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+    "converted_dataset_tree_sha256": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+    "count": 14,
+    "dataset_stats_pkl_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+    "fixed_split_manifest_sha256": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+    "model_hybrid_xml_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "policy_best_ckpt_path": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+    "policy_best_ckpt_sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+    "policy_last_used": false,
+    "proximity_into_act": false,
+    "safety_head_deterministic": true,
+    "safety_head_input_shape": [
+      40,
+      8,
+      8
+    ],
+    "safety_head_output_shape": [
+      7
+    ],
+    "safety_label_scale": 11.359346389770508,
+    "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+    "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "source_collection_tree_sha256": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+    "training_config_sha256": "cb774f953fa01077d51131dd9ff2426435014ad7f4f7d179126a9a97a87d69d7"
+  },
+  "commits": {
+    "act_adapter_base_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "act_branch": "eval/hybrid-obstacle-manifest-safety-v1",
+    "act_commit": "68b73a80746f0165351a80c6e31bbc591f5b11a4",
+    "act_loader_repair_commit": "68b73a80746f0165351a80c6e31bbc591f5b11a4",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "eval/hybrid-obstacle-act-safety-smoke-v1",
+    "root_commit": "d9de2af28be126a134fc4bb649257daafe8209bf",
+    "root_starting_commit": "d9de2af28be126a134fc4bb649257daafe8209bf"
+  },
+  "constraints_honoured": {
+    "act_trained_or_finetuned": false,
+    "canonical_dataset_or_split_changed": false,
+    "collection_manifest_changed": false,
+    "controller_constants_tuned": false,
+    "environment_robot_cameras_changed": false,
+    "evaluation_rows_from_train_or_validation": false,
+    "full_45_row_evaluation_run": false,
+    "invalid_175_file_collection_used": false,
+    "molmospaces_modified": false,
+    "policy_best_or_dataset_stats_changed": false,
+    "pushed": false,
+    "safety_cvae_trained_or_modified": false,
+    "second_safety_controller_implemented": false,
+    "sensor_geometry_modified": false
+  },
+  "contact_classification": {
+    "act_only": {
+      "grasp_target": 1270,
+      "hazard_bar": 0,
+      "other_environment": 65
+    },
+    "act_plus_safety_live": {
+      "grasp_target": 103,
+      "hazard_bar": 0,
+      "other_environment": 173
+    },
+    "clearance_caveat": "minimum_environment_clearance_m comes from the adapter's mj_geomDistance sweep over all non-floor environment geoms, which also includes the grasp target, so it goes negative during a successful grasp. Per-geom distances are not logged for non-contacting bodies, so a hazard-bar-only minimum distance cannot be recovered from these logs; hazard-bar proximity is reported via contact entries and the 40-sensor activation depths instead.",
+    "hazard_bar_contacts_either_arm": 0,
+    "note": "The audited adapter logs every robot contact against a non-floor body, which includes the grasp target cavity_obj_0/<uid>. Touching the target IS the task, so contacts are partitioned here into grasp_target, hazard_bar (body protr_*) and other_environment. collision_free_success counts only the latter two; the raw all-non-floor reading is reported as collision_free_success_including_grasp. The adapter itself is unmodified."
+  },
+  "date": "2026-07-25",
+  "decision": "PAIRED_SMOKE_INCOMPLETE",
+  "decision_reason": "The step-10 zero-equivalence preflight failed, and the handoff directs that the remaining pairs must not be run when it does. The cause is environment render nondeterminism in the wrist_camera stream, proven by a control experiment, and correcting it would require changing the cameras or environment, which is a hard constraint. Four primary pairs therefore did not finalize.",
+  "evaluation_pool": {
+    "composition": {
+      "hazard_absent": 10,
+      "hazard_present": 35,
+      "total": 45
+    },
+    "derivation": "the successful collection rows excluded from the canonical 100-episode dataset",
+    "label": "held_out_expert_feasible_reserve_v1",
+    "no_overlap_proof": {
+      "canonical_selected": 100,
+      "checked": [
+        "pool_vs_canonical_selected_ids",
+        "pool_vs_train_ids",
+        "pool_vs_train_source_hashes",
+        "pool_vs_validation_ids",
+        "pool_vs_validation_source_hashes"
+      ],
+      "clean": true,
+      "overlaps_found": {
+        "pool_vs_canonical_selected_ids": [],
+        "pool_vs_train_ids": [],
+        "pool_vs_train_source_hashes": [],
+        "pool_vs_validation_ids": [],
+        "pool_vs_validation_source_hashes": []
+      },
+      "pool_episodes": 45,
+      "train_episodes": 80,
+      "validation_episodes": 20
+    },
+    "pool_manifest_sha256": "ae4143e91e81e5178e24751a7624c60822f7c2a22a7f3b6f13627564c49c326f",
+    "scope_caveat": "Expert-feasible pool. The 15 collection rows whose expert planner failed have no accepted initial state to replay and are deliberately absent, so this pool is not an unrestricted sample of every environment attempt."
+  },
+  "final_decision_sha256": "c35d66a74df8e98b0d0554c8e31780a012405cf8c57c62870f741bf3c724743b",
+  "known_self_return_sensors": {
+    "act_only_activation_counts": {
+      "link5_front_sensor_1": 0,
+      "link5_front_sensor_2": 0
+    },
+    "dominate_raw_or_subtracted_output": false,
+    "finding": "On the preflight row both known self-return sensors recorded ZERO activations inside the 0.5 m activation depth, so they do not materially dominate the raw or subtracted safety output here. 25-28 other sensors were active on all 200 frames.",
+    "geometry_modified": false,
+    "kept_in_safety_input": true,
+    "sensors": [
+      "link5_front_sensor_1",
+      "link5_front_sensor_2"
+    ]
+  },
+  "next_recommended_task": "Make the paired comparison robust to wrist_camera render nondeterminism, in a task that is explicitly allowed to touch the observation path. Two options worth costing: (a) investigate and fix the reset/first-step wrist_camera cache mismatch that MolmoSpaces already warns about, which would restore bitwise zero-equivalence; or (b) redefine the gate as a stochastic-equivalence test over N repeats per condition, and size the 45-row evaluation for paired variance rather than bitwise identity. Everything else in this stack is validated and ready.",
+  "preliminary_single_pair_result": {
+    "act_only": {
+      "collision_frames": 1335,
+      "collision_free_success": false,
+      "collision_free_success_including_grasp": false,
+      "contact_breakdown": {
+        "example_pairs": {
+          "grasp_target": [
+            "robot_0/gripper/right_pad1 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+            "geom_66 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+            "geom_69 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13",
+            "geom_70 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider13"
+          ],
+          "hazard_bar": [],
+          "other_environment": [
+            "sash_g <-> robot_0/fr3_link6_collision"
+          ]
+        },
+        "first_hazard_bar_contact_step": null,
+        "first_other_environment_contact_step": 126,
+        "frames_with_contact": {
+          "grasp_target": 113,
+          "hazard_bar": 0,
+          "other_environment": 65
+        },
+        "maximum_penetration_m": {
+          "grasp_target": 0.002599691216883805,
+          "hazard_bar": 0.0,
+          "other_environment": 0.00028508799029463764
+        },
+        "pair_entries": {
+          "grasp_target": 1270,
+          "hazard_bar": 0,
+          "other_environment": 65
+        },
+        "safety_relevant_contact_entries": 65
+      },
+      "duration_s": 13.200000000000001,
+      "frames": 200,
+      "maximum_penetration_m": 0.002599691216883805,
+      "minimum_environment_clearance_m": -0.002599691216883807,
+      "task_success": true
+    },
+    "act_plus_safety_live": {
+      "collision_frames": 276,
+      "collision_free_success": false,
+      "collision_free_success_including_grasp": false,
+      "contact_breakdown": {
+        "example_pairs": {
+          "grasp_target": [
+            "geom_60 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider11",
+            "geom_60 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider3",
+            "geom_78 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider2",
+            "geom_78 <-> cavity_obj_0/4afa0cdde045417ab31f98ae7745b039_collider3"
+          ],
+          "hazard_bar": [],
+          "other_environment": [
+            "bench_top <-> geom_70",
+            "bench_top <-> robot_0/gripper/left_pad2",
+            "bench_top <-> robot_0/gripper/right_pad2"
+          ]
+        },
+        "first_hazard_bar_contact_step": null,
+        "first_other_environment_contact_step": 31,
+        "frames_with_contact": {
+          "grasp_target": 56,
+          "hazard_bar": 0,
+          "other_environment": 87
+        },
+        "maximum_penetration_m": {
+          "grasp_target": 0.014754291467492603,
+          "hazard_bar": 0.0,
+          "other_environment": 0.0008091304683819356
+        },
+        "pair_entries": {
+          "grasp_target": 103,
+          "hazard_bar": 0,
+          "other_environment": 173
+        },
+        "safety_relevant_contact_entries": 173
+      },
+      "correction_norm_rms": 0.19690546473099219,
+      "duration_s": 13.200000000000001,
+      "frames": 200,
+      "integrated_residual_norm": 1.469143876286443,
+      "maximum_correction_norm": 0.2967073137747466,
+      "maximum_penetration_m": 0.014754291467492603,
+      "minimum_environment_clearance_m": -0.014754291467492603,
+      "raw_safety_output_norm_max": 2.1337606767119817,
+      "raw_safety_output_norm_rms": 0.7871440611725556,
+      "return_to_nominal_error": 0.15075691428215257,
+      "subtracted_output_norm_max": 0.2259571216127066,
+      "subtracted_output_norm_rms": 0.11780179375468007,
+      "task_success": false,
+      "time_to_first_safety_activation_s": 0.066
+    },
+    "candidate_index": 106,
+    "caveat": "ONE pair only. The gating preflight failed, so the remaining three pairs were not run. Nothing here supports any comparison, ranking or safety claim.",
+    "deltas": {
+      "collision_frame_delta": -1059,
+      "hazard_bar_contact_delta": 0,
+      "minimum_clearance_delta_m": -0.012154600250608796,
+      "safety_relevant_contact_delta": 108,
+      "task_duration_delta_s": 0.0
+    },
+    "hazard_present": true,
+    "integration_checks": {
+      "all_actions_finite": true,
+      "correction_within_max_dev": true,
+      "gripper_bitwise_unchanged_from_nominal": true,
+      "residual_is_arm_only": true
+    },
+    "sensor_attribution": {
+      "distinct_other_sensors_active": 25,
+      "frames_where_only_known_self_return_sensors_active": 0,
+      "frames_with_any_active_sensor": 200,
+      "known_self_return_activation_counts": {
+        "link5_front_sensor_1": 0,
+        "link5_front_sensor_2": 0
+      },
+      "known_sensors_dominate_raw_activation": false,
+      "link_activation_counts": {
+        "link1": 200,
+        "link2": 391,
+        "link3": 459,
+        "link4": 583,
+        "link5_back": 577,
+        "link5_front": 314,
+        "link6": 992
+      },
+      "other_sensor_activation_counts": {
+        "link1_sensor_5": 200,
+        "link2_sensor_3": 200,
+        "link2_sensor_4": 163,
+        "link2_sensor_5": 7,
+        "link2_sensor_6": 21,
+        "link3_sensor_0": 32,
+        "link3_sensor_1": 123,
+        "link3_sensor_2": 172,
+        "link3_sensor_3": 33,
+        "link3_sensor_4": 99,
+        "link4_sensor_0": 172,
+        "link4_sensor_1": 153,
+        "link4_sensor_2": 171,
+        "link4_sensor_3": 87,
+        "link5_back_sensor_2": 177,
+        "link5_back_sensor_4": 200,
+        "link5_back_sensor_5": 200,
+        "link5_front_sensor_0": 169,
+        "link5_front_sensor_3": 145,
+        "link6_sensor_0": 170,
+        "link6_sensor_1": 176,
+        "link6_sensor_2": 200,
+        "link6_sensor_3": 152,
+        "link6_sensor_4": 149,
+        "link6_sensor_5": 145
+      }
+    }
+  },
+  "readiness_gates": {
+    "act_strictly_loads_and_runs": true,
+    "all_four_initial_states_replay_exactly": "1 of 4 verified (only the preflight row was run)",
+    "all_four_primary_pairs_reached_terminal_outcomes": false,
+    "every_artifact_hash_matches": true,
+    "final_reports_complete": true,
+    "gripper_commands_unchanged": true,
+    "no_manifest_row_duplicated_or_replaced": true,
+    "no_nan_invalid_action_missing_sensor_or_logging_corruption": true,
+    "reserve_manifest_no_train_val_overlap": true,
+    "safetyhead_strictly_loads_and_runs": true,
+    "temporal_aggregation_unchanged": true,
+    "zero_safety_reproduces_act_only": false
+  },
+  "reference_mode_decision": {
+    "deterministic_across_all_four_rollouts": true,
+    "headline_mode": "first_live_skin",
+    "implementation": "already present in the audited adapter; frozen at step 0 and reset per episode",
+    "oracle_reference_reason": "optional diagnostic; skipped to keep the rollout budget for the control experiment",
+    "oracle_reference_run": false,
+    "privileged_data_used_in_headline": false,
+    "reference_skin_minimum_depth_m": 0.15644827485084534,
+    "reference_skin_sha256": "e80cefb15ba316bc6a484c078bcab2057e87ccbdd9c0abb55b3bbdc123f5a5cc"
+  },
+  "rollout_budget": {
+    "maximum_allowed": 10,
+    "remaining_pairs_not_run": "per the handoff instruction not to proceed when zero equivalence fails",
+    "rollouts": [
+      "r106 ACT_ONLY",
+      "r106 ACT_PLUS_ZERO",
+      "r106 ACT_PLUS_SAFETY_LIVE",
+      "r106 ACT_ONLY control (determinism)"
+    ],
+    "used": 4
+  },
+  "schema": "hybrid_obstacle_paired_smoke_final_decision",
+  "smoke4_manifest": {
+    "composition": {
+      "hazard_absent": 1,
+      "hazard_present": 3,
+      "total": 4
+    },
+    "preflight_row_episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+    "rows": [
+      {
+        "accepted_retry_index": 0,
+        "candidate_index": 106,
+        "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+        "hazard_present": true,
+        "initial_state_sha256": "a753d751a01d0925e900b844857141d036e3b1a6796987c44dcc3d16e231b064",
+        "predeclared_stratum_rank": 81
+      },
+      {
+        "accepted_retry_index": 1,
+        "candidate_index": 107,
+        "episode_id": "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+        "hazard_present": true,
+        "initial_state_sha256": "7260d64a2f7d08fc4de378e250149831d2b9acaf68ab439b3839fc9a729a1a0a",
+        "predeclared_stratum_rank": 82
+      },
+      {
+        "accepted_retry_index": 0,
+        "candidate_index": 108,
+        "episode_id": "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+        "hazard_present": true,
+        "initial_state_sha256": "089e89bdb146a06b964e8ab809da9282483edfe4f7d82d70f9892bf0698724cc",
+        "predeclared_stratum_rank": 83
+      },
+      {
+        "accepted_retry_index": 0,
+        "candidate_index": 118,
+        "episode_id": "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+        "hazard_present": false,
+        "initial_state_sha256": "2149802af2407a2ac977767a433787c2c82cdb6ea9888a8c6f821169755149bb",
+        "predeclared_stratum_rank": 29
+      }
+    ],
+    "selection_rule": "the three lowest-ranked hazard-present reserve rows and the lowest-ranked hazard-absent reserve row, by predeclared stratum rank; frozen before any rollout",
+    "smoke_manifest_sha256": "e92149d8f2f0def3fa50d0b531535cbcf2be68cebb998062b6b00eb19b26aa38"
+  },
+  "zero_equivalence": {
+    "control_experiment": {
+      "collision_counts": {
+        "act_only": 1335,
+        "act_only_control": 1300,
+        "act_plus_zero": 1427
+      },
+      "conclusion": "Two ACT_ONLY rollouts with byte-identical source diverge in exactly the same way as ACT_ONLY versus ACT_PLUS_ZERO: the wrist_camera RGB at step 0 differs while the replayed initial state, the frozen reference skin, the 40 proximity streams, exo_camera_1 and qpos are all bit-identical. Bitwise zero-equivalence is therefore unattainable in this environment for reasons independent of the safety stack, and the earlier annotation-only source edit is excluded as a cause.",
+      "design": "Two ACT_ONLY rollouts of the same manifest row with byte-identical source, separate processes.",
+      "initial_state_sha256_equal": true,
+      "reference_skin_sha256_equal": true,
+      "run_a": "r106_act_only",
+      "run_b": "r106_act_only_control",
+      "step0_exo_camera_1_equal": true,
+      "step0_proximity_equal": true,
+      "step0_qpos_equal": true,
+      "step0_wrist_camera_equal": false,
+      "task_success": {
+        "act_only": true,
+        "act_only_control": true,
+        "act_plus_zero": true
+      }
+    },
+    "diverged": [
+      "step-0 wrist_camera RGB",
+      "nominal ACT action from step 0",
+      "executed action",
+      "collision sequence"
+    ],
+    "first_diverging_step": 0,
+    "matched": [
+      "replayed initial-state hash",
+      "frozen reference skin hash",
+      "step-0 proximity",
+      "step-0 exo_camera_1",
+      "step-0 qpos",
+      "frame count",
+      "phase sequence",
+      "task success",
+      "gripper bitwise",
+      "corrections identically zero in both arms"
+    ],
+    "max_abs_executed_action_diff": 0.016476929187774658,
+    "root_cause": "wrist_camera render nondeterminism across processes",
+    "ruled_out": {
+      "checkpoint_or_source": {
+        "all_14_artifact_hashes_matched": true,
+        "verdict": "CHECKPOINT_OR_SOURCE_MISMATCH does not apply"
+      },
+      "nominal_act_live": {
+        "act_only_control_task_success_row106": true,
+        "act_only_task_success_row106": true,
+        "verdict": "ACT-only succeeds on the preflight row, so NOMINAL_ACT_LIVE_FAILED does not apply"
+      },
+      "reference_pipeline": {
+        "baseline_mode": "first_live_observation",
+        "privileged_reference_h5_used": false,
+        "reference_reset_per_episode": true,
+        "reference_skin_sha256": "e80cefb15ba316bc6a484c078bcab2057e87ccbdd9c0abb55b3bbdc123f5a5cc",
+        "reference_skin_sha256_identical_across_all_runs": true,
+        "verdict": "DETERMINISTIC and unprivileged -- REFERENCE_PIPELINE_INVALID does not apply"
+      },
+      "safety_residual_integration": {
+        "all_logged_vectors_finite": true,
+        "controller_equation_replay_max_abs_error": 4.513e-08,
+        "gripper_bitwise_preserved_every_frame": true,
+        "max_abs_correction": 0.27656,
+        "max_deviation_limit": 0.35,
+        "residual_is_arm_only_max_abs_error": 1.173e-07,
+        "verdict": "SOUND -- SAFETY_RESIDUAL_INTEGRATION_FAILED does not apply",
+        "within_clip": true
+      }
+    },
+    "verdict": "FAILED"
+  }
+}
