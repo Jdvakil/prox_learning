@@ -392,3 +392,68 @@ Proved on a bounded smoke (8 rows, 24 executions): 1 worker vs 4 workers vs a
 SIGKILLed-and-resumed 4-worker run are **bit-identical** by episode ID, with all
 rows reconciling exactly once and no replica classes. See §14–§15 of the decision
 doc. The claim holds for the recorded runtime only.
+
+## Hybrid obstacle collection: the canonical 100-episode dataset (executed)
+
+The frozen 160-row manifest above **has been executed**, audited, and reduced to
+the predeclared canonical dataset. Read
+`docs/HYBRID_OBSTACLE_FULL_COLLECTION_FINAL_DECISION.md` before using or
+regenerating any of it.
+
+Result: **160/160 rows** reached a terminal outcome and reconcile exactly once by
+candidate index, episode ID and manifest-row hash. **145 succeeded** (110 of 120
+hazard-present, 35 of 40 hazard-absent); the 15 failures are all scientific
+`task_failure` — zero sampling failures, zero infrastructure failures, zero lost
+workers. Both predeclared quotas (75 present / 25 absent) pass. No duplicate
+episode ID, row hash, core-trajectory hash, task-state hash or episode-spec hash
+exists across the 145 successes: **the largest replica class is 1**, so the
+class-of-three defect that voided the 175-file collection does not recur.
+
+```
+assets/datagen/hybrid_obstacle_independent_v2/20260725_full160_4w/   # source, READ-ONLY
+                                     # 1344 files, 1.045 GiB, all 160 rows incl. failures
+                                     # tree sha256 8b569d0e20804949...
+configs/hybrid_obstacle_canonical_manifest_v2.json   # controlled_predeclared_canonical_subset
+                                                     #   100 rows = 75 present + 25 absent
+                                                     #   sha256 f49f5cd14b3c75b8...
+configs/hybrid_obstacle_canonical_split_v2.json      # train 60/20, val 15/5
+                                                     #   sha256 f7c2b22718f1697e...
+assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A/     # 100 ACT episodes
+assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_B/     # byte-identical rerun
+scripts/hybrid_obstacle_full_collection_audit.py          # reconcile + H5/40-sensor + hashes A-E
+scripts/hybrid_obstacle_smoke8_reference_compare.py       # smoke8 vs full run, frozen tolerances
+scripts/hybrid_obstacle_build_canonical_subset.py         # quota gate + selection + split
+scripts/hybrid_obstacle_convert_canonical_to_act.py       # manifest-driven ACT conversion
+scripts/hybrid_obstacle_full_collection_validate.py       # the 18-check offline validation
+scripts/hybrid_obstacle_write_final_decision.py           # generates the decision MD + JSON
+diagnostics_output/hybrid_obstacle_full_collection/       # every report + final_decision.json
+```
+
+The exact commands are in §18 of the decision doc. Things worth knowing:
+
+- **The source collection is read-only and includes the failures.** It is the
+  primary provenance record. Do not delete failed or non-canonical rows.
+- **The committed ACT converter cannot be invoked directly on this layout.**
+  `scripts/convert_obstacle_to_act.py` globs `house_*/trajectories*.h5` and expects
+  `episode_<i>_<cam>_batch_1_of_1.mp4`; the manifest runner writes
+  `rows/<episode_id>/trajectory.h5` and `episode_00000000_<cam>.mp4`, and the
+  committed entry point assigns the ACT episode index from filesystem order.
+  `hybrid_obstacle_convert_canonical_to_act.py` imports and reuses that module's
+  decode/video functions verbatim and takes the episode set *and* index from the
+  canonical manifest instead. The converter and ACT are unmodified.
+- **10 of the 100 selected rows sit past the manifest's own `reserve` boundary.**
+  That is the selection rule working as predeclared: when an earlier-ranked row
+  fails, the next successful row by stratum rank is promoted. The split is then
+  derived from position within the selected set, which reproduces the manifest's
+  own `split` column exactly when nothing fails.
+- **`collection_summary.json` carries a stale `warning: "Partial output
+  retained…"` even on a fully successful run.** `build_final_summary` derives
+  `complete` from a house-based comparison and a manifest run writes no houses, so
+  it always sets that key; the runner then overrides `complete`/`status` from row
+  reconciliation but never deletes it. The validated smoke reference carries the
+  same string. Trust `complete`, `status`, `row_reconciliation.ok` and
+  `workers.complete`, not `warning`.
+- **Next step is ACT training**, in its own approved task: point
+  `obstacle_baseline` at `conversion_A` with `num_episodes=100` and
+  `episode_len=132` (max T = 130). Nothing in this task trained ACT or the
+  Safety-CVAE, or ran any evaluation.

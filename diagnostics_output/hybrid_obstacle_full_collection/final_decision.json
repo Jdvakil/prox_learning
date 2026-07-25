@@ -1,0 +1,380 @@
+{
+  "artifacts": {
+    "canonical_manifest": "configs/hybrid_obstacle_canonical_manifest_v2.json",
+    "conversion_A_manifest": "diagnostics_output/hybrid_obstacle_full_collection/conversion_A_manifest.json",
+    "conversion_B_manifest": "diagnostics_output/hybrid_obstacle_full_collection/conversion_B_manifest.json",
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_full_collection/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_FULL_COLLECTION_FINAL_DECISION.md",
+    "final_validation": "diagnostics_output/hybrid_obstacle_full_collection/final_offline_validation.json",
+    "integrity_audit": "diagnostics_output/hybrid_obstacle_full_collection/integrity_audit.json",
+    "smoke8_revalidation": "diagnostics_output/hybrid_obstacle_full_collection/smoke8_revalidation_summary.json",
+    "source_manifest": "diagnostics_output/hybrid_obstacle_full_collection/source_manifest.json",
+    "split_manifest": "configs/hybrid_obstacle_canonical_split_v2.json"
+  },
+  "canonical_subset": {
+    "composition": {
+      "hazard_absent": 25,
+      "hazard_present": 75,
+      "total": 100
+    },
+    "excluded_successful": 45,
+    "failed_rows": 15,
+    "label": "controlled_predeclared_canonical_subset",
+    "manifest_sha256": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+    "promoted_from_reserve": 10,
+    "regenerates_identically": true
+  },
+  "collection_command": [
+    "/root/act_retrain_venv/bin/python",
+    "scripts/run_hybrid_obstacle_manifest_v2.py",
+    "--output-dir",
+    "assets/datagen/hybrid_obstacle_independent_v2/20260725_full160_4w",
+    "--workers",
+    "4"
+  ],
+  "commits": {
+    "act_gitlink": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+    "act_modified": false,
+    "molmospaces_branch": "repair/hybrid-obstacle-manifest-runner-v2",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "collect/hybrid-obstacle-independent-v2",
+    "root_commit_note": "The provenance commit's own hash is deliberately not recorded: this file is inside that commit, so any hash written here would be invalidated by committing it. Resolve with `git log -1 collect/hybrid-obstacle-independent-v2`.",
+    "root_commit_that_produced_the_data": "afac1d94583888a6402e48e98b0397e195b8e2e1"
+  },
+  "constraints_honoured": {
+    "act_not_trained": true,
+    "act_unmodified": true,
+    "canonical_selection_and_split_rules_unchanged": true,
+    "hazard_schedule_unchanged": true,
+    "manifest_unmodified": true,
+    "master_seed_unchanged": true,
+    "molmospaces_source_unmodified": true,
+    "no_failed_row_rerun_for_quota": true,
+    "no_policy_evaluation": true,
+    "no_scene_or_sampler_caching_introduced": true,
+    "nothing_pushed": true,
+    "old_invalid_collection_unused": true,
+    "per_row_scene_reconstruction_preserved": true,
+    "safety_cvae_not_trained": true
+  },
+  "conversion": {
+    "act_modified": false,
+    "bit_identical_containers": true,
+    "conversion_A": "assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A",
+    "conversion_B": "assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_B",
+    "converter_module": "scripts/convert_obstacle_to_act.py",
+    "converter_module_sha256": "74b60458754b782393d65d508174b4168a94dbe6c539ff5d2005076994856695",
+    "episode_count": 100,
+    "hazard_absent": 25,
+    "hazard_present": 75,
+    "identical": true,
+    "max_T": 130,
+    "min_T": 54,
+    "recommended_act_episode_len": 132,
+    "train_count": 80,
+    "validation_count": 20
+  },
+  "date": "2026-07-25",
+  "decision": "CANONICAL_DATASET_READY_FOR_ACT_TRAINING",
+  "duplicate_audit": {
+    "all_leaf_collisions": 0,
+    "core_trajectory_collisions": 0,
+    "episode_spec_collisions": 0,
+    "file_sha256_collisions": 0,
+    "replica_class_size_histogram": {},
+    "task_state_collisions": 0
+  },
+  "duration_human": "1h 5m 32s (3932 s)",
+  "duration_seconds": 3932.0,
+  "final_validation": {
+    "all_ok": true,
+    "checks": {
+      "canonical_selection_regeneration": true,
+      "clean_submodule_verification": true,
+      "double_conversion_reproducibility": true,
+      "duplicate_content_audit": true,
+      "final_process_guard": true,
+      "git_diff_check": true,
+      "hazard_label_geometry_audit": true,
+      "json_yaml_parsing": true,
+      "manifest_identity_audit": true,
+      "python_byte_compilation": true,
+      "quota_check": true,
+      "ruff": true,
+      "sensor_schema_audit": true,
+      "smoke_reference_comparison": true,
+      "source_integrity_audit": true,
+      "source_unchanged_during_audit": true,
+      "split_leakage_audit": true,
+      "worker_completion_reconciliation": true
+    },
+    "failed_checks": []
+  },
+  "gpu": "NVIDIA A10, 570.86.10",
+  "h5_integrity": {
+    "problems": [],
+    "proximity_stream_shape": "(T,4,8,8)",
+    "proximity_streams_per_episode": 40,
+    "sensor_order_ok": true,
+    "successes_audited": 145,
+    "successes_clean": 145
+  },
+  "hashes": {
+    "canonical_manifest_sha256": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+    "collection_source_digest_sha256": "d584f057f601000374198750f8030061625af1e682bf23d14cd451396f9bfe33",
+    "conversion_A_tree_file_sha256": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+    "conversion_A_tree_semantic_sha256": "8ca1d9540160fd4c7c79db1aed0aad364bc1aa3d14a4c7ac3d6aedf7dd08820f",
+    "conversion_B_tree_file_sha256": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+    "conversion_B_tree_semantic_sha256": "8ca1d9540160fd4c7c79db1aed0aad364bc1aa3d14a4c7ac3d6aedf7dd08820f",
+    "env_config_sha256": "190547e0fa424b17594375e5347a0d21f809b945f14bc648a936e6eb38eccd16",
+    "manifest_file_sha256": "10e45609162a61371f1bf135b563c76c69787a2be58ce0fb245fd54a3688dff3",
+    "manifest_sha256": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+    "robot_model_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "runtime_contract_sha256": "64bc65689ae3d21b8f2e8e1ddf6672732f622dbbaea14851f1664b6eace7dd70",
+    "scene_sha256": "eec36c2ae5d17fc82d1221feaa87a1de2e9bec391902dfb1b46ef27ed7ad716d",
+    "selection_code_sha256": "dc34d8ad23ad099941ba4b5b77f1e79122c18e357d243ab1b3bfc3b21b609d2f",
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "smoke8_sha256": "cb9df6e1f8dabb2e8705f685a8e1a0f9673ca184d1d455995e40e06f6bb4ddbc",
+    "source_collection_tree_sha256": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+    "split_manifest_sha256": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0"
+  },
+  "master_seed": 20260725,
+  "quota": {
+    "observed": {
+      "hazard_absent": 35,
+      "hazard_present": 110
+    },
+    "passed": true,
+    "required": {
+      "hazard_absent": 25,
+      "hazard_present": 75
+    }
+  },
+  "reconciliation": {
+    "duplicate_candidate_indices": {},
+    "duplicate_episode_ids": {},
+    "duplicate_row_hashes": {},
+    "every_candidate_index_once": true,
+    "hazard_label_mismatch": [],
+    "missing_rows": [],
+    "ok": true,
+    "row_hash_mismatch": [],
+    "stray_row_dirs": [],
+    "unresolved_claims": [],
+    "worker_verdict": {
+      "every_worker_has_approved_final_record": true,
+      "expected_workers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "manifest_sha256_in_summary": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+      "missing_final_status": [],
+      "missing_outcome": [],
+      "never_claimed": [],
+      "nonzero_or_unknown_exit_codes": {},
+      "ok": true,
+      "parent_worker_totals_reconcile": true,
+      "per_worker": {
+        "0": {
+          "episodes_attempted": 36,
+          "episodes_successful": 33,
+          "episodes_written": 33,
+          "error": null,
+          "exit_code": 0,
+          "houses_assigned": [],
+          "houses_written": [],
+          "status": "completed"
+        },
+        "1": {
+          "episodes_attempted": 44,
+          "episodes_successful": 39,
+          "episodes_written": 39,
+          "error": null,
+          "exit_code": 0,
+          "houses_assigned": [],
+          "houses_written": [],
+          "status": "completed"
+        },
+        "2": {
+          "episodes_attempted": 40,
+          "episodes_successful": 37,
+          "episodes_written": 37,
+          "error": null,
+          "exit_code": 0,
+          "houses_assigned": [],
+          "houses_written": [],
+          "status": "completed"
+        },
+        "3": {
+          "episodes_attempted": 40,
+          "episodes_successful": 36,
+          "episodes_written": 36,
+          "error": null,
+          "exit_code": 0,
+          "houses_assigned": [],
+          "houses_written": [],
+          "status": "completed"
+        }
+      },
+      "per_worker_sums": {
+        "episodes_attempted": 160,
+        "episodes_successful": 145,
+        "episodes_written": 145
+      },
+      "published_without_outcome": [],
+      "reclaimed_abandoned_claims": [],
+      "reporting_workers": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "row_reconciliation_expected": 160,
+      "row_reconciliation_finalized": 160,
+      "row_reconciliation_ok": true,
+      "rows_already_finalised_on_entry": 0,
+      "run_covered_full_manifest": true,
+      "shared_counters": {
+        "rows_expected": 160,
+        "rows_failed": 15,
+        "rows_finalized": 160,
+        "rows_succeeded": 145
+      },
+      "silently_lost_workers": [],
+      "stale_house_based_warning": "Partial output retained. Some workers did not publish an approved final status or did not exit cleanly, so trajectories they buffered may be missing. Do not treat this collection as canonical.",
+      "stale_house_based_warning_present": true,
+      "summary_complete": true,
+      "summary_status": "complete",
+      "unexpected_row_dirs": [],
+      "worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "worker_totals": {
+        "episodes_attempted": 160,
+        "episodes_successful": 145,
+        "episodes_written": 145,
+        "houses_written": []
+      },
+      "workers_complete": true,
+      "workers_with_failed_status": []
+    }
+  },
+  "row_outcomes": {
+    "failure_phase_histogram": {
+      "rollout_completed_task_not_achieved": 15
+    },
+    "failure_reason_histogram": {
+      "rollout completed without task success": 11,
+      "rollout completed without task success; earlier retries: ValueError: IK failed for lift pose": 4
+    },
+    "hazard_by_status": {
+      "success": {
+        "hazard_absent": 35,
+        "hazard_present": 110
+      },
+      "task_failure": {
+        "hazard_absent": 5,
+        "hazard_present": 10
+      }
+    },
+    "manifest_rows": 160,
+    "retry_histogram": {
+      "0": 127,
+      "1": 29,
+      "2": 2,
+      "3": 1,
+      "4": 1
+    },
+    "rows_with_outcome": 160,
+    "status_counts": {
+      "success": 145,
+      "task_failure": 15
+    },
+    "worker_histogram": {
+      "0": 36,
+      "1": 44,
+      "2": 40,
+      "3": 40
+    }
+  },
+  "run_dir": "assets/datagen/hybrid_obstacle_independent_v2/20260725_full160_4w",
+  "runtime": {
+    "cuda_available": true,
+    "cuda_toolkit_torch_build": "12.6",
+    "h5py": "3.16.0",
+    "kernel": "6.8.0-101-generic",
+    "mujoco": "3.5.0",
+    "mujoco_gl": "egl",
+    "numpy": "2.4.6",
+    "os": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "python_executable": "/root/act_retrain_venv/bin/python",
+    "scipy": "1.17.1",
+    "torch": "2.7.1+cu126",
+    "warp": "1.11.1"
+  },
+  "schema": "hybrid_obstacle_full_collection_final_decision",
+  "smoke8_revalidation": {
+    "all_bit_identical": true,
+    "all_invariant": true,
+    "episodes_compared": 8,
+    "frozen_tolerances": {
+      "actions": 1e-06,
+      "object_pose": 1e-07,
+      "proximity_depth": 1e-05,
+      "qpos": 1e-06,
+      "robot_pose": 1e-07
+    },
+    "reference_h5s_retained": true,
+    "reference_run": "diagnostics_output/hybrid_obstacle_seeding/smoke_runs/run_b",
+    "tolerance_source": "frozen in scripts/hybrid_obstacle_manifest_v2_audit.py (seeding audit)"
+  },
+  "source_collection": {
+    "failures_retained": true,
+    "file_count": 1344,
+    "read_only": true,
+    "total_bytes": 1121586684,
+    "tree_sha256": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30"
+  },
+  "split": {
+    "counts": {
+      "train": {
+        "hazard_absent": 20,
+        "hazard_present": 60,
+        "total": 80
+      },
+      "validation": {
+        "hazard_absent": 5,
+        "hazard_present": 15,
+        "total": 20
+      }
+    },
+    "leakage_free": true,
+    "level": "trajectory",
+    "split_manifest_sha256": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0"
+  },
+  "success_rates": {
+    "hazard_absent": {
+      "rate": 0.875,
+      "rows": 40,
+      "successes": 35
+    },
+    "hazard_present": {
+      "rate": 0.9167,
+      "rows": 120,
+      "successes": 110
+    },
+    "overall": {
+      "rate": 0.9062,
+      "rows": 160,
+      "successes": 145
+    }
+  },
+  "workers": 4
+}

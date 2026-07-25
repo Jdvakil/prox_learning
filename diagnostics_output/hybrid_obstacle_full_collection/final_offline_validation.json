@@ -1,0 +1,202 @@
+{
+  "all_ok": true,
+  "checks": {
+    "canonical_selection_regeneration": {
+      "canonical_sha256_original": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "canonical_sha256_regenerated": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "exit_code": 0,
+      "ok": true,
+      "split_sha256_original": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "split_sha256_regenerated": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "stderr_tail": []
+    },
+    "clean_submodule_verification": {
+      "gitlinks": "4ff337dfc60708f46d5831430df807fa90014821 submodules/MolmoBot (4ff337d)\n 3d25c69edd8d972afa59fec5c3edb9d13a357f92 submodules/act (heads/repair/live-safety-residual-eval)\n 678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5 submodules/molmospaces (heads/repair/hybrid-obstacle-manifest-runner-v2)",
+      "ok": true,
+      "submodules": {
+        "act": {
+          "clean": true,
+          "head": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+          "status_porcelain": ""
+        },
+        "molmospaces": {
+          "clean": true,
+          "head": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+          "status_porcelain": ""
+        }
+      }
+    },
+    "double_conversion_reproducibility": {
+      "bit_identical_containers": true,
+      "composition_ok": true,
+      "container_only_evidence": null,
+      "episode_count_A": 100,
+      "episode_count_B": 100,
+      "episode_id_differences": [],
+      "file_hash_differences": [],
+      "file_lists_equal": true,
+      "identical": true,
+      "manifest_field_differences": [],
+      "manifests_equal_after_documented_nonsemantic_fields": true,
+      "ok": true,
+      "semantic_hash_differences": [],
+      "tree_file_sha256_A": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "tree_file_sha256_B": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "tree_file_sha256_equal": true,
+      "tree_semantic_sha256_A": "8ca1d9540160fd4c7c79db1aed0aad364bc1aa3d14a4c7ac3d6aedf7dd08820f",
+      "tree_semantic_sha256_B": "8ca1d9540160fd4c7c79db1aed0aad364bc1aa3d14a4c7ac3d6aedf7dd08820f",
+      "tree_semantic_sha256_equal": true
+    },
+    "duplicate_content_audit": {
+      "all_leaf_collisions": 0,
+      "core_trajectory_collisions": 0,
+      "episode_spec_collisions": 0,
+      "ok": true,
+      "replica_class_size_histogram": {},
+      "task_state_collisions": 0
+    },
+    "final_process_guard": {
+      "live_processes": [],
+      "ok": true
+    },
+    "git_diff_check": {
+      "exit_code": 0,
+      "ok": true,
+      "stdout": ""
+    },
+    "hazard_label_geometry_audit": {
+      "ledger_hazard_mismatch": [],
+      "ok": true,
+      "rows_with_hazard_problems": []
+    },
+    "json_yaml_parsing": {
+      "json_checked": 10,
+      "json_errors": [],
+      "ok": true,
+      "yaml_errors": []
+    },
+    "manifest_identity_audit": {
+      "duplicate_candidate_indices": {},
+      "duplicate_episode_ids": {},
+      "duplicate_row_hashes": {},
+      "ok": true,
+      "row_hash_mismatch": []
+    },
+    "python_byte_compilation": {
+      "files": [
+        "scripts/hybrid_obstacle_full_collection_audit.py",
+        "scripts/hybrid_obstacle_smoke8_reference_compare.py",
+        "scripts/hybrid_obstacle_build_canonical_subset.py",
+        "scripts/hybrid_obstacle_convert_canonical_to_act.py",
+        "scripts/hybrid_obstacle_full_collection_validate.py",
+        "scripts/hybrid_obstacle_write_final_decision.py"
+      ],
+      "ok": true
+    },
+    "quota_check": {
+      "distinct_successes": {
+        "hazard_absent": 35,
+        "hazard_present": 110
+      },
+      "ok": true,
+      "required": {
+        "hazard_absent": 25,
+        "hazard_present": 75
+      }
+    },
+    "ruff": {
+      "exit_code": 0,
+      "ok": true,
+      "stderr": "",
+      "stdout": "All checks passed!"
+    },
+    "sensor_schema_audit": {
+      "ok": true,
+      "rows_with_bad_sensors": [],
+      "sensor_order_ok": true
+    },
+    "smoke_reference_comparison": {
+      "all_bit_identical": true,
+      "all_invariant": true,
+      "episodes_compared": 8,
+      "ok": true,
+      "reference_h5s_retained": true
+    },
+    "source_integrity_audit": {
+      "manifest_rows": 160,
+      "ok": true,
+      "rows_accounted": 160,
+      "successes_audited": 145,
+      "successes_clean": 145
+    },
+    "source_unchanged_during_audit": {
+      "changed": [],
+      "files_checked": 1344,
+      "ok": true
+    },
+    "split_leakage_audit": {
+      "counts": {
+        "train": {
+          "hazard_absent": 20,
+          "hazard_present": 60,
+          "total": 80
+        },
+        "validation": {
+          "hazard_absent": 5,
+          "hazard_present": 15,
+          "total": 20
+        }
+      },
+      "leakage_audit": {
+        "core_trajectory_sha256": [],
+        "duplicate_episode_ids_within_selection": [],
+        "duplicate_source_files_within_selection": [],
+        "episode_id": [],
+        "source_h5_sha256": [],
+        "source_relpath": [],
+        "task_state_sha256": []
+      },
+      "ok": true
+    },
+    "worker_completion_reconciliation": {
+      "every_worker_has_approved_final_record": true,
+      "missing_final_status": [],
+      "ok": true,
+      "parent_worker_totals_reconcile": true,
+      "per_worker_sums": {
+        "episodes_attempted": 160,
+        "episodes_successful": 145,
+        "episodes_written": 145
+      },
+      "row_reconciliation_ok": true,
+      "shared_counters": {
+        "rows_expected": 160,
+        "rows_failed": 15,
+        "rows_finalized": 160,
+        "rows_succeeded": 145
+      },
+      "silently_lost_workers": [],
+      "stale_house_based_warning_note": "build_final_summary derives `complete` from a house-based comparison and a manifest run writes no houses, so it always inserts this warning; the manifest runner then overrides complete/status from row reconciliation but does not delete the key. The validated smoke reference carries it too. Not a worker-loss signal.",
+      "stale_house_based_warning_present": true,
+      "summary_complete": true,
+      "summary_present": true,
+      "unresolved_claims": [],
+      "worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "worker_histogram": {
+        "0": 36,
+        "1": 44,
+        "2": 40,
+        "3": 40
+      },
+      "workers_complete": true
+    }
+  },
+  "failed_checks": [],
+  "run_dir": "assets/datagen/hybrid_obstacle_independent_v2/20260725_full160_4w",
+  "schema": "hybrid_obstacle_full_collection_final_offline_validation"
+}
