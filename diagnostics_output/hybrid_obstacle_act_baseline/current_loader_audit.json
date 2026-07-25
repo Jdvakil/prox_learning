@@ -1,0 +1,173 @@
+{
+  "schema": "hybrid_obstacle_act_baseline_current_loader_audit",
+  "audited_act_commit": "3d25c69edd8d972afa59fec5c3edb9d13a357f92",
+  "audited_act_branch": "repair/live-safety-residual-eval",
+  "audit_scope": "Read-only trace of the ACT fork's data and training path before any edit.",
+  "traced_path": [
+    "imitate_episodes.main: task_name -> constants.TASK_CONFIGS[task_name] (obstacle_baseline)",
+    "task_config supplies dataset_dir, num_episodes, episode_len, camera_names",
+    "state_dim/action_dim chosen by a hard-coded task-name allowlist (imitate_episodes.py:62-73)",
+    "utils.load_data(dataset_dir, num_episodes, camera_names, bs, bs, chunk_size)",
+    "utils.load_data: np.random.permutation(num_episodes) -> train/val indices",
+    "utils.get_norm_stats(dataset_dir, num_episodes) over ALL episodes",
+    "utils.EpisodicDataset(indices, ...) builds path episode_{id}.hdf5",
+    "DataLoader(train, shuffle=True) / DataLoader(val, shuffle=True)",
+    "imitate_episodes.forward_pass -> policy.ACTPolicy.__call__",
+    "ACTPolicy truncates actions/is_pad to num_queries, masks L1 with ~is_pad",
+    "detr.main.build_ACT_model_and_optimizer -> AdamW two param groups",
+    "train_bc: per-epoch validation, then training; best kept by deepcopy(state_dict)",
+    "policy_best.ckpt written at end of main() from best_ckpt_info"
+  ],
+  "determinations": {
+    "act_generates_its_own_random_split": {
+      "answer": true,
+      "severity": "blocking",
+      "evidence": "utils.py:121 shuffled_indices = np.random.permutation(num_episodes); :122-123 slice at int(0.8*N).",
+      "note": "Ignores any committed split entirely. Also seeded by set_seed(1) in main(), not by --seed, because load_data runs before train_bc's set_seed(seed)."
+    },
+    "normalization_uses_all_100_episodes": {
+      "answer": true,
+      "severity": "blocking",
+      "evidence": "imitate_episodes.py:147 load_data(...) -> utils.py:126 get_norm_stats(dataset_dir, num_episodes) with num_episodes=100; utils.py:87 iterates range(num_episodes).",
+      "note": "Validation trajectories contribute to qpos/action mean and std. This is normalization leakage and must be restricted to the 80 training trajectories."
+    },
+    "dataset_files_discovered_by_filesystem_order": {
+      "answer": false,
+      "evidence": "utils.py:28 and :88 build the path as f'episode_{episode_id}.hdf5' from an integer index; no glob or listdir is used.",
+      "note": "Good: no filesystem-order dependence. The risk here is the contiguity assumption below, not ordering."
+    },
+    "episode_ids_assumed_contiguous": {
+      "answer": true,
+      "severity": "tolerable_for_this_dataset",
+      "evidence": "utils.py:87 for episode_idx in range(num_episodes); indices come from np.random.permutation(num_episodes).",
+      "note": "The converted canonical dataset is exactly episode_0..episode_99 (verified contiguous), so the assumption holds. It still must not be the mechanism that defines the split."
+    },
+    "validation_dataloader_is_shuffled": {
+      "answer": true,
+      "severity": "blocking",
+      "evidence": "utils.py:132 DataLoader(val_dataset, ..., shuffle=True, ...).",
+      "note": "Validation order is nondeterministic, so per-epoch validation loss is not reproducible. Must be shuffle=False."
+    },
+    "qpos_action_statistics_include_padded_timesteps": {
+      "answer": false,
+      "evidence": "utils.py:90-92 reads root['/observations/qpos'][()] and root['/action'][()] — the full on-disk arrays, which contain only real timesteps. Padding is created later, per sample, in __getitem__.",
+      "note": "Padding does not contaminate the statistics. The only statistics defect is the episode set."
+    },
+    "variable_length_episode_padding": {
+      "answer": "padded to num_queries (chunk size), not to episode_len",
+      "evidence": "utils.py:55-59 padded_action = zeros((num_queries, action_dim)); n_real = min(action_len, num_queries); is_pad[n_real:] = 1.",
+      "note": "This fork already diverges from upstream ACT (which pads to episode_len). Padding to num_queries is what the batch contract for this task requires, and truncation past num_queries is harmless because the model only predicts num_queries steps."
+    },
+    "all_batch_elements_receive_same_action_sequence_length": {
+      "answer": true,
+      "evidence": "padded_action is always (num_queries, action_dim) and is_pad is always (num_queries,), independent of episode length or start_ts.",
+      "note": "Heterogeneous episode lengths therefore batch correctly with default collation."
+    },
+    "sim_attribute_set_correctly": {
+      "answer": true,
+      "evidence": "Converter writes dst.attrs['sim'] = True; utils.py:30 reads root.attrs.get('sim', False). All 100 converted episodes verified sim=True.",
+      "note": "EpisodicDataset.is_sim is a side effect of the most recent __getitem__ and is initialised by calling __getitem__(0) in __init__ (utils.py:19). Fragile, but correct for a homogeneous sim dataset."
+    },
+    "simulation_actions_begin_at_same_timestep_as_observations": {
+      "answer": true,
+      "evidence": "utils.py:44-46 with is_sim True: action = root['/action'][start_ts:], action_len = episode_len - start_ts.",
+      "note": "Observation at t is paired with the action sequence beginning at t, which is the required simulation alignment."
+    },
+    "non_simulation_start_ts_minus_1_hack_active": {
+      "answer": false,
+      "evidence": "utils.py:48-49 is the else branch of `if is_sim`; sim=True on every converted episode so the max(0, start_ts - 1) path is never taken.",
+      "note": "Confirmed inactive for this dataset, as required."
+    },
+    "state_dimension_hard_coded": {
+      "answer": true,
+      "severity": "cosmetic",
+      "evidence": "imitate_episodes.py:62-73 sets state_dim by matching task_name against a literal allowlist; 'obstacle_baseline' is in the branch giving state_dim = 9.",
+      "note": "Correct value for this dataset, but derived from a task-name string rather than the data. Should be made explicit and asserted against the H5."
+    },
+    "action_dimension_hard_coded": {
+      "answer": true,
+      "severity": "cosmetic",
+      "evidence": "Same branch sets action_dim = 8 for 'obstacle_baseline'.",
+      "note": "Correct value; should be asserted against the H5."
+    },
+    "camera_names_hard_coded": {
+      "answer": true,
+      "evidence": "constants.py obstacle_baseline: camera_names = ['exo_camera_1', 'wrist_camera'].",
+      "note": "Correct for this dataset. Must be asserted against the H5 image groups."
+    },
+    "episode_horizon_hard_coded": {
+      "answer": true,
+      "severity": "blocking_value_wrong",
+      "evidence": "constants.py obstacle_baseline: episode_len = 169, num_episodes = 100, dataset_dir = '/home/jaydv/code/prox_learning/act_style_data/obstacle_v1'.",
+      "note": "episode_len 169 belongs to the OLD invalid obstacle_v1 collection; the canonical dataset needs 132. dataset_dir is a machine-specific absolute path on another host pointing at the superseded dataset. episode_len is not used by the training data path (only by eval_bc as max_timesteps), but it must still be corrected and must not be the mechanism that selects the dataset."
+    },
+    "checkpoint_resume_preserves_optimizer_and_rng_state": {
+      "answer": false,
+      "severity": "blocking",
+      "evidence": "train_bc (imitate_episodes.py:366-470) has no resume path. Periodic saves at epoch % 100 == 0 write torch.save(policy.state_dict()) only — no optimizer state, no RNG state, no epoch counter, no best-so-far record. Saves are not atomic (direct torch.save to the final path).",
+      "note": "An interrupted 2000-epoch run cannot be resumed without repeating work and losing optimizer/RNG continuity."
+    },
+    "proximity_consumed": {
+      "answer": false,
+      "evidence": "detr/main.py:78 n_proximity_sensors default 0, which the comment states makes the model bit-identical to vanilla ACT; policy.py passes proximity_positions=None; --use_proximity not set.",
+      "note": "Vanilla ACT baseline confirmed: no proximity tokens, no extra Linear layer."
+    },
+    "safety_cvae_loaded": {
+      "answer": false,
+      "evidence": "imitate_episodes.py imports only constants, utils, policy, visualize_episodes; hybrid_safety_residual is a separate module never imported on the training path.",
+      "note": "Confirmed absent."
+    }
+  },
+  "optimizer_behavior_recorded_not_changed": {
+    "optimizer": "torch.optim.AdamW",
+    "param_groups": [
+      "non-backbone parameters at lr = --lr",
+      "backbone parameters at lr = lr_backbone"
+    ],
+    "lr_backbone": 1e-05,
+    "lr_backbone_source": "imitate_episodes.py:74 hard-coded lr_backbone = 1e-5",
+    "weight_decay": 0.0001,
+    "weight_decay_source": "detr/main.py:17 default",
+    "lr_schedule": "none applied during training (lr_drop parsed but unused)",
+    "evidence": "detr/main.py:104-113"
+  },
+  "loss_definition_recorded_not_changed": {
+    "l1": "F.l1_loss(actions, a_hat, reduction='none') masked by ~is_pad then .mean()",
+    "kl": "total_kld[0] from kl_divergence(mu, logvar)",
+    "total": "l1 + kl * kl_weight",
+    "evidence": "policy.py:31-38",
+    "note": "L1 is correctly masked so padded timesteps do not contribute to the loss."
+  },
+  "converted_dataset_contract_verified": {
+    "dataset_dir": "assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A",
+    "episode_files": 100,
+    "contiguous_episode_0_to_99": true,
+    "sim_attr_all_true": true,
+    "cameras": ["exo_camera_1", "wrist_camera"],
+    "image_shape_per_frame": [240, 320, 3],
+    "qpos_dim": 9,
+    "action_dim": 8,
+    "T_min": 54,
+    "T_max": 130,
+    "all_T_le_132": true,
+    "episodes_with_T_gt_chunk_100": 20,
+    "episodes_with_T_le_chunk_100": 80
+  },
+  "blocking_defects_summary": [
+    "random 80/20 split replaces any committed split (utils.py:121)",
+    "normalization statistics computed over all 100 episodes, leaking the 20 validation trajectories (utils.py:126)",
+    "validation DataLoader shuffled, making validation loss nonreproducible (utils.py:132)",
+    "constants.py obstacle_baseline points at a machine-specific absolute path for the superseded obstacle_v1 dataset with episode_len 169 instead of 132",
+    "no optimizer/RNG/epoch resume state and non-atomic checkpoint writes"
+  ],
+  "non_defects_confirmed": [
+    "simulation temporal alignment is correct and the start_ts-1 real-robot hack is inactive",
+    "padding produces a uniform (num_queries, action_dim) action tensor and a matching mask, so heterogeneous lengths batch correctly",
+    "padded timesteps do not enter the normalization statistics",
+    "padded timesteps do not enter the L1 loss",
+    "episode files are not discovered by filesystem order",
+    "no proximity input and no Safety-CVAE on the training path"
+  ],
+  "verdict": "REPAIR_REQUIRED",
+  "verdict_note": "Five blocking defects. All are confined to the data/training path (utils.py, imitate_episodes.py, constants.py) and none require touching the ACT architecture, loss, KL formulation, chunking or optimizer mathematics."
+}

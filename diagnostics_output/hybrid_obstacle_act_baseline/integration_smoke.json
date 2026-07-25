@@ -1,0 +1,248 @@
+{
+  "batch_shape_contract": {
+    "images": [
+      8,
+      2,
+      3,
+      240,
+      320
+    ],
+    "model_output": [
+      8,
+      100,
+      8
+    ],
+    "padded_actions": [
+      8,
+      100,
+      8
+    ],
+    "padding_mask": [
+      8,
+      100
+    ],
+    "qpos": [
+      8,
+      9
+    ],
+    "verified_by": "tests/test_fixed_split_loader.py::test_heterogeneous_episode_lengths_batch and ::test_inference_output_shape_is_chunk_by_action_dim"
+  },
+  "bounded_step_smoke": {
+    "artifacts_written": [
+      "dataset_stats.pkl",
+      "dataset_stats_manifest.json",
+      "epoch_log.jsonl",
+      "policy_best.ckpt",
+      "policy_epoch_0_seed_0.ckpt",
+      "policy_last.ckpt",
+      "resume_bundle.ckpt",
+      "run_manifest.json",
+      "train_episodes.txt",
+      "train_val_kl_seed_0.png",
+      "train_val_l1_seed_0.png",
+      "train_val_loss_seed_0.png",
+      "val_episodes.txt"
+    ],
+    "finite_forward_loss": true,
+    "finite_gradients": true,
+    "first_train_loss": 53.71007,
+    "first_val_loss": 77.08062,
+    "max_steps": 5,
+    "optimizer_steps_taken": 5,
+    "run_manifest_sha256": "f098abf22e172e4c874a6fae6eb4480ca351db68e6e3fd77336693b96dff7b95",
+    "statistics_sha256": "5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71",
+    "train_only_statistics_loaded": true
+  },
+  "constraints": {
+    "canonical_batch_size_changed": false,
+    "gradient_accumulation_used": false,
+    "performance_claim_made": false,
+    "proximity_consumed": false,
+    "safety_cvae_loaded": false,
+    "simulator_rollout_run": false,
+    "task_success_evaluated": false
+  },
+  "gpu_memory": {
+    "batch_size": 8,
+    "device_total_gib": 22.0689697265625,
+    "fits": true,
+    "gpu": "NVIDIA A10",
+    "parameters": 83911817,
+    "peak_allocated_gib": 2.2302026748657227,
+    "peak_reserved_gib": 2.349609375
+  },
+  "model": {
+    "action_dim": 8,
+    "backbone": "resnet18",
+    "batch_size": 8,
+    "chunk_size": 100,
+    "dec_layers": 7,
+    "dim_feedforward": 3200,
+    "enc_layers": 4,
+    "hidden_dim": 512,
+    "image_size": [
+      240,
+      320
+    ],
+    "kl_weight": 10,
+    "nheads": 8,
+    "parameters": 83911817,
+    "policy_class": "ACT",
+    "state_dim": 9
+  },
+  "purpose": "Handoff step 10: bounded full-size smoke. No performance claim, no simulator rollout.",
+  "resume_equality": {
+    "conclusion": "Resume introduces no divergence beyond the platform's own run-to-run nondeterminism: uninterrupted-vs-resumed (max|diff| 1.043e-04) is indistinguishable from fresh-vs-fresh with the same seed (1.041e-04). The epoch-0 validation loss is bit-identical across all three runs, so the data path, split, statistics and fixed validation windows are fully deterministic; divergence appears only after backward passes, from nondeterministic cuDNN kernels. torch.use_deterministic_algorithms was deliberately NOT enabled: the handoff forbids changing training behaviour merely to force bit-identity.",
+    "design": "2 short epochs uninterrupted vs 1 epoch then --resume to 2, same seed/runtime.",
+    "epoch0_validation_loss_all_runs": [
+      77.84487915039062,
+      77.84487915039062,
+      77.84487915039062
+    ],
+    "epoch_bookkeeping": {
+      "best_epoch_resumed": 1,
+      "best_epoch_uninterrupted": 1,
+      "global_step_resumed": 20,
+      "global_step_uninterrupted": 20,
+      "no_epoch_repeated": true,
+      "resumed_epochs": [
+        0,
+        1
+      ],
+      "resumed_from_epoch": 1,
+      "uninterrupted_epochs": [
+        0,
+        1
+      ]
+    },
+    "epoch_curves": {
+      "ctl2ep": [
+        {
+          "best_epoch": 0,
+          "epoch": 0,
+          "global_step": 10,
+          "min_val_loss": 77.84487915039062,
+          "train": {
+            "kl": 4.261908531188965,
+            "l1": 0.3736417591571808,
+            "loss": 42.99272918701172
+          },
+          "val": {
+            "kl": 7.745702266693115,
+            "l1": 0.3878524899482727,
+            "loss": 77.84487915039062
+          }
+        },
+        {
+          "best_epoch": 1,
+          "epoch": 1,
+          "global_step": 20,
+          "min_val_loss": 18.851116180419922,
+          "train": {
+            "kl": 1.7055720090866089,
+            "l1": 0.3564760386943817,
+            "loss": 17.41219711303711
+          },
+          "val": {
+            "kl": 1.8538520336151123,
+            "l1": 0.3125959038734436,
+            "loss": 18.851116180419922
+          }
+        }
+      ],
+      "res_full": [
+        {
+          "best_epoch": 0,
+          "epoch": 0,
+          "global_step": 10,
+          "min_val_loss": 77.84487915039062,
+          "train": {
+            "kl": 4.261908531188965,
+            "l1": 0.37366539239883423,
+            "loss": 42.99274826049805
+          },
+          "val": {
+            "kl": 7.745702266693115,
+            "l1": 0.3878524899482727,
+            "loss": 77.84487915039062
+          }
+        },
+        {
+          "best_epoch": 1,
+          "epoch": 1,
+          "global_step": 20,
+          "min_val_loss": 18.851255416870117,
+          "train": {
+            "kl": 1.7055717706680298,
+            "l1": 0.3565121591091156,
+            "loss": 17.412233352661133
+          },
+          "val": {
+            "kl": 1.8538520336151123,
+            "l1": 0.31273531913757324,
+            "loss": 18.851255416870117
+          }
+        }
+      ],
+      "res_part": [
+        {
+          "best_epoch": 0,
+          "epoch": 0,
+          "global_step": 10,
+          "min_val_loss": 77.84487915039062,
+          "train": {
+            "kl": 4.261908531188965,
+            "l1": 0.3736468255519867,
+            "loss": 42.992733001708984
+          },
+          "val": {
+            "kl": 7.745702266693115,
+            "l1": 0.3878524899482727,
+            "loss": 77.84487915039062
+          }
+        },
+        {
+          "best_epoch": 1,
+          "epoch": 1,
+          "global_step": 20,
+          "min_val_loss": 18.851102828979492,
+          "train": {
+            "kl": 1.7055720090866089,
+            "l1": 0.35650384426116943,
+            "loss": 17.41222381591797
+          },
+          "val": {
+            "kl": 1.8538520336151123,
+            "l1": 0.3125842213630676,
+            "loss": 18.851102828979492
+          }
+        }
+      ]
+    },
+    "weight_comparison_after_2_epochs": {
+      "fresh2_vs_resumed": {
+        "max_abs_diff": 7.989257574081421e-05,
+        "mismatching_tensors": 145,
+        "total_tensors": 344
+      },
+      "fresh_vs_fresh_baseline": {
+        "max_abs_diff": 0.00010410696268081665,
+        "mismatching_tensors": 144,
+        "total_tensors": 344
+      },
+      "uninterrupted_vs_resumed": {
+        "max_abs_diff": 0.00010428950190544128,
+        "mismatching_tensors": 145,
+        "total_tensors": 344
+      }
+    }
+  },
+  "schema": "hybrid_obstacle_act_baseline_integration_smoke",
+  "tests": {
+    "failures": 0,
+    "new_file": "submodules/act/tests/test_fixed_split_loader.py",
+    "new_tests": 38,
+    "preexisting_tests": 18,
+    "total_passed": 56
+  }
+}

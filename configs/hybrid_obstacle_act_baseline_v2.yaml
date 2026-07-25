@@ -1,0 +1,148 @@
+# hybrid_obstacle_act_baseline_v2 — frozen canonical ACT baseline training contract.
+#
+# This is the SINGLE nominal manipulation policy for both later conditions:
+#   1. ACT only
+#   2. the same ACT checkpoint plus the 40-sensor Safety-CVAE residual
+# A separate nominal checkpoint must NOT be trained for the safety condition.
+#
+# Frozen before training was launched and not adjusted afterwards. Nothing in
+# this file may be changed in response to observed training or validation curves.
+schema: hybrid_obstacle_act_baseline_v2_contract
+config_version: hybrid_obstacle_act_baseline_v2
+
+# --------------------------------------------------------------------------- #
+# dataset (immutable inputs)
+# --------------------------------------------------------------------------- #
+dataset:
+  # conversion_A and conversion_B were byte-identical; A is the selected
+  # immutable training input.
+  selected_conversion: conversion_A
+  dataset_dir: assets/act_style_data/hybrid_obstacle_canonical_v2/conversion_A
+  converted_tree_sha256: a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47
+  conversion_manifest: diagnostics_output/hybrid_obstacle_full_collection/conversion_A_manifest.json
+  canonical_manifest: configs/hybrid_obstacle_canonical_manifest_v2.json
+  canonical_manifest_sha256: f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf
+  split_manifest: configs/hybrid_obstacle_canonical_split_v2.json
+  split_manifest_sha256: f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0
+  source_collection_tree_sha256: 8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30
+  source_collection_dir: assets/datagen/hybrid_obstacle_independent_v2/20260725_full160_4w
+  episodes_total: 100
+  hazard_present: 75
+  hazard_absent: 25
+  observed_T_min: 54
+  observed_T_max: 130
+
+split:
+  level: trajectory
+  source: committed split manifest only; no random permutation, no filesystem order
+  train:
+    total: 80
+    hazard_present: 60
+    hazard_absent: 20
+  validation:
+    total: 20
+    hazard_present: 15
+    hazard_absent: 5
+
+normalization:
+  computed_from: training trajectories only
+  contributing_trajectories: 80
+  contributing_timesteps: 6450
+  includes_validation: false
+  includes_padding: false
+  std_clip_min: 0.01
+  statistics_sha256: 5a2425252d01ee505b124e4b77a18a2b80ad54d97c04473b4b09a1438dc44a71
+
+# --------------------------------------------------------------------------- #
+# model and optimization (canonical, frozen)
+# --------------------------------------------------------------------------- #
+policy:
+  policy_class: ACT
+  backbone: resnet18
+  hidden_dim: 512
+  transformer_encoder_layers: 4
+  transformer_decoder_layers: 7
+  attention_heads: 8
+  dim_feedforward: 3200
+  chunk_size: 100
+  kl_weight: 10
+  state_dim: 9
+  action_dim: 8
+  camera_names:
+    - exo_camera_1
+    - wrist_camera
+  image_height: 240
+  image_width: 320
+  episode_horizon: 132
+  parameters: 83911817
+
+training:
+  batch_size: 8
+  learning_rate: 1.0e-5
+  epochs: 2000
+  seed: 0
+  seeds_trained_in_this_task: 1
+  temporal_agg: false
+
+# Recorded from the ACT fork, NOT changed by this task.
+optimizer:
+  type: torch.optim.AdamW
+  source: detr/main.py:104-113
+  lr_non_backbone: 1.0e-5          # = training.learning_rate
+  lr_backbone: 1.0e-5              # imitate_episodes.py:150 hard-coded
+  weight_decay: 1.0e-4             # detr/main.py:17 default
+  lr_schedule: none                # lr_drop is parsed but never applied
+  param_groups:
+    - non-backbone parameters at lr
+    - backbone parameters at lr_backbone
+
+loss:
+  source: policy.py:31-38
+  l1: F.l1_loss(actions, a_hat, reduction='none') masked by ~is_pad, then mean
+  kl: total_kld[0] from kl_divergence(mu, logvar)
+  total: l1 + kl * kl_weight
+  padded_timesteps_contribute: false
+
+# --------------------------------------------------------------------------- #
+# determinism
+# --------------------------------------------------------------------------- #
+determinism:
+  train_loader_shuffle: true        # windows shuffled within the fixed training set
+  train_epoch_seed: (seed * 1000003 + epoch) mod 2^63-1
+  validation_loader_shuffle: false  # deterministic order
+  validation_seed: (seed * 7919 + 104729) mod 2^63-1   # constant across epochs
+  validation_windows: fixed set, identical every epoch
+  numpy_worker_seeding: derived from torch's per-worker base seed
+  torch_use_deterministic_algorithms: false
+  determinism_note: >
+    Bit-identical weights are not claimed. On this runtime two fresh runs with the
+    same seed already differ by max|diff| ~1.0e-4 after two epochs because of
+    nondeterministic cuDNN backward kernels. Resume was measured to add no
+    divergence beyond that baseline. The data path is fully deterministic: the
+    epoch-0 validation loss is bit-identical across runs.
+
+# --------------------------------------------------------------------------- #
+# guarantees
+# --------------------------------------------------------------------------- #
+excluded:
+  proximity_input: false
+  safety_cvae: false
+  simulator_rollout: false
+  task_success_evaluation: false
+  hyperparameter_sweep: false
+  multiple_seeds: false
+
+runtime:
+  python: 3.11.15
+  torch: 2.7.1+cu126
+  cuda: '12.6'
+  gpu: NVIDIA A10
+  driver: 570.86.10
+  python_executable: /root/act_retrain_venv/bin/python
+
+commits:
+  root_branch: train/hybrid-obstacle-act-baseline-v2
+  act_branch: repair/hybrid-obstacle-fixed-split-loader-v1
+  act_base_commit: 3d25c69edd8d972afa59fec5c3edb9d13a357f92
+  molmospaces_commit: 678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5
+  molmospaces_modified: false
