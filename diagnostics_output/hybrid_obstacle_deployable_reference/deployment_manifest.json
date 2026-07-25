@@ -1,0 +1,69 @@
+{
+  "act_checkpoint_sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+  "artifact_file_sha256": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+  "artifact_path": "/root/act_retrain_assets/deployable_reference_v1/posture_skin_mlp_reference_v1.pt",
+  "configuration": {
+    "architecture": "Linear196-256 SiLU 256-256 SiLU 256-128 SiLU 128-7",
+    "batch_norm": false,
+    "dropout": false,
+    "feature_fields": [
+      "qpos",
+      "qvel",
+      "nominal_action",
+      "gripper_state",
+      "gripper_command",
+      "current_head",
+      "sensor_summary"
+    ],
+    "feature_width": 196,
+    "parameters": 150023,
+    "under_250k_parameters": true
+  },
+  "controller_constants": {
+    "decay": 2.2,
+    "dt": 0.066,
+    "ema": 0.75,
+    "gain": 4.0,
+    "label_scale": 11.359346389770508,
+    "max_dev": 0.35
+  },
+  "d_act": 0.18,
+  "dataset_stats_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+  "feature_width": 196,
+  "frozen_before_live_execution": true,
+  "input_statistics_sha256": "1042b4aee41570c50b7c84d345d8dc693c0e35827dd968ee117bd993849a824e",
+  "manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+  "model_digest": "2773378e67dde155e457e70b279b7ae87ade8131647091eaee5ebaea700b1c14",
+  "offsamples": 4,
+  "paired_dataset_manifest_sha256": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+  "privileged_inputs": [],
+  "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+  "runtime": {
+    "device": "cuda",
+    "numpy": "2.4.6",
+    "python": "3.11.15",
+    "torch": "2.7.1+cu126"
+  },
+  "runtime_inputs": [
+    "qpos",
+    "qvel",
+    "nominal_action",
+    "gripper_state",
+    "gripper_command",
+    "current_head",
+    "sensor_summary"
+  ],
+  "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+  "schema": "hybrid_obstacle_deployable_reference_manifest_v1",
+  "selection_report_sha256": "b0e20c2544e282e690cfdfcfec9e87168f7d7a23c4c6f760272d59fabae9deec",
+  "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+  "source_commits": {
+    "act": "709a22de62ac0e8c4640b75eb348416d6e29013d",
+    "molmospaces": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "root": "4193b776640886c1bddc6be5adc7bdaf35855643"
+  },
+  "tau": 1.4161068201065063,
+  "tau_rule": "99.5th percentile of predicted oracle differential norm on hazard-absent validation frames, frozen before live execution",
+  "training_data_sha256": "591aaa3092cea6b2412bbdfefe293e4a1afd135b55a3231a3f6b2d1ba931ec8f",
+  "validation_data_sha256": "11739df22c9471c71b31e04e53f275e2f4c92b9825e2f6d6ec993d3b2ea214a8"
+}

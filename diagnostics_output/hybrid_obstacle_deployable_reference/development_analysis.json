@@ -1,0 +1,1940 @@
+{
+  "all_approximation_gates_passed": false,
+  "all_gross_regression_gates_passed": false,
+  "all_technical_gates_passed": true,
+  "approximation_gates": {
+    "activation_rate_when_shadow_zero_within_2pct": {
+      "passed": false,
+      "threshold": 0.02,
+      "values": [
+        0.23529411764705882,
+        0.10843373493975904,
+        0.0,
+        0.015,
+        0.3433734939759036,
+        0.07954545454545454,
+        0.0,
+        0.02,
+        0.3254437869822485,
+        0.0963855421686747,
+        0.015706806282722512,
+        0.015,
+        0.3132530120481928,
+        0.1125,
+        0.0,
+        0.015,
+        0.3132530120481928,
+        0.06741573033707865,
+        0.0,
+        0.015
+      ]
+    },
+    "candidate_118_activation_within_2pct": {
+      "passed": true,
+      "threshold": 0.02,
+      "values": [
+        0.015,
+        0.02,
+        0.015,
+        0.015,
+        0.015
+      ]
+    },
+    "candidate_118_median_correction_within_10pct_of_hazard_present": {
+      "absent_median": 0.0,
+      "passed": true,
+      "present_median": 0.0,
+      "threshold_ratio": 0.1
+    },
+    "candidate_118_no_run_longer_than_two_frames": {
+      "passed": false,
+      "threshold": 2,
+      "values": [
+        2,
+        4,
+        3,
+        3,
+        3
+      ]
+    },
+    "candidate_118_no_universal_new_collision": {
+      "act_only": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "deployable_other_env": [
+        13,
+        12,
+        35,
+        20,
+        21
+      ],
+      "passed": true
+    },
+    "correction_rms_when_shadow_zero": {
+      "reported_not_gated": true,
+      "values": [
+        0.2999694015595745,
+        0.03177397090811544,
+        0.0,
+        0.01664970443533654,
+        0.3855181133197402,
+        0.027915839887625884,
+        0.0,
+        0.02470342901320974,
+        0.3182090762217655,
+        0.03522948601030886,
+        0.011576330682873281,
+        0.024348880771524594,
+        0.3333343102958779,
+        0.03209972478266614,
+        0.0,
+        0.01954441170638809,
+        0.3474677874046805,
+        0.029471152623106636,
+        0.0,
+        0.017102163637467045
+      ]
+    },
+    "median_deployable_oracle_cosine_at_least_0p70": {
+      "evaluable": true,
+      "passed": false,
+      "per_rollout_medians": [
+        0.2674677073955536,
+        0.3141716718673706,
+        0.8493795096874237,
+        null,
+        0.3072408139705658,
+        0.5053169131278992,
+        null,
+        null,
+        0.33059318363666534,
+        0.5138849020004272,
+        0.008661795407533646,
+        null,
+        0.3408377766609192,
+        0.5788049101829529,
+        null,
+        null,
+        0.34921348094940186,
+        0.5565485060214996,
+        null,
+        null
+      ],
+      "pooled_median": 0.3450256288051605,
+      "rollouts_with_supported_active_frames": 12,
+      "rule": "on shadow-active, teacher-supported frames"
+    },
+    "no_persistent_correction_after_support_clears": {
+      "offenders": [
+        "cand107_deployable_r4"
+      ],
+      "passed": false
+    },
+    "norm_ratio_between_0p5_and_1p5": {
+      "evaluable": true,
+      "passed": false,
+      "pooled_median": 1.5591373592615128,
+      "values": [
+        6.921298027038574,
+        0.7157536149024963,
+        0.911383181810379,
+        5.059927940368652,
+        0.7428235411643982,
+        6.336568832397461,
+        0.5658589601516724,
+        2.2068915367126465,
+        6.106168270111084,
+        0.7673315405845642,
+        5.215813636779785,
+        0.8415027260780334
+      ]
+    },
+    "positive_cosine_fraction_at_least_80pct": {
+      "evaluable": true,
+      "passed": true,
+      "pooled_median": 0.8716758125791473,
+      "values": [
+        0.8695652173913043,
+        0.6262626262626263,
+        1.0,
+        0.8888888888888888,
+        0.8404255319148937,
+        0.875,
+        0.8775510204081632,
+        0.6666666666666666,
+        0.8888888888888888,
+        0.8737864077669902,
+        0.8518518518518519,
+        0.8295454545454546
+      ]
+    }
+  },
+  "candidate_108_analysis": {
+    "note": "direction is scored only inside the teacher-supported range; a reversed vector beyond it is acceptable when the gate keeps it unexecuted",
+    "supported_range": {
+      "cosine_fraction_positive": [
+        1.0,
+        null,
+        0.6666666666666666,
+        null,
+        null
+      ],
+      "cosine_median": [
+        0.8493795096874237,
+        null,
+        0.008661795407533646,
+        null,
+        null
+      ],
+      "definition": "frames with a valid return < 0.18 m and a nonzero shadow oracle",
+      "frames": [
+        4,
+        0,
+        9,
+        0,
+        0
+      ],
+      "max_correction_norm": [
+        0.0,
+        0.0,
+        0.0813817815176429,
+        0.0,
+        0.0
+      ]
+    },
+    "unsupported_range": {
+      "definition": "frames with no valid return inside 0.18 m",
+      "false_activation_rate": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate_returns_residual_to_zero": true,
+      "offline_long_range_cosine_reversed": true,
+      "offline_long_range_note": "the oracle task measured a reversed median cosine (-0.36) beyond the committed activation radius on this row; the support gate is what makes that harmless"
+    }
+  },
+  "candidate_118_negative_control": {
+    "act_only_successes": 0,
+    "activation_rate": [
+      0.015,
+      0.02,
+      0.015,
+      0.015,
+      0.015
+    ],
+    "longest_activation_run": [
+      2,
+      4,
+      3,
+      3,
+      3
+    ],
+    "median_correction_norm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "other_environment_contacts": [
+      13,
+      12,
+      35,
+      20,
+      21
+    ],
+    "successes": 0
+  },
+  "confirmatory_statistical_testing_performed": false,
+  "d_act": 0.18,
+  "decision": "DEPLOYABLE_REFERENCE_LIVE_GROSS_REGRESSION",
+  "frozen_baseline_expectations": {
+    "106": {
+      "act_only": 5,
+      "oracle": 5
+    },
+    "107": {
+      "act_only": 5,
+      "oracle": 5
+    },
+    "108": {
+      "act_only": 1,
+      "oracle": 4
+    },
+    "118": {
+      "act_only": 0,
+      "oracle": 0
+    }
+  },
+  "frozen_baselines_reused": {
+    "act_only": 20,
+    "oracle": 20,
+    "rerun": 0
+  },
+  "gross_regression_gates": {
+    "candidate_106_not_zero_of_five": {
+      "passed": true,
+      "successes": 4
+    },
+    "candidate_107_not_zero_of_five": {
+      "passed": true,
+      "successes": 5
+    },
+    "candidate_118_no_systematic_new_environment_collision": {
+      "act_only": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "deployable": [
+        13,
+        12,
+        35,
+        20,
+        21
+      ],
+      "passed": false
+    },
+    "median_saturation_below_25pct": {
+      "median": 0.0,
+      "passed": true,
+      "threshold": 0.25
+    },
+    "no_new_universal_hazard_collision": {
+      "offenders": [],
+      "passed": true
+    },
+    "no_rollout_saturated_over_75pct": {
+      "offenders": [],
+      "passed": true,
+      "threshold": 0.75
+    },
+    "pooled_hazard_present_at_least_8_of_15": {
+      "deployable": 12,
+      "n": 15,
+      "passed": true,
+      "threshold": 8
+    },
+    "pooled_within_20pp_of_act_only": {
+      "act_only": 11,
+      "deployable": 12,
+      "gap_pp": -6.666666666666667,
+      "n": 15,
+      "passed": true,
+      "threshold_pp": 20.0
+    }
+  },
+  "offline_replay_sha256": "9218f9e6a4f1b04ca15d0581fd21b9d342906290155c75d4b3e3a3409d267e4c",
+  "per_row": [
+    {
+      "act_only": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          61,
+          68,
+          63,
+          68,
+          55
+        ],
+        "successes": 5
+      },
+      "candidate_index": 106,
+      "deployable": {
+        "activation_rate": [
+          0.21,
+          0.29,
+          0.285,
+          0.27,
+          0.27
+        ],
+        "activation_rate_when_shadow_zero": [
+          0.23529411764705882,
+          0.3433734939759036,
+          0.3254437869822485,
+          0.3132530120481928,
+          0.3132530120481928
+        ],
+        "collision_free_successes": 0,
+        "correction_rms_when_shadow_zero": [
+          0.2999694015595745,
+          0.3855181133197402,
+          0.3182090762217655,
+          0.3333343102958779,
+          0.3474677874046805
+        ],
+        "cosine_fraction_positive": [
+          0.8695652173913043,
+          0.8888888888888888,
+          0.875,
+          0.8888888888888888,
+          0.8518518518518519
+        ],
+        "cosine_median": [
+          0.2674677073955536,
+          0.3072408139705658,
+          0.33059318363666534,
+          0.3408377766609192,
+          0.34921348094940186
+        ],
+        "far_activation_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hazard_bar_contacts": [
+          15,
+          0,
+          0,
+          0,
+          0
+        ],
+        "longest_activation_run": [
+          18,
+          55,
+          24,
+          33,
+          26
+        ],
+        "max_correction_norm": [
+          0.710703268184564,
+          0.7196797690627953,
+          0.6948416284370359,
+          0.7158882604131632,
+          0.7129169443546107
+        ],
+        "median_correction_norm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "norm_ratio_median": [
+          6.921298027038574,
+          5.059927940368652,
+          6.336568832397461,
+          6.106168270111084,
+          5.215813636779785
+        ],
+        "other_environment_contacts": [
+          64,
+          49,
+          32,
+          44,
+          46
+        ],
+        "saturation_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": 4,
+        "supported_active_frames": [
+          23,
+          27,
+          24,
+          27,
+          27
+        ]
+      },
+      "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+      "hazard_present": true,
+      "offline_replay": {
+        "activation_rate": 0.0,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "saturation_fraction": 0.0
+      },
+      "oracle": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          33,
+          35,
+          32,
+          27,
+          32
+        ],
+        "successes": 5
+      },
+      "repeats": 5
+    },
+    {
+      "act_only": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          87,
+          93,
+          89,
+          89,
+          75
+        ],
+        "successes": 5
+      },
+      "candidate_index": 107,
+      "deployable": {
+        "activation_rate": [
+          0.335,
+          0.4,
+          0.4,
+          0.405,
+          0.36
+        ],
+        "activation_rate_when_shadow_zero": [
+          0.10843373493975904,
+          0.07954545454545454,
+          0.0963855421686747,
+          0.1125,
+          0.06741573033707865
+        ],
+        "collision_free_successes": 0,
+        "correction_rms_when_shadow_zero": [
+          0.03177397090811544,
+          0.027915839887625884,
+          0.03522948601030886,
+          0.03209972478266614,
+          0.029471152623106636
+        ],
+        "cosine_fraction_positive": [
+          0.6262626262626263,
+          0.8404255319148937,
+          0.8775510204081632,
+          0.8737864077669902,
+          0.8295454545454546
+        ],
+        "cosine_median": [
+          0.3141716718673706,
+          0.5053169131278992,
+          0.5138849020004272,
+          0.5788049101829529,
+          0.5565485060214996
+        ],
+        "far_activation_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "longest_activation_run": [
+          12,
+          21,
+          40,
+          21,
+          22
+        ],
+        "max_correction_norm": [
+          0.7177537261880998,
+          0.7157100539423188,
+          0.7099973585580485,
+          0.7154637686279645,
+          0.7133139811388681
+        ],
+        "median_correction_norm": [
+          0.06030110920757671,
+          0.05995828676434567,
+          0.06272221296005823,
+          0.060563706711981094,
+          0.05945044856703121
+        ],
+        "norm_ratio_median": [
+          0.7157536149024963,
+          0.7428235411643982,
+          0.5658589601516724,
+          0.7673315405845642,
+          0.8415027260780334
+        ],
+        "other_environment_contacts": [
+          28,
+          9,
+          8,
+          9,
+          5
+        ],
+        "saturation_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": 5,
+        "supported_active_frames": [
+          99,
+          94,
+          98,
+          103,
+          88
+        ]
+      },
+      "episode_id": "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+      "hazard_present": true,
+      "offline_replay": {
+        "activation_rate": 0.0,
+        "cosine_teacher_active": {
+          "fraction_positive": 0.8064516129032258,
+          "median": 0.8170361518859863,
+          "n": 31
+        },
+        "saturation_fraction": 0.0
+      },
+      "oracle": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "other_environment_contacts": [
+          77,
+          90,
+          84,
+          90,
+          82
+        ],
+        "successes": 5
+      },
+      "repeats": 5
+    },
+    {
+      "act_only": {
+        "collision_free_successes": 1,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "successes": 1
+      },
+      "candidate_index": 108,
+      "deployable": {
+        "activation_rate": [
+          0.0,
+          0.0,
+          0.015,
+          0.0,
+          0.0
+        ],
+        "activation_rate_when_shadow_zero": [
+          0.0,
+          0.0,
+          0.015706806282722512,
+          0.0,
+          0.0
+        ],
+        "collision_free_successes": 2,
+        "correction_rms_when_shadow_zero": [
+          0.0,
+          0.0,
+          0.011576330682873281,
+          0.0,
+          0.0
+        ],
+        "cosine_fraction_positive": [
+          1.0,
+          null,
+          0.6666666666666666,
+          null,
+          null
+        ],
+        "cosine_median": [
+          0.8493795096874237,
+          null,
+          0.008661795407533646,
+          null,
+          null
+        ],
+        "far_activation_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "longest_activation_run": [
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        "max_correction_norm": [
+          0.0,
+          0.0,
+          0.0813817815176429,
+          0.0,
+          0.0
+        ],
+        "median_correction_norm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "norm_ratio_median": [
+          0.911383181810379,
+          null,
+          2.2068915367126465,
+          null,
+          null
+        ],
+        "other_environment_contacts": [
+          0,
+          10,
+          0,
+          0,
+          0
+        ],
+        "saturation_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": 3,
+        "supported_active_frames": [
+          4,
+          0,
+          9,
+          0,
+          0
+        ]
+      },
+      "episode_id": "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+      "hazard_present": true,
+      "offline_replay": {
+        "activation_rate": 0.0,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "saturation_fraction": 0.0
+      },
+      "oracle": {
+        "collision_free_successes": 4,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "successes": 4
+      },
+      "repeats": 5
+    },
+    {
+      "act_only": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "successes": 0
+      },
+      "candidate_index": 118,
+      "deployable": {
+        "activation_rate": [
+          0.015,
+          0.02,
+          0.015,
+          0.015,
+          0.015
+        ],
+        "activation_rate_when_shadow_zero": [
+          0.015,
+          0.02,
+          0.015,
+          0.015,
+          0.015
+        ],
+        "collision_free_successes": 0,
+        "correction_rms_when_shadow_zero": [
+          0.01664970443533654,
+          0.02470342901320974,
+          0.024348880771524594,
+          0.01954441170638809,
+          0.017102163637467045
+        ],
+        "cosine_fraction_positive": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "cosine_median": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "far_activation_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "longest_activation_run": [
+          2,
+          4,
+          3,
+          3,
+          3
+        ],
+        "max_correction_norm": [
+          0.0788472376117777,
+          0.11720148298824265,
+          0.11559353357569012,
+          0.09285410470675892,
+          0.08128496612910661
+        ],
+        "median_correction_norm": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "norm_ratio_median": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "other_environment_contacts": [
+          13,
+          12,
+          35,
+          20,
+          21
+        ],
+        "saturation_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "successes": 0,
+        "supported_active_frames": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "episode_id": "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+      "hazard_present": false,
+      "offline_replay": {
+        "activation_rate": 0.0,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "saturation_fraction": 0.0
+      },
+      "oracle": {
+        "collision_free_successes": 0,
+        "hazard_bar_contacts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "other_environment_contacts": [
+          31,
+          0,
+          0,
+          0,
+          0
+        ],
+        "successes": 0
+      },
+      "repeats": 5
+    }
+  ],
+  "pooled_hazard_present": {
+    "act_only": 11,
+    "deployable": 12,
+    "n": 15,
+    "oracle": 14
+  },
+  "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+  "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+  "report_sha256": "56fd89da18f9770a19f3a011aee581b68e92b5706e6961daddf92b116505d93d",
+  "rollout_budget": 20,
+  "rollouts": [
+    {
+      "activation_rate": 0.21,
+      "activation_rate_when_shadow_zero": 0.23529411764705882,
+      "activations": 42,
+      "candidate_index": 106,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1090,
+        "hazard_bar": 15,
+        "other_environment": 64
+      },
+      "correction_rms_when_shadow_zero": 0.2999694015595745,
+      "cosine_fraction_positive": 0.8695652173913043,
+      "cosine_median": 0.2674677073955536,
+      "cosine_n": 23,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.7098467613960114,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": true,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 18,
+      "max_correction_norm": 0.710703268184564,
+      "maximum_penetration_m": 0.011450668952538027,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 6.921298027038574,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 0,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 30,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 23,
+      "tag": "cand106_deployable_r0"
+    },
+    {
+      "activation_rate": 0.335,
+      "activation_rate_when_shadow_zero": 0.10843373493975904,
+      "activations": 67,
+      "candidate_index": 107,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1012,
+        "hazard_bar": 0,
+        "other_environment": 28
+      },
+      "correction_rms_when_shadow_zero": 0.03177397090811544,
+      "cosine_fraction_positive": 0.6262626262626263,
+      "cosine_median": 0.3141716718673706,
+      "cosine_n": 99,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.5311414302048273,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 12,
+      "max_correction_norm": 0.7177537261880998,
+      "maximum_penetration_m": 0.0040964351594122705,
+      "median_correction_norm": 0.06030110920757671,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.7157536149024963,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 0,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 117,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 99,
+      "tag": "cand107_deployable_r0"
+    },
+    {
+      "activation_rate": 0.0,
+      "activation_rate_when_shadow_zero": 0.0,
+      "activations": 0,
+      "candidate_index": 108,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 97,
+        "hazard_bar": 0,
+        "other_environment": 0
+      },
+      "correction_rms_when_shadow_zero": 0.0,
+      "cosine_fraction_positive": 1.0,
+      "cosine_median": 0.8493795096874237,
+      "cosine_n": 4,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 0,
+      "max_correction_norm": 0.0,
+      "maximum_penetration_m": 0.0010349062146916995,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.911383181810379,
+      "offsamples": 4,
+      "other_environment_collision": false,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 0,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 4,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 4,
+      "tag": "cand108_deployable_r0"
+    },
+    {
+      "activation_rate": 0.015,
+      "activation_rate_when_shadow_zero": 0.015,
+      "activations": 3,
+      "candidate_index": 118,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 8,
+        "hazard_bar": 0,
+        "other_environment": 13
+      },
+      "correction_rms_when_shadow_zero": 0.01664970443533654,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0021065050940456496,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": false,
+      "initial_state_matches": true,
+      "longest_activation_run": 2,
+      "max_correction_norm": 0.0788472376117777,
+      "maximum_penetration_m": 0.0003677570154070521,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 0,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand118_deployable_r0"
+    },
+    {
+      "activation_rate": 0.29,
+      "activation_rate_when_shadow_zero": 0.3433734939759036,
+      "activations": 58,
+      "candidate_index": 106,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1085,
+        "hazard_bar": 0,
+        "other_environment": 49
+      },
+      "correction_rms_when_shadow_zero": 0.3855181133197402,
+      "cosine_fraction_positive": 0.8888888888888888,
+      "cosine_median": 0.3072408139705658,
+      "cosine_n": 27,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.6221350681053568,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 55,
+      "max_correction_norm": 0.7196797690627953,
+      "maximum_penetration_m": 0.006928810999936854,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 5.059927940368652,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 1,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 34,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 27,
+      "tag": "cand106_deployable_r1"
+    },
+    {
+      "activation_rate": 0.4,
+      "activation_rate_when_shadow_zero": 0.07954545454545454,
+      "activations": 80,
+      "candidate_index": 107,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1252,
+        "hazard_bar": 0,
+        "other_environment": 9
+      },
+      "correction_rms_when_shadow_zero": 0.027915839887625884,
+      "cosine_fraction_positive": 0.8404255319148937,
+      "cosine_median": 0.5053169131278992,
+      "cosine_n": 94,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.7088877206377995,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 21,
+      "max_correction_norm": 0.7157100539423188,
+      "maximum_penetration_m": 0.0041757920429263224,
+      "median_correction_norm": 0.05995828676434567,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.7428235411643982,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 1,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 112,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 94,
+      "tag": "cand107_deployable_r1"
+    },
+    {
+      "activation_rate": 0.0,
+      "activation_rate_when_shadow_zero": 0.0,
+      "activations": 0,
+      "candidate_index": 108,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1018,
+        "hazard_bar": 0,
+        "other_environment": 10
+      },
+      "correction_rms_when_shadow_zero": 0.0,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 0,
+      "max_correction_norm": 0.0,
+      "maximum_penetration_m": 0.0007187553189442291,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 1,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 0,
+      "tag": "cand108_deployable_r1"
+    },
+    {
+      "activation_rate": 0.02,
+      "activation_rate_when_shadow_zero": 0.02,
+      "activations": 4,
+      "candidate_index": 118,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 76,
+        "hazard_bar": 0,
+        "other_environment": 12
+      },
+      "correction_rms_when_shadow_zero": 0.02470342901320974,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.001056909948633213,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": false,
+      "initial_state_matches": true,
+      "longest_activation_run": 4,
+      "max_correction_norm": 0.11720148298824265,
+      "maximum_penetration_m": 0.004473813627287605,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 1,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand118_deployable_r1"
+    },
+    {
+      "activation_rate": 0.285,
+      "activation_rate_when_shadow_zero": 0.3254437869822485,
+      "activations": 57,
+      "candidate_index": 106,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1060,
+        "hazard_bar": 0,
+        "other_environment": 32
+      },
+      "correction_rms_when_shadow_zero": 0.3182090762217655,
+      "cosine_fraction_positive": 0.875,
+      "cosine_median": 0.33059318363666534,
+      "cosine_n": 24,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.6303969557027123,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 24,
+      "max_correction_norm": 0.6948416284370359,
+      "maximum_penetration_m": 0.006808615275923979,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 6.336568832397461,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 2,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 31,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 24,
+      "tag": "cand106_deployable_r2"
+    },
+    {
+      "activation_rate": 0.4,
+      "activation_rate_when_shadow_zero": 0.0963855421686747,
+      "activations": 80,
+      "candidate_index": 107,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1460,
+        "hazard_bar": 0,
+        "other_environment": 8
+      },
+      "correction_rms_when_shadow_zero": 0.03522948601030886,
+      "cosine_fraction_positive": 0.8775510204081632,
+      "cosine_median": 0.5138849020004272,
+      "cosine_n": 98,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.6292248282732565,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 40,
+      "max_correction_norm": 0.7099973585580485,
+      "maximum_penetration_m": 0.011034791458243291,
+      "median_correction_norm": 0.06272221296005823,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.5658589601516724,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 2,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 117,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 98,
+      "tag": "cand107_deployable_r2"
+    },
+    {
+      "activation_rate": 0.015,
+      "activation_rate_when_shadow_zero": 0.015706806282722512,
+      "activations": 3,
+      "candidate_index": 108,
+      "collision_free_success": true,
+      "contacts": {
+        "grasp_target": 679,
+        "hazard_bar": 0,
+        "other_environment": 0
+      },
+      "correction_rms_when_shadow_zero": 0.011576330682873281,
+      "cosine_fraction_positive": 0.6666666666666666,
+      "cosine_median": 0.008661795407533646,
+      "cosine_n": 9,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0023981656790105473,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 3,
+      "max_correction_norm": 0.0813817815176429,
+      "maximum_penetration_m": 0.00211331046967845,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 2.2068915367126465,
+      "offsamples": 4,
+      "other_environment_collision": false,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 2,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 9,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 9,
+      "tag": "cand108_deployable_r2"
+    },
+    {
+      "activation_rate": 0.015,
+      "activation_rate_when_shadow_zero": 0.015,
+      "activations": 3,
+      "candidate_index": 118,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 7,
+        "hazard_bar": 0,
+        "other_environment": 35
+      },
+      "correction_rms_when_shadow_zero": 0.024348880771524594,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0003658229701595323,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": false,
+      "initial_state_matches": true,
+      "longest_activation_run": 3,
+      "max_correction_norm": 0.11559353357569012,
+      "maximum_penetration_m": 0.00122147161795254,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 2,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand118_deployable_r2"
+    },
+    {
+      "activation_rate": 0.27,
+      "activation_rate_when_shadow_zero": 0.3132530120481928,
+      "activations": 54,
+      "candidate_index": 106,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1155,
+        "hazard_bar": 0,
+        "other_environment": 44
+      },
+      "correction_rms_when_shadow_zero": 0.3333343102958779,
+      "cosine_fraction_positive": 0.8888888888888888,
+      "cosine_median": 0.3408377766609192,
+      "cosine_n": 27,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.4387257125064262,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 33,
+      "max_correction_norm": 0.7158882604131632,
+      "maximum_penetration_m": 0.009209355011315054,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 6.106168270111084,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 3,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 34,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 27,
+      "tag": "cand106_deployable_r3"
+    },
+    {
+      "activation_rate": 0.405,
+      "activation_rate_when_shadow_zero": 0.1125,
+      "activations": 81,
+      "candidate_index": 107,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1241,
+        "hazard_bar": 0,
+        "other_environment": 9
+      },
+      "correction_rms_when_shadow_zero": 0.03209972478266614,
+      "cosine_fraction_positive": 0.8737864077669902,
+      "cosine_median": 0.5788049101829529,
+      "cosine_n": 103,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.6753973256230148,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 21,
+      "max_correction_norm": 0.7154637686279645,
+      "maximum_penetration_m": 0.007981172115701643,
+      "median_correction_norm": 0.060563706711981094,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.7673315405845642,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 3,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 120,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 103,
+      "tag": "cand107_deployable_r3"
+    },
+    {
+      "activation_rate": 0.0,
+      "activation_rate_when_shadow_zero": 0.0,
+      "activations": 0,
+      "candidate_index": 108,
+      "collision_free_success": true,
+      "contacts": {
+        "grasp_target": 954,
+        "hazard_bar": 0,
+        "other_environment": 0
+      },
+      "correction_rms_when_shadow_zero": 0.0,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 0,
+      "max_correction_norm": 0.0,
+      "maximum_penetration_m": 0.0009466700366662517,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": false,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 3,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 0,
+      "tag": "cand108_deployable_r3"
+    },
+    {
+      "activation_rate": 0.015,
+      "activation_rate_when_shadow_zero": 0.015,
+      "activations": 3,
+      "candidate_index": 118,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 13,
+        "hazard_bar": 0,
+        "other_environment": 20
+      },
+      "correction_rms_when_shadow_zero": 0.01954441170638809,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.00046205147736734904,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": false,
+      "initial_state_matches": true,
+      "longest_activation_run": 3,
+      "max_correction_norm": 0.09285410470675892,
+      "maximum_penetration_m": 0.0013352878497611019,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 3,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand118_deployable_r3"
+    },
+    {
+      "activation_rate": 0.27,
+      "activation_rate_when_shadow_zero": 0.3132530120481928,
+      "activations": 54,
+      "candidate_index": 106,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1141,
+        "hazard_bar": 0,
+        "other_environment": 46
+      },
+      "correction_rms_when_shadow_zero": 0.3474677874046805,
+      "cosine_fraction_positive": 0.8518518518518519,
+      "cosine_median": 0.34921348094940186,
+      "cosine_n": 27,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.7119108067134586,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 26,
+      "max_correction_norm": 0.7129169443546107,
+      "maximum_penetration_m": 0.006214403054236189,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 5.215813636779785,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 4,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 34,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 27,
+      "tag": "cand106_deployable_r4"
+    },
+    {
+      "activation_rate": 0.36,
+      "activation_rate_when_shadow_zero": 0.06741573033707865,
+      "activations": 72,
+      "candidate_index": 107,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 1404,
+        "hazard_bar": 0,
+        "other_environment": 5
+      },
+      "correction_rms_when_shadow_zero": 0.029471152623106636,
+      "cosine_fraction_positive": 0.8295454545454546,
+      "cosine_median": 0.5565485060214996,
+      "cosine_n": 88,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.7063469530122,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 22,
+      "max_correction_norm": 0.7133139811388681,
+      "maximum_penetration_m": 0.02233290917629157,
+      "median_correction_norm": 0.05945044856703121,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": 0.8415027260780334,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": true,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 4,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 111,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": true,
+      "supported_active_frames": 88,
+      "tag": "cand107_deployable_r4"
+    },
+    {
+      "activation_rate": 0.0,
+      "activation_rate_when_shadow_zero": 0.0,
+      "activations": 0,
+      "candidate_index": 108,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 91,
+        "hazard_bar": 0,
+        "other_environment": 0
+      },
+      "correction_rms_when_shadow_zero": 0.0,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": true,
+      "initial_state_matches": true,
+      "longest_activation_run": 0,
+      "max_correction_norm": 0.0,
+      "maximum_penetration_m": 0.005320175056116868,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": false,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 4,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand108_deployable_r4"
+    },
+    {
+      "activation_rate": 0.015,
+      "activation_rate_when_shadow_zero": 0.015,
+      "activations": 3,
+      "candidate_index": 118,
+      "collision_free_success": false,
+      "contacts": {
+        "grasp_target": 13,
+        "hazard_bar": 0,
+        "other_environment": 21
+      },
+      "correction_rms_when_shadow_zero": 0.017102163637467045,
+      "cosine_fraction_positive": null,
+      "cosine_median": null,
+      "cosine_n": 0,
+      "far_activation_rate": 0.0,
+      "final_correction_norm": 0.0002496919645494737,
+      "frames": 200,
+      "gripper_bitwise_preserved": true,
+      "hazard_collision": false,
+      "hazard_present": false,
+      "initial_state_matches": true,
+      "longest_activation_run": 3,
+      "max_correction_norm": 0.08128496612910661,
+      "maximum_penetration_m": 0.0018900964344384578,
+      "median_correction_norm": 0.0,
+      "nonfinite_action": false,
+      "nonfinite_predictions": 0,
+      "norm_ratio_median": null,
+      "offsamples": 4,
+      "other_environment_collision": true,
+      "persistent_correction_after_support_cleared": false,
+      "privileged_features_used": [],
+      "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "repeat_index": 4,
+      "saturation_fraction": 0.0,
+      "shadow_active_frames": 0,
+      "shadow_neutrality_failures": 0,
+      "shadow_state_neutral": true,
+      "success": false,
+      "supported_active_frames": 0,
+      "tag": "cand118_deployable_r4"
+    }
+  ],
+  "rollouts_executed": 20,
+  "schedule_sha256": "a7980e11eb1a10d2ccf2989e71cde8168f48a99898bbc1f600d0f07b23ce638e",
+  "schema": "hybrid_obstacle_deployable_analysis_v1",
+  "selection_report_sha256": "b0e20c2544e282e690cfdfcfec9e87168f7d7a23c4c6f760272d59fabae9deec",
+  "shadow_oracle_diagnostics": {
+    "active_frames": [
+      30,
+      117,
+      4,
+      0,
+      34,
+      112,
+      0,
+      0,
+      31,
+      117,
+      9,
+      0,
+      34,
+      120,
+      0,
+      0,
+      34,
+      111,
+      0,
+      0
+    ],
+    "executed": false,
+    "privileged": true,
+    "state_neutrality_failures": 0
+  },
+  "tau": 1.4161068201065063,
+  "technical_gates": {
+    "all_twenty_rollouts_finalize": {
+      "executed": 20,
+      "missing": [],
+      "passed": true
+    },
+    "arm_only_correction": {
+      "evidence": "apply_arm_residual touches arm only",
+      "passed": true
+    },
+    "confirmatory41_unexecuted": {
+      "passed": true
+    },
+    "frozen_baselines_verified": {
+      "act_only_verified": 20,
+      "oracle_verified": 20,
+      "passed": true,
+      "problems": {},
+      "reruns_performed": 0
+    },
+    "gripper_bitwise_unchanged": {
+      "offenders": [],
+      "passed": true
+    },
+    "initial_state_replayed_exactly": {
+      "offenders": [],
+      "passed": true
+    },
+    "msaa_and_camera_contract_unchanged": {
+      "passed": true,
+      "values": [
+        4
+      ]
+    },
+    "no_nonfinite_model_output_or_action": {
+      "nonfinite_predictions": 0,
+      "passed": true
+    },
+    "no_privileged_feature_in_the_deployable_model": {
+      "passed": true,
+      "privileged_inputs": [],
+      "runtime_inputs": [
+        "qpos",
+        "qvel",
+        "nominal_action",
+        "gripper_state",
+        "gripper_command",
+        "current_head",
+        "sensor_summary"
+      ]
+    },
+    "no_shadow_oracle_state_neutrality_failure": {
+      "passed": true,
+      "total_failures": 0
+    },
+    "residual_applied_after_temporal_aggregation": {
+      "evidence": "adapter aggregates then corrects; pc.temp_agg_off = False",
+      "passed": true
+    },
+    "state_reset_between_repeats": {
+      "evidence": "fresh process per rollout; reset() clears reference, gate, selector, shadow, controller and inference cache",
+      "passed": true
+    }
+  },
+  "tuning_performed": false
+}

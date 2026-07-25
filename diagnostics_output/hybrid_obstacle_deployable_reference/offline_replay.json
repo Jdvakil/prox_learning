@@ -1,0 +1,298 @@
+{
+  "all_gates_passed": true,
+  "d_act": 0.18,
+  "decision_if_failed": "DEPLOYABLE_REFERENCE_OFFLINE_INVALID",
+  "development_manifest_sha256": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+  "frozen_constants": {
+    "decay": 2.2,
+    "dt": 0.066,
+    "ema": 0.75,
+    "gain": 4.0,
+    "label_scale": 11.359346389770508,
+    "max_dev": 0.35
+  },
+  "gates": {
+    "correction_primarily_inside_support_range": {
+      "passed": true,
+      "rule": "the predicted correction must not be primarily active outside the <0.18 m support range",
+      "values": {
+        "106": null,
+        "107": null,
+        "108": null,
+        "118": null
+      }
+    },
+    "hazard_absent_activation_within_2pct": {
+      "passed": true,
+      "rule": "candidate 118 must not predict a nonzero correction on more than 2% of frames",
+      "threshold": 0.02,
+      "values": {
+        "118": 0.0
+      }
+    },
+    "median_teacher_active_cosine_at_least_0p70": {
+      "evaluable": true,
+      "passed": true,
+      "per_row": {
+        "106": null,
+        "107": 0.8170361518859863,
+        "108": null
+      },
+      "pooled_median": 0.8170361518859863,
+      "rule": "median teacher-active deployable/oracle cosine >= 0.70",
+      "threshold": 0.7
+    },
+    "no_rollout_saturated_over_75pct": {
+      "passed": true,
+      "threshold": 0.75,
+      "values": {
+        "106": 0.0,
+        "107": 0.0,
+        "108": 0.0,
+        "118": 0.0
+      }
+    }
+  },
+  "method_caveat": "open-loop screening over the recorded expert proximity streams; it models the signal and controller paths exactly but not the closed-loop feedback once the correction moves the arm",
+  "reference_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+  "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+  "report_sha256": "9218f9e6a4f1b04ca15d0581fd21b9d342906290155c75d4b3e3a3409d267e4c",
+  "rows": [
+    {
+      "activation_inside_support_range": null,
+      "activation_outside_support_range": null,
+      "activation_rate": 0.0,
+      "activations": 0,
+      "candidate_index": 106,
+      "correction_norm": {
+        "final": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0
+      },
+      "correction_norm_series_downsampled": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_oracle_nonzero": {
+        "fraction_positive": 1.0,
+        "median": 0.9861112833023071,
+        "n": 7
+      },
+      "cosine_teacher_active": {
+        "fraction_positive": null,
+        "median": null,
+        "n": 0
+      },
+      "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+      "far_range_activation_rate": 0.0,
+      "frames": 108,
+      "gripper_preserved_by_construction": true,
+      "hazard_present": true,
+      "intervention_runs": [],
+      "longest_intervention_run": 0,
+      "oracle_nonzero_frames": 7,
+      "predicted_intervention_duration_s": 0.0,
+      "predicted_norm": {
+        "max": 0.7667922377586365,
+        "median": 0.2089027762413025,
+        "p99": 0.7441630959510803
+      },
+      "saturation_fraction": 0.0,
+      "teacher_active_frames": 0
+    },
+    {
+      "activation_inside_support_range": null,
+      "activation_outside_support_range": null,
+      "activation_rate": 0.0,
+      "activations": 0,
+      "candidate_index": 107,
+      "correction_norm": {
+        "final": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0
+      },
+      "correction_norm_series_downsampled": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_oracle_nonzero": {
+        "fraction_positive": 0.7719298245614035,
+        "median": 0.636258602142334,
+        "n": 57
+      },
+      "cosine_teacher_active": {
+        "fraction_positive": 0.8064516129032258,
+        "median": 0.8170361518859863,
+        "n": 31
+      },
+      "episode_id": "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+      "far_range_activation_rate": 0.0,
+      "frames": 109,
+      "gripper_preserved_by_construction": true,
+      "hazard_present": true,
+      "intervention_runs": [],
+      "longest_intervention_run": 0,
+      "oracle_nonzero_frames": 57,
+      "predicted_intervention_duration_s": 0.0,
+      "predicted_norm": {
+        "max": 0.8835645914077759,
+        "median": 0.30535051226615906,
+        "p99": 0.8690405488014221
+      },
+      "saturation_fraction": 0.0,
+      "teacher_active_frames": 32
+    },
+    {
+      "activation_inside_support_range": null,
+      "activation_outside_support_range": null,
+      "activation_rate": 0.0,
+      "activations": 0,
+      "candidate_index": 108,
+      "correction_norm": {
+        "final": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0
+      },
+      "correction_norm_series_downsampled": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_oracle_nonzero": {
+        "fraction_positive": 0.975609756097561,
+        "median": 0.868521511554718,
+        "n": 41
+      },
+      "cosine_teacher_active": {
+        "fraction_positive": null,
+        "median": null,
+        "n": 0
+      },
+      "episode_id": "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+      "far_range_activation_rate": 0.0,
+      "frames": 62,
+      "gripper_preserved_by_construction": true,
+      "hazard_present": true,
+      "intervention_runs": [],
+      "longest_intervention_run": 0,
+      "oracle_nonzero_frames": 41,
+      "predicted_intervention_duration_s": 0.0,
+      "predicted_norm": {
+        "max": 0.537577211856842,
+        "median": 0.2899859547615051,
+        "p99": 0.5240053534507751
+      },
+      "saturation_fraction": 0.0,
+      "teacher_active_frames": 0
+    },
+    {
+      "activation_inside_support_range": null,
+      "activation_outside_support_range": null,
+      "activation_rate": 0.0,
+      "activations": 0,
+      "candidate_index": 118,
+      "correction_norm": {
+        "final": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "median": 0.0
+      },
+      "correction_norm_series_downsampled": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_oracle_nonzero": {
+        "fraction_positive": null,
+        "median": null,
+        "n": 0
+      },
+      "cosine_teacher_active": {
+        "fraction_positive": null,
+        "median": null,
+        "n": 0
+      },
+      "episode_id": "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+      "far_range_activation_rate": 0.0,
+      "frames": 59,
+      "gripper_preserved_by_construction": true,
+      "hazard_present": false,
+      "intervention_runs": [],
+      "longest_intervention_run": 0,
+      "oracle_nonzero_frames": 0,
+      "predicted_intervention_duration_s": 0.0,
+      "predicted_norm": {
+        "max": 1.3622870445251465,
+        "median": 0.8004010915756226,
+        "p99": 1.2244213819503784
+      },
+      "saturation_fraction": 0.0,
+      "teacher_active_frames": 0
+    }
+  ],
+  "schema": "hybrid_obstacle_deployable_offline_replay_v1",
+  "tau": 1.4161068201065063,
+  "tuning_performed": false
+}

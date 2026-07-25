@@ -1,0 +1,1855 @@
+{
+  "artifact_verification": {
+    "all_matched": true,
+    "checks": 50,
+    "partitions": {
+      "all_pairwise_disjoint": true,
+      "confirmatory_rows": 41,
+      "live_development_rows": 4,
+      "reference_training_trajectories": 80,
+      "reference_validation_trajectories": 20
+    }
+  },
+  "artifacts": {
+    "deployment_manifest": "diagnostics_output/hybrid_obstacle_deployable_reference/deployment_manifest.json",
+    "development_analysis": "diagnostics_output/hybrid_obstacle_deployable_reference/development_analysis.json",
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_deployable_reference/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_DEPLOYABLE_REFERENCE_FINAL_DECISION.md",
+    "offline_replay": "diagnostics_output/hybrid_obstacle_deployable_reference/offline_replay.json",
+    "paired_dataset_manifest": "diagnostics_output/hybrid_obstacle_deployable_reference/paired_dataset_manifest.json",
+    "provenance": "diagnostics_output/hybrid_obstacle_deployable_reference/provenance_verification.json",
+    "schedule": "configs/hybrid_obstacle_deployable_schedule_v1.json",
+    "selection_report": "diagnostics_output/hybrid_obstacle_deployable_reference/selection_report.json"
+  },
+  "baselines": {
+    "first_live_skin": {
+      "active_range": {
+        "analytic_teacher_cosine_on_teacher_active": {
+          "fraction_positive": 0.6240601503759399,
+          "mean": 0.26993454113879234,
+          "median": 0.2864378094673157,
+          "n": 133
+        },
+        "differential_mae_all": 0.5078839063644409,
+        "differential_mae_oracle_nonzero": 0.5518336296081543,
+        "differential_mae_teacher_active": 0.6570658683776855,
+        "differential_norm_error_teacher_active": 1.1947230100631714,
+        "jointwise_mae_teacher_active": [
+          0.6423391699790955,
+          1.7370834350585938,
+          0.6028734445571899,
+          1.4764633178710938,
+          0.060422517359256744,
+          0.06429675221443176,
+          0.01598186045885086
+        ],
+        "oracle_cosine_on_oracle_nonzero": {
+          "fraction_positive": 0.5333333333333333,
+          "mean": 0.06110255088479746,
+          "median": 0.15436311066150665,
+          "n": 315
+        },
+        "oracle_cosine_on_teacher_active": {
+          "fraction_positive": 0.6616541353383458,
+          "mean": 0.2814081540625346,
+          "median": 0.7058325409889221,
+          "n": 133
+        },
+        "oracle_nonzero_frames": 322,
+        "supported_frames": 1168,
+        "teacher_active_frames": 133
+      },
+      "candidate": "first_live_skin",
+      "frames": 1543,
+      "quietness": {
+        "correction_norm_p95": 6.310643672943115,
+        "correction_norm_p99": 12.191034317016602,
+        "far_false_activation_rate": null,
+        "far_frames_over_0p25m": 0,
+        "grasp_contact_false_activation_rate": 0.0,
+        "hazard_absent_false_activation_rate": 0.0,
+        "hazard_absent_frames": 386,
+        "quiet_output_rms_hazard_absent": 2.013300657272339,
+        "quiet_output_rms_oracle_zero": 3.1166961193084717,
+        "tau": null
+      },
+      "reference_quality": {
+        "cancellation_error_when_oracle_zero": 0.4962935447692871,
+        "parked_head_jointwise_mae": [
+          0.9003602266311646,
+          0.9282082319259644,
+          0.8469511866569519,
+          0.7446891665458679,
+          0.07671858370304108,
+          0.04272625967860222,
+          0.015530630946159363
+        ],
+        "parked_head_mae": 0.5078839063644409,
+        "parked_head_mae_grasped": 0.37620699405670166,
+        "parked_head_mae_hazard_absent": 0.3986862003803253,
+        "parked_head_mae_hazard_present": 0.5443145036697388,
+        "parked_head_mae_ungrasped": 0.639390230178833
+      }
+    },
+    "raw_safety_head": {
+      "active_range": {
+        "analytic_teacher_cosine_on_teacher_active": {
+          "fraction_positive": 0.6541353383458647,
+          "mean": 0.31201871108137685,
+          "median": 0.31811970472335815,
+          "n": 133
+        },
+        "differential_mae_all": 0.5111854076385498,
+        "differential_mae_oracle_nonzero": 0.5067787766456604,
+        "differential_mae_teacher_active": 0.6601492762565613,
+        "differential_norm_error_teacher_active": 1.1914817094802856,
+        "jointwise_mae_teacher_active": [
+          0.6417466998100281,
+          1.7532578706741333,
+          0.5937957167625427,
+          1.4678460359573364,
+          0.06348354369401932,
+          0.07249561697244644,
+          0.028419174253940582
+        ],
+        "oracle_cosine_on_oracle_nonzero": {
+          "fraction_positive": 0.6024844720496895,
+          "mean": 0.16302981776885273,
+          "median": 0.46177026629447937,
+          "n": 322
+        },
+        "oracle_cosine_on_teacher_active": {
+          "fraction_positive": 0.6766917293233082,
+          "mean": 0.2935706942265195,
+          "median": 0.7405275702476501,
+          "n": 133
+        },
+        "oracle_nonzero_frames": 322,
+        "supported_frames": 1168,
+        "teacher_active_frames": 133
+      },
+      "candidate": "raw_safety_head",
+      "frames": 1543,
+      "quietness": {
+        "correction_norm_p95": 6.3287224769592285,
+        "correction_norm_p99": 12.244658470153809,
+        "far_false_activation_rate": null,
+        "far_frames_over_0p25m": 0,
+        "grasp_contact_false_activation_rate": 0.0,
+        "hazard_absent_false_activation_rate": 0.0,
+        "hazard_absent_frames": 386,
+        "quiet_output_rms_hazard_absent": 2.0620622634887695,
+        "quiet_output_rms_oracle_zero": 3.1566720008850098,
+        "tau": null
+      },
+      "reference_quality": {
+        "cancellation_error_when_oracle_zero": 0.5123476386070251,
+        "parked_head_jointwise_mae": [
+          0.9384565353393555,
+          0.9062612056732178,
+          0.8558588624000549,
+          0.7379646301269531,
+          0.0756094828248024,
+          0.038480281829833984,
+          0.025667287409305573
+        ],
+        "parked_head_mae": 0.5111854076385498,
+        "parked_head_mae_grasped": 0.3655512034893036,
+        "parked_head_mae_hazard_absent": 0.4188152551651001,
+        "parked_head_mae_hazard_present": 0.5420021414756775,
+        "parked_head_mae_ungrasped": 0.6566310524940491
+      }
+    }
+  },
+  "candidate_108_analysis": {
+    "note": "direction is scored only inside the teacher-supported range; a reversed vector beyond it is acceptable when the gate keeps it unexecuted",
+    "supported_range": {
+      "cosine_fraction_positive": [
+        1.0,
+        null,
+        0.6666666666666666,
+        null,
+        null
+      ],
+      "cosine_median": [
+        0.8493795096874237,
+        null,
+        0.008661795407533646,
+        null,
+        null
+      ],
+      "definition": "frames with a valid return < 0.18 m and a nonzero shadow oracle",
+      "frames": [
+        4,
+        0,
+        9,
+        0,
+        0
+      ],
+      "max_correction_norm": [
+        0.0,
+        0.0,
+        0.0813817815176429,
+        0.0,
+        0.0
+      ]
+    },
+    "unsupported_range": {
+      "definition": "frames with no valid return inside 0.18 m",
+      "false_activation_rate": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate_returns_residual_to_zero": true,
+      "offline_long_range_cosine_reversed": true,
+      "offline_long_range_note": "the oracle task measured a reversed median cosine (-0.36) beyond the committed activation radius on this row; the support gate is what makes that harmless"
+    }
+  },
+  "candidate_118_negative_control": {
+    "act_only_successes": 0,
+    "activation_rate": [
+      0.015,
+      0.02,
+      0.015,
+      0.015,
+      0.015
+    ],
+    "longest_activation_run": [
+      2,
+      4,
+      3,
+      3,
+      3
+    ],
+    "median_correction_norm": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "other_environment_contacts": [
+      13,
+      12,
+      35,
+      20,
+      21
+    ],
+    "successes": 0
+  },
+  "candidates": {
+    "POSTURE_KNN_REFERENCE_V1": {
+      "active_range": {
+        "analytic_teacher_cosine_on_teacher_active": {
+          "fraction_positive": 0.38345864661654133,
+          "mean": -0.18405013105698995,
+          "median": -0.35756251215934753,
+          "n": 133
+        },
+        "differential_mae_all": 0.7151169776916504,
+        "differential_mae_oracle_nonzero": 0.7806496620178223,
+        "differential_mae_teacher_active": 0.9459366798400879,
+        "differential_norm_error_teacher_active": 1.7755863666534424,
+        "jointwise_mae_teacher_active": [
+          1.2943735122680664,
+          2.413424015045166,
+          1.1111161708831787,
+          1.6051628589630127,
+          0.11650596559047699,
+          0.05722414702177048,
+          0.023749524727463722
+        ],
+        "oracle_cosine_on_oracle_nonzero": {
+          "fraction_positive": 0.4720496894409938,
+          "mean": 0.011503884072779962,
+          "median": -0.10718110203742981,
+          "n": 322
+        },
+        "oracle_cosine_on_teacher_active": {
+          "fraction_positive": 0.3082706766917293,
+          "mean": -0.20079658166120262,
+          "median": -0.3900127708911896,
+          "n": 133
+        },
+        "oracle_nonzero_frames": 322,
+        "supported_frames": 1168,
+        "teacher_active_frames": 133
+      },
+      "configuration": {
+        "bank_frames": 6450,
+        "feature_fields": [
+          "qpos",
+          "qvel",
+          "gripper_state"
+        ],
+        "feature_width": 20,
+        "k": 8,
+        "tie_break": "(distance, trajectory_index, timestep) lexsort",
+        "weighting": "inverse distance"
+      },
+      "gates": {
+        "all_passed": false,
+        "gate1_oracle_direction": {
+          "evaluable": true,
+          "fraction_positive": 0.3082706766917293,
+          "median": -0.3900127708911896,
+          "n": 133,
+          "passed": false,
+          "rule": "median oracle cosine >= 0.70 and positive fraction >= 80% on teacher-active validation frames"
+        },
+        "gate2_analytic_direction": {
+          "evaluable": true,
+          "fraction_positive": 0.38345864661654133,
+          "median": -0.35756251215934753,
+          "n": 133,
+          "passed": false,
+          "rule": "median analytic-teacher cosine >= 0.60 and positive fraction >= 75%"
+        },
+        "gate3_quietness": {
+          "far": null,
+          "hazard_absent": 0.0051813471502590676,
+          "passed": true,
+          "rule": "hazard-absent false activation <= 1% and far-frame <= 2%"
+        },
+        "gate4_beats_baselines": {
+          "baselines": {
+            "first_live_skin": 0.6570658683776855,
+            "raw_safety_head": 0.6601492762565613
+          },
+          "candidate_mae": 0.9459366798400879,
+          "passed": false,
+          "rule": "active-frame differential MAE below every listed baseline"
+        }
+      },
+      "quietness": {
+        "correction_norm_p95": 10.330174446105957,
+        "correction_norm_p99": 15.215621948242188,
+        "far_false_activation_rate": null,
+        "far_frames_over_0p25m": 0,
+        "grasp_contact_false_activation_rate": 0.05196850393700787,
+        "hazard_absent_false_activation_rate": 0.0051813471502590676,
+        "hazard_absent_frames": 386,
+        "quiet_output_rms_hazard_absent": 2.2660903930664062,
+        "quiet_output_rms_oracle_zero": 4.302743434906006,
+        "tau": 6.213284492492676
+      },
+      "reference_quality": {
+        "cancellation_error_when_oracle_zero": 0.697834849357605,
+        "parked_head_jointwise_mae": [
+          1.1766786575317383,
+          1.506875991821289,
+          1.0797770023345947,
+          1.0600110292434692,
+          0.11983320116996765,
+          0.04778072610497475,
+          0.014862945303320885
+        ],
+        "parked_head_mae": 0.7151169776916504,
+        "parked_head_mae_grasped": 0.4713799059391022,
+        "parked_head_mae_hazard_absent": 0.4650849997997284,
+        "parked_head_mae_hazard_present": 0.7985330820083618,
+        "parked_head_mae_ungrasped": 0.9585383534431458
+      },
+      "selected": false,
+      "tau": 6.213284492492676
+    },
+    "POSTURE_SKIN_MLP_REFERENCE_V1": {
+      "active_range": {
+        "analytic_teacher_cosine_on_teacher_active": {
+          "fraction_positive": 0.9849624060150376,
+          "mean": 0.8149157713230392,
+          "median": 0.9221132397651672,
+          "n": 133
+        },
+        "differential_mae_all": 0.09720566123723984,
+        "differential_mae_oracle_nonzero": 0.18090210855007172,
+        "differential_mae_teacher_active": 0.2826678156852722,
+        "differential_norm_error_teacher_active": 0.8832600712776184,
+        "jointwise_mae_teacher_active": [
+          0.49062520265579224,
+          0.5037010312080383,
+          0.46830204129219055,
+          0.4277905821800232,
+          0.054345954209566116,
+          0.023362131789326668,
+          0.010547459125518799
+        ],
+        "oracle_cosine_on_oracle_nonzero": {
+          "fraction_positive": 0.8913043478260869,
+          "mean": 0.6992487644668963,
+          "median": 0.9265129566192627,
+          "n": 322
+        },
+        "oracle_cosine_on_teacher_active": {
+          "fraction_positive": 0.9172932330827067,
+          "mean": 0.805272677335608,
+          "median": 0.9770738482475281,
+          "n": 133
+        },
+        "oracle_nonzero_frames": 322,
+        "supported_frames": 1168,
+        "teacher_active_frames": 133
+      },
+      "configuration": {
+        "architecture": "Linear196-256 SiLU 256-256 SiLU 256-128 SiLU 128-7",
+        "batch_norm": false,
+        "dropout": false,
+        "feature_fields": [
+          "qpos",
+          "qvel",
+          "nominal_action",
+          "gripper_state",
+          "gripper_command",
+          "current_head",
+          "sensor_summary"
+        ],
+        "feature_width": 196,
+        "parameters": 150023,
+        "under_250k_parameters": true
+      },
+      "gates": {
+        "all_passed": true,
+        "gate1_oracle_direction": {
+          "evaluable": true,
+          "fraction_positive": 0.9172932330827067,
+          "median": 0.9770738482475281,
+          "n": 133,
+          "passed": true,
+          "rule": "median oracle cosine >= 0.70 and positive fraction >= 80% on teacher-active validation frames"
+        },
+        "gate2_analytic_direction": {
+          "evaluable": true,
+          "fraction_positive": 0.9849624060150376,
+          "median": 0.9221132397651672,
+          "n": 133,
+          "passed": true,
+          "rule": "median analytic-teacher cosine >= 0.60 and positive fraction >= 75%"
+        },
+        "gate3_quietness": {
+          "far": null,
+          "hazard_absent": 0.0051813471502590676,
+          "passed": true,
+          "rule": "hazard-absent false activation <= 1% and far-frame <= 2%"
+        },
+        "gate4_beats_baselines": {
+          "baselines": {
+            "first_live_skin": 0.6570658683776855,
+            "posture_knn": 0.9459366798400879,
+            "raw_safety_head": 0.6601492762565613
+          },
+          "candidate_mae": 0.2826678156852722,
+          "passed": true,
+          "rule": "active-frame differential MAE below every listed baseline"
+        }
+      },
+      "quietness": {
+        "correction_norm_p95": 1.0634765625,
+        "correction_norm_p99": 2.4488637447357178,
+        "far_false_activation_rate": null,
+        "far_frames_over_0p25m": 0,
+        "grasp_contact_false_activation_rate": 0.0015748031496062992,
+        "hazard_absent_false_activation_rate": 0.0051813471502590676,
+        "hazard_absent_frames": 386,
+        "quiet_output_rms_hazard_absent": 0.4624275863170624,
+        "quiet_output_rms_oracle_zero": 0.38544076681137085,
+        "tau": 1.4161068201065063
+      },
+      "reference_quality": {
+        "cancellation_error_when_oracle_zero": 0.07513336837291718,
+        "parked_head_jointwise_mae": [
+          0.15278837084770203,
+          0.18977510929107666,
+          0.15354005992412567,
+          0.13930091261863708,
+          0.02357430011034012,
+          0.012587308883666992,
+          0.00887352041900158
+        ],
+        "parked_head_mae": 0.09720566123723984,
+        "parked_head_mae_grasped": 0.0786244124174118,
+        "parked_head_mae_hazard_absent": 0.09579779207706451,
+        "parked_head_mae_hazard_present": 0.09767534583806992,
+        "parked_head_mae_ungrasped": 0.11576282232999802
+      },
+      "selected": true,
+      "strict_reload_bitwise_identical": true,
+      "tau": 1.4161068201065063,
+      "training": {
+        "best_epoch": 141,
+        "best_validation_loss": 0.021256830543279648,
+        "epochs": 150,
+        "parameters": 150023
+      }
+    }
+  },
+  "commits": {
+    "act_branch": "develop/hybrid-obstacle-posture-reference-v1",
+    "act_commit": "709a22de62ac0e8c4640b75eb348416d6e29013d",
+    "act_starting_commit": "709a22de62ac0e8c4640b75eb348416d6e29013d",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "develop/hybrid-obstacle-deployable-reference-v1",
+    "root_commit": "4193b776640886c1bddc6be5adc7bdaf35855643",
+    "root_starting_commit": "4193b776640886c1bddc6be5adc7bdaf35855643"
+  },
+  "confirmatory41": {
+    "evaluator_hard_refuses_it": true,
+    "executed_in_this_task": false,
+    "manifest": "configs/hybrid_obstacle_confirmatory41_v1.json",
+    "rows": 41,
+    "sha256": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+    "untouched": true
+  },
+  "constraints_honoured": {
+    "act_trained_or_modified": false,
+    "canonical_collection_dataset_split_manifests_modified": false,
+    "checkpoint_or_statistics_modified": false,
+    "confirmatory_row_executed": false,
+    "development4_or_confirmatory41_modified": false,
+    "first_live_skin_used": false,
+    "live_rollout_budget": 20,
+    "live_rollouts_used": 20,
+    "molmospaces_modified": false,
+    "msaa_cameras_robot_environment_obstacle_planner_task_horizon_changed": false,
+    "parked_render_used_at_deployable_inference": false,
+    "pushed": false,
+    "raw_safety_head_used_as_fallback": false,
+    "residual_constants_tuned": false,
+    "safety_cvae_trained_or_modified": false,
+    "temporal_aggregation_changed": false
+  },
+  "date": "2026-07-25",
+  "decision": "DEPLOYABLE_REFERENCE_LIVE_GROSS_REGRESSION",
+  "final_decision_sha256": "c59a04681c36a3d3597034c57b3d07e71871d63a33ff3e0d7bcc79338e34023c",
+  "frozen_model": {
+    "artifact_file_sha256": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+    "frozen_before_live_execution": true,
+    "input_statistics_sha256": "1042b4aee41570c50b7c84d345d8dc693c0e35827dd968ee117bd993849a824e",
+    "manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+    "model_digest": "2773378e67dde155e457e70b279b7ae87ade8131647091eaee5ebaea700b1c14",
+    "privileged_inputs": [],
+    "reference_type": "POSTURE_SKIN_MLP_REFERENCE_V1",
+    "runtime_inputs": [
+      "qpos",
+      "qvel",
+      "nominal_action",
+      "gripper_state",
+      "gripper_command",
+      "current_head",
+      "sensor_summary"
+    ],
+    "tau": 1.4161068201065063,
+    "tau_rule": "99.5th percentile of predicted oracle differential norm on hazard-absent validation frames, frozen before live execution"
+  },
+  "interpretation": {
+    "honest_caveats": [
+      "Attribution of candidate 118's contacts to the controller is supported but not proven at n=5: the oracle condition, whose correction is provably exactly zero, still produced 31 contacts in 1 of its 5 repeats, so MSAA-driven variation alone can generate them. What the deployable adds is that all five repeats show them, with a nonzero correction present.",
+      "The hazard-absent false-activation gate is close to automatic: tau is the 99.5th percentile of the hazard-absent validation norm, so roughly 0.5% exceedance is guaranteed by construction rather than measured.",
+      "The far-frame false-activation gate is vacuous in this environment -- no validation frame exceeds 0.187 m minimum depth, so it has zero frames.",
+      "The candidate-118 'median correction within 10% of hazard-present' gate passes trivially because both medians are exactly 0.0.",
+      "Four development rows and five repeats cannot establish an effect size."
+    ],
+    "not_a_task_regression": "Pooled hazard-present task success is 12/15, above ACT-only's 11/15 and below the oracle's 14/15, and no hazard-present row fell to 0/5. The regression is in unnecessary motion and in new contact on the hazard-absent row, not in task completion.",
+    "one_genuinely_positive_signal": "On candidate 107 the deployable reference cut other-environment contacts from ACT-only's 75-93 per rollout to 5-28, better than the oracle's 77-90, while keeping 5/5 task success. The mechanism is real even though the approximation is poor.",
+    "root_cause": "Distribution shift between the reference model's training data and its deployment. The model is trained on expert planner trajectories, which deflect around the hazard and keep the oracle differential small -- on the four development expert trajectories the predicted norm never once reached tau. Live ACT trajectories visit states the expert never does and drive oracle differentials up to 2.5, and there the model extrapolates: right sign more often than not (positive-cosine fraction 0.87 still passes) but wrong direction in detail and several times too large.",
+    "what_failed": [
+      "Live oracle-approximation collapsed: pooled median cosine 0.345 against the 0.70 gate, versus 0.977 on offline validation.",
+      "Magnitude is badly over-predicted where it matters: on candidate 106 the deployable differential is 5.1-6.9x the true oracle differential.",
+      "The controller fires when the true signal is exactly zero: 23-34% of shadow-zero frames on candidate 106 and 7-11% on candidate 107, against a 2% gate.",
+      "Candidate 118, where the true differential is provably zero on every frame, showed new environment contact in ALL FIVE repeats (12-35 contacts) where ACT-only had none, and its activation runs reached 4 frames against a 2-frame limit."
+    ],
+    "what_worked": [
+      "The paired oracle-reference dataset is exact: 0 state-neutrality failures over 7993 frames, and on every hazard-absent trajectory the current and parked heads are bitwise equal.",
+      "The posture-only KNN baseline answers its question decisively: posture alone does NOT explain the parked head (median oracle cosine -0.39, differential MAE 0.946, worse than both the raw head and first-live baselines).",
+      "The MLP passed every predeclared offline gate on held-out trajectories with a median oracle cosine of 0.977 and a differential MAE of 0.283 against 0.660 for the raw head and 0.657 for first-live skin.",
+      "All 12 live technical gates passed: 20/20 rollouts finalised, no privileged feature entered the model, the shadow oracle stayed state-neutral on every frame, the gripper was bitwise unchanged and the residual stayed arm-only after temporal aggregation."
+    ]
+  },
+  "live": {
+    "all_approximation_gates_passed": false,
+    "all_gross_regression_gates_passed": false,
+    "all_technical_gates_passed": true,
+    "approximation_gates": {
+      "activation_rate_when_shadow_zero_within_2pct": {
+        "passed": false,
+        "threshold": 0.02,
+        "values": [
+          0.23529411764705882,
+          0.10843373493975904,
+          0.0,
+          0.015,
+          0.3433734939759036,
+          0.07954545454545454,
+          0.0,
+          0.02,
+          0.3254437869822485,
+          0.0963855421686747,
+          0.015706806282722512,
+          0.015,
+          0.3132530120481928,
+          0.1125,
+          0.0,
+          0.015,
+          0.3132530120481928,
+          0.06741573033707865,
+          0.0,
+          0.015
+        ]
+      },
+      "candidate_118_activation_within_2pct": {
+        "passed": true,
+        "threshold": 0.02,
+        "values": [
+          0.015,
+          0.02,
+          0.015,
+          0.015,
+          0.015
+        ]
+      },
+      "candidate_118_median_correction_within_10pct_of_hazard_present": {
+        "absent_median": 0.0,
+        "passed": true,
+        "present_median": 0.0,
+        "threshold_ratio": 0.1
+      },
+      "candidate_118_no_run_longer_than_two_frames": {
+        "passed": false,
+        "threshold": 2,
+        "values": [
+          2,
+          4,
+          3,
+          3,
+          3
+        ]
+      },
+      "candidate_118_no_universal_new_collision": {
+        "act_only": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "deployable_other_env": [
+          13,
+          12,
+          35,
+          20,
+          21
+        ],
+        "passed": true
+      },
+      "correction_rms_when_shadow_zero": {
+        "reported_not_gated": true,
+        "values": [
+          0.2999694015595745,
+          0.03177397090811544,
+          0.0,
+          0.01664970443533654,
+          0.3855181133197402,
+          0.027915839887625884,
+          0.0,
+          0.02470342901320974,
+          0.3182090762217655,
+          0.03522948601030886,
+          0.011576330682873281,
+          0.024348880771524594,
+          0.3333343102958779,
+          0.03209972478266614,
+          0.0,
+          0.01954441170638809,
+          0.3474677874046805,
+          0.029471152623106636,
+          0.0,
+          0.017102163637467045
+        ]
+      },
+      "median_deployable_oracle_cosine_at_least_0p70": {
+        "evaluable": true,
+        "passed": false,
+        "per_rollout_medians": [
+          0.2674677073955536,
+          0.3141716718673706,
+          0.8493795096874237,
+          null,
+          0.3072408139705658,
+          0.5053169131278992,
+          null,
+          null,
+          0.33059318363666534,
+          0.5138849020004272,
+          0.008661795407533646,
+          null,
+          0.3408377766609192,
+          0.5788049101829529,
+          null,
+          null,
+          0.34921348094940186,
+          0.5565485060214996,
+          null,
+          null
+        ],
+        "pooled_median": 0.3450256288051605,
+        "rollouts_with_supported_active_frames": 12,
+        "rule": "on shadow-active, teacher-supported frames"
+      },
+      "no_persistent_correction_after_support_clears": {
+        "offenders": [
+          "cand107_deployable_r4"
+        ],
+        "passed": false
+      },
+      "norm_ratio_between_0p5_and_1p5": {
+        "evaluable": true,
+        "passed": false,
+        "pooled_median": 1.5591373592615128,
+        "values": [
+          6.921298027038574,
+          0.7157536149024963,
+          0.911383181810379,
+          5.059927940368652,
+          0.7428235411643982,
+          6.336568832397461,
+          0.5658589601516724,
+          2.2068915367126465,
+          6.106168270111084,
+          0.7673315405845642,
+          5.215813636779785,
+          0.8415027260780334
+        ]
+      },
+      "positive_cosine_fraction_at_least_80pct": {
+        "evaluable": true,
+        "passed": true,
+        "pooled_median": 0.8716758125791473,
+        "values": [
+          0.8695652173913043,
+          0.6262626262626263,
+          1.0,
+          0.8888888888888888,
+          0.8404255319148937,
+          0.875,
+          0.8775510204081632,
+          0.6666666666666666,
+          0.8888888888888888,
+          0.8737864077669902,
+          0.8518518518518519,
+          0.8295454545454546
+        ]
+      }
+    },
+    "budget": 20,
+    "frozen_baselines_reused": {
+      "act_only": 20,
+      "oracle": 20,
+      "rerun": 0
+    },
+    "gross_regression_gates": {
+      "candidate_106_not_zero_of_five": {
+        "passed": true,
+        "successes": 4
+      },
+      "candidate_107_not_zero_of_five": {
+        "passed": true,
+        "successes": 5
+      },
+      "candidate_118_no_systematic_new_environment_collision": {
+        "act_only": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "deployable": [
+          13,
+          12,
+          35,
+          20,
+          21
+        ],
+        "passed": false
+      },
+      "median_saturation_below_25pct": {
+        "median": 0.0,
+        "passed": true,
+        "threshold": 0.25
+      },
+      "no_new_universal_hazard_collision": {
+        "offenders": [],
+        "passed": true
+      },
+      "no_rollout_saturated_over_75pct": {
+        "offenders": [],
+        "passed": true,
+        "threshold": 0.75
+      },
+      "pooled_hazard_present_at_least_8_of_15": {
+        "deployable": 12,
+        "n": 15,
+        "passed": true,
+        "threshold": 8
+      },
+      "pooled_within_20pp_of_act_only": {
+        "act_only": 11,
+        "deployable": 12,
+        "gap_pp": -6.666666666666667,
+        "n": 15,
+        "passed": true,
+        "threshold_pp": 20.0
+      }
+    },
+    "per_row": [
+      {
+        "act_only": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            61,
+            68,
+            63,
+            68,
+            55
+          ],
+          "successes": 5
+        },
+        "candidate_index": 106,
+        "deployable": {
+          "activation_rate": [
+            0.21,
+            0.29,
+            0.285,
+            0.27,
+            0.27
+          ],
+          "activation_rate_when_shadow_zero": [
+            0.23529411764705882,
+            0.3433734939759036,
+            0.3254437869822485,
+            0.3132530120481928,
+            0.3132530120481928
+          ],
+          "collision_free_successes": 0,
+          "correction_rms_when_shadow_zero": [
+            0.2999694015595745,
+            0.3855181133197402,
+            0.3182090762217655,
+            0.3333343102958779,
+            0.3474677874046805
+          ],
+          "cosine_fraction_positive": [
+            0.8695652173913043,
+            0.8888888888888888,
+            0.875,
+            0.8888888888888888,
+            0.8518518518518519
+          ],
+          "cosine_median": [
+            0.2674677073955536,
+            0.3072408139705658,
+            0.33059318363666534,
+            0.3408377766609192,
+            0.34921348094940186
+          ],
+          "far_activation_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hazard_bar_contacts": [
+            15,
+            0,
+            0,
+            0,
+            0
+          ],
+          "longest_activation_run": [
+            18,
+            55,
+            24,
+            33,
+            26
+          ],
+          "max_correction_norm": [
+            0.710703268184564,
+            0.7196797690627953,
+            0.6948416284370359,
+            0.7158882604131632,
+            0.7129169443546107
+          ],
+          "median_correction_norm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "norm_ratio_median": [
+            6.921298027038574,
+            5.059927940368652,
+            6.336568832397461,
+            6.106168270111084,
+            5.215813636779785
+          ],
+          "other_environment_contacts": [
+            64,
+            49,
+            32,
+            44,
+            46
+          ],
+          "saturation_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "successes": 4,
+          "supported_active_frames": [
+            23,
+            27,
+            24,
+            27,
+            27
+          ]
+        },
+        "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2",
+        "hazard_present": true,
+        "offline_replay": {
+          "activation_rate": 0.0,
+          "cosine_teacher_active": {
+            "fraction_positive": null,
+            "median": null,
+            "n": 0
+          },
+          "saturation_fraction": 0.0
+        },
+        "oracle": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            33,
+            35,
+            32,
+            27,
+            32
+          ],
+          "successes": 5
+        },
+        "repeats": 5
+      },
+      {
+        "act_only": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            87,
+            93,
+            89,
+            89,
+            75
+          ],
+          "successes": 5
+        },
+        "candidate_index": 107,
+        "deployable": {
+          "activation_rate": [
+            0.335,
+            0.4,
+            0.4,
+            0.405,
+            0.36
+          ],
+          "activation_rate_when_shadow_zero": [
+            0.10843373493975904,
+            0.07954545454545454,
+            0.0963855421686747,
+            0.1125,
+            0.06741573033707865
+          ],
+          "collision_free_successes": 0,
+          "correction_rms_when_shadow_zero": [
+            0.03177397090811544,
+            0.027915839887625884,
+            0.03522948601030886,
+            0.03209972478266614,
+            0.029471152623106636
+          ],
+          "cosine_fraction_positive": [
+            0.6262626262626263,
+            0.8404255319148937,
+            0.8775510204081632,
+            0.8737864077669902,
+            0.8295454545454546
+          ],
+          "cosine_median": [
+            0.3141716718673706,
+            0.5053169131278992,
+            0.5138849020004272,
+            0.5788049101829529,
+            0.5565485060214996
+          ],
+          "far_activation_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "longest_activation_run": [
+            12,
+            21,
+            40,
+            21,
+            22
+          ],
+          "max_correction_norm": [
+            0.7177537261880998,
+            0.7157100539423188,
+            0.7099973585580485,
+            0.7154637686279645,
+            0.7133139811388681
+          ],
+          "median_correction_norm": [
+            0.06030110920757671,
+            0.05995828676434567,
+            0.06272221296005823,
+            0.060563706711981094,
+            0.05945044856703121
+          ],
+          "norm_ratio_median": [
+            0.7157536149024963,
+            0.7428235411643982,
+            0.5658589601516724,
+            0.7673315405845642,
+            0.8415027260780334
+          ],
+          "other_environment_contacts": [
+            28,
+            9,
+            8,
+            9,
+            5
+          ],
+          "saturation_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "successes": 5,
+          "supported_active_frames": [
+            99,
+            94,
+            98,
+            103,
+            88
+          ]
+        },
+        "episode_id": "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+        "hazard_present": true,
+        "offline_replay": {
+          "activation_rate": 0.0,
+          "cosine_teacher_active": {
+            "fraction_positive": 0.8064516129032258,
+            "median": 0.8170361518859863,
+            "n": 31
+          },
+          "saturation_fraction": 0.0
+        },
+        "oracle": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "other_environment_contacts": [
+            77,
+            90,
+            84,
+            90,
+            82
+          ],
+          "successes": 5
+        },
+        "repeats": 5
+      },
+      {
+        "act_only": {
+          "collision_free_successes": 1,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "successes": 1
+        },
+        "candidate_index": 108,
+        "deployable": {
+          "activation_rate": [
+            0.0,
+            0.0,
+            0.015,
+            0.0,
+            0.0
+          ],
+          "activation_rate_when_shadow_zero": [
+            0.0,
+            0.0,
+            0.015706806282722512,
+            0.0,
+            0.0
+          ],
+          "collision_free_successes": 2,
+          "correction_rms_when_shadow_zero": [
+            0.0,
+            0.0,
+            0.011576330682873281,
+            0.0,
+            0.0
+          ],
+          "cosine_fraction_positive": [
+            1.0,
+            null,
+            0.6666666666666666,
+            null,
+            null
+          ],
+          "cosine_median": [
+            0.8493795096874237,
+            null,
+            0.008661795407533646,
+            null,
+            null
+          ],
+          "far_activation_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "longest_activation_run": [
+            0,
+            0,
+            3,
+            0,
+            0
+          ],
+          "max_correction_norm": [
+            0.0,
+            0.0,
+            0.0813817815176429,
+            0.0,
+            0.0
+          ],
+          "median_correction_norm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "norm_ratio_median": [
+            0.911383181810379,
+            null,
+            2.2068915367126465,
+            null,
+            null
+          ],
+          "other_environment_contacts": [
+            0,
+            10,
+            0,
+            0,
+            0
+          ],
+          "saturation_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "successes": 3,
+          "supported_active_frames": [
+            4,
+            0,
+            9,
+            0,
+            0
+          ]
+        },
+        "episode_id": "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+        "hazard_present": true,
+        "offline_replay": {
+          "activation_rate": 0.0,
+          "cosine_teacher_active": {
+            "fraction_positive": null,
+            "median": null,
+            "n": 0
+          },
+          "saturation_fraction": 0.0
+        },
+        "oracle": {
+          "collision_free_successes": 4,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "successes": 4
+        },
+        "repeats": 5
+      },
+      {
+        "act_only": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "successes": 0
+        },
+        "candidate_index": 118,
+        "deployable": {
+          "activation_rate": [
+            0.015,
+            0.02,
+            0.015,
+            0.015,
+            0.015
+          ],
+          "activation_rate_when_shadow_zero": [
+            0.015,
+            0.02,
+            0.015,
+            0.015,
+            0.015
+          ],
+          "collision_free_successes": 0,
+          "correction_rms_when_shadow_zero": [
+            0.01664970443533654,
+            0.02470342901320974,
+            0.024348880771524594,
+            0.01954441170638809,
+            0.017102163637467045
+          ],
+          "cosine_fraction_positive": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cosine_median": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "far_activation_rate": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "longest_activation_run": [
+            2,
+            4,
+            3,
+            3,
+            3
+          ],
+          "max_correction_norm": [
+            0.0788472376117777,
+            0.11720148298824265,
+            0.11559353357569012,
+            0.09285410470675892,
+            0.08128496612910661
+          ],
+          "median_correction_norm": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "norm_ratio_median": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "other_environment_contacts": [
+            13,
+            12,
+            35,
+            20,
+            21
+          ],
+          "saturation_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "successes": 0,
+          "supported_active_frames": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "episode_id": "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+        "hazard_present": false,
+        "offline_replay": {
+          "activation_rate": 0.0,
+          "cosine_teacher_active": {
+            "fraction_positive": null,
+            "median": null,
+            "n": 0
+          },
+          "saturation_fraction": 0.0
+        },
+        "oracle": {
+          "collision_free_successes": 0,
+          "hazard_bar_contacts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "other_environment_contacts": [
+            31,
+            0,
+            0,
+            0,
+            0
+          ],
+          "successes": 0
+        },
+        "repeats": 5
+      }
+    ],
+    "pooled_hazard_present": {
+      "act_only": 11,
+      "deployable": 12,
+      "n": 15,
+      "oracle": 14
+    },
+    "rollouts": 20,
+    "schedule_sha256": "a7980e11eb1a10d2ccf2989e71cde8168f48a99898bbc1f600d0f07b23ce638e",
+    "technical_gates": {
+      "all_twenty_rollouts_finalize": {
+        "executed": 20,
+        "missing": [],
+        "passed": true
+      },
+      "arm_only_correction": {
+        "evidence": "apply_arm_residual touches arm only",
+        "passed": true
+      },
+      "confirmatory41_unexecuted": {
+        "passed": true
+      },
+      "frozen_baselines_verified": {
+        "act_only_verified": 20,
+        "oracle_verified": 20,
+        "passed": true,
+        "problems": {},
+        "reruns_performed": 0
+      },
+      "gripper_bitwise_unchanged": {
+        "offenders": [],
+        "passed": true
+      },
+      "initial_state_replayed_exactly": {
+        "offenders": [],
+        "passed": true
+      },
+      "msaa_and_camera_contract_unchanged": {
+        "passed": true,
+        "values": [
+          4
+        ]
+      },
+      "no_nonfinite_model_output_or_action": {
+        "nonfinite_predictions": 0,
+        "passed": true
+      },
+      "no_privileged_feature_in_the_deployable_model": {
+        "passed": true,
+        "privileged_inputs": [],
+        "runtime_inputs": [
+          "qpos",
+          "qvel",
+          "nominal_action",
+          "gripper_state",
+          "gripper_command",
+          "current_head",
+          "sensor_summary"
+        ]
+      },
+      "no_shadow_oracle_state_neutrality_failure": {
+        "passed": true,
+        "total_failures": 0
+      },
+      "residual_applied_after_temporal_aggregation": {
+        "evidence": "adapter aggregates then corrects; pc.temp_agg_off = False",
+        "passed": true
+      },
+      "state_reset_between_repeats": {
+        "evidence": "fresh process per rollout; reset() clears reference, gate, selector, shadow, controller and inference cache",
+        "passed": true
+      }
+    }
+  },
+  "next_recommended_task": "Close the distribution gap before changing the model. The reference is trained on expert trajectories that never enter the near-hazard regime the deployed policy actually visits, and that -- not the architecture -- is what the live numbers implicate. The natural next step is a predeclared on-policy paired dataset: run ACT_ONLY rollouts on the training rows, generate the parked counterfactual along those trajectories with the same state-neutral seam, and retrain the same fixed architecture on the union. Two secondary items: raise the quiet threshold's basis from a percentile of hazard-absent norms to a calibrated false-activation target measured on-policy, and reconsider gate A, which is open on 76% of frames because this enclosure is never more than 19 cm away.",
+  "offline_replay": {
+    "all_passed": true,
+    "gates": {
+      "correction_primarily_inside_support_range": {
+        "passed": true,
+        "rule": "the predicted correction must not be primarily active outside the <0.18 m support range",
+        "values": {
+          "106": null,
+          "107": null,
+          "108": null,
+          "118": null
+        }
+      },
+      "hazard_absent_activation_within_2pct": {
+        "passed": true,
+        "rule": "candidate 118 must not predict a nonzero correction on more than 2% of frames",
+        "threshold": 0.02,
+        "values": {
+          "118": 0.0
+        }
+      },
+      "median_teacher_active_cosine_at_least_0p70": {
+        "evaluable": true,
+        "passed": true,
+        "per_row": {
+          "106": null,
+          "107": 0.8170361518859863,
+          "108": null
+        },
+        "pooled_median": 0.8170361518859863,
+        "rule": "median teacher-active deployable/oracle cosine >= 0.70",
+        "threshold": 0.7
+      },
+      "no_rollout_saturated_over_75pct": {
+        "passed": true,
+        "threshold": 0.75,
+        "values": {
+          "106": 0.0,
+          "107": 0.0,
+          "108": 0.0,
+          "118": 0.0
+        }
+      }
+    },
+    "headline": "the gate never opened on any of the four expert development trajectories: predicted differential norms peaked at 0.54-1.36 against tau = 1.4161, so all four gates passed with zero activations",
+    "rows": [
+      {
+        "activation_rate": 0.0,
+        "candidate_index": 106,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "frames": 108,
+        "hazard_present": true,
+        "predicted_norm": {
+          "max": 0.7667922377586365,
+          "median": 0.2089027762413025,
+          "p99": 0.7441630959510803
+        },
+        "saturation_fraction": 0.0
+      },
+      {
+        "activation_rate": 0.0,
+        "candidate_index": 107,
+        "cosine_teacher_active": {
+          "fraction_positive": 0.8064516129032258,
+          "median": 0.8170361518859863,
+          "n": 31
+        },
+        "frames": 109,
+        "hazard_present": true,
+        "predicted_norm": {
+          "max": 0.8835645914077759,
+          "median": 0.30535051226615906,
+          "p99": 0.8690405488014221
+        },
+        "saturation_fraction": 0.0
+      },
+      {
+        "activation_rate": 0.0,
+        "candidate_index": 108,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "frames": 62,
+        "hazard_present": true,
+        "predicted_norm": {
+          "max": 0.537577211856842,
+          "median": 0.2899859547615051,
+          "p99": 0.5240053534507751
+        },
+        "saturation_fraction": 0.0
+      },
+      {
+        "activation_rate": 0.0,
+        "candidate_index": 118,
+        "cosine_teacher_active": {
+          "fraction_positive": null,
+          "median": null,
+          "n": 0
+        },
+        "frames": 59,
+        "hazard_present": false,
+        "predicted_norm": {
+          "max": 1.3622870445251465,
+          "median": 0.8004010915756226,
+          "p99": 1.2244213819503784
+        },
+        "saturation_fraction": 0.0
+      }
+    ]
+  },
+  "paired_dataset": {
+    "counts": {
+      "train": {
+        "frames": 6450,
+        "oracle_nonzero_frames": 1418,
+        "support_frames": 4742,
+        "teacher_active_frames": 453,
+        "trajectories": 80
+      },
+      "validation": {
+        "frames": 1543,
+        "oracle_nonzero_frames": 322,
+        "support_frames": 1168,
+        "teacher_active_frames": 133,
+        "trajectories": 20
+      }
+    },
+    "feature_contract": {
+      "audit_only_fields": [
+        "minimum_depth",
+        "oracle_dq",
+        "parked_head",
+        "skins_identical",
+        "state_neutral",
+        "task_phase",
+        "teacher_active",
+        "teacher_dq",
+        "teacher_valid",
+        "timestep"
+      ],
+      "leaked": [],
+      "privileged_fields_outside_namespace": [],
+      "privileged_namespace_prefix": "privileged_",
+      "runtime_whitelist": [
+        "current_head",
+        "gripper_command",
+        "gripper_state",
+        "minimum_depth",
+        "nominal_action",
+        "qpos",
+        "qvel",
+        "sensor_summary",
+        "skin_stack"
+      ]
+    },
+    "manifest_sha256": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+    "pairing_correctness": {
+      "dynamics_advancing_operation_called": false,
+      "hazard_absent_heads_exactly_equal": true,
+      "mj_forward_implementation_used": false,
+      "observation_substep_used_as_current_half": false,
+      "render_state_restored_directly": true,
+      "rendered_at_the_same_decision_state": true,
+      "state_neutrality_failures": 0,
+      "zero_state_neutrality_failures": true
+    },
+    "split_level": "trajectory",
+    "total_frames": 7993,
+    "train_trajectories": [
+      "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+      "342a4b388c2007800c171aef54e1e4166e9fbeb5cf7ac4c93464800a3ae96005",
+      "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+      "a408f67872ec2e9caf5fc72e400297938002208beb9bcf35a209d6bf7da1b323",
+      "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+      "46f618e5d66b74d3bb27cb3195d15775ca60c52f04123602135dd73ce6bb895a",
+      "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+      "52a0037c22c65ad00e8e1923b52567a5f50979a62f6985652051d9c1da86b96b",
+      "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+      "14a56d2b15d0d3ec63cfcd548c5b4bc2360f2ac2f7a6722d8f86e5eed15e7aa3",
+      "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957",
+      "0adc6685e3b5cd39c9a491ad6312e56c0422c20e97fa5ed574a389b77c669f8c",
+      "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+      "1432fb6b4afad4807bc9e2fa88c1b787f729ee3abbdb08b51bba2531066ad3cc",
+      "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+      "e7b8be71f50021148bd6f8873f0a704a63df0fdb888da96e347f613e892a1e53",
+      "857105fbb836dd3cbf978d6e996021554141854ee0492a2e979c2838cdc2978a",
+      "274353a3b9bbc69c46c75a2c332161de306e6f6d536ac5a9024d484e9dca5234",
+      "1029051cdaccb6f68b7cbf12280e9f0b2966c218cfe50b6a56468d954e781a3e",
+      "d8db73116a2d422ed337216957f985566ff1de5324a54b7462c8145de2bdf677",
+      "41797277d503ef23d9f75487fd8b24b45921372e1d16911d1184fcecd645976a",
+      "7bfe7f09204ae2280baff892f70e35231854d01cd93a18c6dce7edc4d1f180cd",
+      "a5cfb51af3b21f8621f6bc50553e2c9dabd4c5a244edfc1e9e4d445163083d19",
+      "99f5d8637d38b81dafca0ef9b56e0fe0364258f70b41316a51acd32666b8eb84",
+      "92e5b1e115e1ffd6931af0751f570f031c3eb661a463d7cd254277a8b64d0762",
+      "addcd9cfe547623a0eb446c58361e82269ccf681a9102373e35152835c16b592",
+      "97221aea67f0a7818a6c87685391e73655fd0bba1aeca34392f2c52d349b62b1",
+      "7ec096c672424e62d88427c68959e77e7bc066816267b85a391c6469d4ee585c",
+      "b8c4d5cd317229ceb5bf3a93db87c0c77efb0b271416ae47146889901540d792",
+      "a7d40f57ed0a84314864348551f701fbabd423795cb66870c4c7f963e8e4bc3b",
+      "a98482577e3e0e513889d5900e4945e90bf716d76f9ad12979e04e6c0daf6285",
+      "2c27113b653c6950ed4cb2fcc61906858b95decf9cb95c16c91e2d5f6cc33a69",
+      "1accd018cc4ecaef56733d5a7a9a248d8f8fcee732cbb7b0b908f50835345baf",
+      "038c0483749119ce5087664b5db86d05a787d3d5829cfa9a610c76cf97256ce9",
+      "5898ac81a09a014b159c09cc0cf46170d8060cb040bdf4605882087fc8c47cee",
+      "1950427ae8ea240f08ee5d1320d09883fa8a2d79a67d850dbbe3e7288d993bf5",
+      "c394d7d04ca67819e5ce7035364c1c87c43982b4627f2eea7c6b43ce789adea6",
+      "916057e7f464a5f26062c21752effa2c6f9819409adc139a3456b589467e390e",
+      "51231fd5d5a564489fbcd1781195a99e8b1a217f2fe1234b7b151806551f2958",
+      "795552b916bd3dfd0f2dbd04827e536a57c925a02dc6b6cd34fa5694db20256a",
+      "a7cadb488a023c926865a6dce952a63acd5b155f8f0cea9de466afc9b7e6289e",
+      "b76f0c65133f0d3b4baa0a4f4e129b1f74eb979326860abb3c665ee87a893d5d",
+      "5554b598bc42b34d4e638a74b58adb3ce2803edeb21c6f1d53e5a05851fa193c",
+      "6a8d9f99f9600a59315f218ac6fed8c2c10dd1ca8971acb0fd4137f9e33a0d98",
+      "1b7928ffdf2d76073eb0d617da6b22ea7054f98a8fd6dda7b1e3002e70818ec7",
+      "f6f36a6ee01218a5ceaea5078be201290e6dd93c63ba50488cbe2a34605bf15e",
+      "6d53c9e581b7a0f7dfba17194627ba9e900c0892b24a260b4ac204095a714c28",
+      "c2920e422da4803e4b9f5c872541cac0657307d34b8bdf082a70fe246c4ccec1",
+      "49909b89d654ce3a53a150e87e81d86036669aaf9e9d192110724a471651c4d1",
+      "08ff1acc30f45fb52c63031272898ab48f36a39b0fd176bb32af66e57ad2ea00",
+      "7404731973685444de3f090cea1d3e5409a3c5f3c61a024a20f808b0e6cfd04d",
+      "0302475b94abcb67f40e2ba78f2742264509463fbaa2a3c0435d82412a8ee912",
+      "4a0e5d5b01b01f89a561a9aca5324dd6db037927551caee890e48815e79bf40d",
+      "f6d7718fe7327b4cd0db26f76dc4d806bae701446df96fe059187b73f58e10be",
+      "53f8462510a904cf680ce284f22f8d1876dbefe98a8492ac210ead06a4ad96bc",
+      "6ad2a17ce1d8350b4573a4f6f1af4aee77bab7698785c55b11152f46679ca83d",
+      "f4a97e9e1a6aa5a8477eb6b07b0f0cc7cf27964ec155862fa82c033a40fbba64",
+      "0e6a528174d2e522bfe1ef0347822206239415f5319520ebee3e63a8f9bbbe50",
+      "080223c5204ac6faca6d7bed0d4f8d9d53dcef92d462b919d65c66cea98bd6a5",
+      "d4733e916c1a1c2336ff4df159e469da96b27b6acbe96c39744ef7920c0595c0",
+      "77133bf13137f9451f558cba096fe6f0241fba01a3dc26191c3440eade21850e",
+      "82be54001d2eda45d3f2006d5abfbd5a1ba38e93c198d984cf88eb2ddbdfe893",
+      "fc3941e5ebd703e0c33c090309a95263bca560c9fd7d03123d74a05f1f2d9fdc",
+      "dcf91810bdcd1abfe4746324159d19657e9a8c616ef8ec4287d1f3b17aa879f0",
+      "e6bba9967e83537506cc7e4591a8fe0031f71de371ae8a570c28bf6a6c900d8d",
+      "52dc16fd0d792f6c8d4956f94a637055ab9d6afc80f15db2833e56c8213a4944",
+      "3ca22f507bffbad4c1526acb2f2005d3d905fd90b0853f59c827b46688e12348",
+      "a2a6e8f63194dcac25e6e7f5a4334b35465779b1ebe2af032915aa2213ec3d23",
+      "59705c89a68624d733822e7299d43b959a2b76bb4f5270e5175ff81a50420314",
+      "3adffc50a9a4c3872cbc39010d9373620b7561f03ed656995a186bf1e0bf7191",
+      "8240dcd8f6ffa40056632307413106ddee0340e62066e748fb344794c89b4471",
+      "bfed4dcecf858d7205198b55c781d2d5a5b1408e48fb29067d2eba14b15e58d4"
+    ],
+    "train_tree_sha256": "591aaa3092cea6b2412bbdfefe293e4a1afd135b55a3231a3f6b2d1ba931ec8f",
+    "trajectories": 100,
+    "tree_sha256": "9e3a66ece0fbcf997bc3597bb3542ff871e99092211d6311b00d10947a2de6ce",
+    "validation_trajectories": [
+      "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+      "abea31b28c6fe48aab09248d8293360d508bf15e08f2a640033733e4a9a107ec",
+      "74afc9ab4a9368ff8a5ccecc7306e0274fb624faa328bc17ba3fe43c2dace7b2",
+      "10e1cd6d45700f4957ea9382cbb3360d24f7abaee274142c0c5cc655bbfa2326",
+      "72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350",
+      "8032fabd9fe0211c19b115c2ede6422c64500dbeb80709a07550fb6bcabe0945",
+      "c8425b548fa62c4652bdc17dc35803018095a69ecf22cdf3419fdf250431e1a9",
+      "9312495a27e0bf865c435f8c472e00c1eca18e8a4fdbf1bf97ea75881fbe9f77",
+      "10d698b68ccde0dc9fd40326767f43f3fec7a0bf423bc2c2cabddf6b5c6503f8",
+      "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+      "15b7751135578d34cbf0f5229f2e0e686c923ab02d42737792e8f1d9515dfbb8",
+      "08e834f65a5d8ba7ce54f57ccf2a5d21329b31fffec67ca08d6dcf264934b1ec",
+      "cf6f9c259f9b375fe2196109c7f1d964c1eecdb325f21b843fdec7a3b52693b6",
+      "815db39e841c29340eeaaa8531329a3b020efccfc03b516c6f0c3263793c6d17",
+      "5fb90f8aed511a979290fbe34c4fdcfc7e4452ecac84f94ac8ef42a390e1fe6f",
+      "1ce06b5c41b9d7d3f23763621b61a960fdd5dcf1a43f53681c16604a74c7e89e",
+      "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+      "97ba8fa5ca54e4a795514fe1aaf815575fe1fa0e7ba3ebef2d1a5f85271d92bf",
+      "3dd56c4f5180e28d3d151ad5fd903b6c547e661eaf762feb01542e5ff28ec85c",
+      "b90df4a7b64c84c127bf15191c7077d5e10e5760d43502b9fbf82a15905e0803"
+    ],
+    "validation_tree_sha256": "11739df22c9471c71b31e04e53f275e2f4c92b9825e2f6d6ec993d3b2ea214a8"
+  },
+  "report_hashes": {
+    "analysis_sha256": "56fd89da18f9770a19f3a011aee581b68e92b5706e6961daddf92b116505d93d",
+    "deployment_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+    "offline_replay_sha256": "9218f9e6a4f1b04ca15d0581fd21b9d342906290155c75d4b3e3a3409d267e4c",
+    "paired_dataset_manifest_sha256": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+    "provenance_sha256": "17c7e69a78d4d3d7452ad9ad24f8989daf9cf11c73f5b1d27b70e17096bd2802",
+    "schedule_sha256": "a7980e11eb1a10d2ccf2989e71cde8168f48a99898bbc1f600d0f07b23ce638e",
+    "selection_sha256": "b0e20c2544e282e690cfdfcfec9e87168f7d7a23c4c6f760272d59fabae9deec"
+  },
+  "schema": "hybrid_obstacle_deployable_reference_final_decision_v1",
+  "selected": "POSTURE_SKIN_MLP_REFERENCE_V1",
+  "selection_rule": "lexicographic gates 1-4; ties on active-frame differential MAE, then hazard-absent false activation, then in favour of KNN as the simpler model",
+  "shadow_oracle_diagnostics": {
+    "active_frames": [
+      30,
+      117,
+      4,
+      0,
+      34,
+      112,
+      0,
+      0,
+      31,
+      117,
+      9,
+      0,
+      34,
+      120,
+      0,
+      0,
+      34,
+      111,
+      0,
+      0
+    ],
+    "executed": false,
+    "privileged": true,
+    "state_neutrality_failures": 0
+  },
+  "task": "Train and qualify a deployable posture-conditioned reference that approximates the validated parked-obstacle oracle without privileged simulation information",
+  "teacher_support": {
+    "d_act_m": 0.18,
+    "support_gate_is_weak_in_this_environment": "No validation frame has a minimum valid depth above 0.187 m, so the '>0.25 m far frame' metric has ZERO frames and gate A (a valid return inside 0.18 m) is open on 1168 of 1543 validation frames. The quiet threshold tau does essentially all of the gating work.",
+    "why_long_range_direction_is_out_of_scope": "The analytic teacher only fires when a hazard return is a sensor's closest return inside D_act = 0.18 m; beyond it the repulsion weight 1/r - 1/D_act is undefined and the oracle task measured a REVERSED median cosine (-0.36) on candidate 108 at the head's 0.5 m input radius. Direction is therefore neither optimised nor scored outside the supported range; the residual is required to be quiet there instead."
+  },
+  "uncommitted_artifacts": [
+    {
+      "committed": false,
+      "files": 105,
+      "label": "paired_dataset_dir",
+      "path": "/root/act_retrain_assets/paired_reference_v1"
+    },
+    {
+      "committed": false,
+      "label": "reference_artifact",
+      "path": "/root/act_retrain_assets/deployable_reference_v1/posture_skin_mlp_reference_v1.pt",
+      "sha256": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2"
+    },
+    {
+      "committed": false,
+      "label": "act_checkpoint",
+      "path": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36"
+    },
+    {
+      "committed": false,
+      "files": 20,
+      "label": "deployable_rollout_root",
+      "path": "/root/act_retrain_assets/deployable_dev_v1"
+    },
+    {
+      "committed": false,
+      "files": 5,
+      "label": "development_paired_dir",
+      "path": "/root/act_retrain_assets/paired_reference_dev4"
+    }
+  ]
+}

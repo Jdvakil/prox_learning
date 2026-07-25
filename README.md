@@ -577,3 +577,48 @@ Things worth knowing before writing another reference:
   `scripts/hybrid_obstacle_geom_distance_probe.py`.
 - **`confirmatory41` has never been executed.** The oracle evaluator hard-refuses
   any manifest whose role is `CONFIRMATORY_UNTOUCHED`.
+
+## Hybrid obstacle safety residual: the deployable reference attempt
+
+`docs/HYBRID_OBSTACLE_DEPLOYABLE_REFERENCE_FINAL_DECISION.md` —
+`DEPLOYABLE_REFERENCE_LIVE_GROSS_REGRESSION`.
+
+A posture+skin MLP was trained to predict the parked SafetyHead output from
+runtime-observable signals only, so the oracle's subtraction could be done without
+privileged information. It passed every offline gate on held-out trajectories and
+then failed live.
+
+- **Posture alone is not enough.** The predeclared KNN control over (qpos, qvel,
+  gripper) gives a median oracle cosine of **−0.39** and a differential MAE worse
+  than doing nothing clever. Skin information is doing the work.
+- **Offline looked excellent**: the MLP reached median oracle cosine **+0.977** and
+  differential MAE 0.283 against 0.660 (raw head) and 0.657 (first-live) on 20
+  held-out trajectories.
+- **Live it collapsed**: pooled median cosine **0.345**, magnitude over-predicted by
+  up to **6.9×**, and the controller fired on 23–34 % of frames where the true
+  differential was exactly zero. On the hazard-absent row it produced new
+  environment contact in all five repeats.
+- **Root cause is distribution shift, not architecture.** The reference trains on
+  expert planner trajectories that deflect around the hazard; on all four
+  development expert trajectories the predicted norm never once reached the quiet
+  threshold, so the gate opened zero times offline. Live ACT trajectories drive
+  oracle differentials up to 2.5 and the model extrapolates.
+- **Task success did not regress** (12/15 vs ACT-only 11/15, oracle 14/15), and on
+  candidate 107 the deployable reference cut environment contacts from 75–93 per
+  rollout to 5–28 — better than the oracle. The mechanism is real; the
+  approximation is not yet good enough.
+
+Two measurement traps worth knowing before designing the next study:
+
+- **The support gate is nearly always open here.** No validation frame has a
+  minimum valid depth above 0.187 m, so the "far frame > 0.25 m" false-activation
+  metric has *zero* frames and gate A fires on 76 % of frames. The quiet threshold
+  does all the work.
+- **That threshold guarantees its own gate.** `tau` is the 99.5th percentile of the
+  hazard-absent validation norm, so ~0.5 % exceedance is true by construction, not
+  measured. Calibrate it against an on-policy false-activation target instead.
+
+Next: build the paired dataset **on-policy** — ACT_ONLY rollouts on the training
+rows, parked counterfactual along those trajectories through the same state-neutral
+seam — and retrain the same fixed architecture on the union. `confirmatory41` is
+still untouched.
