@@ -1,0 +1,230 @@
+{
+  "artifact_verification": {
+    "all_hashes_matched": true,
+    "best_epoch": 1738,
+    "camera_config_sha256": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+    "dataset_stats_pkl_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+    "model_hybrid_xml_sha256": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+    "policy_best_ckpt_sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+    "safety_meta_sha256": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+    "safety_model_sha256": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858"
+  },
+  "artifacts": {
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_observation_reference/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_OBSERVATION_REFERENCE_FINAL_DECISION.md",
+    "one_pair_attribution": "diagnostics_output/hybrid_obstacle_observation_reference/one_pair_attribution.json",
+    "probe_script": "scripts/hybrid_obstacle_wrist_determinism_probe.py",
+    "reference_contract_classification": "diagnostics_output/hybrid_obstacle_observation_reference/reference_contract_classification.json",
+    "reference_provenance": "diagnostics_output/hybrid_obstacle_observation_reference/reference_provenance.json",
+    "tests": "tests/test_observation_reference_contract.py",
+    "wrist_divergence_probe_matrix": "diagnostics_output/hybrid_obstacle_observation_reference/wrist_divergence_probe_matrix.json"
+  },
+  "blocker_1_wrist_determinism": {
+    "correction_to_earlier_inference": "Probes A and C showed exo_camera_1 as bit-identical, which suggested the effect was specific to the wrist camera. Probe L, which renders both cameras through the same sweep, shows exo diverging 4 of 8 times. exo's earlier stability was incidental to that view, not a property of the camera. The defect is general to MSAA'd RGB rendering.",
+    "environment_constructions_used": {
+      "budget": 20,
+      "fresh_env": 5,
+      "in_process": 1,
+      "probe_k": 1,
+      "probe_l": 2,
+      "total": 9
+    },
+    "exact_cause": "4x multisample anti-aliasing is enabled in the compiled model (mjModel.vis.quality.offsamples = 4). The classic OpenGL renderer's MSAA resolve is not bit-reproducible on this GPU/driver, so two renders of a byte-identical scene can differ by one least-significant bit on edge pixels. It is view-dependent only in likelihood, not in kind: the wrist view diverged on every render and the exo view diverged on half of them. Depth renders are unaffected, which is why all 40 proximity streams were bit-identical in the prior paired runs.",
+    "fix_assessment": {
+      "allowed_categories_examined": {
+        "clear_stale_per_camera_observation_caches": "not the cause - back-to-back render calls bypass every cache and still diverge",
+        "correct_an_aliasing_cache_key": "not the cause - same reason",
+        "explicit_robot_mounted_camera_pose_update": "not the cause - registry pose identical; sample_task already calls update_all_cameras",
+        "first_render_only_after_state_and_camera_sync": "not the cause - renders 2..10 diverge equally",
+        "mujoco_forward_refresh_after_restore": "not the cause - state and derived kinematics were already identical",
+        "reset_renderer_scene_state": "tested as probe K via a correctly configured scene camera - REFUTED"
+      },
+      "no_narrow_fix_applied": true,
+      "reason": "Every allowed fix category was examined against the evidence and none addresses the cause. Applying one anyway would be a speculative change, which step 7 forbids. The one allowed-category hypothesis with a plausible mechanism (probe K) was tested and falsified.",
+      "the_only_known_route_to_determinism": "set mjModel.vis.quality.offsamples = 0, i.e. disable anti-aliasing",
+      "why_that_route_is_not_taken": "It changes rendered-image semantics, which this task's hard constraints forbid ('Do not alter ... image preprocessing'; step 7 disallows 'changing images or preprocessing'). It is also a scientific decision rather than a bug fix: the 100-episode ACT training dataset was rendered with MSAA enabled through this same path, so evaluating with MSAA off would introduce a train/eval observation mismatch for the pinned checkpoint."
+    },
+    "magnitude": {
+      "differing_pixels_range": [
+        13,
+        19
+      ],
+      "fraction_of_pixels": 8.65e-05,
+      "max_abs_rgb_diff": 1,
+      "note": "a single least-significant bit per affected channel",
+      "total_pixels": 219648
+    },
+    "offsamples": 4,
+    "probe_K_refuted": {
+      "hypothesis": "the degenerate MjvCamera passed to renderer.update() destabilises mjv_updateScene culling / transparent-geom depth sorting",
+      "note": "Configuring the MjvCamera passed to renderer.update() so culling and transparent-geom sorting have well-defined keys did NOT stabilise the wrist view (8/8 distinct either way). The cause is below mjv_updateScene. Hypothesis falsified, not asserted.",
+      "verdict": "REFUTED",
+      "wrist_configured_camera_distinct": 8,
+      "wrist_stock_distinct": 8
+    },
+    "probe_L_confirmed": {
+      "exo_msaa_as_configured": {
+        "all_identical": false,
+        "distinct_hashes": 4
+      },
+      "exo_msaa_disabled": {
+        "all_identical": true,
+        "distinct_hashes": 1
+      },
+      "msaa_enabled": true,
+      "note": "With offsamples=4 both RGB views are nondeterministic; with offsamples=0 both become bit-identical over 8 renders. The OpenGL multisample resolve is not bit-reproducible on this driver.",
+      "offsamples": 4,
+      "quality": {
+        "numquads": 4,
+        "numslices": 28,
+        "numstacks": 16,
+        "offsamples": 4,
+        "shadowsize": 4096
+      },
+      "verdict": "CONFIRMED",
+      "wrist_msaa_as_configured": {
+        "all_identical": false,
+        "distinct_hashes": 8
+      },
+      "wrist_msaa_disabled": {
+        "all_identical": true,
+        "distinct_hashes": 1
+      }
+    },
+    "ruled_out": {
+      "cache_key_collision": "RULED OUT - same reason",
+      "conclusion": "The divergence originates inside the render call itself. With byte-identical simulator state, byte-identical camera pose and the same renderer instance, each render_rgb_frame('wrist_camera') returns a different image differing in 13-19 of 219648 pixels by exactly 1 LSB. exo_camera_1 is bit-identical under the same treatment, so the effect is view-dependent, consistent with unstable tie-breaking among near-coincident fragments in the close-up wrist view. Depth rendering is unaffected, which is why all 40 proximity streams were bit-identical in the prior paired runs.",
+      "derived_mujoco_kinematics": "RULED OUT - xpos/xmat digests identical",
+      "observation_cache_reuse": "RULED OUT - two consecutive render_rgb_frame calls bypass any cache and still diverge",
+      "render_order": "RULED OUT - probe EF",
+      "renderer_context_initialization": "RULED OUT - divergence persists on renders 2..10 within one initialized renderer, so it is not a first-render warm-up",
+      "robot_mounted_camera_pose_update": "RULED OUT - wrist registry pos/forward/up/fov identical across all probes; sample_task already ends with update_all_cameras (task_sampler.py:1157)",
+      "simulator_state_restoration": "RULED OUT - qpos/qvel/ctrl/mocap/warmstart digests identical; divergence occurs with no state change at all"
+    },
+    "status": "root cause identified; not fixed, by constraint"
+  },
+  "blocker_2_reference_contract": {
+    "classification": {
+      "clear/rest-pose skin (mode C)": "HISTORICAL_DEMO_ONLY",
+      "frozen first-live skin (mode B)": "NOVEL_UNVALIDATED",
+      "per-frame frame-aligned obstacle-parked counterfactual (modes D/E)": "SIMULATION_ORACLE",
+      "raw SafetyHead, no subtraction (mode A)": "DEPLOYABLE",
+      "step-indexed recorded-trajectory reference H5 (mode F)": "UNSUPPORTED"
+    },
+    "documented_canonical": "mode D - per-frame frame-aligned obstacle-parked counterfactual (README:174, safety_react_demo.py:368-379)",
+    "first_live_skin_status": "mode B - NOVEL_UNVALIDATED, present only at eval_act_obstacle_safety.py:213-215",
+    "headline_finding": "first_live_skin is NOT canonical. It appears in no README passage, no demo, and no paper text. It exists only as the else-branch fallback in the live ACT adapter (eval_act_obstacle_safety.py:213-215). The documented contract is a PER-FRAME, FRAME-ALIGNED, obstacle-parked counterfactual, which requires privileged simulation state.",
+    "options_for_next_task": [
+      {
+        "cost": "one extra 40-sensor render per control step; requires privileged mocap parking",
+        "does_not_give": "a hardware-deployable controller",
+        "gives": "a faithful reproduction of the published method and an upper bound on residual benefit",
+        "option": "A",
+        "statement": "Reproduce the documented counterfactual controller and label it an oracle."
+      },
+      {
+        "cost": "new design plus its own validation campaign",
+        "does_not_give": "anything already established; this is new research, not a repair",
+        "gives": "a deployable controller that cancels static structure at the current posture",
+        "option": "B",
+        "statement": "Design and validate a deployable posture-conditioned reference."
+      },
+      {
+        "cost": "none beyond the evaluation itself",
+        "does_not_give": "the static-clutter suppression the demos rely on",
+        "gives": "the only variant whose inputs match Safety-CVAE training, and a clean measurement of what the head does unaided in a cluttered cavity",
+        "option": "C",
+        "statement": "Evaluate the raw SafetyHead without subtraction."
+      },
+      {
+        "cost": "an explicit scope decision plus its own validation",
+        "does_not_give": "continuity with the published method; it must not be reported as the documented parked-obstacle subtraction",
+        "gives": "a deployable controller that can be honestly named as new work",
+        "option": "D",
+        "statement": "Retain first-live subtraction as a newly defined controller and validate it separately."
+      }
+    ],
+    "recommendation_withheld": "Not chosen here. Selecting among A-D changes what the safety result means scientifically, so it belongs to whoever owns the claim, not to this repair task.",
+    "safety_cvae_trained_on": "raw absolute depths, no subtraction anywhere (train_safety_cvae.py:2-3, 89-94)",
+    "status": "resolved as an audit; the choice is escalated"
+  },
+  "camera_semantics_proof": {
+    "camera_config_py_hash_unchanged": true,
+    "model_hybrid_xml_hash_unchanged": true,
+    "molmospaces_worktree_clean": true,
+    "note": "No camera pose, FOV, intrinsic, resolution, lighting, texture or preprocessing value was altered. The MSAA experiment in probe L mutated offsamples in-process only, restored it in a finally block, and never touched source.",
+    "resolution": [
+      624,
+      352
+    ],
+    "wrist_registry_fov": 56.74,
+    "wrist_registry_pose": [
+      0.3199982556767919,
+      -0.08106286650310322,
+      0.8945843201687841
+    ]
+  },
+  "commits": {
+    "act_branch": "eval/hybrid-obstacle-manifest-safety-v1",
+    "act_commit": "61f51b01e43e5016656b1aa39fb536143d8ccc32",
+    "act_unchanged_this_task": true,
+    "branches_not_created": [
+      "repair/wrist-camera-replay-determinism-v1 (no MolmoSpaces fix was warranted)",
+      "repair/paired-reference-contract-audit-v1 (no ACT change was needed)"
+    ],
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "repair/hybrid-obstacle-observation-reference-v1",
+    "root_commit": "75b2347cb4e550cf5c0976b2c9b7114cb6de1e81",
+    "root_starting_commit": "75b2347cb4e550cf5c0976b2c9b7114cb6de1e81"
+  },
+  "constraints_honoured": {
+    "act_trained_or_modified": false,
+    "camera_pose_fov_intrinsics_resolution_lighting_textures_preprocessing_altered": false,
+    "canonical_dataset_split_or_manifests_changed": false,
+    "controller_constants_tuned": false,
+    "full_45_row_evaluation_run": false,
+    "future_observations_shared_between_conditions": false,
+    "molmospaces_modified": false,
+    "mujoco_egl_cuda_driver_renderer_versions_changed": false,
+    "obstacle_robot_planner_task_collisions_success_horizon_changed": false,
+    "policy_best_or_dataset_stats_changed": false,
+    "pushed": false,
+    "recorded_wrist_image_injected": false,
+    "safety_cvae_trained_or_modified": false,
+    "zero_equivalence_redefined_statistically": false
+  },
+  "date": "2026-07-25",
+  "decision": "OBSERVATION_CONTRACT_CHANGED",
+  "decision_reason": "Determinism is obtainable, but only by disabling 4x multisample anti-aliasing (mjModel.vis.quality.offsamples 4 -> 0), which changes rendered-image semantics. This task's hard constraints forbid altering image rendering, and the change is a scientific decision rather than a bug fix because the pinned ACT checkpoint was trained on MSAA-rendered images through this same path. No fix was applied and the reference contract also requires an explicit scope decision, so both blockers are escalated.",
+  "final_decision_sha256": "f227a08d92c250cebd1233b273c1188800131f4b0c8ae67648fc13a8b893e450",
+  "next_recommended_task": "Two independent decisions, both needing an owner rather than more engineering.\n(1) Observation determinism. Either accept a rendering-semantics change - set offsamples=0 for BOTH data collection and evaluation so training and evaluation stay matched, which means re-rendering the converted dataset or accepting a train/eval mismatch for the pinned checkpoint - or keep MSAA and replace exact bitwise zero-equivalence with a repeat-based equivalence gate, which the present task was explicitly forbidden from doing. A cheaper third option worth costing is to keep MSAA for the ACT observation path and note that paired comparisons must then be designed around per-render noise of 1 LSB on order 10-30 pixels.\n(2) Reference contract. Choose among options A-D in reference_contract_classification.json. Note that the documented canonical controller is a simulation oracle, so a deployable claim cannot be made with it, and that first-live subtraction is new work that must be named as such.",
+  "one_pair_saturation_attribution": {
+    "active_sensors_growth": "10 -> 22 as the arm enters the cavity",
+    "caveat": "ONE episode. This attributes a mechanism; it does not measure an effect size and supports no claim about the controller's merit.",
+    "hazard_bar_contact_frames": 0,
+    "hazard_driven": false,
+    "known_self_return_frames_active": 0,
+    "primary_cause": "posture drift away from the frozen step-0 reference",
+    "reference_head_norm_constant": 0.806553,
+    "self_return_driven": false
+  },
+  "rollout_budget": {
+    "maximum_full_policy_rollouts": 3,
+    "render_reset_probe_budget": 20,
+    "render_reset_probes_used": 9,
+    "used": 0
+  },
+  "schema": "hybrid_obstacle_observation_reference_final_decision",
+  "steps_not_performed": {
+    "step_7_narrow_fix": "not applied - every allowed category was examined and none addresses the cause; the one plausible candidate was tested and falsified (probe K)",
+    "step_8_determinism_acceptance": "not run - it requires bit-identical wrist RGB after a frozen fix, which cannot pass without the forbidden semantic change",
+    "step_9_zero_equivalence_rollouts": "not run - 0 of 3 permitted rollouts used; gated on step 8, and with determinism unrestored they could only re-demonstrate the known divergence without changing the decision"
+  },
+  "tests": {
+    "failed": 0,
+    "file": "tests/test_observation_reference_contract.py",
+    "passed": 22
+  }
+}

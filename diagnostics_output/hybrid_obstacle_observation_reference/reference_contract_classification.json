@@ -1,0 +1,74 @@
+{
+  "basis": "scripts/reference_provenance.json; committed source and paper text only",
+  "classification": [
+    {
+      "caveat": "README:178 states the head fires on any close surface, including hood walls and the arm's own links, which is precisely why the demos subtract. Used raw inside a fumehood cavity it would push constantly. Its behaviour there has never been measured.",
+      "controller": "raw SafetyHead, no subtraction (mode A)",
+      "label": "DEPLOYABLE",
+      "why": "Needs only the live 40-sensor reading. It is also the ONLY option whose input distribution matches Safety-CVAE training, which used raw absolute depths with no subtraction anywhere (train_safety_cvae.py:2-3, 89-94)."
+    },
+    {
+      "caveat": "Not equivalent to the documented parked-obstacle subtraction. The one completed pair shows why: the reference is frozen at the step-0 posture while active sensors grow 10 -> 22 as the arm enters the cavity, so the residual tracks posture drift rather than hazard proximity (see one_pair_attribution.json).",
+      "controller": "frozen first-live skin (mode B)",
+      "label": "NOVEL_UNVALIDATED",
+      "why": "Deployable, but established by nothing: it appears in no README passage, no committed demo and no paper text, existing only as the else-branch at eval_act_obstacle_safety.py:213-215."
+    },
+    {
+      "caveat": "Requires rendering a hazard-free scene, and does not transfer to a moving arm.",
+      "controller": "clear/rest-pose skin (mode C)",
+      "label": "HISTORICAL_DEMO_ONLY",
+      "why": "Used by safety_flinch_demo.py:293-296, where a single baseline is valid only because the arm is held at a fixed rest posture (lines 85, 109)."
+    },
+    {
+      "caveat": "Requires privileged mocap manipulation and a second render per frame. Sound as an oracle upper bound; not deployable on hardware.",
+      "controller": "per-frame frame-aligned obstacle-parked counterfactual (modes D/E)",
+      "label": "SIMULATION_ORACLE",
+      "why": "THE documented canonical contract: README:174 and safety_react_demo.py:368-379, which parks the bars at the CURRENT pose, re-renders, subtracts and restores, every frame."
+    },
+    {
+      "caveat": "Self-defeating for a residual controller: the moment the residual makes ACT deviate -- its entire purpose -- the reference describes a posture the robot is no longer in. It also needs a paired pre-recorded episode, so it is privileged as well.",
+      "controller": "step-indexed recorded-trajectory reference H5 (mode F)",
+      "label": "UNSUPPORTED",
+      "why": "Available at eval_act_obstacle_safety.py:206-212 via --baseline_reference_h5, but it is indexed by step, so it is frame-aligned only while the live rollout still tracks the recorded trajectory."
+    }
+  ],
+  "important_distinctions": {
+    "first_live_is_not_the_documented_subtraction": "A frozen first-live reference is deployable but is not automatically equivalent to the documented parked-obstacle subtraction, and the measured one-pair behaviour shows the two are materially different.",
+    "oracle_vs_deployable": "A frame-aligned obstacle-parked or obstacle-removed reference is useful as a simulation oracle but uses privileged counterfactual information, so results obtained with it cannot be presented as achievable on hardware.",
+    "react_demo_does_not_transfer": "The recorded-trajectory react demo does not by itself prove the same baseline works for a live, deviating ACT rollout: the demo recomputes its baseline per-frame at the current pose, so it never relies on posture agreement with a recording."
+  },
+  "options_for_the_next_approved_task": [
+    {
+      "cost": "one extra 40-sensor render per control step; requires privileged mocap parking",
+      "does_not_give": "a hardware-deployable controller",
+      "gives": "a faithful reproduction of the published method and an upper bound on residual benefit",
+      "option": "A",
+      "statement": "Reproduce the documented counterfactual controller and label it an oracle."
+    },
+    {
+      "cost": "new design plus its own validation campaign",
+      "does_not_give": "anything already established; this is new research, not a repair",
+      "gives": "a deployable controller that cancels static structure at the current posture",
+      "option": "B",
+      "statement": "Design and validate a deployable posture-conditioned reference."
+    },
+    {
+      "cost": "none beyond the evaluation itself",
+      "does_not_give": "the static-clutter suppression the demos rely on",
+      "gives": "the only variant whose inputs match Safety-CVAE training, and a clean measurement of what the head does unaided in a cluttered cavity",
+      "option": "C",
+      "statement": "Evaluate the raw SafetyHead without subtraction."
+    },
+    {
+      "cost": "an explicit scope decision plus its own validation",
+      "does_not_give": "continuity with the published method; it must not be reported as the documented parked-obstacle subtraction",
+      "gives": "a deployable controller that can be honestly named as new work",
+      "option": "D",
+      "statement": "Retain first-live subtraction as a newly defined controller and validate it separately."
+    }
+  ],
+  "principle": "The project's canonical implementation requires privileged counterfactual information, so no non-privileged reference is established as the intended live controller. This task therefore classifies the options and escalates rather than choosing one.",
+  "recommendation_withheld": "Not chosen here. Selecting among A-D changes what the safety result means scientifically, so it belongs to whoever owns the claim, not to this repair task.",
+  "report_sha256": "7463ef42b208fcafe9186767fe47d16981ed7921e8f3cbe467ee5e96f85e9b4e",
+  "schema": "hybrid_obstacle_reference_contract_classification_v1"
+}

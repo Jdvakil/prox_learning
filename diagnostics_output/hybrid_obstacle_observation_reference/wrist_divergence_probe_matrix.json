@@ -1,0 +1,180 @@
+{
+  "correction_to_earlier_inference": "Probes A and C showed exo_camera_1 as bit-identical, which suggested the effect was specific to the wrist camera. Probe L, which renders both cameras through the same sweep, shows exo diverging 4 of 8 times. exo's earlier stability was incidental to that view, not a property of the camera. The defect is general to MSAA'd RGB rendering.",
+  "environment_constructions_used": {
+    "budget": 20,
+    "fresh_env": 5,
+    "in_process": 1,
+    "probe_k": 1,
+    "probe_l": 2,
+    "total": 9
+  },
+  "exact_causal_defect": "4x multisample anti-aliasing is enabled in the compiled model (mjModel.vis.quality.offsamples = 4). The classic OpenGL renderer's MSAA resolve is not bit-reproducible on this GPU/driver, so two renders of a byte-identical scene can differ by one least-significant bit on edge pixels. It is view-dependent only in likelihood, not in kind: the wrist view diverged on every render and the exo view diverged on half of them. Depth renders are unaffected, which is why all 40 proximity streams were bit-identical in the prior paired runs.",
+  "first_divergence_localization": {
+    "cache_key_collision": "RULED OUT - same reason",
+    "conclusion": "The divergence originates inside the render call itself. With byte-identical simulator state, byte-identical camera pose and the same renderer instance, each render_rgb_frame('wrist_camera') returns a different image differing in 13-19 of 219648 pixels by exactly 1 LSB. exo_camera_1 is bit-identical under the same treatment, so the effect is view-dependent, consistent with unstable tie-breaking among near-coincident fragments in the close-up wrist view. Depth rendering is unaffected, which is why all 40 proximity streams were bit-identical in the prior paired runs.",
+    "derived_mujoco_kinematics": "RULED OUT - xpos/xmat digests identical",
+    "observation_cache_reuse": "RULED OUT - two consecutive render_rgb_frame calls bypass any cache and still diverge",
+    "render_order": "RULED OUT - probe EF",
+    "renderer_context_initialization": "RULED OUT - divergence persists on renders 2..10 within one initialized renderer, so it is not a first-render warm-up",
+    "robot_mounted_camera_pose_update": "RULED OUT - wrist registry pos/forward/up/fov identical across all probes; sample_task already ends with update_all_cameras (task_sampler.py:1157)",
+    "simulator_state_restoration": "RULED OUT - qpos/qvel/ctrl/mocap/warmstart digests identical; divergence occurs with no state change at all"
+  },
+  "fix_assessment": {
+    "allowed_categories_examined": {
+      "clear_stale_per_camera_observation_caches": "not the cause - back-to-back render calls bypass every cache and still diverge",
+      "correct_an_aliasing_cache_key": "not the cause - same reason",
+      "explicit_robot_mounted_camera_pose_update": "not the cause - registry pose identical; sample_task already calls update_all_cameras",
+      "first_render_only_after_state_and_camera_sync": "not the cause - renders 2..10 diverge equally",
+      "mujoco_forward_refresh_after_restore": "not the cause - state and derived kinematics were already identical",
+      "reset_renderer_scene_state": "tested as probe K via a correctly configured scene camera - REFUTED"
+    },
+    "no_narrow_fix_applied": true,
+    "reason": "Every allowed fix category was examined against the evidence and none addresses the cause. Applying one anyway would be a speculative change, which step 7 forbids. The one allowed-category hypothesis with a plausible mechanism (probe K) was tested and falsified.",
+    "the_only_known_route_to_determinism": "set mjModel.vis.quality.offsamples = 0, i.e. disable anti-aliasing",
+    "why_that_route_is_not_taken": "It changes rendered-image semantics, which this task's hard constraints forbid ('Do not alter ... image preprocessing'; step 7 disallows 'changing images or preprocessing'). It is also a scientific decision rather than a bug fix: the 100-episode ACT training dataset was rendered with MSAA enabled through this same path, so evaluating with MSAA off would introduce a train/eval observation mismatch for the pinned checkpoint."
+  },
+  "magnitude": {
+    "differing_pixels_range": [
+      13,
+      19
+    ],
+    "fraction_of_pixels": 8.65e-05,
+    "max_abs_rgb_diff": 1,
+    "note": "a single least-significant bit per affected channel",
+    "total_pixels": 219648
+  },
+  "probe_K_scene_camera_hypothesis": {
+    "hypothesis": "the degenerate MjvCamera passed to renderer.update() destabilises mjv_updateScene culling / transparent-geom depth sorting",
+    "note": "Configuring the MjvCamera passed to renderer.update() so culling and transparent-geom sorting have well-defined keys did NOT stabilise the wrist view (8/8 distinct either way). The cause is below mjv_updateScene. Hypothesis falsified, not asserted.",
+    "verdict": "REFUTED",
+    "wrist_configured_camera_distinct": 8,
+    "wrist_stock_distinct": 8
+  },
+  "probe_L_multisample_hypothesis": {
+    "exo_msaa_as_configured": {
+      "all_identical": false,
+      "distinct_hashes": 4
+    },
+    "exo_msaa_disabled": {
+      "all_identical": true,
+      "distinct_hashes": 1
+    },
+    "msaa_enabled": true,
+    "note": "With offsamples=4 both RGB views are nondeterministic; with offsamples=0 both become bit-identical over 8 renders. The OpenGL multisample resolve is not bit-reproducible on this driver.",
+    "offsamples": 4,
+    "quality": {
+      "numquads": 4,
+      "numslices": 28,
+      "numstacks": 16,
+      "offsamples": 4,
+      "shadowsize": 4096
+    },
+    "verdict": "CONFIRMED",
+    "wrist_msaa_as_configured": {
+      "all_identical": false,
+      "distinct_hashes": 8
+    },
+    "wrist_msaa_disabled": {
+      "all_identical": true,
+      "distinct_hashes": 1
+    }
+  },
+  "probe_matrix": {
+    "A_render_wrist_twice_same_env_same_state": {
+      "distinct_hashes": 10,
+      "note": "10 back-to-back renders of an unchanged state gave 10 distinct images",
+      "render_1_vs_2": {
+        "differing_pixels": 19,
+        "first_differing_pixel": [
+          261,
+          242
+        ],
+        "identical": false,
+        "max_abs_diff": 1,
+        "mean_abs_diff": 8.650203962703963e-05,
+        "total_pixels": 219648
+      },
+      "render_1_vs_last": {
+        "differing_pixels": 22,
+        "first_differing_pixel": [
+          44,
+          315
+        ],
+        "identical": false,
+        "max_abs_diff": 1,
+        "mean_abs_diff": 8.801961926961927e-05,
+        "total_pixels": 219648
+      },
+      "render_2_vs_3": {
+        "differing_pixels": 13,
+        "first_differing_pixel": [
+          44,
+          315
+        ],
+        "identical": false,
+        "max_abs_diff": 1,
+        "mean_abs_diff": 5.6150446775446774e-05,
+        "total_pixels": 219648
+      },
+      "renders": 10,
+      "result": "DIVERGES"
+    },
+    "B_restore_exact_state_and_render": {
+      "all_identical": false,
+      "cycles": 5,
+      "note": "qpos/qvel/ctrl/mocap/warmstart restored, mj_forward + update_all_cameras run each cycle",
+      "result": "DIVERGES"
+    },
+    "C_fresh_environment_same_manifest_state": {
+      "constructions": 5,
+      "exo_all_identical": true,
+      "note": "across 5 independent constructions exo RGB is bit-identical and state/pose are identical, yet wrist RGB never repeats",
+      "qpos_all_identical": true,
+      "result": "DIVERGES for wrist, IDENTICAL for exo",
+      "wrist_first_render_all_identical": false,
+      "wrist_registry_pose_all_identical": true,
+      "wrist_stable_render_all_identical": false
+    },
+    "D_fresh_process": {
+      "note": "probe A already shows divergence between two consecutive renders inside one process, so a cross-process comparison cannot be more sensitive; the prior task's ACT_ONLY vs ACT_ONLY control already demonstrated cross-process divergence",
+      "result": "SUBSUMED"
+    },
+    "EF_render_order": {
+      "note": "wrist differs whether rendered before or after exo, so render order is not the cause",
+      "order_independent": false,
+      "result": "ORDER-INDEPENDENT DIVERGENCE"
+    },
+    "GH_cache_clearing": {
+      "note": "_render_frame calls renderer.update(data, cam) on every call and sets the GL camera pose explicitly, so no per-step observation cache or render cache is consulted between two consecutive render_rgb_frame calls; back-to-back renders already diverge with no cache in the path",
+      "result": "NOT APPLICABLE"
+    },
+    "IJ_reset_restore_sequence": {
+      "J_forward_plus_camera_update_equal_to_stable": false,
+      "note": "mj_forward followed by update_all_cameras does not make the wrist render reproducible",
+      "result": "DIVERGES"
+    }
+  },
+  "render_contract": {
+    "exo_registry_fov": 45.0,
+    "note": "both wrist_camera and exo_camera_1 are registry-only cameras with no MuJoCo <camera> element (model_camera_id -1), so their pose lives solely in CameraManager.registry and render_rgb_frame renders a free camera from it",
+    "renderer_class": "MjOpenGLRenderer",
+    "resolution": [
+      624,
+      352
+    ],
+    "total_pixels": 219648,
+    "wrist_model_camera_id": -1,
+    "wrist_registry_fov": 56.74,
+    "wrist_registry_pos": [
+      0.3199982556767919,
+      -0.08106286650310322,
+      0.8945843201687841
+    ]
+  },
+  "row": {
+    "accepted_retry_index": 0,
+    "candidate_index": 106,
+    "episode_id": "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2"
+  },
+  "schema": "hybrid_obstacle_wrist_divergence_probe_matrix_v1"
+}

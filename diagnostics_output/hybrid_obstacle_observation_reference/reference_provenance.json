@@ -1,0 +1,167 @@
+{
+  "citations": [
+    {
+      "lines": "174",
+      "note": "the documented residual-mode formula",
+      "source": "README.md",
+      "text": "dq = head(skin with obstacle) - head(skin, obstacle parked)"
+    },
+    {
+      "lines": "178-179",
+      "note": "states the PURPOSE of subtraction: suppress static clutter and self returns",
+      "source": "README.md",
+      "text": "The baseline subtraction is key: the head fires on *any* close surface (hood walls, the arm's own links), so subtracting its rest output makes each demo react only to the obstacle."
+    },
+    {
+      "lines": "12",
+      "note": "docstring explicitly says PER-FRAME",
+      "source": "scripts/safety_react_demo.py",
+      "text": "dq_raw = head(skin_with_bars) - head(skin_bars_parked)   # per-frame baseline -> the bars' push"
+    },
+    {
+      "lines": "368-379",
+      "note": "THE canonical implementation: at the CURRENT pose, park the bars, re-render, subtract, restore. Two renders per frame and privileged mocap manipulation.",
+      "source": "scripts/safety_react_demo.py",
+      "text": "depths=render_all(...); for name in bar_mocaps: data.mocap_pos[mid[name]]=sw.PARK; mj_forward(); depths_rest=render_all(...); restore bars; mj_forward(); dq_raw=(head(depths)-head(depths_rest))/head.scale"
+    },
+    {
+      "lines": "293-296",
+      "note": "computed ONCE, but valid there only because the flinch demo holds the arm at a FIXED rest posture (line 85, 109). Not transferable to a moving arm.",
+      "source": "scripts/safety_flinch_demo.py",
+      "text": "# rest baseline: head output with the bar parked (subtracted every frame) / rest_depths=render_all(...); dq_rest=head(rest_depths)"
+    },
+    {
+      "lines": "2-3",
+      "note": "training maps RAW skin -> retreat delta",
+      "source": "scripts/train_safety_cvae.py",
+      "text": "joint-space retreat delta, distilled from the analytic potential-field labels produced by scripts/safety_sweep.py"
+    },
+    {
+      "lines": "89-94",
+      "note": "the network input is absolute closeness, NOT a difference. No subtraction anywhere in training.",
+      "source": "scripts/train_safety_cvae.py",
+      "text": "def featurize(prox): d=prox; c=clip(1-d/D_MAX,0,1); c[d<0.005]=0; return c.reshape(len(c),-1)"
+    },
+    {
+      "lines": "83-86",
+      "note": "z=0 determinism confirmed",
+      "source": "scripts/train_safety_cvae.py",
+      "text": "def act(self,x): z=torch.zeros(...); return self.dec(cat([x,z],-1))  # Deterministic head: decode at z = 0"
+    },
+    {
+      "lines": "-",
+      "note": "the head is quiet only when nothing is near; inside a fumehood cavity walls and self returns are always near, so the raw head always fires",
+      "source": "assets/safety/cvae_v3/meta.json",
+      "text": "far_quiet 0.0310, close_cos 0.9255, label_scale 11.359346389770508"
+    },
+    {
+      "lines": "5, 346-350",
+      "note": "the controller EQUATION is faithful; the module makes no claim about how the reference is obtained",
+      "source": "submodules/act/hybrid_safety_residual.py",
+      "text": "implements the controller equation already used by scripts/safety_react_demo.py"
+    },
+    {
+      "lines": "206-212",
+      "note": "mode F: step-indexed recorded-trajectory reference",
+      "source": "submodules/act/eval_act_obstacle_safety.py",
+      "text": "if self._reference_proximity is not None: baseline = self._head(self._reference_proximity[self._step])"
+    },
+    {
+      "lines": "213-215",
+      "note": "mode B: first_live_skin, frozen once at step 0. This is the ONLY place it exists.",
+      "source": "submodules/act/eval_act_obstacle_safety.py",
+      "text": "if self._baseline_safety_output is None: self._baseline_safety_output = self._head(current_proximity); baseline = self._baseline_safety_output"
+    },
+    {
+      "lines": "-",
+      "note": "the paper establishes no reference contract",
+      "source": "paper/section3_proximity_signal_draft.md",
+      "text": "no mention of baseline subtraction, parked obstacle, or reference"
+    }
+  ],
+  "conclusion": "The documented canonical reference (mode D) is a per-frame frame-aligned counterfactual that cannot be deployed outside simulation. The mode the live adapter actually used for the headline condition (mode B) is deployable but is a new, unvalidated controller that no committed source or paper text establishes. Mode A is the only reference-free option whose input distribution matches Safety-CVAE training. Choosing between these is a scientific scope decision, not an implementation detail, so it is escalated rather than decided here.",
+  "headline_finding": "first_live_skin is NOT canonical. It appears in no README passage, no demo, and no paper text. It exists only as the else-branch fallback in the live ACT adapter (eval_act_obstacle_safety.py:213-215). The documented contract is a PER-FRAME, FRAME-ALIGNED, obstacle-parked counterfactual, which requires privileged simulation state.",
+  "modes": [
+    {
+      "code_path": "SafetyHead.__call__ used directly; no committed consumer does this on the live path",
+      "deployable_outside_simulation": true,
+      "frame_aligned_with_current_posture": true,
+      "id": "A",
+      "merely_a_new_evaluation_choice": false,
+      "name": "no subtraction (raw SafetyHead)",
+      "note": "This is the only mode whose input distribution matches training exactly. It fires on static clutter and self returns by design (README:178).",
+      "requires_privileged_simulation_state": false,
+      "used_by_committed_demo": false,
+      "used_by_live_act": false,
+      "used_to_train_the_safety_cvae": true
+    },
+    {
+      "code_path": "eval_act_obstacle_safety.py:213-215 (else-branch)",
+      "deployable_outside_simulation": true,
+      "frame_aligned_with_current_posture": false,
+      "id": "B",
+      "merely_a_new_evaluation_choice": true,
+      "name": "first_live_skin (frozen step-0 reference)",
+      "note": "Appears in no README passage, no demo and no paper text. Valid only while posture stays near step 0; ACT traverses a large workspace, so the reference becomes progressively posture-mismatched.",
+      "requires_privileged_simulation_state": false,
+      "used_by_committed_demo": false,
+      "used_by_live_act": true,
+      "used_to_train_the_safety_cvae": false
+    },
+    {
+      "code_path": "safety_flinch_demo.py:293-296",
+      "deployable_outside_simulation": false,
+      "frame_aligned_with_current_posture": true,
+      "id": "C",
+      "merely_a_new_evaluation_choice": false,
+      "name": "clear/rest-pose skin",
+      "note": "Frame-aligned only because the flinch demo holds a fixed rest posture. Requires rendering a hazard-free scene.",
+      "requires_privileged_simulation_state": true,
+      "used_by_committed_demo": true,
+      "used_by_live_act": false,
+      "used_to_train_the_safety_cvae": false
+    },
+    {
+      "code_path": "safety_react_demo.py:368-379 (also moving/orbit demos)",
+      "deployable_outside_simulation": false,
+      "frame_aligned_with_current_posture": true,
+      "id": "D",
+      "merely_a_new_evaluation_choice": false,
+      "name": "frame-aligned obstacle-parked skin (per frame)",
+      "note": "THE documented canonical contract (README:174). Needs mocap manipulation and a second render every frame.",
+      "requires_privileged_simulation_state": true,
+      "used_by_committed_demo": true,
+      "used_by_live_act": false,
+      "used_to_train_the_safety_cvae": false
+    },
+    {
+      "code_path": "not separately implemented; equivalent in effect to D (park == remove from view)",
+      "deployable_outside_simulation": false,
+      "frame_aligned_with_current_posture": true,
+      "id": "E",
+      "merely_a_new_evaluation_choice": false,
+      "name": "obstacle-removed same-pose counterfactual",
+      "note": "Same privilege profile as D.",
+      "requires_privileged_simulation_state": true,
+      "used_by_committed_demo": false,
+      "used_by_live_act": false,
+      "used_to_train_the_safety_cvae": false
+    },
+    {
+      "code_path": "eval_act_obstacle_safety.py:206-212 via --baseline_reference_h5",
+      "deployable_outside_simulation": false,
+      "frame_aligned_with_current_posture": false,
+      "id": "F",
+      "merely_a_new_evaluation_choice": true,
+      "name": "step-indexed recorded-trajectory reference H5",
+      "note": "Indexed by step, so it is frame-aligned only while the live rollout still tracks the recorded trajectory. The moment the residual makes ACT deviate -- which is its whole purpose -- the reference describes a posture the robot is no longer in. Requires a paired pre-recorded episode.",
+      "requires_privileged_simulation_state": true,
+      "used_by_committed_demo": false,
+      "used_by_live_act": true,
+      "used_to_train_the_safety_cvae": false
+    }
+  ],
+  "question": "Which Safety-CVAE reference contract is established by committed source and paper text?",
+  "report_sha256": "e92664d5971891d9314000d431aa7e6f0ec9efdbf7d6a1a404d5d1eda385a21c",
+  "schema": "hybrid_obstacle_safety_reference_provenance_v1"
+}

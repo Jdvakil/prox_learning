@@ -1,0 +1,103 @@
+{
+  "attribution": "The correction growth is attributable to posture drift away from the frozen step-0 reference, not to hazard proximity. The Safety-CVAE was trained on raw absolute skin depths, so its output is a strong function of how much static structure is in view; the number of active sensors more than doubles as the arm enters the fumehood cavity. Subtracting a reference captured at the step-0 posture therefore leaves a large residual that reflects the posture change. This is a direct consequence of using mode B (first_live_skin) rather than the documented mode D (per-frame frame-aligned parked-obstacle counterfactual), which by construction cancels the static contribution at the CURRENT posture.",
+  "candidate_causes": {
+    "actual_hazard_proximity": {
+      "evidence": "zero hazard-bar (body protr_*) contact frames in the entire episode; the bar was never touched",
+      "supported": false
+    },
+    "changing_self_returns": {
+      "evidence": "the two known self-return sensors link5_front_sensor_1 and link5_front_sensor_2 were active in 0 of 200 frames",
+      "supported": false
+    },
+    "changing_static_fumehood_returns": {
+      "correlation_raw_vs_min_active_depth": -0.362,
+      "correlation_subtracted_vs_min_active_depth": -0.203,
+      "correlation_subtracted_vs_n_active_sensors": 0.364,
+      "evidence": "active sensors grow 10 -> 22 as the arm enters the cavity (by step: [10, 9, 15, 17, 20, 17, 20, 21, 21, 22]); 12 sensors newly activate across links 2,3,4,5_back,5_front,6 by step 100",
+      "supported": true
+    },
+    "posture_drift_from_the_frozen_reference": {
+      "evidence": "the reference is head(skin at step-0 posture) and never updates, while the arm traverses into the cavity. raw |head| swings 0.112 .. 2.134 with posture alone, so the difference raw-minus-frozen-reference measures how far the posture has moved from step 0, not how close the hazard is.",
+      "primary": true,
+      "supported": true
+    },
+    "target_grasp_contact": {
+      "evidence": "grasp-target contacts appear only intermittently and do not coincide with the correction's rise; the rise begins by step 20, well before any contact",
+      "supported": "incidental"
+    }
+  },
+  "candidate_index": 106,
+  "caveat": "ONE episode. This attributes a mechanism; it does not measure an effect size and supports no claim about the controller's merit.",
+  "explicitly_not_done": [
+    "no controller constant was changed",
+    "no gain/decay/ema/max_dev/dt tuning",
+    "no reference mode was switched on the basis of this episode",
+    "no simulation was rerun for this step"
+  ],
+  "frames": 200,
+  "hazard_present": true,
+  "known_self_return_sensors": {
+    "dominate_raw_or_subtracted_output": false,
+    "frames_active": 0,
+    "note": "reported separately as required; they contributed nothing on this episode",
+    "sensors": [
+      "link5_front_sensor_1",
+      "link5_front_sensor_2"
+    ]
+  },
+  "newly_active_by_step_100": [
+    "link2_sensor_4",
+    "link3_sensor_1",
+    "link3_sensor_2",
+    "link4_sensor_0",
+    "link4_sensor_1",
+    "link4_sensor_2",
+    "link5_back_sensor_2",
+    "link5_front_sensor_0",
+    "link5_front_sensor_3",
+    "link6_sensor_1",
+    "link6_sensor_3",
+    "link6_sensor_5"
+  ],
+  "reference": {
+    "distinct_reference_values_over_episode": 1,
+    "mode": "first_live_observation",
+    "note": "confirms the step-0 frozen reference never updates",
+    "reference_head_norm": 0.806553,
+    "reference_head_norm_constant": true
+  },
+  "report_sha256": "c72c566b3a380c9e90ea5fe27981eb72cb017abbe844906c9003bb74e7687944",
+  "run": "r106_safety_live",
+  "schema": "hybrid_obstacle_one_pair_saturation_attribution_v1",
+  "scope": "Offline analysis of the single completed ACT_PLUS_SAFETY_LIVE pair. Diagnostic only; the controller was not changed and nothing was tuned.",
+  "step0_active_sensors": [
+    "link1_sensor_5",
+    "link2_sensor_3",
+    "link2_sensor_6",
+    "link3_sensor_0",
+    "link3_sensor_3",
+    "link5_back_sensor_4",
+    "link5_back_sensor_5",
+    "link6_sensor_0",
+    "link6_sensor_2",
+    "link6_sensor_4"
+  ],
+  "timeseries_summary": {
+    "correction_ever_clipped": false,
+    "correction_norm_range": [
+      0.0,
+      0.29671
+    ],
+    "first_step_over_50pct_element_saturation": 52,
+    "max_element_saturation_pct": 79.0,
+    "raw_head_norm_range": [
+      0.1116,
+      2.1338
+    ],
+    "steps_over_80pct_element_saturation": 0,
+    "subtracted_norm_range": [
+      0.0,
+      0.22596
+    ]
+  }
+}
