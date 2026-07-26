@@ -1,0 +1,476 @@
+{
+  "all_matched": true,
+  "check_count": 55,
+  "checks": [
+    {
+      "actual": "5270bee29604f30e020cb9c28318ef90e030d500",
+      "artifact": "prior_root_branch_tip",
+      "expected": "5270bee29604f30e020cb9c28318ef90e030d500",
+      "expected_source": "prior task HEAD",
+      "matched": true
+    },
+    {
+      "actual": "21bf05efd49887dc18bbf0b4094cd7663526c2bb",
+      "artifact": "prior_act_branch_tip",
+      "expected": "21bf05efd49887dc18bbf0b4094cd7663526c2bb",
+      "expected_source": "prior task HEAD",
+      "matched": true
+    },
+    {
+      "actual": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+      "artifact": "prior_decision_recorded_root_commit_is_its_parent",
+      "expected": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+      "expected_source": "the decision JSON records the commit it was written against",
+      "matched": true
+    },
+    {
+      "actual": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+      "artifact": "molmospaces_commit",
+      "expected": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": true,
+      "artifact": "molmospaces_unmodified",
+      "expected": true,
+      "expected_source": "hard constraint",
+      "matched": true
+    },
+    {
+      "actual": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "artifact": "policy_best_ckpt_path",
+      "expected": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "expected_source": "checkpoint_manifest.json",
+      "matched": true
+    },
+    {
+      "actual": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+      "artifact": "policy_best_ckpt_sha256",
+      "expected": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+      "artifact": "dataset_stats_pkl_sha256",
+      "expected": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": 1738,
+      "artifact": "best_epoch",
+      "expected": 1738,
+      "expected_source": "checkpoint_manifest.json",
+      "matched": true
+    },
+    {
+      "actual": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+      "artifact": "checkpoint_manifest_sha256",
+      "expected": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+      "artifact": "collection_manifest_sha256",
+      "expected": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "artifact": "canonical_manifest_sha256",
+      "expected": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "artifact": "fixed_split_manifest_sha256",
+      "expected": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "artifact": "converted_dataset_tree_sha256",
+      "expected": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+      "artifact": "source_collection_tree_sha256",
+      "expected": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "artifact": "model_hybrid_xml_sha256",
+      "expected": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+      "artifact": "camera_contract_sha256",
+      "expected": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "artifact": "sensor_order_sha256",
+      "expected": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": 40,
+      "artifact": "sensor_count",
+      "expected": 40,
+      "expected_source": "40-sensor contract",
+      "matched": true
+    },
+    {
+      "actual": 4,
+      "artifact": "offsamples",
+      "expected": 4,
+      "expected_source": "retained MSAA contract",
+      "matched": true
+    },
+    {
+      "actual": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "artifact": "safety_model_sha256",
+      "expected": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "artifact": "safety_meta_sha256",
+      "expected": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": [
+        2560,
+        7
+      ],
+      "artifact": "safety_head_io",
+      "expected": [
+        2560,
+        7
+      ],
+      "expected_source": "40x8x8 -> 7",
+      "matched": true
+    },
+    {
+      "actual": 0.5,
+      "artifact": "safety_d_max_input",
+      "expected": 0.5,
+      "expected_source": "the closeness transform's reference depth",
+      "matched": true
+    },
+    {
+      "actual": "a0a958753a108e2231d41be31b56350640f8a9897b7f8cfd274504e604c1eb16",
+      "artifact": "oracle_implementation_sha256",
+      "expected": "a0a958753a108e2231d41be31b56350640f8a9897b7f8cfd274504e604c1eb16",
+      "expected_source": "recorded; unmodified in this task",
+      "matched": true
+    },
+    {
+      "actual": false,
+      "artifact": "oracle_mj_forward_called",
+      "expected": false,
+      "expected_source": "the corrected pairing",
+      "matched": true
+    },
+    {
+      "actual": [
+        4.0,
+        2.2,
+        0.75,
+        0.35
+      ],
+      "artifact": "residual_constants",
+      "expected": [
+        4.0,
+        2.2,
+        0.75,
+        0.35
+      ],
+      "expected_source": "frozen constants",
+      "matched": true
+    },
+    {
+      "actual": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "artifact": "residual_contract_sha256",
+      "expected": "655a2e926351eef59c44896eb2cd6b142bfbf6fd5444e26c133c200443eaeeca",
+      "expected_source": "recorded; unmodified",
+      "matched": true
+    },
+    {
+      "actual": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+      "artifact": "expert_paired_manifest_sha256",
+      "expected": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+      "expected_source": "deployable decision",
+      "matched": true
+    },
+    {
+      "actual": "9e3a66ece0fbcf997bc3597bb3542ff871e99092211d6311b00d10947a2de6ce",
+      "artifact": "expert_paired_tree_sha256",
+      "expected": "9e3a66ece0fbcf997bc3597bb3542ff871e99092211d6311b00d10947a2de6ce",
+      "expected_source": "deployable decision",
+      "matched": true
+    },
+    {
+      "actual": "c1e54ba1df37a25e2c98f5099a7a6270864c8c2124a285ee37a10bb3c27b30e0",
+      "artifact": "labelling_dataset_sha256",
+      "expected": "c1e54ba1df37a25e2c98f5099a7a6270864c8c2124a285ee37a10bb3c27b30e0",
+      "expected_source": "on-policy decision",
+      "matched": true
+    },
+    {
+      "actual": "973b2102390a4ba5ec2075f89197abbd8d3932945c027e513b297f5ed84daae3",
+      "artifact": "learner_dataset_sha256",
+      "expected": "973b2102390a4ba5ec2075f89197abbd8d3932945c027e513b297f5ed84daae3",
+      "expected_source": "on-policy decision",
+      "matched": true
+    },
+    {
+      "actual": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+      "artifact": "partition_sha256",
+      "expected": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+      "expected_source": "on-policy decision",
+      "matched": true
+    },
+    {
+      "actual": {
+        "offline_reference_test": {
+          "hazard_absent": 5,
+          "hazard_present": 15,
+          "total": 20
+        },
+        "reference_calibration": {
+          "hazard_absent": 2,
+          "hazard_present": 6,
+          "total": 8
+        },
+        "reference_train": {
+          "hazard_absent": 16,
+          "hazard_present": 48,
+          "total": 64
+        },
+        "reference_validation": {
+          "hazard_absent": 2,
+          "hazard_present": 6,
+          "total": 8
+        }
+      },
+      "artifact": "partition_composition",
+      "expected": {
+        "offline_reference_test": {
+          "hazard_absent": 5,
+          "hazard_present": 15,
+          "total": 20
+        },
+        "reference_calibration": {
+          "hazard_absent": 2,
+          "hazard_present": 6,
+          "total": 8
+        },
+        "reference_train": {
+          "hazard_absent": 16,
+          "hazard_present": 48,
+          "total": 64
+        },
+        "reference_validation": {
+          "hazard_absent": 2,
+          "hazard_present": 6,
+          "total": 8
+        }
+      },
+      "expected_source": "on-policy decision",
+      "matched": true
+    },
+    {
+      "actual": true,
+      "artifact": "partition_all_pairwise_disjoint",
+      "expected": true,
+      "expected_source": "partition manifest",
+      "matched": true
+    },
+    {
+      "actual": 0,
+      "artifact": "paired_state_neutrality_failures",
+      "expected": 0,
+      "expected_source": "expert dataset",
+      "matched": true
+    },
+    {
+      "actual": 0,
+      "artifact": "labelling_state_neutrality_failures",
+      "expected": 0,
+      "expected_source": "on-policy dataset",
+      "matched": true
+    },
+    {
+      "actual": 0,
+      "artifact": "learner_state_neutrality_failures",
+      "expected": 0,
+      "expected_source": "learner dataset",
+      "matched": true
+    },
+    {
+      "actual": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "artifact": "v1_reference_manifest_sha256",
+      "expected": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "expected_source": "deployable decision",
+      "matched": true
+    },
+    {
+      "actual": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+      "artifact": "v1_checkpoint_sha256",
+      "expected": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+      "expected_source": "V1 deployment manifest",
+      "matched": true
+    },
+    {
+      "actual": "b8e5b2c1f22ffbfcd529e6dd0670fd4b3b2b8c87b1ec77642c349e47d852a4c6",
+      "artifact": "v2_round1_checkpoint_sha256",
+      "expected": "b8e5b2c1f22ffbfcd529e6dd0670fd4b3b2b8c87b1ec77642c349e47d852a4c6",
+      "expected_source": "V2 round-1 training report",
+      "matched": true
+    },
+    {
+      "actual": "ON_POLICY_REFERENCE_OFFLINE_INVALID",
+      "artifact": "prior_decision_token",
+      "expected": "ON_POLICY_REFERENCE_OFFLINE_INVALID",
+      "expected_source": "prior task",
+      "matched": true
+    },
+    {
+      "actual": "C",
+      "artifact": "prior_case",
+      "expected": "C",
+      "expected_source": "prior task",
+      "matched": true
+    },
+    {
+      "actual": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+      "artifact": "development4_manifest_sha256",
+      "expected": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+      "artifact": "confirmatory41_manifest_sha256",
+      "expected": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": false,
+      "artifact": "confirmatory41_executed_in_this_task",
+      "expected": false,
+      "expected_source": "hard requirement",
+      "matched": true
+    },
+    {
+      "actual": 41,
+      "artifact": "confirmatory41_rows",
+      "expected": 41,
+      "expected_source": "32 present + 9 absent",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_train_free_of_development4",
+      "expected": [],
+      "expected_source": "no development row may train, calibrate or validate",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_train_free_of_confirmatory41",
+      "expected": [],
+      "expected_source": "confirmatory41 takes no part",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_calibration_free_of_development4",
+      "expected": [],
+      "expected_source": "no development row may train, calibrate or validate",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_calibration_free_of_confirmatory41",
+      "expected": [],
+      "expected_source": "confirmatory41 takes no part",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_validation_free_of_development4",
+      "expected": [],
+      "expected_source": "no development row may train, calibrate or validate",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "reference_validation_free_of_confirmatory41",
+      "expected": [],
+      "expected_source": "confirmatory41 takes no part",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "offline_reference_test_free_of_development4",
+      "expected": [],
+      "expected_source": "no development row may train, calibrate or validate",
+      "matched": true
+    },
+    {
+      "actual": [],
+      "artifact": "offline_reference_test_free_of_confirmatory41",
+      "expected": [],
+      "expected_source": "confirmatory41 takes no part",
+      "matched": true
+    }
+  ],
+  "decision_if_failed": "CHECKPOINT_OR_SOURCE_MISMATCH",
+  "failed": [],
+  "report_sha256": "9ebcf391ce1cd387a03628ba663786448fc717f2fe93dc4dc76a8549f4d58f7f",
+  "schema": "hybrid_obstacle_parked_skin_provenance_v1",
+  "starting_state": {
+    "act_branch": "develop/hybrid-obstacle-parked-skin-reference-v1",
+    "act_commit": "21bf05efd49887dc18bbf0b4094cd7663526c2bb",
+    "act_status": [],
+    "gitlinks": [
+      "160000 commit 4ff337dfc60708f46d5831430df807fa90014821\tsubmodules/MolmoBot",
+      "160000 commit 21bf05efd49887dc18bbf0b4094cd7663526c2bb\tsubmodules/act",
+      "160000 commit 678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5\tsubmodules/molmospaces"
+    ],
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_status": [],
+    "remotes": [
+      "origin\thttps://github.com/Jdvakil/prox_learning.git (fetch)",
+      "origin\thttps://github.com/Jdvakil/prox_learning.git (push)"
+    ],
+    "root_branch": "develop/hybrid-obstacle-parked-skin-reference-v1",
+    "root_commit": "5270bee29604f30e020cb9c28318ef90e030d500",
+    "root_stashes": 2,
+    "root_status": [
+      "?? report_1.md",
+      "?? scripts/hybrid_obstacle_parked_skin_provenance.py"
+    ]
+  }
+}

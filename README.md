@@ -661,3 +661,44 @@ Practical notes for the next attempt:
 - **Calibrate on oracle-on-policy states specifically.** That is where the model is
   weakest and where a deployed reference will spend its time.
 - `confirmatory41` is still untouched, and still disjoint from every partition.
+
+## Hybrid obstacle safety residual: the parked-skin reference (blocked on data)
+
+`docs/HYBRID_OBSTACLE_PARKED_SKIN_REFERENCE_FINAL_DECISION.md` —
+`PARKED_SKIN_DATA_CONTRACT_FAILED`.
+
+The plan was to stop predicting the 7-D parked SafetyHead output and predict the
+parked 40×8×8 **field** instead, routing it through the frozen head. The task
+stopped at its own data-contract audit: **the training target does not exist.**
+
+- **0 of 60,793 paired frames** carry both a causal current skin and a parked skin.
+  The parked field was never retained anywhere — only its SHA-256 and the 7-D head
+  output derived from it, neither invertible to the field.
+- Causal current skins exist only for the 7,993 expert frames (13%). The three
+  on-policy distributions store the 40×4 per-sensor summary the *previous* model
+  consumed, not the fields this one needs.
+- Not corruption — a scoping consequence. Retaining both raw fields would have added
+  ~2.9 GiB that the previous model never used.
+
+**If you add a field to a paired dataset, retain the raw counterfactual too.** The
+oracle already renders the parked field every frame inside
+`PerFrameParkedObstacleReference`; the previous collection hashed it and threw it
+away. Keeping it is free in compute and only costs disk.
+
+Delivered anyway, so the next attempt only needs data:
+
+- `submodules/act/parked_skin_reference.py` — `CAUSAL_PARKED_SKIN_REFERENCE_V1`,
+  331,713 parameters, with `0 ≤ c_parked ≤ c_current` guaranteed **by construction**
+  (verified even with the change head's bias driven to +50).
+- The closeness transform (`clip(1 - depth/0.5, 0, 1)`, dead pixels <5 mm → 0), the
+  four-frame causal buffer, an activity gate that gates on activity probability
+  rather than predicted norm, and a strict loader.
+- 54 contract tests.
+
+To regenerate: 364 rollouts (100 expert paired, 200 on-policy labelling, 64
+learner-induced), ~2.9 GiB. Cut it by storing float16 closeness instead of float32
+depth, and keeping fields only for oracle-active frames plus a sample of zero
+frames. Note a rerun is a *new sample* under MSAA — reuse the partition and
+schedules, but expect different frames.
+
+`confirmatory41` is still untouched.
