@@ -1,0 +1,877 @@
+{
+  "aggregation_rounds_performed": 1,
+  "all_offline_gates_passed": null,
+  "architecture_or_hyperparameter_sweep": false,
+  "artifact_verification": {
+    "all_matched": true,
+    "checks": 49
+  },
+  "artifacts": {
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_on_policy_reference/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_ON_POLICY_REFERENCE_FINAL_DECISION.md",
+    "labelling_schedule": "configs/hybrid_obstacle_on_policy_labelling_schedule_v2.json",
+    "learner_schedule": "configs/hybrid_obstacle_on_policy_learner_schedule_v2.json",
+    "live_schedule": "configs/hybrid_obstacle_on_policy_live_schedule_v2.json",
+    "partition": "configs/hybrid_obstacle_reference_partition_v2.json"
+  },
+  "calibration": {
+    "active_frames": 548,
+    "best_direction_seen": {
+      "median_cosine": 0.6629185080528259,
+      "positive": 0.7268817204301076
+    },
+    "feasible": false,
+    "rejected_examples": [
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.026972798630595207,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.026984624564647675,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.02994726598262787,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.03227059170603752,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.032929133623838425,
+        "why": "direction"
+      }
+    ],
+    "rho_max": 5.834739823341367,
+    "rho_rule": "99.0th percentile of the privileged oracle differential norm on active calibration frames",
+    "tau": null,
+    "zero_frames": 3273
+  },
+  "case": "C",
+  "commits": {
+    "act_branch": "develop/hybrid-obstacle-on-policy-reference-v2",
+    "act_commit": "f6301bcaae4510946a7cb71e6feb3871d59327ad",
+    "act_starting_commit": "f6301bcaae4510946a7cb71e6feb3871d59327ad",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "develop/hybrid-obstacle-on-policy-reference-v2",
+    "root_commit": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+    "root_starting_commit": "0bca2be10b6421115ecef50d8ffcfc8577f13821"
+  },
+  "confirmatory41": {
+    "evaluator_hard_refuses_it": true,
+    "executed_in_this_task": false,
+    "manifest": "configs/hybrid_obstacle_confirmatory41_v1.json",
+    "rows": 41,
+    "sha256": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+    "untouched": true
+  },
+  "constraints_honoured": {
+    "act_trained_or_modified": false,
+    "architecture_or_hyperparameter_sweep": false,
+    "broken_clearance_metric_used_as_evidence": false,
+    "cameras_msaa_robot_obstacle_planner_task_horizon_changed": false,
+    "canonical_collection_or_act_dataset_modified": false,
+    "confirmatory_row_executed": false,
+    "previous_tau_silently_reused": false,
+    "privileged_features_at_inference": false,
+    "pushed": false,
+    "residual_constants_changed": false,
+    "safety_cvae_trained_or_modified": false,
+    "second_architecture_added": false,
+    "trained_on_development_rows": false
+  },
+  "datasets": {
+    "labelling": {
+      "by_distribution": {
+        "act_only_on_policy": {
+          "frames": 20000,
+          "hazard_present_rollouts": 75,
+          "oracle_active_frames": 4800,
+          "rollouts": 100
+        },
+        "oracle_on_policy": {
+          "frames": 20000,
+          "hazard_present_rollouts": 75,
+          "oracle_active_frames": 4536,
+          "rollouts": 100
+        }
+      },
+      "feature_contract": {
+        "no_privileged_field_outside_namespace": true,
+        "privileged_fields_present": [
+          "privileged_hazard_changed_sensors",
+          "privileged_oracle_active",
+          "privileged_oracle_dq",
+          "privileged_oracle_norm",
+          "privileged_oracle_zero",
+          "privileged_parked_head",
+          "privileged_state_neutral"
+        ],
+        "privileged_namespace_prefix": "privileged_",
+        "runtime_fields": [
+          "current_head",
+          "gripper_command",
+          "gripper_state",
+          "nominal_action",
+          "qpos",
+          "qvel",
+          "sensor_summary"
+        ]
+      },
+      "manifest_sha256": "c1e54ba1df37a25e2c98f5099a7a6270864c8c2124a285ee37a10bb3c27b30e0",
+      "oracle_pairing": {
+        "dynamics_advancing_call": false,
+        "hazard_absent_oracle_exactly_zero": true,
+        "rendered_at_the_same_decision_state": true,
+        "state_neutrality_failures": 0,
+        "zero_state_neutrality_failures": true
+      },
+      "rollouts": 200,
+      "total_frames": 40000,
+      "valid": true
+    },
+    "learner": {
+      "manifest_sha256": "973b2102390a4ba5ec2075f89197abbd8d3932945c027e513b297f5ed84daae3",
+      "oracle_pairing": {
+        "dynamics_advancing_call": false,
+        "hazard_absent_oracle_exactly_zero": true,
+        "rendered_at_the_same_decision_state": true,
+        "state_neutrality_failures": 0,
+        "zero_state_neutrality_failures": true
+      },
+      "rollouts": 64,
+      "total_frames": 12800,
+      "valid": true
+    }
+  },
+  "date": "2026-07-26",
+  "decision": "ON_POLICY_REFERENCE_OFFLINE_INVALID",
+  "final_decision_sha256": "d442b253ef6f6f0e4208fecbff86ed160438b961e248196e7139368f08d03345",
+  "live": null,
+  "offline_evaluations": null,
+  "offline_gates": null,
+  "reference_partition": {
+    "act_split_unchanged": true,
+    "all_pairwise_disjoint": true,
+    "composition": {
+      "offline_reference_test": {
+        "hazard_absent": 5,
+        "hazard_present": 15,
+        "total": 20
+      },
+      "reference_calibration": {
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "total": 8
+      },
+      "reference_train": {
+        "hazard_absent": 16,
+        "hazard_present": 48,
+        "total": 64
+      },
+      "reference_validation": {
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "total": 8
+      }
+    },
+    "excluded": {
+      "confirmatory41_rows": 41,
+      "development4": [
+        "2186a9afb8531ea0592d8ca0f099d101b98f6acaa16395c5c7a6940a710389bf",
+        "4f85b23206489b0ffd0d59f0300221b89cae71fde6053e83d319b46dd4fa9311",
+        "a766240874f9fe5e7b222243786960f214a34c91e25036a5560adf266e265d37",
+        "f802a9057b18fc13615bcb1386d13cb839ade4b5fa5a038a5cfc054b9187b8e2"
+      ],
+      "note": "development4 is the live development set and confirmatory41 takes no part in any action in this task; neither may appear in any reference-model dataset"
+    },
+    "rule": "deterministic stratified assignment by the episode's committed predeclared_stratum_rank, calibration then validation then train; no fresh randomness, no dependence on file order",
+    "sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d"
+  },
+  "report_hashes": {
+    "analysis_sha256": null,
+    "labelling_dataset_sha256": "c1e54ba1df37a25e2c98f5099a7a6270864c8c2124a285ee37a10bb3c27b30e0",
+    "partition_sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+    "provenance_sha256": "92a5d65d1f843d24f3e15492bbc5a6296da35969fe6c3e05446e10ab4d001980",
+    "reference_manifest_sha256": null,
+    "round0_sha256": "716bae972117f76b54ff7c542753037608795f8541d4014340e3367c4f602b51",
+    "round1_sha256": "fa49f96b425fc88037cb92172d7868587c4c58e6d2189aec3be0d19fd6c7c006",
+    "shift_audit_sha256": "4766b8d73ca4200b832f01adb566295424d2f5819f50f1c51891ccba3a012b40"
+  },
+  "rho_max": null,
+  "round0": {
+    "artifact_file_sha256": "f5c613347ef47a054504381891b17227781689afdec997a3c50933a2f49f3796",
+    "best_epoch": 5,
+    "best_validation_loss": 0.13501472771167755,
+    "continued_from_previous_checkpoint": false,
+    "distribution_provenance": {
+      "act_only_on_policy": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 12800
+      },
+      "expert": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 5119
+      },
+      "oracle_on_policy": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 12800
+      }
+    },
+    "distribution_weighting": {
+      "act_only_on_policy": 0.3333333333333333,
+      "expert": 0.3333333333333333,
+      "oracle_on_policy": 0.3333333333333333
+    },
+    "fresh_initialisation": true,
+    "label": "POSTURE_SKIN_MLP_REFERENCE_V2_ROUND0",
+    "model_digest": "3df00a0dd96ae87a0e37f6b7a15ac00053587d92882760e8726b77b3c8ec57d1",
+    "parameters": 150023,
+    "strict_reload_bitwise_identical": true
+  },
+  "round1": {
+    "artifact_file_sha256": "b8e5b2c1f22ffbfcd529e6dd0670fd4b3b2b8c87b1ec77642c349e47d852a4c6",
+    "best_epoch": 86,
+    "best_validation_loss": 0.06030791997909546,
+    "continued_from_previous_checkpoint": false,
+    "distribution_provenance": {
+      "act_only_on_policy": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 12800
+      },
+      "expert": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 5119
+      },
+      "learner_on_policy": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 12800
+      },
+      "oracle_on_policy": {
+        "frames_drawn": 6000,
+        "rows": 64,
+        "total_frames_available": 12800
+      }
+    },
+    "distribution_weighting": {
+      "act_only_on_policy": 0.25,
+      "expert": 0.25,
+      "learner_on_policy": 0.25,
+      "oracle_on_policy": 0.25
+    },
+    "fresh_initialisation": true,
+    "label": "POSTURE_SKIN_MLP_REFERENCE_V2_ROUND1",
+    "model_digest": "a6521360d47c810b710b6ecb4a4d463466c44c2a3d617b1738cd7c4b8c3c5823",
+    "parameters": 150023,
+    "strict_reload_bitwise_identical": true
+  },
+  "schedules": {
+    "labelling": {
+      "order_balance": {
+        "first_condition_counts": {
+          "ACT_ONLY_ON_POLICY": 50,
+          "ACT_PLUS_ORACLE_ON_POLICY": 50
+        },
+        "rule": "even row rank runs ACT_ONLY_ON_POLICY first, odd runs the oracle first"
+      },
+      "rollouts": 200,
+      "sha256": "efc0a09a055e76ed2b690007c6af8282d4dd207d723cd7a319af3d85c038a403"
+    },
+    "learner": {
+      "rollouts": 64,
+      "sha256": "56615da0550db8bf67744e3518cc9f258384e251aae9a67b9400c6c3a5557e86"
+    },
+    "live": null
+  },
+  "schema": "hybrid_obstacle_on_policy_reference_final_decision_v2",
+  "second_architecture_added": false,
+  "shift_audit": {
+    "all_evaluable_required_improvements_met": true,
+    "caveat": "offline improvement alone does not establish that the architecture is adequate; the live development evaluation is the test that matters",
+    "improvements_not_evaluable": [
+      "oracle_zero_false_activation"
+    ],
+    "required_improvements": {
+      "act_only_on_policy_differential_mae": {
+        "distribution": "act_only_on_policy",
+        "evaluable": true,
+        "improved": true,
+        "metric": "differential_mae_active",
+        "v1": 0.31319956481456757,
+        "v2": 0.20807580649852753
+      },
+      "norm_ratio_error": {
+        "distribution": "act_only_on_policy",
+        "evaluable": true,
+        "improved": true,
+        "metric": "norm_ratio_error",
+        "v1": 0.585085303719463,
+        "v2": 0.41958460937868025
+      },
+      "oracle_on_policy_differential_mae": {
+        "distribution": "oracle_on_policy",
+        "evaluable": true,
+        "improved": true,
+        "metric": "differential_mae_active",
+        "v1": 0.3553646504878998,
+        "v2": 0.15139033645391464
+      },
+      "oracle_zero_false_activation": {
+        "distribution": "act_only_on_policy",
+        "evaluable": false,
+        "improved": null,
+        "metric": "oracle_zero_activation_rate",
+        "threshold_free_v1_oracle_zero_predicted_norm_median": 0.3081423491239548,
+        "threshold_free_v2_oracle_zero_predicted_norm_median": 0.2556437700986862,
+        "v1": 0.13688690421243732,
+        "v2": 1.0,
+        "why_not_evaluable": "V2 has no feasible tau, so a gated activation rate is an artefact of the diagnostic gate"
+      }
+    },
+    "results": {
+      "offline_reference_test": {
+        "act_only_on_policy": {
+          "V1": {
+            "activation_rate": 0.11775,
+            "differential_mae_active": 0.28971487283706665,
+            "differential_mae_all": 0.2097611278295517,
+            "error_after_controller_changed_trajectory": 0.8829485774040222,
+            "error_before_controller_changed_trajectory": 0.02538493275642395,
+            "error_by_phase": {
+              "third_0": 0.029824594035744667,
+              "third_1": 0.18070317804813385,
+              "third_2": 0.4219221770763397
+            },
+            "error_during_grasp_contact": 0.19163592159748077,
+            "feature_distance_to_training_support": {
+              "max": 25.063683646065847,
+              "median": 0.7149768897465296,
+              "p95": 3.1446453366960747
+            },
+            "frames": 4000,
+            "median_cosine": 0.9239257574081421,
+            "median_norm_ratio": 0.3431109055215974,
+            "model": "V1",
+            "norm_ratio_error": 0.7532391211487409,
+            "oracle_norm": {
+              "median": 0.5246383845806122,
+              "p99": 5.883195796012878
+            },
+            "oracle_zero_activation_rate": 0.13285024154589373,
+            "oracle_zero_predicted_norm": {
+              "median": 0.32733991742134094,
+              "p95": 6.5075297355651855,
+              "rms": 2.512805461883545
+            },
+            "positive_cosine_fraction": 0.9032258064516129,
+            "predicted_norm": {
+              "median": 0.329863578081131,
+              "p99": 10.498390197753906
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.214153453707695,
+            "differential_mae_all": 0.12334181368350983,
+            "error_after_controller_changed_trajectory": 0.12365017831325531,
+            "error_before_controller_changed_trajectory": 0.061977848410606384,
+            "error_by_phase": {
+              "third_0": 0.05622796714305878,
+              "third_1": 0.13475055992603302,
+              "third_2": 0.1798909455537796
+            },
+            "error_during_grasp_contact": 0.0938248410820961,
+            "feature_distance_to_training_support": {
+              "max": 5.575819832938058,
+              "median": 0.6106624943869454,
+              "p95": 1.1461195128304618
+            },
+            "frames": 4000,
+            "median_cosine": 0.6854270994663239,
+            "median_norm_ratio": 0.6720961822589974,
+            "model": "V2",
+            "norm_ratio_error": 0.49027229963159585,
+            "oracle_norm": {
+              "median": 0.5246383845806122,
+              "p99": 5.883195796012878
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.23573711514472961,
+              "p95": 1.2302056550979614,
+              "rms": 0.5775052309036255
+            },
+            "positive_cosine_fraction": 0.8328488372093024,
+            "predicted_norm": {
+              "median": 0.2412126362323761,
+              "p99": 2.017850160598755
+            }
+          }
+        },
+        "expert": {
+          "V1": {
+            "activation_rate": 0.028515878159429683,
+            "differential_mae_active": 0.2486650049686432,
+            "differential_mae_all": 0.05293479934334755,
+            "error_after_controller_changed_trajectory": 0.2545846402645111,
+            "error_before_controller_changed_trajectory": 0.03654280677437782,
+            "error_by_phase": {
+              "third_0": 0.05154961720108986,
+              "third_1": 0.05446948856115341,
+              "third_2": null
+            },
+            "error_during_grasp_contact": 0.04511754587292671,
+            "feature_distance_to_training_support": {
+              "max": 2.5911857060023715,
+              "median": 0.6292285237993512,
+              "p95": 1.328792531149728
+            },
+            "frames": 1543,
+            "median_cosine": 0.9865466058254242,
+            "median_norm_ratio": 0.6599511088854112,
+            "model": "V1",
+            "norm_ratio_error": 0.3400488911145888,
+            "oracle_norm": {
+              "median": 0.7307933866977692,
+              "p99": 6.870637321472175
+            },
+            "oracle_zero_activation_rate": 0.003276003276003276,
+            "oracle_zero_predicted_norm": {
+              "median": 0.17406970262527466,
+              "p95": 0.8660128712654114,
+              "rms": 0.38544076681137085
+            },
+            "positive_cosine_fraction": 1.0,
+            "predicted_norm": {
+              "median": 0.21096642315387726,
+              "p99": 2.4488637447357178
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.21784062683582306,
+            "differential_mae_all": 0.09832525998353958,
+            "error_after_controller_changed_trajectory": 0.09880257397890091,
+            "error_before_controller_changed_trajectory": 0.061977919191122055,
+            "error_by_phase": {
+              "third_0": 0.09218043088912964,
+              "third_1": 0.10513325035572052,
+              "third_2": null
+            },
+            "error_during_grasp_contact": 0.07787180691957474,
+            "feature_distance_to_training_support": {
+              "max": 1.9819071633475167,
+              "median": 0.5979914665222168,
+              "p95": 1.1172126088823586
+            },
+            "frames": 1543,
+            "median_cosine": 0.9084715843200684,
+            "median_norm_ratio": 0.47652344238569244,
+            "model": "V2",
+            "norm_ratio_error": 0.5609460410194924,
+            "oracle_norm": {
+              "median": 0.7307933866977692,
+              "p99": 6.870637321472175
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.18169480562210083,
+              "p95": 0.6081761717796326,
+              "rms": 0.34008824825286865
+            },
+            "positive_cosine_fraction": 0.9037267080745341,
+            "predicted_norm": {
+              "median": 0.2044302225112915,
+              "p99": 2.4205145835876465
+            }
+          }
+        },
+        "oracle_on_policy": {
+          "V1": {
+            "activation_rate": 0.11425,
+            "differential_mae_active": 0.5203636288642883,
+            "differential_mae_all": 0.22976619005203247,
+            "error_after_controller_changed_trajectory": 0.9326308369636536,
+            "error_before_controller_changed_trajectory": 0.016249286010861397,
+            "error_by_phase": {
+              "third_0": 0.026781197637319565,
+              "third_1": 0.13036896288394928,
+              "third_2": 0.5367298722267151
+            },
+            "error_during_grasp_contact": 0.1488763988018036,
+            "feature_distance_to_training_support": {
+              "max": 36.744820731026785,
+              "median": 0.752723217010498,
+              "p95": 3.4789851052420375
+            },
+            "frames": 4000,
+            "median_cosine": 0.5432424545288086,
+            "median_norm_ratio": 60.68872239544351,
+            "model": "V1",
+            "norm_ratio_error": 59.68872239544351,
+            "oracle_norm": {
+              "median": 0.33157092332839966,
+              "p99": 1.9834956264495869
+            },
+            "oracle_zero_activation_rate": 0.11659192825112108,
+            "oracle_zero_predicted_norm": {
+              "median": 0.33520179986953735,
+              "p95": 5.4232282638549805,
+              "rms": 2.583045244216919
+            },
+            "positive_cosine_fraction": 0.7313432835820896,
+            "predicted_norm": {
+              "median": 0.3339286148548126,
+              "p99": 20.01047706604004
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.13694529235363007,
+            "differential_mae_all": 0.1077994704246521,
+            "error_after_controller_changed_trajectory": 0.10802973806858063,
+            "error_before_controller_changed_trajectory": 0.061977870762348175,
+            "error_by_phase": {
+              "third_0": 0.05794792249798775,
+              "third_1": 0.10532374680042267,
+              "third_2": 0.16091960668563843
+            },
+            "error_during_grasp_contact": 0.08326590061187744,
+            "feature_distance_to_training_support": {
+              "max": 17.60841042654855,
+              "median": 0.6175288132258825,
+              "p95": 1.2084926468985422
+            },
+            "frames": 4000,
+            "median_cosine": 0.3815158009529114,
+            "median_norm_ratio": 0.7261856465041873,
+            "model": "V2",
+            "norm_ratio_error": 0.4772673389425478,
+            "oracle_norm": {
+              "median": 0.33157092332839966,
+              "p99": 1.9834956264495869
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.23471008241176605,
+              "p95": 1.1371909379959106,
+              "rms": 0.7017441987991333
+            },
+            "positive_cosine_fraction": 0.6702290076335878,
+            "predicted_norm": {
+              "median": 0.23975761234760284,
+              "p99": 1.7661492824554443
+            }
+          }
+        }
+      },
+      "reference_validation": {
+        "act_only_on_policy": {
+          "V1": {
+            "activation_rate": 0.135625,
+            "differential_mae_active": 0.3366842567920685,
+            "differential_mae_all": 0.281446248292923,
+            "error_after_controller_changed_trajectory": 1.2266345024108887,
+            "error_before_controller_changed_trajectory": 0.05157526955008507,
+            "error_by_phase": {
+              "third_0": 0.04168908670544624,
+              "third_1": 0.31389951705932617,
+              "third_2": 0.49189111590385437
+            },
+            "error_during_grasp_contact": 0.08789750188589096,
+            "feature_distance_to_training_support": {
+              "max": 83.23772321428571,
+              "median": 0.7873720782143729,
+              "p95": 5.259033448355495
+            },
+            "frames": 1600,
+            "median_cosine": -0.08210187032818794,
+            "median_norm_ratio": 1.019241400883754,
+            "model": "V1",
+            "norm_ratio_error": 0.4169314862901851,
+            "oracle_norm": {
+              "median": 0.9757841229438782,
+              "p99": 4.22600341796875
+            },
+            "oracle_zero_activation_rate": 0.1409235668789809,
+            "oracle_zero_predicted_norm": {
+              "median": 0.2889447808265686,
+              "p95": 7.554560661315918,
+              "rms": 3.49220609664917
+            },
+            "positive_cosine_fraction": 0.45,
+            "predicted_norm": {
+              "median": 0.3822648227214813,
+              "p99": 14.889430046081543
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.20199815928936005,
+            "differential_mae_all": 0.16096121072769165,
+            "error_after_controller_changed_trajectory": 0.16155867278575897,
+            "error_before_controller_changed_trajectory": 0.042063213884830475,
+            "error_by_phase": {
+              "third_0": 0.07367971539497375,
+              "third_1": 0.15060657262802124,
+              "third_2": 0.260076642036438
+            },
+            "error_during_grasp_contact": 0.10944797098636627,
+            "feature_distance_to_training_support": {
+              "max": 30.99562508719308,
+              "median": 0.6238221440996443,
+              "p95": 1.5612925393240789
+            },
+            "frames": 1600,
+            "median_cosine": 0.8841374218463898,
+            "median_norm_ratio": 0.7034594513597389,
+            "model": "V2",
+            "norm_ratio_error": 0.3488969191257646,
+            "oracle_norm": {
+              "median": 0.9757841229438782,
+              "p99": 4.22600341796875
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.2755504250526428,
+              "p95": 2.037971258163452,
+              "rms": 1.4750288724899292
+            },
+            "positive_cosine_fraction": 0.938953488372093,
+            "predicted_norm": {
+              "median": 0.33783262968063354,
+              "p99": 3.915557622909546
+            }
+          }
+        },
+        "expert": {
+          "V1": {
+            "activation_rate": 0.0028169014084507044,
+            "differential_mae_active": 0.15102793276309967,
+            "differential_mae_all": 0.033047646284103394,
+            "error_after_controller_changed_trajectory": 0.6460800170898438,
+            "error_before_controller_changed_trajectory": 0.032183002680540085,
+            "error_by_phase": {
+              "third_0": 0.03452511504292488,
+              "third_1": 0.030724385753273964,
+              "third_2": null
+            },
+            "error_during_grasp_contact": 0.03208957985043526,
+            "feature_distance_to_training_support": {
+              "max": 6.177704947335379,
+              "median": 0.544832706451416,
+              "p95": 1.402263886587959
+            },
+            "frames": 710,
+            "median_cosine": null,
+            "median_norm_ratio": null,
+            "model": "V1",
+            "norm_ratio_error": null,
+            "oracle_norm": {
+              "median": 0.5148982107639313,
+              "p99": 1.315717500448227
+            },
+            "oracle_zero_activation_rate": 0.0035587188612099642,
+            "oracle_zero_predicted_norm": {
+              "median": 0.09962385147809982,
+              "p95": 0.28597089648246765,
+              "rms": 0.19590379297733307
+            },
+            "positive_cosine_fraction": null,
+            "predicted_norm": {
+              "median": 0.12217365950345993,
+              "p99": 1.1513519287109375
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.10413507372140884,
+            "differential_mae_all": 0.07358226180076599,
+            "error_after_controller_changed_trajectory": 0.07394146174192429,
+            "error_before_controller_changed_trajectory": 0.04206322506070137,
+            "error_by_phase": {
+              "third_0": 0.07539991289377213,
+              "third_1": 0.07072407752275467,
+              "third_2": null
+            },
+            "error_during_grasp_contact": 0.057982612401247025,
+            "feature_distance_to_training_support": {
+              "max": 2.0179093224661693,
+              "median": 0.5462115662438529,
+              "p95": 1.2542884758540545
+            },
+            "frames": 710,
+            "median_cosine": 0.8427658975124359,
+            "median_norm_ratio": 0.769643450308688,
+            "model": "V2",
+            "norm_ratio_error": 0.37154377126546834,
+            "oracle_norm": {
+              "median": 0.5148982107639313,
+              "p99": 1.315717500448227
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.15594033896923065,
+              "p95": 0.8743559718132019,
+              "rms": 0.39067190885543823
+            },
+            "positive_cosine_fraction": 0.918918918918919,
+            "predicted_norm": {
+              "median": 0.19126999378204346,
+              "p99": 1.38541841506958
+            }
+          }
+        },
+        "oracle_on_policy": {
+          "V1": {
+            "activation_rate": 0.11375,
+            "differential_mae_active": 0.19036567211151123,
+            "differential_mae_all": 0.30081841349601746,
+            "error_after_controller_changed_trajectory": 1.4181010723114014,
+            "error_before_controller_changed_trajectory": 0.04086514189839363,
+            "error_by_phase": {
+              "third_0": 0.03253462165594101,
+              "third_1": 0.330452561378479,
+              "third_2": 0.5430840253829956
+            },
+            "error_during_grasp_contact": 0.027188926935195923,
+            "feature_distance_to_training_support": {
+              "max": 13.358167375837054,
+              "median": 0.7759933131081718,
+              "p95": 6.91810934884207
+            },
+            "frames": 1600,
+            "median_cosine": -0.28598281741142273,
+            "median_norm_ratio": 5.744332689266081,
+            "model": "V1",
+            "norm_ratio_error": 4.744332689266081,
+            "oracle_norm": {
+              "median": 0.5527195930480957,
+              "p99": 1.743931051492688
+            },
+            "oracle_zero_activation_rate": 0.13543307086614173,
+            "oracle_zero_predicted_norm": {
+              "median": 0.28029999136924744,
+              "p95": 9.904458045959473,
+              "rms": 4.265690326690674
+            },
+            "positive_cosine_fraction": 0.3,
+            "predicted_norm": {
+              "median": 0.3262525200843811,
+              "p99": 20.038738250732422
+            }
+          },
+          "V2": {
+            "activation_rate": 1.0,
+            "differential_mae_active": 0.16583538055419922,
+            "differential_mae_all": 0.15610815584659576,
+            "error_after_controller_changed_trajectory": 0.15668123960494995,
+            "error_before_controller_changed_trajectory": 0.042063239961862564,
+            "error_by_phase": {
+              "third_0": 0.0753580629825592,
+              "third_1": 0.14810675382614136,
+              "third_2": 0.24620436131954193
+            },
+            "error_during_grasp_contact": 0.08045385032892227,
+            "feature_distance_to_training_support": {
+              "max": 7.933887481689453,
+              "median": 0.6088837896074568,
+              "p95": 1.6008478164672848
+            },
+            "frames": 1600,
+            "median_cosine": 0.5922957360744476,
+            "median_norm_ratio": 0.647922752333224,
+            "model": "V2",
+            "norm_ratio_error": 0.48709723016779105,
+            "oracle_norm": {
+              "median": 0.5527195930480957,
+              "p99": 1.743931051492688
+            },
+            "oracle_zero_activation_rate": 1.0,
+            "oracle_zero_predicted_norm": {
+              "median": 0.2615814208984375,
+              "p95": 2.519878625869751,
+              "rms": 1.1438847780227661
+            },
+            "positive_cosine_fraction": 0.6545454545454545,
+            "predicted_norm": {
+              "median": 0.2807614505290985,
+              "p99": 3.813197612762451
+            }
+          }
+        }
+      }
+    },
+    "v2_gate_is_diagnostic_only": true
+  },
+  "support_envelope": {
+    "gate": "SupportEnvelopeGate",
+    "global_minimum_depth_used_as_support_gate": false,
+    "previous_tau_reused": false,
+    "rule": "silent below tau; above it the direction is preserved and the norm capped at rho_max",
+    "why_removed": "the V1 depth gate was open on 76% of validation frames because this enclosure is never more than ~19 cm away; it was dominated by static geometry and gated almost nothing"
+  },
+  "task": "One predeclared DAgger-style on-policy dataset-aggregation round for the posture+skin reference MLP, with activation recalibrated on disjoint trajectories and the four-row live development evaluation repeated",
+  "tau": null,
+  "uncommitted_artifacts": [
+    {
+      "committed": false,
+      "entries": 200,
+      "label": "on_policy_rollout_root",
+      "path": "/root/act_retrain_assets/on_policy_v2"
+    },
+    {
+      "committed": false,
+      "entries": 64,
+      "label": "learner_rollout_root",
+      "path": "/root/act_retrain_assets/on_policy_learner_v2"
+    },
+    {
+      "committed": false,
+      "label": "live_rollout_root",
+      "path": "/root/act_retrain_assets/on_policy_live_v2"
+    },
+    {
+      "committed": false,
+      "entries": 105,
+      "label": "expert_paired_dir",
+      "path": "/root/act_retrain_assets/paired_reference_v1"
+    },
+    {
+      "committed": false,
+      "label": "round0_checkpoint",
+      "path": "/root/act_retrain_assets/on_policy_reference_v2/posture_skin_mlp_reference_v2_round0.pt",
+      "sha256": "f5c613347ef47a054504381891b17227781689afdec997a3c50933a2f49f3796"
+    },
+    {
+      "committed": false,
+      "label": "round1_checkpoint",
+      "path": "/root/act_retrain_assets/on_policy_reference_v2/posture_skin_mlp_reference_v2_round1.pt",
+      "sha256": "b8e5b2c1f22ffbfcd529e6dd0670fd4b3b2b8c87b1ec77642c349e47d852a4c6"
+    },
+    {
+      "committed": false,
+      "label": "act_checkpoint",
+      "path": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36"
+    }
+  ]
+}

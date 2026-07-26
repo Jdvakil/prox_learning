@@ -1,0 +1,408 @@
+{
+  "all_matched": true,
+  "check_count": 49,
+  "checks": [
+    {
+      "actual": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+      "artifact": "root_starting_commit",
+      "expected": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+      "expected_source": "handoff starting state",
+      "matched": true
+    },
+    {
+      "actual": "f6301bcaae4510946a7cb71e6feb3871d59327ad",
+      "artifact": "act_starting_commit",
+      "expected": "f6301bcaae4510946a7cb71e6feb3871d59327ad",
+      "expected_source": "handoff starting state",
+      "matched": true
+    },
+    {
+      "actual": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+      "artifact": "molmospaces_commit",
+      "expected": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": true,
+      "artifact": "molmospaces_unmodified",
+      "expected": true,
+      "expected_source": "hard constraint",
+      "matched": true
+    },
+    {
+      "actual": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "artifact": "policy_best_ckpt_path",
+      "expected": "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2/20260725_seed0_2000ep/policy_best.ckpt",
+      "expected_source": "checkpoint_manifest.json",
+      "matched": true
+    },
+    {
+      "actual": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+      "artifact": "policy_best_ckpt_sha256",
+      "expected": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+      "artifact": "dataset_stats_pkl_sha256",
+      "expected": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": 1738,
+      "artifact": "best_epoch",
+      "expected": 1738,
+      "expected_source": "checkpoint_manifest.json",
+      "matched": true
+    },
+    {
+      "actual": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+      "artifact": "checkpoint_manifest_sha256",
+      "expected": "21678cd693f75df9ca22ad1d6f4f38474583bd6065ee624567b55b535b7525fc",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+      "artifact": "collection_manifest_sha256",
+      "expected": "8be804057f3e0710a7c4770de54e8516e6156856423b6fdcac191ac0b15f2805",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "artifact": "canonical_manifest_sha256",
+      "expected": "f49f5cd14b3c75b88e312cbad201273bddc7cdc100436a09fbfb74bfe3bb84cf",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "artifact": "fixed_split_manifest_sha256",
+      "expected": "f7c2b22718f1697ea153926220a48bac1ab5876f6119d863317117d04474ccd0",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "artifact": "converted_dataset_tree_sha256",
+      "expected": "a567df08e3bea549a1f8f6ddfe06d8c2d6b0e8e7816759404312497ff36d7c47",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+      "artifact": "source_collection_tree_sha256",
+      "expected": "8b569d0e20804949f6cd344a761de17fb6207863275d66c8fa1aef587bc21f30",
+      "expected_source": "ACT-baseline decision",
+      "matched": true
+    },
+    {
+      "actual": "trajectory",
+      "artifact": "split_level",
+      "expected": "trajectory",
+      "expected_source": "split must be by trajectory",
+      "matched": true
+    },
+    {
+      "actual": 80,
+      "artifact": "split_train_total",
+      "expected": 80,
+      "expected_source": "80 ACT-train",
+      "matched": true
+    },
+    {
+      "actual": 20,
+      "artifact": "split_validation_total",
+      "expected": 20,
+      "expected_source": "20 ACT-val",
+      "matched": true
+    },
+    {
+      "actual": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "artifact": "model_hybrid_xml_sha256",
+      "expected": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+      "artifact": "camera_contract_sha256",
+      "expected": "7e90b4db37b0037344e9a55b35e1d4d98b9e2025edab32e7132a7a434799cfa6",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "artifact": "sensor_order_sha256",
+      "expected": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": 40,
+      "artifact": "sensor_count",
+      "expected": 40,
+      "expected_source": "40-sensor contract",
+      "matched": true
+    },
+    {
+      "actual": 4,
+      "artifact": "msaa_offsamples",
+      "expected": 4,
+      "expected_source": "retained MSAA contract",
+      "matched": true
+    },
+    {
+      "actual": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "artifact": "safety_model_sha256",
+      "expected": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "artifact": "safety_meta_sha256",
+      "expected": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "expected_source": "raw-head decision",
+      "matched": true
+    },
+    {
+      "actual": [
+        2560,
+        7
+      ],
+      "artifact": "safety_head_io",
+      "expected": [
+        2560,
+        7
+      ],
+      "expected_source": "40x8x8 -> 7",
+      "matched": true
+    },
+    {
+      "actual": 11.359346389770508,
+      "artifact": "safety_label_scale",
+      "expected": 11.359346389770508,
+      "expected_source": "pinned",
+      "matched": true
+    },
+    {
+      "actual": "ORACLE_REFERENCE_VALID_CONTROLLER_VIABLE",
+      "artifact": "oracle_decision_token",
+      "expected": "ORACLE_REFERENCE_VALID_CONTROLLER_VIABLE",
+      "expected_source": "oracle task",
+      "matched": true
+    },
+    {
+      "actual": "ORACLE_PARKED_REFERENCE_V1",
+      "artifact": "oracle_reference_id",
+      "expected": "ORACLE_PARKED_REFERENCE_V1",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": false,
+      "artifact": "oracle_mj_forward_called",
+      "expected": false,
+      "expected_source": "the corrected pairing must be reused",
+      "matched": true
+    },
+    {
+      "actual": 0,
+      "artifact": "oracle_state_neutrality_failures",
+      "expected": 0,
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "a0a958753a108e2231d41be31b56350640f8a9897b7f8cfd274504e604c1eb16",
+      "artifact": "oracle_implementation_sha256",
+      "expected": "a0a958753a108e2231d41be31b56350640f8a9897b7f8cfd274504e604c1eb16",
+      "expected_source": "recorded; the file is unmodified in this task",
+      "matched": true
+    },
+    {
+      "actual": [
+        4.0,
+        2.2,
+        0.75,
+        0.35
+      ],
+      "artifact": "residual_constants",
+      "expected": [
+        4.0,
+        2.2,
+        0.75,
+        0.35
+      ],
+      "expected_source": "frozen constants",
+      "matched": true
+    },
+    {
+      "actual": "DEPLOYABLE_REFERENCE_LIVE_GROSS_REGRESSION",
+      "artifact": "prior_decision_token",
+      "expected": "DEPLOYABLE_REFERENCE_LIVE_GROSS_REGRESSION",
+      "expected_source": "prior task",
+      "matched": true
+    },
+    {
+      "actual": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "artifact": "prior_selected_reference",
+      "expected": "POSTURE_SKIN_MLP_REFERENCE_V1",
+      "expected_source": "prior task",
+      "matched": true
+    },
+    {
+      "actual": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "artifact": "v1_deployment_manifest_sha256",
+      "expected": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+      "expected_source": "prior decision",
+      "matched": true
+    },
+    {
+      "actual": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+      "artifact": "v1_checkpoint_sha256",
+      "expected": "361ec6eb71566deac6f21ea9801aca117d958f92ac629b4adfca8c885f5a3fd2",
+      "expected_source": "prior deployment manifest",
+      "matched": true
+    },
+    {
+      "actual": 196,
+      "artifact": "v1_feature_width",
+      "expected": 196,
+      "expected_source": "fixed schema",
+      "matched": true
+    },
+    {
+      "actual": [
+        "qpos",
+        "qvel",
+        "nominal_action",
+        "gripper_state",
+        "gripper_command",
+        "current_head",
+        "sensor_summary"
+      ],
+      "artifact": "v1_runtime_inputs",
+      "expected": [
+        "qpos",
+        "qvel",
+        "nominal_action",
+        "gripper_state",
+        "gripper_command",
+        "current_head",
+        "sensor_summary"
+      ],
+      "expected_source": "fixed feature schema",
+      "matched": true
+    },
+    {
+      "actual": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+      "artifact": "expert_paired_dataset_sha256",
+      "expected": "6d162fc3d5f6c90079ecc2f886b572ac40ab274356eb6e8b9ba0bce994dc47d2",
+      "expected_source": "prior decision",
+      "matched": true
+    },
+    {
+      "actual": "9e3a66ece0fbcf997bc3597bb3542ff871e99092211d6311b00d10947a2de6ce",
+      "artifact": "expert_paired_tree_sha256",
+      "expected": "9e3a66ece0fbcf997bc3597bb3542ff871e99092211d6311b00d10947a2de6ce",
+      "expected_source": "prior decision",
+      "matched": true
+    },
+    {
+      "actual": 0,
+      "artifact": "expert_paired_neutrality_failures",
+      "expected": 0,
+      "expected_source": "prior dataset",
+      "matched": true
+    },
+    {
+      "actual": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+      "artifact": "development4_manifest_sha256",
+      "expected": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": "DEVELOPMENT_ONLY",
+      "artifact": "development4_role",
+      "expected": "DEVELOPMENT_ONLY",
+      "expected_source": "manifest role",
+      "matched": true
+    },
+    {
+      "actual": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+      "artifact": "confirmatory41_manifest_sha256",
+      "expected": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+      "expected_source": "oracle decision",
+      "matched": true
+    },
+    {
+      "actual": false,
+      "artifact": "confirmatory41_executed_in_this_task",
+      "expected": false,
+      "expected_source": "hard requirement",
+      "matched": true
+    },
+    {
+      "actual": 41,
+      "artifact": "confirmatory41_rows",
+      "expected": 41,
+      "expected_source": "32 present + 9 absent",
+      "matched": true
+    },
+    {
+      "actual": 20,
+      "artifact": "frozen_act_only_rollouts",
+      "expected": 20,
+      "expected_source": "prior task outputs",
+      "matched": true
+    },
+    {
+      "actual": 20,
+      "artifact": "frozen_oracle_rollouts",
+      "expected": 20,
+      "expected_source": "prior task outputs",
+      "matched": true
+    },
+    {
+      "actual": 20,
+      "artifact": "frozen_v1_deployable_rollouts",
+      "expected": 20,
+      "expected_source": "prior task outputs",
+      "matched": true
+    }
+  ],
+  "decision_if_failed": "CHECKPOINT_OR_SOURCE_MISMATCH",
+  "failed": [],
+  "report_sha256": "92a5d65d1f843d24f3e15492bbc5a6296da35969fe6c3e05446e10ab4d001980",
+  "schema": "hybrid_obstacle_on_policy_provenance_v1",
+  "starting_state": {
+    "act_branch": "develop/hybrid-obstacle-on-policy-reference-v2",
+    "act_commit": "f6301bcaae4510946a7cb71e6feb3871d59327ad",
+    "act_status": [],
+    "gitlinks": [
+      "160000 commit 4ff337dfc60708f46d5831430df807fa90014821\tsubmodules/MolmoBot",
+      "160000 commit f6301bcaae4510946a7cb71e6feb3871d59327ad\tsubmodules/act",
+      "160000 commit 678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5\tsubmodules/molmospaces"
+    ],
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_status": [],
+    "remotes": [
+      "origin\thttps://github.com/Jdvakil/prox_learning.git (fetch)",
+      "origin\thttps://github.com/Jdvakil/prox_learning.git (push)"
+    ],
+    "root_branch": "develop/hybrid-obstacle-on-policy-reference-v2",
+    "root_commit": "0bca2be10b6421115ecef50d8ffcfc8577f13821",
+    "root_stashes": 2,
+    "root_status": [
+      "?? report_1.md",
+      "?? scripts/hybrid_obstacle_on_policy_provenance.py"
+    ]
+  }
+}

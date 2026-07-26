@@ -622,3 +622,42 @@ Next: build the paired dataset **on-policy** — ACT_ONLY rollouts on the traini
 rows, parked counterfactual along those trajectories through the same state-neutral
 seam — and retrain the same fixed architecture on the union. `confirmatory41` is
 still untouched.
+
+## Hybrid obstacle safety residual: the on-policy aggregation round
+
+`docs/HYBRID_OBSTACLE_ON_POLICY_REFERENCE_FINAL_DECISION.md` —
+`ON_POLICY_REFERENCE_OFFLINE_INVALID` (Case C).
+
+One DAgger-style aggregation round was run against the previous task's
+distribution-shift diagnosis: 200 on-policy labelling rollouts (ACT-only and
+privileged-oracle, per canonical row), then 64 learner-induced rollouts, then a
+retrain of the *unchanged* architecture on four equally weighted distributions.
+
+- **The diagnosis was right and the round worked.** Round 1 halves the differential
+  MAE on both on-policy distributions (0.313 → 0.208 and 0.355 → 0.151) and turns
+  the median oracle cosine on ACT-only on-policy validation frames from **−0.08 to
+  +0.88**.
+- **It still cannot be given an activation contract.** On the 8 calibration
+  trajectories no threshold satisfies the predeclared rule: holding recall ≥ 80 %
+  leaves the median cosine at ~0.61, reaching cosine ≥ 0.70 drops recall to 0.72,
+  and the positive-cosine fraction never reaches 80 % above 4 % recall.
+- **The failure concentrates on oracle-on-policy states** (calibration cosine 0.501
+  vs 0.72 elsewhere) — the states a *correct* reference creates for itself. A
+  contract fitted anywhere else would be optimistic.
+- No live rollout was run: the offline stage failed, so the 20-rollout schedule was
+  frozen and left unexecuted, and the frozen ACT-only/oracle/V1 baselines were not
+  touched.
+
+Practical notes for the next attempt:
+
+- **Don't run another round on this feature contract.** The round improved
+  everything measurable and the contract still didn't close.
+- **Predict the parked *skin*, not the parked head.** Pushing a predicted 40×8×8
+  depth field through the frozen head keeps the head's structure instead of asking a
+  150 k-parameter MLP to imitate its 7-number output — a target that equals its own
+  input on most frames.
+- The four causal skin frames are already collected in every paired shard and are
+  currently unused; the per-sensor summary discards intra-patch layout entirely.
+- **Calibrate on oracle-on-policy states specifically.** That is where the model is
+  weakest and where a deployed reference will spend its time.
+- `confirmatory41` is still untouched, and still disjoint from every partition.

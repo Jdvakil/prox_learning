@@ -1,0 +1,117 @@
+{
+  "architecture_unchanged": true,
+  "artifact_file_sha256": "f5c613347ef47a054504381891b17227781689afdec997a3c50933a2f49f3796",
+  "artifact_path": "/root/act_retrain_assets/on_policy_reference_v2/posture_skin_mlp_reference_v2_round0.pt",
+  "best_epoch": 5,
+  "best_validation_loss": 0.13501472771167755,
+  "calibration": {
+    "active_frames": 548,
+    "best_direction_seen": {
+      "median_cosine": 0.3037595897912979,
+      "positive": 0.6222627737226277
+    },
+    "feasible": false,
+    "rejected_examples": [
+      {
+        "median": 0.3037595897912979,
+        "positive": 0.6222627737226277,
+        "tau": 0.028164472430944443,
+        "why": "direction"
+      },
+      {
+        "median": 0.3037595897912979,
+        "positive": 0.6222627737226277,
+        "tau": 0.034509316086769104,
+        "why": "direction"
+      },
+      {
+        "median": 0.3037595897912979,
+        "positive": 0.6222627737226277,
+        "tau": 0.03530378267168999,
+        "why": "direction"
+      },
+      {
+        "median": 0.3037595897912979,
+        "positive": 0.6222627737226277,
+        "tau": 0.03549441695213318,
+        "why": "direction"
+      },
+      {
+        "median": 0.3037595897912979,
+        "positive": 0.6222627737226277,
+        "tau": 0.03589751198887825,
+        "why": "direction"
+      }
+    ],
+    "rho_max": 5.834739823341367,
+    "rho_rule": "99.0th percentile of the privileged oracle differential norm on active calibration frames",
+    "tau": null,
+    "zero_frames": 3273
+  },
+  "calibration_is_provisional": true,
+  "calibration_trajectories": [
+    "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+    "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+    "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+    "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+    "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+    "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+    "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+    "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f"
+  ],
+  "continued_from_previous_checkpoint": false,
+  "distribution_provenance": {
+    "act_only_on_policy": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 12800
+    },
+    "expert": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 5119
+    },
+    "oracle_on_policy": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 12800
+    }
+  },
+  "distribution_weighting": {
+    "act_only_on_policy": 0.3333333333333333,
+    "expert": 0.3333333333333333,
+    "oracle_on_policy": 0.3333333333333333
+  },
+  "feature_width": 196,
+  "fresh_initialisation": true,
+  "input_statistics_sha256": "bc3ed87a4b5f9af52af4cb0736602f453fab76dad5402dbb9e479c74dcd5a565",
+  "label": "POSTURE_SKIN_MLP_REFERENCE_V2_ROUND0",
+  "labelling_schedule_sha256": "efc0a09a055e76ed2b690007c6af8282d4dd207d723cd7a319af3d85c038a403",
+  "model_digest": "3df00a0dd96ae87a0e37f6b7a15ac00053587d92882760e8726b77b3c8ec57d1",
+  "parameters": 150023,
+  "partition_sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+  "report_sha256": "716bae972117f76b54ff7c542753037608795f8541d4014340e3367c4f602b51",
+  "rho_max": 5.834739823341367,
+  "round": 0,
+  "round0_collection_gate": {
+    "data_collection_only": true,
+    "evaluated": false,
+    "rho_max": 5.834739823341367,
+    "tau": 0.0,
+    "why": "no tau satisfies the lexicographic direction rule on the calibration trajectories for the round-0 model, so the learner round is collected ungated inside the oracle-derived output bound"
+  },
+  "samples_per_distribution": 6000,
+  "sampling_rule": "uniform over rows, then uniform over frames, within each distribution",
+  "schema": "hybrid_obstacle_on_policy_reference_training_v2",
+  "strict_reload_bitwise_identical": true,
+  "tau": 0.0,
+  "training_configuration": {
+    "batch_size": 256,
+    "loss": "SmoothL1",
+    "lr": 0.001,
+    "max_epochs": 150,
+    "optimizer": "AdamW",
+    "seed": 0,
+    "weight_decay": 1e-05
+  }
+}

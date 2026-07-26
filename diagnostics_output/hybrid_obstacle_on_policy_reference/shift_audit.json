@@ -1,0 +1,534 @@
+{
+  "all_evaluable_required_improvements_met": true,
+  "caveat": "offline improvement alone does not establish that the architecture is adequate; the live development evaluation is the test that matters",
+  "evaluated_on": "identical frames from the disjoint validation and offline-test trajectories",
+  "improvements_not_evaluable": [
+    "oracle_zero_false_activation"
+  ],
+  "report_sha256": "4766b8d73ca4200b832f01adb566295424d2f5819f50f1c51891ccba3a012b40",
+  "required_improvements": {
+    "act_only_on_policy_differential_mae": {
+      "distribution": "act_only_on_policy",
+      "evaluable": true,
+      "improved": true,
+      "metric": "differential_mae_active",
+      "v1": 0.31319956481456757,
+      "v2": 0.20807580649852753
+    },
+    "norm_ratio_error": {
+      "distribution": "act_only_on_policy",
+      "evaluable": true,
+      "improved": true,
+      "metric": "norm_ratio_error",
+      "v1": 0.585085303719463,
+      "v2": 0.41958460937868025
+    },
+    "oracle_on_policy_differential_mae": {
+      "distribution": "oracle_on_policy",
+      "evaluable": true,
+      "improved": true,
+      "metric": "differential_mae_active",
+      "v1": 0.3553646504878998,
+      "v2": 0.15139033645391464
+    },
+    "oracle_zero_false_activation": {
+      "distribution": "act_only_on_policy",
+      "evaluable": false,
+      "improved": null,
+      "metric": "oracle_zero_activation_rate",
+      "threshold_free_v1_oracle_zero_predicted_norm_median": 0.3081423491239548,
+      "threshold_free_v2_oracle_zero_predicted_norm_median": 0.2556437700986862,
+      "v1": 0.13688690421243732,
+      "v2": 1.0,
+      "why_not_evaluable": "V2 has no feasible tau, so a gated activation rate is an artefact of the diagnostic gate"
+    }
+  },
+  "results": {
+    "offline_reference_test": {
+      "act_only_on_policy": {
+        "V1": {
+          "activation_rate": 0.11775,
+          "differential_mae_active": 0.28971487283706665,
+          "differential_mae_all": 0.2097611278295517,
+          "error_after_controller_changed_trajectory": 0.8829485774040222,
+          "error_before_controller_changed_trajectory": 0.02538493275642395,
+          "error_by_phase": {
+            "third_0": 0.029824594035744667,
+            "third_1": 0.18070317804813385,
+            "third_2": 0.4219221770763397
+          },
+          "error_during_grasp_contact": 0.19163592159748077,
+          "feature_distance_to_training_support": {
+            "max": 25.063683646065847,
+            "median": 0.7149768897465296,
+            "p95": 3.1446453366960747
+          },
+          "frames": 4000,
+          "median_cosine": 0.9239257574081421,
+          "median_norm_ratio": 0.3431109055215974,
+          "model": "V1",
+          "norm_ratio_error": 0.7532391211487409,
+          "oracle_norm": {
+            "median": 0.5246383845806122,
+            "p99": 5.883195796012878
+          },
+          "oracle_zero_activation_rate": 0.13285024154589373,
+          "oracle_zero_predicted_norm": {
+            "median": 0.32733991742134094,
+            "p95": 6.5075297355651855,
+            "rms": 2.512805461883545
+          },
+          "positive_cosine_fraction": 0.9032258064516129,
+          "predicted_norm": {
+            "median": 0.329863578081131,
+            "p99": 10.498390197753906
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.214153453707695,
+          "differential_mae_all": 0.12334181368350983,
+          "error_after_controller_changed_trajectory": 0.12365017831325531,
+          "error_before_controller_changed_trajectory": 0.061977848410606384,
+          "error_by_phase": {
+            "third_0": 0.05622796714305878,
+            "third_1": 0.13475055992603302,
+            "third_2": 0.1798909455537796
+          },
+          "error_during_grasp_contact": 0.0938248410820961,
+          "feature_distance_to_training_support": {
+            "max": 5.575819832938058,
+            "median": 0.6106624943869454,
+            "p95": 1.1461195128304618
+          },
+          "frames": 4000,
+          "median_cosine": 0.6854270994663239,
+          "median_norm_ratio": 0.6720961822589974,
+          "model": "V2",
+          "norm_ratio_error": 0.49027229963159585,
+          "oracle_norm": {
+            "median": 0.5246383845806122,
+            "p99": 5.883195796012878
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.23573711514472961,
+            "p95": 1.2302056550979614,
+            "rms": 0.5775052309036255
+          },
+          "positive_cosine_fraction": 0.8328488372093024,
+          "predicted_norm": {
+            "median": 0.2412126362323761,
+            "p99": 2.017850160598755
+          }
+        }
+      },
+      "expert": {
+        "V1": {
+          "activation_rate": 0.028515878159429683,
+          "differential_mae_active": 0.2486650049686432,
+          "differential_mae_all": 0.05293479934334755,
+          "error_after_controller_changed_trajectory": 0.2545846402645111,
+          "error_before_controller_changed_trajectory": 0.03654280677437782,
+          "error_by_phase": {
+            "third_0": 0.05154961720108986,
+            "third_1": 0.05446948856115341,
+            "third_2": null
+          },
+          "error_during_grasp_contact": 0.04511754587292671,
+          "feature_distance_to_training_support": {
+            "max": 2.5911857060023715,
+            "median": 0.6292285237993512,
+            "p95": 1.328792531149728
+          },
+          "frames": 1543,
+          "median_cosine": 0.9865466058254242,
+          "median_norm_ratio": 0.6599511088854112,
+          "model": "V1",
+          "norm_ratio_error": 0.3400488911145888,
+          "oracle_norm": {
+            "median": 0.7307933866977692,
+            "p99": 6.870637321472175
+          },
+          "oracle_zero_activation_rate": 0.003276003276003276,
+          "oracle_zero_predicted_norm": {
+            "median": 0.17406970262527466,
+            "p95": 0.8660128712654114,
+            "rms": 0.38544076681137085
+          },
+          "positive_cosine_fraction": 1.0,
+          "predicted_norm": {
+            "median": 0.21096642315387726,
+            "p99": 2.4488637447357178
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.21784062683582306,
+          "differential_mae_all": 0.09832525998353958,
+          "error_after_controller_changed_trajectory": 0.09880257397890091,
+          "error_before_controller_changed_trajectory": 0.061977919191122055,
+          "error_by_phase": {
+            "third_0": 0.09218043088912964,
+            "third_1": 0.10513325035572052,
+            "third_2": null
+          },
+          "error_during_grasp_contact": 0.07787180691957474,
+          "feature_distance_to_training_support": {
+            "max": 1.9819071633475167,
+            "median": 0.5979914665222168,
+            "p95": 1.1172126088823586
+          },
+          "frames": 1543,
+          "median_cosine": 0.9084715843200684,
+          "median_norm_ratio": 0.47652344238569244,
+          "model": "V2",
+          "norm_ratio_error": 0.5609460410194924,
+          "oracle_norm": {
+            "median": 0.7307933866977692,
+            "p99": 6.870637321472175
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.18169480562210083,
+            "p95": 0.6081761717796326,
+            "rms": 0.34008824825286865
+          },
+          "positive_cosine_fraction": 0.9037267080745341,
+          "predicted_norm": {
+            "median": 0.2044302225112915,
+            "p99": 2.4205145835876465
+          }
+        }
+      },
+      "oracle_on_policy": {
+        "V1": {
+          "activation_rate": 0.11425,
+          "differential_mae_active": 0.5203636288642883,
+          "differential_mae_all": 0.22976619005203247,
+          "error_after_controller_changed_trajectory": 0.9326308369636536,
+          "error_before_controller_changed_trajectory": 0.016249286010861397,
+          "error_by_phase": {
+            "third_0": 0.026781197637319565,
+            "third_1": 0.13036896288394928,
+            "third_2": 0.5367298722267151
+          },
+          "error_during_grasp_contact": 0.1488763988018036,
+          "feature_distance_to_training_support": {
+            "max": 36.744820731026785,
+            "median": 0.752723217010498,
+            "p95": 3.4789851052420375
+          },
+          "frames": 4000,
+          "median_cosine": 0.5432424545288086,
+          "median_norm_ratio": 60.68872239544351,
+          "model": "V1",
+          "norm_ratio_error": 59.68872239544351,
+          "oracle_norm": {
+            "median": 0.33157092332839966,
+            "p99": 1.9834956264495869
+          },
+          "oracle_zero_activation_rate": 0.11659192825112108,
+          "oracle_zero_predicted_norm": {
+            "median": 0.33520179986953735,
+            "p95": 5.4232282638549805,
+            "rms": 2.583045244216919
+          },
+          "positive_cosine_fraction": 0.7313432835820896,
+          "predicted_norm": {
+            "median": 0.3339286148548126,
+            "p99": 20.01047706604004
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.13694529235363007,
+          "differential_mae_all": 0.1077994704246521,
+          "error_after_controller_changed_trajectory": 0.10802973806858063,
+          "error_before_controller_changed_trajectory": 0.061977870762348175,
+          "error_by_phase": {
+            "third_0": 0.05794792249798775,
+            "third_1": 0.10532374680042267,
+            "third_2": 0.16091960668563843
+          },
+          "error_during_grasp_contact": 0.08326590061187744,
+          "feature_distance_to_training_support": {
+            "max": 17.60841042654855,
+            "median": 0.6175288132258825,
+            "p95": 1.2084926468985422
+          },
+          "frames": 4000,
+          "median_cosine": 0.3815158009529114,
+          "median_norm_ratio": 0.7261856465041873,
+          "model": "V2",
+          "norm_ratio_error": 0.4772673389425478,
+          "oracle_norm": {
+            "median": 0.33157092332839966,
+            "p99": 1.9834956264495869
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.23471008241176605,
+            "p95": 1.1371909379959106,
+            "rms": 0.7017441987991333
+          },
+          "positive_cosine_fraction": 0.6702290076335878,
+          "predicted_norm": {
+            "median": 0.23975761234760284,
+            "p99": 1.7661492824554443
+          }
+        }
+      }
+    },
+    "reference_validation": {
+      "act_only_on_policy": {
+        "V1": {
+          "activation_rate": 0.135625,
+          "differential_mae_active": 0.3366842567920685,
+          "differential_mae_all": 0.281446248292923,
+          "error_after_controller_changed_trajectory": 1.2266345024108887,
+          "error_before_controller_changed_trajectory": 0.05157526955008507,
+          "error_by_phase": {
+            "third_0": 0.04168908670544624,
+            "third_1": 0.31389951705932617,
+            "third_2": 0.49189111590385437
+          },
+          "error_during_grasp_contact": 0.08789750188589096,
+          "feature_distance_to_training_support": {
+            "max": 83.23772321428571,
+            "median": 0.7873720782143729,
+            "p95": 5.259033448355495
+          },
+          "frames": 1600,
+          "median_cosine": -0.08210187032818794,
+          "median_norm_ratio": 1.019241400883754,
+          "model": "V1",
+          "norm_ratio_error": 0.4169314862901851,
+          "oracle_norm": {
+            "median": 0.9757841229438782,
+            "p99": 4.22600341796875
+          },
+          "oracle_zero_activation_rate": 0.1409235668789809,
+          "oracle_zero_predicted_norm": {
+            "median": 0.2889447808265686,
+            "p95": 7.554560661315918,
+            "rms": 3.49220609664917
+          },
+          "positive_cosine_fraction": 0.45,
+          "predicted_norm": {
+            "median": 0.3822648227214813,
+            "p99": 14.889430046081543
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.20199815928936005,
+          "differential_mae_all": 0.16096121072769165,
+          "error_after_controller_changed_trajectory": 0.16155867278575897,
+          "error_before_controller_changed_trajectory": 0.042063213884830475,
+          "error_by_phase": {
+            "third_0": 0.07367971539497375,
+            "third_1": 0.15060657262802124,
+            "third_2": 0.260076642036438
+          },
+          "error_during_grasp_contact": 0.10944797098636627,
+          "feature_distance_to_training_support": {
+            "max": 30.99562508719308,
+            "median": 0.6238221440996443,
+            "p95": 1.5612925393240789
+          },
+          "frames": 1600,
+          "median_cosine": 0.8841374218463898,
+          "median_norm_ratio": 0.7034594513597389,
+          "model": "V2",
+          "norm_ratio_error": 0.3488969191257646,
+          "oracle_norm": {
+            "median": 0.9757841229438782,
+            "p99": 4.22600341796875
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.2755504250526428,
+            "p95": 2.037971258163452,
+            "rms": 1.4750288724899292
+          },
+          "positive_cosine_fraction": 0.938953488372093,
+          "predicted_norm": {
+            "median": 0.33783262968063354,
+            "p99": 3.915557622909546
+          }
+        }
+      },
+      "expert": {
+        "V1": {
+          "activation_rate": 0.0028169014084507044,
+          "differential_mae_active": 0.15102793276309967,
+          "differential_mae_all": 0.033047646284103394,
+          "error_after_controller_changed_trajectory": 0.6460800170898438,
+          "error_before_controller_changed_trajectory": 0.032183002680540085,
+          "error_by_phase": {
+            "third_0": 0.03452511504292488,
+            "third_1": 0.030724385753273964,
+            "third_2": null
+          },
+          "error_during_grasp_contact": 0.03208957985043526,
+          "feature_distance_to_training_support": {
+            "max": 6.177704947335379,
+            "median": 0.544832706451416,
+            "p95": 1.402263886587959
+          },
+          "frames": 710,
+          "median_cosine": null,
+          "median_norm_ratio": null,
+          "model": "V1",
+          "norm_ratio_error": null,
+          "oracle_norm": {
+            "median": 0.5148982107639313,
+            "p99": 1.315717500448227
+          },
+          "oracle_zero_activation_rate": 0.0035587188612099642,
+          "oracle_zero_predicted_norm": {
+            "median": 0.09962385147809982,
+            "p95": 0.28597089648246765,
+            "rms": 0.19590379297733307
+          },
+          "positive_cosine_fraction": null,
+          "predicted_norm": {
+            "median": 0.12217365950345993,
+            "p99": 1.1513519287109375
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.10413507372140884,
+          "differential_mae_all": 0.07358226180076599,
+          "error_after_controller_changed_trajectory": 0.07394146174192429,
+          "error_before_controller_changed_trajectory": 0.04206322506070137,
+          "error_by_phase": {
+            "third_0": 0.07539991289377213,
+            "third_1": 0.07072407752275467,
+            "third_2": null
+          },
+          "error_during_grasp_contact": 0.057982612401247025,
+          "feature_distance_to_training_support": {
+            "max": 2.0179093224661693,
+            "median": 0.5462115662438529,
+            "p95": 1.2542884758540545
+          },
+          "frames": 710,
+          "median_cosine": 0.8427658975124359,
+          "median_norm_ratio": 0.769643450308688,
+          "model": "V2",
+          "norm_ratio_error": 0.37154377126546834,
+          "oracle_norm": {
+            "median": 0.5148982107639313,
+            "p99": 1.315717500448227
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.15594033896923065,
+            "p95": 0.8743559718132019,
+            "rms": 0.39067190885543823
+          },
+          "positive_cosine_fraction": 0.918918918918919,
+          "predicted_norm": {
+            "median": 0.19126999378204346,
+            "p99": 1.38541841506958
+          }
+        }
+      },
+      "oracle_on_policy": {
+        "V1": {
+          "activation_rate": 0.11375,
+          "differential_mae_active": 0.19036567211151123,
+          "differential_mae_all": 0.30081841349601746,
+          "error_after_controller_changed_trajectory": 1.4181010723114014,
+          "error_before_controller_changed_trajectory": 0.04086514189839363,
+          "error_by_phase": {
+            "third_0": 0.03253462165594101,
+            "third_1": 0.330452561378479,
+            "third_2": 0.5430840253829956
+          },
+          "error_during_grasp_contact": 0.027188926935195923,
+          "feature_distance_to_training_support": {
+            "max": 13.358167375837054,
+            "median": 0.7759933131081718,
+            "p95": 6.91810934884207
+          },
+          "frames": 1600,
+          "median_cosine": -0.28598281741142273,
+          "median_norm_ratio": 5.744332689266081,
+          "model": "V1",
+          "norm_ratio_error": 4.744332689266081,
+          "oracle_norm": {
+            "median": 0.5527195930480957,
+            "p99": 1.743931051492688
+          },
+          "oracle_zero_activation_rate": 0.13543307086614173,
+          "oracle_zero_predicted_norm": {
+            "median": 0.28029999136924744,
+            "p95": 9.904458045959473,
+            "rms": 4.265690326690674
+          },
+          "positive_cosine_fraction": 0.3,
+          "predicted_norm": {
+            "median": 0.3262525200843811,
+            "p99": 20.038738250732422
+          }
+        },
+        "V2": {
+          "activation_rate": 1.0,
+          "differential_mae_active": 0.16583538055419922,
+          "differential_mae_all": 0.15610815584659576,
+          "error_after_controller_changed_trajectory": 0.15668123960494995,
+          "error_before_controller_changed_trajectory": 0.042063239961862564,
+          "error_by_phase": {
+            "third_0": 0.0753580629825592,
+            "third_1": 0.14810675382614136,
+            "third_2": 0.24620436131954193
+          },
+          "error_during_grasp_contact": 0.08045385032892227,
+          "feature_distance_to_training_support": {
+            "max": 7.933887481689453,
+            "median": 0.6088837896074568,
+            "p95": 1.6008478164672848
+          },
+          "frames": 1600,
+          "median_cosine": 0.5922957360744476,
+          "median_norm_ratio": 0.647922752333224,
+          "model": "V2",
+          "norm_ratio_error": 0.48709723016779105,
+          "oracle_norm": {
+            "median": 0.5527195930480957,
+            "p99": 1.743931051492688
+          },
+          "oracle_zero_activation_rate": 1.0,
+          "oracle_zero_predicted_norm": {
+            "median": 0.2615814208984375,
+            "p95": 2.519878625869751,
+            "rms": 1.1438847780227661
+          },
+          "positive_cosine_fraction": 0.6545454545454545,
+          "predicted_norm": {
+            "median": 0.2807614505290985,
+            "p99": 3.813197612762451
+          }
+        }
+      }
+    }
+  },
+  "schema": "hybrid_obstacle_on_policy_shift_audit_v2",
+  "v1_gate": {
+    "d_act": 0.18,
+    "tau": 1.4161068201065063,
+    "type": "SupportGate"
+  },
+  "v1_manifest_sha256": "0e34e85a7f3180e3645d2d4aba34acad2418960d1c90a4805f4c0c8a3f161014",
+  "v2_gate": {
+    "rho_max": 5.834739823341367,
+    "tau": 0.0,
+    "type": "SupportEnvelopeGate"
+  },
+  "v2_gate_is_diagnostic_only": true,
+  "v2_manifest_sha256": "668ac10b71c0033f06d46017a2ba9b9c33439a681bac7af8c2100c63e9f7364c"
+}

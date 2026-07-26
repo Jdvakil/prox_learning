@@ -1,0 +1,116 @@
+{
+  "architecture_unchanged": true,
+  "artifact_file_sha256": "b8e5b2c1f22ffbfcd529e6dd0670fd4b3b2b8c87b1ec77642c349e47d852a4c6",
+  "artifact_path": "/root/act_retrain_assets/on_policy_reference_v2/posture_skin_mlp_reference_v2_round1.pt",
+  "best_epoch": 86,
+  "best_validation_loss": 0.06030791997909546,
+  "calibration": {
+    "active_frames": 548,
+    "best_direction_seen": {
+      "median_cosine": 0.6629185080528259,
+      "positive": 0.7268817204301076
+    },
+    "feasible": false,
+    "rejected_examples": [
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.026972798630595207,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.026984624564647675,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.02994726598262787,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.03227059170603752,
+        "why": "direction"
+      },
+      {
+        "median": 0.6117682456970215,
+        "positive": 0.7427007299270073,
+        "tau": 0.032929133623838425,
+        "why": "direction"
+      }
+    ],
+    "rho_max": 5.834739823341367,
+    "rho_rule": "99.0th percentile of the privileged oracle differential norm on active calibration frames",
+    "tau": null,
+    "zero_frames": 3273
+  },
+  "calibration_is_provisional": false,
+  "calibration_trajectories": [
+    "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+    "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+    "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+    "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+    "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+    "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+    "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+    "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f"
+  ],
+  "continued_from_previous_checkpoint": false,
+  "decision": "ON_POLICY_REFERENCE_OFFLINE_INVALID",
+  "distribution_provenance": {
+    "act_only_on_policy": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 12800
+    },
+    "expert": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 5119
+    },
+    "learner_on_policy": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 12800
+    },
+    "oracle_on_policy": {
+      "frames_drawn": 6000,
+      "rows": 64,
+      "total_frames_available": 12800
+    }
+  },
+  "distribution_weighting": {
+    "act_only_on_policy": 0.25,
+    "expert": 0.25,
+    "learner_on_policy": 0.25,
+    "oracle_on_policy": 0.25
+  },
+  "feature_width": 196,
+  "fresh_initialisation": true,
+  "input_statistics_sha256": "27094edc0d6efcba90c01972c316a910dbfa74828b42bb581378158218dd1ae7",
+  "label": "POSTURE_SKIN_MLP_REFERENCE_V2_ROUND1",
+  "labelling_schedule_sha256": "efc0a09a055e76ed2b690007c6af8282d4dd207d723cd7a319af3d85c038a403",
+  "model_digest": "a6521360d47c810b710b6ecb4a4d463466c44c2a3d617b1738cd7c4b8c3c5823",
+  "parameters": 150023,
+  "partition_sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+  "reason": "no tau satisfies the lexicographic rule on calibration",
+  "report_sha256": "fa49f96b425fc88037cb92172d7868587c4c58e6d2189aec3be0d19fd6c7c006",
+  "round": 1,
+  "samples_per_distribution": 6000,
+  "sampling_rule": "uniform over rows, then uniform over frames, within each distribution",
+  "schema": "hybrid_obstacle_on_policy_reference_training_v2",
+  "strict_reload_bitwise_identical": true,
+  "training_configuration": {
+    "batch_size": 256,
+    "loss": "SmoothL1",
+    "lr": 0.001,
+    "max_epochs": 150,
+    "optimizer": "AdamW",
+    "seed": 0,
+    "weight_decay": 1e-05
+  }
+}
