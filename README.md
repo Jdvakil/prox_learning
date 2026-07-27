@@ -828,3 +828,62 @@ across-seed CV is substantially kernel noise.
 
 These are offline feasibility results. No live rollouts were run, ACT and the Safety-CVAE
 were untouched, and `confirmatory41` is still untouched.
+
+## Hybrid obstacle safety residual: trajectory-aware threshold (transfer failed)
+
+`docs/HYBRID_OBSTACLE_REFERENCE_THRESHOLD_FINAL_DECISION.md` —
+`REFERENCE_THRESHOLD_TRANSFER_FAILED`, Case C.
+
+The previous `PARKED_REFERENCE_MODEL_OVERFIT` token was a rubric artefact, not a diagnosis —
+test MAE was *below* validation MAE. The real blocker was activation-threshold transfer.
+This task fixed the threshold statistics properly and found the model still fails, for a
+reason no threshold can fix.
+
+**The frame-level percentile threshold was wrong and is retired.** Treating 3,821
+autocorrelated frames as independent observations overstates a quantile's precision badly;
+whole trajectories share a scene, a hazard pose and a policy, so the effective sample size is
+nearer the trajectory count than the frame count. Its ~1% calibration exceedance was a
+construction artefact, which is why it read 2.15% elsewhere.
+
+Replaced with: metrics computed **per trajectory, never pooled first**, and a **cluster
+bootstrap resampling whole episodes** (10,000 replicates, seed 20260727, one-sided 95%
+bound). Episodes are the cluster, not files — the same episode appears in three source
+distributions, so resampling files would smuggle the independence assumption back in.
+
+On `threshold_calibration16` (16 episodes / 48 trajectories / 7,731 frames) the fit is
+excellent: threshold **0.99960858**, bootstrap upper FPR bound **0.00000**, median recall
+0.882, median cosine 1.000, **zero** false positives in all 48 trajectories.
+
+**It fails on held-back data anyway.** Two blocking checks trip, both from one trajectory —
+a *hazard-absent* episode where current and parked fields are bitwise identical and the true
+differential is exactly 0.0 — on which the model fires for **7 consecutive frames** at
+activity 0.999999, predicting a differential norm rising to 0.390.
+
+**Why no threshold repairs it:** silencing that run needs a threshold above 0.99999905, which
+would discard **59% of all genuinely active frames**. The false activation sits *above* most
+true activations in activity.
+
+**The mechanism is episode onset.** Across all three partitions there are 17 false-positive
+frames at the selected threshold: **16 are at frame index 0–6, all 17 are in the first 10% of
+their trajectory, and there are none anywhere else.** Every episode starts from the same home
+posture, and in hazard-present episodes the obstacle is there from frame 0 — so the model
+appears to have learned a posture-onset prior and applies it before the proximity field
+becomes discriminative.
+
+**Watch the aggregate/cluster gap.** Mean trajectory FPR on the diagnostic set is 0.30% and
+the bootstrap upper bound 0.68%, both comfortably inside the 2% target. Pooled over frames
+this model looks calibrated and would have gone to a live run; clustered by trajectory it
+shows a sustained false activation on a provably clear scene. **Keep the trajectory-aware
+machinery — it is what caught this.**
+
+Also confirmed: frozen inference is **bit-identical** over 24 repeats (activity, parked
+field, delta and head differential all exactly 0.0 drift), so the earlier training
+nondeterminism does not touch the deployed forward pass.
+
+No live rollouts were run (0 of 20 permitted) — step 9 requires stopping before live when
+these checks trip. The threshold manifest is written but carries
+`authorized_for_live: false`, and its strict loader refuses to hand it to an evaluator. No
+model was retrained, no seed reselected, no controller constant changed. `confirmatory41`
+remains untouched.
+
+**Next change must be to the activity model or training objective, not the threshold.**

@@ -1,0 +1,166 @@
+{
+  "act": {
+    "best_epoch": 1738,
+    "dataset_stats_sha256": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+    "policy_best_sha256": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+    "temporal_aggregation": "enabled; residual applies after aggregation"
+  },
+  "activation": {
+    "activity_definition": "max over the 40x8x8 per-pixel changed-probability map; the frozen model has no frame-level activity head and this is a parameter-free reduction of an existing output",
+    "gate_rule": "activate when frame activity probability >= threshold; the predicted differential is never the sole gate",
+    "gate_variable": "frame activity probability",
+    "gates_on_differential_norm_alone": false,
+    "retired_threshold": {
+      "reused": false,
+      "rule": "frame-level 99th percentile of oracle-zero predicted-differential norms over eight calibration trajectories",
+      "value": 0.02819432708943556,
+      "why_retired": "it treated 3,821 autocorrelated frames as independent observations, so its ~1% calibration exceedance was a construction artefact rather than an estimate; it produced 2.15% on a different partition"
+    },
+    "selected_threshold": 0.99960857629776
+  },
+  "authorization_blocker": "reused-diagnostic blocking checks failed: hazard-absent trajectory active fraction 0.1111 > 0.1; false-active run 7 > 5",
+  "authorized_for_live": false,
+  "calibration": {
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260727,
+    "bootstrap_upper_fpr_bound": 0.0,
+    "cluster_unit": "episode",
+    "episode_count": 16,
+    "episodes": [
+      "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+      "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+      "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+      "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+      "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+      "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+      "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+      "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957"
+    ],
+    "feasibility_contract": {
+      "bootstrap_upper_fpr_max": 0.02,
+      "hazard_absent_trajectory_fpr_max": 0.05,
+      "max_consecutive_false_positive_run": 2,
+      "median_active_cosine_min": 0.75,
+      "median_active_recall_min": 0.8,
+      "median_positive_cosine_fraction_min": 0.85,
+      "persistent_activation_allowed": false
+    },
+    "manifest_sha256": "59a8570314f2c894c4d2d11fd9eb77a8992f794af42c6eb689c5fdf59d4e8d97",
+    "median_active_recall": 0.8819444444444444,
+    "set": "threshold_calibration16",
+    "total_frames": 7731,
+    "trajectory_count": 48
+  },
+  "commits": {
+    "act": "91fc42a1bfda2acd4b973bb53549bbf42d1fe9a6",
+    "molmospaces": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "root": "b2051ae31cacef3a0f92f52728d60d2b8327cd9d",
+    "root_branch": "qualify/hybrid-obstacle-reference-threshold-v1"
+  },
+  "controller": {
+    "arm_only": true,
+    "changed_in_this_task": false,
+    "decay_per_second": 2.2,
+    "dt_seconds": 0.066,
+    "ema": 0.75,
+    "gain": 4.0,
+    "gripper_owner": "ACT",
+    "max_deviation_rad_per_joint": 0.35
+  },
+  "excluded_field_reason": "mj_geomDistance returns exactly 0.0 for robot_0/fr3_link7_collision, pinning minimum_clearance_m at <= 0 regardless of true geometry",
+  "excluded_log_fields": [
+    "minimum_clearance_m"
+  ],
+  "live_schedule": {
+    "confirmatory41_permitted": false,
+    "executed": 0,
+    "manifest": "configs/hybrid_obstacle_controller_development4_v1.json",
+    "repeats_per_row": 5,
+    "rows": [
+      106,
+      107,
+      108,
+      118
+    ],
+    "total_rollouts": 20
+  },
+  "log_schema": [
+    "episode_id",
+    "repeat_index",
+    "timestep",
+    "qpos",
+    "qvel",
+    "nominal_act_action",
+    "aggregated_act_action",
+    "current_field_sha256",
+    "predicted_parked_field_sha256",
+    "activity_probability",
+    "selected_threshold",
+    "activation_decision",
+    "ungated_differential",
+    "magnitude_capped_differential",
+    "privileged_oracle_differential",
+    "deployable_oracle_cosine",
+    "deployable_oracle_norm_ratio",
+    "false_active_sequence_length",
+    "filtered_correction",
+    "accumulated_correction",
+    "clipping_saturation",
+    "executed_action",
+    "gripper_command",
+    "contact_classes",
+    "penetration",
+    "task_success",
+    "termination_reason",
+    "artifact_hashes"
+  ],
+  "magnitude_support": {
+    "construction": "changed_probability = sigmoid(mask_logits); delta_magnitude = current_closeness * sigmoid(magnitude_logits); predicted_delta = changed_probability * delta_magnitude; predicted_parked = current_closeness - predicted_delta",
+    "guarantee": "0 <= predicted_parked <= current_closeness <= 1 by construction",
+    "post_hoc_clipping": false,
+    "recalculated_in_this_task": false,
+    "source": "frozen at model qualification; carried forward unchanged"
+  },
+  "manifest_sha256": "12f7267c6c4c1a1f55ff5ebbd03b8c1101e987dc6574d070fe3ef2f47a2d4a29",
+  "model": {
+    "checkpoint_path": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/final/CURRENT_FRAME_ONLY__seed0/best.pt",
+    "checkpoint_sha256": "47ae5cb1206c07d3f988bd0174b6cf4d09ea341e7e27850f5436ba9639c2bcd5",
+    "feature_contract_sha256": "cc87a773b2a06d7ca6bd4be5a0783be1d576887c74efa3e13ea94dd6d92d7704",
+    "history_frames": 1,
+    "model_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+    "parameter_count": 838434,
+    "reference_id": "CAUSAL_PARKED_SKIN_REFERENCE_V1",
+    "seed": 0,
+    "variant": "CURRENT_FRAME_ONLY"
+  },
+  "offsamples": 4,
+  "runtime": {
+    "cuda": "12.6",
+    "gpu": "NVIDIA A10",
+    "numpy": "2.4.6",
+    "python": "3.11.15",
+    "torch": "2.7.1+cu126"
+  },
+  "safety_head": {
+    "directory": "assets/safety/cvae_v3",
+    "frozen": true,
+    "hashes": {
+      "config.json": "c376f44316e1edfc5c198ad3a8ca64b69e1e8e54c6f3125a082020172ac46060",
+      "history.json": "0bd2910383b46d2ea411bfd1cd8b83b14e108de060b52d432421f6820510489f",
+      "meta.json": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "model.pt": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405"
+    },
+    "label_scale": 11.359346389770508
+  },
+  "schema": "hybrid_obstacle_reference_threshold_manifest_v1",
+  "sensor_count": 40,
+  "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858"
+}

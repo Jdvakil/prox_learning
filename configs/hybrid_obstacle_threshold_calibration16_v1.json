@@ -1,0 +1,467 @@
+{
+  "activity_definition": "max over the 40x8x8 per-pixel changed-probability map; the frozen model has no frame-level activity head and this is a parameter-free reduction of an existing output",
+  "cluster_rationale": "the same episode appears in three source distributions, so those trajectories are not independent; resampling files would reintroduce the independence assumption this recalibration removes",
+  "cluster_unit": "episode",
+  "consumed_diagnostic_partition_excluded": "offline_reference_test",
+  "episode_count": 16,
+  "episodes": [
+    "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+    "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+    "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+    "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+    "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+    "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+    "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+    "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+    "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+    "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+    "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+    "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+    "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+    "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+    "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+    "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957"
+  ],
+  "manifest_sha256": "59a8570314f2c894c4d2d11fd9eb77a8992f794af42c6eb689c5fdf59d4e8d97",
+  "name": "threshold_calibration16",
+  "source_partitions": [
+    "reference_calibration",
+    "reference_validation"
+  ],
+  "total_frames": 7731,
+  "trajectories": [
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 11,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 8,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 139,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 100,
+      "partition": "reference_calibration",
+      "trajectory_id": "act_only_on_policy__ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "frames": 65,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "frames": 103,
+      "hazard_present": true,
+      "oracle_active_frames": 4,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "frames": 108,
+      "hazard_present": true,
+      "oracle_active_frames": 9,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "frames": 59,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "frames": 56,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+      "frames": 58,
+      "hazard_present": true,
+      "oracle_active_frames": 25,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+      "frames": 67,
+      "hazard_present": true,
+      "oracle_active_frames": 11,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "frames": 105,
+      "hazard_present": true,
+      "oracle_active_frames": 12,
+      "partition": "reference_calibration",
+      "trajectory_id": "expert_reconstructed__ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__02ce6a616ae21ff370bb7defaf4b7a2aaa1268ad6919ef8a6946470a6102178c"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 7,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__05ac82b8ad8f6fa54cfbb099c10a418f1bfb1b2672b53031018fdb23f5fa4834"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 9,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__14a576f2851c712087b390ca5d1b0a907abb340c13faac0f21b0efc35b78981a"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__2b3349e9ef97bd4043254ceff60ad415a9a40d97736ac4838d42a68e8586122f"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__3cb1b467a0561ca38718d9cc7af4245807989b93fe48c594fb33f5a774b1a99f"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__5571ea32e6ec500509ca06c8738a970a8b41fe3d48d06bd93c3e04bae4df6bdc"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 117,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__848de58049de5b0d5b9c5e7a9ad84b23cdef679b25decd38d89c44ce4d156a0b"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 97,
+      "partition": "reference_calibration",
+      "trajectory_id": "oracle_on_policy__ec9d068e369e791e170f8c74aee38325dc73bc6003ebe47d486428e4fd250f21"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 41,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 128,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 161,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 8,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d"
+    },
+    {
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "act_only_on_policy__f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+      "frames": 108,
+      "hazard_present": true,
+      "oracle_active_frames": 31,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "frames": 64,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+      "frames": 97,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+      "frames": 113,
+      "hazard_present": true,
+      "oracle_active_frames": 54,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+      "frames": 96,
+      "hazard_present": true,
+      "oracle_active_frames": 63,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+      "frames": 92,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "frames": 59,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d"
+    },
+    {
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957",
+      "frames": 81,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "expert_reconstructed__f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 32,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__23774f685781aeb934d160ffe24cbc33b094be11cdc619ed99fb1c18280f7ae9"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__37845503017238ff298e8a274f5d72db2fa92cd6a34db83b66a4cd2c761045c1"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__416912749602a5e1298b788b63628bbd155ff57e71c995ba8ecc38e2a94c72f3"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 130,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__720587236b2216bf828fcbdf375f5e0747d1a4997b1e5ae9aa0974e2ca88bf27"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 159,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__9c7f6277832c650abe6e412e3cd26026dde0559e25270f6077b61cd3ef7d39ff"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 3,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__b89366985b82f2ae8cdc9b3333e5c6c7c573576ac992be1df3b0d3de53a7de1c"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d",
+      "frames": 200,
+      "hazard_present": false,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__bfbb6269f1d3a2ca3a0005d7d0428159e588360d0fde2c558af71867c121121d"
+    },
+    {
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957",
+      "frames": 200,
+      "hazard_present": true,
+      "oracle_active_frames": 0,
+      "partition": "reference_validation",
+      "trajectory_id": "oracle_on_policy__f47331adc53f8c91356f6c507bb59ac7ccabc2cc4f01f811511d6ef2e237a957"
+    }
+  ],
+  "trajectory_count": 48
+}
