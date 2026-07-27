@@ -1,0 +1,539 @@
+{
+  "all_matched": true,
+  "check_count": 67,
+  "checks": [
+    {
+      "check": "seed0_checkpoint_sha256",
+      "detail": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/final/CURRENT_FRAME_ONLY__seed0/best.pt",
+      "expected": "47ae5cb1206c07d3f988bd0174b6cf4d09ea341e7e27850f5436ba9639c2bcd5",
+      "matched": true,
+      "observed": "47ae5cb1206c07d3f988bd0174b6cf4d09ea341e7e27850f5436ba9639c2bcd5"
+    },
+    {
+      "check": "frozen_primary_is_current_frame_only",
+      "detail": "",
+      "expected": "CURRENT_FRAME_ONLY",
+      "matched": true,
+      "observed": "CURRENT_FRAME_ONLY"
+    },
+    {
+      "check": "previous_decision_token",
+      "detail": "",
+      "expected": "PARKED_REFERENCE_MODEL_OVERFIT",
+      "matched": true,
+      "observed": "PARKED_REFERENCE_MODEL_OVERFIT"
+    },
+    {
+      "check": "checkpoint_config_hash",
+      "detail": "",
+      "expected": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+      "matched": true,
+      "observed": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15"
+    },
+    {
+      "check": "checkpoint_variant",
+      "detail": "",
+      "expected": "CURRENT_FRAME_ONLY",
+      "matched": true,
+      "observed": "CURRENT_FRAME_ONLY"
+    },
+    {
+      "check": "checkpoint_seed",
+      "detail": "",
+      "expected": 0,
+      "matched": true,
+      "observed": 0
+    },
+    {
+      "check": "checkpoint_best_epoch",
+      "detail": "",
+      "expected": 53,
+      "matched": true,
+      "observed": 53
+    },
+    {
+      "check": "parameter_count",
+      "detail": "",
+      "expected": 838434,
+      "matched": true,
+      "observed": 838434
+    },
+    {
+      "check": "history_frames_is_one",
+      "detail": "four-frame causal history must stay retired",
+      "expected": 1,
+      "matched": true,
+      "observed": 1
+    },
+    {
+      "check": "uses_proximity",
+      "detail": "CURRENT_FRAME_ONLY is not the state-only control",
+      "expected": true,
+      "matched": true,
+      "observed": true
+    },
+    {
+      "check": "input_contract_sha256",
+      "detail": "",
+      "expected": "cc87a773b2a06d7ca6bd4be5a0783be1d576887c74efa3e13ea94dd6d92d7704",
+      "matched": true,
+      "observed": "cc87a773b2a06d7ca6bd4be5a0783be1d576887c74efa3e13ea94dd6d92d7704"
+    },
+    {
+      "check": "no_prohibited_inputs",
+      "detail": "",
+      "expected": [],
+      "matched": true,
+      "observed": []
+    },
+    {
+      "check": "state_vector_width",
+      "detail": "",
+      "expected": 29,
+      "matched": true,
+      "observed": 29
+    },
+    {
+      "check": "closeness_formula",
+      "detail": "",
+      "expected": "closeness = clip(1 - depth / 0.5, 0, 1); depth < 0.005 maps to zero",
+      "matched": true,
+      "observed": "closeness = clip(1 - depth / 0.5, 0, 1); depth < 0.005 maps to zero"
+    },
+    {
+      "check": "d_max_m",
+      "detail": "",
+      "expected": 0.5,
+      "matched": true,
+      "observed": 0.5
+    },
+    {
+      "check": "dead_pixel_below_m",
+      "detail": "",
+      "expected": 0.005,
+      "matched": true,
+      "observed": 0.005
+    },
+    {
+      "check": "physical_pairing_constraint",
+      "detail": "",
+      "expected": "0 <= parked_closeness <= current_closeness <= 1",
+      "matched": true,
+      "observed": "0 <= parked_closeness <= current_closeness <= 1"
+    },
+    {
+      "check": "physical_pairing_violations",
+      "detail": "",
+      "expected": 0,
+      "matched": true,
+      "observed": 0
+    },
+    {
+      "check": "dataset_tree_sha256",
+      "detail": "",
+      "expected": "1fb68b3cdee9755881579a187c84992782bfdd5f1c65aff6a3c39ebd11b8dba5",
+      "matched": true,
+      "observed": "1fb68b3cdee9755881579a187c84992782bfdd5f1c65aff6a3c39ebd11b8dba5"
+    },
+    {
+      "check": "dataset_manifest_sha256",
+      "detail": "",
+      "expected": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+      "matched": true,
+      "observed": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b"
+    },
+    {
+      "check": "partition_sha256",
+      "detail": "",
+      "expected": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+      "matched": true,
+      "observed": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d"
+    },
+    {
+      "check": "dataset_read_only",
+      "detail": "mode bits; root bypasses enforcement so bits are the evidence",
+      "expected": [],
+      "matched": true,
+      "observed": []
+    },
+    {
+      "check": "sensor_count",
+      "detail": "",
+      "expected": 40,
+      "matched": true,
+      "observed": 40
+    },
+    {
+      "check": "sensor_order_sha256",
+      "detail": "recorded ordering hash carried forward unchanged",
+      "expected": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+      "matched": true,
+      "observed": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858"
+    },
+    {
+      "check": "safety_cvae_config.json",
+      "detail": "",
+      "expected": "c376f44316e1edfc5c198ad3a8ca64b69e1e8e54c6f3125a082020172ac46060",
+      "matched": true,
+      "observed": "c376f44316e1edfc5c198ad3a8ca64b69e1e8e54c6f3125a082020172ac46060"
+    },
+    {
+      "check": "safety_cvae_history.json",
+      "detail": "",
+      "expected": "0bd2910383b46d2ea411bfd1cd8b83b14e108de060b52d432421f6820510489f",
+      "matched": true,
+      "observed": "0bd2910383b46d2ea411bfd1cd8b83b14e108de060b52d432421f6820510489f"
+    },
+    {
+      "check": "safety_cvae_meta.json",
+      "detail": "",
+      "expected": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81",
+      "matched": true,
+      "observed": "7c873756fb16e4f3fc565f96c41a581816981ab93886f1db5d27e62110a5fc81"
+    },
+    {
+      "check": "safety_cvae_model.pt",
+      "detail": "",
+      "expected": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405",
+      "matched": true,
+      "observed": "1fb2fc2b6023e64d2b9cbcf67fd5a24402968ec6f902c1e8a8595690396e7405"
+    },
+    {
+      "check": "safety_label_scale",
+      "detail": "",
+      "expected": 11.359346389770508,
+      "matched": true,
+      "observed": 11.359346389770508
+    },
+    {
+      "check": "safety_n_in",
+      "detail": "",
+      "expected": 2560,
+      "matched": true,
+      "observed": 2560
+    },
+    {
+      "check": "safety_n_out",
+      "detail": "",
+      "expected": 7,
+      "matched": true,
+      "observed": 7
+    },
+    {
+      "check": "act_best_epoch",
+      "detail": "",
+      "expected": 1738,
+      "matched": true,
+      "observed": 1738
+    },
+    {
+      "check": "act_policy_best_sha256_expected",
+      "detail": "",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36"
+    },
+    {
+      "check": "act_dataset_stats_sha256_expected",
+      "detail": "",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2"
+    },
+    {
+      "check": "act_policy_best_sha256",
+      "detail": "",
+      "expected": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36",
+      "matched": true,
+      "observed": "dd7cd108a64ce10e5aab21b525dc06190f54d4e5fe446f65715b6852c49e7d36"
+    },
+    {
+      "check": "act_dataset_stats_sha256",
+      "detail": "",
+      "expected": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2",
+      "matched": true,
+      "observed": "c8119b904bfc80d66e3d33825722fcf9bb8bf3433c956dc09c27e6517d7c4ae2"
+    },
+    {
+      "check": "residual_gain",
+      "detail": "",
+      "expected": 4.0,
+      "matched": true,
+      "observed": 4.0
+    },
+    {
+      "check": "residual_decay_per_second",
+      "detail": "",
+      "expected": 2.2,
+      "matched": true,
+      "observed": 2.2
+    },
+    {
+      "check": "residual_ema",
+      "detail": "",
+      "expected": 0.75,
+      "matched": true,
+      "observed": 0.75
+    },
+    {
+      "check": "residual_max_deviation_rad_per_joint",
+      "detail": "",
+      "expected": 0.35,
+      "matched": true,
+      "observed": 0.35
+    },
+    {
+      "check": "residual_arm_only",
+      "detail": "",
+      "expected": true,
+      "matched": true,
+      "observed": true
+    },
+    {
+      "check": "residual_gripper_owner",
+      "detail": "",
+      "expected": "ACT",
+      "matched": true,
+      "observed": "ACT"
+    },
+    {
+      "check": "residual_dt_rule_mentions_66ms",
+      "detail": "",
+      "expected": true,
+      "matched": true,
+      "observed": true
+    },
+    {
+      "check": "offsamples",
+      "detail": "MSAA offsamples; re-asserted live per rollout",
+      "expected": 4,
+      "matched": true,
+      "observed": 4
+    },
+    {
+      "check": "development4_sha256",
+      "detail": "recorded manifest hash carried forward",
+      "expected": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b",
+      "matched": true,
+      "observed": "5aaf6ddb4aba56bc17434fb860f809c137ba8e5fd41b309cd6382c66c8a1bd0b"
+    },
+    {
+      "check": "development4_rows",
+      "detail": "",
+      "expected": [
+        106,
+        107,
+        108,
+        118
+      ],
+      "matched": true,
+      "observed": [
+        106,
+        107,
+        108,
+        118
+      ]
+    },
+    {
+      "check": "confirmatory41_sha256",
+      "detail": "unchanged",
+      "expected": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+      "matched": true,
+      "observed": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e"
+    },
+    {
+      "check": "confirmatory41_rows",
+      "detail": "",
+      "expected": 41,
+      "matched": true,
+      "observed": 41
+    },
+    {
+      "check": "confirmatory41_not_executed",
+      "detail": "",
+      "expected": false,
+      "matched": true,
+      "observed": false
+    },
+    {
+      "check": "previous_threshold_manifest_sha256",
+      "detail": "",
+      "expected": "12f7267c6c4c1a1f55ff5ebbd03b8c1101e987dc6574d070fe3ef2f47a2d4a29",
+      "matched": true,
+      "observed": "12f7267c6c4c1a1f55ff5ebbd03b8c1101e987dc6574d070fe3ef2f47a2d4a29"
+    },
+    {
+      "check": "previous_threshold_variant",
+      "detail": "",
+      "expected": "CURRENT_FRAME_ONLY",
+      "matched": true,
+      "observed": "CURRENT_FRAME_ONLY"
+    },
+    {
+      "check": "previous_threshold_seed",
+      "detail": "",
+      "expected": 0,
+      "matched": true,
+      "observed": 0
+    },
+    {
+      "check": "previous_threshold_history_frames",
+      "detail": "",
+      "expected": 1,
+      "matched": true,
+      "observed": 1
+    },
+    {
+      "check": "magnitude_support_recalculated",
+      "detail": "",
+      "expected": false,
+      "matched": true,
+      "observed": false
+    },
+    {
+      "check": "magnitude_support_post_hoc_clipping",
+      "detail": "",
+      "expected": false,
+      "matched": true,
+      "observed": false
+    },
+    {
+      "check": "previous_activation_threshold",
+      "detail": "",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": 0.99960857629776
+    },
+    {
+      "check": "previous_activity_definition",
+      "detail": "",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": "max over the 40x8x8 per-pixel changed-probability map; the frozen model has no frame-level activity head and this is a parameter-free reduction of an existing output"
+    },
+    {
+      "check": "previous_manifest_authorized_for_live",
+      "detail": "the previous gate was never authorized; it must stay that way",
+      "expected": false,
+      "matched": true,
+      "observed": false
+    },
+    {
+      "check": "model_hybrid_xml_sha256_expected",
+      "detail": "file not at assets/model_hybrid.xml in this snapshot",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": "50924661e0411f92ab529c790512b17b674e789434c592c3dbc6d2359164d4c6"
+    },
+    {
+      "check": "seed1_checkpoint_sha256",
+      "detail": "diagnostic only; never a deployment candidate",
+      "expected": "8797ad87e20f2d540b40eb0563d51b1523ec96069b431ed65253b61062770d7f",
+      "matched": true,
+      "observed": "8797ad87e20f2d540b40eb0563d51b1523ec96069b431ed65253b61062770d7f"
+    },
+    {
+      "check": "seed2_checkpoint_sha256",
+      "detail": "diagnostic only; never a deployment candidate",
+      "expected": "b4fa1b6daa2cf66b75fbe53be2039cbc152882508b3b2a831a29254a4b05cd6e",
+      "matched": true,
+      "observed": "b4fa1b6daa2cf66b75fbe53be2039cbc152882508b3b2a831a29254a4b05cd6e"
+    },
+    {
+      "check": "prox_gate_checkpoint_sha256",
+      "detail": "",
+      "expected": "50613f0914e48c0f88461fdb227b5988d413d9f08a6c932603450429bb28f7f9",
+      "matched": true,
+      "observed": "50613f0914e48c0f88461fdb227b5988d413d9f08a6c932603450429bb28f7f9"
+    },
+    {
+      "check": "prox_gate_decision",
+      "detail": "",
+      "expected": "PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE",
+      "matched": true,
+      "observed": "PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE"
+    },
+    {
+      "check": "onset_classification",
+      "detail": "",
+      "expected": "PROXIMITY_AMBIGUITY_DOMINANT",
+      "matched": true,
+      "observed": "PROXIMITY_AMBIGUITY_DOMINANT"
+    },
+    {
+      "check": "historical_false_positive_count",
+      "detail": "",
+      "expected": 17,
+      "matched": true,
+      "observed": 17
+    },
+    {
+      "check": "prox_activity_partition_sha256",
+      "detail": "",
+      "expected": "daf97291596ac38abc4056236bffa92c32a81584cdbcb04203c5bf7b1d37466f",
+      "matched": true,
+      "observed": "daf97291596ac38abc4056236bffa92c32a81584cdbcb04203c5bf7b1d37466f"
+    },
+    {
+      "check": "other_seed_checkpoints_present",
+      "detail": "reported as sensitivity diagnostics only; never selected",
+      "expected": "(recorded)",
+      "matched": true,
+      "observed": [
+        1,
+        2
+      ]
+    }
+  ],
+  "commits": {
+    "act_commit": "91fc42a1bfda2acd4b973bb53549bbf42d1fe9a6",
+    "act_dirty": false,
+    "act_expected": "91fc42a",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_dirty": false,
+    "molmospaces_expected": "678f2eb",
+    "root_branch": "qualify/hybrid-obstacle-uncertainty-abstention-v1",
+    "root_commit": "893c83ab4218a02031520f6d817f8c3fb3593895",
+    "root_expected": "b2051ae"
+  },
+  "decision_if_failed": "CHECKPOINT_OR_SOURCE_MISMATCH",
+  "failed": [],
+  "frozen_model": {
+    "checkpoint_path": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/final/CURRENT_FRAME_ONLY__seed0/best.pt",
+    "checkpoint_sha256": "47ae5cb1206c07d3f988bd0174b6cf4d09ea341e7e27850f5436ba9639c2bcd5",
+    "config": {
+      "active_fraction": 0.5,
+      "batch_size": 64,
+      "batches_per_epoch": 300,
+      "blocks": 2,
+      "dropout": 0.0,
+      "grad_clip": 1.0,
+      "hidden": 192,
+      "learning_rate": 0.0003,
+      "max_epochs": 100,
+      "patience": 12,
+      "seed": 0,
+      "variant": "CURRENT_FRAME_ONLY",
+      "weight_decay": 0.0001,
+      "weights": {
+        "active_delta": 30.0,
+        "all_valid_field": 5.0,
+        "changed_mask": 2.0,
+        "focal_gamma": 2.0,
+        "head_consistency": 20.0,
+        "huber_beta": 0.01,
+        "mask_pos_weight_cap": 32.0,
+        "quiet": 20.0,
+        "temporal_smoothness": 0.0
+      }
+    },
+    "model_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+    "parameter_count": 838434,
+    "previous_threshold": 0.02819432708943556,
+    "previous_threshold_rule": "frame-level 99th percentile of oracle-zero norms on 8 calibration trajectories",
+    "seed": 0,
+    "variant": "CURRENT_FRAME_ONLY"
+  },
+  "report_sha256": "2635964e3686a117edacd4c51d43fdc7bde8d8c02e35f81eed20ba7d7423644d",
+  "schema": "hybrid_obstacle_reference_threshold_provenance_v1"
+}

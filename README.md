@@ -994,3 +994,48 @@ false positive, one has a run of 7.
 Next: one predeclared trajectory-bootstrap ensemble, uncertainty used **only** for
 abstention, seed-0 mean model retained, qualified on development4 before confirmatory41.
 `confirmatory41` remains untouched.
+
+## Hybrid obstacle safety residual: uncertainty abstention (bootstrap collapsed)
+
+`docs/HYBRID_OBSTACLE_UNCERTAINTY_ABSTENTION_FINAL_DECISION.md` —
+`UNCERTAINTY_ABSTENTION_CALIBRATION_INFEASIBLE`, Case C.
+
+All five bootstrap members trained and strict-loaded cleanly (0 constraint violations, all
+well under the 0.0715 trivial baseline). **No agreement threshold satisfies the contract**,
+and the reason is that swapping seed-variance for data-variance destroyed the signal.
+
+**Trajectory-bootstrap disagreement is not seed disagreement.** Seeds 0/1/2 were each trained
+on the *full* training set, so their disagreement isolated seed variance at fixed data. The
+bootstrap members see 24–28 unique clusters each, so their disagreement is dominated by how
+much data they happened to get:
+
+| Anchor-vs-member agreement | Three seeds (full data) | Trajectory bootstrap |
+|---|---:|---:|
+| Genuine active frames | 0.71–0.78 | **0.5467** |
+| Oracle-zero frames | — | 0.6000 |
+| Historical false positives | 0.167 | — |
+| **Separation** | **≈0.55** | **+0.053** |
+
+Members agree with *each other* at only 0.41. Any threshold low enough to keep genuine
+activations accepts nearly everything; any threshold high enough to abstain meaningfully
+throws away genuine activations too.
+
+**A second, independent failure sits underneath.** At agreement threshold 0 — abstaining on
+nothing — median active recall is **0.786**, already below the 0.80 floor. That is the frozen
+activity threshold alone (range 0.152–1.000 over 18 trajectories), which this task may not
+refit. *Even a perfect uncertainty metric would have failed this contract on this split.*
+Both are reported, because acting on one alone would mislead.
+
+**The anti-degeneracy floors earned their place.** The previous task recommended a
+quiet-frame acceptance floor; it was added and is exactly what fails first as the threshold
+rises. Final false activation is 0.000 at *every* threshold, so on false-activation grounds
+alone a threshold near 0.6 would have looked attractive while abstaining on half of every
+trajectory. Don't weaken these to make something feasible.
+
+No deployment manifest written, 0 of 20 live rollouts, `development4` not executed,
+`confirmatory41` untouched. Seed 0 unaltered, no averaging, no member substitution — the ACT
+`ACT_PLUS_UNCERTAINTY_ABSTENTION` condition is committed but never ran.
+
+Next: decide explicitly whether the 0.80 recall floor or the frozen threshold gives way (they
+are currently incompatible), and if uncertainty is retried, **keep the data fixed and vary
+only the seed** — that is the construction the evidence actually supports.

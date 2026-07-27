@@ -1,0 +1,31 @@
+{
+  "activity_gate_alone_recall": {
+    "max": 1.0,
+    "median": 0.786,
+    "meets_080_floor": false,
+    "min": 0.1519,
+    "trajectories": 18
+  },
+  "anchor_agreement_median": {
+    "activity_gate_fail": 0.6,
+    "activity_gate_pass": 0.5901,
+    "oracle_active": 0.5467,
+    "oracle_zero": 0.6
+  },
+  "mean_pairwise_agreement_among_members": {
+    "active": 0.4092,
+    "zero": 0.35
+  },
+  "raw_output": "=== anchor_mask_agreement distribution (bootstrap ensemble vs seed 0) ===\n  oracle-active          n=  1099 median=0.5467 q10=0.1667 q90=0.7114\n  oracle-zero            n=  4381 median=0.6000 q10=0.2000 q90=1.0000\n  activity-gate PASS     n=   774 median=0.5901 q10=0.2712 q90=0.7162\n  activity-gate FAIL     n=  4706 median=0.6000 q10=0.2000 q90=1.0000\n\n=== compare: three-seed audit reported active median 0.71-0.78, historical FP 0.167 ===\n  bootstrap active median   = 0.5467\n  bootstrap zero median     = 0.6000\n  separation (zero - active)= +0.0533\n\n=== mean pairwise agreement among members (diagnostic) ===\n  active median=0.4092  zero median=0.3500\n\n=== activity gate alone, per trajectory recall ===\n  trajectories with active frames: 18\n  median=0.7860 min=0.1519 max=1.0000\n  contract floor 0.80 -> met by activity gate alone: False\n",
+  "schema": "hybrid_obstacle_uncertainty_agreement_diagnostic_v1",
+  "separation_zero_minus_active": 0.0533,
+  "split": "threshold_calibration (8 clusters of reference_train)",
+  "three_seed_reference": {
+    "genuine_active_median_range": [
+      0.71,
+      0.78
+    ],
+    "historical_false_positive_median": 0.167,
+    "note": "seeds 0/1/2 were each trained on the FULL reference_train; the bootstrap members see ~27 of 40 resampled clusters, so the two ensembles measure different things"
+  }
+}
