@@ -231,6 +231,37 @@ def main() -> int:
     checks.add("confirmatory41_not_executed", False,
                bool(conf41.get("executed_in_this_task", False)))
 
+    # ---- 8b. previous threshold manifest and magnitude-support bound -------------
+    threshold_manifest_path = ROOT / "configs" / "hybrid_obstacle_reference_threshold_v1.json"
+    if threshold_manifest_path.is_file():
+        tm = json.loads(threshold_manifest_path.read_text())
+        recorded = tm.pop("manifest_sha256")
+        checks.add("previous_threshold_manifest_sha256", recorded, canonical_hash(tm))
+        tm["manifest_sha256"] = recorded
+        checks.add("previous_threshold_variant", "CURRENT_FRAME_ONLY",
+                   tm["model"]["variant"])
+        checks.add("previous_threshold_seed", 0, tm["model"]["seed"])
+        checks.add("previous_threshold_history_frames", 1, tm["model"]["history_frames"])
+        checks.add("magnitude_support_recalculated", False,
+                   tm["magnitude_support"]["recalculated_in_this_task"])
+        checks.add("magnitude_support_post_hoc_clipping", False,
+                   tm["magnitude_support"]["post_hoc_clipping"])
+        checks.note("previous_activation_threshold",
+                    tm["activation"]["selected_threshold"])
+        checks.note("previous_activity_definition", tm["activation"]["activity_definition"])
+        checks.add("previous_manifest_authorized_for_live", False,
+                   tm["authorized_for_live"],
+                   detail="the previous gate was never authorized; it must stay that way")
+    hybrid_xml = ROOT / "assets" / "model_hybrid.xml"
+    if hybrid_xml.is_file():
+        checks.add("model_hybrid_xml_sha256",
+                   stack["pinned_hashes"]["model_hybrid_xml_sha256"],
+                   sha256_file(hybrid_xml))
+    else:
+        checks.note("model_hybrid_xml_sha256_expected",
+                    stack["pinned_hashes"]["model_hybrid_xml_sha256"],
+                    detail="file not at assets/model_hybrid.xml in this snapshot")
+
     # ---- 9. seed disposition ----------------------------------------------------
     other_seeds = {c["seed"]: c["sha256"] for c in parked["checkpoints"]
                    if c["variant"] == "CURRENT_FRAME_ONLY" and c["seed"] != 0}

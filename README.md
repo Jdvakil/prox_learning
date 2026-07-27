@@ -887,3 +887,58 @@ model was retrained, no seed reselected, no controller constant changed. `confir
 remains untouched.
 
 **Next change must be to the activity model or training objective, not the threshold.**
+
+## Hybrid obstacle safety residual: proximity-only activity gate (infeasible)
+
+`docs/HYBRID_OBSTACLE_PROX_ACTIVITY_GATE_FINAL_DECISION.md` —
+`PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE`, Case B.
+
+**The previous task's hypothesis was wrong, and causal intervention says so.** The onset
+false activations were attributed to a proprioceptive/episode-onset prior. Running eight
+interventions on the frozen checkpoint refutes it: with real state and the proximity field
+replaced by a clear reference, activity on the 17 known false positives collapses from
+0.9999 to **0.0229**. Shuffling state or replacing it with the batch mean moves nothing
+(0.9999 either way). **State alone does not fire the gate.** Classification:
+`PROXIMITY_AMBIGUITY_DOMINANT`.
+
+The structural audit still condemns the old design: **there is no dedicated activity head**.
+State is summed into every sensor token before the cross-sensor transformer, the shared
+decoder emits the mask-logit channel, and "activity" is a max-reduction of that same
+channel. Activity and the parked field are siblings from one decoder — entangled by
+construction.
+
+So a proximity-only gate was built to spec (90,241 params, budget 250,000), trained once on
+seed 0 over a fresh 40/8/8/8 nested episode partition, onset-zero frames weighted 4× with a
+trajectory-level onset-**max** penalty (a mean would score seven clustered activations the
+same as seven scattered ones — the clustered case is the dangerous one).
+
+**No feasible threshold exists.** Recall ≥ 0.80 and mean trajectory FPR ≤ 0.02 are not
+jointly attainable anywhere: at τ=0.50 recall 0.802 but FPR **24.7%**; at τ=0.99 FPR 1.1%
+but recall **0.022**. 3,502 of 5,447 candidates clear the recall screen; **zero** are
+feasible.
+
+**This is an information limit, not underfitting** — measured, not assumed:
+
+| Split | Gate AUROC | Old head AUROC |
+|---|---:|---:|
+| gate_training | 0.9893 | 0.9982 |
+| threshold_calibration (held out) | **0.7859** | **0.9998** |
+| nested_offline_evaluation | 0.8734 | 0.9979 |
+
+The gate fits its training split and fails to transfer; the old head — which sees proximity
+**and** state — is near-perfect on the same held-out episodes. **Current proximity alone
+does not identify removable hazard evidence.** The causal audit showed proximity is
+*necessary* (clearing it extinguishes activation); it never showed it *sufficient*.
+
+Two things worth carrying forward. The old head is already at AUROC 0.998 held out — its
+defect is 17 rare, clustered, onset-located false positives out of ~22,000 frames, not a
+separation failure, so replacing it wholesale trades a rare failure for a common one. And
+the prohibition on state input is *what makes* the isolated gate weak; any future design
+that keeps state out of the activity path needs a different disambiguator — uncertainty over
+the predicted parked field is the obvious candidate, since the frames that fool the gate are
+exactly those where the field is compatible with both a hazard and a clear scene.
+
+The task stops at calibration per its own rules: **0 of 20 permitted live rollouts**, no
+nested evaluation, no runtime integration. The parked-field model was not retrained, no seed
+reselected, no controller constant changed, dataset untouched. `confirmatory41` remains
+untouched.

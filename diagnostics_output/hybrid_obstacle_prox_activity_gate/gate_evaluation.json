@@ -1,0 +1,170 @@
+{
+  "calibration": {
+    "bootstrap": {
+      "confidence": 0.95,
+      "one_sided": true,
+      "replicates": 10000,
+      "resampled_unit": "episode",
+      "seed": 20260727
+    },
+    "bootstrap_upper_fpr": null,
+    "candidate_count": 5447,
+    "feasible_count": 0,
+    "screened": 3502,
+    "selected_index": null,
+    "selected_threshold": null,
+    "selection_rule": "lexicographic: lowest bootstrap FPR upper bound, lowest max onset false-positive run, highest active recall, highest threshold"
+  },
+  "decision_if_infeasible": "PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE",
+  "feasible": false,
+  "gate_checkpoint": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/prox_gate/gate_best.pt",
+  "gate_checkpoint_epoch": 8,
+  "gate_parameter_count": 90241,
+  "no_threshold_satisfies": "recall >= 0.80 and mean trajectory zero FPR <= 0.02 are not jointly attainable at any operating point",
+  "partition_manifest_sha256": "daf97291596ac38abc4056236bffa92c32a81584cdbcb04203c5bf7b1d37466f",
+  "post_termination_diagnostics_note": "the sweep and AUROC below were computed after calibration had already failed and the task had terminated; no threshold, model or split selection follows them",
+  "report_sha256": "be31154bd050e1ad22079749ff21a2f0abec668992b59b3be61583965a8ebff1",
+  "schema": "hybrid_obstacle_prox_activity_evaluate_v1",
+  "separability": {
+    "gate_training": {
+      "active_prevalence": 0.27889428739693756,
+      "frames": 27168,
+      "gate_auroc": 0.9892683967038839,
+      "old_head_auroc": 0.9981766089743651
+    },
+    "nested_offline_evaluation": {
+      "active_prevalence": 0.2552563629656953,
+      "frames": 5422,
+      "gate_auroc": 0.8734021019963526,
+      "old_head_auroc": 0.9978903451889134
+    },
+    "threshold_calibration": {
+      "active_prevalence": 0.20054744525547447,
+      "frames": 5480,
+      "gate_auroc": 0.7858518846063498,
+      "old_head_auroc": 0.9997889804160949
+    }
+  },
+  "threshold_sweep": [
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.715,
+      "mean_trajectory_zero_fpr": 0.34405140622990626,
+      "median_active_cosine": 0.9999814466087141,
+      "median_active_recall": 0.8377192982456141,
+      "recall_meets_080": true,
+      "threshold": 0.1
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.68,
+      "mean_trajectory_zero_fpr": 0.30560755877575124,
+      "median_active_cosine": 0.9999814466087141,
+      "median_active_recall": 0.8377192982456141,
+      "recall_meets_080": true,
+      "threshold": 0.2
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.67,
+      "mean_trajectory_zero_fpr": 0.2812270888737901,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.8210526315789474,
+      "recall_meets_080": true,
+      "threshold": 0.3
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.665,
+      "mean_trajectory_zero_fpr": 0.2612679060436388,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.805982905982906,
+      "recall_meets_080": true,
+      "threshold": 0.4
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.645,
+      "mean_trajectory_zero_fpr": 0.2470747125886469,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.8017094017094017,
+      "recall_meets_080": true,
+      "threshold": 0.5
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.63,
+      "mean_trajectory_zero_fpr": 0.22838335113455943,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.765146358066712,
+      "recall_meets_080": false,
+      "threshold": 0.6
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.605,
+      "mean_trajectory_zero_fpr": 0.20592617662757226,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.7553418803418803,
+      "recall_meets_080": false,
+      "threshold": 0.7
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.57,
+      "mean_trajectory_zero_fpr": 0.18045596777055867,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.7510683760683761,
+      "recall_meets_080": false,
+      "threshold": 0.8
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 2,
+      "max_hazard_absent_trajectory_fpr": 0.335,
+      "mean_trajectory_zero_fpr": 0.12973456538749822,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.580085403726708,
+      "recall_meets_080": false,
+      "threshold": 0.9
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 2,
+      "max_hazard_absent_trajectory_fpr": 0.28888888888888886,
+      "mean_trajectory_zero_fpr": 0.07977619565959557,
+      "median_active_cosine": 0.9999844176144155,
+      "median_active_recall": 0.3970588235294118,
+      "recall_meets_080": false,
+      "threshold": 0.95
+    },
+    {
+      "fpr_meets_002": true,
+      "max_consecutive_onset_false_positive_run": 1,
+      "max_hazard_absent_trajectory_fpr": 0.035,
+      "mean_trajectory_zero_fpr": 0.010907846867059319,
+      "median_active_cosine": 0.9999760595026115,
+      "median_active_recall": 0.022242414664981038,
+      "recall_meets_080": false,
+      "threshold": 0.99
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 0,
+      "max_hazard_absent_trajectory_fpr": 0.0,
+      "mean_trajectory_zero_fpr": 0.0,
+      "median_active_cosine": 0.9999854215133475,
+      "median_active_recall": 0.0,
+      "recall_meets_080": false,
+      "threshold": 0.999
+    }
+  ]
+}

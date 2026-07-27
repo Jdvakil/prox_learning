@@ -1,0 +1,1279 @@
+{
+  "act_trained_or_modified": false,
+  "artifacts": {
+    "current_activity_path": "diagnostics_output/hybrid_obstacle_prox_activity_gate/current_activity_path.json",
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_prox_activity_gate/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_PROX_ACTIVITY_GATE_FINAL_DECISION.md",
+    "gate_evaluation": "diagnostics_output/hybrid_obstacle_prox_activity_gate/gate_evaluation.json",
+    "gate_source": "causal_parked_skin/activity_gate.py",
+    "gate_training": "diagnostics_output/hybrid_obstacle_prox_activity_gate/gate_training.json",
+    "onset_attribution": "diagnostics_output/hybrid_obstacle_prox_activity_gate/onset_attribution.json",
+    "partition_manifest": "configs/hybrid_obstacle_prox_activity_partition_v1.json",
+    "provenance": "diagnostics_output/hybrid_obstacle_prox_activity_gate/provenance_verification.json",
+    "tests": "tests/test_prox_activity_gate.py"
+  },
+  "calibration": {
+    "bootstrap": {
+      "confidence": 0.95,
+      "one_sided": true,
+      "replicates": 10000,
+      "resampled_unit": "episode",
+      "seed": 20260727
+    },
+    "bootstrap_upper_fpr": null,
+    "candidate_count": 5447,
+    "feasible_count": 0,
+    "screened": 3502,
+    "selected_index": null,
+    "selected_threshold": null,
+    "selection_rule": "lexicographic: lowest bootstrap FPR upper bound, lowest max onset false-positive run, highest active recall, highest threshold"
+  },
+  "case": "B",
+  "case_interpretation": "proximity-only gate cannot separate oracle activity offline; current proximity alone does not identify removable hazard evidence reliably. Do not add another threshold or activity MLP; the next model must use spatial uncertainty or jointly model activity and parked-field credibility",
+  "commits": {
+    "act_commit": "91fc42a1bfda2acd4b973bb53549bbf42d1fe9a6",
+    "act_expected": "91fc42a",
+    "act_modified": false,
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_expected": "678f2eb",
+    "molmospaces_modified": false,
+    "root_branch": "qualify/hybrid-obstacle-prox-activity-gate-v1",
+    "root_commit": "bbfdb5e5f4ff846e25a61bf049461f3513a83fd3",
+    "root_starting_commit": "bbfdb5e"
+  },
+  "confirmatory41_executed": false,
+  "constraints_honoured": {
+    "act_trained_or_modified": false,
+    "another_parked_field_seed_selected": false,
+    "confirmatory41_executed": false,
+    "development4_or_confirmatory41_used_for_gate_training": false,
+    "hand_coded_first_n_frame_suppression": false,
+    "magnitude_support_bound_changed": false,
+    "max_new_live_rollouts": 20,
+    "msaa_cameras_robot_obstacle_task_changed": false,
+    "new_live_rollouts_executed": 0,
+    "paired_dataset_modified": false,
+    "parked_field_physical_constraint_changed": false,
+    "parked_field_retrained": false,
+    "pushed": false,
+    "residual_controller_changed": false,
+    "safety_cvae_trained_or_modified": false,
+    "seeds_ensembled": false,
+    "state_features_used_by_gate": false,
+    "temporal_proximity_history_reintroduced": false,
+    "threshold_only_change": false
+  },
+  "dataset_modified": false,
+  "date": "2026-07-27",
+  "decision": "PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE",
+  "development4_executed": false,
+  "final_decision_sha256": "2bc43347a5675efb55a373a39214b80a5c6f1c8969ddcf0a45a28589a53fdc8f",
+  "gate": {
+    "architecture": {
+      "activity_head": "Linear(128->64) SiLU Linear(64->1)",
+      "cross_sensor": "TransformerEncoder layers=2 d_model=64 heads=4 ff=128 pre-norm dropout=0",
+      "per_sensor": "Linear(128->64) SiLU Linear(64->64) SiLU + sensor embedding",
+      "pooling": "concat(mean, max) over 40 sensor tokens -> 128"
+    },
+    "best_epoch": 8,
+    "best_validation_metric": 0.4214515258058228,
+    "checkpoint_committed": false,
+    "checkpoint_path": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/prox_gate/gate_best.pt",
+    "checkpoint_policy": "gate weights remain external to git; no approved artifact policy exists for binary weights here",
+    "checkpoint_sha256": "50613f0914e48c0f88461fdb227b5988d413d9f08a6c932603450429bb28f7f9",
+    "frames": {
+      "checkpoint_validation": 5449,
+      "gate_training": 27168,
+      "gate_training_active": 7577,
+      "gate_training_onset_zero": 2490
+    },
+    "gate_id": "PROX_EVIDENCE_ACTIVITY_GATE_V1",
+    "label_definition": "activity_target = any changed_pixel_mask value is true",
+    "loss": {
+      "dynamic_positive_weight": false,
+      "focal_loss": false,
+      "onset_penalty": "mean over represented trajectories of the max predicted activity on their onset-zero frames",
+      "onset_penalty_weight": 1.0,
+      "weights": {
+        "onset_zero": 4.0,
+        "oracle_active": 1.0,
+        "ordinary_zero": 1.0
+      }
+    },
+    "onset_definition": "episode_step < max(10, ceil(0.1 * trajectory_length))",
+    "optimization": {
+      "batch_size": 256,
+      "batches_per_epoch": 100,
+      "checkpoint_rule": "minimum trajectory-balanced BCE on the checkpoint-validation episodes",
+      "dropout": 0.0,
+      "gradient_clipping": 1.0,
+      "learning_rate": 0.0003,
+      "max_epochs": 80,
+      "optimizer": "AdamW",
+      "restarted_with_another_seed": false,
+      "seed": 0,
+      "training_runs": 1,
+      "weight_decay": 1e-05
+    },
+    "parameter_budget": 250000,
+    "parameter_count": 90241,
+    "permitted_inputs": [
+      "current_closeness",
+      "current_valid_mask",
+      "sensor_identity"
+    ],
+    "sampling": {
+      "global_frame_count_weighting": false,
+      "order": [
+        "distribution uniform",
+        "trajectory uniform within distribution",
+        "activity class 50/50",
+        "zero split 50/50 onset/non-onset",
+        "frame uniform within group"
+      ],
+      "replacement": "within the selected trajectory group only"
+    }
+  },
+  "live_rollouts_executed": 0,
+  "live_rollouts_permitted": 20,
+  "magnitude_support_changed": false,
+  "no_threshold_satisfies": "recall >= 0.80 and mean trajectory zero FPR <= 0.02 are not jointly attainable at any operating point",
+  "old_activity_path": {
+    "dedicated_activity_head_exists": false,
+    "finding": "There is no isolated activity path. Proprioceptive state is summed into every sensor token before the cross-sensor transformer, the shared decoder emits the mask-logit channel from those tokens, and the activity value is a max-reduction of that channel. State can therefore drive activation with no proximity evidence, and the activity signal is entangled with the parked-field decoder by construction rather than by accident.",
+    "proximity_reaches_activity": true,
+    "shares_context_conditioned_tokens_with_parked_decoder": true,
+    "stages": [
+      {
+        "current_proximity_can_reach": true,
+        "note": "shared per-sensor conv over the frame-t tile only",
+        "parked_field_can_reach": false,
+        "shape": [
+          320,
+          64,
+          8,
+          8
+        ],
+        "source_inputs": [
+          "current_closeness",
+          "current_valid_mask"
+        ],
+        "stage": "current_field_encoder",
+        "state_can_reach": false
+      },
+      {
+        "current_proximity_can_reach": true,
+        "note": "mean+max pooled conv features projected to d_model",
+        "parked_field_can_reach": false,
+        "shape": [
+          320,
+          192
+        ],
+        "source_inputs": [
+          "current_closeness",
+          "current_valid_mask"
+        ],
+        "stage": "sensor_token_projection",
+        "state_can_reach": false
+      },
+      {
+        "current_proximity_can_reach": false,
+        "note": "29-D proprioceptive vector -> d_model, ADDED to every sensor token",
+        "parked_field_can_reach": false,
+        "shape": [
+          8,
+          192
+        ],
+        "source_inputs": [
+          "qpos",
+          "qvel",
+          "nominal_action",
+          "gripper_state",
+          "gripper_command"
+        ],
+        "stage": "state_context_encoder",
+        "state_can_reach": true
+      },
+      {
+        "current_proximity_can_reach": true,
+        "note": "state is summed into the tokens BEFORE attention",
+        "parked_field_can_reach": false,
+        "shape": [
+          8,
+          40,
+          192
+        ],
+        "source_inputs": [
+          "sensor_token_projection",
+          "state_context_encoder",
+          "sensor_embedding",
+          "link_embedding"
+        ],
+        "stage": "cross_sensor_transformer",
+        "state_can_reach": true
+      },
+      {
+        "current_proximity_can_reach": true,
+        "note": "emits BOTH logit channels: channel 0 is the change mask that becomes the activity signal, channel 1 is the magnitude",
+        "parked_field_can_reach": false,
+        "shape": [
+          320,
+          2,
+          8,
+          8
+        ],
+        "source_inputs": [
+          "cross_sensor_transformer",
+          "current_field_encoder"
+        ],
+        "stage": "shared_per_sensor_decoder",
+        "state_can_reach": true
+      }
+    ],
+    "state_reaches_activity": true,
+    "training_gradient_connectivity": {
+      "activity_objective": "focal BCE on changed_pixel_mask, i.e. the same channel the activity value reduces",
+      "explanation": "the mask loss backpropagates through the shared decoder into the cross-sensor tokens, and the state embedding is summed into those tokens, so the activity objective did train the state encoder",
+      "gradient_reached_state_encoder": true
+    }
+  },
+  "onset_attribution": {
+    "classification": "PROXIMITY_AMBIGUITY_DOMINANT",
+    "classification_evidence": {
+      "fraction_of_known_fps_dropping_by_0.5": {
+        "PROX_ONLY": 0.47058823529411764,
+        "STATE_MEAN": 0.0,
+        "STATE_SHUFFLED_WITHIN_ONSET": 0.0,
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": 0.29411764705882354
+      },
+      "median_activity_full_input": 0.9999876022338867,
+      "median_activity_prox_only": 0.9871872663497925,
+      "median_activity_state_only": 0.020788459107279778,
+      "proximity_alone_reproduces_activation": true,
+      "state_intervention_reduces_majority": false
+    },
+    "group_sizes": {
+      "A_known_false_positives": 17,
+      "B_onset_zero_hazard_absent": 450,
+      "C_onset_active_hazard_present": 452,
+      "D_later_active": 2651,
+      "E_later_zero": 12812
+    },
+    "harness_control": {
+      "dataset_modified": false,
+      "identity_control_exact": true,
+      "identity_control_max_activity_delta": 0.0,
+      "model_weights_unchanged": true
+    },
+    "interventions": [
+      "FULL_INPUT",
+      "PROX_ONLY",
+      "STATE_ONLY",
+      "STATE_SHUFFLED_WITHIN_ONSET",
+      "STATE_SWAPPED_ACROSS_HAZARD_STRATA",
+      "PROX_SWAPPED_ACROSS_HAZARD_STRATA",
+      "STATE_MEAN",
+      "CURRENT_FIELD_IDENTITY_CONTROL"
+    ],
+    "known_false_positive_count": 17,
+    "known_false_positive_frames": [
+      {
+        "activity": 0.9999991655349731,
+        "distribution": "ACT_ONLY_ON_POLICY",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.9999876022338867,
+        "distribution": "ACT_ONLY_ON_POLICY",
+        "episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 4,
+        "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.9998279809951782,
+        "distribution": "ACT_ONLY_ON_POLICY",
+        "episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.999998927116394,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.999998927116394,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 1,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9999990463256836,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 2,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9999983310699463,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 3,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9999953508377075,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 4,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9999512434005737,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 5,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9998328685760498,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 6,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 63
+      },
+      {
+        "activity": 0.9998049139976501,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "trajectory_length": 97
+      },
+      {
+        "activity": 0.9998049139976501,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 1,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "trajectory_length": 97
+      },
+      {
+        "activity": 0.9998501539230347,
+        "distribution": "EXPERT_RECONSTRUCTED",
+        "episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 2,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "trajectory_length": 97
+      },
+      {
+        "activity": 0.9999991655349731,
+        "distribution": "ORACLE_ON_POLICY",
+        "episode_id": "499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "hazard_present": false,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.9999494552612305,
+        "distribution": "ORACLE_ON_POLICY",
+        "episode_id": "72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 9,
+        "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.9999876022338867,
+        "distribution": "ORACLE_ON_POLICY",
+        "episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 4,
+        "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+        "trajectory_length": 200
+      },
+      {
+        "activity": 0.9998279809951782,
+        "distribution": "ORACLE_ON_POLICY",
+        "episode_id": "cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "hazard_present": true,
+        "partition": "offline_reference_test",
+        "step": 0,
+        "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad",
+        "trajectory_length": 200
+      }
+    ],
+    "results": {
+      "A_known_false_positives": {
+        "CURRENT_FIELD_IDENTITY_CONTROL": {
+          "activity_pre_logit": 11.130992160123938,
+          "activity_probability": {
+            "max": 0.9999991655349731,
+            "mean": 0.9999302134794348,
+            "median": 0.9999876022338867
+          },
+          "change_mask_fraction": 0.003906250053071691,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.11775448315722101,
+          "predicted_removable_field_norm": 1.291513979434967,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 8.545545185313506
+        },
+        "FULL_INPUT": {
+          "activity_pre_logit": 11.130992160123938,
+          "activity_probability": {
+            "max": 0.9999991655349731,
+            "mean": 0.9999302134794348,
+            "median": 0.9999876022338867
+          },
+          "change_mask_fraction": 0.003906250053071691,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.11775448315722101,
+          "predicted_removable_field_norm": 1.291513979434967,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 8.545545185313506
+        },
+        "PROX_ONLY": {
+          "activity_pre_logit": 0.701077797833611,
+          "activity_probability": {
+            "max": 0.9999902248382568,
+            "mean": 0.5488725174732013,
+            "median": 0.9871872663497925
+          },
+          "change_mask_fraction": 0.0007582720598507234,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.057058543810539424,
+          "predicted_removable_field_norm": 0.36624547180009454,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 1.0039175748825073
+        },
+        "PROX_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": 1.762822754242841,
+          "activity_probability": {
+            "max": 0.9999998807907104,
+            "mean": 0.3847666222547345,
+            "median": 0.033378031104803085
+          },
+          "change_mask_fraction": 0.0017003677100600565,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.15700246151098274,
+          "predicted_removable_field_norm": 0.43222392092665984,
+          "proximity_token_embedding_norm": 61.954429402070886,
+          "state_context_embedding_norm": 8.545545185313506
+        },
+        "STATE_MEAN": {
+          "activity_pre_logit": 11.85051648757037,
+          "activity_probability": {
+            "max": 0.9999994039535522,
+            "mean": 0.9999379515647888,
+            "median": 0.9999945163726807
+          },
+          "change_mask_fraction": 0.004227941196672071,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.11788183308261282,
+          "predicted_removable_field_norm": 1.2931180841782515,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 8.522459983825684
+        },
+        "STATE_ONLY": {
+          "activity_pre_logit": -3.838887228685267,
+          "activity_probability": {
+            "max": 0.05285898223519325,
+            "mean": 0.022870670565787482,
+            "median": 0.020788459107279778
+          },
+          "change_mask_fraction": 0.0,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.0007989199032582453,
+          "predicted_removable_field_norm": 0.0015112693089416578,
+          "proximity_token_embedding_norm": 58.50008010864258,
+          "state_context_embedding_norm": 8.545545185313506
+        },
+        "STATE_SHUFFLED_WITHIN_ONSET": {
+          "activity_pre_logit": 11.730464823105756,
+          "activity_probability": {
+            "max": 0.9999998807907104,
+            "mean": 0.9998884165988249,
+            "median": 0.9999958276748657
+          },
+          "change_mask_fraction": 0.0040211397794979245,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.11642108961720676,
+          "predicted_removable_field_norm": 1.2476017405005062,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 8.545545185313506
+        },
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": 6.551296921337352,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.731603382871767,
+            "median": 0.9995203018188477
+          },
+          "change_mask_fraction": 0.0032398897473125115,
+          "frames": 17,
+          "predicted_oracle_differential_norm": 0.07941131256787812,
+          "predicted_removable_field_norm": 0.9497107140010445,
+          "proximity_token_embedding_norm": 62.86672345329733,
+          "state_context_embedding_norm": 10.941328217001523
+        }
+      },
+      "B_onset_zero_hazard_absent": {
+        "CURRENT_FIELD_IDENTITY_CONTROL": {
+          "activity_pre_logit": -3.6753183329105377,
+          "activity_probability": {
+            "max": 0.9999991655349731,
+            "mean": 0.06914808500150685,
+            "median": 0.01673347782343626
+          },
+          "change_mask_fraction": 0.00015039062665891833,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.004089067569352665,
+          "predicted_removable_field_norm": 0.0399043916851293,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 8.413300428390503
+        },
+        "FULL_INPUT": {
+          "activity_pre_logit": -3.6753183329105377,
+          "activity_probability": {
+            "max": 0.9999991655349731,
+            "mean": 0.06914808500150685,
+            "median": 0.01673347782343626
+          },
+          "change_mask_fraction": 0.00015039062665891833,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.004089067569352665,
+          "predicted_removable_field_norm": 0.0399043916851293,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 8.413300428390503
+        },
+        "PROX_ONLY": {
+          "activity_pre_logit": -6.593825535774231,
+          "activity_probability": {
+            "max": 0.9958040118217468,
+            "mean": 0.037544957914069525,
+            "median": 0.0008101700805127621
+          },
+          "change_mask_fraction": 3.3203125130967234e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.0020936579141419597,
+          "predicted_removable_field_norm": 0.012905695014494501,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 1.0039175748825073
+        },
+        "PROX_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": 1.2307966196537017,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.3874289730569944,
+            "median": 0.06390117481350899
+          },
+          "change_mask_fraction": 0.0014248047074943316,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.38583483100005467,
+          "predicted_removable_field_norm": 0.39562550658484613,
+          "proximity_token_embedding_norm": 62.02511037826538,
+          "state_context_embedding_norm": 8.413300428390503
+        },
+        "STATE_MEAN": {
+          "activity_pre_logit": -3.6025251948833468,
+          "activity_probability": {
+            "max": 0.9999992847442627,
+            "mean": 0.07062968711601571,
+            "median": 0.014088733587414026
+          },
+          "change_mask_fraction": 0.0001660156259458745,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.005457226599644116,
+          "predicted_removable_field_norm": 0.043546321732431004,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 8.33844978928566
+        },
+        "STATE_ONLY": {
+          "activity_pre_logit": -3.950768412947655,
+          "activity_probability": {
+            "max": 0.8069276213645935,
+            "mean": 0.05583386334419629,
+            "median": 0.020755291916429996
+          },
+          "change_mask_fraction": 3.125000061118044e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.002261632612028528,
+          "predicted_removable_field_norm": 0.013518217310718086,
+          "proximity_token_embedding_norm": 58.50008010864258,
+          "state_context_embedding_norm": 8.413300428390503
+        },
+        "STATE_SHUFFLED_WITHIN_ONSET": {
+          "activity_pre_logit": -3.531930401325226,
+          "activity_probability": {
+            "max": 0.9999997615814209,
+            "mean": 0.09235783640178852,
+            "median": 0.014559312257915735
+          },
+          "change_mask_fraction": 0.00019238281522120814,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.011778674445017021,
+          "predicted_removable_field_norm": 0.058998052768654004,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 8.413300428390503
+        },
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": -5.379108111858368,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.07880257299011646,
+            "median": 0.0025698021054267883
+          },
+          "change_mask_fraction": 0.00012597656714206096,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.006018031029831059,
+          "predicted_removable_field_norm": 0.040036617604952605,
+          "proximity_token_embedding_norm": 62.87186305046082,
+          "state_context_embedding_norm": 11.992321560382843
+        }
+      },
+      "C_onset_active_hazard_present": {
+        "CURRENT_FIELD_IDENTITY_CONTROL": {
+          "activity_pre_logit": 19.071032432317732,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9985288056731224,
+            "median": 1.0
+          },
+          "change_mask_fraction": 0.0020087891091679923,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.44145877798553557,
+          "predicted_removable_field_norm": 1.047711097188294,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 8.709309809207916
+        },
+        "FULL_INPUT": {
+          "activity_pre_logit": 19.071032432317732,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9985288056731224,
+            "median": 1.0
+          },
+          "change_mask_fraction": 0.0020087891091679923,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.44145877798553557,
+          "predicted_removable_field_norm": 1.047711097188294,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 8.709309809207916
+        },
+        "PROX_ONLY": {
+          "activity_pre_logit": 5.566459387540817,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.7165861774997029,
+            "median": 0.9965167939662933
+          },
+          "change_mask_fraction": 0.001147460962238256,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.20398185855842718,
+          "predicted_removable_field_norm": 0.5062286977859608,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 1.0039175748825073
+        },
+        "PROX_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": -2.5656445276737214,
+          "activity_probability": {
+            "max": 0.9999979734420776,
+            "mean": 0.19781260196301445,
+            "median": 0.024049793370068073
+          },
+          "change_mask_fraction": 0.00045703125513682605,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.19884893233818127,
+          "predicted_removable_field_norm": 0.12203628766057677,
+          "proximity_token_embedding_norm": 61.854065570831295,
+          "state_context_embedding_norm": 8.709309809207916
+        },
+        "STATE_MEAN": {
+          "activity_pre_logit": 18.753189301490785,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9987549540400505,
+            "median": 1.0
+          },
+          "change_mask_fraction": 0.0019785156698344506,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.44160156170837583,
+          "predicted_removable_field_norm": 1.0452084413915872,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 8.664674558639526
+        },
+        "STATE_ONLY": {
+          "activity_pre_logit": -4.107484802603722,
+          "activity_probability": {
+            "max": 0.23904457688331604,
+            "mean": 0.01901049891777802,
+            "median": 0.018842266872525215
+          },
+          "change_mask_fraction": 0.0,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.00043321300431216515,
+          "predicted_removable_field_norm": 0.0009822537594754977,
+          "proximity_token_embedding_norm": 58.50008010864258,
+          "state_context_embedding_norm": 8.709309809207916
+        },
+        "STATE_SHUFFLED_WITHIN_ONSET": {
+          "activity_pre_logit": 18.696195713281632,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9983632849156856,
+            "median": 1.0
+          },
+          "change_mask_fraction": 0.0019804687954456312,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.44081638967152686,
+          "predicted_removable_field_norm": 1.0432689612731338,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 8.709309809207916
+        },
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": 5.802974280118942,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.6540936819157424,
+            "median": 0.9878553152084351
+          },
+          "change_mask_fraction": 0.0011923828395083546,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.18735648782025652,
+          "predicted_removable_field_norm": 0.5035799004275839,
+          "proximity_token_embedding_norm": 62.924022092819214,
+          "state_context_embedding_norm": 12.276556994915008
+        }
+      },
+      "D_later_active": {
+        "CURRENT_FIELD_IDENTITY_CONTROL": {
+          "activity_pre_logit": 11.274429329037666,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9602821270945424,
+            "median": 0.9999801516532898
+          },
+          "change_mask_fraction": 0.0044375000820582496,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.8964681264092981,
+          "predicted_removable_field_norm": 1.20088276317379,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 12.580900474190711
+        },
+        "FULL_INPUT": {
+          "activity_pre_logit": 11.274429329037666,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9602821270945424,
+            "median": 0.9999801516532898
+          },
+          "change_mask_fraction": 0.0044375000820582496,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.8964681264092981,
+          "predicted_removable_field_norm": 1.20088276317379,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 12.580900474190711
+        },
+        "PROX_ONLY": {
+          "activity_pre_logit": 5.525041733384132,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.7564613776738406,
+            "median": 0.9985507428646088
+          },
+          "change_mask_fraction": 0.002499023490017862,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.5577186823469205,
+          "predicted_removable_field_norm": 0.8650568741058519,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 1.0039175748825073
+        },
+        "PROX_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": -4.0028405857086184,
+          "activity_probability": {
+            "max": 0.9999485015869141,
+            "mean": 0.12169016254867984,
+            "median": 0.022524278610944748
+          },
+          "change_mask_fraction": 7.617187540745363e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.016160837192921784,
+          "predicted_removable_field_norm": 0.020738301871367763,
+          "proximity_token_embedding_norm": 61.742678594589236,
+          "state_context_embedding_norm": 12.580900474190711
+        },
+        "STATE_MEAN": {
+          "activity_pre_logit": 9.983443754911423,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9500925370035112,
+            "median": 0.9999468326568604
+          },
+          "change_mask_fraction": 0.003986328193350346,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.8596682366820911,
+          "predicted_removable_field_norm": 1.1266908164297293,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 11.573887934684754
+        },
+        "STATE_ONLY": {
+          "activity_pre_logit": -1.6244924226403237,
+          "activity_probability": {
+            "max": 0.9721011519432068,
+            "mean": 0.28512526883039757,
+            "median": 0.17578940838575363
+          },
+          "change_mask_fraction": 0.00020117188018048182,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.027347608998151144,
+          "predicted_removable_field_norm": 0.04760713442944734,
+          "proximity_token_embedding_norm": 58.50008010864258,
+          "state_context_embedding_norm": 12.580900474190711
+        },
+        "STATE_SHUFFLED_WITHIN_ONSET": {
+          "activity_pre_logit": 9.894447512626648,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9482665956706477,
+            "median": 0.9999368786811829
+          },
+          "change_mask_fraction": 0.004045898513286374,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.8639616877273029,
+          "predicted_removable_field_norm": 1.1346498562247052,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 12.580900474190711
+        },
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": 9.221751468777656,
+          "activity_probability": {
+            "max": 1.0,
+            "mean": 0.9146643259914709,
+            "median": 0.9998858571052551
+          },
+          "change_mask_fraction": 0.003954101630079095,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.8621794692053425,
+          "predicted_removable_field_norm": 1.0979940040633214,
+          "proximity_token_embedding_norm": 61.629170122146604,
+          "state_context_embedding_norm": 12.569448734521865
+        }
+      },
+      "E_later_zero": {
+        "CURRENT_FIELD_IDENTITY_CONTROL": {
+          "activity_pre_logit": -4.522914903461933,
+          "activity_probability": {
+            "max": 0.971299409866333,
+            "mean": 0.08401909944747558,
+            "median": 0.01219643047079444
+          },
+          "change_mask_fraction": 1.7578125261934475e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.0026574534413168925,
+          "predicted_removable_field_norm": 0.003539859163128899,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 12.22830537378788
+        },
+        "FULL_INPUT": {
+          "activity_pre_logit": -4.522914903461933,
+          "activity_probability": {
+            "max": 0.971299409866333,
+            "mean": 0.08401909944747558,
+            "median": 0.01219643047079444
+          },
+          "change_mask_fraction": 1.7578125261934475e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.0026574534413168925,
+          "predicted_removable_field_norm": 0.003539859163128899,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 12.22830537378788
+        },
+        "PROX_ONLY": {
+          "activity_pre_logit": -4.555386198163032,
+          "activity_probability": {
+            "max": 0.9911532998085022,
+            "mean": 0.06648573263904836,
+            "median": 0.0066288241650909185
+          },
+          "change_mask_fraction": 2.929687536379788e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.006918304794887238,
+          "predicted_removable_field_norm": 0.012034289344216123,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 1.0039175748825073
+        },
+        "PROX_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": -4.278777459263802,
+          "activity_probability": {
+            "max": 0.9999593496322632,
+            "mean": 0.12291531792287742,
+            "median": 0.011706436984241009
+          },
+          "change_mask_fraction": 0.00016015625347790775,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.06723523578006713,
+          "predicted_removable_field_norm": 0.044097082135160975,
+          "proximity_token_embedding_norm": 61.91019741058349,
+          "state_context_embedding_norm": 12.22830537378788
+        },
+        "STATE_MEAN": {
+          "activity_pre_logit": -4.864490170776844,
+          "activity_probability": {
+            "max": 0.9888906478881836,
+            "mean": 0.10250466803096117,
+            "median": 0.008524788077920675
+          },
+          "change_mask_fraction": 6.054687641153578e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.0265273666224999,
+          "predicted_removable_field_norm": 0.02049219593160932,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 10.869294354915619
+        },
+        "STATE_ONLY": {
+          "activity_pre_logit": -3.170626709163189,
+          "activity_probability": {
+            "max": 0.995603084564209,
+            "mean": 0.16168338735049134,
+            "median": 0.07048184052109718
+          },
+          "change_mask_fraction": 7.324218888243194e-05,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.014327127146693429,
+          "predicted_removable_field_norm": 0.026036866090298413,
+          "proximity_token_embedding_norm": 58.50008010864258,
+          "state_context_embedding_norm": 12.22830537378788
+        },
+        "STATE_SHUFFLED_WITHIN_ONSET": {
+          "activity_pre_logit": -3.899423277080059,
+          "activity_probability": {
+            "max": 0.9999716281890869,
+            "mean": 0.14673907254606092,
+            "median": 0.013611908536404371
+          },
+          "change_mask_fraction": 0.00018164063003496268,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.057030081038281076,
+          "predicted_removable_field_norm": 0.04521387515543219,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 12.22830537378788
+        },
+        "STATE_SWAPPED_ACROSS_HAZARD_STRATA": {
+          "activity_pre_logit": -3.900994403064251,
+          "activity_probability": {
+            "max": 0.9999997615814209,
+            "mean": 0.12745943071480725,
+            "median": 0.013744864147156477
+          },
+          "change_mask_fraction": 0.0001884765672002686,
+          "frames": 400,
+          "predicted_oracle_differential_norm": 0.06891907945646113,
+          "predicted_removable_field_norm": 0.04280400935493235,
+          "proximity_token_embedding_norm": 61.92717248916626,
+          "state_context_embedding_norm": 12.010133022665977
+        }
+      }
+    }
+  },
+  "parked_field_retrained": false,
+  "parked_field_seed_reselected": false,
+  "partition": {
+    "assignment_rule": "episodes sorted by identity within each hazard stratum and dealt in the fixed order gate_training, checkpoint_validation, threshold_calibration, nested_offline_evaluation",
+    "excluded": {
+      "reason": "already opened in earlier tasks; they may not enter gate fitting or threshold calibration",
+      "reused_diagnostics_only": [
+        "reference_validation",
+        "reference_calibration",
+        "offline_reference_test"
+      ]
+    },
+    "manifest": "configs/hybrid_obstacle_prox_activity_partition_v1.json",
+    "manifest_sha256": "daf97291596ac38abc4056236bffa92c32a81584cdbcb04203c5bf7b1d37466f",
+    "source_partition": "reference_train",
+    "splits": {
+      "checkpoint_validation": {
+        "episode_count": 8,
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "trajectory_count": 32
+      },
+      "gate_training": {
+        "episode_count": 40,
+        "hazard_absent": 10,
+        "hazard_present": 30,
+        "trajectory_count": 160
+      },
+      "nested_offline_evaluation": {
+        "episode_count": 8,
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "trajectory_count": 32
+      },
+      "threshold_calibration": {
+        "episode_count": 8,
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "trajectory_count": 32
+      }
+    }
+  },
+  "post_termination_diagnostics_note": "the sweep and AUROC below were computed after calibration had already failed and the task had terminated; no threshold, model or split selection follows them",
+  "previous_decision": "REFERENCE_THRESHOLD_TRANSFER_FAILED",
+  "provenance": {
+    "all_matched": true,
+    "checks": 59,
+    "frozen_model": {
+      "checkpoint_path": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/final/CURRENT_FRAME_ONLY__seed0/best.pt",
+      "checkpoint_sha256": "47ae5cb1206c07d3f988bd0174b6cf4d09ea341e7e27850f5436ba9639c2bcd5",
+      "config": {
+        "active_fraction": 0.5,
+        "batch_size": 64,
+        "batches_per_epoch": 300,
+        "blocks": 2,
+        "dropout": 0.0,
+        "grad_clip": 1.0,
+        "hidden": 192,
+        "learning_rate": 0.0003,
+        "max_epochs": 100,
+        "patience": 12,
+        "seed": 0,
+        "variant": "CURRENT_FRAME_ONLY",
+        "weight_decay": 0.0001,
+        "weights": {
+          "active_delta": 30.0,
+          "all_valid_field": 5.0,
+          "changed_mask": 2.0,
+          "focal_gamma": 2.0,
+          "head_consistency": 20.0,
+          "huber_beta": 0.01,
+          "mask_pos_weight_cap": 32.0,
+          "quiet": 20.0,
+          "temporal_smoothness": 0.0
+        }
+      },
+      "model_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+      "parameter_count": 838434,
+      "previous_threshold": 0.02819432708943556,
+      "previous_threshold_rule": "frame-level 99th percentile of oracle-zero norms on 8 calibration trajectories",
+      "seed": 0,
+      "variant": "CURRENT_FRAME_ONLY"
+    }
+  },
+  "report_hashes": {
+    "evaluation_sha256": "be31154bd050e1ad22079749ff21a2f0abec668992b59b3be61583965a8ebff1",
+    "onset_audit_sha256": "77c9acbedab29ed4324ae7505f8418c843e328ade6513a99c34343948ed19927",
+    "partition_sha256": "daf97291596ac38abc4056236bffa92c32a81584cdbcb04203c5bf7b1d37466f",
+    "path_audit_sha256": "3821bc8d8680a636eaf0e2ff7e49ed2f2db742a7397d216293bbb28550d26d58",
+    "provenance_sha256": "cbae37f75d0036b7f588a06832d3123814b426a6349856dd12c480090ecf2346",
+    "training_sha256": "15327b901425b19da767ea25ab066310c0eeb3e42b1eb53fc6868073a3a16e47"
+  },
+  "residual_controller_changed": false,
+  "runtime": {
+    "cuda": "12.6",
+    "gpu": "NVIDIA A10",
+    "numpy": "2.4.6",
+    "python": "3.11.15",
+    "torch": "2.7.1+cu126"
+  },
+  "safety_cvae_trained_or_modified": false,
+  "schema": "hybrid_obstacle_prox_activity_gate_final_decision_v1",
+  "seeds_ensembled": false,
+  "separability": {
+    "gate_training": {
+      "active_prevalence": 0.27889428739693756,
+      "frames": 27168,
+      "gate_auroc": 0.9892683967038839,
+      "old_head_auroc": 0.9981766089743651
+    },
+    "nested_offline_evaluation": {
+      "active_prevalence": 0.2552563629656953,
+      "frames": 5422,
+      "gate_auroc": 0.8734021019963526,
+      "old_head_auroc": 0.9978903451889134
+    },
+    "threshold_calibration": {
+      "active_prevalence": 0.20054744525547447,
+      "frames": 5480,
+      "gate_auroc": 0.7858518846063498,
+      "old_head_auroc": 0.9997889804160949
+    }
+  },
+  "stages_not_reached": [
+    "nested offline evaluation (step 13)",
+    "reused diagnostic audit (step 14)",
+    "runtime integration (step 15-16)",
+    "live development rollouts (step 17-18)",
+    "live approximation gates (step 19)",
+    "live gross-regression gates (step 20)"
+  ],
+  "task": "Diagnose the episode-onset activity prior, replace only the activity path with a proximity-evidence gate, and conditionally repeat the four-row live development evaluation",
+  "temporal_history_reintroduced": false,
+  "threshold_sweep": [
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.715,
+      "mean_trajectory_zero_fpr": 0.34405140622990626,
+      "median_active_cosine": 0.9999814466087141,
+      "median_active_recall": 0.8377192982456141,
+      "recall_meets_080": true,
+      "threshold": 0.1
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.68,
+      "mean_trajectory_zero_fpr": 0.30560755877575124,
+      "median_active_cosine": 0.9999814466087141,
+      "median_active_recall": 0.8377192982456141,
+      "recall_meets_080": true,
+      "threshold": 0.2
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.67,
+      "mean_trajectory_zero_fpr": 0.2812270888737901,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.8210526315789474,
+      "recall_meets_080": true,
+      "threshold": 0.3
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.665,
+      "mean_trajectory_zero_fpr": 0.2612679060436388,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.805982905982906,
+      "recall_meets_080": true,
+      "threshold": 0.4
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.645,
+      "mean_trajectory_zero_fpr": 0.2470747125886469,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.8017094017094017,
+      "recall_meets_080": true,
+      "threshold": 0.5
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.63,
+      "mean_trajectory_zero_fpr": 0.22838335113455943,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.765146358066712,
+      "recall_meets_080": false,
+      "threshold": 0.6
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.605,
+      "mean_trajectory_zero_fpr": 0.20592617662757226,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.7553418803418803,
+      "recall_meets_080": false,
+      "threshold": 0.7
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 5,
+      "max_hazard_absent_trajectory_fpr": 0.57,
+      "mean_trajectory_zero_fpr": 0.18045596777055867,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.7510683760683761,
+      "recall_meets_080": false,
+      "threshold": 0.8
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 2,
+      "max_hazard_absent_trajectory_fpr": 0.335,
+      "mean_trajectory_zero_fpr": 0.12973456538749822,
+      "median_active_cosine": 0.9999838691427718,
+      "median_active_recall": 0.580085403726708,
+      "recall_meets_080": false,
+      "threshold": 0.9
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 2,
+      "max_hazard_absent_trajectory_fpr": 0.28888888888888886,
+      "mean_trajectory_zero_fpr": 0.07977619565959557,
+      "median_active_cosine": 0.9999844176144155,
+      "median_active_recall": 0.3970588235294118,
+      "recall_meets_080": false,
+      "threshold": 0.95
+    },
+    {
+      "fpr_meets_002": true,
+      "max_consecutive_onset_false_positive_run": 1,
+      "max_hazard_absent_trajectory_fpr": 0.035,
+      "mean_trajectory_zero_fpr": 0.010907846867059319,
+      "median_active_cosine": 0.9999760595026115,
+      "median_active_recall": 0.022242414664981038,
+      "recall_meets_080": false,
+      "threshold": 0.99
+    },
+    {
+      "fpr_meets_002": false,
+      "max_consecutive_onset_false_positive_run": 0,
+      "max_hazard_absent_trajectory_fpr": 0.0,
+      "mean_trajectory_zero_fpr": 0.0,
+      "median_active_cosine": 0.9999854215133475,
+      "median_active_recall": 0.0,
+      "recall_meets_080": false,
+      "threshold": 0.999
+    }
+  ]
+}

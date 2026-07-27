@@ -1,0 +1,132 @@
+{
+  "activation_threshold_previous": 0.99960857629776,
+  "activity_head": {
+    "activity_definition": "sigmoid of the maximum per-pixel mask logit; a reduction of the same channel that builds the parked field",
+    "dedicated_activity_head_exists": false,
+    "proximity_reaches_activity": true,
+    "shares_context_conditioned_tokens_with_parked_decoder": true,
+    "state_reaches_activity": true
+  },
+  "checkpoint": "/tmp/claude-0/-root-prox-learning-hybrid-safety/ef021269-325a-47b3-98bd-db3bd3d4c292/scratchpad/final/CURRENT_FRAME_ONLY__seed0/best.pt",
+  "checkpoint_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+  "finding": "There is no isolated activity path. Proprioceptive state is summed into every sensor token before the cross-sensor transformer, the shared decoder emits the mask-logit channel from those tokens, and the activity value is a max-reduction of that channel. State can therefore drive activation with no proximity evidence, and the activity signal is entangled with the parked-field decoder by construction rather than by accident.",
+  "report_sha256": "3821bc8d8680a636eaf0e2ff7e49ed2f2db742a7397d216293bbb28550d26d58",
+  "schema": "hybrid_obstacle_prox_activity_path_audit_v1",
+  "seed": 0,
+  "stages": [
+    {
+      "current_proximity_can_reach": true,
+      "note": "shared per-sensor conv over the frame-t tile only",
+      "parked_field_can_reach": false,
+      "shape": [
+        320,
+        64,
+        8,
+        8
+      ],
+      "source_inputs": [
+        "current_closeness",
+        "current_valid_mask"
+      ],
+      "stage": "current_field_encoder",
+      "state_can_reach": false
+    },
+    {
+      "current_proximity_can_reach": true,
+      "note": "mean+max pooled conv features projected to d_model",
+      "parked_field_can_reach": false,
+      "shape": [
+        320,
+        192
+      ],
+      "source_inputs": [
+        "current_closeness",
+        "current_valid_mask"
+      ],
+      "stage": "sensor_token_projection",
+      "state_can_reach": false
+    },
+    {
+      "current_proximity_can_reach": false,
+      "note": "29-D proprioceptive vector -> d_model, ADDED to every sensor token",
+      "parked_field_can_reach": false,
+      "shape": [
+        8,
+        192
+      ],
+      "source_inputs": [
+        "qpos",
+        "qvel",
+        "nominal_action",
+        "gripper_state",
+        "gripper_command"
+      ],
+      "stage": "state_context_encoder",
+      "state_can_reach": true
+    },
+    {
+      "current_proximity_can_reach": true,
+      "note": "state is summed into the tokens BEFORE attention",
+      "parked_field_can_reach": false,
+      "shape": [
+        8,
+        40,
+        192
+      ],
+      "source_inputs": [
+        "sensor_token_projection",
+        "state_context_encoder",
+        "sensor_embedding",
+        "link_embedding"
+      ],
+      "stage": "cross_sensor_transformer",
+      "state_can_reach": true
+    },
+    {
+      "current_proximity_can_reach": true,
+      "note": "emits BOTH logit channels: channel 0 is the change mask that becomes the activity signal, channel 1 is the magnitude",
+      "parked_field_can_reach": false,
+      "shape": [
+        320,
+        2,
+        8,
+        8
+      ],
+      "source_inputs": [
+        "cross_sensor_transformer",
+        "current_field_encoder"
+      ],
+      "stage": "shared_per_sensor_decoder",
+      "state_can_reach": true
+    }
+  ],
+  "tensors": {
+    "activity_pre_logit": {
+      "current_proximity_can_reach": true,
+      "definition": "max over the 40x8x8 per-pixel mask logits; the frozen model has no dedicated frame-level activity head",
+      "parked_field_relationship": "sibling, not ancestor: both are produced from the same decoder output; the activity value is the mask-logit channel and the parked field multiplies that channel by the magnitude channel and the current field",
+      "predicted_parked_field_can_reach": false,
+      "shape": [
+        8
+      ],
+      "state_can_reach": true
+    },
+    "predicted_parked_field": {
+      "current_proximity_can_reach": true,
+      "definition": "current_closeness - changed_probability * magnitude * current",
+      "shape": [
+        8,
+        40,
+        8,
+        8
+      ],
+      "state_can_reach": true
+    }
+  },
+  "training_gradient_connectivity": {
+    "activity_objective": "focal BCE on changed_pixel_mask, i.e. the same channel the activity value reduces",
+    "explanation": "the mask loss backpropagates through the shared decoder into the cross-sensor tokens, and the state embedding is summed into those tokens, so the activity objective did train the state encoder",
+    "gradient_reached_state_encoder": true
+  },
+  "variant": "CURRENT_FRAME_ONLY"
+}
