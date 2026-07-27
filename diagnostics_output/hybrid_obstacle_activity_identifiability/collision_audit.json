@@ -1,0 +1,1905 @@
+{
+  "checkpoint_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+  "collisions": {
+    "any_exact_full_input_collision": false,
+    "exact_current_prox_count": 0,
+    "exact_current_prox_pairs": [],
+    "exact_full_input_count": 0,
+    "exact_full_input_pairs": [],
+    "near_identity_count": 0,
+    "near_identity_pairs": [],
+    "tolerances": {
+      "action": 1e-06,
+      "closeness": 1e-05,
+      "qpos": 1e-06,
+      "qvel": 1e-06
+    }
+  },
+  "dataset_modified": false,
+  "exclusions": [
+    "same trajectory",
+    "same episode identity",
+    "duplicate scientific state hash"
+  ],
+  "feature_spaces": {
+    "A_CURRENT_PROX_RAW": 5120,
+    "B_CURRENT_PROX_EMBEDDING": 7680,
+    "C_FULL_DEPLOYABLE_INPUT": 2589,
+    "D_FROZEN_MODEL_EMBEDDING": 2560
+  },
+  "frames_indexed": 60793,
+  "local_ambiguity": {
+    "ambiguous_band": [
+      0.2,
+      0.8
+    ],
+    "by_group": {
+      "HISTORICAL_FALSE_POSITIVE": {
+        "fraction_ambiguous": 0.23529411764705882,
+        "median_label_entropy": 0.3372900666170139,
+        "median_p_local_active": 0.0625,
+        "queries": 17
+      },
+      "LATE_ACTIVE": {
+        "fraction_ambiguous": 0.24,
+        "median_label_entropy": 0.20062232431271465,
+        "median_p_local_active": 0.90625,
+        "queries": 250
+      },
+      "LATE_ZERO": {
+        "fraction_ambiguous": 0.144,
+        "median_label_entropy": 0.0,
+        "median_p_local_active": 0.0,
+        "queries": 250
+      },
+      "ONSET_ACTIVE": {
+        "fraction_ambiguous": 0.38,
+        "median_label_entropy": 0.4488644887230294,
+        "median_p_local_active": 0.25,
+        "queries": 250
+      },
+      "ONSET_ZERO": {
+        "fraction_ambiguous": 0.084,
+        "median_label_entropy": 0.0,
+        "median_p_local_active": 0.0,
+        "queries": 250
+      }
+    },
+    "calibration_bins": [
+      {
+        "bin": [
+          0.0,
+          0.1
+        ],
+        "count": 117,
+        "empirical": 0.4700854700854701,
+        "predicted": 0.058493589743589744
+      },
+      {
+        "bin": [
+          0.1,
+          0.2
+        ],
+        "count": 49,
+        "empirical": 0.4489795918367347,
+        "predicted": 0.14668367346938777
+      },
+      {
+        "bin": [
+          0.2,
+          0.30000000000000004
+        ],
+        "count": 53,
+        "empirical": 0.660377358490566,
+        "predicted": 0.24587264150943397
+      },
+      {
+        "bin": [
+          0.30000000000000004,
+          0.4
+        ],
+        "count": 36,
+        "empirical": 0.6944444444444444,
+        "predicted": 0.3463541666666667
+      },
+      {
+        "bin": [
+          0.4,
+          0.5
+        ],
+        "count": 32,
+        "empirical": 0.75,
+        "predicted": 0.435546875
+      },
+      {
+        "bin": [
+          0.5,
+          0.6000000000000001
+        ],
+        "count": 34,
+        "empirical": 0.7352941176470589,
+        "predicted": 0.5496323529411765
+      },
+      {
+        "bin": [
+          0.6000000000000001,
+          0.7000000000000001
+        ],
+        "count": 30,
+        "empirical": 0.6666666666666666,
+        "predicted": 0.659375
+      },
+      {
+        "bin": [
+          0.7000000000000001,
+          0.8
+        ],
+        "count": 31,
+        "empirical": 0.8387096774193549,
+        "predicted": 0.751008064516129
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "count": 34,
+        "empirical": 0.7941176470588235,
+        "predicted": 0.84375
+      },
+      {
+        "bin": [
+          0.9,
+          1.0
+        ],
+        "count": 61,
+        "empirical": 0.9016393442622951,
+        "predicted": 0.9436475409836066
+      }
+    ],
+    "feature_space": "D_FROZEN_MODEL_EMBEDDING",
+    "historical_frames": [
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.6252624052234231,
+        "p_local_active": 0.84375,
+        "step": 0,
+        "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.20062232431271465,
+        "p_local_active": 0.03125,
+        "step": 4,
+        "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": -0.0,
+        "p_local_active": 0.0,
+        "step": 0,
+        "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+      },
+      {
+        "ambiguous": true,
+        "effective_sample_count": 32,
+        "label_entropy": 0.8571484374283715,
+        "p_local_active": 0.71875,
+        "step": 0,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": true,
+        "effective_sample_count": 32,
+        "label_entropy": 0.8571484374283715,
+        "p_local_active": 0.71875,
+        "step": 1,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": true,
+        "effective_sample_count": 32,
+        "label_entropy": 0.954434002924965,
+        "p_local_active": 0.625,
+        "step": 2,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": true,
+        "effective_sample_count": 32,
+        "label_entropy": 0.9886994082884974,
+        "p_local_active": 0.5625,
+        "step": 3,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.3372900666170139,
+        "p_local_active": 0.0625,
+        "step": 4,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.4488644887230294,
+        "p_local_active": 0.09375,
+        "step": 5,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.3372900666170139,
+        "p_local_active": 0.0625,
+        "step": 6,
+        "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": -0.0,
+        "p_local_active": 0.0,
+        "step": 0,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": -0.0,
+        "p_local_active": 0.0,
+        "step": 1,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.20062232431271465,
+        "p_local_active": 0.03125,
+        "step": 2,
+        "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.6252624052234231,
+        "p_local_active": 0.84375,
+        "step": 0,
+        "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": -0.0,
+        "p_local_active": 0.0,
+        "step": 9,
+        "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": 0.20062232431271465,
+        "p_local_active": 0.03125,
+        "step": 4,
+        "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+      },
+      {
+        "ambiguous": false,
+        "effective_sample_count": 32,
+        "label_entropy": -0.0,
+        "p_local_active": 0.0,
+        "step": 0,
+        "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+      }
+    ],
+    "k": 32
+  },
+  "neighbour_pool": {
+    "frames": 43519,
+    "partition": "reference_train"
+  },
+  "neighbours": {
+    "A_CURRENT_PROX_RAW": {
+      "by_group": {
+        "HISTORICAL_FALSE_POSITIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.029411764705882353,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 4.562018555314822,
+            "median_opposite_over_same_distance_ratio": 1.3066634773429917,
+            "queries": 17
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.034926470588235295,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 4.589017337502809,
+            "median_opposite_over_same_distance_ratio": 1.2596109756240645,
+            "queries": 17
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          }
+        },
+        "LATE_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.468,
+            "mean_opposite_label_fraction": 0.468,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.999715155748125,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.468,
+            "mean_opposite_label_fraction": 0.50325,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.095288345875411,
+            "median_opposite_over_same_distance_ratio": 1.0132946118908768,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.468,
+            "mean_opposite_label_fraction": 0.527375,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 3.0358725964665347,
+            "median_opposite_over_same_distance_ratio": 1.0189897548695197,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.468,
+            "mean_opposite_label_fraction": 0.475,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.092803039505477,
+            "median_opposite_over_same_distance_ratio": 0.9988218482052461,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.468,
+            "mean_opposite_label_fraction": 0.48,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.1617170043672522,
+            "median_opposite_over_same_distance_ratio": 1.0029476020884815,
+            "queries": 250
+          }
+        },
+        "LATE_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.216,
+            "mean_opposite_label_fraction": 0.216,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.1280844351739145,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.216,
+            "mean_opposite_label_fraction": 0.2075,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.9417384632114087,
+            "median_opposite_over_same_distance_ratio": 1.015666248720685,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.216,
+            "mean_opposite_label_fraction": 0.202375,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.9130466521194465,
+            "median_opposite_over_same_distance_ratio": 1.038818680766414,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.216,
+            "mean_opposite_label_fraction": 0.217,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.0949334857553885,
+            "median_opposite_over_same_distance_ratio": 1.0007576020900042,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.216,
+            "mean_opposite_label_fraction": 0.218,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.0515588997674614,
+            "median_opposite_over_same_distance_ratio": 1.0108529304127372,
+            "queries": 250
+          }
+        },
+        "ONSET_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.676,
+            "mean_opposite_label_fraction": 0.676,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.083320868249241,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.676,
+            "mean_opposite_label_fraction": 0.7305,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.1210869500929457,
+            "median_opposite_over_same_distance_ratio": 1.032963754847399,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.676,
+            "mean_opposite_label_fraction": 0.77275,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.1409460164705427,
+            "median_opposite_over_same_distance_ratio": 1.0364681747118825,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.676,
+            "mean_opposite_label_fraction": 0.705,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.1048543456039805,
+            "median_opposite_over_same_distance_ratio": 1.020749645764859,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.676,
+            "mean_opposite_label_fraction": 0.7165,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.111683289387541,
+            "median_opposite_over_same_distance_ratio": 1.0136735253610047,
+            "queries": 250
+          }
+        },
+        "ONSET_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.004,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 0.8228012841050991,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.00725,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.1681189296966772,
+            "median_opposite_over_same_distance_ratio": 1.1202092072614875,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.01375,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.0407939052113055,
+            "median_opposite_over_same_distance_ratio": 1.2277663960723146,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.001,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 0.8228012841050991,
+            "median_opposite_over_same_distance_ratio": 0.9685514641771451,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.003,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.1681189296966772,
+            "median_opposite_over_same_distance_ratio": 1.0641570146761674,
+            "queries": 250
+          }
+        }
+      },
+      "feature_dimension": 5120,
+      "historical_frames": [
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.189598582483605,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.0291171125046945,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2048486525117126,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.189598582483605,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.189598582483605,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.189598582483605,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.143748821643874,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 3,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.118721547701423,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 3.6003336433933453,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 5,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 3.3899410278682307,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 6,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2048486525117126,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2048486525117126,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2048486525117126,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.189598582483605,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2260398966285722,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 9,
+          "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.0291171125046945,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2048486525117126,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        }
+      ],
+      "overall": {
+        "k=1": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3352999016715831,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 1.6875723364125759,
+          "median_opposite_over_same_distance_ratio": null,
+          "queries": 1017
+        },
+        "k=16": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.35656342182890854,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.0398256474206318,
+          "median_opposite_over_same_distance_ratio": 1.0201732326705766,
+          "queries": 1017
+        },
+        "k=32": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3733099803343166,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.1081790812068384,
+          "median_opposite_over_same_distance_ratio": 1.0422400560058045,
+          "queries": 1017
+        },
+        "k=4": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.34365781710914456,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 1.8649336101113352,
+          "median_opposite_over_same_distance_ratio": 1.0052672106950644,
+          "queries": 1017
+        },
+        "k=8": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.34845132743362833,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.0384782201028155,
+          "median_opposite_over_same_distance_ratio": 1.0086435147841648,
+          "queries": 1017
+        }
+      },
+      "pool_frames": 43519,
+      "pool_partition": "reference_train"
+    },
+    "B_CURRENT_PROX_EMBEDDING": {
+      "by_group": {
+        "HISTORICAL_FALSE_POSITIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.07352941176470588,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.489724882775774,
+            "median_opposite_over_same_distance_ratio": 1.1197164948300036,
+            "queries": 17
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.10661764705882353,
+            "median_label_entropy": 0.5435644431995964,
+            "median_nearest_opposite_distance": 10.087664680129414,
+            "median_opposite_over_same_distance_ratio": 1.5972475253512803,
+            "queries": 17
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          }
+        },
+        "LATE_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.348,
+            "mean_opposite_label_fraction": 0.348,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 6.209536988324895,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.348,
+            "mean_opposite_label_fraction": 0.40725,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 6.221576297627255,
+            "median_opposite_over_same_distance_ratio": 1.0301946689518413,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.348,
+            "mean_opposite_label_fraction": 0.4345,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 6.312461324138945,
+            "median_opposite_over_same_distance_ratio": 1.0316632245598738,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.348,
+            "mean_opposite_label_fraction": 0.373,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 6.434503067974809,
+            "median_opposite_over_same_distance_ratio": 1.0147831362860142,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.348,
+            "mean_opposite_label_fraction": 0.3855,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 6.390128044075309,
+            "median_opposite_over_same_distance_ratio": 1.0255201901429516,
+            "queries": 250
+          }
+        },
+        "LATE_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.176,
+            "mean_opposite_label_fraction": 0.176,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 5.5212562016342615,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.176,
+            "mean_opposite_label_fraction": 0.17925,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 5.929023876423274,
+            "median_opposite_over_same_distance_ratio": 1.0189873115655248,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.176,
+            "mean_opposite_label_fraction": 0.173875,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 5.805039735275289,
+            "median_opposite_over_same_distance_ratio": 1.0352854457111969,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.176,
+            "mean_opposite_label_fraction": 0.196,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 5.867031805849281,
+            "median_opposite_over_same_distance_ratio": 1.0029505943655759,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.176,
+            "mean_opposite_label_fraction": 0.189,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 5.774248479153831,
+            "median_opposite_over_same_distance_ratio": 1.0080433606822115,
+            "queries": 250
+          }
+        },
+        "ONSET_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.476,
+            "mean_opposite_label_fraction": 0.476,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.8075092928530132,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.476,
+            "mean_opposite_label_fraction": 0.52775,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.9390745225605897,
+            "median_opposite_over_same_distance_ratio": 1.0187837840182064,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.476,
+            "mean_opposite_label_fraction": 0.58025,
+            "median_label_entropy": 0.4962144659613129,
+            "median_nearest_opposite_distance": 2.083170681008198,
+            "median_opposite_over_same_distance_ratio": 1.0231769609112118,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.476,
+            "mean_opposite_label_fraction": 0.479,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.8516093058145675,
+            "median_opposite_over_same_distance_ratio": 1.0089786484598853,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.476,
+            "mean_opposite_label_fraction": 0.499,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.8824720272706368,
+            "median_opposite_over_same_distance_ratio": 1.0187837840182064,
+            "queries": 250
+          }
+        },
+        "ONSET_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.02,
+            "mean_opposite_label_fraction": 0.02,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.1975944596953374,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.02,
+            "mean_opposite_label_fraction": 0.02825,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.4480441012929077,
+            "median_opposite_over_same_distance_ratio": 1.2190621768379022,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.02,
+            "mean_opposite_label_fraction": 0.03125,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.1440718297188104,
+            "median_opposite_over_same_distance_ratio": 1.2770089718033508,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.02,
+            "mean_opposite_label_fraction": 0.019,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.9604687785745019,
+            "median_opposite_over_same_distance_ratio": 1.0079506366355595,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.02,
+            "mean_opposite_label_fraction": 0.024,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 2.040364284714168,
+            "median_opposite_over_same_distance_ratio": 1.0575390222089385,
+            "queries": 250
+          }
+        }
+      },
+      "feature_dimension": 7680,
+      "historical_frames": [
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.3156319581851825,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.1392559490685072,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.2235314870071345,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.3156319581851825,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.31567061462993,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.31567061462993,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.390032827087041,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 3,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.520063978478069,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 5.741289257975947,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 5,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 5.609810389886064,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 6,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.2235314870071345,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.2235314870071345,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.223421578474267,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 6.3156319581851825,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.348016949204158,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 9,
+          "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.1394272397857232,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 2.2235314870071345,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        }
+      ],
+      "overall": {
+        "k=1": {
+          "fraction_nearest_neighbour_opposite_label": 0.25073746312684364,
+          "mean_opposite_label_fraction": 0.25073746312684364,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 3.5750532666486246,
+          "median_opposite_over_same_distance_ratio": null,
+          "queries": 1017
+        },
+        "k=16": {
+          "fraction_nearest_neighbour_opposite_label": 0.25073746312684364,
+          "mean_opposite_label_fraction": 0.28207964601769914,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 4.001830635784078,
+          "median_opposite_over_same_distance_ratio": 1.032360530782914,
+          "queries": 1017
+        },
+        "k=32": {
+          "fraction_nearest_neighbour_opposite_label": 0.25073746312684364,
+          "mean_opposite_label_fraction": 0.3016531465093412,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 4.001830635784078,
+          "median_opposite_over_same_distance_ratio": 1.0510331595198334,
+          "queries": 1017
+        },
+        "k=4": {
+          "fraction_nearest_neighbour_opposite_label": 0.25073746312684364,
+          "mean_opposite_label_fraction": 0.26229105211406095,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 4.137635916553581,
+          "median_opposite_over_same_distance_ratio": 1.0124769991685323,
+          "queries": 1017
+        },
+        "k=8": {
+          "fraction_nearest_neighbour_opposite_label": 0.25073746312684364,
+          "mean_opposite_label_fraction": 0.26978859390363813,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 4.098786262800855,
+          "median_opposite_over_same_distance_ratio": 1.021428584108783,
+          "queries": 1017
+        }
+      },
+      "pool_frames": 43519,
+      "pool_partition": "reference_train"
+    },
+    "C_FULL_DEPLOYABLE_INPUT": {
+      "by_group": {
+        "HISTORICAL_FALSE_POSITIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.025735294117647058,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 4.5918605147635745,
+            "median_opposite_over_same_distance_ratio": 1.299294859443096,
+            "queries": 17
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.027573529411764705,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 4.5918605147635745,
+            "median_opposite_over_same_distance_ratio": 1.299294859443096,
+            "queries": 17
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.0,
+            "mean_opposite_label_fraction": 0.0,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": null,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          }
+        },
+        "LATE_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.472,
+            "mean_opposite_label_fraction": 0.472,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.0752270880425705,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.472,
+            "mean_opposite_label_fraction": 0.50275,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.3348133553659847,
+            "median_opposite_over_same_distance_ratio": 1.0190758923242769,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.472,
+            "mean_opposite_label_fraction": 0.518,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 3.3190891300932877,
+            "median_opposite_over_same_distance_ratio": 1.020605320954327,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.472,
+            "mean_opposite_label_fraction": 0.477,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.3190891300932877,
+            "median_opposite_over_same_distance_ratio": 0.9982394441954654,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.472,
+            "mean_opposite_label_fraction": 0.4885,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.357594004640823,
+            "median_opposite_over_same_distance_ratio": 1.0113397607484331,
+            "queries": 250
+          }
+        },
+        "LATE_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.204,
+            "mean_opposite_label_fraction": 0.204,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.3095505737184316,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.204,
+            "mean_opposite_label_fraction": 0.2125,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.259601056314359,
+            "median_opposite_over_same_distance_ratio": 1.0213912772611389,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.204,
+            "mean_opposite_label_fraction": 0.202375,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.2185982973959333,
+            "median_opposite_over_same_distance_ratio": 1.0433813274850103,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.204,
+            "mean_opposite_label_fraction": 0.209,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.3119103248729425,
+            "median_opposite_over_same_distance_ratio": 1.0071622629925718,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.204,
+            "mean_opposite_label_fraction": 0.2095,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 3.3107304492956873,
+            "median_opposite_over_same_distance_ratio": 1.00985746657596,
+            "queries": 250
+          }
+        },
+        "ONSET_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.684,
+            "mean_opposite_label_fraction": 0.684,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.179299347537855,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.684,
+            "mean_opposite_label_fraction": 0.73925,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.2192194596909027,
+            "median_opposite_over_same_distance_ratio": 1.0181108987389584,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.684,
+            "mean_opposite_label_fraction": 0.772375,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.2315192204197898,
+            "median_opposite_over_same_distance_ratio": 1.0122862192702669,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.684,
+            "mean_opposite_label_fraction": 0.704,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.192203292642087,
+            "median_opposite_over_same_distance_ratio": 1.0181108987389584,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.684,
+            "mean_opposite_label_fraction": 0.7205,
+            "median_label_entropy": 4.1304950338020633e-11,
+            "median_nearest_opposite_distance": 1.2005778510840819,
+            "median_opposite_over_same_distance_ratio": 1.0144018556327952,
+            "queries": 250
+          }
+        },
+        "ONSET_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.004,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 0.9487262908325244,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.01225,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.2031884114782792,
+            "median_opposite_over_same_distance_ratio": 1.1198233317992539,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.01625,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.1957006976232183,
+            "median_opposite_over_same_distance_ratio": 1.1689618487220912,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.002,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.1348147313838866,
+            "median_opposite_over_same_distance_ratio": 0.9936420182175784,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.004,
+            "mean_opposite_label_fraction": 0.0055,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 1.3209031719352486,
+            "median_opposite_over_same_distance_ratio": 1.073032228369685,
+            "queries": 250
+          }
+        }
+      },
+      "feature_dimension": 2589,
+      "historical_frames": [
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.196135541430432,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.0781586130403296,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2081968734683077,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.193790323032324,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.193791005236845,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.193662066610836,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.154137095834264,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 3,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.1501408472633825,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 3.6458013188001,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 5,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 3.430285147555882,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 6,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2080563139989227,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2080547844798626,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.209394443956939,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 4.196133723234592,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2851873701322118,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 9,
+          "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.0782629284188663,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 1.2081968734683077,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        }
+      ],
+      "overall": {
+        "k=1": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3352999016715831,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 1.7204570962422678,
+          "median_opposite_over_same_distance_ratio": null,
+          "queries": 1017
+        },
+        "k=16": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3609882005899705,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.1758617886168325,
+          "median_opposite_over_same_distance_ratio": 1.025909658144326,
+          "queries": 1017
+        },
+        "k=32": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3714048672566372,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.254988438646406,
+          "median_opposite_over_same_distance_ratio": 1.0350405632921709,
+          "queries": 1017
+        },
+        "k=4": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3421828908554572,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 1.9304306514350627,
+          "median_opposite_over_same_distance_ratio": 1.0090751864505674,
+          "queries": 1017
+        },
+        "k=8": {
+          "fraction_nearest_neighbour_opposite_label": 0.3352999016715831,
+          "mean_opposite_label_fraction": 0.3500491642084562,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 2.1812410458268934,
+          "median_opposite_over_same_distance_ratio": 1.014408037320551,
+          "queries": 1017
+        }
+      },
+      "pool_frames": 43519,
+      "pool_partition": "reference_train"
+    },
+    "D_FROZEN_MODEL_EMBEDDING": {
+      "by_group": {
+        "HISTORICAL_FALSE_POSITIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.35294117647058826,
+            "mean_opposite_label_fraction": 0.35294117647058826,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 585.8822673812479,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 17
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.35294117647058826,
+            "mean_opposite_label_fraction": 0.35661764705882354,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 545.8447867755082,
+            "median_opposite_over_same_distance_ratio": 1.0220122739328263,
+            "queries": 17
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.35294117647058826,
+            "mean_opposite_label_fraction": 0.27205882352941174,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 545.8383459949624,
+            "median_opposite_over_same_distance_ratio": 0.9902749931230147,
+            "queries": 17
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.35294117647058826,
+            "mean_opposite_label_fraction": 0.36764705882352944,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 585.8780003123517,
+            "median_opposite_over_same_distance_ratio": 1.0220122739328263,
+            "queries": 17
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.35294117647058826,
+            "mean_opposite_label_fraction": 0.3602941176470588,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 554.7869580504657,
+            "median_opposite_over_same_distance_ratio": 1.0220122739328263,
+            "queries": 17
+          }
+        },
+        "LATE_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.28,
+            "mean_opposite_label_fraction": 0.28,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 190.5807556404482,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.28,
+            "mean_opposite_label_fraction": 0.292,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 200.57847916869002,
+            "median_opposite_over_same_distance_ratio": 1.0133914646592044,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.28,
+            "mean_opposite_label_fraction": 0.30625,
+            "median_label_entropy": 0.20062232431271465,
+            "median_nearest_opposite_distance": 208.44663585675832,
+            "median_opposite_over_same_distance_ratio": 1.0691987560732799,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.28,
+            "mean_opposite_label_fraction": 0.288,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 194.75559849413634,
+            "median_opposite_over_same_distance_ratio": 1.0120154208214192,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.28,
+            "mean_opposite_label_fraction": 0.2865,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 198.51006930347472,
+            "median_opposite_over_same_distance_ratio": 1.0120154208214192,
+            "queries": 250
+          }
+        },
+        "LATE_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.12,
+            "mean_opposite_label_fraction": 0.12,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 180.7428642917015,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.12,
+            "mean_opposite_label_fraction": 0.1225,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 198.7334898802917,
+            "median_opposite_over_same_distance_ratio": 1.0625547602554466,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.12,
+            "mean_opposite_label_fraction": 0.127,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 203.4126599241456,
+            "median_opposite_over_same_distance_ratio": 1.068347689548508,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.12,
+            "mean_opposite_label_fraction": 0.111,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 186.63199082686762,
+            "median_opposite_over_same_distance_ratio": 0.9925071540295034,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.12,
+            "mean_opposite_label_fraction": 0.1155,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 192.47297408687575,
+            "median_opposite_over_same_distance_ratio": 1.0136727980655216,
+            "queries": 250
+          }
+        },
+        "ONSET_ACTIVE": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.492,
+            "mean_opposite_label_fraction": 0.492,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 121.08055170009757,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.492,
+            "mean_opposite_label_fraction": 0.596,
+            "median_label_entropy": 0.3372900666170139,
+            "median_nearest_opposite_distance": 145.89551055464318,
+            "median_opposite_over_same_distance_ratio": 1.0624499685121132,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.492,
+            "mean_opposite_label_fraction": 0.65425,
+            "median_label_entropy": 0.4488644887230294,
+            "median_nearest_opposite_distance": 154.19143945109275,
+            "median_opposite_over_same_distance_ratio": 1.065748499116737,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.492,
+            "mean_opposite_label_fraction": 0.511,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 131.1670869262895,
+            "median_opposite_over_same_distance_ratio": 1.017600747050864,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.492,
+            "mean_opposite_label_fraction": 0.543,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 137.13130254320393,
+            "median_opposite_over_same_distance_ratio": 1.0551171654811562,
+            "queries": 250
+          }
+        },
+        "ONSET_ZERO": {
+          "k=1": {
+            "fraction_nearest_neighbour_opposite_label": 0.028,
+            "mean_opposite_label_fraction": 0.028,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 126.6352992788247,
+            "median_opposite_over_same_distance_ratio": null,
+            "queries": 250
+          },
+          "k=16": {
+            "fraction_nearest_neighbour_opposite_label": 0.028,
+            "mean_opposite_label_fraction": 0.03925,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 126.6352992788247,
+            "median_opposite_over_same_distance_ratio": 1.0919980278974117,
+            "queries": 250
+          },
+          "k=32": {
+            "fraction_nearest_neighbour_opposite_label": 0.028,
+            "mean_opposite_label_fraction": 0.040875,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 129.18685809482585,
+            "median_opposite_over_same_distance_ratio": 1.1966068890778672,
+            "queries": 250
+          },
+          "k=4": {
+            "fraction_nearest_neighbour_opposite_label": 0.028,
+            "mean_opposite_label_fraction": 0.042,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 120.92229144076813,
+            "median_opposite_over_same_distance_ratio": 1.06497025701058,
+            "queries": 250
+          },
+          "k=8": {
+            "fraction_nearest_neighbour_opposite_label": 0.028,
+            "mean_opposite_label_fraction": 0.041,
+            "median_label_entropy": 4.130580026464068e-11,
+            "median_nearest_opposite_distance": 123.7234820072568,
+            "median_opposite_over_same_distance_ratio": 1.0836188549694583,
+            "queries": 250
+          }
+        }
+      },
+      "feature_dimension": 2560,
+      "historical_frames": [
+        {
+          "hazard_present": false,
+          "nearest_distance": 545.8447867755082,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 1.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 144.79640205086244,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.125,
+          "step": 4,
+          "trajectory_id": "act_only_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 128.71285872048682,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "act_only_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 585.8865344501442,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 0.875,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 585.8780003123517,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 0.875,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 588.0408414812699,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 0.875,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 604.0968724054114,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 1.0,
+          "step": 3,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 526.6022870725117,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.125,
+          "step": 4,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 506.068177225164,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.125,
+          "step": 5,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 476.50496783874144,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.125,
+          "step": 6,
+          "trajectory_id": "expert_reconstructed__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 129.66110424149952,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 129.65145583447955,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 1,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 133.18971431758536,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 2,
+          "trajectory_id": "expert_reconstructed__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        },
+        {
+          "hazard_present": false,
+          "nearest_distance": 545.8319052144167,
+          "nearest_neighbour_label": true,
+          "opposite_fraction_k8": 1.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__499eee89fb917c2eeb4a150edcce9064a64ff23ba6452713a937390ff3eb34bb"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 173.4488397193824,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 9,
+          "trajectory_id": "oracle_on_policy__72ac2c10c0c079666873559e80e11380d77a2903ade13a605761dc4636f74350"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 144.8792600754159,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 4,
+          "trajectory_id": "oracle_on_policy__a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f"
+        },
+        {
+          "hazard_present": true,
+          "nearest_distance": 128.71285872048682,
+          "nearest_neighbour_label": false,
+          "opposite_fraction_k8": 0.0,
+          "step": 0,
+          "trajectory_id": "oracle_on_policy__cdaaa6c0b0971ea6cbdee9a18ca8f8c5f0db150b48bac363ed7e6d5d20e921ad"
+        }
+      ],
+      "overall": {
+        "k=1": {
+          "fraction_nearest_neighbour_opposite_label": 0.232055063913471,
+          "mean_opposite_label_fraction": 0.232055063913471,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 154.05593989337888,
+          "median_opposite_over_same_distance_ratio": null,
+          "queries": 1017
+        },
+        "k=16": {
+          "fraction_nearest_neighbour_opposite_label": 0.232055063913471,
+          "mean_opposite_label_fraction": 0.2640117994100295,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 175.57690495219458,
+          "median_opposite_over_same_distance_ratio": 1.0607580177567069,
+          "queries": 1017
+        },
+        "k=32": {
+          "fraction_nearest_neighbour_opposite_label": 0.232055063913471,
+          "mean_opposite_label_fraction": 0.28192600786627336,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 184.76876525806816,
+          "median_opposite_over_same_distance_ratio": 1.081146036373067,
+          "queries": 1017
+        },
+        "k=4": {
+          "fraction_nearest_neighbour_opposite_label": 0.232055063913471,
+          "mean_opposite_label_fraction": 0.24016715830875124,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 161.1481614450267,
+          "median_opposite_over_same_distance_ratio": 1.0152532611418164,
+          "queries": 1017
+        },
+        "k=8": {
+          "fraction_nearest_neighbour_opposite_label": 0.232055063913471,
+          "mean_opposite_label_fraction": 0.24840216322517208,
+          "median_label_entropy": 4.130580026464068e-11,
+          "median_nearest_opposite_distance": 167.51268025697337,
+          "median_opposite_over_same_distance_ratio": 1.0331850603789259,
+          "queries": 1017
+        }
+      },
+      "pool_frames": 43519,
+      "pool_partition": "reference_train"
+    }
+  },
+  "query_groups": {
+    "HISTORICAL_FALSE_POSITIVE": 17,
+    "LATE_ACTIVE": 250,
+    "LATE_ZERO": 250,
+    "ONSET_ACTIVE": 250,
+    "ONSET_ZERO": 250
+  },
+  "report_sha256": "4779b91b87fd4f33d4851a05a7c252b6ce2d5c7b9316df6061dd8d1f750598d7",
+  "schema": "hybrid_obstacle_activity_collision_audit_v1",
+  "training_performed": false
+}

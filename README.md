@@ -942,3 +942,55 @@ The task stops at calibration per its own rules: **0 of 20 permitted live rollou
 nested evaluation, no runtime integration. The parked-field model was not retrained, no seed
 reselected, no controller constant changed, dataset untouched. `confirmatory41` remains
 untouched.
+
+## Hybrid obstacle safety residual: activity identifiability (uncertainty works)
+
+`docs/HYBRID_OBSTACLE_ACTIVITY_IDENTIFIABILITY_FINAL_DECISION.md` —
+`EPISTEMIC_UNCERTAINTY_SIGNAL_PRESENT`.
+
+**The observation contract is sufficient after all, and ensemble disagreement finds the
+failures.** Read-only audit; nothing trained, no thresholds changed, no rollouts.
+
+Disagreement among the three frozen parked-field seeds separates the 17 historical false
+positives cleanly. **Changed-pixel-mask agreement rejects 17/17 while retaining 96.5% of
+active frames and 94.4% of hard-true-active** (AUROC 0.979, pAUC@5% 0.783). Median agreement
+is 0.167 on the failures vs 0.71–0.78 on genuine activity — the seeds disagree about *which
+pixels move* exactly where the head is wrong.
+
+**No collisions anywhere.** Across all 60,793 frames: 0 exact current-proximity, 0 exact
+full-deployable-input, 0 near-identity collisions with opposite labels (tolerances 1e-5
+closeness, 1e-6 state/action). No pair shares an observation and disagrees about the truth.
+
+**The ambiguity is asymmetric, and it runs the other way.** Opposite-label fraction among the
+8 nearest neighbours in raw proximity:
+
+| Group | Opposite fraction |
+|---|---:|
+| **HISTORICAL_FALSE_POSITIVE** | **0.0000** |
+| ONSET_ZERO | 0.0030 |
+| LATE_ACTIVE | 0.4800 |
+| **ONSET_ACTIVE** | **0.7165** |
+
+The 17 failures sit in unanimously quiet neighbourhoods — their observations *do* determine
+their labels; the head was simply wrong. The genuine ambiguity is onset-**active** frames
+looking like quiet ones, which causes missed detections, not spurious corrections.
+
+**A measurement trap worth remembering.** Raw between-class embedding distance is 5.6 at
+onset vs 16.5 late, which reads as severe onset overlap. Against the within-class baseline it
+reverses: separation ratio **1.121 onset vs 1.037 late** — onset is *better* separated. The
+raw gap was pure embedding-magnitude compression. Always divide by the within-class baseline.
+
+Two caveats on the record: **n = 17** bounds every separability estimate, and one metric
+(`norm_coefficient_of_variation`) passes the gate's letter while being useless — its median
+on ordinary quiet frames (0.90–1.04) exceeds its median on the failures (0.708), so it would
+abstain almost everywhere. That is a hole in the gate, which constrains active recall only;
+it is flagged and excluded, and any successor contract should add a quiet-frame retention
+floor.
+
+Score tails at the frozen threshold (trajectory-clustered bootstrap): FPR 0.0012
+(CI 0.0003–0.0025), active recall 0.770 (CI 0.671–0.853); 99 of 108 trajectories have no
+false positive, one has a run of 7.
+
+Next: one predeclared trajectory-bootstrap ensemble, uncertainty used **only** for
+abstention, seed-0 mean model retained, qualified on development4 before confirmatory41.
+`confirmatory41` remains untouched.

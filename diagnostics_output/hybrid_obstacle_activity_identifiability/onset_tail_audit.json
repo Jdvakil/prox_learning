@@ -1,0 +1,191 @@
+{
+  "checkpoint_config_hash": "298eb58e4c8807245710d5d95ebb7159621e6c0f879844b20876c084482d6e15",
+  "frames": 17274,
+  "historical_frame_count": 17,
+  "onset_vs_late": {
+    "embedding_distance": {
+      "late_active_within": 15.102174758911133,
+      "late_zero_to_late_active": 16.530513763427734,
+      "late_zero_within": 16.786354064941406,
+      "onset_active_within": 5.077599048614502,
+      "onset_hazard_present_vs_absent_zero": 5.159305572509766,
+      "onset_zero_to_onset_active": 5.635402202606201,
+      "onset_zero_within": 4.9728007316589355
+    },
+    "episode_index_used_as_feature": false,
+    "hazard_separability_before_counterfactual": {
+      "late_hazard_absent_median": 0.8538486957550049,
+      "late_hazard_present_median": 0.8443199396133423,
+      "onset_hazard_absent_median": 0.6270642280578613,
+      "onset_hazard_present_median": 0.6270627975463867,
+      "statistic": "max current closeness over the whole field"
+    },
+    "late_active": {
+      "count": 2651,
+      "mean_active_link_count": 5.994341757827235,
+      "mean_active_sensor_count": 14.401735194266315,
+      "mean_changed_pixel_fraction": 0.004202865663900415,
+      "mean_closeness": 0.04470045492053032,
+      "mean_max_closeness": 0.7970758676528931,
+      "mean_min_valid_depth_m": 0.10146208107471466,
+      "mean_nonzero_pixel_fraction": 0.13892074924556772,
+      "mean_parked_field_delta": 0.0017582037253305316,
+      "mean_valid_fraction": 1.0
+    },
+    "late_zero": {
+      "count": 12812,
+      "mean_active_link_count": 6.235248204807992,
+      "mean_active_sensor_count": 14.589135185763347,
+      "mean_changed_pixel_fraction": 0.0,
+      "mean_closeness": 0.04279636591672897,
+      "mean_max_closeness": 0.8228577971458435,
+      "mean_min_valid_depth_m": 0.08857112377882004,
+      "mean_nonzero_pixel_fraction": 0.12835543582188574,
+      "mean_parked_field_delta": 0.0,
+      "mean_valid_fraction": 1.0
+    },
+    "onset_active": {
+      "count": 452,
+      "mean_active_link_count": 3.6769911504424777,
+      "mean_active_sensor_count": 8.194690265486726,
+      "mean_changed_pixel_fraction": 0.001892629977876106,
+      "mean_closeness": 0.01449674554169178,
+      "mean_max_closeness": 0.6360122561454773,
+      "mean_min_valid_depth_m": 0.18199387192726135,
+      "mean_nonzero_pixel_fraction": 0.048402931415929204,
+      "mean_parked_field_delta": 0.0009621659992262721,
+      "mean_valid_fraction": 1.0
+    },
+    "onset_hazard_absent_zero": {
+      "count": 450,
+      "mean_active_link_count": 4.275555555555556,
+      "mean_active_sensor_count": 8.633333333333333,
+      "mean_changed_pixel_fraction": 0.0,
+      "mean_closeness": 0.014852600172162056,
+      "mean_max_closeness": 0.6382233500480652,
+      "mean_min_valid_depth_m": 0.1808883398771286,
+      "mean_nonzero_pixel_fraction": 0.04879079861111111,
+      "mean_parked_field_delta": 0.0,
+      "mean_valid_fraction": 1.0
+    },
+    "onset_hazard_present_zero": {
+      "count": 909,
+      "mean_active_link_count": 4.49064906490649,
+      "mean_active_sensor_count": 8.896589658965896,
+      "mean_changed_pixel_fraction": 0.0,
+      "mean_closeness": 0.015085802413523197,
+      "mean_max_closeness": 0.6356241703033447,
+      "mean_min_valid_depth_m": 0.18218792974948883,
+      "mean_nonzero_pixel_fraction": 0.050215724697469745,
+      "mean_parked_field_delta": 0.0,
+      "mean_valid_fraction": 1.0
+    },
+    "onset_zero": {
+      "count": 1359,
+      "mean_active_link_count": 4.419426048565121,
+      "mean_active_sensor_count": 8.809418690213393,
+      "mean_changed_pixel_fraction": 0.0,
+      "mean_closeness": 0.01500858273357153,
+      "mean_max_closeness": 0.6364848017692566,
+      "mean_min_valid_depth_m": 0.1817575991153717,
+      "mean_nonzero_pixel_fraction": 0.04974389486754967,
+      "mean_parked_field_delta": 0.0,
+      "mean_valid_fraction": 1.0
+    },
+    "separation_ratio": {
+      "definition": "between-class embedding distance divided by the mean within-class distance; 1.0 means the classes are indistinguishable in this space",
+      "late": 1.0367686671743195,
+      "late_within_baseline": 15.94426441192627,
+      "onset": 1.1214284656949,
+      "onset_within_baseline": 5.025199890136719
+    }
+  },
+  "previous_threshold": 0.99960857629776,
+  "report_sha256": "0b36b817fbc55508d04dcc68d81596c781a561a68734647ccb8c3a1e15e2e126",
+  "schema": "hybrid_obstacle_activity_onset_tail_audit_v1",
+  "score_tail": {
+    "active_recall_clustered_bootstrap": {
+      "ci_high": 0.8532903676798792,
+      "ci_low": 0.6708713395706636,
+      "point": 0.7699000966806316,
+      "replicates": 10000,
+      "resampled_unit": "trajectory",
+      "seed": 20260727
+    },
+    "active_score_distribution": {
+      "count": 3103,
+      "median": 0.9999901056289673,
+      "min": 8.32657860883046e-06,
+      "q1": 0.01733143914490938,
+      "q10": 0.9882391691207886,
+      "q25": 0.9997124671936035,
+      "q5": 0.8405994474887848
+    },
+    "clustered_false_positive_episodes": 2,
+    "false_positive_rate_clustered_bootstrap": {
+      "ci_high": 0.0025003672091726092,
+      "ci_low": 0.00033742517656639326,
+      "point": 0.0011996330534189542,
+      "replicates": 10000,
+      "resampled_unit": "trajectory",
+      "seed": 20260727
+    },
+    "false_positive_run_histogram": {
+      "0": 99,
+      "1": 7,
+      "3": 1,
+      "7": 1
+    },
+    "max_consecutive_false_positive_length": 7,
+    "note": "full-range AUROC is deliberately not the headline; the upper tail and the clustering of errors are what determine usability",
+    "partial_roc": {
+      "tpr_at_fpr_0.1pct": 0.7131807927811795,
+      "tpr_at_fpr_0.5pct": 0.9233000322268772,
+      "tpr_at_fpr_1pct": 0.9381243957460522,
+      "tpr_at_fpr_2pct": 0.9513374154044473,
+      "tpr_at_fpr_5pct": 0.9671285852400903
+    },
+    "per_trajectory_max_score": {
+      "max": 0.9999991655349731,
+      "median": 0.7442435622215271,
+      "trajectories": 108
+    },
+    "tail_overlap": {
+      "zero_top_0.1pct": {
+        "active_fraction_below_cutoff": 0.2868192072188205,
+        "score_cutoff": 0.9998240596055985,
+        "zero_frames_above_cutoff": 15
+      },
+      "zero_top_0.5pct": {
+        "active_fraction_below_cutoff": 0.07669996777312278,
+        "score_cutoff": 0.9717123180627812,
+        "zero_frames_above_cutoff": 71
+      },
+      "zero_top_1pct": {
+        "active_fraction_below_cutoff": 0.061875604253947794,
+        "score_cutoff": 0.9334872007369992,
+        "zero_frames_above_cutoff": 142
+      },
+      "zero_top_2pct": {
+        "active_fraction_below_cutoff": 0.04866258459555269,
+        "score_cutoff": 0.8248666405677798,
+        "zero_frames_above_cutoff": 284
+      },
+      "zero_top_5pct": {
+        "active_fraction_below_cutoff": 0.03287141475990976,
+        "score_cutoff": 0.44902659952640533,
+        "zero_frames_above_cutoff": 709
+      }
+    },
+    "zero_score_distribution": {
+      "count": 14171,
+      "max": 0.9999991655349731,
+      "median": 0.01125832088291645,
+      "q90": 0.24275225400924683,
+      "q99": 0.9334872007369992,
+      "q99.5": 0.9717123180627812,
+      "q99.9": 0.9998240596055985
+    }
+  },
+  "training_performed": false
+}

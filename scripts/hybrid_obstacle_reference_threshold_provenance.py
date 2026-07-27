@@ -262,6 +262,31 @@ def main() -> int:
                     stack["pinned_hashes"]["model_hybrid_xml_sha256"],
                     detail="file not at assets/model_hybrid.xml in this snapshot")
 
+    # ---- 8c. diagnostic seeds and the proximity-only gate ------------------------
+    for record in parked["checkpoints"]:
+        if record["variant"] != "CURRENT_FRAME_ONLY" or record["seed"] == 0:
+            continue
+        checks.add(f"seed{record['seed']}_checkpoint_sha256", record["sha256"],
+                   sha256_file(Path(record["local_path"])),
+                   detail="diagnostic only; never a deployment candidate")
+    gate_report = (ROOT / "diagnostics_output" / "hybrid_obstacle_prox_activity_gate"
+                   / "final_decision.json")
+    if gate_report.is_file():
+        gate = json.loads(gate_report.read_text())
+        checks.add("prox_gate_checkpoint_sha256", gate["gate"]["checkpoint_sha256"],
+                   sha256_file(Path(gate["gate"]["checkpoint_path"])))
+        checks.add("prox_gate_decision", "PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE",
+                   gate["decision"])
+        checks.add("onset_classification", "PROXIMITY_AMBIGUITY_DOMINANT",
+                   gate["onset_attribution"]["classification"])
+        checks.add("historical_false_positive_count", 17,
+                   gate["onset_attribution"]["known_false_positive_count"])
+        checks.add("prox_activity_partition_sha256",
+                   gate["partition"]["manifest_sha256"],
+                   json.loads((ROOT / "configs"
+                               / "hybrid_obstacle_prox_activity_partition_v1.json"
+                               ).read_text())["manifest_sha256"])
+
     # ---- 9. seed disposition ----------------------------------------------------
     other_seeds = {c["seed"]: c["sha256"] for c in parked["checkpoints"]
                    if c["variant"] == "CURRENT_FRAME_ONLY" and c["seed"] != 0}
