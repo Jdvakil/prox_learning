@@ -1039,3 +1039,49 @@ No deployment manifest written, 0 of 20 live rollouts, `development4` not execut
 Next: decide explicitly whether the 0.80 recall floor or the frozen threshold gives way (they
 are currently incompatible), and if uncertainty is retried, **keep the data fixed and vary
 only the seed** — that is the construction the evidence actually supports.
+
+## Hybrid obstacle safety residual: full-seed joint gate (offline transfer failed)
+
+`docs/HYBRID_OBSTACLE_FULL_SEED_JOINT_GATE_FINAL_DECISION.md` —
+`FULL_SEED_JOINT_GATE_OFFLINE_TRANSFER_FAILED`, Case C.
+
+**Joint calibration works, and it vindicates the owner's diagnosis.** Recalibrating the
+activity threshold *together with* the agreement threshold — instead of inheriting one fitted
+for a single-gate controller — restores full coverage without touching the 0.80 recall floor:
+
+| | Retired standalone | Jointly calibrated |
+|---|---:|---:|
+| Activity threshold | 0.99960858 | **0.99154764** |
+| Activity-alone active retention | 0.786 | **1.000** |
+| Final active recall | — | **1.000** |
+
+1,690 feasible (activity, agreement) pairs out of a 5,084 × 266 Cartesian grid; bootstrap
+upper bound on false activation 0.00000. **The recall floor was never lowered** — the
+threshold moved because the deployed system is now a two-gate controller.
+
+**Offline transfer then fails, and only on clustering.** Nested recall 0.997, diagnostic
+recall 0.970, mean executed false activation 0.0044 / 0.0026 — all comfortably inside their
+ceilings. What fails: nested false-active **run 3** (>2) plus persistent correction after
+support ends; diagnostic **run 7** (>5); historical regression **7/17 rejected, 10 executed**.
+
+**The proximate cause is a definitional difference worth remembering.** The handoff specifies
+anchor agreement `mean(J(s0,s1), J(s0,s2))`; the identifiability audit that produced the
+validated 17/17 used the **three-pair** mean including `J(s1,s2)`. On all 17 frames
+`J(s0,s2) = 0.000` and `J(s1,s2) ≈ 0`, so the audit got `(0.5+0+0)/3 = 0.167` — exactly its
+reported median — while the anchor form gives `(0.5+0)/2 = 0.250`. Dropping the seed1–seed2
+term raises the failures' agreement ~1.5×, above the 0.225 threshold, and 10 of 17 execute.
+Rejecting all 17 needs >0.375, but only **14 of 266** agreement values survive the
+quiet-frame acceptance floors at all.
+
+Also worth noting: the retired activity threshold would have rejected **0 of 17** — these
+frames always passed the activity gate, so disagreement was always the only thing that could
+stop them.
+
+Three constructions have now failed on the same observation contract (three full-data seeds,
+a trajectory bootstrap, this joint gate). **Do not add another same-input ensemble.** But
+before concluding, re-run this exact calibration with the three-pair metric — it is one
+argument, and it is the only validated form. Every failure here was clustering or persistence,
+never coverage.
+
+0 of 20 live rollouts, `development4` not executed, `confirmatory41` untouched. Frozen
+inference is bit-identical across all three seeds.
