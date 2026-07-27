@@ -1,0 +1,291 @@
+{
+  "hypotheses": [
+    {
+      "evidence": {
+        "offline_mae": 0.012808989205669245,
+        "relative_improvement": 0.6954708923849224,
+        "zero_baseline_mae": 0.042061625261318895
+      },
+      "hypothesis": "signal_not_learnable_from_causal_inputs",
+      "reading": "a model that cannot separate itself from predicting 'no obstacle ever' has not extracted the counterfactual from its inputs",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "field_mae_vs_zero_baseline_field_mae": {
+          "model": 0.00012342956595183622,
+          "zero": 0.00036187325094340605
+        },
+        "oracle_active_recall": 0.9097859327217126,
+        "oracle_zero_false_positive_rate": 0.023122622558447662
+      },
+      "hypothesis": "model_predicts_the_majority_zero_class",
+      "reading": "near-zero recall with a near-zero false-positive rate is the signature of a model that has learned to stay silent",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "current_frame_only_mae": 0.011336645253703962,
+        "full_causal_mae": 0.012808989205669245,
+        "history_relative_gain": -0.1298747485711642,
+        "proximity_relative_gain_over_qpos_only": 0.7659946687809203,
+        "qpos_only_mae": 0.04844609819205531
+      },
+      "hypothesis": "static_state_sufficient_history_unnecessary",
+      "reading": "if four frames do not beat one, the obstacle signature is instantaneous rather than temporal",
+      "supported": true
+    },
+    {
+      "evidence": {
+        "learner_induced_present_in_offline_test": false,
+        "offline_test_source_modes": [
+          "EXPERT_RECONSTRUCTED",
+          "ACT_ONLY_ON_POLICY",
+          "ORACLE_ON_POLICY"
+        ]
+      },
+      "hypothesis": "learner_induced_distribution_causes_failure",
+      "reading": "not evaluable: the learner-induced distribution exists only in the train partition, so its generalization cannot be measured here at all. This is a coverage limitation of the frozen dataset, not a finding about the model.",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "changed_pixel_prevalence": 0.000798237255056062,
+        "mask_auprc": 0.6609758042868413,
+        "mask_f1": 0.6365984391588361,
+        "oracle_active_frame_prevalence_offline": null
+      },
+      "hypothesis": "oracle_active_events_too_sparse",
+      "reading": "sparsity of the positive class relative to what the mask head sees",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "direction_cosine": 0.9961815780127604,
+        "field_mae": 0.00012342956595183622,
+        "head_relative_improvement": 0.6954708923849224,
+        "zero_field_mae": 0.00036187325094340605
+      },
+      "hypothesis": "field_accurate_but_head_space_output_wrong",
+      "reading": "the frozen head amplifies small field errors; pixel accuracy does not automatically become differential accuracy",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "changed_pixel_prevalence": 0.000798237255056062,
+        "head_relative_improvement": 0.6954708923849224,
+        "mask_auprc": 0.6609758042868413,
+        "mask_f1": 0.6365984391588361
+      },
+      "hypothesis": "head_space_accurate_but_localization_weak",
+      "reading": "the 7-D output can be right while the model is wrong about which pixels moved, because the head pools over the field",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "differential_mae_by_source_mode": {
+          "ACT_ONLY_ON_POLICY": 0.012825875159631203,
+          "EXPERT_RECONSTRUCTED": 0.019495093378773046,
+          "LEARNER_INDUCED_ON_POLICY": null,
+          "ORACLE_ON_POLICY": 0.010212938566932497
+        },
+        "direction_cosine_by_source_mode": {
+          "ACT_ONLY_ON_POLICY": 0.9951872272624355,
+          "EXPERT_RECONSTRUCTED": 0.9986467377501388,
+          "LEARNER_INDUCED_ON_POLICY": null,
+          "ORACLE_ON_POLICY": 0.9927083885089831
+        },
+        "worst_over_best_mae_ratio": 1.9088622976637062
+      },
+      "hypothesis": "source_mode_distribution_shift",
+      "reading": "error concentrated in one driving distribution rather than spread",
+      "supported": false
+    },
+    {
+      "evidence": {
+        "calibrated_threshold_across_seeds": {
+          "coefficient_of_variation": 0.7182049802852056,
+          "mean": 0.06918511318473401,
+          "n": 3,
+          "std": 0.04968909285087161,
+          "values": [
+            0.031334166830159604,
+            0.13938424741290736,
+            0.03683692531113508
+          ]
+        },
+        "offline_false_positive_rate": 0.023122622558447662,
+        "seed_spread_of_offline_mae": {
+          "coefficient_of_variation": 0.3812859814119017,
+          "mean": 0.012808989205669245,
+          "n": 3,
+          "std": 0.004883888020178053,
+          "values": [
+            0.008873880333438824,
+            0.01969230725624235,
+            0.009860780027326566
+          ]
+        }
+      },
+      "hypothesis": "calibration_instability",
+      "reading": "a threshold that moves sharply between seeds will not transfer to a live run",
+      "supported": true
+    }
+  ],
+  "per_link_field_mae": {
+    "link1": {
+      "field_mae": 1.5075686255904506e-07,
+      "sensors": 7
+    },
+    "link2": {
+      "field_mae": 2.9246717843222122e-08,
+      "sensors": 7
+    },
+    "link3": {
+      "field_mae": 4.361742264560688e-05,
+      "sensors": 5
+    },
+    "link4": {
+      "field_mae": 1.4470451879818863e-07,
+      "sensors": 5
+    },
+    "link5_back": {
+      "field_mae": 0.0004747344736546263,
+      "sensors": 6
+    },
+    "link5_front": {
+      "field_mae": 8.162513332646145e-06,
+      "sensors": 4
+    },
+    "link6": {
+      "field_mae": 0.0003060091679794057,
+      "sensors": 6
+    }
+  },
+  "per_sensor_field_mae": {
+    "link1_sensor_0": 0.0,
+    "link1_sensor_1": 0.0,
+    "link1_sensor_2": 0.0,
+    "link1_sensor_3": 1.1237938944984645e-10,
+    "link1_sensor_4": 1.6144309915220651e-09,
+    "link1_sensor_5": 1.0535712275323436e-06,
+    "link1_sensor_6": 0.0,
+    "link2_sensor_0": 1.4897046055153016e-11,
+    "link2_sensor_1": 1.6265370334546763e-14,
+    "link2_sensor_2": 0.0,
+    "link2_sensor_3": 4.774902778835384e-12,
+    "link2_sensor_4": 2.0378081397448573e-07,
+    "link2_sensor_5": 7.557202386784485e-13,
+    "link2_sensor_6": 9.2576699362615e-10,
+    "link3_sensor_0": 2.7338927078153667e-06,
+    "link3_sensor_1": 2.722133466379987e-06,
+    "link3_sensor_2": 0.00020489570616106264,
+    "link3_sensor_3": 1.2329222525196472e-06,
+    "link3_sensor_4": 6.5024586402567364e-06,
+    "link4_sensor_0": 7.434891884796924e-10,
+    "link4_sensor_1": 6.961054466667946e-07,
+    "link4_sensor_2": 8.132685167273381e-13,
+    "link4_sensor_3": 2.66728448671522e-08,
+    "link4_sensor_4": 0.0,
+    "link5_back_sensor_0": 4.1548749943676285e-09,
+    "link5_back_sensor_1": 0.0,
+    "link5_back_sensor_2": 2.7440151446053745e-05,
+    "link5_back_sensor_3": 0.0,
+    "link5_back_sensor_4": 0.0028208850675915075,
+    "link5_back_sensor_5": 7.746801520239028e-08,
+    "link5_front_sensor_0": 4.06634258363669e-14,
+    "link5_front_sensor_1": 0.0,
+    "link5_front_sensor_2": 0.0,
+    "link5_front_sensor_3": 3.2650053289921156e-05,
+    "link6_sensor_0": 0.001124326636099001,
+    "link6_sensor_1": 1.6850123186721145e-06,
+    "link6_sensor_2": 0.00011111326451292444,
+    "link6_sensor_3": 0.0004511055682170344,
+    "link6_sensor_4": 0.00014782451071961155,
+    "link6_sensor_5": 1.600919075177765e-11
+  },
+  "primary_variant": "FULL_CAUSAL",
+  "report_sha256": "a8d927b52a4b599b5a6720ac05ea929e644f13ca11861c2f2e38c53c4f8836a2",
+  "schema": "causal_parked_skin_failure_analysis_v1",
+  "source_mode_coverage": {
+    "modes_absent_from_offline_test": [
+      "LEARNER_INDUCED_ON_POLICY"
+    ],
+    "offline_test_modes": [
+      "EXPERT_RECONSTRUCTED",
+      "ACT_ONLY_ON_POLICY",
+      "ORACLE_ON_POLICY"
+    ]
+  },
+  "summary": {
+    "history_relative_gain_over_current_frame": -0.1298747485711642,
+    "median_direction_cosine_active": 0.9961815780127604,
+    "offline_mae": {
+      "current_frame_only": 0.011336645253703962,
+      "full_causal": 0.012808989205669245,
+      "qpos_only": 0.04844609819205531,
+      "zero_differential": 0.042061625261318895
+    },
+    "oracle_active_recall": 0.9097859327217126,
+    "oracle_zero_false_positive_rate": 0.023122622558447662,
+    "proximity_relative_gain_over_qpos_only": 0.7659946687809203,
+    "relative_improvement_over_zero": 0.6954708923849224,
+    "seed_spread": {
+      "coefficient_of_variation": 0.3812859814119017,
+      "mean": 0.012808989205669245,
+      "n": 3,
+      "std": 0.004883888020178053,
+      "values": [
+        0.008873880333438824,
+        0.01969230725624235,
+        0.009860780027326566
+      ]
+    }
+  },
+  "supported_hypotheses": [
+    "static_state_sufficient_history_unnecessary",
+    "calibration_instability"
+  ],
+  "worst_sensors_by_field_mae": [
+    {
+      "field_mae": 0.0028208850675915075,
+      "link": "link5_back",
+      "sensor": "link5_back_sensor_4"
+    },
+    {
+      "field_mae": 0.001124326636099001,
+      "link": "link6",
+      "sensor": "link6_sensor_0"
+    },
+    {
+      "field_mae": 0.0004511055682170344,
+      "link": "link6",
+      "sensor": "link6_sensor_3"
+    },
+    {
+      "field_mae": 0.00020489570616106264,
+      "link": "link3",
+      "sensor": "link3_sensor_2"
+    },
+    {
+      "field_mae": 0.00014782451071961155,
+      "link": "link6",
+      "sensor": "link6_sensor_4"
+    },
+    {
+      "field_mae": 0.00011111326451292444,
+      "link": "link6",
+      "sensor": "link6_sensor_2"
+    },
+    {
+      "field_mae": 3.2650053289921156e-05,
+      "link": "link5_front",
+      "sensor": "link5_front_sensor_3"
+    },
+    {
+      "field_mae": 2.7440151446053745e-05,
+      "link": "link5_back",
+      "sensor": "link5_back_sensor_2"
+    }
+  ]
+}

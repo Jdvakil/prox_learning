@@ -767,3 +767,64 @@ Not yet established: that the dataset is *useful*. Nothing here shows
 `CAUSAL_PARKED_SKIN_REFERENCE_V1` can learn the parked field from these inputs, or that
 it would close the activation contract `V2` failed. Training, `development4` and
 `confirmatory41` were all out of scope — `confirmatory41` remains untouched.
+
+## Hybrid obstacle safety residual: the parked-skin reference (trained, offline)
+
+`docs/CAUSAL_PARKED_SKIN_REFERENCE_V1_FINAL_DECISION.md` —
+`PARKED_REFERENCE_MODEL_OVERFIT`.
+
+**The dataset is useful and the field is learnable.** The open question above is answered:
+offline SafetyHead-space differential MAE drops from the trivial baseline's 0.042062 to
+**0.011337** — a **73% reduction** against a 25% gate — with median direction cosine
+**0.999** against a 0.75 gate, 94–98% recall on oracle-active frames, and zero
+output-constraint violations. The privileged upper bound (true parked field through the
+frozen head) is 3.8e-08, so essentially all the recoverable signal is there.
+
+7 of 8 technical gates and 7 of 8 generalization gates pass. The decision token is set by the
+one failure: oracle-zero false-positive rate 2.15% on seed 0 against a ≤2% ceiling.
+
+**Read the token carefully — this is not overfitting.** Offline-test MAE (0.0091) is *less
+than half* validation MAE (0.0208); there is no validation-to-test gap. The failure is
+**threshold transfer**. The activation threshold is the 99th percentile of oracle-zero norms
+on the 8-episode / 3,821-frame calibration partition, which gives 1.01% there by
+construction, 2.15% on offline test and 2.61% on validation. Across seeds the thresholds
+themselves vary by CV 0.72. **Calibrate on more than one partition, and target a false-
+positive rate below the ceiling you have to hold** — a quantile fitted on ~3.8k frames does
+not transfer tightly enough to sit right on a 2% line. No retraining is needed to fix this.
+
+Three ablations, same targets, partitions, checkpoint rule and evaluation code:
+
+| Model | Offline MAE | Seed CV |
+|---|---:|---:|
+| `CURRENT_FRAME_ONLY` — **frozen primary** | **0.011337** | 0.177 |
+| `FULL_CAUSAL` (4 frames) | 0.012809 | 0.381 |
+| `QPOS_ONLY` (state only) | 0.048446 | 0.034 |
+| `ZERO_DIFFERENTIAL` | 0.042062 | — |
+
+**Temporal history does not help — drop it.** Four causal frames are 13% *worse* than the
+current frame alone and twice as variable across seeds. The hazard is a *parked* obstacle,
+static by construction, so its whole signature is in frame `t`; the extra frames buy
+parameters and variance. The handoff's alternative branch applies: the simpler model is
+frozen and every remaining gate was recomputed against it rather than inherited. A live
+deployment can drop the four-frame buffer entirely.
+
+**Proximity is essential, robot state is not sufficient.** `QPOS_ONLY` is *worse than
+predicting no obstacle at all*. Posture tells you where the arm is, not where the hazard is.
+
+Two implementation notes worth carrying forward. The BCE positive weight must be capped:
+uncapped at `negatives/positives ≈ 1200` the mask head fires field-wide, and the frozen head
+turns a ~4e-3 per-pixel error into a ~0.7 differential error — a validation MAE of 0.2739,
+far worse than silence. And the state-only control must not receive the current field
+through its decoder, or it quietly becomes a worse `CURRENT_FRAME_ONLY` instead of a control.
+
+Error is confined to the distal links — `link5_back` 4.8e-04, `link6` 3.1e-04, and exactly
+0.00 on `link1`, `link2`, `link4`, which never see the hazard.
+
+Two limits on what this establishes. `LEARNER_INDUCED_ON_POLICY` exists only in the train
+partition, so generalization to learner-induced states — the distribution that broke the
+previous reference — is **unevaluable** from this dataset. And re-running an identical
+config and seed moved validation MAE by 15.2% (non-deterministic GPU kernels), so the 17.7%
+across-seed CV is substantially kernel noise.
+
+These are offline feasibility results. No live rollouts were run, ACT and the Safety-CVAE
+were untouched, and `confirmatory41` is still untouched.

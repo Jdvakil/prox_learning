@@ -1,0 +1,436 @@
+{
+  "contract": {
+    "causal_history_frames": 4,
+    "causal_history_rule": "history(t) = [t-3,t-2,t-1,t], left-padded by repeating the earliest frame",
+    "link_of_sensor": [
+      "link1",
+      "link1",
+      "link1",
+      "link1",
+      "link1",
+      "link1",
+      "link1",
+      "link2",
+      "link2",
+      "link2",
+      "link2",
+      "link2",
+      "link2",
+      "link2",
+      "link3",
+      "link3",
+      "link3",
+      "link3",
+      "link3",
+      "link4",
+      "link4",
+      "link4",
+      "link4",
+      "link4",
+      "link5_back",
+      "link5_back",
+      "link5_back",
+      "link5_back",
+      "link5_back",
+      "link5_back",
+      "link5_front",
+      "link5_front",
+      "link5_front",
+      "link5_front",
+      "link6",
+      "link6",
+      "link6",
+      "link6",
+      "link6",
+      "link6"
+    ],
+    "links": [
+      "link1",
+      "link2",
+      "link3",
+      "link4",
+      "link5_back",
+      "link5_front",
+      "link6"
+    ],
+    "model_input_fields": [
+      "current_closeness",
+      "current_valid_mask",
+      "gripper_command",
+      "gripper_state",
+      "nominal_action",
+      "qpos",
+      "qvel"
+    ],
+    "pixels_per_sensor": 64,
+    "prohibited_as_input": [
+      "changed_pixel_mask",
+      "current_head",
+      "oracle_active",
+      "oracle_dq",
+      "parked_closeness",
+      "parked_field_sha256",
+      "parked_head",
+      "parked_valid_mask",
+      "removable_closeness",
+      "teacher_dq",
+      "teacher_valid"
+    ],
+    "sensor_count": 40,
+    "sensor_order_sha256": "c31df8c36b0011b0eaf5b2eb5ce66d2514b5d6662ba9d7684ff021cd17cec858",
+    "state_vector_layout": [
+      {
+        "field": "qpos",
+        "width": 9
+      },
+      {
+        "field": "qvel",
+        "width": 9
+      },
+      {
+        "field": "nominal_action",
+        "width": 8
+      },
+      {
+        "field": "gripper_state",
+        "width": 2
+      },
+      {
+        "field": "gripper_command",
+        "width": 1
+      }
+    ],
+    "state_vector_width": 29
+  },
+  "dataset_manifest_sha256": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+  "dataset_version": "hybrid_obstacle_parked_skin_supervision_v1",
+  "field_count": 23,
+  "fields": [
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "bool",
+      "group": "privileged",
+      "name": "changed_pixel_mask",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "supervises the changed-probability head",
+      "role": "target",
+      "units": "boolean per pixel; |current - parked| > 1e-5"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "trivially available live as step * policy_dt",
+      "dtype": "float64",
+      "group": "deployable",
+      "name": "control_timestamp",
+      "per_frame_shape": [],
+      "rationale": "excluded for the same reason as episode_step; it is an affine function of it",
+      "role": "metadata",
+      "units": "seconds since episode start"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t; the four-frame window [t-3..t] is reconstructed causally",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "current_closeness",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "the primary observation; the field the obstacle is visible in",
+      "role": "model_input",
+      "units": "dimensionless closeness in [0,1]; clip(1 - depth_m/0.5, 0, 1)"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "derived from a deployable field",
+      "dtype": "object",
+      "group": "integrity",
+      "name": "current_field_sha256",
+      "per_frame_shape": [],
+      "rationale": "provenance and leakage checks",
+      "role": "metadata",
+      "units": "hex digest"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "recomputable live from current_closeness through the frozen head",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "current_head",
+      "per_frame_shape": [
+        7
+      ],
+      "rationale": "not privileged in principle -- it is a deterministic function of a deployable field -- but it is read as a stored target here, never as a model input",
+      "role": "target",
+      "units": "SafetyHead 7-D output, physical units after label_scale"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t together with the field it annotates",
+      "dtype": "bool",
+      "group": "deployable",
+      "name": "current_valid_mask",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "without it a dead pixel and a true contact are the same number, and the model would learn to read sensor dropout as an obstacle",
+      "role": "model_input",
+      "units": "boolean per pixel; False where the depth reading is below 5 mm"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "trivially available live as a counter",
+      "dtype": "int64",
+      "group": "deployable",
+      "name": "episode_step",
+      "per_frame_shape": [],
+      "rationale": "EXCLUDED from model input by choice: on-policy rows all run a fixed 200-step horizon, so a step index lets the model learn a time-indexed prior over when the hazard is near instead of reading it from the proximity field",
+      "role": "metadata",
+      "units": "integer control step index"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "gripper_command",
+      "per_frame_shape": [
+        1
+      ],
+      "rationale": "duplicates nominal_action[7:8]; kept for parity with the live dictionary",
+      "role": "model_input",
+      "units": "commanded gripper scalar"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "gripper_state",
+      "per_frame_shape": [
+        2
+      ],
+      "rationale": "duplicates qpos[7:9] but is kept for parity with the live input dictionary",
+      "role": "model_input",
+      "units": "metres, 2 finger joints"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "the ACT action for step t, produced before the reference runs",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "nominal_action",
+      "per_frame_shape": [
+        8
+      ],
+      "rationale": "the evaluator computes it first precisely because the reference consumes it",
+      "role": "model_input",
+      "units": "radians (7 arm targets) plus 1 gripper command"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "bool",
+      "group": "privileged",
+      "name": "oracle_active",
+      "per_frame_shape": [],
+      "rationale": "stratification and metric conditioning only",
+      "role": "target",
+      "units": "boolean per frame"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "oracle_dq",
+      "per_frame_shape": [
+        7
+      ],
+      "rationale": "the quantity the whole reference exists to estimate",
+      "role": "target",
+      "units": "SafetyHead 7-D differential, current_head - parked_head"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "parked_closeness",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "the primary regression target",
+      "role": "target",
+      "units": "dimensionless closeness in [0,1]"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "derived from a privileged field",
+      "dtype": "object",
+      "group": "integrity",
+      "name": "parked_field_sha256",
+      "per_frame_shape": [],
+      "rationale": "provenance only; never an input",
+      "role": "metadata",
+      "units": "hex digest"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "parked_head",
+      "per_frame_shape": [
+        7
+      ],
+      "rationale": "SafetyHead-space target",
+      "role": "target",
+      "units": "SafetyHead 7-D output"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "bool",
+      "group": "privileged",
+      "name": "parked_valid_mask",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "target-side validity, used for loss masking and mask-agreement diagnostics",
+      "role": "target",
+      "units": "boolean per pixel"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t before the control decision",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "qpos",
+      "per_frame_shape": [
+        9
+      ],
+      "rationale": "posture determines which sensors can see the parked hazard at all",
+      "role": "model_input",
+      "units": "radians (7 arm joints) and metres (2 finger joints)"
+    },
+    {
+      "available_in_live_evaluator": true,
+      "causal_availability": "available at t before the control decision",
+      "dtype": "float32",
+      "group": "deployable",
+      "name": "qvel",
+      "per_frame_shape": [
+        9
+      ],
+      "rationale": "constructed live by the evaluator from obs['qvel']",
+      "role": "model_input",
+      "units": "rad/s (7 arm joints) and m/s (2 finger joints)"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "counterfactual; never observable live",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "removable_closeness",
+      "per_frame_shape": [
+        40,
+        8,
+        8
+      ],
+      "rationale": "the differential the model must reproduce in pixel space",
+      "role": "target",
+      "units": "dimensionless; current - parked"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "derived from deployable state",
+      "dtype": "object",
+      "group": "integrity",
+      "name": "scientific_state_sha256",
+      "per_frame_shape": [],
+      "rationale": "partition-independence checking",
+      "role": "metadata",
+      "units": "hex digest"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "oracle bookkeeping",
+      "dtype": "bool",
+      "group": "integrity",
+      "name": "state_neutral",
+      "per_frame_shape": [],
+      "rationale": "confirms parking perturbed only the hazard",
+      "role": "metadata",
+      "units": "boolean per frame"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "not part of this task's contract",
+      "dtype": "float32",
+      "group": "privileged",
+      "name": "teacher_dq",
+      "per_frame_shape": [
+        7
+      ],
+      "rationale": "a previous model's output; using it would make this a distillation task",
+      "role": "prohibited",
+      "units": "7-D differential from the previous learner, when populated"
+    },
+    {
+      "available_in_live_evaluator": false,
+      "causal_availability": "not part of this task's contract",
+      "dtype": "bool",
+      "group": "privileged",
+      "name": "teacher_valid",
+      "per_frame_shape": [],
+      "rationale": "companion flag to teacher_dq",
+      "role": "prohibited",
+      "units": "boolean per frame"
+    }
+  ],
+  "files_sampled": 24,
+  "inconsistent_field_shapes": [],
+  "input_contract_sha256": "cc87a773b2a06d7ca6bd4be5a0783be1d576887c74efa3e13ea94dd6d92d7704",
+  "inputs_not_live_available": [],
+  "live_evaluator": {
+    "additionally_live_available": [
+      "control_timestamp",
+      "current_closeness",
+      "current_valid_mask",
+      "episode_step"
+    ],
+    "note": "keys parsed from the assignment to `runtime` in the evaluator AST. Matching the largest dict containing qpos instead finds the per-frame diagnostic record, which logs privileged fields and would wrongly certify them live-available.",
+    "path": "submodules/act/eval_act_obstacle_on_policy.py",
+    "renders_full_current_field": true,
+    "runtime_dictionary_keys": [
+      "current_head",
+      "gripper_command",
+      "gripper_state",
+      "nominal_action",
+      "qpos",
+      "qvel",
+      "sensor_summary"
+    ],
+    "sha256": "1756196633d876871c1087e2a8b9c2e0bd95980cf10da9295220d8ab34f98c27"
+  },
+  "missing_expected_fields": [],
+  "prohibited_inputs_used": [],
+  "report_sha256": "528ee2d97a9425bf2a6f674dc0b4457e6b840ba0af932a6a4d59993351b47a26",
+  "schema": "causal_parked_skin_input_contract_audit_v1",
+  "unexpected_fields": [],
+  "valid": true
+}

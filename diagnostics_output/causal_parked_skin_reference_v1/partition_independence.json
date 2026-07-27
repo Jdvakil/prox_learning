@@ -1,0 +1,125 @@
+{
+  "composition": {
+    "offline_reference_test": {
+      "distinct_episodes": 20,
+      "frames": 9543,
+      "hazard_absent_frames": 2386,
+      "hazard_absent_trajectories": 15,
+      "hazard_present_frames": 7157,
+      "hazard_present_trajectories": 45,
+      "oracle_active_frames": 1744,
+      "oracle_active_prevalence": 0.182752,
+      "oracle_zero_frames": 7799,
+      "source_mode_frames": {
+        "ACT_ONLY_ON_POLICY": 4000,
+        "EXPERT_RECONSTRUCTED": 1543,
+        "ORACLE_ON_POLICY": 4000
+      },
+      "source_mode_trajectories": {
+        "ACT_ONLY_ON_POLICY": 20,
+        "EXPERT_RECONSTRUCTED": 20,
+        "ORACLE_ON_POLICY": 20
+      },
+      "trajectories": 60
+    },
+    "reference_calibration": {
+      "distinct_episodes": 8,
+      "frames": 3821,
+      "hazard_absent_frames": 924,
+      "hazard_absent_trajectories": 6,
+      "hazard_present_frames": 2897,
+      "hazard_present_trajectories": 18,
+      "oracle_active_frames": 549,
+      "oracle_active_prevalence": 0.14368,
+      "oracle_zero_frames": 3272,
+      "source_mode_frames": {
+        "ACT_ONLY_ON_POLICY": 1600,
+        "EXPERT_RECONSTRUCTED": 621,
+        "ORACLE_ON_POLICY": 1600
+      },
+      "source_mode_trajectories": {
+        "ACT_ONLY_ON_POLICY": 8,
+        "EXPERT_RECONSTRUCTED": 8,
+        "ORACLE_ON_POLICY": 8
+      },
+      "trajectories": 24
+    },
+    "reference_train": {
+      "distinct_episodes": 64,
+      "frames": 43519,
+      "hazard_absent_frames": 10792,
+      "hazard_absent_trajectories": 64,
+      "hazard_present_frames": 32727,
+      "hazard_present_trajectories": 192,
+      "oracle_active_frames": 11308,
+      "oracle_active_prevalence": 0.259841,
+      "oracle_zero_frames": 32211,
+      "source_mode_frames": {
+        "ACT_ONLY_ON_POLICY": 12800,
+        "EXPERT_RECONSTRUCTED": 5119,
+        "LEARNER_INDUCED_ON_POLICY": 12800,
+        "ORACLE_ON_POLICY": 12800
+      },
+      "source_mode_trajectories": {
+        "ACT_ONLY_ON_POLICY": 64,
+        "EXPERT_RECONSTRUCTED": 64,
+        "LEARNER_INDUCED_ON_POLICY": 64,
+        "ORACLE_ON_POLICY": 64
+      },
+      "trajectories": 256
+    },
+    "reference_validation": {
+      "distinct_episodes": 8,
+      "frames": 3910,
+      "hazard_absent_frames": 923,
+      "hazard_absent_trajectories": 6,
+      "hazard_present_frames": 2987,
+      "hazard_present_trajectories": 18,
+      "oracle_active_frames": 810,
+      "oracle_active_prevalence": 0.207161,
+      "oracle_zero_frames": 3100,
+      "source_mode_frames": {
+        "ACT_ONLY_ON_POLICY": 1600,
+        "EXPERT_RECONSTRUCTED": 710,
+        "ORACLE_ON_POLICY": 1600
+      },
+      "source_mode_trajectories": {
+        "ACT_ONLY_ON_POLICY": 8,
+        "EXPERT_RECONSTRUCTED": 8,
+        "ORACLE_ON_POLICY": 8
+      },
+      "trajectories": 24
+    }
+  },
+  "crossings": {
+    "episode_id": [],
+    "initial_state_sha256": [],
+    "manifest_row_id": [],
+    "source_h5_sha256": [],
+    "trajectory_id": []
+  },
+  "dataset_manifest_sha256": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+  "episode_reuse_across_distributions": {
+    "episodes_by_partition_count": {
+      "1": 100
+    },
+    "files_per_episode_histogram": {
+      "3": 36,
+      "4": 64
+    },
+    "note": "an episode identity is reused across source distributions by design; every copy must land in one partition"
+  },
+  "identity_keys_checked": [
+    "episode_id",
+    "initial_state_sha256",
+    "manifest_row_id",
+    "source_h5_sha256",
+    "trajectory_id"
+  ],
+  "partition_config_sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+  "report_sha256": "147fe6afdbcb9036e501594c9a329e9249b99fa37de5018032d02213065f4290",
+  "schema": "causal_parked_skin_partition_independence_v1",
+  "total_crossings": 0,
+  "unknown_partitions": [],
+  "valid": true
+}
