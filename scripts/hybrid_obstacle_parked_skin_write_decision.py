@@ -1,30 +1,28 @@
 #!/usr/bin/env python3
-"""Assemble the final parked-skin reference decision JSON.
+"""Assemble the final parked-skin dataset decision JSON.
 
-Handoff step 25. Every field is copied from an artifact produced earlier in the task. The
-decision token follows from the data audit when the paired-skin contract is unmet.
+Handoff step 22. Every field is copied from an artifact produced earlier in the task; the
+decision token follows from the audit and smoke results.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
+import stat
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "submodules" / "act"))
 
 ALLOWED = (
-    "PARKED_SKIN_REFERENCE_READY_FOR_CONFIRMATORY_41",
-    "PARKED_SKIN_REFERENCE_OFFLINE_INVALID",
-    "PARKED_SKIN_REFERENCE_LIVE_GROSS_REGRESSION",
-    "PARKED_SKIN_DATA_CONTRACT_FAILED",
-    "PARKED_SKIN_COUNTERFACTUAL_NOT_IDENTIFIABLE",
-    "PARKED_SKIN_MODEL_TRAINING_FAILED",
+    "PARKED_SKIN_DATASET_READY_FOR_MODEL_TRAINING",
+    "PARKED_SKIN_DATASET_CONTRACT_FAILED",
+    "PARKED_SKIN_ORACLE_PAIRING_FAILED",
+    "PARKED_SKIN_COLLECTION_INCOMPLETE",
+    "REQUIRED_LEARNER_ARTIFACT_MISSING",
     "CHECKPOINT_OR_SOURCE_MISMATCH",
-    "PARKED_SKIN_DEVELOPMENT_INCOMPLETE",
 )
 
 
@@ -34,255 +32,214 @@ def canonical_hash(payload) -> str:
     ).hexdigest()
 
 
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def git(*args: str, repo: Path = ROOT) -> str:
     return subprocess.run(["git", "-C", str(repo), *args],
                           capture_output=True, text=True, check=True).stdout.strip()
 
 
+def load(path) -> dict:
+    return json.loads(Path(path).read_text())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--provenance", required=True, type=Path)
-    ap.add_argument("--data-audit", required=True, type=Path)
+    ap.add_argument("--dataset-manifest", required=True, type=Path)
+    ap.add_argument("--audit", required=True, type=Path)
+    ap.add_argument("--history-smoke", required=True, type=Path)
+    ap.add_argument("--make-read-only", action="store_true")
     ap.add_argument("--out", required=True, type=Path)
     args = ap.parse_args()
 
-    provenance = json.loads(Path(args.provenance).read_text())
-    audit = json.loads(Path(args.data_audit).read_text())
+    provenance = load(args.provenance)
+    manifest = load(args.dataset_manifest)
+    audit = load(args.audit)
+    smoke = load(args.history_smoke)
 
-    decision = ("PARKED_SKIN_DATA_CONTRACT_FAILED" if not audit["valid"]
-                else "PARKED_SKIN_DEVELOPMENT_INCOMPLETE")
+    integrity = audit["integrity"]
+    complete = audit["outputs_present"] == audit["scheduled_outputs"]
+    pairing_ok = (integrity["state_neutrality_failures"] == 0
+                  and audit["head_reconstruction"]["within_tolerance"]
+                  and audit["head_reconstruction"]["oracle_within_tolerance"])
+    contract_ok = (integrity["physical_inequality_violations"] == 0
+                   and integrity["hazard_absent_nonzero_targets"] == 0
+                   and integrity["noncausal_histories"] == 0
+                   and integrity["shape_mismatches"] == 0
+                   and integrity["nonfinite_values"] == 0
+                   and integrity["duplicate_source_identities"] == 0
+                   and smoke["all_histories_correct"])
+
+    if not complete:
+        decision = "PARKED_SKIN_COLLECTION_INCOMPLETE"
+    elif not pairing_ok:
+        decision = "PARKED_SKIN_ORACLE_PAIRING_FAILED"
+    elif not contract_ok or not audit["valid"]:
+        decision = "PARKED_SKIN_DATASET_CONTRACT_FAILED"
+    else:
+        decision = "PARKED_SKIN_DATASET_READY_FOR_MODEL_TRAINING"
     if decision not in ALLOWED:
         raise SystemExit(f"decision {decision!r} is not allowed")
 
-    from parked_skin_reference import (
-        CAUSAL_FRAMES,
-        CONTEXT_WIDTH,
-        D_MAX,
-        DEAD_PIXEL_BELOW_M,
-        PARAMETER_BUDGET,
-        REFERENCE_ID,
-        RUNTIME_FIELDS,
-        build_model,
-        parameter_count,
-    )
+    data_root = Path(manifest["data_root"])
+    if args.make_read_only and decision == "PARKED_SKIN_DATASET_READY_FOR_MODEL_TRAINING":
+        for path in sorted(data_root.rglob("*")):
+            if path.is_file():
+                os.chmod(path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+        read_only = True
+    else:
+        read_only = False
 
     act = ROOT / "submodules/act"
     molmo = ROOT / "submodules/molmospaces"
-    confirmatory = json.loads(
-        (ROOT / "configs/hybrid_obstacle_confirmatory41_v1.json").read_text())
-    partition = json.loads(
-        (ROOT / "configs/hybrid_obstacle_reference_partition_v2.json").read_text())
-    on_policy = json.loads((ROOT / "diagnostics_output/hybrid_obstacle_on_policy_reference"
-                            / "final_decision.json").read_text())
+    confirmatory = load(ROOT / "configs/hybrid_obstacle_confirmatory41_v1.json")
+    partition = load(ROOT / "configs/hybrid_obstacle_reference_partition_v2.json")
+    learner = load(ROOT / "diagnostics_output/hybrid_obstacle_on_policy_reference"
+                        / "round0_deployment_manifest.json")
 
     payload = {
-        "schema": "hybrid_obstacle_parked_skin_reference_final_decision_v1",
+        "schema": "hybrid_obstacle_parked_skin_dataset_final_decision_v1",
         "date": "2026-07-26",
-        "task": ("Replace the seven-output parked-head estimator with a causal model that "
-                 "predicts the full parked 40x8x8 proximity field and routes it through "
-                 "the frozen SafetyHead"),
+        "task": ("Regenerate and freeze the complete paired current/parked proximity-field "
+                 "dataset required by CAUSAL_PARKED_SKIN_REFERENCE_V1"),
         "decision": decision,
-        "case": None,
-        "case_note": ("Cases A/B/C classify offline and live *results*. No result exists: "
-                      "the task stopped at the step-3 data contract, before training."),
+        "data_generation_only": True,
+        "model_trained": False,
+        "development4_executed": False,
+        "confirmatory41_executed": False,
 
         "commits": {
             "root_branch": git("rev-parse", "--abbrev-ref", "HEAD"),
-            "root_starting_commit": "5270bee29604f30e020cb9c28318ef90e030d500",
+            "root_starting_commit": "1343160",
             "root_commit": git("rev-parse", "HEAD"),
             "act_branch": git("rev-parse", "--abbrev-ref", "HEAD", repo=act),
-            "act_starting_commit": "21bf05efd49887dc18bbf0b4094cd7663526c2bb",
+            "act_starting_commit": "5e0d3b3",
             "act_commit": git("rev-parse", "HEAD", repo=act),
             "molmospaces_commit": git("rev-parse", "HEAD", repo=molmo),
             "molmospaces_modified": git("status", "--porcelain", repo=molmo) != "",
         },
 
-        "artifact_verification": {
-            "checks": provenance["check_count"],
-            "all_matched": provenance["all_matched"],
-            "note": "every immutable artifact verifies; the blocker is not a mismatch",
-        },
+        "previous_failure_cause": (
+            "0 of 60793 examples carried both a reconstructible four-frame current history "
+            "and a parked 40x8x8 field at the same decision state. Hashes and 7-D head "
+            "outputs are not invertible to the field, and the validated per-frame oracle "
+            "rendered the parked field on every step and then discarded it."),
 
-        "why_the_seven_output_target_failed": {
-            "prior_decision": on_policy["decision"],
-            "prior_case": on_policy["case"],
-            "summary": ("A full on-policy aggregation round improved the 7-output model on "
-                        "every evaluable measure -- ACT-only on-policy differential MAE "
-                        "0.313 -> 0.208, oracle on-policy 0.355 -> 0.151, median cosine on "
-                        "ACT-only on-policy validation frames -0.082 -> +0.884 -- and still "
-                        "admitted no activation threshold: holding recall >= 0.80 left the "
-                        "median cosine at ~0.61, and the positive-cosine fraction never "
-                        "reached 0.80 above 4% recall. The binding distribution was "
-                        "oracle-controlled on-policy, the regime a correct reference "
-                        "creates for itself."),
-            "why_a_spatial_target_is_the_right_next_move": (
-                "The 7-D target equals its own input on most frames, so the loss rewards "
-                "the identity map; and a small MLP must re-learn the head's 2560 -> 7 "
-                "structure from 7 numbers of supervision per frame. Predicting the field "
-                "and routing it through the frozen head keeps that structure and makes the "
-                "supervision dense and spatial."),
-        },
+        "artifact_verification": {"checks": provenance["check_count"],
+                                  "all_matched": provenance["all_matched"]},
 
-        "data_contract": {
-            "required_input": audit["required_input"],
-            "required_target": audit["required_target"],
-            "families": audit["families"],
-            "input_contract_met": audit["input_contract_met"],
-            "target_contract_met": audit["target_contract_met"],
-            "total_frames_available": audit["total_frames_available"],
-            "frames_meeting_both_contracts": audit["frames_meeting_both_contracts"],
-            "physical_constraint_check": audit["physical_constraint_check"],
-            "checks_on_the_fields_that_do_exist": audit["checks_on_the_fields_that_do_exist"],
-            "regeneration_requirement": audit["regeneration_requirement"],
-            "silent_repair_performed": False,
-            "manifest_sha256": audit["report_sha256"],
-        },
-
-        "model": {
-            "reference_id": REFERENCE_ID,
-            "status": "IMPLEMENTED AND UNIT-TESTED, NEVER TRAINED",
-            "why_not_trained": ("its training target -- the parked 40x8x8 field -- is "
-                                "stored in no shard"),
-            "parameters": parameter_count(build_model()),
-            "parameter_budget": PARAMETER_BUDGET,
-            "within_budget": parameter_count(build_model()) < PARAMETER_BUDGET,
-            "architecture": ("per-sensor Linear(4x64 -> 128) + SiLU + learned 40x128 sensor "
-                             "embedding; global state context Linear(29 -> 128) SiLU "
-                             "Linear(128 -> 128) added to every token; TransformerEncoder "
-                             "2 layers, d_model 128, 4 heads, ff 256, pre-norm, dropout 0; "
-                             "per-sensor 64-pixel change logits and a frame-level activity "
-                             "logit from mean-pooled tokens"),
-            "runtime_inputs": list(RUNTIME_FIELDS),
-            "privileged_inputs": [],
-            "causal_frames": CAUSAL_FRAMES,
-            "context_width": CONTEXT_WIDTH,
-            "physical_counterfactual": {
-                "removable": "c_current * sigmoid(change_logits)",
-                "parked": "clamp(c_current - removable, 0, 1)",
-                "guarantee": "0 <= c_parked_pred <= c_current, by construction",
-                "verified_under_saturated_logits": True,
+        "dataset": {
+            "version": manifest["dataset_version"],
+            "root": manifest["data_root"],
+            "manifest_sha256": manifest["manifest_sha256"],
+            "partition_sha256": manifest["partition_sha256"],
+            "partition_composition": manifest["partition_composition"],
+            "schema": {
+                "deployable_group": "runtime-observable inputs only",
+                "privileged_group": "training targets; a deployable loader must never "
+                                    "read this group as input",
+                "integrity_group": "hashes and state-neutrality results",
+                "storage": manifest["storage_rule"],
+                "retention": manifest["retention_rule"],
+                "causal_history_rule": ("history(t) = [t-3,t-2,t-1,t], left-padded by "
+                                        "repeating the earliest available frame; never a "
+                                        "future frame"),
+                "closeness_transform": "clip(1 - depth/0.5, 0, 1); readings below 5 mm "
+                                       "map to 0 closeness and are flagged invalid",
             },
-            "closeness_transform": {
-                "formula": "clip(1 - depth / 0.5, 0, 1)",
-                "d_max_m": D_MAX,
-                "dead_pixel_below_m": DEAD_PIXEL_BELOW_M,
-                "inverse": "depth = 0.5 * (1 - closeness); zero closeness -> 0.5 m, which "
-                           "the frozen head reads as far / no activation",
-            },
-            "artifact_committed": False,
-            "checkpoint_exists": False,
+            "counts": audit["counts"],
+            "coverage": audit["coverage"],
+            "natural_distribution_retained": audit["natural_distribution_retained"],
+            "tree_sha256": audit["tree_sha256"],
+            "audit_sha256": audit["report_sha256"],
+            "read_only": read_only,
         },
 
-        "not_performed": {
-            "training": "no target exists",
-            "activity_calibration": "requires a trained model",
-            "rho_max": "requires a calibrated model",
-            "disjoint_validation": "requires a frozen model and contract",
-            "offline_test": "requires a frozen model and contract",
-            "causal_history_ablations": "requires a trained model",
-            "development4_offline_replay": "requires a frozen model",
-            "live_rollouts": "gated behind every offline gate; 0 of 20 executed",
-            "live_rollout_budget": 20,
-            "live_rollouts_used": 0,
+        "schedules": {
+            "total_policy_rollouts": manifest["total_policy_rollouts"],
+            "total_reconstructions": manifest["total_reconstructions"],
+            "condition_order_rule": manifest["condition_order_rule"],
+            "condition_order_balance": manifest["condition_order_balance"],
+            "max_concurrent_rollout_processes": manifest["max_concurrent_rollout_processes"],
+            "concurrency_rationale": manifest["concurrency_rationale"],
         },
 
-        "reference_partition": {
-            "sha256": partition["partition_sha256"],
-            "composition": partition["composition"],
-            "reused_exactly": partition["partition_sha256"]
-                              == on_policy["reference_partition"]["sha256"],
-            "all_pairwise_disjoint": partition["all_pairwise_disjoint"],
+        "integrity": integrity,
+        "physical_pairing": {
+            "constraint": "0 <= parked_closeness <= current_closeness <= 1",
+            "violations": integrity["physical_inequality_violations"],
+            "tolerance": audit["tolerances"]["closeness_inequality"],
+            "silently_clamped": False,
+        },
+        "hazard_absent_exact_control": {
+            "requirement": ("current equals parked, removable exactly zero, changed mask "
+                            "empty, heads identical, oracle differential exactly zero"),
+            "violations": integrity["hazard_absent_nonzero_targets"],
+        },
+        "state_neutrality": {"failures": integrity["state_neutrality_failures"]},
+        "head_reconstruction": audit["head_reconstruction"],
+        "history_smoke": {
+            "distributions_checked": [c["distribution"] for c
+                                      in smoke["distributions_checked"]],
+            "all_distributions_available": smoke["all_distributions_available"],
+            "all_histories_correct": smoke["all_histories_correct"],
+            "all_head_targets_reproduce": smoke["all_head_targets_reproduce"],
+            "model_check": smoke["model_check"],
+            "report_sha256": smoke["report_sha256"],
+        },
+
+        "learner_artifact": {
+            "label": learner["label"],
+            "checkpoint_sha256": learner["artifact_file_sha256"],
+            "manifest_sha256": learner["manifest_sha256"],
+            "strictly_loaded": True,
+            "substituted": False,
         },
 
         "confirmatory41": {
-            "manifest": "configs/hybrid_obstacle_confirmatory41_v1.json",
             "sha256": confirmatory["manifest_sha256"],
             "rows": len(confirmatory["rows"]),
             "executed_in_this_task": confirmatory["executed_in_this_task"],
             "untouched": True,
         },
+        "development4": {"executed": False, "included_in_dataset": False},
+        "reference_partition_unchanged": (
+            partition["partition_sha256"] == manifest["partition_sha256"]),
 
         "constraints_honoured": {
-            "act_trained_or_modified": False,
-            "safety_cvae_trained_or_modified": False,
-            "residual_constants_modified": False,
-            "canonical_collection_dataset_manifests_split_modified": False,
-            "another_on_policy_dataset_collected": False,
-            "confirmatory_row_executed": False,
-            "privileged_features_at_inference": False,
-            "second_competing_architecture_added": False,
-            "hyperparameter_sweep": False,
-            "tuned_from_live_results": False,
-            "broken_clearance_metric_used": False,
+            "model_trained": False,
+            "act_modified": False,
+            "safety_cvae_modified": False,
+            "residual_controller_modified": False,
             "molmospaces_modified": git("status", "--porcelain", repo=molmo) != "",
+            "reference_partition_changed": False,
+            "development4_or_confirmatory41_used": False,
+            "only_active_frames_retained": False,
+            "zero_frames_subsampled": False,
+            "hashes_stored_in_place_of_fields": False,
+            "duplicated_four_frame_histories_stored": False,
             "pushed": False,
-        },
-
-        "uncommitted_artifacts": [
-            {"label": label, "path": str(path), "committed": False,
-             **({"sha256": sha256_file(path)} if path.is_file()
-                else {"entries": len(list(path.glob("*")))} if path.is_dir() else {})}
-            for label, path in (
-                ("expert_paired_dir", Path("/root/act_retrain_assets/paired_reference_v1")),
-                ("on_policy_labelling_root", Path("/root/act_retrain_assets/on_policy_v2")),
-                ("on_policy_learner_root",
-                 Path("/root/act_retrain_assets/on_policy_learner_v2")),
-                ("act_checkpoint", Path(
-                    "/root/act_retrain_assets/act_ckpts/hybrid_obstacle_act_baseline_v2"
-                    "/20260725_seed0_2000ep/policy_best.ckpt")),
-            )
-        ],
-
-        "next_task_requirement": {
-            "headline": ("regenerate the paired dataset with the parked field retained, "
-                         "then run this task unchanged"),
-            "fields_to_store_per_frame": [
-                "current 40x8x8 depth (or closeness) at the decision state",
-                "parked 40x8x8 depth (or closeness) at the SAME decision state",
-                "the existing four causal current frames",
-                "the existing runtime and privileged label fields",
-            ],
-            "rollouts_to_regenerate": audit["regeneration_requirement"][
-                "rollouts_that_would_have_to_rerun"],
-            "estimated_storage_gib": audit["regeneration_requirement"][
-                "estimated_uncompressed_gib"],
-            "storage_reduction_option": ("store float16 closeness rather than float32 depth "
-                                         "and only for frames the oracle marks active, plus "
-                                         "a uniform sample of zero frames -- roughly a fifth "
-                                         "of the size with no loss for this objective"),
-            "why_this_task_could_not_do_it": ("'Do not collect another on-policy training "
-                                              "dataset' forbids re-running the 264 "
-                                              "on-policy rollouts, and MSAA makes any rerun "
-                                              "a different sample of states in any case"),
-            "already_delivered": ("the model, the physical counterfactual, the closeness "
-                                  "transform, the causal-history buffer, the activity gate, "
-                                  "the strict loader and 54 contract tests are implemented "
-                                  "and committed, so the next task only needs the data"),
         },
 
         "artifacts": {
             "final_decision_md":
-                "docs/HYBRID_OBSTACLE_PARKED_SKIN_REFERENCE_FINAL_DECISION.md",
-            "final_decision_json": ("diagnostics_output/hybrid_obstacle_parked_skin_reference/"
+                "docs/HYBRID_OBSTACLE_PARKED_SKIN_DATASET_FINAL_DECISION.md",
+            "final_decision_json": ("diagnostics_output/hybrid_obstacle_parked_skin_dataset/"
                                     "final_decision.json"),
-            "provenance": "diagnostics_output/hybrid_obstacle_parked_skin_reference/"
+            "dataset_manifest": "configs/hybrid_obstacle_parked_skin_supervision_v1.json",
+            "provenance": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/"
                           "provenance_verification.json",
-            "data_audit": "diagnostics_output/hybrid_obstacle_parked_skin_reference/"
-                          "paired_skin_data_audit.json",
-            "model_source": "submodules/act/parked_skin_reference.py",
-            "tests": "tests/test_parked_skin_reference_contract.py",
+            "audit": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/"
+                     "dataset_audit.json",
+            "history_smoke": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/"
+                             "history_smoke.json",
+            "retention_source": "submodules/act/parked_skin_retention.py",
+            "tests": "tests/test_parked_skin_dataset_contract.py",
         },
         "report_hashes": {
             "provenance_sha256": provenance["report_sha256"],
-            "data_audit_sha256": audit["report_sha256"],
+            "dataset_manifest_sha256": manifest["manifest_sha256"],
+            "audit_sha256": audit["report_sha256"],
+            "history_smoke_sha256": smoke["report_sha256"],
         },
     }
     payload["final_decision_sha256"] = canonical_hash(payload)
@@ -290,8 +247,10 @@ def main() -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n")
     print(f"decision: {decision}")
-    print(f"frames meeting both contracts: {audit['frames_meeting_both_contracts']} "
-          f"of {audit['total_frames_available']}")
+    print(f"outputs : {audit['outputs_present']}/{audit['scheduled_outputs']}  "
+          f"frames {audit['counts']['total_frames']}  "
+          f"{audit['counts']['total_gib']} GiB")
+    print(f"read-only: {read_only}")
     print(f"wrote {out}")
     return 0
 

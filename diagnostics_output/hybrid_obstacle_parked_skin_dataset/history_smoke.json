@@ -1,0 +1,154 @@
+{
+  "all_distributions_available": true,
+  "all_head_targets_reproduce": true,
+  "all_histories_correct": true,
+  "distributions_checked": [
+    {
+      "available": true,
+      "distribution": "ACT_ONLY_ON_POLICY",
+      "episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+      "first_window_sources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "fourth_window_sources": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": 200,
+      "head_reconstruction_max_abs_delta": 0.0,
+      "head_within_tolerance": true,
+      "history_shape": [
+        200,
+        4,
+        40,
+        8,
+        8
+      ],
+      "history_shape_is_N4x40x8x8": true,
+      "last_history_frame_equals_current": true,
+      "no_future_frame": true,
+      "oracle_reconstruction_max_abs_delta": 0.0,
+      "oracle_within_tolerance": true,
+      "trajectory_scoped": true
+    },
+    {
+      "available": true,
+      "distribution": "EXPERT_RECONSTRUCTED",
+      "episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+      "first_window_sources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "fourth_window_sources": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": 110,
+      "head_reconstruction_max_abs_delta": 0.0,
+      "head_within_tolerance": true,
+      "history_shape": [
+        110,
+        4,
+        40,
+        8,
+        8
+      ],
+      "history_shape_is_N4x40x8x8": true,
+      "last_history_frame_equals_current": true,
+      "no_future_frame": true,
+      "oracle_reconstruction_max_abs_delta": 0.0,
+      "oracle_within_tolerance": true,
+      "trajectory_scoped": true
+    },
+    {
+      "available": true,
+      "distribution": "LEARNER_INDUCED_ON_POLICY",
+      "episode_id": "857105fbb836dd3cbf978d6e996021554141854ee0492a2e979c2838cdc2978a",
+      "first_window_sources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "fourth_window_sources": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": 200,
+      "head_reconstruction_max_abs_delta": 0.0,
+      "head_within_tolerance": true,
+      "history_shape": [
+        200,
+        4,
+        40,
+        8,
+        8
+      ],
+      "history_shape_is_N4x40x8x8": true,
+      "last_history_frame_equals_current": true,
+      "no_future_frame": true,
+      "oracle_reconstruction_max_abs_delta": 0.0,
+      "oracle_within_tolerance": true,
+      "trajectory_scoped": true
+    },
+    {
+      "available": true,
+      "distribution": "ORACLE_ON_POLICY",
+      "episode_id": "a048f9a55ad73ebf53c024e52612864ed9b6261bc75a84bc7b72a4086e94f47f",
+      "first_window_sources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "fourth_window_sources": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "frames": 200,
+      "head_reconstruction_max_abs_delta": 0.0,
+      "head_within_tolerance": true,
+      "history_shape": [
+        200,
+        4,
+        40,
+        8,
+        8
+      ],
+      "history_shape_is_N4x40x8x8": true,
+      "last_history_frame_equals_current": true,
+      "no_future_frame": true,
+      "oracle_reconstruction_max_abs_delta": 0.0,
+      "oracle_within_tolerance": true,
+      "trajectory_scoped": true
+    }
+  ],
+  "manifest_sha256": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+  "model_check": {
+    "imported": true,
+    "instantiated_with_data": false,
+    "parameters": 331713,
+    "trained": false,
+    "within_budget": true
+  },
+  "report_sha256": "57e4c82cb3301a89c73c45dffbb8fd0d33e1be48d339b0b7f5a22bab22108c04",
+  "schema": "hybrid_obstacle_parked_skin_history_smoke_v1",
+  "tolerances": {
+    "closeness_inequality": 1e-07,
+    "head_output_max_abs_delta": 1e-06,
+    "oracle_differential_max_abs_delta": 1e-06
+  }
+}
