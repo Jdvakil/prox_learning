@@ -1,0 +1,234 @@
+{
+  "artifact_verification": {
+    "all_matched": true,
+    "checks": 55
+  },
+  "artifacts": {
+    "audit": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/dataset_audit.json",
+    "dataset_manifest": "configs/hybrid_obstacle_parked_skin_supervision_v1.json",
+    "final_decision_json": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/final_decision.json",
+    "final_decision_md": "docs/HYBRID_OBSTACLE_PARKED_SKIN_DATASET_FINAL_DECISION.md",
+    "history_smoke": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/history_smoke.json",
+    "provenance": "diagnostics_output/hybrid_obstacle_parked_skin_dataset/provenance_verification.json",
+    "retention_source": "submodules/act/parked_skin_retention.py",
+    "tests": "tests/test_parked_skin_dataset_contract.py"
+  },
+  "commits": {
+    "act_branch": "data/hybrid-obstacle-parked-skin-retention-v1",
+    "act_commit": "91fc42a1bfda2acd4b973bb53549bbf42d1fe9a6",
+    "act_starting_commit": "5e0d3b3",
+    "molmospaces_commit": "678f2eb4a0ac0d9e3d14e555aaac0e099089b9a5",
+    "molmospaces_modified": false,
+    "root_branch": "data/hybrid-obstacle-parked-skin-supervision-v1",
+    "root_commit": "fdb217f754c037fe27d341b62b7422aab622b834",
+    "root_starting_commit": "1343160"
+  },
+  "confirmatory41": {
+    "executed_in_this_task": false,
+    "rows": 41,
+    "sha256": "7b4500e9b4b2868e2612d7e444c34762d72c5e6e7b4b7c38bcf31f027b51b69e",
+    "untouched": true
+  },
+  "confirmatory41_executed": false,
+  "constraints_honoured": {
+    "act_diff_deleted_lines": 0,
+    "act_diff_inserted_lines": 47,
+    "act_eval_harness_retention_flag_added": true,
+    "act_policy_architecture_weights_or_training_modified": false,
+    "development4_or_confirmatory41_used": false,
+    "duplicated_four_frame_histories_stored": false,
+    "hashes_stored_in_place_of_fields": false,
+    "model_trained": false,
+    "molmospaces_modified": false,
+    "only_active_frames_retained": false,
+    "pushed": false,
+    "reference_partition_changed": false,
+    "residual_controller_modified": false,
+    "safety_cvae_modified": false,
+    "zero_frames_subsampled": false
+  },
+  "data_generation_only": true,
+  "dataset": {
+    "audit_sha256": "c229648b48cd6666ba1735852a9f74899721fff773f94c695c8b0b6ae1204382",
+    "counts": {
+      "files_per_distribution": {
+        "ACT_ONLY_ON_POLICY": 100,
+        "EXPERT_RECONSTRUCTED": 100,
+        "LEARNER_INDUCED_ON_POLICY": 64,
+        "ORACLE_ON_POLICY": 100
+      },
+      "frames_per_distribution": {
+        "ACT_ONLY_ON_POLICY": 20000,
+        "EXPERT_RECONSTRUCTED": 7993,
+        "LEARNER_INDUCED_ON_POLICY": 12800,
+        "ORACLE_ON_POLICY": 20000
+      },
+      "frames_per_partition": {
+        "offline_reference_test": 9543,
+        "reference_calibration": 3821,
+        "reference_train": 43519,
+        "reference_validation": 3910
+      },
+      "hazard_absent_frames": 15025,
+      "hazard_present_frames": 45768,
+      "oracle_active_frames": 14411,
+      "oracle_zero_frames": 46382,
+      "total_bytes": 246584205,
+      "total_frames": 60793,
+      "total_gib": 0.23,
+      "trajectories_per_partition": {
+        "offline_reference_test": 60,
+        "reference_calibration": 24,
+        "reference_train": 256,
+        "reference_validation": 24
+      }
+    },
+    "coverage": {
+      "changed_pixel_fraction": {
+        "max": 0.00928515625,
+        "median": 3.90625e-05
+      },
+      "current_head_norm_median_per_trajectory": {
+        "median": 2.572750687599182
+      },
+      "median_active_sensor_count_histogram": {
+        "40": 364
+      },
+      "oracle_norm_max_per_trajectory": {
+        "max": 16.882221221923828,
+        "median": 0.15560927987098694
+      }
+    },
+    "manifest_sha256": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+    "natural_distribution_retained": {
+      "active_zero_balancing_at_generation": false,
+      "failures_retained": true,
+      "note": "balancing belongs to the future training sampler",
+      "zero_frames_subsampled": false
+    },
+    "partition_composition": {
+      "offline_reference_test": {
+        "hazard_absent": 5,
+        "hazard_present": 15,
+        "total": 20
+      },
+      "reference_calibration": {
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "total": 8
+      },
+      "reference_train": {
+        "hazard_absent": 16,
+        "hazard_present": 48,
+        "total": 64
+      },
+      "reference_validation": {
+        "hazard_absent": 2,
+        "hazard_present": 6,
+        "total": 8
+      }
+    },
+    "partition_sha256": "b06196b641b702e93dd2450bee0d0007d28ace29cf0fa8983bb42df3da0a827d",
+    "read_only": true,
+    "root": "/root/prox_learning_hybrid_safety/assets/reference_data/hybrid_obstacle_parked_skin_supervision_v1",
+    "schema": {
+      "causal_history_rule": "history(t) = [t-3,t-2,t-1,t], left-padded by repeating the earliest available frame; never a future frame",
+      "closeness_transform": "clip(1 - depth/0.5, 0, 1); readings below 5 mm map to 0 closeness and are flagged invalid",
+      "deployable_group": "runtime-observable inputs only",
+      "integrity_group": "hashes and state-neutrality results",
+      "privileged_group": "training targets; a deployable loader must never read this group as input",
+      "retention": "every real timestep is retained -- active, zero, grasp-contact, post-contact, failure and clear alike; no balancing and no subsampling at generation time, so natural class prevalence, false-positive rates and temporal persistence stay measurable",
+      "storage": "one contiguous (T,40,8,8) current sequence and one paired (T,40,8,8) parked sequence per trajectory; the four-frame causal history is reconstructed on demand, never stored duplicated"
+    },
+    "tree_sha256": "1fb68b3cdee9755881579a187c84992782bfdd5f1c65aff6a3c39ebd11b8dba5",
+    "version": "hybrid_obstacle_parked_skin_supervision_v1"
+  },
+  "date": "2026-07-26",
+  "decision": "PARKED_SKIN_DATASET_READY_FOR_MODEL_TRAINING",
+  "development4": {
+    "executed": false,
+    "included_in_dataset": false
+  },
+  "development4_executed": false,
+  "final_decision_sha256": "7aa6030d2c6330a34550837fd5220cb28a603c922a20f8bdca3d69ca1d68dd97",
+  "hazard_absent_exact_control": {
+    "requirement": "current equals parked, removable exactly zero, changed mask empty, heads identical, oracle differential exactly zero",
+    "violations": 0
+  },
+  "head_reconstruction": {
+    "max_abs_head_delta": 0.0,
+    "max_abs_oracle_delta": 0.0,
+    "method": "SafetyHead re-run from the STORED closeness fields via closeness_to_depth, compared against the recorded 7-D targets",
+    "oracle_within_tolerance": true,
+    "trajectories_checked": 16,
+    "within_tolerance": true
+  },
+  "history_smoke": {
+    "all_distributions_available": true,
+    "all_head_targets_reproduce": true,
+    "all_histories_correct": true,
+    "distributions_checked": [
+      "ACT_ONLY_ON_POLICY",
+      "EXPERT_RECONSTRUCTED",
+      "LEARNER_INDUCED_ON_POLICY",
+      "ORACLE_ON_POLICY"
+    ],
+    "model_check": {
+      "imported": true,
+      "instantiated_with_data": false,
+      "parameters": 331713,
+      "trained": false,
+      "within_budget": true
+    },
+    "report_sha256": "57e4c82cb3301a89c73c45dffbb8fd0d33e1be48d339b0b7f5a22bab22108c04"
+  },
+  "integrity": {
+    "duplicate_source_identities": 0,
+    "duplicate_trajectory_ids": 0,
+    "hazard_absent_nonzero_targets": 0,
+    "missing_outputs": 0,
+    "noncausal_histories": 0,
+    "nonfinite_values": 0,
+    "physical_inequality_violations": 0,
+    "shape_mismatches": 0,
+    "state_neutrality_failures": 0
+  },
+  "learner_artifact": {
+    "checkpoint_sha256": "f5c613347ef47a054504381891b17227781689afdec997a3c50933a2f49f3796",
+    "label": "POSTURE_SKIN_MLP_REFERENCE_V2_ROUND0",
+    "manifest_sha256": "a0b787787a24c45a0979924ddaf5e277180a918130edb8c5b0f981dfdc8e4b49",
+    "strictly_loaded": true,
+    "substituted": false
+  },
+  "model_trained": false,
+  "physical_pairing": {
+    "constraint": "0 <= parked_closeness <= current_closeness <= 1",
+    "silently_clamped": false,
+    "tolerance": 1e-07,
+    "violations": 0
+  },
+  "previous_failure_cause": "0 of 60793 examples carried both a reconstructible four-frame current history and a parked 40x8x8 field at the same decision state. Hashes and 7-D head outputs are not invertible to the field, and the validated per-frame oracle rendered the parked field on every step and then discarded it.",
+  "reference_partition_unchanged": true,
+  "report_hashes": {
+    "audit_sha256": "c229648b48cd6666ba1735852a9f74899721fff773f94c695c8b0b6ae1204382",
+    "dataset_manifest_sha256": "a88b94b37014a70db971a2c291803364d0d81b3968dd88cdee01e7ed79c58d1b",
+    "history_smoke_sha256": "57e4c82cb3301a89c73c45dffbb8fd0d33e1be48d339b0b7f5a22bab22108c04",
+    "provenance_sha256": "22dc5050ee17671f0ba11bbc7a81a8349d4aca1fc4f4545fe00f63e310987dd6"
+  },
+  "schedules": {
+    "concurrency_rationale": "the prior collection lost a shard to GPU contention at five concurrent processes",
+    "condition_order_balance": {
+      "ACT_ONLY_ON_POLICY": 50,
+      "ORACLE_ON_POLICY": 50
+    },
+    "condition_order_rule": "even predeclared row rank runs ACT_ONLY_ON_POLICY first, odd runs ORACLE_ON_POLICY first; learner rows are ordered after all 200 ACT/oracle identities",
+    "max_concurrent_rollout_processes": 2,
+    "total_policy_rollouts": 264,
+    "total_reconstructions": 100
+  },
+  "schema": "hybrid_obstacle_parked_skin_dataset_final_decision_v1",
+  "state_neutrality": {
+    "failures": 0
+  },
+  "task": "Regenerate and freeze the complete paired current/parked proximity-field dataset required by CAUSAL_PARKED_SKIN_REFERENCE_V1"
+}

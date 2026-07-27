@@ -207,7 +207,14 @@ def main() -> int:
 
         "constraints_honoured": {
             "model_trained": False,
-            "act_modified": False,
+            # The ACT policy, its architecture, its weights and its training code are
+            # untouched. The evaluation harness in the ACT repo did gain an opt-in
+            # --retain-parked-skin flag: 47 inserted lines, 0 deleted, inert unless
+            # passed. Recorded explicitly rather than as a bare "act_modified: false".
+            "act_policy_architecture_weights_or_training_modified": False,
+            "act_eval_harness_retention_flag_added": True,
+            "act_diff_inserted_lines": 47,
+            "act_diff_deleted_lines": 0,
             "safety_cvae_modified": False,
             "residual_controller_modified": False,
             "molmospaces_modified": git("status", "--porcelain", repo=molmo) != "",

@@ -702,3 +702,68 @@ frames. Note a rerun is a *new sample* under MSAA — reuse the partition and
 schedules, but expect different frames.
 
 `confirmatory41` is still untouched.
+
+## Hybrid obstacle safety residual: the parked-skin dataset (collected and frozen)
+
+`docs/HYBRID_OBSTACLE_PARKED_SKIN_DATASET_FINAL_DECISION.md` —
+`PARKED_SKIN_DATASET_READY_FOR_MODEL_TRAINING`.
+
+The missing target from the section above now exists. 364 outputs / 60,793 frames,
+frozen at `assets/reference_data/hybrid_obstacle_parked_skin_supervision_v1/`
+(gitignored; tree sha256 `1fb68b3c…db1dba5`, every file mode 444). Zero collection
+failures.
+
+| Distribution | Files | Frames |
+|---|---:|---:|
+| `EXPERT_RECONSTRUCTED` | 100 | 7,993 |
+| `ACT_ONLY_ON_POLICY` | 100 | 20,000 |
+| `ORACLE_ON_POLICY` | 100 | 20,000 |
+| `LEARNER_INDUCED_ON_POLICY` | 64 | 12,800 |
+
+**The ~2.9 GiB estimate above was wrong by 12×, and the mitigation it proposed was
+unnecessary.** Actual size is 0.23 GiB with *every* frame retained — no active-frame
+filtering, no zero-frame subsampling. Two changes did it, both in
+`submodules/act/parked_skin_retention.py`:
+
+- Store closeness (`clip(1 - depth/0.5, 0, 1)`) rather than raw depth, alongside an
+  explicit validity mask. Sub-5 mm readings map to 0 closeness **and** are flagged
+  invalid — dead pixels and true contact otherwise look identical, and a model would
+  learn to read sensor dropout as an obstacle.
+- Store only the contiguous current-field sequence. The four-frame window is rebuilt on
+  load: `history(t) = [t-3, t-2, t-1, t]`, left-padded by repeating the earliest frame,
+  never crossing a trajectory boundary. Materialising windows holds four copies of every
+  frame for no information.
+
+So the retention lesson generalises further than it first looked: **the reason to throw
+data away is usually a storage layout you haven't fixed yet.** Discarding oracle-zero
+frames would have destroyed the majority class (46,382 of 60,793) — and which states are
+quiet is itself the signal. Balancing belongs to the training sampler, not the collector.
+
+Three field groups: `deployable/` (runtime-observable inputs), `privileged/` (targets —
+`load_trajectory` refuses to return these without `allow_privileged=True`), `integrity/`
+(hashes, state-neutrality). The split is enforced at load so a deployable loader cannot
+accidentally consume its own label.
+
+Integrity over all 364 files: 0 duplicate identities, 0 state-neutrality failures, 0
+violations of `0 ≤ parked ≤ current ≤ 1` (nothing silently clamped), 0 non-causal
+histories, 0 nonfinite values. Re-running the frozen SafetyHead from the *stored* fields
+reproduces the recorded 7-D targets and the oracle differential at max abs delta
+**exactly 0.0** — on-policy rows retain the same parked array the oracle already
+rendered, because a second render lands at a different physics substep and would break
+the pairing silently.
+
+Hazard-absent frames (15,025) are an **exact** control: fields bitwise equal, changed-pixel
+mask empty, differential exactly zero. That is the sharpest available test that parking
+perturbs only the hazard and leaks nothing into scene state.
+
+Two operational notes. Concurrency is capped at **two** rollout processes — five lanes
+under GPU contention is what killed a shard during the on-policy round. And expert rows
+are reconstructed by open-loop replay of the recorded commands, *not* by pose-setting:
+the trajectory H5 stores no per-step pose for the pickup object, so restoring only the
+robot leaves the target at its rest pose and pairs the parked field against a scene that
+never existed.
+
+Not yet established: that the dataset is *useful*. Nothing here shows
+`CAUSAL_PARKED_SKIN_REFERENCE_V1` can learn the parked field from these inputs, or that
+it would close the activation contract `V2` failed. Training, `development4` and
+`confirmatory41` were all out of scope — `confirmatory41` remains untouched.
