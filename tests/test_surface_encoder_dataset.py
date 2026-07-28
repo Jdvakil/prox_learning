@@ -63,3 +63,9 @@ def test_surface_dataset_uses_only_frozen_split_indices(tmp_path):
     )
     assert [path.name for path in selected.files] == ["episode_1.hdf5"]
     assert selected.positive_count == 1
+
+
+def test_surface_report_has_explicit_small_artifact_path():
+    source = (ROOT / "scripts" / "train_pact_surface_encoder.py").read_text()
+    assert 'parser.add_argument("--report-out", required=True' in source
+    assert "args.report_out.write_text" in source

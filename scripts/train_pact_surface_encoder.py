@@ -252,6 +252,7 @@ def main() -> int:
     parser.add_argument("--conversion-manifest", required=True, type=Path)
     parser.add_argument("--split-manifest", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--report-out", required=True, type=Path)
     parser.add_argument("--seed", type=int, default=2201)
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--batch-size", type=int, default=256)
@@ -409,9 +410,8 @@ def main() -> int:
             "history": history,
         }
     )
-    (args.output_dir / "surface_encoder_report.json").write_text(
-        json.dumps(report, indent=2, sort_keys=True) + "\n"
-    )
+    args.report_out.parent.mkdir(parents=True, exist_ok=True)
+    args.report_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     print(f"frozen_checkpoint={checkpoint_path}")
     print(f"sha256={report['checkpoint_sha256']}")
     return 0
