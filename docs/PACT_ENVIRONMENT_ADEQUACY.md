@@ -33,8 +33,8 @@ removes the exocentric RGB camera. Both learned policies receive wrist RGB and
 9-D Franka proprioception. PACT additionally receives all 40 skin streams.
 
 One wall-colored matte panel enters the wrist/link-6 passage from either the
-left or the right. Its nominal center is `(0.595, +/-0.320, 0.88)` m with half
-extents `(0.075, 0.240, 0.080)` m. Its side is exactly balanced in every
+left or the right. Its nominal center is `(0.615, +/-0.340, 0.89)` m with half
+extents `(0.055, 0.240, 0.090)` m. Its side is exactly balanced in every
 manifest role. The aperture width is fixed at 0.85 m, leaving the opposite-side
 expert bow physically open. Small x and inner-face jitters are committed per row. The red
 grasp-validated `Cup_10` target has a 7.0 by 7.3 cm cross-section, safely
@@ -44,7 +44,7 @@ inside the Franka's 8.5 cm finger span; it is independently sampled near
 left-versus-right avoidance direction. The robot-base forward placement is
 0.14 m, keeping the target in the same proven relative reach envelope as the
 parent fumehood pick. A privileged expert reads the panel geometry and bows
-away from it with a 0.10 m nominal surface-clearance margin.
+away from it with a 0.08 m nominal surface-clearance margin.
 The sash aperture is fixed at 0.70 m so incidental link-5/sash contact cannot
 contaminate the panel-avoidance endpoint.
 

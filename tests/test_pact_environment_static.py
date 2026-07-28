@@ -43,7 +43,7 @@ def test_scene_has_exactly_two_parkable_intrusions():
         assert body.attrib["mocap"] == "true"
         geom = body.find("geom")
         assert geom is not None
-        assert geom.attrib["size"] == "0.075 0.240 0.080"
+        assert geom.attrib["size"] == "0.055 0.240 0.090"
     metadata = json.loads(
         scene.with_name("pact_collision_corridor_metadata.json").read_text()
     )
@@ -63,10 +63,10 @@ def test_runtime_config_is_wrist_plus_all_40_skin_sensors():
     assert PactCollisionCorridorSampler.BASE_FWD == 0.14
     assert PactCollisionCorridorSampler.TARGET_UID == "Cup_10"
     assert PactCollisionCorridorSampler.SASH_APERTURE_HEIGHT == 0.70
-    assert PactCollisionCorridorSampler.PANEL_X == 0.595
-    assert PactCollisionCorridorSampler.PANEL_Z == 0.88
-    assert PactCollisionCorridorSampler.PANEL_INNER_FACE_Y == 0.08
-    assert PactCollisionCorridorPolicy.SAFE_GAP == 0.10
+    assert PactCollisionCorridorSampler.PANEL_X == 0.615
+    assert PactCollisionCorridorSampler.PANEL_Z == 0.89
+    assert PactCollisionCorridorSampler.PANEL_INNER_FACE_Y == 0.10
+    assert PactCollisionCorridorPolicy.SAFE_GAP == 0.08
 
 
 def test_manifest_sensor_order_matches_camera_config():
