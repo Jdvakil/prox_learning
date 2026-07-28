@@ -109,6 +109,14 @@ def test_demo_and_infrastructure_cannot_award_environment_inadequate():
         infrastructure_progression_met=True,
         minimum_scientific_rows_met=True,
     ) == "PACT_ENVIRONMENT_INADEQUATE"
+    assert stats.environment_decision(
+        surface_classification="adequate",
+        gate_b_classification="floor",
+        gate_c_classification="adequate",
+        usable_demo_floor_met=True,
+        infrastructure_progression_met=True,
+        minimum_scientific_rows_met=False,
+    ) == "PACT_EXPERIMENT_INCOMPLETE"
 
 
 def test_corridor_expert_fix_does_not_change_scene_geometry():

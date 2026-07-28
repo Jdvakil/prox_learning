@@ -30,7 +30,7 @@ The machine-readable preregistration is
 `configs/pact_collision_environment_v2.json`. The independently seeded
 candidate population is
 `configs/pact_collision_candidate_manifest_v2.json`, SHA-256
-`9e024337ee49f46b6e6ab50a328c6d9e40a3641dec65bbf54a0332323d5b58fb`.
+`cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784`.
 Its master seed is `2026072901`.
 
 | Role | Fixed attempts |

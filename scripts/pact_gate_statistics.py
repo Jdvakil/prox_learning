@@ -225,6 +225,8 @@ def environment_decision(
 ) -> str:
     """Map independent science, demo, and infrastructure concerns to a token."""
     science = (surface_classification, gate_b_classification, gate_c_classification)
+    if not minimum_scientific_rows_met:
+        return "PACT_EXPERIMENT_INCOMPLETE"
     science_failures = {
         "insufficient_surface_signal",
         "floor",
