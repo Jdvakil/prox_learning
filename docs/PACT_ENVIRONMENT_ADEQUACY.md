@@ -52,8 +52,10 @@ The primary endpoint is exactly:
 `task_success AND hazard_bar == 0 AND other_environment == 0`
 
 Only robot-to-environment contacts at non-positive MuJoCo distance are counted.
-Robot self-contact and floor contact are excluded. Every counted pair is
-partitioned into:
+The audit runs after every 2 ms control/physics step, as well as at episode
+boundaries, so contacts that begin and resolve inside the 66 ms policy interval
+are retained. Robot self-contact and floor contact are excluded. Every counted
+pair is partitioned into:
 
 - `grasp_target`: any pair rooted at `cavity_obj_`; recorded and exempt;
 - `hazard_bar`: either `pact_intrusion_left` or `pact_intrusion_right`;

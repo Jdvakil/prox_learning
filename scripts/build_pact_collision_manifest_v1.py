@@ -52,6 +52,14 @@ SOURCE_FILES = {
         / "tasks"
         / "pact_contact_audit.py"
     ),
+    "contact_sampling_hook": (
+        ROOT
+        / "submodules"
+        / "molmospaces"
+        / "molmo_spaces"
+        / "tasks"
+        / "task.py"
+    ),
     "sensor_assembly": (
         ROOT
         / "submodules"

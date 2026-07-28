@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import inspect
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -20,6 +21,7 @@ from molmo_spaces.tasks.enclosure_reach import (  # noqa: E402
     PactCollisionCorridorSampler,
 )
 from molmo_spaces.env.sensors import get_core_sensors  # noqa: E402
+from molmo_spaces.tasks.task import BaseMujocoTask  # noqa: E402
 
 
 def test_scene_has_exactly_two_parkable_intrusions():
@@ -80,3 +82,11 @@ def test_skin_camera_parameter_intrinsics_use_native_eight_by_eight_resolution()
         if getattr(spec, "is_proximity_sensor", False)
     ]:
         assert parameters[name].img_resolution == (8, 8)
+
+
+def test_contact_audit_hook_runs_inside_the_control_physics_loop():
+    source = inspect.getsource(BaseMujocoTask.step)
+    physics = source.index("self._env.step(self._n_sim_steps_per_ctrl)")
+    hook = source.index('getattr(self, "_contact_audit_hook", None)')
+    proximity = source.index("sim_steps_in_policy +=")
+    assert physics < hook < proximity
