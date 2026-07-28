@@ -225,6 +225,13 @@ def _run_row(
     auto_import_configs()
     config_class = get_config_class("FrankaSkinPACTCollisionCorridorConfig")
     config = config_class(output_dir=Path(output_dir), num_workers=1)
+    resolved_output = Path(output_dir).resolve()
+    if Path(config.output_dir).resolve() != resolved_output:
+        raise RuntimeError(
+            "runtime config did not retain the isolated collection output directory"
+        )
+    if not resolved_output.is_relative_to(ROOT.resolve()):
+        raise RuntimeError("collection output must stay inside the isolated worktree")
 
     configured_names = [spec.name for spec in config.camera_config.cameras][1:]
     if configured_names != sensor_names:
@@ -345,6 +352,10 @@ def _run_row(
                 "scene_params": _jsonable(getattr(task, "scene_params", {}) or {}),
                 "root_source_commit": _git_head(ROOT),
                 "molmospaces_source_commit": _git_head(MOLMO),
+                "runtime_assets_dir": str(
+                    Path(os.environ["MLSPACES_ASSETS_DIR"]).resolve()
+                ),
+                "isolated_output_dir": str(resolved_output),
             }
             trajectory_path, videos = _publish_episode(
                 row_dir=row_dir,

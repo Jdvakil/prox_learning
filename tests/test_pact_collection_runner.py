@@ -81,3 +81,11 @@ def test_canonical_runner_can_consume_prevalidated_reset():
     ).read_text()
     assert "initial_reset_result=None" in source
     assert "observation, _info = initial_reset_result" in source
+
+
+def test_runtime_assets_and_isolated_output_are_separate_and_recorded():
+    source = (ROOT / "scripts" / "run_pact_collision_collection.py").read_text()
+    assert "runtime config did not retain the isolated collection output" in source
+    assert "collection output must stay inside the isolated worktree" in source
+    assert '"runtime_assets_dir"' in source
+    assert '"isolated_output_dir"' in source

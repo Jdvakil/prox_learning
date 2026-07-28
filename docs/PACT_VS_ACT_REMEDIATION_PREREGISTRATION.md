@@ -30,7 +30,7 @@ The machine-readable preregistration is
 `configs/pact_collision_environment_v2.json`. The independently seeded
 candidate population is
 `configs/pact_collision_candidate_manifest_v2.json`, SHA-256
-`a622cb590319cb8fe0bfc4c6a78219c504f3f73d7f2d0d85aa8e78902cfc045e`.
+`313a4892ccaf45b470eff0da0a119a5417ce191ec918f111699142a91147d557`.
 Its master seed is `2026072901`.
 
 | Role | Fixed attempts |
@@ -104,3 +104,9 @@ The decision mapping is frozen:
 At preregistration time,
 `pgrep -fc eval_act_obstacle_on_policy.py` returned 16. No simulator
 collection, training, or evaluation may launch until it returns zero.
+
+The static MolmoSpaces object/LMDB cache is read from the handoff path
+`/root/prox_learning_hybrid_safety/assets`. The collection runner asserts that
+its output directory resolves inside the isolated remediation worktree and
+records both resolved paths per row; no PACT output is written to the shared
+asset tree.
