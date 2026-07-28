@@ -28,6 +28,15 @@ SOURCE_FILES = {
         / "custom_scenes"
         / "pact_collision_corridor.xml"
     ),
+    "scene_metadata": (
+        ROOT
+        / "submodules"
+        / "molmospaces"
+        / "molmo_spaces"
+        / "data_generation"
+        / "custom_scenes"
+        / "pact_collision_corridor_metadata.json"
+    ),
     "camera_config": (
         ROOT
         / "submodules"

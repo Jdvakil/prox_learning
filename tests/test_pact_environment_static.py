@@ -44,6 +44,10 @@ def test_scene_has_exactly_two_parkable_intrusions():
         geom = body.find("geom")
         assert geom is not None
         assert geom.attrib["size"] == "0.030 0.240 0.045"
+    metadata = json.loads(
+        scene.with_name("pact_collision_corridor_metadata.json").read_text()
+    )
+    assert metadata == {"objects": {}}
 
 
 def test_runtime_config_is_wrist_plus_all_40_skin_sensors():
