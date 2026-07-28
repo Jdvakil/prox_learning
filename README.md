@@ -1128,3 +1128,38 @@ relax the per-frame contract.
 
 0 of 20 live rollouts, `development4` not executed, `confirmatory41` untouched. Frozen
 inference bit-identical across all three seeds including J12.
+
+## Hybrid obstacle safety residual: three-pair joint gate, live (owner override)
+
+`docs/HYBRID_OBSTACLE_THREE_PAIR_LIVE_FINAL_DECISION.md` —
+`THREE_PAIR_LIVE_DEVELOPMENT_PASSED`. 20/20 rollouts on `development4` under
+`ACT_PLUS_THREE_PAIR_JOINT_GATE`, `confirmatory41` untouched, nothing trained or
+recalibrated. Provenance 67/67.
+
+**The offline blocker was an artifact of the offline framing.** Five tasks stopped on 17
+onset false positives that projected to multi-frame bursts. Live, across ~3,900 control
+frames: **1** false-positive frame, burst length 1, peak arm deviation **0.000144 rad**
+against the 0.35 cap, non-persistent, zero hazard-bar contact anywhere. False-positive
+onset bursts do not cause closed-loop harm — they barely occur. All 10 development
+criteria pass.
+
+Three things temper the pass:
+
+1. **The uncertainty veto never fired.** 471 executed frames, 471 `ACTIVITY_ONLY_SHADOW`
+   frames, 0 vetoes. Live, this was a bare seed-0 activity gate; the agreement term from
+   tasks 15–17 bought zero interventions.
+2. **The empty-mask convention is backwards on the frames that matter.** The one false
+   positive scored J01 = 0, J02 = 0, **J12 = 1.0** → three-pair 0.3333, passing the 0.1667
+   threshold, because seeds 1 and 2 were both *empty* and empty-vs-empty is defined as
+   perfect agreement. Seed 0 firing alone against two silent peers is the strongest
+   disagreement evidence available and the metric scores it near-maximal. Fix this
+   convention before spending more calibration effort on the veto.
+3. **The 7 task failures are not the controller's.** All five 118 rollouts executed 0
+   frames with `executed_action` **bitwise identical** to nominal; 108 failed r0 and r2,
+   and r2 also intervened zero times. 118's other-environment contact is `[0,0,0,0,0]`,
+   matching ACT-only exactly — the earlier deployable reference scored `[13,12,35,20,21]`
+   and failed that gate.
+
+Contact classes resolve at episode granularity only; per-frame contact classes are not in
+the rollout schema, so a contact cannot be timestamped to a burst frame. Immaterial at one
+FP frame and zero hazard contacts; it would matter at a real burst rate.
