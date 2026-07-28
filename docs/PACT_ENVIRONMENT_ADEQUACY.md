@@ -3,10 +3,11 @@
 ## Status
 
 The environment route and gate are preregistered, but Phase 1 has not yet been
-adjudicated. Simulator work is intentionally paused while the protected
-confirmatory evaluation occupies the shared A10. No ACT or PACT training is
-authorized until the measurements below are complete and all applicable gates
-pass simultaneously.
+adjudicated. The protected confirmatory evaluation has finished, and the
+reserved development rows are being used to validate the candidate scene. No
+ACT or PACT training beyond the preregistered pilot baseline is authorized
+until the measurements below are complete and all applicable gates pass
+simultaneously.
 
 The machine-readable preregistration is
 `configs/pact_collision_environment_v1.json`. The deterministic candidate
@@ -31,9 +32,9 @@ added in its place.
 removes the exocentric RGB camera. Both learned policies receive wrist RGB and
 9-D Franka proprioception. PACT additionally receives all 40 skin streams.
 
-One wall-colored matte panel enters the distal-arm corridor from either the
-left or the right. Its nominal center is `(0.64, +/-0.360, 1.10)` m with half
-extents `(0.030, 0.240, 0.045)` m. Its side is exactly balanced in every
+One wall-colored matte panel enters the wrist/link-6 passage from either the
+left or the right. Its nominal center is `(0.64, +/-0.320, 0.88)` m with half
+extents `(0.030, 0.240, 0.080)` m. Its side is exactly balanced in every
 manifest role. The aperture width is fixed at 0.85 m, leaving the opposite-side
 expert bow physically open. Small x and inner-face jitters are committed per row. The red
 cup is independently sampled near `(0.76, y, shelf_top)`, with
@@ -41,13 +42,12 @@ cup is independently sampled near `(0.76, y, shelf_top)`, with
 left-versus-right avoidance direction. The robot-base forward placement is
 0.14 m, keeping the target in the same proven relative reach envelope as the
 parent fumehood pick. A privileged expert reads the panel geometry and bows
-away from it with a 0.32 m nominal surface-clearance margin, clipped at the
-fixed aperture's maximum opposite-side waypoint.
+away from it with a 0.20 m nominal surface-clearance margin.
 
-The design targets link-5/link-6 rather than the gripper. This is the intended
-whole-body necessity: the wrist camera can keep the target visible while an
-overhead forearm intrusion remains outside its useful view. Opposite intrusion
-sides make a single memorized safe detour impossible.
+The design targets the wrist/link-6 swept volume rather than the grasp target.
+This is the intended whole-body necessity: the wrist camera can keep the target
+visible while a lateral arm intrusion remains outside its useful view.
+Opposite intrusion sides make a single memorized safe detour impossible.
 
 ## Endpoint and contact taxonomy
 
