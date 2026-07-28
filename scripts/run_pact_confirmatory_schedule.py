@@ -174,7 +174,7 @@ def run_one(
     else:
         try:
             _validate_scientific_result(scientific_path, row)
-        except Exception as exc:  # terminal identity failure, never auto-rerun
+        except Exception as exc:  # noqa: BLE001 - terminal identity ledger
             status = "invocation_failure"
             error = f"{type(exc).__name__}: {exc}"
     driver = {
@@ -195,6 +195,14 @@ def main() -> int:
     parser.add_argument("--schedule", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument(
+        "--pilot-gate",
+        action="store_true",
+        help=(
+            "treat evaluator invocation failures as terminal infrastructure "
+            "ledger entries; scientific Gate B/C analysis still excludes them"
+        ),
+    )
     args = parser.parse_args()
     schedule = json.loads(args.schedule.read_text())
     payload = dict(schedule)
@@ -226,7 +234,7 @@ def main() -> int:
             row = futures[future]
             try:
                 result = future.result()
-            except BaseException as exc:
+            except BaseException as exc:  # noqa: BLE001 - worker death reconciliation
                 result = {
                     "status": "driver_crash",
                     "rollout_id": row["rollout_id"],
@@ -248,21 +256,36 @@ def main() -> int:
         for row in schedule["rows"]
         if by_id.get(row["rollout_id"], {}).get("status") != "complete"
     ]
+    terminal_driver_statuses = {"complete", "invocation_failure"}
+    nonterminal = [
+        row["rollout_id"]
+        for row in schedule["rows"]
+        if by_id.get(row["rollout_id"], {}).get("status")
+        not in terminal_driver_statuses
+    ]
     summary = {
-        "schema_version": "pact_confirmatory_execution_v1",
+        "schema_version": "pact_schedule_execution_v2",
         "schedule_sha256": schedule["schedule_sha256"],
         "workers": 8,
+        "pilot_gate_mode": args.pilot_gate,
         "expected": len(schedule["rows"]),
         "complete_count": sum(
             result.get("status") == "complete" for result in results
         ),
         "missing": missing,
         "noncomplete": noncomplete,
-        "reconciled": not missing and not noncomplete,
+        "nonterminal": nonterminal,
+        "terminal_ledger_reconciled": not missing and not nonterminal,
+        "scientific_schedule_reconciled": not missing and not noncomplete,
     }
     write_json_atomic(args.output_root / "execution_summary.json", summary)
-    if not summary["reconciled"]:
-        print("PACT CONFIRMATORY SCHEDULE DID NOT RECONCILE", file=sys.stderr)
+    accepted = (
+        summary["terminal_ledger_reconciled"]
+        if args.pilot_gate
+        else summary["scientific_schedule_reconciled"]
+    )
+    if not accepted:
+        print("PACT SCHEDULE DID NOT RECONCILE", file=sys.stderr)
         return 1
     return 0
 

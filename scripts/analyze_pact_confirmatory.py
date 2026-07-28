@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Frozen analysis for the PACT versus ACT confirmatory schedule."""
 
+# ruff: noqa: ISC004
+
 from __future__ import annotations
 
 import argparse
@@ -199,6 +201,7 @@ def _load_results(schedule: dict, output_root: Path):
             "episode_id": row["instance_episode_id"],
             "arm": row["arm"],
             "checkpoint_sha256": row["checkpoint_sha256"],
+            "checkpoint_seed": row["checkpoint_seed"],
         }
         if any(result.get(key) != value for key, value in checks.items()):
             reconciliation["invalid"].append(row["rollout_id"])
@@ -232,13 +235,13 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
             fisher_pact_zero=None,
         )
         analysis = {
-            "schema_version": "pact_confirmatory_analysis_v1",
+            "schema_version": "pact_confirmatory_analysis_v2",
             "schedule_sha256": schedule["schedule_sha256"],
             "reconciliation": reconciliation,
             "results_available": False,
         }
         decision = {
-            "schema_version": "pact_final_decision_v1",
+            "schema_version": "pact_final_decision_v2",
             "schedule_sha256": schedule["schedule_sha256"],
             "decision": token,
             "reason": "The frozen schedule did not reconcile; outcomes are not analyzed.",
@@ -249,26 +252,60 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
         arm: [result for result in results if result["arm"] == arm] for arm in ARMS
     }
     summaries = {arm: arm_summary(rows) for arm, rows in by_arm.items()}
-    by_instance: dict[str, dict[str, Any]] = {}
+    by_instance: dict[str, dict[str, list[dict[str, Any]]]] = {}
     for result in results:
-        by_instance.setdefault(result["episode_id"], {})[result["arm"]] = result
-    instances = [by_instance[key] for key in sorted(by_instance)]
-    if len(instances) != 80 or any(set(instance) != set(ARMS) for instance in instances):
+        by_instance.setdefault(result["episode_id"], {}).setdefault(
+            result["arm"], []
+        ).append(result)
+    raw_instances = [by_instance[key] for key in sorted(by_instance)]
+    valid_matrix = (
+        len(raw_instances) == int(schedule["instances"])
+        and all(set(instance) == set(ARMS) for instance in raw_instances)
+        and all(
+            len(instance[arm]) == int(schedule["repeats_per_instance_per_arm"])
+            and {
+                int(result["checkpoint_seed"]) for result in instance[arm]
+            }
+            == set(schedule["checkpoint_seeds"])
+            for instance in raw_instances
+            for arm in ARMS
+        )
+    )
+    if not valid_matrix:
         reconciliation["reconciled"] = False
         reconciliation["invalid"].append("instance_arm_matrix")
         analysis = {
-            "schema_version": "pact_confirmatory_analysis_v1",
+            "schema_version": "pact_confirmatory_analysis_v2",
             "schedule_sha256": schedule["schedule_sha256"],
             "reconciliation": reconciliation,
             "results_available": False,
         }
         decision = {
-            "schema_version": "pact_final_decision_v1",
+            "schema_version": "pact_final_decision_v2",
             "schedule_sha256": schedule["schedule_sha256"],
             "decision": "PACT_EXPERIMENT_INCOMPLETE",
             "reason": "The instance-by-arm matrix did not reconcile.",
         }
         return analysis, decision
+    # The bootstrap resamples whole task instances. Within an instance, average
+    # the two fixed checkpoint-seed repetitions before computing an arm
+    # contrast, so repeats are never treated as independent clusters.
+    instances = [
+        {
+            arm: {
+                "collision_free_task_success": float(
+                    np.mean(
+                        [
+                            bool(result["collision_free_task_success"])
+                            for result in instance[arm]
+                        ]
+                    )
+                )
+            }
+            for arm in ARMS
+        }
+        for instance in raw_instances
+    ]
     pact_vs_act = paired_bootstrap(
         instances,
         arm_a="PACT",
@@ -306,7 +343,7 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
         for arm in ARMS
     }
     analysis = {
-        "schema_version": "pact_confirmatory_analysis_v1",
+        "schema_version": "pact_confirmatory_analysis_v2",
         "schedule_sha256": schedule["schedule_sha256"],
         "reconciliation": reconciliation,
         "results_available": True,
@@ -340,7 +377,7 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
         },
     }
     decision = {
-        "schema_version": "pact_final_decision_v1",
+        "schema_version": "pact_final_decision_v2",
         "schedule_sha256": schedule["schedule_sha256"],
         "decision": token,
         "decision_rule": (
@@ -376,34 +413,65 @@ def render_report(
     if environment_gate is not None:
         expert = environment_gate["expert"]
         act = environment_gate["act"]
-        lines.extend(
-            [
-                "## Environment adequacy gate",
-                "",
-                f"Phase 1 decision: `{environment_gate['decision']}` "
-                f"({sum(environment_gate['checks'].values())}/"
-                f"{len(environment_gate['checks'])} frozen checks passed).",
-                "",
-                f"- Expert collision-free task success: "
-                f"{expert['collision_free_task_success']}/{expert['n']}; "
-                f"ordinary task success: "
-                f"{expert['ordinary_task_success']}/{expert['n']}.",
-                f"- Active-panel surface signal: "
-                f"{expert['fraction_pregrasp_inside_20cm']:.1%} of pre-grasp "
-                f"steps inside 20 cm, "
-                f"{expert['fraction_pregrasp_inside_12cm']:.1%} inside 12 cm; "
-                f"{expert['episodes_with_intrusion_sighting']}/{expert['n']} "
-                f"episodes active.",
-                f"- Pilot ACT collision-free task success: "
-                f"{act['collision_free_task_success']}/{act['n']}; ordinary "
-                f"task success: {act['ordinary_task_success']}/{act['n']}; "
-                f"non-target contact in "
-                f"{act['episodes_with_any_non_target_contact']}/{act['n']} "
-                f"and intrusion contact in "
-                f"{act['episodes_with_hazard_bar_contact']}/{act['n']}.",
-                "",
-            ]
-        )
+        if environment_gate.get("schema_version") == "pact_environment_gate_v2":
+            surface = environment_gate["surface_observability"]
+            points = surface["point_estimates"]
+            lines.extend(
+                [
+                    "## Environment adequacy gate",
+                    "",
+                    f"Phase 1 decision: `{environment_gate['decision']}`. "
+                    f"Science classifications: "
+                    f"{environment_gate['science_gate_classifications']}.",
+                    "",
+                    f"- Usable clean expert demonstrations: "
+                    f"{expert['usable_clean_demonstrations']}/"
+                    f"{expert['attempts']}; ordinary task success: "
+                    f"{expert['ordinary_task_success']}/{expert['attempts']}.",
+                    f"- Active-panel surface signal: "
+                    f"{points['inside_20cm']:.1%} of pre-grasp steps inside "
+                    f"20 cm, {points['inside_12cm']:.1%} inside 12 cm; "
+                    f"{points['active_episode_fraction']:.1%} of scientific "
+                    f"episodes active.",
+                    f"- Pilot ACT collision-free task success: "
+                    f"{act['collision_free_task_success']}/"
+                    f"{act['scientific_outcomes']}; ordinary task success: "
+                    f"{act['ordinary_task_success']}/"
+                    f"{act['scientific_outcomes']}; intrusion contact in "
+                    f"{act['episodes_with_hazard_bar_contact']}/"
+                    f"{act['scientific_outcomes']}.",
+                    "",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    "## Environment adequacy gate",
+                    "",
+                    f"Phase 1 decision: `{environment_gate['decision']}` "
+                    f"({sum(environment_gate['checks'].values())}/"
+                    f"{len(environment_gate['checks'])} frozen checks passed).",
+                    "",
+                    f"- Expert collision-free task success: "
+                    f"{expert['collision_free_task_success']}/{expert['n']}; "
+                    f"ordinary task success: "
+                    f"{expert['ordinary_task_success']}/{expert['n']}.",
+                    f"- Active-panel surface signal: "
+                    f"{expert['fraction_pregrasp_inside_20cm']:.1%} of pre-grasp "
+                    f"steps inside 20 cm, "
+                    f"{expert['fraction_pregrasp_inside_12cm']:.1%} inside 12 cm; "
+                    f"{expert['episodes_with_intrusion_sighting']}/{expert['n']} "
+                    f"episodes active.",
+                    f"- Pilot ACT collision-free task success: "
+                    f"{act['collision_free_task_success']}/{act['n']}; ordinary "
+                    f"task success: {act['ordinary_task_success']}/{act['n']}; "
+                    f"non-target contact in "
+                    f"{act['episodes_with_any_non_target_contact']}/{act['n']} "
+                    f"and intrusion contact in "
+                    f"{act['episodes_with_hazard_bar_contact']}/{act['n']}.",
+                    "",
+                ]
+            )
     if surface_report is not None:
         metrics = surface_report["heldout_metrics"]
         lines.extend(
@@ -453,7 +521,9 @@ def render_report(
                 "## Frozen confirmatory design",
                 "",
                 f"{schedule['instances']} held-out instances × "
-                f"{len(schedule['arms'])} arms = {schedule['rollouts']} rollouts, "
+                f"{len(schedule['arms'])} arms × "
+                f"{schedule['repeats_per_instance_per_arm']} checkpoint seeds = "
+                f"{schedule['rollouts']} rollouts, "
                 f"{schedule['workers']} fixed workers, one fresh subprocess per row. "
                 f"Schedule SHA-256: `{schedule['schedule_sha256']}`.",
                 "",

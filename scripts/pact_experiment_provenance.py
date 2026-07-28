@@ -120,7 +120,8 @@ def main() -> int:
             for row in manifest["rows"]
             if row["role"] == "pilot_train"
         }
-        if not summary.get("complete") or len(rows_by_id) != 24:
+        expected_pilot_rows = int(manifest["role_counts"]["pilot_train"])
+        if not summary.get("complete") or len(rows_by_id) != expected_pilot_rows:
             raise SystemExit("pilot expert collection is not complete")
         row_records = []
         for result_path in sorted(
@@ -151,8 +152,10 @@ def main() -> int:
                     "artifacts": artifacts,
                 }
             )
-        if len(row_records) != 24:
-            raise SystemExit("expected 24 terminal pilot row results")
+        if len(row_records) != expected_pilot_rows:
+            raise SystemExit(
+                f"expected {expected_pilot_rows} terminal pilot row results"
+            )
         pilot_collection = {
             "path": str(args.pilot_collection),
             "summary": artifact_record(summary_path),
@@ -169,19 +172,26 @@ def main() -> int:
         }
 
     decision = json.loads(args.decision.read_text())
-    stopped_at_gate = decision.get("decision") == "PACT_ENVIRONMENT_INADEQUATE"
-    if stopped_at_gate and (
+    environment_gate = json.loads(args.environment_gate.read_text())
+    phase1_adequate = (
+        environment_gate.get("decision") == "PACT_ENVIRONMENT_ADEQUATE"
+    )
+    if not phase1_adequate and (
         args.surface_report is not None or args.training_summary is not None
     ):
         raise SystemExit(
-            "environment-inadequate provenance must not claim trained artifacts"
+            "a non-adequate Phase 1 provenance must not claim trained artifacts"
         )
     document = {
-        "schema_version": "pact_vs_act_provenance_v1",
+        "schema_version": "pact_vs_act_provenance_v2",
         "experiment_stage": (
             "stopped_at_phase1_environment_gate"
-            if stopped_at_gate
-            else "confirmatory_complete"
+            if not phase1_adequate
+            else (
+                "confirmatory_complete"
+                if decision.get("decision") != "PACT_EXPERIMENT_INCOMPLETE"
+                else "confirmatory_incomplete"
+            )
         ),
         "source_commits": {
             "root": git_head(ROOT),
@@ -196,8 +206,12 @@ def main() -> int:
         "policy_checkpoints": checkpoints,
         "policy_checkpoint_status": (
             "not_trained_due_to_phase1_environment_gate"
-            if stopped_at_gate
-            else "trained"
+            if not phase1_adequate
+            else (
+                "trained"
+                if args.training_summary is not None
+                else "not_trained_experiment_incomplete"
+            )
         ),
         "pilot_collection": pilot_collection,
         "protected_chain": {

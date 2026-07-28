@@ -66,6 +66,28 @@ def test_significantly_worse_is_not_buried():
     assert token == "PACT_WORSE_THAN_ACT"
 
 
+def test_bootstrap_clusters_instance_averages_not_seed_repeats():
+    instances = [
+        {
+            "PACT": {"collision_free_task_success": 1.0},
+            "ACT": {"collision_free_task_success": 0.5},
+        },
+        {
+            "PACT": {"collision_free_task_success": 0.5},
+            "ACT": {"collision_free_task_success": 0.0},
+        },
+    ]
+    result = analysis.paired_bootstrap(
+        instances,
+        arm_a="PACT",
+        arm_b="ACT",
+        replicates=1_000,
+        seed=7,
+    )
+    assert result["n_instances"] == 2
+    assert result["difference"] == pytest.approx(0.5)
+
+
 def test_report_last_nonblank_line_is_exact_token():
     document = analysis.render_report(
         {
