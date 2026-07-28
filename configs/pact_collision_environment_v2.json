@@ -1,0 +1,214 @@
+{
+  "schema_version": "pact_collision_environment_preregistration_v2",
+  "supersedes": "pact_collision_environment_preregistration_v1 for new data only; the v1 decision and its 24 rows remain final under v1",
+  "environment_version": "pact_collision_corridor_v1",
+  "expert_version": "pact_collision_corridor_expert_v2",
+  "route": "collision",
+  "route_rationale": "The 40 skin cameras measure nearby surfaces, and the primary endpoint penalizes non-target surface contact. The corridor already produced dense panel-specific signal and is retained without scene redesign.",
+  "immutability": {
+    "old_pilot_use": "The v1 pilot is historical only and is not loaded, rescored, pooled, or used to select v2 rows.",
+    "scene": "The v1 corridor XML, panel geometry, aperture, target distribution, side balance, and target-side independence are unchanged.",
+    "expert_changes_only": [
+      "nominal expert surface clearance raised from 0.08 m to 0.10 m",
+      "mid-rollout planner retries disabled; initial construction remains deterministically retryable before the scientific boundary"
+    ],
+    "freeze_boundary": "This file and the v2 manifest are hashed and immutable before the first pilot_train row. Development rows may only trigger a new expert/contract version and a wholly new pilot manifest."
+  },
+  "inputs": {
+    "act": [
+      "wrist_camera_rgb",
+      "qpos"
+    ],
+    "pact": [
+      "wrist_camera_rgb",
+      "qpos",
+      "40_causal_skin_depth_streams"
+    ],
+    "pact_zero": [
+      "wrist_camera_rgb",
+      "qpos",
+      "40_zero_tokens_at_inference"
+    ],
+    "exo_camera_present": false
+  },
+  "scene": {
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+    "metadata": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor_metadata.json",
+    "target": "grasp-validated Cup_10 sampled independently near x=0.76 m and y in [-0.04, 0.04] m",
+    "robot_base_forward_m": 0.14,
+    "panel_center_nominal_m": [
+      0.615,
+      "side * 0.340",
+      0.89
+    ],
+    "panel_half_extents_m": [
+      0.055,
+      0.24,
+      0.09
+    ],
+    "panel_inner_face_nominal_abs_y_m": 0.1,
+    "aperture_width_m": 0.85,
+    "sash_aperture_height_m": 0.7,
+    "panel_x_jitter_m": [
+      -0.015,
+      0.015
+    ],
+    "panel_inner_face_jitter_m": [
+      -0.005,
+      0.005
+    ],
+    "intrusion_side_balance": "exactly 50/50 within every manifest role",
+    "target_intrusion_independence": "target placement RNG and intrusion-side schedule are independent"
+  },
+  "expert_and_collection": {
+    "development_attempts": 32,
+    "development_readiness_clean_demo_floor": 24,
+    "pilot_train_attempts": 64,
+    "expert_surface_clearance_margin_m": 0.1,
+    "blind_demo_filter": "A row is usable for behavior cloning iff task_success is true and hazard_bar plus other_environment contact entries are both zero. The filter is applied to every fixed attempt before any policy result exists. All excluded rows and reasons remain in provenance; no row is replaced or rerun.",
+    "pilot_usable_clean_demo_floor": 48,
+    "pilot_dataset_rule": "Use every usable pilot_train row in frozen role_index order, then make the fixed 80/20 train/validation split. ACT and PACT use the identical split.",
+    "clean_rate_reporting": "Report the attempted-row clean-demo fraction with a two-sided Wilson 95% interval. The science gate is a floor on usable count, not a clean-rate threshold.",
+    "pre_rollout_construction_retries": {
+      "maximum_retries_after_initial_seed": 4,
+      "seed_rule": "deterministic retry_seed(row, retry_index) from the frozen manifest row",
+      "eligible_failure_window": "sampling or initial task.reset/expert trajectory construction before any action",
+      "terminal_boundary": "after accepted initial reset the row is outcome-bearing; no later result or exception is eligible for retry",
+      "mid_rollout_policy_failure": "terminal task failure with the row and contacts retained"
+    }
+  },
+  "infrastructure_health": {
+    "definition": "A no-scientific-outcome row has terminal status sampling_failure or infrastructure_failure. Task failures are scientific outcomes.",
+    "scale_target": "observed no-scientific-outcome fraction strictly below 0.05 in development and pilot ledgers",
+    "interval": "two-sided Wilson 95%",
+    "effect_on_science_gate": "never awards PACT_ENVIRONMENT_INADEQUATE and never counts as a collision-free failure",
+    "effect_on_progression": "If the target is missed, repair under a new version or report PACT_EXPERIMENT_INCOMPLETE; do not scale."
+  },
+  "phase1": {
+    "pilot_act_eval_attempts": 64,
+    "minimum_scientific_act_rows_for_adjudication": 61,
+    "gate_a_object_signal": {
+      "applicable": false,
+      "reason": "collision route; the frozen target is nearest-surface geometry, not object position"
+    },
+    "surface_observability": {
+      "population": "outcome-bearing pilot_train expert rows; no-outcome rows are reported but excluded from sensor denominators",
+      "definition": "Before first grasp-target contact or closing command, a depth ray is panel signal only when its reconstructed world point lies inside the active panel AABB with 1 cm tolerance.",
+      "active_episode_fraction_min": 0.8333333333333334,
+      "fraction_pregrasp_frames_inside_20cm_min": 0.3,
+      "fraction_pregrasp_frames_inside_12cm_min": 0.05,
+      "interval": "20,000-replicate deterministic episode-cluster bootstrap 95% percentile intervals for frame fractions; Wilson 95% for active episodes",
+      "one_row_rule": "Pass requires every leave-one-episode-out point estimate to remain above all three thresholds. Fail requires an applicable 95% upper bound below its threshold. Otherwise the result is inconclusive, not inadequate."
+    },
+    "gate_b_vision_insufficient_but_solvable": {
+      "endpoint": "ACT collision-free task success among scientific pilot_eval rows",
+      "target_point_band": [
+        0.3333333333333333,
+        0.6666666666666666
+      ],
+      "pass_interval_guard": "Wilson 95% interval must also lie strictly inside [0.20, 0.80]",
+      "floor_failure": "point estimate below 1/3 and Wilson upper bound below 0.50",
+      "ceiling_failure": "point estimate above 2/3 and Wilson lower bound above 0.50",
+      "one_row_rule": "Adequate, floor, or ceiling is awarded only when the same core classification holds after changing one outcome in either direction. Otherwise Gate B is inconclusive.",
+      "ordinary_task_success": "secondary endpoint only; report with Wilson 95%"
+    },
+    "gate_c_baseline_collisions": {
+      "endpoint": "fraction of scientific ACT pilot_eval rows with at least one hazard_bar contact",
+      "pass_point_min": 0.25,
+      "pass_wilson_lower_min": 0.1,
+      "failure": "point estimate below 0.25 and Wilson upper bound below 0.40",
+      "one_row_rule": "Pass or fail is awarded only when the same core classification holds after changing one outcome in either direction. Otherwise Gate C is inconclusive.",
+      "other_environment_contacts": "reported separately and do not substitute for intrusion contact"
+    },
+    "decision_mapping": {
+      "PACT_ENVIRONMENT_ADEQUATE": "surface observability, Gate B, and Gate C all robustly pass; demo count and infrastructure progression requirements also pass",
+      "PACT_ENVIRONMENT_INADEQUATE": "at least one of surface observability, Gate B, or Gate C robustly fails; demonstrator cleanliness and infrastructure can never produce this token",
+      "PACT_EXPERIMENT_INCOMPLETE": "a science gate is inconclusive, fewer than 61 scientific ACT rows exist, usable demos are below 48, infrastructure misses its progression target, or artifacts do not reconcile"
+    }
+  },
+  "pilot_act_training": {
+    "seed": 1101,
+    "checkpoint_rule": "minimum validation loss across the fixed 2000-epoch run",
+    "recipe": {
+      "backbone": "resnet18",
+      "encoder_layers": 7,
+      "decoder_layers": 7,
+      "attention_heads": 8,
+      "hidden_dim": 512,
+      "chunk_size": 100,
+      "learning_rate": 1e-05,
+      "batch_size": 8,
+      "epochs": 2000,
+      "kl_beta": 10
+    }
+  },
+  "endpoint": {
+    "primary": "task_success AND hazard_bar_contact_entries == 0 AND other_environment_contact_entries == 0",
+    "target_contact_exempt": true,
+    "contact_taxonomy": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "contact_sampling": "after every 2 ms control/physics step and at episode boundaries",
+    "secondary": "ordinary task success"
+  },
+  "frontend": {
+    "route_target": "nearest visible surface point in each sensor local frame plus in-range validity",
+    "input": "32 causal 8x8 depth frames per sensor",
+    "architecture": "weight-shared transformer with conv stem, CLS token, sinusoidal positions, 4 layers, 4 heads, d_model=128",
+    "valid_depth_range_m": [
+      0.0,
+      0.2
+    ],
+    "heldout_metrics": [
+      "mean Euclidean XYZ error on valid in-range samples",
+      "median Euclidean XYZ error",
+      "within-2cm rate",
+      "validity precision",
+      "validity recall"
+    ],
+    "freeze_before_policy_training": true
+  },
+  "full_training": {
+    "full_train_attempts": 240,
+    "full_validation_attempts": 64,
+    "policy_seeds_per_arm": [
+      3101,
+      3102
+    ],
+    "arms_trained": [
+      "ACT",
+      "PACT"
+    ],
+    "pact_zero": "No separate training; each frozen PACT checkpoint is evaluated with all proximity tokens zeroed.",
+    "recipe": "identical to pilot ACT except for declared arm and seed"
+  },
+  "confirmatory_design": {
+    "candidate_instances": 160,
+    "minimum_instances": 50,
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_ZERO"
+    ],
+    "checkpoint_seeds_per_arm": 2,
+    "repeats_per_instance_per_arm": 2,
+    "planned_total_rollouts": 960,
+    "worker_count": 8,
+    "fresh_subprocess_per_rollout": true,
+    "balanced_arm_and_seed_order": true,
+    "no_outcome_based_reruns": true,
+    "power_statement": "The final detectable-effect calculation is frozen after pilot Gate B/C and before any confirmatory rollout, using all 160 fixed instances. The confirmatory schedule and analysis hash must record it.",
+    "analysis": {
+      "wilson_interval": 0.95,
+      "fisher_exact_two_sided": [
+        "PACT_vs_ACT",
+        "PACT_vs_PACT_ZERO"
+      ],
+      "instance_cluster_bootstrap_replicates": 20000,
+      "instance_cluster_bootstrap_seed": 2026072902,
+      "decision_ci": "two-sided 95% percentile interval for each instance-clustered risk difference"
+    }
+  }
+}

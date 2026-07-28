@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import inspect
+import json
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -10,18 +10,18 @@ ROOT = Path(__file__).resolve().parents[1]
 MOLMO = ROOT / "submodules" / "molmospaces"
 sys.path.insert(0, str(MOLMO))
 
-from molmo_spaces.configs.camera_configs import (  # noqa: E402
+from molmo_spaces.configs.camera_configs import (
     FrankaSkinHybridWristOnlyCameraSystem,
 )
-from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (  # noqa: E402
+from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
     FrankaSkinPACTCollisionCorridorConfig,
 )
-from molmo_spaces.tasks.enclosure_reach import (  # noqa: E402
+from molmo_spaces.env.sensors import get_core_sensors
+from molmo_spaces.tasks.enclosure_reach import (
     PactCollisionCorridorPolicy,
     PactCollisionCorridorSampler,
 )
-from molmo_spaces.env.sensors import get_core_sensors  # noqa: E402
-from molmo_spaces.tasks.task import BaseMujocoTask  # noqa: E402
+from molmo_spaces.tasks.task import BaseMujocoTask
 
 
 def test_scene_has_exactly_two_parkable_intrusions():
@@ -66,7 +66,8 @@ def test_runtime_config_is_wrist_plus_all_40_skin_sensors():
     assert PactCollisionCorridorSampler.PANEL_X == 0.615
     assert PactCollisionCorridorSampler.PANEL_Z == 0.89
     assert PactCollisionCorridorSampler.PANEL_INNER_FACE_Y == 0.10
-    assert PactCollisionCorridorPolicy.SAFE_GAP == 0.08
+    assert PactCollisionCorridorPolicy.SAFE_GAP == 0.10
+    assert config.policy_config.max_retries == 0
 
 
 def test_manifest_sensor_order_matches_camera_config():

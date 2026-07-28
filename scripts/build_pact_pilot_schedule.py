@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Freeze the 24-row vision-only ACT environment-gate schedule."""
+"""Freeze the remediation-v2 vision-only ACT environment-gate schedule."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from pact_collision_contract import load_manifest, rows_for_role  # noqa: E402
+from pact_collision_contract import load_manifest, rows_for_role
 
 
 def canonical_hash(value) -> str:
@@ -29,7 +29,7 @@ def build(manifest: dict, training: dict) -> dict:
     rows = []
     for index, instance in enumerate(rows_for_role(manifest, "pilot_eval")):
         identity = {
-            "schedule_schema": "pact_pilot_act_schedule_v1",
+            "schedule_schema": "pact_pilot_act_schedule_v2",
             "instance_episode_id": instance["episode_id"],
             "arm": "ACT",
             "checkpoint_seed": 1101,
@@ -57,13 +57,13 @@ def build(manifest: dict, training: dict) -> dict:
         row["schedule_row_sha256"] = canonical_hash(row)
         rows.append(row)
     document = {
-        "schema_version": "pact_pilot_act_schedule_v1",
+        "schema_version": "pact_pilot_act_schedule_v2",
         "candidate_manifest_sha256": manifest["manifest_sha256"],
         "training_summary_sha256": canonical_hash(training),
-        "instances": 24,
+        "instances": len(rows),
         "arms": ["ACT"],
         "repeats_per_instance_per_arm": 1,
-        "rollouts": 24,
+        "rollouts": len(rows),
         "workers": 8,
         "fresh_subprocess_per_rollout": True,
         "no_outcome_based_reruns": True,

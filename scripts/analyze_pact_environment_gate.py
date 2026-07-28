@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -19,9 +18,18 @@ SCRIPTS = ROOT / "scripts"
 for path in (ROOT, ACT, SCRIPTS):
     sys.path.insert(0, str(path))
 
-from pact_collision_contract import load_manifest, rows_for_role  # noqa: E402
-from scripts.convert_obstacle_to_act import _decode_action  # noqa: E402
-from surface_proximity_encoder import native_camera_intrinsic  # noqa: E402
+from pact_collision_contract import load_manifest, rows_for_role
+from pact_gate_statistics import (
+    classify_surface_observability,
+    environment_decision,
+    gate_b_core,
+    gate_c_core,
+    one_outcome_robust_classification,
+    wilson_interval,
+)
+from surface_proximity_encoder import native_camera_intrinsic
+
+from scripts.convert_obstacle_to_act import _decode_action
 
 
 def _trajectory(handle: h5py.File):
@@ -159,19 +167,177 @@ def _pilot_act_results(schedule_path: Path, output_root: Path):
     for row in schedule["rows"]:
         result_path = output_root / row["output_relpath"] / "result.json"
         driver_path = output_root / row["output_relpath"] / "driver_result.json"
-        if not result_path.exists() or not driver_path.exists():
-            raise RuntimeError(f"pilot ACT row is unreconciled: {row['rollout_id']}")
+        if not driver_path.exists():
+            raise RuntimeError(f"pilot ACT row has no terminal driver result: {row['rollout_id']}")
         driver = json.loads(driver_path.read_text())
-        result = json.loads(result_path.read_text())
+        if driver.get("rollout_id") != row["rollout_id"]:
+            raise RuntimeError(f"pilot ACT driver identity mismatch: {row['rollout_id']}")
         if driver.get("status") != "complete":
-            raise RuntimeError(f"pilot ACT driver failed: {row['rollout_id']}")
+            results.append(
+                {
+                    "status": "infrastructure_failure",
+                    "rollout_id": row["rollout_id"],
+                    "schedule_row_sha256": row["schedule_row_sha256"],
+                    "task_success": None,
+                    "collision_free_task_success": None,
+                    "driver_status": driver.get("status"),
+                    "driver_error": driver.get("error"),
+                }
+            )
+            continue
+        if not result_path.exists():
+            raise RuntimeError(
+                f"complete pilot ACT driver has no result: {row['rollout_id']}"
+            )
+        result = json.loads(result_path.read_text())
         if (
             result.get("rollout_id") != row["rollout_id"]
             or result.get("schedule_row_sha256") != row["schedule_row_sha256"]
         ):
             raise RuntimeError(f"pilot ACT identity mismatch: {row['rollout_id']}")
+        result["status"] = "scientific_outcome"
         results.append(result)
     return results, schedule
+
+
+def _status_ledger(results: list[dict[str, Any]]) -> dict[str, Any]:
+    counts = dict(
+        __import__("collections").Counter(result["status"] for result in results)
+    )
+    no_outcome = sum(
+        result["status"] in ("sampling_failure", "infrastructure_failure")
+        for result in results
+    )
+    total = len(results)
+    return {
+        "attempts": total,
+        "status_counts": counts,
+        "no_scientific_outcome": no_outcome,
+        "no_scientific_outcome_rate": no_outcome / total if total else None,
+        "no_scientific_outcome_wilson_95": (
+            list(wilson_interval(no_outcome, total)) if total else None
+        ),
+        "progression_target_strictly_below_5_percent": (
+            total > 0 and no_outcome / total < 0.05
+        ),
+    }
+
+
+def analyze_remediation_v2(
+    *,
+    manifest: dict,
+    expert_results: list[dict[str, Any]],
+    act_results: list[dict[str, Any]],
+    pilot_schedule: dict,
+) -> dict[str, Any]:
+    """Adjudicate the independently seeded remediation-v2 pilot."""
+    expert_ledger = _status_ledger(expert_results)
+    scientific_experts = [
+        result
+        for result in expert_results
+        if result["status"] in ("success", "task_failure")
+    ]
+    surface = classify_surface_observability(
+        [result["surface_activity"] for result in scientific_experts]
+    )
+    clean_demos = sum(
+        bool(result.get("collision_free_task_success"))
+        for result in scientific_experts
+    )
+    clean_interval = wilson_interval(clean_demos, len(expert_results))
+    demo_floor_met = clean_demos >= 48
+
+    act_ledger = _status_ledger(act_results)
+    scientific_act = [
+        result for result in act_results if result["status"] == "scientific_outcome"
+    ]
+    act_n = len(scientific_act)
+    act_primary = sum(
+        bool(result["collision_free_task_success"]) for result in scientific_act
+    )
+    act_task = sum(bool(result["task_success"]) for result in scientific_act)
+    act_hazard = sum(
+        int(result["contact_audit"]["contact_class_totals"].get("hazard_bar", 0)) > 0
+        for result in scientific_act
+    )
+    act_other = sum(
+        int(
+            result["contact_audit"]["contact_class_totals"].get(
+                "other_environment", 0
+            )
+        )
+        > 0
+        for result in scientific_act
+    )
+    gate_b = one_outcome_robust_classification(
+        act_primary, act_n, gate_b_core
+    )
+    gate_c = one_outcome_robust_classification(
+        act_hazard, act_n, gate_c_core
+    )
+    minimum_scientific_rows_met = act_n >= 61
+    infrastructure_progression_met = bool(
+        expert_ledger["progression_target_strictly_below_5_percent"]
+        and act_ledger["progression_target_strictly_below_5_percent"]
+    )
+    decision = environment_decision(
+        surface_classification=surface["robust_classification"],
+        gate_b_classification=gate_b["robust_classification"],
+        gate_c_classification=gate_c["robust_classification"],
+        usable_demo_floor_met=demo_floor_met,
+        infrastructure_progression_met=infrastructure_progression_met,
+        minimum_scientific_rows_met=minimum_scientific_rows_met,
+    )
+    return {
+        "schema_version": "pact_environment_gate_v2",
+        "route": "collision",
+        "gate_a_applicable": False,
+        "manifest_sha256": manifest["manifest_sha256"],
+        "pilot_schedule_sha256": pilot_schedule["schedule_sha256"],
+        "old_v1_rows_used": False,
+        "expert": {
+            **expert_ledger,
+            "scientific_outcomes": len(scientific_experts),
+            "ordinary_task_success": sum(
+                bool(result.get("task_success")) for result in scientific_experts
+            ),
+            "usable_clean_demonstrations": clean_demos,
+            "usable_clean_demo_floor": 48,
+            "usable_clean_demo_floor_met": demo_floor_met,
+            "clean_demo_fraction_of_attempts": clean_demos / len(expert_results),
+            "clean_demo_fraction_wilson_95": list(clean_interval),
+        },
+        "surface_observability": surface,
+        "act": {
+            **act_ledger,
+            "scientific_outcomes": act_n,
+            "minimum_scientific_rows": 61,
+            "minimum_scientific_rows_met": minimum_scientific_rows_met,
+            "ordinary_task_success": act_task,
+            "ordinary_task_success_rate": act_task / act_n if act_n else None,
+            "ordinary_task_success_wilson_95": (
+                list(wilson_interval(act_task, act_n)) if act_n else None
+            ),
+            "collision_free_task_success": act_primary,
+            "episodes_with_hazard_bar_contact": act_hazard,
+            "episodes_with_other_environment_contact": act_other,
+            "failure_taxonomy": dict(
+                __import__("collections").Counter(
+                    result["failure_taxonomy"] for result in scientific_act
+                )
+            ),
+        },
+        "gate_b": gate_b,
+        "gate_c": gate_c,
+        "infrastructure_progression_met": infrastructure_progression_met,
+        "science_gate_classifications": {
+            "surface_observability": surface["robust_classification"],
+            "gate_b": gate_b["robust_classification"],
+            "gate_c": gate_c["robust_classification"],
+        },
+        "all_applicable_gates_pass": decision == "PACT_ENVIRONMENT_ADEQUATE",
+        "decision": decision,
+    }
 
 
 def analyze_expert_prerequisite(
@@ -408,42 +574,24 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--expert-collection", required=True, type=Path)
-    parser.add_argument("--pilot-schedule", type=Path)
-    parser.add_argument("--pilot-output-root", type=Path)
-    parser.add_argument(
-        "--expert-only-stop",
-        action="store_true",
-        help=(
-            "adjudicate a failed expert/surface prerequisite and stop before "
-            "pilot ACT training"
-        ),
-    )
+    parser.add_argument("--pilot-schedule", required=True, type=Path)
+    parser.add_argument("--pilot-output-root", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     manifest = load_manifest(args.manifest)
     experts = _expert_results(args.expert_collection, manifest)
-    if args.expert_only_stop:
-        if len(experts) != 24:
-            raise SystemExit("Phase 1 requires exactly 24 reconciled expert rows")
-        result = analyze_expert_prerequisite(
-            manifest=manifest,
-            expert_results=experts,
-        )
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
-        print(result["decision"])
-        return 3
-    if args.pilot_schedule is None or args.pilot_output_root is None:
-        raise SystemExit(
-            "--pilot-schedule and --pilot-output-root are required unless "
-            "--expert-only-stop is set"
-        )
     acts, schedule = _pilot_act_results(
         args.pilot_schedule, args.pilot_output_root
     )
-    if len(experts) != 24 or len(acts) != 24:
-        raise SystemExit("Phase 1 requires exactly 24 reconciled rows in each set")
-    result = analyze(
+    expected_experts = int(manifest["role_counts"]["pilot_train"])
+    expected_acts = int(manifest["role_counts"]["pilot_eval"])
+    if len(experts) != expected_experts or len(acts) != expected_acts:
+        raise SystemExit(
+            "Phase 1 requires every fixed row to have a terminal ledger entry: "
+            f"experts={len(experts)}/{expected_experts}, "
+            f"ACT={len(acts)}/{expected_acts}"
+        )
+    result = analyze_remediation_v2(
         manifest=manifest,
         expert_results=experts,
         act_results=acts,

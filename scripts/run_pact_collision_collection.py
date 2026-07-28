@@ -28,14 +28,14 @@ SCRIPTS = ROOT / "scripts"
 MOLMO = ROOT / "submodules" / "molmospaces"
 sys.path.insert(0, str(SCRIPTS))
 
-from pact_collision_contract import (  # noqa: E402
+from pact_collision_contract import (
     canonical_json,
     load_manifest,
     retry_seed,
     rows_for_role,
 )
 
-DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v1.json"
+DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v2.json"
 TERMINAL_STATUSES = {
     "success",
     "task_failure",
@@ -264,7 +264,7 @@ def _run_row(
                 sampler.close()
                 sampler = None
                 continue
-            except Exception as exc:  # sampling-only retry
+            except Exception as exc:  # noqa: BLE001 - terminal sampling ledger
                 retry_history.append(
                     {
                         "retry_index": retry_index,
@@ -286,7 +286,7 @@ def _run_row(
             policy = setup_policy(config, task, None, None)
             try:
                 initial_reset_result = task.reset()
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 - pre-boundary construction ledger
                 retry_history.append(
                     {
                         "retry_index": retry_index,
@@ -325,7 +325,7 @@ def _run_row(
             audit = policy_info.get("pact_contact_audit", {})
             collision_free = bool(audit.get("collision_free", False))
             result: dict[str, Any] = {
-                "schema_version": "pact_collision_collection_result_v1",
+                "schema_version": "pact_collision_collection_result_v2",
                 "status": "success" if task_success else "task_failure",
                 "episode_id": row["episode_id"],
                 "row_sha256": row["row_sha256"],
@@ -361,7 +361,7 @@ def _run_row(
             return result
 
         result = {
-            "schema_version": "pact_collision_collection_result_v1",
+            "schema_version": "pact_collision_collection_result_v2",
             "status": "sampling_failure",
             "episode_id": row["episode_id"],
             "row_sha256": row["row_sha256"],
@@ -376,9 +376,9 @@ def _run_row(
         }
         _write_json_atomic(result_path, result)
         return result
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - preserve terminal row provenance
         result = {
-            "schema_version": "pact_collision_collection_result_v1",
+            "schema_version": "pact_collision_collection_result_v2",
             "status": "infrastructure_failure",
             "episode_id": row["episode_id"],
             "row_sha256": row["row_sha256"],
@@ -414,6 +414,21 @@ def _result_counts(results: list[dict[str, Any]]) -> dict[str, int]:
     }
 
 
+def _protected_eval_processes() -> list[int]:
+    """Find the protected shared-GPU evaluation without matching this process."""
+    matches = []
+    for entry in Path("/proc").iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            command = (entry / "cmdline").read_bytes()
+        except (FileNotFoundError, PermissionError, ProcessLookupError):
+            continue
+        if b"eval_act_obstacle_on_policy.py" in command:
+            matches.append(int(entry.name))
+    return matches
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--role", required=True, choices=(
@@ -432,8 +447,14 @@ def main() -> int:
         help="omit MP4s (development diagnostics only; converted training rows require them)",
     )
     args = parser.parse_args()
-    if not 1 <= args.workers <= 12:
-        raise SystemExit("--workers must be in [1, 12]")
+    if not 8 <= args.workers <= 12:
+        raise SystemExit("--workers must be in [8, 12] for this experiment")
+    active = _protected_eval_processes()
+    if active:
+        raise SystemExit(
+            "protected confirmatory evaluation is still active; refusing datagen "
+            f"(PIDs {active})"
+        )
 
     manifest = load_manifest(args.manifest)
     rows = rows_for_role(manifest, args.role)
@@ -469,7 +490,7 @@ def main() -> int:
             row = futures[future]
             try:
                 result = future.result()
-            except BaseException as exc:  # worker died before writing its row
+            except BaseException as exc:  # noqa: BLE001 - worker death reconciliation
                 result = {
                     "status": "unreconciled_worker_failure",
                     "episode_id": row["episode_id"],
@@ -495,7 +516,7 @@ def main() -> int:
         if by_id.get(row["episode_id"], {}).get("status") not in TERMINAL_STATUSES
     ]
     summary = {
-        "schema_version": "pact_collision_collection_summary_v1",
+        "schema_version": "pact_collision_collection_summary_v2",
         "manifest_path": str(args.manifest),
         "manifest_sha256": manifest["manifest_sha256"],
         "role": args.role,

@@ -30,9 +30,9 @@ contacts = _load(
 
 
 def test_role_counts_are_balanced_and_minimum_eval_is_exceeded():
-    assert contract.ROLE_COUNTS["pilot_train"] == 24
-    assert contract.ROLE_COUNTS["pilot_eval"] == 24
-    assert contract.ROLE_COUNTS["confirmatory_eval"] == 80
+    assert contract.ROLE_COUNTS["pilot_train"] == 64
+    assert contract.ROLE_COUNTS["pilot_eval"] == 64
+    assert contract.ROLE_COUNTS["confirmatory_eval"] == 160
     assert contract.ROLE_COUNTS["confirmatory_eval"] >= 50
     for role, count in contract.ROLE_COUNTS.items():
         sides = contract._balanced_sides(role, count)
@@ -59,7 +59,9 @@ def test_manifest_round_trip_and_tamper_detection(tmp_path):
     assert contract.load_manifest(path) == first
 
     damaged = json.loads(json.dumps(first))
-    damaged["rows"][0]["intrusion_side"] = "right"
+    damaged["rows"][0]["intrusion_side"] = (
+        "left" if damaged["rows"][0]["intrusion_side"] == "right" else "right"
+    )
     with pytest.raises(contract.PactContractError):
         contract.validate_manifest(damaged)
 

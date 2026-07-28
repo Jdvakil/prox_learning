@@ -34,16 +34,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from pact_collision_contract import load_manifest, rows_for_role, sha256_file  # noqa: E402
-from scripts.convert_obstacle_to_act import (  # noqa: E402
+from pact_collision_contract import load_manifest, rows_for_role, sha256_file
+
+from scripts.convert_obstacle_to_act import (
     ACTION_DIM,
-    QPOS_DIM,
     _decode_action,
     _decode_qpos_qvel,
     _video_frames,
 )
 
-DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v1.json"
+DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v2.json"
+PILOT_USABLE_DEMO_FLOOR = 48
 
 
 def _trajectory_group(handle: h5py.File) -> h5py.Group:
@@ -129,6 +130,24 @@ def _find_wrist_video(row_dir: Path) -> Path:
     if len(videos) != 1:
         raise RuntimeError(f"{row_dir}: expected one wrist RGB MP4, found {len(videos)}")
     return videos[0]
+
+
+def _is_usable_clean_demo(result: dict[str, Any]) -> bool:
+    """Apply the frozen, endpoint-only demonstration filter."""
+    audit = result.get("contact_audit", {})
+    totals = audit.get("contact_class_totals", {})
+    computed = bool(
+        result.get("task_success")
+        and int(totals.get("hazard_bar", 0)) == 0
+        and int(totals.get("other_environment", 0)) == 0
+    )
+    recorded = result.get("collision_free_task_success")
+    if recorded is not None and bool(recorded) != computed:
+        raise RuntimeError(
+            "recorded collision_free_task_success disagrees with the frozen "
+            "contact-taxonomy recomputation"
+        )
+    return computed
 
 
 def _semantic_sha256(path: Path) -> str:
@@ -287,7 +306,7 @@ def main() -> int:
         result = json.loads(result_path.read_text())
         if result.get("row_sha256") != row["row_sha256"]:
             raise SystemExit(f"row identity mismatch at {result_path}")
-        if result.get("collision_free_task_success") is True:
+        if _is_usable_clean_demo(result):
             included.append((row, result))
         else:
             excluded.append(
@@ -301,6 +320,13 @@ def main() -> int:
                     ),
                 }
             )
+
+    if roles == ["pilot_train"] and len(included) < PILOT_USABLE_DEMO_FLOOR:
+        raise SystemExit(
+            "pilot demonstration floor not met: "
+            f"{len(included)} usable clean rows < {PILOT_USABLE_DEMO_FLOOR}; "
+            "rows are not replaced or rerun"
+        )
 
     episodes = []
     for act_index, (row, result) in enumerate(included):
@@ -346,7 +372,7 @@ def main() -> int:
             f"\x1f{episode['act_h5_sha256']}\n".encode()
         )
     conversion = {
-        "schema_version": "pact_collision_act_conversion_v1",
+        "schema_version": "pact_collision_act_conversion_v2",
         "source_manifest_sha256": manifest["manifest_sha256"],
         "sensor_order_sha256": manifest["sensor_order_sha256"],
         "sensor_names": manifest["sensor_names"],
@@ -354,7 +380,14 @@ def main() -> int:
         "requested_count": len(requested),
         "included_count": len(episodes),
         "excluded_count": len(excluded),
-        "selection_rule": "collision_free_task_success == true, then frozen role_index order",
+        "selection_rule": (
+            "task_success == true and hazard_bar == 0 and other_environment == 0; "
+            "all fixed attempts retained in provenance, included rows ordered by frozen "
+            "role_index, no replacement or rerun"
+        ),
+        "pilot_usable_demo_floor": (
+            PILOT_USABLE_DEMO_FLOOR if roles == ["pilot_train"] else None
+        ),
         "excluded": excluded,
         "episodes": episodes,
         "converted_tree_file_sha256": tree_file.hexdigest(),

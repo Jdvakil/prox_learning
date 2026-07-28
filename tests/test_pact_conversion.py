@@ -60,8 +60,51 @@ def test_extract_proximity_preserves_manifest_order(tmp_path):
 def test_extract_proximity_rejects_missing_sensor(tmp_path):
     path = tmp_path / "source.h5"
     _source(path, ["sensor_a"])
-    with h5py.File(path) as handle:
-        with pytest.raises(RuntimeError, match="sensor mismatch"):
-            converter.extract_proximity(
-                handle["traj_0"], ["sensor_a", "sensor_b"], 3
-            )
+    with h5py.File(path) as handle, pytest.raises(RuntimeError, match="sensor mismatch"):
+        converter.extract_proximity(
+            handle["traj_0"], ["sensor_a", "sensor_b"], 3
+        )
+
+
+def test_usable_demo_filter_is_exactly_the_primary_endpoint():
+    clean = {
+        "task_success": True,
+        "collision_free_task_success": True,
+        "contact_audit": {
+            "contact_class_totals": {
+                "grasp_target": 7,
+                "hazard_bar": 0,
+                "other_environment": 0,
+            }
+        },
+    }
+    assert converter._is_usable_clean_demo(clean)
+    for contact_class in ("hazard_bar", "other_environment"):
+        contacting = {
+            **clean,
+            "collision_free_task_success": False,
+            "contact_audit": {
+                "contact_class_totals": {
+                    "grasp_target": 7,
+                    "hazard_bar": int(contact_class == "hazard_bar"),
+                    "other_environment": int(contact_class == "other_environment"),
+                }
+            },
+        }
+        assert not converter._is_usable_clean_demo(contacting)
+
+
+def test_usable_demo_filter_rejects_endpoint_mismatch():
+    with pytest.raises(RuntimeError, match="disagrees"):
+        converter._is_usable_clean_demo(
+            {
+                "task_success": True,
+                "collision_free_task_success": True,
+                "contact_audit": {
+                    "contact_class_totals": {
+                        "hazard_bar": 1,
+                        "other_environment": 0,
+                    }
+                },
+            }
+        )

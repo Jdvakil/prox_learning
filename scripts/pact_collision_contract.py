@@ -15,23 +15,28 @@ from typing import Any
 
 import numpy as np
 
-SCHEMA_VERSION = "pact_collision_manifest_v1"
+# Remediation v2 is a wholly new candidate population.  The physical scene
+# remains pact_collision_corridor_v1; only the expert and experimental
+# contract change.
+SCHEMA_VERSION = "pact_collision_manifest_v2"
 ENVIRONMENT_VERSION = "pact_collision_corridor_v1"
-MASTER_SEED = 20260728
+EXPERT_VERSION = "pact_collision_corridor_expert_v2"
+MASTER_SEED = 2026072901
 SCENE_TEMPLATE_ID = "pact_collision_corridor_narrow_cup_v1"
 SCENE_TEMPLATE_HOUSE_INDEX = 1
 MAX_SAMPLING_RETRIES = 4
 
-# Development rows may inform a versioned scene revision. The remaining roles
-# are frozen candidates for the named environment version and must not be
-# outcome-selected, replaced, or reassigned.
+# Development rows may inform expert/harness fixes only.  The scene is frozen.
+# The remaining roles are fixed candidates and must not be outcome-selected,
+# replaced, or reassigned.  Pilot sizes are deliberately larger than v1's 24
+# rows so one observation has at most 1.6 percentage points of weight.
 ROLE_COUNTS: dict[str, int] = {
-    "development": 8,
-    "pilot_train": 24,
-    "pilot_eval": 24,
-    "full_train": 160,
-    "full_validation": 40,
-    "confirmatory_eval": 80,
+    "development": 32,
+    "pilot_train": 64,
+    "pilot_eval": 64,
+    "full_train": 240,
+    "full_validation": 64,
+    "confirmatory_eval": 160,
 }
 
 ROLE_STREAM_IDS = {
@@ -156,6 +161,7 @@ def build_manifest(*, source_hashes: dict[str, str], sensor_names: list[str]) ->
     document: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "environment_version": ENVIRONMENT_VERSION,
+        "expert_version": EXPERT_VERSION,
         "master_seed": MASTER_SEED,
         "scene_template_id": SCENE_TEMPLATE_ID,
         "scene_template_house_index": SCENE_TEMPLATE_HOUSE_INDEX,
@@ -185,6 +191,10 @@ def validate_manifest(document: dict[str, Any]) -> None:
         )
     if document.get("schema_version") != SCHEMA_VERSION:
         raise PactContractError("wrong schema version")
+    if document.get("environment_version") != ENVIRONMENT_VERSION:
+        raise PactContractError("wrong environment version")
+    if document.get("expert_version") != EXPERT_VERSION:
+        raise PactContractError("wrong expert version")
     if document.get("role_counts") != ROLE_COUNTS:
         raise PactContractError("role counts differ from frozen contract")
     rows = document.get("rows", [])

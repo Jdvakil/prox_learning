@@ -13,6 +13,8 @@ The preregistered whole-body modality comparison is documented in
 [`docs/PACT_VS_ACT_FINAL_DECISION.md`](docs/PACT_VS_ACT_FINAL_DECISION.md);
 its Phase 1 environment gate is
 [`docs/PACT_ENVIRONMENT_ADEQUACY.md`](docs/PACT_ENVIRONMENT_ADEQUACY.md).
+The independently seeded recovery protocol is frozen in
+[`docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md`](docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md).
 
 ---
 

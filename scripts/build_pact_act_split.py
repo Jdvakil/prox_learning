@@ -80,7 +80,7 @@ def build(conversion: dict, mode: str) -> dict:
         dataset_tree_kind = "file"
     document = {
         "schema": SCHEMA,
-        "experiment": f"pact_collision_{mode}_v1",
+        "experiment": f"pact_collision_{mode}_v2",
         "canonical_manifest_sha256": conversion["source_manifest_sha256"],
         "source_collection_tree_sha256": dataset_tree_sha256,
         "source_collection_tree_hash_kind": dataset_tree_kind,
