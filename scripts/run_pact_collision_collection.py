@@ -42,6 +42,8 @@ TERMINAL_STATUSES = {
     "sampling_failure",
     "infrastructure_failure",
 }
+BOUNDARY_FILENAME = "initial_observation_accepted.json"
+MAX_TASKS_PER_CHILD = 8
 
 
 def _jsonable(value: Any) -> Any:
@@ -202,6 +204,7 @@ def _run_row(
     row_dir = Path(output_dir) / "rows" / row["episode_id"]
     row_dir.mkdir(parents=True, exist_ok=True)
     result_path = row_dir / "result.json"
+    boundary_path = row_dir / BOUNDARY_FILENAME
     existing = _terminal_result(result_path, row)
     if existing is not None:
         existing["resume_action"] = "skipped_terminal_row"
@@ -210,6 +213,36 @@ def _run_row(
         raise RuntimeError(
             f"{row_dir} has a trajectory but no terminal result; refusing automatic re-run"
         )
+    if boundary_path.exists():
+        boundary = json.loads(boundary_path.read_text())
+        if boundary.get("episode_id") != row["episode_id"]:
+            raise RuntimeError(f"{boundary_path}: episode ID does not match requested row")
+        if boundary.get("row_sha256") != row["row_sha256"]:
+            raise RuntimeError(f"{boundary_path}: row hash does not match requested row")
+        result = {
+            "schema_version": "pact_collision_collection_result_v2",
+            "status": "infrastructure_failure",
+            "episode_id": row["episode_id"],
+            "row_sha256": row["row_sha256"],
+            "manifest_sha256": manifest_sha256,
+            "candidate_index": int(row["candidate_index"]),
+            "role": row["role"],
+            "role_index": int(row["role_index"]),
+            "intrusion_side": row["intrusion_side"],
+            "rollout_started": True,
+            "accepted_observation_marker": str(boundary_path),
+            "accepted_observation_marker_sha256": __import__("hashlib").sha256(
+                boundary_path.read_bytes()
+            ).hexdigest(),
+            "error": (
+                "accepted initial observation from an earlier worker process has "
+                "no terminal result; conservatively terminalized without rerun"
+            ),
+            "task_success": False,
+            "collision_free_task_success": False,
+        }
+        _write_json_atomic(result_path, result)
+        return result
 
     from molmo_spaces.data_generation.config_registry import get_config_class
     from molmo_spaces.data_generation.main import auto_import_configs
@@ -318,6 +351,20 @@ def _run_row(
 
             # The row becomes outcome-bearing here. No exception or result after
             # this point is eligible for a retry.
+            _write_json_atomic(
+                boundary_path,
+                {
+                    "schema_version": "pact_collection_scientific_boundary_v1",
+                    "episode_id": row["episode_id"],
+                    "row_sha256": row["row_sha256"],
+                    "manifest_sha256": manifest_sha256,
+                    "role": row["role"],
+                    "role_index": int(row["role_index"]),
+                    "retry_index": retry_index,
+                    "seed": seed,
+                    "boundary": "initial_observation_accepted",
+                },
+            )
             rollout_started = True
             task_success = bool(
                 ParallelRolloutRunner.run_single_rollout(
@@ -482,9 +529,21 @@ def main() -> int:
 
     context = multiprocessing.get_context("spawn")
     results: list[dict[str, Any]] = []
+    pending_rows: list[dict[str, Any]] = []
+    for row in rows:
+        result_path = args.output_dir / "rows" / row["episode_id"] / "result.json"
+        existing = _terminal_result(result_path, row)
+        if existing is None:
+            pending_rows.append(row)
+        else:
+            existing["resume_action"] = "skipped_terminal_row"
+            results.append(existing)
+    print(f"terminal_resume {len(results)}")
+    print(f"pending         {len(pending_rows)}")
     with concurrent.futures.ProcessPoolExecutor(
         max_workers=args.workers,
         mp_context=context,
+        max_tasks_per_child=MAX_TASKS_PER_CHILD,
     ) as executor:
         futures = {
             executor.submit(
@@ -495,7 +554,7 @@ def main() -> int:
                 output_dir=str(args.output_dir),
                 save_videos=not args.no_save_videos,
             ): row
-            for row in rows
+            for row in pending_rows
         }
         for future in concurrent.futures.as_completed(futures):
             row = futures[future]

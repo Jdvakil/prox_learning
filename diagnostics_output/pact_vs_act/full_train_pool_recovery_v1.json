@@ -1,0 +1,140 @@
+{
+  "collection": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88",
+  "conservative_rule": "every assigned ambiguous row is terminalized without rerun, even if its failure may have preceded observation acceptance",
+  "contract_sha256": "a832275c0926fc319b4b33b2a10ea1c35bcbc98ec014a9e31fb1dd83496e1348",
+  "failed_status_counts": {
+    "infrastructure_failure": 0,
+    "sampling_failure": 9,
+    "success": 199,
+    "task_failure": 18
+  },
+  "failed_summary_path": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/full_train_summary.json",
+  "failed_summary_sha256": "b043c4cdcc9b31e3b1cb53412ba4104d62b570cbee65a21804cbc4cabdcd8ea5",
+  "first_attempt_never_assigned_rows": [
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "c8190cdc113296ffc0a9bc2638183af04a4473a3a08dada302f0c7b98aaf17cc",
+      "role_index": 234,
+      "row_sha256": "7e51ff6b5250f786b9c928022329c09fbbbd0a7dce766f582303825c7968b46d"
+    },
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "a664198cb221b9a129fd19d0d1ba6385d8afb803492b7222708c4db4ccfa223c",
+      "role_index": 235,
+      "row_sha256": "316a4b92d184fdaffe94406fe41ec4f2d7ecf98e06843b1bc315d83cc3eaebc9"
+    },
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "f2ede734281e8def39d8f857f3c5f347a413f904489ea264a27a5d77c74d6f3e",
+      "role_index": 236,
+      "row_sha256": "a4b26d94e09f08303cb95fc44acfb5ed3954a2455c99ae6aa13219ec0514416d"
+    },
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "0006bcf3ffb09c849a6cd5d0ebc78ff17ecb727b75847b796b54560990a4aa0d",
+      "role_index": 237,
+      "row_sha256": "55f417ff140f03015f18259a89b4171df243c33a697d2f3448b2584cf8b2bb91"
+    },
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "f50eedc6a06255af361532703f926d94c689603eff51a002667d128f2aacf97a",
+      "role_index": 238,
+      "row_sha256": "92bfb66c92f3612091169d46e68c8852f2b88771310874c55fe73e5e3a216c1c"
+    },
+    {
+      "action": "eligible_first_attempt_never_assigned",
+      "episode_id": "bfd37a9fb9af78cdf25c64dd0a97201cf909fd63963a19adab29733d417ec97a",
+      "role_index": 239,
+      "row_sha256": "161bd82349b134a278981780971c315aa09486c7225b60bb73fb83798787325d"
+    }
+  ],
+  "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_collision_candidate_manifest_v2.json",
+  "manifest_sha256": "cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784",
+  "outcome_independence": "classification uses only worker assignment evidence and empty directory state; no contact or task outcome exists for these rows",
+  "role": "full_train",
+  "scene_endpoint_thresholds_changed": false,
+  "schema_version": "pact_collection_pool_recovery_v1",
+  "scientific_rows_rerun": 0,
+  "terminalize_assigned_ambiguous_rows": [
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "462ebb97cb08f2f3e00b7b6839105b68f7744d7a3a6a3a4ac13530401a450a7b",
+      "role_index": 226,
+      "row_sha256": "2d49a146dd6fd3648d01d58e960382c226c0fd17cbf8dd8ff4e2bad774eb46d9",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:55:48.878994+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/462ebb97cb08f2f3e00b7b6839105b68f7744d7a3a6a3a4ac13530401a450a7b"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "8fc5ace3bf0f24e720c6049c8c580b4334e577d7c09f421522efccb959a7eadb",
+      "role_index": 227,
+      "row_sha256": "88fb50e4078a920919b0fd60fef0c6aee9f13eb2ab0fd78dce1c91793f795112",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:55:50.975056+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/8fc5ace3bf0f24e720c6049c8c580b4334e577d7c09f421522efccb959a7eadb"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "b7070ecc28b6a475ca3ab421e17acb9998d7ca4295a453c4588d4aee6737e993",
+      "role_index": 228,
+      "row_sha256": "365d71c97aa82484156c3f1b45fd79fa9167c33e0fed0943d85acd91bf5fdbe2",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:56:10.704634+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/b7070ecc28b6a475ca3ab421e17acb9998d7ca4295a453c4588d4aee6737e993"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "f93b1d830fe60ad502e717dd7318574134beb5da5ef24784e03d0928415097c9",
+      "role_index": 229,
+      "row_sha256": "141d5c5ac3e80b5281274090128d9cf7bdc8cea795aa6f63f835f740845242a0",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:56:38.379442+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/f93b1d830fe60ad502e717dd7318574134beb5da5ef24784e03d0928415097c9"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "fc31c09b1e0870dab5e0c6bb9ef44a70c0fc4793aa5e153e3f0eb4f504b5e2f9",
+      "role_index": 230,
+      "row_sha256": "ad4e0f35c4b5ceb29193149ab7eabf47b973b5d4831b776ec4bc559bebd7708a",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:56:56.361966+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/fc31c09b1e0870dab5e0c6bb9ef44a70c0fc4793aa5e153e3f0eb4f504b5e2f9"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "18a1e779c9ce23386ba4f9671212b077b778ca4cdda3ffdcb955f493a795bcda",
+      "role_index": 231,
+      "row_sha256": "476b1c10781a6a96a52dd6d410a9a407f9d4245ca20d6b557773208a76639ea9",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T21:57:12.379431+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/18a1e779c9ce23386ba4f9671212b077b778ca4cdda3ffdcb955f493a795bcda"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "8f6682a877c7da6a22087ed541d37b11a8317a1b4a7d2a07bee394c965fb31b0",
+      "role_index": 232,
+      "row_sha256": "db4372984918cc75bf225bfa1788ba628255a50ce70654f9c29afb06216822ca",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T22:04:39.913112+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/8f6682a877c7da6a22087ed541d37b11a8317a1b4a7d2a07bee394c965fb31b0"
+      }
+    },
+    {
+      "action": "terminal_infrastructure_failure_no_retry",
+      "episode_id": "f1d0b9c6234ed94218c726a5ebf4ce647443d372a87c538cfd08c5dfd42201cf",
+      "role_index": 233,
+      "row_sha256": "cdbef3f526b6d8062331c331e034b582c313d971de1cf9f49ed7125a373c1bdf",
+      "worker_assignment_evidence": {
+        "directory_mtime_utc": "2026-07-28T22:04:44.499240+00:00",
+        "empty_row_directory": "/root/prox_learning_pact_remediation/assets/datagen/pact_collision_corridor_v2/full_cba7ff88/rows/f1d0b9c6234ed94218c726a5ebf4ce647443d372a87c538cfd08c5dfd42201cf"
+      }
+    }
+  ]
+}

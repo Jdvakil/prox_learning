@@ -100,6 +100,15 @@
       "original_failed_dispatch": "64/64 invocation failures before manifest load; zero observations, zero actions, zero scientific outcomes",
       "bias_argument": "absolute path resolution was committed before any policy result and is independent of row content and outcome",
       "launch_smoke": "before every full schedule dispatch, run one predeclared schedule row and require a scientific result.json; reconcile that same row without rerun during full dispatch"
+    },
+    "full_collection_pool_recovery": {
+      "boundary_marker": "initial_observation_accepted.json is written atomically after accepted task.reset and before the first expert action",
+      "marker_without_result": "terminal post-boundary infrastructure failure; never rerun",
+      "no_marker_no_result": "eligible for a first attempt only",
+      "max_tasks_per_child": 8,
+      "fixed_concurrency": 8,
+      "legacy_pool_failure_rule": "for the first full_train pool failure, every assigned row lacking durable boundary state is conservatively terminalized without rerun; only rows never assigned receive a first attempt",
+      "bias_argument": "the mapping is frozen from assignment/start evidence alone, does not inspect contact or task outcomes for affected rows, and can only discard demonstrations"
     }
   },
   "phase1": {

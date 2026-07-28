@@ -61,12 +61,14 @@ def test_status_counts_do_not_treat_unknown_as_terminal():
 def test_construction_retry_precedes_terminal_rollout_boundary():
     source = (ROOT / "scripts" / "run_pact_collision_collection.py").read_text()
     reset_at = source.index("initial_reset_result = task.reset()")
-    boundary_at = source.index("rollout_started = True")
+    marker_at = source.index("_write_json_atomic(", reset_at)
+    boundary_at = source.index("rollout_started = True", marker_at)
     rollout_at = source.index(
         "ParallelRolloutRunner.run_single_rollout(", boundary_at
     )
-    assert reset_at < boundary_at < rollout_at
-    assert "pre_rollout_construction_failure" in source[reset_at:boundary_at]
+    assert reset_at < marker_at < boundary_at < rollout_at
+    assert runner.BOUNDARY_FILENAME == "initial_observation_accepted.json"
+    assert "pre_rollout_construction_failure" in source[reset_at:marker_at]
     assert "initial_reset_result=initial_reset_result" in source[rollout_at:]
 
 
@@ -89,3 +91,13 @@ def test_runtime_assets_and_isolated_output_are_separate_and_recorded():
     assert "collection output must stay inside the isolated worktree" in source
     assert '"runtime_assets_dir"' in source
     assert '"isolated_output_dir"' in source
+
+
+def test_resumed_collection_skips_terminal_rows_before_worker_dispatch():
+    source = (ROOT / "scripts" / "run_pact_collision_collection.py").read_text()
+    prefilter_at = source.index("pending_rows: list[dict[str, Any]]")
+    executor_at = source.index("ProcessPoolExecutor(", prefilter_at)
+    assert prefilter_at < executor_at
+    assert "for row in pending_rows" in source[executor_at:]
+    assert "max_tasks_per_child=MAX_TASKS_PER_CHILD" in source[executor_at:]
+    assert runner.MAX_TASKS_PER_CHILD == 8

@@ -80,6 +80,23 @@ smoke passes. The smoke row is part of the fixed schedule and is reconciled,
 not rerun, when the remaining rows are released. This requirement also applies
 to the 960-rollout confirmatory schedule.
 
+The same boundary is durable for full expert collection. Before the first
+expert action, the collector atomically records acceptance of the initial
+observation. A future child-process loss with that marker but no result is a
+terminal post-boundary infrastructure failure and is never rerun. A row with
+neither marker nor result remains eligible for its first attempt. Collection
+workers are replaced after eight assigned rows to bound native simulator/video
+resource accumulation; concurrency remains fixed at eight.
+
+The first `full_train` process pool broke after 226 terminal rows. Eight more
+rows had been assigned but the pre-marker collector left no durable boundary
+state; six later rows were never assigned. Before any recovery action, a
+self-hashed contract freezes the conservative mapping: all eight assigned
+ambiguous rows are terminal infrastructure failures and are never rerun,
+whereas only the six never-assigned rows receive their first attempt. This
+mapping is independent of contact/task outcomes and cannot improve the
+observed demonstration yield.
+
 ## Demonstrator and infrastructure rules
 
 A usable demonstration is defined before collection as ordinary task success
