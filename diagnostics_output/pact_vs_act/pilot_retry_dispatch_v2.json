@@ -1,0 +1,61 @@
+{
+  "dispatch_contract_sha256": "43128c8d137df3b768d85ecb4b9ac94d77255ef8ada72c21ac8dd8956ce1b893",
+  "future_confirmatory_requirement": {
+    "launch_smoke_required": true,
+    "planned_rollouts": 960
+  },
+  "launch_smoke": {
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "711c684bcb89d1cb559b296a86c68a3aa07d0099a2932cf690e47ee1c823843c",
+    "output_relpath": "rows/000_76c59c423483c58c_act",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "76c59c423483c58cbcf2b5161dcacf690457d180ba84e99e4adaa7a02129af97",
+    "schedule_index": 0,
+    "schedule_row_sha256": "55908e022defd206d0f0cdbd29921555312d268da3efaf024936d037eb9c507d"
+  },
+  "prior_failed_dispatch": {
+    "actions": 0,
+    "attempts": 64,
+    "common_root_cause": "relative manifest path invalid from evaluator cwd",
+    "driver_ledger_sha256": "2d3f99670cccd789a3e93a5ae3d105fa9b31e7e43f0ea5d75d814e073d1a496d",
+    "execution_summary_sha256": "68690c7519ef8ed54c770ea2ce94a30f4d7343443026d67c9388ce3feb0b467f",
+    "initial_observations": 0,
+    "matching_root_cause_logs": 64,
+    "output_root": "/root/pact_remediation_artifacts_v2/pilot_eval_e0515adf",
+    "scientific_outcomes": 0
+  },
+  "protocol_amendment": {
+    "checkpoint_changed": false,
+    "machine_preregistration_path": "configs/pact_collision_environment_v2.json",
+    "machine_preregistration_sha256": "d13be8ff43a748d4f6d1ea90baef99217c0906566e2a5bcbbadaa7cb06262cb5",
+    "post_observation_terminal": "no later exception, contact, task failure, or success may cause replacement or rerun",
+    "pre_observation_retry_limit": null,
+    "preregistration_path": "docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md",
+    "preregistration_sha256": "a711172c9f3b9f97a7a6615651b3ee2256a963c6c6c04f6dc5018f7e27b765ca",
+    "scene_changed": false,
+    "scientific_boundary": "a schedule row becomes outcome-bearing when its initial observation is accepted",
+    "thresholds_changed": false
+  },
+  "retained_pilot_checkpoint": {
+    "arm": "ACT",
+    "checkpoint_sha256": "4fca3b0b0542d6ae65c7d44f1fd562cd376199532f91b08aaf5722109a858db6",
+    "retrained": false,
+    "seed": 1101
+  },
+  "retry_justification": {
+    "fix_committed_before_any_policy_result": true,
+    "no_scientific_outcome_to_select_on": true,
+    "outcome_based_replacement": false,
+    "path_resolution_content_independent": true
+  },
+  "schema_version": "pact_pilot_retry_dispatch_v2",
+  "scientific_schedule": {
+    "path": "diagnostics_output/pact_vs_act/pilot_schedule_v2.json",
+    "rows": 64,
+    "rows_changed": 0,
+    "schedule_sha256": "e0515adf10a12cca22412d349d37b56ec5400446894b450b0e84edbe139b564e",
+    "workers": 8
+  }
+}

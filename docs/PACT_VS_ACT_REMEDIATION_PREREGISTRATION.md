@@ -42,8 +42,43 @@ Its master seed is `2026072901`.
 | Full validation | 64 |
 | Confirmatory instances | 160 |
 
-All rows are terminal ledger entries. No row is replaced or rerun based on
-contact, task outcome, policy outcome, or process outcome.
+All rows that cross the scientific boundary are terminal ledger entries. No
+such row is replaced or rerun based on contact, task outcome, policy outcome,
+or any later process outcome. Pre-observation infrastructure attempts are
+recorded separately and are not scientific rows.
+
+## Frozen infrastructure-boundary amendment
+
+This amendment is the only protocol change made after the first remediation-v2
+pilot dispatch. It is frozen and hashed before the repaired pilot is launched.
+It changes no scene, row, checkpoint, endpoint, threshold, confidence
+interval, or decision rule.
+
+A schedule row becomes outcome-bearing at the moment an initial observation is
+accepted. Any failure strictly before that point—including invocation failure,
+import error, an unresolvable path, missing file, startup OOM, or CUDA
+initialization failure—is a pre-observation infrastructure failure. It is
+retryable without limit, its cause and retry count are retained, and it is
+reported separately from scientific outcomes. It can never fail a science
+gate or award a decision token.
+
+Once an initial observation is accepted, the row is terminal. No later
+exception, contact, task failure, or success may cause a replacement or rerun.
+
+The original 64 pilot evaluator invocations produced zero initial
+observations, zero actions, and zero scientific outcomes. Their common relative
+manifest-path failure occurred before the manifest was loaded. The path fix was
+committed before any policy result existed and is content-independent: it
+cannot depend on a row's contact or task outcome and cannot change the
+distribution of policy actions after startup. Retrying those 64 unchanged
+schedule rows is therefore infrastructure recovery, not outcome-based
+replacement.
+
+Every schedule dispatch must first execute one predeclared row and verify a
+scientific `result.json`. The full dispatch is forbidden unless this launch
+smoke passes. The smoke row is part of the fixed schedule and is reconciled,
+not rerun, when the remaining rows are released. This requirement also applies
+to the 960-rollout confirmatory schedule.
 
 ## Demonstrator and infrastructure rules
 

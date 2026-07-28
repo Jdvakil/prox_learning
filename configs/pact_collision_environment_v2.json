@@ -78,11 +78,29 @@
     }
   },
   "infrastructure_health": {
-    "definition": "A no-scientific-outcome row has terminal status sampling_failure or infrastructure_failure. Task failures are scientific outcomes.",
-    "scale_target": "observed no-scientific-outcome fraction strictly below 0.05 in development and pilot ledgers",
+    "definition": "Expert sampling failures remain fixed no-scientific-outcome attempts. For policy schedules, failures strictly before an accepted initial observation are retryable infrastructure attempts rather than scientific rows; failures after that boundary are terminal and never retried.",
+    "scale_target": "observed expert no-scientific-outcome fraction strictly below 0.05 in development and pilot expert ledgers; policy pre-observation retries are reported separately",
     "interval": "two-sided Wilson 95%",
-    "effect_on_science_gate": "never awards PACT_ENVIRONMENT_INADEQUATE and never counts as a collision-free failure",
-    "effect_on_progression": "If the target is missed, repair under a new version or report PACT_EXPERIMENT_INCOMPLETE; do not scale."
+    "effect_on_science_gate": "pre-observation infrastructure attempts never award a decision token and never count as policy failures",
+    "effect_on_progression": "retry pre-observation infrastructure failures without limit; PACT_EXPERIMENT_INCOMPLETE is reserved for a genuinely unreconciled schedule, not a retryable harness failure",
+    "scientific_boundary_amendment": {
+      "frozen_before_repaired_pilot_dispatch": true,
+      "boundary": "a schedule row becomes outcome-bearing when its initial observation is accepted",
+      "retryable_before_boundary": [
+        "invocation failure",
+        "import error",
+        "unresolvable path",
+        "missing file",
+        "startup OOM",
+        "CUDA initialization failure"
+      ],
+      "retry_limit": null,
+      "retry_record": "retain cause, attempt identity, and retry count separately from scientific outcomes",
+      "terminal_after_boundary": "no later exception, contact, task failure, or success may cause replacement or rerun",
+      "original_failed_dispatch": "64/64 invocation failures before manifest load; zero observations, zero actions, zero scientific outcomes",
+      "bias_argument": "absolute path resolution was committed before any policy result and is independent of row content and outcome",
+      "launch_smoke": "before every full schedule dispatch, run one predeclared schedule row and require a scientific result.json; reconcile that same row without rerun during full dispatch"
+    }
   },
   "phase1": {
     "pilot_act_eval_attempts": 64,
@@ -203,6 +221,8 @@
     "fresh_subprocess_per_rollout": true,
     "balanced_arm_and_seed_order": true,
     "no_outcome_based_reruns": true,
+    "pre_observation_infrastructure_retries_are_not_outcome_based": true,
+    "launch_smoke_required_before_dispatch": true,
     "power_statement": "The final detectable-effect calculation is frozen after pilot Gate B/C and before any confirmatory rollout, using all 160 fixed instances. The confirmatory schedule and analysis hash must record it.",
     "analysis": {
       "wilson_interval": 0.95,
