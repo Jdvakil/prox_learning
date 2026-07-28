@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DIAG = ROOT / "diagnostics_output" / "pact_vs_act"
-TOKEN = "PACT_ENVIRONMENT_INADEQUATE"
+TOKEN = "PACT_EXPERIMENT_INCOMPLETE"
 
 
 def _json(path: Path):
@@ -29,26 +29,25 @@ def test_both_required_reports_end_with_exact_environment_token():
         assert path.read_text().rstrip().splitlines()[-1] == TOKEN
 
 
-def test_gate_records_the_single_failed_prerequisite_and_early_stop():
+def test_gate_records_adequate_surface_signal_and_infrastructure_stop():
     gate = _json(DIAG / "environment_gate.json")
     assert gate["decision"] == TOKEN
-    assert gate["stop_before_policy_training"] is True
-    assert gate["expert"]["ordinary_task_success"] == 20
-    assert gate["expert"]["collision_free_task_success"] == 19
-    assert gate["expert"]["episodes_with_intrusion_sighting"] == 20
+    assert gate["surface_observability"]["robust_classification"] == "adequate"
+    assert gate["surface_observability"]["all_leave_one_episode_out_points_pass"]
+    assert gate["expert"]["attempts"] == 64
+    assert gate["expert"]["usable_clean_demonstrations"] == 58
+    assert gate["expert"]["no_scientific_outcome"] == 2
     assert gate["expert"]["status_counts"] == {
-        "success": 20,
-        "sampling_failure": 1,
-        "infrastructure_failure": 3,
+        "success": 59,
+        "task_failure": 3,
+        "sampling_failure": 2,
     }
-    failed = [name for name, passed in gate["checks"].items() if not passed]
-    assert failed == [
-        "expert_collision_free_task_success_at_least_20_of_24"
-    ]
-    assert gate["act"] == {
-        "n": 0,
-        "status": "not_run_due_to_failed_expert_prerequisite",
-    }
+    assert gate["act"]["attempts"] == 64
+    assert gate["act"]["scientific_outcomes"] == 0
+    assert gate["act"]["status_counts"] == {"infrastructure_failure": 64}
+    assert gate["act"]["minimum_scientific_rows_met"] is False
+    assert gate["gate_b"]["robust_classification"] == "inconclusive"
+    assert gate["gate_c"]["robust_classification"] == "inconclusive"
 
 
 def test_required_machine_artifacts_describe_a_valid_nonconfirmatory_stop():
@@ -56,54 +55,48 @@ def test_required_machine_artifacts_describe_a_valid_nonconfirmatory_stop():
     analysis = _json(DIAG / "analysis.json")
     decision = _json(DIAG / "final_decision.json")
     assert schedule["status"] == (
-        "not_instantiated_due_to_phase1_environment_gate"
+        "not_instantiated_due_to_phase1_infrastructure_gate"
     )
     assert schedule["rows"] == []
     assert schedule["rollouts_executed"] == 0
     assert schedule["confirmatory_outcomes_seen"] is False
-    assert analysis["valid_early_stop"] is True
-    assert analysis["arm_comparison"]["status"] == (
-        "not_run_due_to_failed_environment_gate"
-    )
-    assert analysis["policy_checkpoint_sha256s"] == []
-    assert decision["decision"] == TOKEN
-    assert decision["policy_training_performed"] is False
-    assert decision["confirmatory_evaluation_performed"] is False
-    assert decision["checkpoint_sha256s"] == []
-
-
-def test_provenance_hashes_all_terminal_pilot_artifacts():
-    provenance = _json(DIAG / "provenance.json")
-    pilot = provenance["pilot_collection"]
-    assert provenance["experiment_stage"] == (
-        "stopped_at_phase1_environment_gate"
-    )
-    assert provenance["policy_checkpoint_status"] == (
-        "not_trained_due_to_phase1_environment_gate"
-    )
-    assert provenance["policy_checkpoints"] == []
-    assert provenance["surface_encoder"]["status"] == (
-        "not_trained_due_to_phase1_environment_gate"
-    )
-    assert len(pilot["rows"]) == 24
-    assert pilot["status_counts"] == {
-        "success": 20,
-        "task_failure": 0,
-        "sampling_failure": 1,
-        "infrastructure_failure": 3,
+    assert schedule["pilot_execution"]["terminal_ledger_reconciled"] is True
+    assert schedule["pilot_execution"]["scientific_schedule_reconciled"] is False
+    assert schedule["pilot_execution"]["status_counts"] == {
+        "invocation_failure": 64
     }
-    assert pilot["artifact_file_count"] == sum(
-        len(row["artifacts"]) for row in pilot["rows"]
+    assert analysis["valid_preregistered_stop"] is True
+    assert analysis["arm_comparison"]["status"] == (
+        "not_run_due_to_phase1_infrastructure_failure"
     )
-    for row in pilot["rows"]:
-        for artifact in row["artifacts"]:
-            path = ROOT / artifact["path"]
-            # Rollout H5s/videos are deliberately uncommitted and need not be
-            # present in a fresh remediation worktree.  If a historical local
-            # artifact is present, its frozen provenance must still verify.
-            if path.exists():
-                assert path.stat().st_size == artifact["size_bytes"]
-                assert _sha256(path) == artifact["sha256"]
+    assert analysis["pilot_evaluation"]["rows_rerun"] == 0
+    assert analysis["pilot_evaluation"]["scientific_outcomes"] == 0
+    assert decision["decision"] == TOKEN
+    assert decision["arm_comparison_available"] is False
+    assert decision["full_policy_training_performed"] is False
+    assert decision["confirmatory_evaluation_performed"] is False
+    assert decision["final_arm_checkpoint_sha256s"] == []
+
+
+def test_provenance_records_pilot_checkpoint_and_terminal_driver_ledger():
+    provenance = _json(DIAG / "provenance.json")
+    assert provenance["experiment_stage"] == (
+        "stopped_at_phase1_infrastructure_gate"
+    )
+    assert provenance["decision"] == TOKEN
+    assert provenance["final_arm_checkpoints"] == []
+    assert provenance["surface_encoder"]["status"] == (
+        "not_trained_due_to_phase1_gate"
+    )
+    checkpoint = provenance["pilot_checkpoint"]
+    assert checkpoint["sha256"] == checkpoint["observed_sha256"]
+    checkpoint_path = Path(checkpoint["path"])
+    if checkpoint_path.exists():
+        assert _sha256(checkpoint_path) == checkpoint["sha256"]
+    execution = provenance["pilot_execution"]
+    assert execution["driver_ledger"]["files"] == 64
+    assert execution["scientific_result_files"] == 0
+    assert execution["rows_rerun"] == 0
 
 
 def test_small_artifact_hashes_and_protected_chain_claims_match():

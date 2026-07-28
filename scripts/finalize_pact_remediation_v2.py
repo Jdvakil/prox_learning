@@ -419,6 +419,7 @@ def main() -> int:
         },
         "protected_chain": {
             "modified_by_pact_work": False,
+            "preexisting_worktree_changes_preserved": True,
             "used_as_pact_evidence": False,
             "confirmatory41_touched_by_pact_work": False,
         },
