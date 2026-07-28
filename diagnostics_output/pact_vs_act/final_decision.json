@@ -1,18 +1,17 @@
 {
-  "analysis_sha256": "0671b5492ce35c455d4703c70e3d06f0b73eaf664e20ac03eca622cbcc13f87b",
+  "analysis_sha256": "27734a416142372043c9d8f8511eb035b0dd609779551eb742b61e479d2d1c25",
   "arm_comparison_available": false,
-  "checkpoint_sha256s": [],
   "confirmatory_evaluation_performed": false,
-  "decision": "PACT_ENVIRONMENT_INADEQUATE",
-  "environment_gate_sha256": "8c758ba10b259b07ace7e33438da641b3b15ffe4da70a640519e7273e215cecf",
+  "decision": "PACT_EXPERIMENT_INCOMPLETE",
+  "environment_gate_sha256": "9d04a67ccd456fe81b19e9c2ec379f79261e9197f64f72d017c6b2dd4759568d",
+  "environment_signal_result": "robustly_adequate",
   "experiment_stage": "phase1_environment_adequacy",
-  "failed_checks": [
-    "expert_collision_free_task_success_at_least_20_of_24"
-  ],
-  "final_decision_sha256": "355704bf5054133c67edec58a37826fae7fb7c1cf668a7de31e09cdaea8c1d60",
-  "manifest_sha256": "418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4",
-  "policy_training_performed": false,
-  "reason": "Expert collision-free task success was 19/24; the preregistered minimum was 20/24. The protocol therefore stopped before policy training.",
-  "schedule_sha256": "1f6969d0101ebea6d045c1a49a476976b97da560bf1047db2bef0e7442f83da0",
-  "schema_version": "pact_final_decision_v1"
+  "final_arm_checkpoint_sha256s": [],
+  "final_decision_sha256": "08060e5faacedc66d6dd61f465a467e632d62053106c8586cae74484792b6533",
+  "full_policy_training_performed": false,
+  "manifest_sha256": "cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784",
+  "pilot_act_checkpoint_sha256": "4fca3b0b0542d6ae65c7d44f1fd562cd376199532f91b08aaf5722109a858db6",
+  "reason": "The fixed pilot evaluation has 0/64 scientific ACT outcomes and its terminal rows may not be rerun.",
+  "schedule_sha256": "3421b8a0418bb2a802e365e1193f6281cbbd0f34e165fc21bcd8e864a26f6d86",
+  "schema_version": "pact_final_decision_v2"
 }

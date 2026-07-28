@@ -1,85 +1,161 @@
 {
-  "analysis_sha256": "0671b5492ce35c455d4703c70e3d06f0b73eaf664e20ac03eca622cbcc13f87b",
+  "analysis_sha256": "27734a416142372043c9d8f8511eb035b0dd609779551eb742b61e479d2d1c25",
   "arm_comparison": {
-    "ACT": "not_trained",
+    "ACT": "pilot_only",
     "PACT": "not_trained",
     "PACT_ZERO": "not_evaluated",
     "fisher_exact": "not_applicable",
-    "paired_instance_bootstrap": "not_applicable",
-    "status": "not_run_due_to_failed_environment_gate",
+    "instance_cluster_bootstrap": "not_applicable",
+    "status": "not_run_due_to_phase1_infrastructure_failure",
     "wilson_intervals": "not_applicable"
   },
-  "decision": "PACT_ENVIRONMENT_INADEQUATE",
-  "environment_gate_sha256": "8c758ba10b259b07ace7e33438da641b3b15ffe4da70a640519e7273e215cecf",
+  "confirmatory_schedule_sha256": "3421b8a0418bb2a802e365e1193f6281cbbd0f34e165fc21bcd8e864a26f6d86",
+  "decision": "PACT_EXPERIMENT_INCOMPLETE",
+  "environment_gate_sha256": "9d04a67ccd456fe81b19e9c2ec379f79261e9197f64f72d017c6b2dd4759568d",
   "experiment_stage": "phase1_environment_adequacy",
-  "full_dataset": "not_collected",
-  "manifest_sha256": "418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4",
+  "manifest_sha256": "cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784",
   "phase1": {
     "act": {
-      "n": 0,
-      "status": "not_run_due_to_failed_expert_prerequisite"
-    },
-    "checks": {
-      "expert_collision_free_task_success_at_least_20_of_24": false,
-      "expert_task_success_at_least_20_of_24": true,
-      "surface_active_episodes_at_least_20_of_24": true,
-      "surface_pregrasp_inside_12cm_at_least_5_percent": true,
-      "surface_pregrasp_inside_20cm_at_least_30_percent": true
-    },
-    "deferred_checks_not_run": [
-      "act_primary_between_8_and_16_of_24",
-      "act_task_success_at_least_12_of_24",
-      "act_any_non_target_contact_at_least_6_of_24",
-      "act_hazard_contact_at_least_6_of_24"
-    ],
-    "expert": {
-      "collision_free_task_success": 19,
-      "collision_rows": [
-        {
-          "contact_class_totals": {
-            "grasp_target": 10230,
-            "hazard_bar": 58,
-            "other_environment": 0
-          },
-          "episode_id": "2ac0f1e4dccbc07e81b1d36ae5a29568fdcbf679f4a7078cf2f7a2dd7f42b7d8",
-          "first_contact_step": {
-            "grasp_target": 87,
-            "hazard_bar": 146,
-            "other_environment": null
-          },
-          "frames_with_contact": {
-            "grasp_target": 1838,
-            "hazard_bar": 58,
-            "other_environment": 0
-          },
-          "non_target_contact_entries": 58,
-          "role_index": 21
-        }
+      "attempts": 64,
+      "collision_free_task_success": 0,
+      "episodes_with_hazard_bar_contact": 0,
+      "episodes_with_other_environment_contact": 0,
+      "failure_taxonomy": {},
+      "minimum_scientific_rows": 61,
+      "minimum_scientific_rows_met": false,
+      "no_scientific_outcome": 64,
+      "no_scientific_outcome_rate": 1.0,
+      "no_scientific_outcome_wilson_95": [
+        0.9433759402071946,
+        1.0
       ],
-      "episodes_with_intrusion_sighting": 20,
-      "fraction_pregrasp_inside_12cm": 0.1971943887775551,
-      "fraction_pregrasp_inside_20cm": 0.5146292585170341,
-      "n": 24,
-      "ordinary_task_success": 20,
-      "pregrasp_control_steps": 2495,
+      "ordinary_task_success": 0,
+      "ordinary_task_success_rate": null,
+      "ordinary_task_success_wilson_95": null,
+      "progression_target_strictly_below_5_percent": false,
+      "scientific_outcomes": 0,
       "status_counts": {
-        "infrastructure_failure": 3,
-        "sampling_failure": 1,
-        "success": 20
-      },
-      "steps_intrusion_inside_12cm": 492,
-      "steps_intrusion_inside_20cm": 1284
+        "infrastructure_failure": 64
+      }
     },
-    "failed_checks": [
-      "expert_collision_free_task_success_at_least_20_of_24"
-    ]
+    "all_applicable_gates_pass": false,
+    "decision": "PACT_EXPERIMENT_INCOMPLETE",
+    "expert": {
+      "attempts": 64,
+      "clean_demo_fraction_of_attempts": 0.90625,
+      "clean_demo_fraction_wilson_95": [
+        0.810171204003544,
+        0.9563217474148016
+      ],
+      "no_scientific_outcome": 2,
+      "no_scientific_outcome_rate": 0.03125,
+      "no_scientific_outcome_wilson_95": [
+        0.008612138346171874,
+        0.10697291770958313
+      ],
+      "ordinary_task_success": 59,
+      "progression_target_strictly_below_5_percent": true,
+      "scientific_outcomes": 62,
+      "status_counts": {
+        "sampling_failure": 2,
+        "success": 59,
+        "task_failure": 3
+      },
+      "usable_clean_demo_floor": 48,
+      "usable_clean_demo_floor_met": true,
+      "usable_clean_demonstrations": 58
+    },
+    "gate_a_applicable": false,
+    "gate_b": {
+      "core_classification": "inconclusive",
+      "n": 0,
+      "one_outcome_perturbations": {
+        "0": "inconclusive"
+      },
+      "one_outcome_stable": false,
+      "point_estimate": null,
+      "robust_classification": "inconclusive",
+      "successes": 0,
+      "wilson_95": null
+    },
+    "gate_c": {
+      "core_classification": "inconclusive",
+      "n": 0,
+      "one_outcome_perturbations": {
+        "0": "inconclusive"
+      },
+      "one_outcome_stable": false,
+      "point_estimate": null,
+      "robust_classification": "inconclusive",
+      "successes": 0,
+      "wilson_95": null
+    },
+    "infrastructure_progression_met": false,
+    "manifest_sha256": "cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784",
+    "old_v1_rows_used": false,
+    "pilot_schedule_sha256": "e0515adf10a12cca22412d349d37b56ec5400446894b450b0e84edbe139b564e",
+    "route": "collision",
+    "schema_version": "pact_environment_gate_v2",
+    "science_gate_classifications": {
+      "gate_b": "inconclusive",
+      "gate_c": "inconclusive",
+      "surface_observability": "adequate"
+    },
+    "surface_observability": {
+      "active_episodes": 62,
+      "all_leave_one_episode_out_points_pass": true,
+      "intervals_95": {
+        "active_episode_fraction_wilson": [
+          0.9416559278986275,
+          0.9999999999999999
+        ],
+        "inside_12cm_episode_cluster_bootstrap": [
+          0.13462201541321878,
+          0.22840475242301192
+        ],
+        "inside_20cm_episode_cluster_bootstrap": [
+          0.4601498991779662,
+          0.619303367760397
+        ]
+      },
+      "leave_one_episode_out_failures": 0,
+      "n": 62,
+      "point_estimates": {
+        "active_episode_fraction": 1.0,
+        "inside_12cm": 0.18056760441194697,
+        "inside_20cm": 0.539967777915479
+      },
+      "pregrasp_control_steps": 8069,
+      "robust_classification": "adequate",
+      "robust_fail_reasons": [],
+      "steps_intrusion_inside_12cm": 1457,
+      "steps_intrusion_inside_20cm": 4357,
+      "thresholds": {
+        "active_episode_fraction_min": 0.8333333333333334,
+        "inside_12cm_min": 0.05,
+        "inside_20cm_min": 0.3
+      }
+    }
   },
-  "pilot_collection_summary_sha256": "266c2f5998b7d995c34bf163ab63e3473e512e4f0d98c8321ca6b6c802351931",
-  "policy_checkpoint_sha256s": [],
-  "primary_endpoint": "task_success and zero hazard_bar and other_environment contacts",
-  "schedule_sha256": "1f6969d0101ebea6d045c1a49a476976b97da560bf1047db2bef0e7442f83da0",
-  "schema_version": "pact_vs_act_analysis_environment_stop_v1",
-  "surface_encoder": "not_trained",
+  "pilot_evaluation": {
+    "attempts": 64,
+    "root_cause": "relative manifest path was invalid from evaluator cwd",
+    "rows_rerun": 0,
+    "scientific_outcomes": 0,
+    "status_counts": {
+      "invocation_failure": 64
+    }
+  },
+  "pilot_training": {
+    "arm": "ACT",
+    "best_epoch": 1849,
+    "best_validation_loss": 0.09353795647621155,
+    "checkpoint_sha256": "4fca3b0b0542d6ae65c7d44f1fd562cd376199532f91b08aaf5722109a858db6",
+    "dataset_stats_sha256": "fd1150e45470cbcd2912f83717e9576367439200378f8999e47c5c75f2b8bd0a",
+    "seed": 1101
+  },
+  "primary_endpoint": "task success with zero hazard_bar and other_environment contact",
+  "schema_version": "pact_vs_act_analysis_phase1_incomplete_v2",
   "target_contact_exempt": true,
-  "valid_early_stop": true
+  "valid_preregistered_stop": true
 }

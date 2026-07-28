@@ -1,17 +1,32 @@
 {
   "confirmatory_outcomes_seen": false,
-  "decision": "PACT_ENVIRONMENT_INADEQUATE",
-  "environment_gate_sha256": "8c758ba10b259b07ace7e33438da641b3b15ffe4da70a640519e7273e215cecf",
-  "manifest_sha256": "418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4",
+  "decision": "PACT_EXPERIMENT_INCOMPLETE",
+  "environment_gate_sha256": "9d04a67ccd456fe81b19e9c2ec379f79261e9197f64f72d017c6b2dd4759568d",
+  "manifest_sha256": "cba7ff8879565e72eb667da3419267104dc9c3141a459de78d635fe760a41784",
+  "pilot_execution": {
+    "execution_summary_sha256": "68690c7519ef8ed54c770ea2ce94a30f4d7343443026d67c9388ce3feb0b467f",
+    "output_root": "/root/pact_remediation_artifacts_v2/pilot_eval_e0515adf",
+    "scientific_schedule_reconciled": false,
+    "status_counts": {
+      "invocation_failure": 64
+    },
+    "terminal_ledger_reconciled": true
+  },
+  "pilot_schedule": {
+    "file_sha256": "6d3d90e1d8751dcf15f92379570ea185cc1c270a3aec8df04f50e992e78d00e9",
+    "path": "diagnostics_output/pact_vs_act/pilot_schedule_v2.json",
+    "rows": 64,
+    "schedule_sha256": "e0515adf10a12cca22412d349d37b56ec5400446894b450b0e84edbe139b564e"
+  },
   "planned_confirmatory_design": {
     "analysis": {
-      "decision_ci": "two-sided 95% percentile interval for each paired risk difference",
+      "decision_ci": "two-sided 95% percentile interval for each instance-clustered risk difference",
       "fisher_exact_two_sided": [
         "PACT_vs_ACT",
         "PACT_vs_PACT_ZERO"
       ],
-      "paired_instance_bootstrap_replicates": 20000,
-      "paired_instance_bootstrap_seed": 2026072801,
+      "instance_cluster_bootstrap_replicates": 20000,
+      "instance_cluster_bootstrap_seed": 2026072902,
       "wilson_interval": 0.95
     },
     "arms": [
@@ -19,20 +34,21 @@
       "PACT",
       "PACT_ZERO"
     ],
-    "balanced_arm_order": true,
-    "decision_rule": "PACT_BENEFIT_ESTABLISHED requires positive PACT-ACT and PACT-PACT_ZERO point differences, both paired-bootstrap 95% lower bounds above zero, and both two-sided Fisher p-values below 0.05. PACT_WORSE_THAN_ACT requires the PACT-ACT paired-bootstrap 95% upper bound below zero and two-sided Fisher p<0.05. A reconciled experiment not meeting either rule is PACT_NO_CONFIRMED_BENEFIT. Any unreconciled scheduled row is PACT_EXPERIMENT_INCOMPLETE.",
+    "balanced_arm_and_seed_order": true,
+    "candidate_instances": 160,
+    "checkpoint_seeds_per_arm": 2,
     "fresh_subprocess_per_rollout": true,
-    "instances": 80,
+    "minimum_instances": 50,
     "no_outcome_based_reruns": true,
-    "power_statement": "With 80 observations per arm, a conservative equal-n independent-proportions normal approximation has 80% power at two-sided alpha=0.05 for about a 21.6 percentage-point increase from a 50% ACT baseline. Pairing may improve precision but is not credited in this planning number.",
-    "repeats_per_instance_per_arm": 1,
-    "total_rollouts": 240,
+    "planned_total_rollouts": 960,
+    "power_statement": "The final detectable-effect calculation is frozen after pilot Gate B/C and before any confirmatory rollout, using all 160 fixed instances. The confirmatory schedule and analysis hash must record it.",
+    "repeats_per_instance_per_arm": 2,
     "worker_count": 8
   },
-  "reason": "The frozen expert/surface prerequisite failed before pilot ACT training; checkpoint-bound confirmatory rows therefore do not exist.",
+  "reason": "Phase 1 had 0/64 scientific ACT rows after terminal invocation failures.",
   "rollouts_executed": 0,
   "rows": [],
-  "schedule_sha256": "1f6969d0101ebea6d045c1a49a476976b97da560bf1047db2bef0e7442f83da0",
-  "schema_version": "pact_confirmatory_schedule_not_instantiated_v1",
-  "status": "not_instantiated_due_to_phase1_environment_gate"
+  "schedule_sha256": "3421b8a0418bb2a802e365e1193f6281cbbd0f34e165fc21bcd8e864a26f6d86",
+  "schema_version": "pact_confirmatory_schedule_not_instantiated_v2",
+  "status": "not_instantiated_due_to_phase1_infrastructure_gate"
 }

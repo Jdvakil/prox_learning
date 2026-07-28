@@ -2,46 +2,50 @@
 
 ## Outcome
 
-Decision: `PACT_ENVIRONMENT_INADEQUATE`.
+Decision: `PACT_EXPERIMENT_INCOMPLETE`.
 
-The frozen collision-route environment did not pass its Phase 1 solvability prerequisite. The protocol therefore stopped before dataset conversion, proximity-encoder training, ACT/PACT training, or any three-arm evaluation. This is a valid preregistered early stop, not an unreconciled confirmatory schedule.
+The remediation-v2 collision environment passed the surface-signal test and produced enough clean expert demonstrations. The fixed pilot ACT evaluation nevertheless produced no scientific policy outcomes because every fresh evaluator subprocess failed before loading the manifest. The preregistered process-outcome rule makes those 64 ledger entries terminal, so none was rerun and the experiment stopped before scale.
 
-## Frozen Phase 1 result
+This run therefore does not establish whether PACT beats ACT or PACT_ZERO.
 
-| Check | Result | Threshold | Pass |
-|---|---:|---:|---:|
-| Expert ordinary task success | 20/24 | >=20/24 | True |
-| Expert collision-free task success | 19/24 | >=20/24 | False |
-| Episodes with panel signal | 20/24 | >=20/24 | True |
-| Pre-grasp frames inside 20 cm | 1284/2495 (51.5%) | >=30% | True |
-| Pre-grasp frames inside 12 cm | 492/2495 (19.7%) | >=5% | True |
+## Environment evidence
 
-The 24-row ledger reconciled as 20 successes, 1 sampling failure, and 3 infrastructure failures. All terminal rows count; none was replaced.
+| Measure | Result | Frozen threshold |
+|---|---:|---:|
+| Active-panel signal inside 20 cm | 54.0% (95% bootstrap 46.0%–61.9%) | >=30% |
+| Active-panel signal inside 12 cm | 18.1% (95% bootstrap 13.5%–22.8%) | >=5% |
+| Active scientific expert episodes | 62/62 | >=5/6 |
+| Usable clean demonstrations | 58/64 | >=48 |
+| Expert no-outcome rate | 2/64 (3.1%) | <5% |
 
-The sole outcome-bearing collision was pilot expert row 21 (`2ac0f1e4dccbc07e81b1d36ae5a29568fdcbf679f4a7078cf2f7a2dd7f42b7d8`): it completed the task but recorded 58 `hazard_bar` entries across 58 frames. `grasp_target` contact remained exempt and there were 0 `other_environment` entries.
+Surface observability was robustly adequate and passed every leave-one-episode-out check. Gate A was not applicable because the predeclared route targets nearby surface geometry, not object position.
+
+## Pilot policy and terminal evaluation ledger
+
+Vision-only ACT seed 1101 completed 2,000 epochs. Its frozen best checkpoint was epoch 1849 with validation loss 0.093538 and SHA-256 `4fca3b0b0542d6ae65c7d44f1fd562cd376199532f91b08aaf5722109a858db6`.
+
+The immutable pilot schedule contains 64 ACT rows, uses eight workers, and has SHA-256 `e0515adf10a12cca22412d349d37b56ec5400446894b450b0e84edbe139b564e`. All 64 driver entries are `invocation_failure`; there are zero scientific `result.json` files. Each evaluator was launched from the ACT submodule while receiving the relative manifest path `configs/pact_collision_candidate_manifest_v2.json`, which was not resolvable from that working directory.
+
+The runner now resolves manifest and output paths before changing the evaluator working directory, with a focused regression test. That repair was made only after the terminal ledger existed and was not used to rerun any row.
 
 ## What was not run
 
-Because one applicable prerequisite failed, Gates B/C were not run. There is no pilot ACT checkpoint, full dataset, frozen surface encoder, ACT checkpoint, PACT checkpoint, PACT_ZERO evaluation, Wilson interval, Fisher test, or paired bootstrap result. Running those steps would violate the frozen stop rule.
+Gates B and C are inconclusive because 0/64 rows have scientific ACT outcomes; the frozen minimum was 61. The full train/validation collection, surface encoder, full ACT and PACT seeds, PACT_ZERO ablation, 960-rollout confirmatory schedule, Fisher tests, and instance bootstrap were not run.
 
-The planned 80-instance × 3-arm schedule is retained only as the preregistered design. Its checkpoint-bound rows were never instantiated and no confirmatory outcome was seen. The stopped schedule record has SHA-256 `1f6969d0101ebea6d045c1a49a476976b97da560bf1047db2bef0e7442f83da0`.
-
-## Interpretation
-
-The surface-signal guard passed, so this is not a repeat of the fridge scene's no-signal failure. The environment nevertheless missed its joint adequacy requirement: it was not sufficiently robustly solvable by the expert under the fixed seeds and contact endpoint. Consequently this run cannot establish whether PACT beats ACT or PACT_ZERO.
+The pilot checkpoint is retained as provenance, but it is not one of the three final-arm checkpoints requested for a completed comparison. No claim is made from its validation loss.
 
 ## Machine-readable artifacts
 
-- `diagnostics_output/pact_vs_act/environment_gate.json`
+- `diagnostics_output/pact_vs_act/provenance.json`
 - `diagnostics_output/pact_vs_act/schedule.json`
 - `diagnostics_output/pact_vs_act/analysis.json`
 - `diagnostics_output/pact_vs_act/final_decision.json`
-- `diagnostics_output/pact_vs_act/provenance.json`
+- `diagnostics_output/pact_vs_act/environment_gate.json`
 
-Analysis SHA-256: `0671b5492ce35c455d4703c70e3d06f0b73eaf664e20ac03eca622cbcc13f87b`. Final-decision SHA-256: `355704bf5054133c67edec58a37826fae7fb7c1cf668a7de31e09cdaea8c1d60`.
+Analysis SHA-256: `27734a416142372043c9d8f8511eb035b0dd609779551eb742b61e479d2d1c25`. Final-decision SHA-256: `08060e5faacedc66d6dd61f465a467e632d62053106c8586cae74484792b6533`.
 
 ## Decision
 
-The final line is the exact allowed decision token.
+The last line is the exact allowed decision token.
 
-PACT_ENVIRONMENT_INADEQUATE
+PACT_EXPERIMENT_INCOMPLETE
