@@ -9,6 +9,11 @@ The repo is organized around three things that are actively used:
 2. **Safety-CVAE training** — distills an analytic potential-field teacher into a small conditional VAE.
 3. **Evaluation + demos + paper figures** — render the trained reflex and the sensor's capabilities.
 
+The preregistered whole-body modality comparison is documented in
+[`docs/PACT_VS_ACT_FINAL_DECISION.md`](docs/PACT_VS_ACT_FINAL_DECISION.md);
+its Phase 1 environment gate is
+[`docs/PACT_ENVIRONMENT_ADEQUACY.md`](docs/PACT_ENVIRONMENT_ADEQUACY.md).
+
 ---
 
 ## What the Safety-CVAE is

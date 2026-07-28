@@ -1,0 +1,58 @@
+from __future__ import annotations
+
+import importlib.util
+import json
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _load():
+    spec = importlib.util.spec_from_file_location(
+        "run_pact_collision_collection",
+        ROOT / "scripts" / "run_pact_collision_collection.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+runner = _load()
+
+
+def _row():
+    return {"episode_id": "e" * 64, "row_sha256": "a" * 64}
+
+
+def test_terminal_result_is_identity_checked(tmp_path):
+    path = tmp_path / "result.json"
+    payload = {**_row(), "status": "task_failure"}
+    path.write_text(json.dumps(payload))
+    assert runner._terminal_result(path, _row()) == payload
+
+    payload["row_sha256"] = "b" * 64
+    path.write_text(json.dumps(payload))
+    with pytest.raises(RuntimeError, match="row hash"):
+        runner._terminal_result(path, _row())
+
+
+def test_nonterminal_result_is_rejected(tmp_path):
+    path = tmp_path / "result.json"
+    path.write_text(json.dumps({**_row(), "status": "running"}))
+    with pytest.raises(RuntimeError, match="non-terminal"):
+        runner._terminal_result(path, _row())
+
+
+def test_status_counts_do_not_treat_unknown_as_terminal():
+    results = [
+        {"status": "success"},
+        {"status": "task_failure"},
+        {"status": "unreconciled_worker_failure"},
+    ]
+    counts = runner._result_counts(results)
+    assert counts["success"] == 1
+    assert counts["task_failure"] == 1
+    assert sum(counts.values()) == 2
