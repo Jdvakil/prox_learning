@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ACT = ROOT / "submodules" / "act"
 sys.path.insert(0, str(ACT))
 
-from surface_proximity_encoder import (  # noqa: E402
+from surface_proximity_encoder import (
     causal_sensor_window,
     load_frozen_surface_encoder,
 )
@@ -29,6 +29,20 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _protected_eval_processes() -> list[int]:
+    matches = []
+    for entry in Path("/proc").iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            command = (entry / "cmdline").read_bytes()
+        except (FileNotFoundError, PermissionError, ProcessLookupError):
+            continue
+        if b"eval_act_obstacle_on_policy.py" in command:
+            matches.append(int(entry.name))
+    return matches
 
 
 def encode_episode(
@@ -128,6 +142,12 @@ def main() -> int:
     parser.add_argument("--report-out", required=True, type=Path)
     parser.add_argument("--batch-size", type=int, default=512)
     args = parser.parse_args()
+    active = _protected_eval_processes()
+    if active:
+        raise SystemExit(
+            "protected confirmatory evaluation is still active; refusing surface "
+            f"token encoding (PIDs {active})"
+        )
     checkpoint_sha256 = sha256_file(args.checkpoint)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, payload = load_frozen_surface_encoder(args.checkpoint, map_location=device)

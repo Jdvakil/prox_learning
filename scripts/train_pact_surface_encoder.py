@@ -7,7 +7,6 @@ import argparse
 import hashlib
 import json
 import math
-import os
 import random
 import sys
 from pathlib import Path
@@ -23,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ACT = ROOT / "submodules" / "act"
 sys.path.insert(0, str(ACT))
 
-from surface_proximity_encoder import (  # noqa: E402
+from surface_proximity_encoder import (
     MAX_SURFACE_RANGE_M,
     SurfaceProximityEncoder,
     causal_sensor_window,
@@ -59,8 +58,20 @@ class SurfaceSampleDataset(Dataset):
         *,
         seed: int,
         negative_to_positive_ratio: float | None,
+        episode_indices: set[int] | None = None,
     ) -> None:
-        self.files = episode_files(directory)
+        files = episode_files(directory)
+        self.files = (
+            files
+            if episode_indices is None
+            else [
+                path
+                for path in files
+                if int(path.stem.split("_")[1]) in episode_indices
+            ]
+        )
+        if not self.files:
+            raise ValueError("the selected surface-encoder split has no episodes")
         self._handles: dict[int, h5py.File] = {}
         positives: list[tuple[int, int, int, bool]] = []
         negatives: list[tuple[int, int, int, bool]] = []
@@ -102,7 +113,7 @@ class SurfaceSampleDataset(Dataset):
         else:
             requested = min(
                 len(negatives),
-                int(math.ceil(len(positives) * negative_to_positive_ratio)),
+                math.ceil(len(positives) * negative_to_positive_ratio),
             )
             rng = np.random.default_rng(seed)
             choice = (
@@ -221,12 +232,25 @@ def _seed_all(seed: int) -> None:
     torch.backends.cudnn.benchmark = False
 
 
+def _protected_eval_processes() -> list[int]:
+    matches = []
+    for entry in Path("/proc").iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            command = (entry / "cmdline").read_bytes()
+        except (FileNotFoundError, PermissionError, ProcessLookupError):
+            continue
+        if b"eval_act_obstacle_on_policy.py" in command:
+            matches.append(int(entry.name))
+    return matches
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--train-dir", required=True, type=Path)
-    parser.add_argument("--validation-dir", required=True, type=Path)
-    parser.add_argument("--train-conversion-manifest", required=True, type=Path)
-    parser.add_argument("--validation-conversion-manifest", required=True, type=Path)
+    parser.add_argument("--dataset-dir", required=True, type=Path)
+    parser.add_argument("--conversion-manifest", required=True, type=Path)
+    parser.add_argument("--split-manifest", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--seed", type=int, default=2201)
     parser.add_argument("--epochs", type=int, default=100)
@@ -234,27 +258,47 @@ def main() -> int:
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
     args = parser.parse_args()
+    active = _protected_eval_processes()
+    if active:
+        raise SystemExit(
+            "protected confirmatory evaluation is still active; refusing surface "
+            f"encoder training (PIDs {active})"
+        )
     args.output_dir.mkdir(parents=True, exist_ok=True)
     _seed_all(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    train_manifest = json.loads(args.train_conversion_manifest.read_text())
-    validation_manifest = json.loads(args.validation_conversion_manifest.read_text())
+    conversion_manifest = json.loads(args.conversion_manifest.read_text())
+    split_manifest = json.loads(args.split_manifest.read_text())
     if (
-        train_manifest["sensor_order_sha256"]
-        != validation_manifest["sensor_order_sha256"]
+        split_manifest["canonical_manifest_sha256"]
+        != conversion_manifest["source_manifest_sha256"]
     ):
-        raise SystemExit("train/validation sensor order differs")
+        raise SystemExit("surface split/conversion manifest identity mismatch")
+    train_indices = {
+        int(episode["act_episode_index"])
+        for episode in split_manifest["episodes"]
+        if episode["split"] == "train"
+    }
+    validation_indices = {
+        int(episode["act_episode_index"])
+        for episode in split_manifest["episodes"]
+        if episode["split"] == "validation"
+    }
+    if train_indices & validation_indices or not train_indices or not validation_indices:
+        raise SystemExit("surface encoder requires disjoint nonempty train/validation splits")
 
     train_dataset = SurfaceSampleDataset(
-        args.train_dir,
+        args.dataset_dir,
         seed=args.seed,
         negative_to_positive_ratio=1.0,
+        episode_indices=train_indices,
     )
     validation_dataset = SurfaceSampleDataset(
-        args.validation_dir,
+        args.dataset_dir,
         seed=args.seed + 10,
         negative_to_positive_ratio=None,
+        episode_indices=validation_indices,
     )
     generator = torch.Generator().manual_seed(args.seed)
     train_loader = DataLoader(
@@ -341,17 +385,13 @@ def main() -> int:
             "output": "sensor-local XYZ normalized by 0.20m plus validity logit",
         },
         "max_surface_range_m": MAX_SURFACE_RANGE_M,
-        "sensor_order_sha256": train_manifest["sensor_order_sha256"],
+        "sensor_order_sha256": conversion_manifest["sensor_order_sha256"],
         "seed": args.seed,
         "best_epoch": best_epoch,
         "best_validation_loss": best_loss,
         "heldout_metrics": final_metrics,
-        "train_conversion_manifest_sha256": sha256_file(
-            args.train_conversion_manifest
-        ),
-        "validation_conversion_manifest_sha256": sha256_file(
-            args.validation_conversion_manifest
-        ),
+        "conversion_manifest_sha256": sha256_file(args.conversion_manifest),
+        "split_manifest_sha256": split_manifest["split_manifest_sha256"],
     }
     checkpoint_path = args.output_dir / "surface_encoder_frozen.pt"
     torch.save(checkpoint, checkpoint_path)

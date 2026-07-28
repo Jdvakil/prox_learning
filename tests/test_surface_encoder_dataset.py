@@ -50,3 +50,16 @@ def test_surface_dataset_balances_negatives_and_builds_causal_sample(tmp_path):
     for window, point, flag in valid_samples:
         assert tuple(window.shape) == (32, 8, 8)
         assert tuple(point.shape) == (3,)
+
+
+def test_surface_dataset_uses_only_frozen_split_indices(tmp_path):
+    _episode(tmp_path / "episode_0.hdf5")
+    _episode(tmp_path / "episode_1.hdf5")
+    selected = trainer.SurfaceSampleDataset(
+        tmp_path,
+        seed=11,
+        negative_to_positive_ratio=1.0,
+        episode_indices={1},
+    )
+    assert [path.name for path in selected.files] == ["episode_1.hdf5"]
+    assert selected.positive_count == 1
