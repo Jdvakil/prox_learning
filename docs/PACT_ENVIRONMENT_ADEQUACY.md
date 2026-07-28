@@ -33,8 +33,8 @@ removes the exocentric RGB camera. Both learned policies receive wrist RGB and
 9-D Franka proprioception. PACT additionally receives all 40 skin streams.
 
 One wall-colored matte panel enters the wrist/link-6 passage from either the
-left or the right. Its nominal center is `(0.55, +/-0.320, 0.88)` m with half
-extents `(0.120, 0.240, 0.080)` m. Its side is exactly balanced in every
+left or the right. Its nominal center is `(0.595, +/-0.320, 0.88)` m with half
+extents `(0.075, 0.240, 0.080)` m. Its side is exactly balanced in every
 manifest role. The aperture width is fixed at 0.85 m, leaving the opposite-side
 expert bow physically open. Small x and inner-face jitters are committed per row. The red
 grasp-validated `Cup_10` target has a 7.0 by 7.3 cm cross-section, safely
