@@ -16,7 +16,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 ACT = ROOT / "submodules" / "act"
 SCRIPTS = ROOT / "scripts"
-for path in (ACT, SCRIPTS):
+for path in (ROOT, ACT, SCRIPTS):
     sys.path.insert(0, str(path))
 
 from pact_collision_contract import load_manifest, rows_for_role  # noqa: E402
@@ -174,6 +174,123 @@ def _pilot_act_results(schedule_path: Path, output_root: Path):
     return results, schedule
 
 
+def analyze_expert_prerequisite(
+    *,
+    manifest: dict,
+    expert_results: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Adjudicate the expert/surface prerequisite before pilot ACT training.
+
+    A failed prerequisite is sufficient to stop Phase 1. Gates B/C must not be
+    run in that case because the preregistration forbids policy training after
+    any applicable guard fails.
+    """
+    expert_task = sum(bool(result["task_success"]) for result in expert_results)
+    expert_primary = sum(
+        bool(result["collision_free_task_success"]) for result in expert_results
+    )
+    total_pregrasp = sum(
+        result["surface_activity"]["pregrasp_control_steps"]
+        for result in expert_results
+    )
+    inside20 = sum(
+        result["surface_activity"]["steps_intrusion_inside_20cm"]
+        for result in expert_results
+    )
+    inside12 = sum(
+        result["surface_activity"]["steps_intrusion_inside_12cm"]
+        for result in expert_results
+    )
+    active_episodes = sum(
+        result["surface_activity"]["episode_has_intrusion_sighting"]
+        for result in expert_results
+    )
+    checks = {
+        "expert_task_success_at_least_20_of_24": expert_task >= 20,
+        "expert_collision_free_task_success_at_least_20_of_24": (
+            expert_primary >= 20
+        ),
+        "surface_active_episodes_at_least_20_of_24": active_episodes >= 20,
+        "surface_pregrasp_inside_20cm_at_least_30_percent": (
+            total_pregrasp > 0 and inside20 / total_pregrasp >= 0.30
+        ),
+        "surface_pregrasp_inside_12cm_at_least_5_percent": (
+            total_pregrasp > 0 and inside12 / total_pregrasp >= 0.05
+        ),
+    }
+    if all(checks.values()):
+        raise RuntimeError(
+            "expert prerequisite passed; pilot ACT Gates B/C must be run"
+        )
+    status_counts = dict(
+        __import__("collections").Counter(
+            result["status"] for result in expert_results
+        )
+    )
+    collision_rows = []
+    for result in expert_results:
+        if result.get("task_success") and not result.get(
+            "collision_free_task_success"
+        ):
+            audit = result.get("contact_audit", {})
+            collision_rows.append(
+                {
+                    "role_index": int(result["role_index"]),
+                    "episode_id": result["episode_id"],
+                    "contact_class_totals": audit.get(
+                        "contact_class_totals", {}
+                    ),
+                    "frames_with_contact": audit.get(
+                        "frames_with_contact", {}
+                    ),
+                    "first_contact_step": audit.get(
+                        "first_contact_step", {}
+                    ),
+                    "non_target_contact_entries": audit.get(
+                        "non_target_contact_entries"
+                    ),
+                }
+            )
+    return {
+        "schema_version": "pact_environment_gate_v1",
+        "route": "collision",
+        "gate_a_applicable": False,
+        "manifest_sha256": manifest["manifest_sha256"],
+        "adjudication_stage": "expert_and_surface_prerequisite",
+        "expert": {
+            "n": len(expert_results),
+            "ordinary_task_success": expert_task,
+            "collision_free_task_success": expert_primary,
+            "status_counts": status_counts,
+            "pregrasp_control_steps": total_pregrasp,
+            "steps_intrusion_inside_20cm": inside20,
+            "fraction_pregrasp_inside_20cm": (
+                inside20 / total_pregrasp if total_pregrasp else None
+            ),
+            "steps_intrusion_inside_12cm": inside12,
+            "fraction_pregrasp_inside_12cm": (
+                inside12 / total_pregrasp if total_pregrasp else None
+            ),
+            "episodes_with_intrusion_sighting": active_episodes,
+            "collision_rows": collision_rows,
+        },
+        "act": {
+            "status": "not_run_due_to_failed_expert_prerequisite",
+            "n": 0,
+        },
+        "checks": checks,
+        "deferred_checks_not_run": [
+            "act_primary_between_8_and_16_of_24",
+            "act_task_success_at_least_12_of_24",
+            "act_any_non_target_contact_at_least_6_of_24",
+            "act_hazard_contact_at_least_6_of_24",
+        ],
+        "all_applicable_gates_pass": False,
+        "stop_before_policy_training": True,
+        "decision": "PACT_ENVIRONMENT_INADEQUATE",
+    }
+
+
 def analyze(
     *,
     manifest: dict,
@@ -291,12 +408,36 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--expert-collection", required=True, type=Path)
-    parser.add_argument("--pilot-schedule", required=True, type=Path)
-    parser.add_argument("--pilot-output-root", required=True, type=Path)
+    parser.add_argument("--pilot-schedule", type=Path)
+    parser.add_argument("--pilot-output-root", type=Path)
+    parser.add_argument(
+        "--expert-only-stop",
+        action="store_true",
+        help=(
+            "adjudicate a failed expert/surface prerequisite and stop before "
+            "pilot ACT training"
+        ),
+    )
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     manifest = load_manifest(args.manifest)
     experts = _expert_results(args.expert_collection, manifest)
+    if args.expert_only_stop:
+        if len(experts) != 24:
+            raise SystemExit("Phase 1 requires exactly 24 reconciled expert rows")
+        result = analyze_expert_prerequisite(
+            manifest=manifest,
+            expert_results=experts,
+        )
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+        print(result["decision"])
+        return 3
+    if args.pilot_schedule is None or args.pilot_output_root is None:
+        raise SystemExit(
+            "--pilot-schedule and --pilot-output-root are required unless "
+            "--expert-only-stop is set"
+        )
     acts, schedule = _pilot_act_results(
         args.pilot_schedule, args.pilot_output_root
     )

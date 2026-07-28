@@ -1,0 +1,85 @@
+{
+  "analysis_sha256": "0671b5492ce35c455d4703c70e3d06f0b73eaf664e20ac03eca622cbcc13f87b",
+  "arm_comparison": {
+    "ACT": "not_trained",
+    "PACT": "not_trained",
+    "PACT_ZERO": "not_evaluated",
+    "fisher_exact": "not_applicable",
+    "paired_instance_bootstrap": "not_applicable",
+    "status": "not_run_due_to_failed_environment_gate",
+    "wilson_intervals": "not_applicable"
+  },
+  "decision": "PACT_ENVIRONMENT_INADEQUATE",
+  "environment_gate_sha256": "8c758ba10b259b07ace7e33438da641b3b15ffe4da70a640519e7273e215cecf",
+  "experiment_stage": "phase1_environment_adequacy",
+  "full_dataset": "not_collected",
+  "manifest_sha256": "418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4",
+  "phase1": {
+    "act": {
+      "n": 0,
+      "status": "not_run_due_to_failed_expert_prerequisite"
+    },
+    "checks": {
+      "expert_collision_free_task_success_at_least_20_of_24": false,
+      "expert_task_success_at_least_20_of_24": true,
+      "surface_active_episodes_at_least_20_of_24": true,
+      "surface_pregrasp_inside_12cm_at_least_5_percent": true,
+      "surface_pregrasp_inside_20cm_at_least_30_percent": true
+    },
+    "deferred_checks_not_run": [
+      "act_primary_between_8_and_16_of_24",
+      "act_task_success_at_least_12_of_24",
+      "act_any_non_target_contact_at_least_6_of_24",
+      "act_hazard_contact_at_least_6_of_24"
+    ],
+    "expert": {
+      "collision_free_task_success": 19,
+      "collision_rows": [
+        {
+          "contact_class_totals": {
+            "grasp_target": 10230,
+            "hazard_bar": 58,
+            "other_environment": 0
+          },
+          "episode_id": "2ac0f1e4dccbc07e81b1d36ae5a29568fdcbf679f4a7078cf2f7a2dd7f42b7d8",
+          "first_contact_step": {
+            "grasp_target": 87,
+            "hazard_bar": 146,
+            "other_environment": null
+          },
+          "frames_with_contact": {
+            "grasp_target": 1838,
+            "hazard_bar": 58,
+            "other_environment": 0
+          },
+          "non_target_contact_entries": 58,
+          "role_index": 21
+        }
+      ],
+      "episodes_with_intrusion_sighting": 20,
+      "fraction_pregrasp_inside_12cm": 0.1971943887775551,
+      "fraction_pregrasp_inside_20cm": 0.5146292585170341,
+      "n": 24,
+      "ordinary_task_success": 20,
+      "pregrasp_control_steps": 2495,
+      "status_counts": {
+        "infrastructure_failure": 3,
+        "sampling_failure": 1,
+        "success": 20
+      },
+      "steps_intrusion_inside_12cm": 492,
+      "steps_intrusion_inside_20cm": 1284
+    },
+    "failed_checks": [
+      "expert_collision_free_task_success_at_least_20_of_24"
+    ]
+  },
+  "pilot_collection_summary_sha256": "266c2f5998b7d995c34bf163ab63e3473e512e4f0d98c8321ca6b6c802351931",
+  "policy_checkpoint_sha256s": [],
+  "primary_endpoint": "task_success and zero hazard_bar and other_environment contacts",
+  "schedule_sha256": "1f6969d0101ebea6d045c1a49a476976b97da560bf1047db2bef0e7442f83da0",
+  "schema_version": "pact_vs_act_analysis_environment_stop_v1",
+  "surface_encoder": "not_trained",
+  "target_contact_exempt": true,
+  "valid_early_stop": true
+}

@@ -1,0 +1,65 @@
+{
+  "act": {
+    "n": 0,
+    "status": "not_run_due_to_failed_expert_prerequisite"
+  },
+  "adjudication_stage": "expert_and_surface_prerequisite",
+  "all_applicable_gates_pass": false,
+  "checks": {
+    "expert_collision_free_task_success_at_least_20_of_24": false,
+    "expert_task_success_at_least_20_of_24": true,
+    "surface_active_episodes_at_least_20_of_24": true,
+    "surface_pregrasp_inside_12cm_at_least_5_percent": true,
+    "surface_pregrasp_inside_20cm_at_least_30_percent": true
+  },
+  "decision": "PACT_ENVIRONMENT_INADEQUATE",
+  "deferred_checks_not_run": [
+    "act_primary_between_8_and_16_of_24",
+    "act_task_success_at_least_12_of_24",
+    "act_any_non_target_contact_at_least_6_of_24",
+    "act_hazard_contact_at_least_6_of_24"
+  ],
+  "expert": {
+    "collision_free_task_success": 19,
+    "collision_rows": [
+      {
+        "contact_class_totals": {
+          "grasp_target": 10230,
+          "hazard_bar": 58,
+          "other_environment": 0
+        },
+        "episode_id": "2ac0f1e4dccbc07e81b1d36ae5a29568fdcbf679f4a7078cf2f7a2dd7f42b7d8",
+        "first_contact_step": {
+          "grasp_target": 87,
+          "hazard_bar": 146,
+          "other_environment": null
+        },
+        "frames_with_contact": {
+          "grasp_target": 1838,
+          "hazard_bar": 58,
+          "other_environment": 0
+        },
+        "non_target_contact_entries": 58,
+        "role_index": 21
+      }
+    ],
+    "episodes_with_intrusion_sighting": 20,
+    "fraction_pregrasp_inside_12cm": 0.1971943887775551,
+    "fraction_pregrasp_inside_20cm": 0.5146292585170341,
+    "n": 24,
+    "ordinary_task_success": 20,
+    "pregrasp_control_steps": 2495,
+    "status_counts": {
+      "infrastructure_failure": 3,
+      "sampling_failure": 1,
+      "success": 20
+    },
+    "steps_intrusion_inside_12cm": 492,
+    "steps_intrusion_inside_20cm": 1284
+  },
+  "gate_a_applicable": false,
+  "manifest_sha256": "418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4",
+  "route": "collision",
+  "schema_version": "pact_environment_gate_v1",
+  "stop_before_policy_training": true
+}

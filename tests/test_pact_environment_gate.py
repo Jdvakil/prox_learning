@@ -117,3 +117,143 @@ def test_terminal_expert_construction_failures_count_as_failed_rows(tmp_path):
         }
         for result in results
     )
+
+
+def test_failed_expert_prerequisite_stops_before_pilot_act():
+    experts = [_expert() for _ in range(24)]
+    for index in range(4):
+        experts[index] = {
+            "status": "infrastructure_failure",
+            "role_index": index,
+            "episode_id": f"failed-{index}",
+            "task_success": False,
+            "collision_free_task_success": False,
+            "surface_activity": {
+                "pregrasp_control_steps": 0,
+                "steps_intrusion_inside_20cm": 0,
+                "steps_intrusion_inside_12cm": 0,
+                "episode_has_intrusion_sighting": False,
+            },
+        }
+    for index, expert in enumerate(experts[4:], start=4):
+        expert.update(
+            {
+                "status": "success",
+                "role_index": index,
+                "episode_id": f"success-{index}",
+            }
+        )
+    experts[4]["collision_free_task_success"] = False
+    experts[4]["contact_audit"] = {
+        "contact_class_totals": {
+            "grasp_target": 1,
+            "hazard_bar": 58,
+            "other_environment": 0,
+        },
+        "frames_with_contact": {
+            "grasp_target": 1,
+            "hazard_bar": 58,
+            "other_environment": 0,
+        },
+        "first_contact_step": {
+            "grasp_target": 10,
+            "hazard_bar": 20,
+            "other_environment": None,
+        },
+        "non_target_contact_entries": 58,
+    }
+
+    result = gate.analyze_expert_prerequisite(
+        manifest={"manifest_sha256": "m"},
+        expert_results=experts,
+    )
+
+    assert result["expert"]["ordinary_task_success"] == 20
+    assert result["expert"]["collision_free_task_success"] == 19
+    assert result["expert"]["episodes_with_intrusion_sighting"] == 20
+    assert not result["checks"][
+        "expert_collision_free_task_success_at_least_20_of_24"
+    ]
+    assert result["act"]["status"] == (
+        "not_run_due_to_failed_expert_prerequisite"
+    )
+    assert result["stop_before_policy_training"]
+    assert result["decision"] == "PACT_ENVIRONMENT_INADEQUATE"
+
+
+def test_environment_stop_report_ends_in_exact_token():
+    spec = importlib.util.spec_from_file_location(
+        "finalize_pact_environment_stop",
+        ROOT / "scripts" / "finalize_pact_environment_stop.py",
+    )
+    finalizer = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(finalizer)
+    gate_result = {
+        "decision": "PACT_ENVIRONMENT_INADEQUATE",
+        "all_applicable_gates_pass": False,
+        "stop_before_policy_training": True,
+        "manifest_sha256": "m",
+        "checks": {
+            "expert_task_success_at_least_20_of_24": True,
+            "expert_collision_free_task_success_at_least_20_of_24": False,
+            "surface_active_episodes_at_least_20_of_24": True,
+            "surface_pregrasp_inside_20cm_at_least_30_percent": True,
+            "surface_pregrasp_inside_12cm_at_least_5_percent": True,
+        },
+        "expert": {
+            "n": 24,
+            "ordinary_task_success": 20,
+            "collision_free_task_success": 19,
+            "status_counts": {
+                "success": 20,
+                "sampling_failure": 1,
+                "infrastructure_failure": 3,
+            },
+            "pregrasp_control_steps": 100,
+            "steps_intrusion_inside_20cm": 50,
+            "fraction_pregrasp_inside_20cm": 0.5,
+            "steps_intrusion_inside_12cm": 20,
+            "fraction_pregrasp_inside_12cm": 0.2,
+            "episodes_with_intrusion_sighting": 20,
+            "collision_rows": [
+                {
+                    "role_index": 21,
+                    "episode_id": "x",
+                    "contact_class_totals": {
+                        "grasp_target": 10,
+                        "hazard_bar": 58,
+                        "other_environment": 0,
+                    },
+                    "frames_with_contact": {
+                        "grasp_target": 10,
+                        "hazard_bar": 58,
+                        "other_environment": 0,
+                    },
+                }
+            ],
+        },
+        "act": {"status": "not_run", "n": 0},
+        "deferred_checks_not_run": ["gate_b", "gate_c"],
+    }
+    schedule, stopped_analysis, decision = finalizer.build_stop_documents(
+        gate=gate_result,
+        preregistration={"confirmatory_design": {"instances": 80}},
+        collection_summary={
+            "complete": True,
+            "manifest_sha256": "m",
+        },
+        manifest_sha256="m",
+        gate_sha256="g",
+        collection_summary_sha256="c",
+    )
+    report = finalizer.render_report(
+        gate=gate_result,
+        schedule=schedule,
+        analysis=stopped_analysis,
+        decision=decision,
+    )
+    assert decision["decision"] == "PACT_ENVIRONMENT_INADEQUATE"
+    assert not decision["policy_training_performed"]
+    assert schedule["rows"] == []
+    assert report.rstrip().splitlines()[-1] == "PACT_ENVIRONMENT_INADEQUATE"

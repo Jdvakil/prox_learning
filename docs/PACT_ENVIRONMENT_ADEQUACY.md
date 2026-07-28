@@ -2,12 +2,12 @@
 
 ## Status
 
-The environment route and gate are preregistered, but Phase 1 has not yet been
-adjudicated. The protected confirmatory evaluation has finished, and the
-reserved development rows are being used to validate the candidate scene. No
-ACT or PACT training beyond the preregistered pilot baseline is authorized
-until the measurements below are complete and all applicable gates pass
-simultaneously.
+Phase 1 is adjudicated. The frozen expert/surface pilot failed its expert
+collision-free solvability guard: ordinary task success was 20/24, but
+collision-free task success was 19/24 against a minimum of 20/24. The
+surface-observability guards passed. Per the preregistration, the experiment
+stopped before dataset conversion, pilot ACT training, full collection,
+front-end training, or ACT/PACT policy training.
 
 The machine-readable preregistration is
 `configs/pact_collision_environment_v1.json`. The deterministic candidate
@@ -147,17 +147,30 @@ sensor names, intrinsics, and per-timestep world-to-sensor extrinsics.
 
 | Quantity | Result |
 |---|---:|
-| Expert ordinary task success | Pending |
-| Expert collision-free task success | Pending |
-| Pre-grasp frames with intrusion inside 20 cm | Pending |
-| Pre-grasp frames with intrusion inside 12 cm | Pending |
-| Episodes with an intrusion sighting | Pending |
-| Pilot ACT ordinary task success | Pending |
-| Pilot ACT collision-free task success | Pending |
-| Pilot ACT rows with any non-target contact | Pending |
-| Pilot ACT rows with intrusion contact | Pending |
+| Expert terminal-row ledger | 20 success, 1 sampling failure, 3 infrastructure failures |
+| Expert ordinary task success | 20/24 (pass; minimum 20) |
+| Expert collision-free task success | **19/24 (fail; minimum 20)** |
+| Pre-grasp frames with intrusion inside 20 cm | 1284/2495 (51.5%; pass) |
+| Pre-grasp frames with intrusion inside 12 cm | 492/2495 (19.7%; pass) |
+| Episodes with an intrusion sighting | 20/24 (pass) |
+| Pilot ACT ordinary task success | Not run: failed expert prerequisite |
+| Pilot ACT collision-free task success | Not run: failed expert prerequisite |
+| Pilot ACT rows with any non-target contact | Not run: failed expert prerequisite |
+| Pilot ACT rows with intrusion contact | Not run: failed expert prerequisite |
+
+Pilot expert row 21 completed the task but recorded 58 `hazard_bar`
+contact-pair entries across 58 contact frames; it had no
+`other_environment` contact. Four other rows were terminal construction/IK
+failures and count as failures without replacement. Thus the 24-row ledger is
+complete, but the expert collision-free guard misses its threshold by one.
 
 ## Decision
 
-Pending Phase 1 measurement. The required adequacy token will be appended only
-after the frozen gate is adjudicated.
+The environment is not adequate under the jointly frozen criteria. Although
+the proximity modality carried strong panel signal, the task was not robustly
+solvable enough by the expert at the primary endpoint. Gates B and C were not
+run because any failed applicable prerequisite mandates a stop before policy
+training. The machine-readable adjudication is
+`diagnostics_output/pact_vs_act/environment_gate.json`.
+
+PACT_ENVIRONMENT_INADEQUATE
