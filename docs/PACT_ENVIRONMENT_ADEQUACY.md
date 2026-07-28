@@ -44,7 +44,7 @@ inside the Franka's 8.5 cm finger span; it is independently sampled near
 left-versus-right avoidance direction. The robot-base forward placement is
 0.14 m, keeping the target in the same proven relative reach envelope as the
 parent fumehood pick. A privileged expert reads the panel geometry and bows
-away from it with a 0.20 m nominal surface-clearance margin.
+away from it with a 0.10 m nominal surface-clearance margin.
 The sash aperture is fixed at 0.70 m so incidental link-5/sash contact cannot
 contaminate the panel-avoidance endpoint.
 
