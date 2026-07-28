@@ -24,6 +24,14 @@ def _load():
 converter = _load()
 
 
+def test_frozen_usable_demo_floors_are_count_based():
+    assert converter.PILOT_USABLE_DEMO_FLOOR == 48
+    assert converter.FULL_USABLE_DEMO_FLOORS == {
+        "full_train": 180,
+        "full_validation": 48,
+    }
+
+
 def _source(path: Path, names: list[str], timesteps: int = 3):
     with h5py.File(path, "w") as handle:
         trajectory = handle.create_group("traj_0")

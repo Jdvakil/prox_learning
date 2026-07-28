@@ -30,7 +30,7 @@ The machine-readable preregistration is
 `configs/pact_collision_environment_v2.json`. The independently seeded
 candidate population is
 `configs/pact_collision_candidate_manifest_v2.json`, SHA-256
-`313a4892ccaf45b470eff0da0a119a5417ce191ec918f111699142a91147d557`.
+`9e024337ee49f46b6e6ab50a328c6d9e40a3641dec65bbf54a0332323d5b58fb`.
 Its master seed is `2026072901`.
 
 | Role | Fixed attempts |
@@ -60,6 +60,11 @@ attempts. The no-scientific-outcome rate—`sampling_failure` plus
 interval is reported. Missing scientific outcomes never count as policy
 failures and can never award `PACT_ENVIRONMENT_INADEQUATE`; a missed
 progression criterion yields `PACT_EXPERIMENT_INCOMPLETE`.
+
+After an adequate pilot, the fixed full roles must yield at least 180 usable
+clean demonstrations from 240 `full_train` attempts and at least 48 from 64
+`full_validation` attempts. A shortfall yields
+`PACT_EXPERIMENT_INCOMPLETE`; no attempt is replaced.
 
 ## Environment science gates
 

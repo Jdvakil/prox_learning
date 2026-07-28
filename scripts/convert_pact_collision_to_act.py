@@ -45,6 +45,10 @@ from scripts.convert_obstacle_to_act import (
 
 DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v2.json"
 PILOT_USABLE_DEMO_FLOOR = 48
+FULL_USABLE_DEMO_FLOORS = {
+    "full_train": 180,
+    "full_validation": 48,
+}
 
 
 def _trajectory_group(handle: h5py.File) -> h5py.Group:
@@ -327,6 +331,17 @@ def main() -> int:
             f"{len(included)} usable clean rows < {PILOT_USABLE_DEMO_FLOOR}; "
             "rows are not replaced or rerun"
         )
+    included_by_role = {
+        role: sum(row["role"] == role for row, _result in included)
+        for role in roles
+    }
+    for role, floor in FULL_USABLE_DEMO_FLOORS.items():
+        if role in roles and included_by_role[role] < floor:
+            raise SystemExit(
+                f"{role} demonstration floor not met: "
+                f"{included_by_role[role]} usable clean rows < {floor}; "
+                "rows are not replaced or rerun"
+            )
 
     episodes = []
     for act_index, (row, result) in enumerate(included):
@@ -388,6 +403,12 @@ def main() -> int:
         "pilot_usable_demo_floor": (
             PILOT_USABLE_DEMO_FLOOR if roles == ["pilot_train"] else None
         ),
+        "full_usable_demo_floors": {
+            role: FULL_USABLE_DEMO_FLOORS[role]
+            for role in roles
+            if role in FULL_USABLE_DEMO_FLOORS
+        },
+        "included_count_by_role": included_by_role,
         "excluded": excluded,
         "episodes": episodes,
         "converted_tree_file_sha256": tree_file.hexdigest(),
