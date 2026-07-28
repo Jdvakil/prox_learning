@@ -58,3 +58,18 @@ def test_failure_taxonomy_prioritizes_non_target_contact():
         )
         == "hazard_bar_contact"
     )
+
+
+def test_evaluator_marks_boundary_after_reset_and_before_any_action():
+    source = (ACT / "eval_pact_collision_row.py").read_text()
+    model_at = source.index("policy.prepare_model()")
+    reset_at = source.index("initial_reset_result = task.reset()")
+    boundary_at = source.index(
+        "_write_json_atomic(\n            boundary_path", reset_at
+    )
+    rollout_at = source.index(
+        "ParallelRolloutRunner.run_single_rollout(", boundary_at
+    )
+    assert model_at < reset_at < boundary_at < rollout_at
+    assert "initial_reset_result=initial_reset_result" in source[rollout_at:]
+    assert "initial observation was already accepted; this row is terminal" in source
