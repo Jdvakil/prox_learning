@@ -2,7 +2,7 @@
 
 ## Remediation-v2 decision
 
-Decision: `PACT_EXPERIMENT_INCOMPLETE`.
+Decision: `PACT_ENVIRONMENT_ADEQUATE`.
 
 This is a new, independently seeded Phase 1 experiment. The historical v1 pilot is neither rescored nor pooled. Its preregistered `PACT_ENVIRONMENT_INADEQUATE` decision remains final under v1.
 
@@ -39,24 +39,34 @@ Demonstrator count and infrastructure health are progression criteria, not scien
 
 Robust classification: `adequate`. All leave-one-episode-out point estimates pass: `True`.
 
+## Handoff-3 infrastructure recovery
+
+The original dispatch made 64 evaluator attempts but accepted zero initial observations, executed zero actions, and produced zero scientific outcomes. All 64 failed before manifest load because the relative manifest path was invalid from the evaluator working directory.
+
+The absolute-path fix was committed before any policy result existed. Path resolution is content-independent: it cannot select rows by contact or task outcome and cannot change policy actions after startup. Re-executing these unchanged rows is therefore pre-observation infrastructure recovery, not outcome-based replacement.
+
+Predeclared launch-smoke row 0 (`76c59c423483c58cbcf2b5161dcacf690457d180ba84e99e4adaa7a02129af97`) passed once before full dispatch. The repaired ledger contains 64 scientific results, 0 post-boundary terminal failures, and 0 retryable pre-observation failures. Scientific rows rerun: 0.
+
+The expert and surface measurements above are carried forward byte-for-byte from the settled Phase 1 gate; they were not recomputed for this resume.
+
 ## Gate B — vision alone is insufficient but solvable
 
-ACT collision-free task success is 0/0 (N/A), Wilson 95% CI N/A. The target point band is [33.3%, 66.7%], with the interval required inside [20%, 80%].
+ACT collision-free task success is 23/64 (35.9%), Wilson 95% CI [25.3%, 48.2%]. The target point band is [33.3%, 66.7%], with the interval required inside [20%, 80%].
 
-Robust classification: `inconclusive`; one-outcome stable: `False`.
+Robust classification: `adequate`; one-outcome stable: `True`.
 
-Ordinary ACT task success is 0/0 (N/A), Wilson 95% CI N/A. This is the secondary endpoint.
+Ordinary ACT task success is 23/64 (35.9%), Wilson 95% CI [25.3%, 48.2%]. This is the secondary endpoint.
 
 ## Gate C — the baseline contacts the intrusion
 
-ACT contacted the panel in 0/0 scientific rows (N/A), Wilson 95% CI N/A. The frozen point minimum is 25%, with Wilson lower bound above 10%.
+ACT contacted the panel in 23/64 scientific rows (35.9%), Wilson 95% CI [25.3%, 48.2%]. The frozen point minimum is 25%, with Wilson lower bound above 10%.
 
-Robust classification: `inconclusive`; one-outcome stable: `False`. `other_environment` contact occurred in 0 rows and does not substitute for panel contact.
+Robust classification: `adequate`; one-outcome stable: `True`. `other_environment` contact occurred in 0 rows and does not substitute for panel contact.
 
 ## Decision
 
-No environment-inadequacy claim is made. At least one result is marginal or a non-science progression/reconciliation requirement is unmet.
+All three environment science gates robustly pass, and the predeclared demo/infrastructure progression requirements are met. The experiment may proceed to full collection and training.
 
 The last line is the exact allowed decision token.
 
-PACT_EXPERIMENT_INCOMPLETE
+PACT_ENVIRONMENT_ADEQUATE
