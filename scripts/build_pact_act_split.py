@@ -70,13 +70,20 @@ def build(conversion: dict, mode: str) -> dict:
         }
         for label in ("train", "validation")
     }
+    dataset_tree_sha256 = conversion.get("converted_tree_semantic_sha256")
+    dataset_tree_kind = "semantic"
+    if not dataset_tree_sha256:
+        # Token encoding changes the HDF5 files after the raw conversion. The
+        # updated manifest deliberately drops the now-stale semantic tree hash
+        # but carries a current byte-for-byte file tree hash.
+        dataset_tree_sha256 = conversion["converted_tree_file_sha256"]
+        dataset_tree_kind = "file"
     document = {
         "schema": SCHEMA,
         "experiment": f"pact_collision_{mode}_v1",
         "canonical_manifest_sha256": conversion["source_manifest_sha256"],
-        "source_collection_tree_sha256": conversion[
-            "converted_tree_semantic_sha256"
-        ],
+        "source_collection_tree_sha256": dataset_tree_sha256,
+        "source_collection_tree_hash_kind": dataset_tree_kind,
         "split_rule": split_rule,
         "counts": counts,
         "episodes": output_episodes,

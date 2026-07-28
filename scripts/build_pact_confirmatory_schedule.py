@@ -143,6 +143,12 @@ def build(manifest: dict, training: dict, surface_encoder: Path) -> dict:
         "workers": WORKERS,
         "fresh_subprocess_per_rollout": True,
         "no_outcome_based_reruns": True,
+        "detectable_effect_statement": (
+            "With 80 observations per arm, a conservative equal-n independent-"
+            "proportions normal approximation has 80% power at two-sided "
+            "alpha=0.05 for about a 21.6 percentage-point increase from a 50% "
+            "ACT baseline. Pairing may improve precision but is not credited."
+        ),
         "schedule_seed": SCHEDULE_SEED,
         "bootstrap_seed": 2026072801,
         "bootstrap_replicates": 20000,

@@ -310,6 +310,20 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
         "schedule_sha256": schedule["schedule_sha256"],
         "reconciliation": reconciliation,
         "results_available": True,
+        "design": {
+            "instances": schedule["instances"],
+            "rollouts": schedule["rollouts"],
+            "workers": schedule["workers"],
+            "repeats_per_instance_per_arm": schedule[
+                "repeats_per_instance_per_arm"
+            ],
+            "fresh_subprocess_per_rollout": schedule[
+                "fresh_subprocess_per_rollout"
+            ],
+            "detectable_effect_statement": schedule[
+                "detectable_effect_statement"
+            ],
+        },
         "primary_endpoint": (
             "task_success and zero hazard_bar and other_environment contacts"
         ),
@@ -341,7 +355,15 @@ def analyze(schedule: dict, output_root: Path) -> tuple[dict, dict]:
     return analysis, decision
 
 
-def render_report(analysis: dict, decision: dict) -> str:
+def render_report(
+    analysis: dict,
+    decision: dict,
+    *,
+    environment_gate: dict | None = None,
+    surface_report: dict | None = None,
+    training_summary: dict | None = None,
+    schedule: dict | None = None,
+) -> str:
     token = decision["decision"]
     lines = [
         "# PACT versus ACT final decision",
@@ -351,6 +373,94 @@ def render_report(analysis: dict, decision: dict) -> str:
         f"Decision: `{token}`",
         "",
     ]
+    if environment_gate is not None:
+        expert = environment_gate["expert"]
+        act = environment_gate["act"]
+        lines.extend(
+            [
+                "## Environment adequacy gate",
+                "",
+                f"Phase 1 decision: `{environment_gate['decision']}` "
+                f"({sum(environment_gate['checks'].values())}/"
+                f"{len(environment_gate['checks'])} frozen checks passed).",
+                "",
+                f"- Expert collision-free task success: "
+                f"{expert['collision_free_task_success']}/{expert['n']}; "
+                f"ordinary task success: "
+                f"{expert['ordinary_task_success']}/{expert['n']}.",
+                f"- Active-panel surface signal: "
+                f"{expert['fraction_pregrasp_inside_20cm']:.1%} of pre-grasp "
+                f"steps inside 20 cm, "
+                f"{expert['fraction_pregrasp_inside_12cm']:.1%} inside 12 cm; "
+                f"{expert['episodes_with_intrusion_sighting']}/{expert['n']} "
+                f"episodes active.",
+                f"- Pilot ACT collision-free task success: "
+                f"{act['collision_free_task_success']}/{act['n']}; ordinary "
+                f"task success: {act['ordinary_task_success']}/{act['n']}; "
+                f"non-target contact in "
+                f"{act['episodes_with_any_non_target_contact']}/{act['n']} "
+                f"and intrusion contact in "
+                f"{act['episodes_with_hazard_bar_contact']}/{act['n']}.",
+                "",
+            ]
+        )
+    if surface_report is not None:
+        metrics = surface_report["heldout_metrics"]
+        lines.extend(
+            [
+                "## Frozen proximity front-end",
+                "",
+                f"The route-matched surface encoder has "
+                f"{surface_report['parameter_count']:,} parameters and checkpoint "
+                f"SHA-256 `{surface_report['checkpoint_sha256']}`.",
+                "",
+                f"- Held-out mean / median Euclidean error: "
+                f"{100 * metrics['mean_euclidean_error_m']:.2f} cm / "
+                f"{100 * metrics['median_euclidean_error_m']:.2f} cm.",
+                f"- Within 2 cm: {metrics['within_2cm_rate']:.1%}; validity "
+                f"precision: {metrics['validity_precision']:.1%}; recall: "
+                f"{metrics['validity_recall']:.1%}.",
+                "",
+            ]
+        )
+    if training_summary is not None:
+        lines.extend(
+            [
+                "## Policy training",
+                "",
+                "| Arm | Seed | Best epoch | Validation loss | Checkpoint SHA-256 |",
+                "|---|---:|---:|---:|---|",
+            ]
+        )
+        for record in training_summary["records"]:
+            lines.append(
+                f"| {record['arm']} | {record['seed']} | "
+                f"{record['best_epoch']} | "
+                f"{record['best_validation_loss']:.6f} | "
+                f"`{record['checkpoint_sha256']}` |"
+            )
+        lines.extend(
+            [
+                "",
+                "PACT_ZERO was not separately trained; it uses the corresponding "
+                "PACT checkpoint with all 40 proximity tokens zeroed at inference.",
+                "",
+            ]
+        )
+    if schedule is not None:
+        lines.extend(
+            [
+                "## Frozen confirmatory design",
+                "",
+                f"{schedule['instances']} held-out instances × "
+                f"{len(schedule['arms'])} arms = {schedule['rollouts']} rollouts, "
+                f"{schedule['workers']} fixed workers, one fresh subprocess per row. "
+                f"Schedule SHA-256: `{schedule['schedule_sha256']}`.",
+                "",
+                schedule["detectable_effect_statement"],
+                "",
+            ]
+        )
     if not analysis["results_available"]:
         reconciliation = analysis["reconciliation"]
         lines.extend(
@@ -409,6 +519,11 @@ def render_report(analysis: dict, decision: dict) -> str:
                 f"{summary['contact_pair_entry_totals']}; episodes "
                 f"{summary['episodes_with_contact']}."
             )
+        lines.extend(["", "## Failure taxonomy", ""])
+        for arm in ARMS:
+            lines.append(
+                f"- {arm}: {analysis['pooled'][arm]['failure_taxonomy']}."
+            )
         lines.append("")
     lines.extend(
         [
@@ -429,6 +544,9 @@ def main() -> int:
     parser.add_argument("--analysis-out", required=True, type=Path)
     parser.add_argument("--decision-out", required=True, type=Path)
     parser.add_argument("--report-out", required=True, type=Path)
+    parser.add_argument("--environment-gate", type=Path)
+    parser.add_argument("--surface-report", type=Path)
+    parser.add_argument("--training-summary", type=Path)
     args = parser.parse_args()
     schedule = json.loads(args.schedule.read_text())
     payload = dict(schedule)
@@ -445,7 +563,28 @@ def main() -> int:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
     args.report_out.parent.mkdir(parents=True, exist_ok=True)
-    args.report_out.write_text(render_report(analysis, decision))
+    args.report_out.write_text(
+        render_report(
+            analysis,
+            decision,
+            environment_gate=(
+                json.loads(args.environment_gate.read_text())
+                if args.environment_gate
+                else None
+            ),
+            surface_report=(
+                json.loads(args.surface_report.read_text())
+                if args.surface_report
+                else None
+            ),
+            training_summary=(
+                json.loads(args.training_summary.read_text())
+                if args.training_summary
+                else None
+            ),
+            schedule=schedule,
+        )
+    )
     print(decision["decision"])
     return 0 if analysis["reconciliation"]["reconciled"] else 2
 

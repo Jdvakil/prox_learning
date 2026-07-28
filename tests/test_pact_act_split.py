@@ -58,3 +58,16 @@ def test_full_split_uses_predeclared_roles():
     split = builder.build(conversion, "full")
     assert split["counts"]["train"]["total"] == 3
     assert split["counts"]["validation"]["total"] == 2
+
+
+def test_full_split_accepts_post_token_file_tree_hash():
+    roles = ["full_train"] * 3 + ["full_validation"] * 2
+    conversion = {
+        "roles": ["full_train", "full_validation"],
+        "episodes": _episodes(roles),
+        "source_manifest_sha256": "m",
+        "converted_tree_file_sha256": "f" * 64,
+    }
+    split = builder.build(conversion, "full")
+    assert split["source_collection_tree_sha256"] == "f" * 64
+    assert split["source_collection_tree_hash_kind"] == "file"
