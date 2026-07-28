@@ -51,7 +51,7 @@
   },
   "phase1": {
     "development_rows": 8,
-    "pilot_expert_rows": 24,
+    "pilot_train_rows": 24,
     "pilot_act_eval_rows": 24,
     "gate_a_object_signal": {
       "applicable": false,
@@ -61,6 +61,13 @@
       "collision_free_task_success_min_count": 20,
       "denominator": 24,
       "ordinary_task_success_min_count": 20
+    },
+    "pre_rollout_construction_retries": {
+      "maximum_retries_after_initial_seed": 4,
+      "seed_rule": "deterministic retry_seed(row, retry_index) from the frozen manifest row",
+      "eligible_failure_window": "task sampling or initial task.reset/expert trajectory construction, before the initial observation is accepted and before any action",
+      "terminal_boundary": "the row becomes outcome-bearing immediately after a successful initial reset; no later exception, contact, task failure, or success is eligible for retry",
+      "reporting": "all failed construction attempts and seeds are retained in retry_history"
     },
     "surface_observability_guard": {
       "definition": "Before the first grasp-target contact or closing command, identify depth rays whose sensor-local point transforms inside the active intrusion AABB (1 cm tolerance). A frame is active when at least one such point is in range.",
@@ -81,7 +88,7 @@
       "denominator": 24
     },
     "pilot_act_training": {
-      "source": "collision-free successful pilot_expert rows only, ordered by frozen role_index",
+      "source": "collision-free successful pilot_train rows only, ordered by frozen role_index",
       "split": "first 80 percent train, remaining 20 percent validation",
       "seed": 1101,
       "checkpoint_rule": "minimum validation loss across the fixed 2000-epoch run",
@@ -155,5 +162,5 @@
     },
     "decision_rule": "PACT_BENEFIT_ESTABLISHED requires positive PACT-ACT and PACT-PACT_ZERO point differences, both paired-bootstrap 95% lower bounds above zero, and both two-sided Fisher p-values below 0.05. PACT_WORSE_THAN_ACT requires the PACT-ACT paired-bootstrap 95% upper bound below zero and two-sided Fisher p<0.05. A reconciled experiment not meeting either rule is PACT_NO_CONFIRMED_BENEFIT. Any unreconciled scheduled row is PACT_EXPERIMENT_INCOMPLETE."
   },
-  "freeze_rule": "Development rows may cause a newly versioned scene before pilot collection. Immediately before the first pilot_expert row, regenerate and hash the manifest. From that point onward the scene, gates, endpoint, contact taxonomy, training rule, and analysis are immutable."
+  "freeze_rule": "Development rows may cause a newly versioned scene before pilot collection. Immediately before the first pilot_train row, regenerate and hash the manifest. From that point onward the scene, gates, endpoint, contact taxonomy, construction-retry rule, training rule, and analysis are immutable."
 }

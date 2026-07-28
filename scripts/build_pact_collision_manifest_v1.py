@@ -69,6 +69,14 @@ SOURCE_FILES = {
         / "tasks"
         / "task.py"
     ),
+    "rollout_runtime": (
+        ROOT
+        / "submodules"
+        / "molmospaces"
+        / "molmo_spaces"
+        / "data_generation"
+        / "pipeline.py"
+    ),
     "sensor_assembly": (
         ROOT
         / "submodules"
@@ -97,6 +105,7 @@ SOURCE_FILES = {
     "environment_preregistration": (
         ROOT / "configs" / "pact_collision_environment_v1.json"
     ),
+    "collection_runtime": ROOT / "scripts" / "run_pact_collision_collection.py",
 }
 
 

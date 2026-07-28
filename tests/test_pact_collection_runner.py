@@ -56,3 +56,28 @@ def test_status_counts_do_not_treat_unknown_as_terminal():
     assert counts["success"] == 1
     assert counts["task_failure"] == 1
     assert sum(counts.values()) == 2
+
+
+def test_construction_retry_precedes_terminal_rollout_boundary():
+    source = (ROOT / "scripts" / "run_pact_collision_collection.py").read_text()
+    reset_at = source.index("initial_reset_result = task.reset()")
+    boundary_at = source.index("rollout_started = True")
+    rollout_at = source.index(
+        "ParallelRolloutRunner.run_single_rollout(", boundary_at
+    )
+    assert reset_at < boundary_at < rollout_at
+    assert "pre_rollout_construction_failure" in source[reset_at:boundary_at]
+    assert "initial_reset_result=initial_reset_result" in source[rollout_at:]
+
+
+def test_canonical_runner_can_consume_prevalidated_reset():
+    source = (
+        ROOT
+        / "submodules"
+        / "molmospaces"
+        / "molmo_spaces"
+        / "data_generation"
+        / "pipeline.py"
+    ).read_text()
+    assert "initial_reset_result=None" in source
+    assert "observation, _info = initial_reset_result" in source

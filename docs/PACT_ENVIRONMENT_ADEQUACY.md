@@ -41,7 +41,7 @@ cup is independently sampled near `(0.76, y, shelf_top)`, with
 left-versus-right avoidance direction. The robot-base forward placement is
 0.14 m, keeping the target in the same proven relative reach envelope as the
 parent fumehood pick. A privileged expert reads the panel geometry and bows
-away from it.
+away from it with a 0.28 m nominal surface-clearance margin.
 
 The design targets link-5/link-6 rather than the gripper. This is the intended
 whole-body necessity: the wrist camera can keep the target visible while an
@@ -72,6 +72,14 @@ Ordinary task success is a separate secondary endpoint.
 Eight `development` rows are reserved for render, kinematic, and expert smoke
 tests. They may cause a newly versioned scene. Once the first `pilot_train` row
 starts, the scene and this gate freeze.
+
+Each manifest row has one initial construction seed and four deterministic
+retry seeds. A retry is allowed only when task sampling or the initial
+`task.reset()`/expert trajectory construction fails before an initial
+observation is accepted and before any action. Every such failure and seed is
+retained. Immediately after a successful initial reset the row becomes
+outcome-bearing: no later exception, contact, task failure, or success can
+cause a replacement or rerun.
 
 The pilot contains 24 expert `pilot_train` rows and 24 independent
 `pilot_eval` instances. A wrist-RGB-plus-proprio ACT baseline is trained on only

@@ -3,8 +3,10 @@
 
 Each candidate has one immutable terminal result under
 ``<output>/rows/<episode_id>/result.json``. A terminal row is never re-run.
-Task failures retain their trajectory; sampling failures retain their retry
-history. The launcher exits nonzero if any requested row is unreconciled.
+Task failures retain their trajectory. Deterministic construction failures
+before the initial observation may advance to a predeclared retry seed and
+retain their retry history. Once a rollout can begin, its row is never retried.
+The launcher exits nonzero if any requested row is unreconciled.
 """
 
 from __future__ import annotations
@@ -282,6 +284,33 @@ def _run_row(
                 continue
 
             policy = setup_policy(config, task, None, None)
+            try:
+                initial_reset_result = task.reset()
+            except Exception as exc:
+                retry_history.append(
+                    {
+                        "retry_index": retry_index,
+                        "seed": seed,
+                        "reason": (
+                            "pre_rollout_construction_failure: "
+                            f"{type(exc).__name__}: {exc}"
+                        ),
+                    }
+                )
+                cleanup_episode_resources(
+                    task=task,
+                    policy=policy,
+                    task_sampler=sampler,
+                    preloaded_policy=None,
+                    close_task_sampler=True,
+                )
+                task = None
+                policy = None
+                sampler = None
+                continue
+
+            # The row becomes outcome-bearing here. No exception or result after
+            # this point is eligible for a retry.
             rollout_started = True
             task_success = bool(
                 ParallelRolloutRunner.run_single_rollout(
@@ -289,6 +318,7 @@ def _run_row(
                     task=task,
                     policy=policy,
                     end_on_success=config.end_on_success,
+                    initial_reset_result=initial_reset_result,
                 )
             )
             policy_info = _jsonable(policy.get_info())
