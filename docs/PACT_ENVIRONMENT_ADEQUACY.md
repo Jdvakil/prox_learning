@@ -35,10 +35,12 @@ One wall-colored matte panel enters the distal-arm corridor from either the
 left or the right. Its nominal center is `(0.64, +/-0.260, 1.10)` m with half
 extents `(0.030, 0.240, 0.045)` m. Its side is exactly balanced in every
 manifest role. Small x and inner-face jitters are committed per row. The red
-cup is independently sampled near `(0.78, y, shelf_top)`, with
+cup is independently sampled near `(0.76, y, shelf_top)`, with
 `y in [-0.04, 0.04]` m. Thus target pixels do not disclose the required
-left-versus-right avoidance direction. A privileged expert reads the panel
-geometry and bows away from it.
+left-versus-right avoidance direction. The robot-base forward placement is
+0.14 m, keeping the target in the same proven relative reach envelope as the
+parent fumehood pick. A privileged expert reads the panel geometry and bows
+away from it.
 
 The design targets link-5/link-6 rather than the gripper. This is the intended
 whole-body necessity: the wrist camera can keep the target visible while an
