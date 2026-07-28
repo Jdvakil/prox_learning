@@ -62,6 +62,10 @@ def command_for(
     save_video: bool,
 ) -> list[str]:
     checkpoint_path = Path(row["checkpoint_path"])
+    # Evaluators run from the ACT submodule, not from the schedule runner's
+    # working directory. Resolve caller-supplied paths before that cwd change.
+    manifest_path = manifest_path.resolve()
+    output_dir = output_dir.resolve()
     command = [
         str(PYTHON),
         str(EVALUATOR),
