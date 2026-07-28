@@ -51,6 +51,74 @@ def _act(primary: bool, hazard: bool):
     }
 
 
+def _v2_expert(index: int):
+    clean = index < 58
+    return {
+        "status": "success" if clean else "task_failure",
+        "task_success": clean,
+        "collision_free_task_success": clean,
+        "surface_activity": {
+            "pregrasp_control_steps": 100,
+            "steps_intrusion_inside_20cm": 50,
+            "steps_intrusion_inside_12cm": 20,
+            "episode_has_intrusion_sighting": True,
+        },
+    }
+
+
+def _v2_act(index: int):
+    primary = index < 32
+    hazard = 32 <= index < 52
+    task_success = index < 52
+    return {
+        "status": "scientific_outcome",
+        "task_success": task_success,
+        "collision_free_task_success": primary,
+        "contact_audit": {
+            "contact_class_totals": {
+                "grasp_target": int(task_success),
+                "hazard_bar": int(hazard),
+                "other_environment": 0,
+            }
+        },
+        "failure_taxonomy": (
+            "collision_free_task_success"
+            if primary
+            else ("hazard_bar_contact" if hazard else "task_failure")
+        ),
+    }
+
+
+def test_remediation_v2_runs_decisive_gates_b_and_c():
+    result = gate.analyze_remediation_v2(
+        manifest={"manifest_sha256": "m"},
+        expert_results=[_v2_expert(index) for index in range(64)],
+        act_results=[_v2_act(index) for index in range(64)],
+        pilot_schedule={"schedule_sha256": "s"},
+    )
+    assert result["expert"]["usable_clean_demonstrations"] == 58
+    assert result["surface_observability"]["robust_classification"] == "adequate"
+    assert result["gate_b"]["robust_classification"] == "adequate"
+    assert result["gate_c"]["robust_classification"] == "adequate"
+    assert result["decision"] == "PACT_ENVIRONMENT_ADEQUATE"
+
+
+def test_remediation_demo_shortfall_is_incomplete_not_environment_failure():
+    experts = [_v2_expert(index) for index in range(64)]
+    for index in range(47, 58):
+        experts[index]["status"] = "task_failure"
+        experts[index]["task_success"] = False
+        experts[index]["collision_free_task_success"] = False
+    result = gate.analyze_remediation_v2(
+        manifest={"manifest_sha256": "m"},
+        expert_results=experts,
+        act_results=[_v2_act(index) for index in range(64)],
+        pilot_schedule={"schedule_sha256": "s"},
+    )
+    assert result["expert"]["usable_clean_demonstrations"] == 47
+    assert result["decision"] == "PACT_EXPERIMENT_INCOMPLETE"
+
+
 def test_gate_passes_only_in_predeclared_headroom_band():
     experts = [_expert() for _ in range(24)]
     acts = [_act(index < 12, index >= 12) for index in range(24)]

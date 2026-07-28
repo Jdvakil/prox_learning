@@ -82,3 +82,21 @@ def test_contact_taxonomy_exempts_only_target_and_separates_intrusion():
     assert contacts.classify_contact(target) == "grasp_target"
     assert contacts.classify_contact(panel) == "hazard_bar"
     assert contacts.classify_contact(wall) == "other_environment"
+
+
+def test_v2_is_new_data_with_byte_identical_scene():
+    v1 = json.loads(
+        (ROOT / "configs" / "pact_collision_candidate_manifest_v1.json").read_text()
+    )
+    v2 = json.loads(
+        (ROOT / "configs" / "pact_collision_candidate_manifest_v2.json").read_text()
+    )
+    assert v1["source_hashes"]["scene_xml"] == v2["source_hashes"]["scene_xml"]
+    assert (
+        v1["source_hashes"]["scene_metadata"]
+        == v2["source_hashes"]["scene_metadata"]
+    )
+    assert not (
+        {row["episode_id"] for row in v1["rows"]}
+        & {row["episode_id"] for row in v2["rows"]}
+    )
