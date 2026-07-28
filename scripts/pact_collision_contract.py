@@ -18,7 +18,7 @@ import numpy as np
 SCHEMA_VERSION = "pact_collision_manifest_v1"
 ENVIRONMENT_VERSION = "pact_collision_corridor_v1"
 MASTER_SEED = 20260728
-SCENE_TEMPLATE_ID = "pact_collision_corridor_red_cup_v1"
+SCENE_TEMPLATE_ID = "pact_collision_corridor_narrow_cup_v1"
 SCENE_TEMPLATE_HOUSE_INDEX = 1
 MAX_SAMPLING_RETRIES = 4
 

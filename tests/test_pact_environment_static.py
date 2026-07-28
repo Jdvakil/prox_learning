@@ -61,6 +61,8 @@ def test_runtime_config_is_wrist_plus_all_40_skin_sensors():
     assert config.task_sampler_config.task_sampler_class is PactCollisionCorridorSampler
     assert config.policy_config.policy_cls is PactCollisionCorridorPolicy
     assert PactCollisionCorridorSampler.BASE_FWD == 0.14
+    assert PactCollisionCorridorSampler.TARGET_UID == "Cup_10"
+    assert PactCollisionCorridorSampler.SASH_APERTURE_HEIGHT == 0.70
     assert PactCollisionCorridorSampler.PANEL_Z == 0.88
     assert PactCollisionCorridorSampler.PANEL_INNER_FACE_Y == 0.08
     assert PactCollisionCorridorPolicy.SAFE_GAP == 0.20

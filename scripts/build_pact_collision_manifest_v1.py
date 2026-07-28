@@ -19,6 +19,7 @@ from molmo_spaces.configs.camera_configs import (  # noqa: E402
 
 OUTPUT = ROOT / "configs" / "pact_collision_candidate_manifest_v1.json"
 SOURCE_FILES = {
+    "manifest_contract": ROOT / "scripts" / "pact_collision_contract.py",
     "scene_xml": (
         ROOT
         / "submodules"
