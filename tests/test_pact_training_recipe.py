@@ -51,3 +51,9 @@ def test_act_and_pact_recipes_differ_only_in_modality_flags():
     ):
         assert act[act.index(flag) + 1] == value
         assert pact[pact.index(flag) + 1] == value
+
+
+def test_training_summary_has_an_explicit_small_artifact_path():
+    source = (ROOT / "scripts" / "train_pact_policies.py").read_text()
+    assert 'parser.add_argument("--summary-out", required=True' in source
+    assert "args.summary_out.write_text" in source

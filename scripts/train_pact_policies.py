@@ -6,9 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -142,6 +140,7 @@ def main() -> int:
     parser.add_argument("--split-manifest", required=True, type=Path)
     parser.add_argument("--dataset-manifest", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--summary-out", required=True, type=Path)
     parser.add_argument("--surface-encoder", type=Path)
     args = parser.parse_args()
     active = protected_eval_processes()
@@ -209,7 +208,7 @@ def main() -> int:
                 }
             )
     summary = {
-        "schema_version": "pact_policy_training_summary_v1",
+        "schema_version": "pact_policy_training_summary_v2",
         "mode": args.mode,
         "dataset_dir": str(args.dataset_dir),
         "dataset_manifest": str(args.dataset_manifest),
@@ -232,9 +231,8 @@ def main() -> int:
         },
         "records": records,
     }
-    (args.output_root / "training_summary.json").write_text(
-        json.dumps(summary, indent=2, sort_keys=True) + "\n"
-    )
+    args.summary_out.parent.mkdir(parents=True, exist_ok=True)
+    args.summary_out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
     return 0
 
 
