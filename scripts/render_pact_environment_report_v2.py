@@ -110,6 +110,47 @@ def render(gate: dict, manifest: dict, preregistration: dict) -> str:
         f"All leave-one-episode-out point estimates pass: "
         f"`{surface['all_leave_one_episode_out_points_pass']}`.",
         "",
+    ]
+    recovery = gate.get("infrastructure_recovery")
+    if recovery is not None:
+        prior = recovery["prior_failed_dispatch"]
+        repaired = recovery["repaired_dispatch"]
+        smoke = recovery["launch_smoke"]
+        lines.extend(
+            [
+                "## Handoff-3 infrastructure recovery",
+                "",
+                f"The original dispatch made {prior['attempts']} evaluator "
+                "attempts but accepted zero initial observations, executed zero "
+                "actions, and produced zero scientific outcomes. All 64 failed "
+                "before manifest load because the relative manifest path was "
+                "invalid from the evaluator working directory.",
+                "",
+                "The absolute-path fix was committed before any policy result "
+                "existed. Path resolution is content-independent: it cannot "
+                "select rows by contact or task outcome and cannot change policy "
+                "actions after startup. Re-executing these unchanged rows is "
+                "therefore pre-observation infrastructure recovery, not "
+                "outcome-based replacement.",
+                "",
+                f"Predeclared launch-smoke row {smoke['schedule_index']} "
+                f"(`{smoke['rollout_id']}`) passed once before full dispatch. "
+                f"The repaired ledger contains {repaired['scientific_results']} "
+                "scientific results, "
+                f"{repaired['post_boundary_failures']} post-boundary terminal "
+                "failures, and "
+                f"{repaired['pre_observation_infrastructure_failures']} "
+                "retryable pre-observation failures. Scientific rows rerun: "
+                f"{repaired['scientific_rows_rerun']}.",
+                "",
+                "The expert and surface measurements above are carried forward "
+                "byte-for-byte from the settled Phase 1 gate; they were not "
+                "recomputed for this resume.",
+                "",
+            ]
+        )
+    lines.extend(
+        [
         "## Gate B — vision alone is insufficient but solvable",
         "",
         f"ACT collision-free task success is "
@@ -143,7 +184,8 @@ def render(gate: dict, manifest: dict, preregistration: dict) -> str:
         "",
         "## Decision",
         "",
-    ]
+        ]
+    )
     if token == "PACT_ENVIRONMENT_ADEQUATE":
         lines.append(
             "All three environment science gates robustly pass, and the "
