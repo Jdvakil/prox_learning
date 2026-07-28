@@ -115,8 +115,28 @@ def _expert_results(collection: Path, manifest: dict):
         result = json.loads(path.read_text())
         if result.get("row_sha256") != row["row_sha256"]:
             raise RuntimeError(f"expert row identity mismatch: {path}")
-        if result.get("status") not in ("success", "task_failure"):
-            raise RuntimeError(f"expert row has non-rollout status: {path}")
+        status = result.get("status")
+        if status not in (
+            "success",
+            "task_failure",
+            "sampling_failure",
+            "infrastructure_failure",
+        ):
+            raise RuntimeError(f"expert row has unknown terminal status: {path}")
+        if status in ("sampling_failure", "infrastructure_failure"):
+            # These are predeclared terminal row outcomes, not missing data and
+            # not eligible for replacement. Count them as failed expert rows
+            # with no observable pre-grasp trajectory.
+            result["task_success"] = False
+            result["collision_free_task_success"] = False
+            result["surface_activity"] = {
+                "pregrasp_control_steps": 0,
+                "steps_intrusion_inside_20cm": 0,
+                "steps_intrusion_inside_12cm": 0,
+                "episode_has_intrusion_sighting": False,
+            }
+            results.append(result)
+            continue
         audit = result["contact_audit"]
         center = np.asarray(result["scene_params"]["protr_center"], dtype=float)
         half = np.asarray(result["scene_params"]["protr_half"], dtype=float)

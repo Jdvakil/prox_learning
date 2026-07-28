@@ -53,6 +53,24 @@ This is the intended whole-body necessity: the wrist camera can keep the target
 visible while a lateral arm intrusion remains outside its useful view.
 Opposite intrusion sides make a single memorized safe detour impossible.
 
+### Frozen development screen
+
+The final eight reserved development rows were run from manifest
+`418e2b919c620c66422d3b3b3da2afdfc21fb245ba8a7b60a66f5464ba1063d4`
+at root commit `9a79e16` and MolmoSpaces commit `84c54a9`. The privileged
+expert achieved 8/8 ordinary and collision-free task success with zero
+non-target contact entries. All 8/8 rows saw the active panel before grasp:
+533/982 frames (54.3%) had a panel return inside 20 cm and 229/982 (23.3%)
+inside 12 cm.
+
+As a causal geometry control, the avoidance bow was disabled on development
+row 5 without changing the task seed or scene. The straight path still
+completed the task but produced 192 `hazard_bar` contact entries across 164
+frames. These are development measurements, not the Phase 1 gate result. They
+justify freezing the candidate and starting the independently seeded pilot.
+The machine-readable record is
+`diagnostics_output/pact_vs_act/development_screen.json`.
+
 ## Endpoint and contact taxonomy
 
 The primary endpoint is exactly:

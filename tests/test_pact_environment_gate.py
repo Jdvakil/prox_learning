@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -71,3 +72,48 @@ def test_gate_passes_only_in_predeclared_headroom_band():
     )
     assert not result["all_applicable_gates_pass"]
     assert result["decision"] == "PACT_ENVIRONMENT_INADEQUATE"
+
+
+def test_terminal_expert_construction_failures_count_as_failed_rows(tmp_path):
+    manifest = json.loads(
+        (ROOT / "configs" / "pact_collision_candidate_manifest_v1.json").read_text()
+    )
+    expected = []
+    for index, row in enumerate(
+        sorted(
+            (
+                row
+                for row in manifest["rows"]
+                if row["role"] == "pilot_train"
+            ),
+            key=lambda row: row["role_index"],
+        )
+    ):
+        status = "sampling_failure" if index % 2 == 0 else "infrastructure_failure"
+        result = {
+            "status": status,
+            "episode_id": row["episode_id"],
+            "row_sha256": row["row_sha256"],
+            "task_success": False,
+            "collision_free_task_success": False,
+        }
+        path = tmp_path / "rows" / row["episode_id"] / "result.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(json.dumps(result))
+        expected.append(status)
+
+    results = gate._expert_results(tmp_path, manifest)
+
+    assert [result["status"] for result in results] == expected
+    assert all(not result["task_success"] for result in results)
+    assert all(not result["collision_free_task_success"] for result in results)
+    assert all(
+        result["surface_activity"]
+        == {
+            "pregrasp_control_steps": 0,
+            "steps_intrusion_inside_20cm": 0,
+            "steps_intrusion_inside_12cm": 0,
+            "episode_has_intrusion_sighting": False,
+        }
+        for result in results
+    )
