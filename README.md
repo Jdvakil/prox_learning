@@ -1085,3 +1085,46 @@ never coverage.
 
 0 of 20 live rollouts, `development4` not executed, `confirmatory41` untouched. Frozen
 inference is bit-identical across all three seeds.
+
+## Hybrid obstacle safety residual: three-pair joint gate (metric question closed)
+
+`docs/HYBRID_OBSTACLE_THREE_PAIR_JOINT_GATE_FINAL_DECISION.md` —
+`THREE_PAIR_JOINT_GATE_OFFLINE_TRANSFER_FAILED`, Case D.
+
+**The previous task's hypothesis is falsified, and the metric question is now closed.** It
+predicted that restoring `J(seed1,seed2)` would reverse the historical decision. Measured:
+executions went **10 → 9** of 17. One frame.
+
+The reason is arithmetic. `J(s0,s2)` and `J(s1,s2)` are **both exactly 0.000 on all 17**
+frames, so restoring J12 multiplies every one of them by the same 2/3 factor — a monotone
+rescaling that cannot reorder them — and the calibration then moves the threshold down by a
+comparable factor (0.225 → 0.1667, ratio 0.74 vs the 2/3 rescale):
+
+| | Two-anchor | Three-pair |
+|---|---:|---:|
+| Historical median / max agreement | 0.250 / 0.375 | 0.1667 / 0.2500 |
+| Calibrated threshold | 0.225 | 0.166667 |
+| Historical frames executing | 10/17 | **9/17** |
+
+Golden reproduction of the identifiability audit passed exactly (three-pair median 0.1667,
+anchor 0.2500). The handoff's `>= 0.5` mask vs the audit's `> 0.5` was settled empirically —
+masks are **bitwise identical**, so the distinction is empty here.
+
+**Everything non-temporal is healthy**: calibration feasible with the 0.80 floor untouched,
+bootstrap upper bound 0.00000, calibration recall 1.000, nested recall 0.997, hard-active
+retention 0.979, acceptance 0.977/0.999/0.980. The only nested and diagnostic failures are
+temporal (run 5 with post-support persistence; run 7). But the historical regression fails on
+**per-frame** grounds — 9 of 17 still execute — so this is Case D, not the temporal token.
+Awarding `THREE_PAIR_TEMPORAL_CLUSTERING_REMAINS` would authorize a temporal study while nine
+known false positives still execute.
+
+**Stop pursuing agreement-metric variants.** Both definitions are now calibrated under an
+identical contract and differ by a monotone rescaling on exactly the frames that matter. With
+J02 and J12 identically zero, J01 is the only discriminative term, and it spans 0.385–0.750 on
+frames that must all be rejected. A temporal study is now well motivated — it is the only
+offline failure left once the historical frames are set aside — but it should test whether
+suppressing the onset burst also removes the per-frame executions, and must not be allowed to
+relax the per-frame contract.
+
+0 of 20 live rollouts, `development4` not executed, `confirmatory41` untouched. Frozen
+inference bit-identical across all three seeds including J12.
