@@ -18,6 +18,10 @@ stats = _load(
     "pact_gate_statistics",
     ROOT / "scripts" / "pact_gate_statistics.py",
 )
+reporter = _load(
+    "render_pact_environment_report_v2",
+    ROOT / "scripts" / "render_pact_environment_report_v2.py",
+)
 
 
 def test_gate_b_is_interval_based_and_one_outcome_robust():
@@ -127,3 +131,65 @@ def test_corridor_expert_fix_does_not_change_scene_geometry():
     assert "PANEL_Z = 0.89" in sampler
     assert "PANEL_INNER_FACE_Y = 0.100" in sampler
     assert "SASH_APERTURE_HEIGHT = 0.70" in sampler
+
+
+def test_v2_environment_report_preserves_exact_last_line():
+    gate = {
+        "schema_version": "pact_environment_gate_v2",
+        "decision": "PACT_ENVIRONMENT_ADEQUATE",
+        "manifest_sha256": "m",
+        "expert": {
+            "attempts": 64,
+            "scientific_outcomes": 64,
+            "ordinary_task_success": 60,
+            "usable_clean_demonstrations": 58,
+            "usable_clean_demo_floor": 48,
+            "clean_demo_fraction_wilson_95": [0.81, 0.96],
+            "no_scientific_outcome": 0,
+            "no_scientific_outcome_wilson_95": [0.0, 0.056],
+        },
+        "surface_observability": {
+            "point_estimates": {
+                "active_episode_fraction": 0.9,
+                "inside_20cm": 0.5,
+                "inside_12cm": 0.2,
+            },
+            "intervals_95": {
+                "active_episode_fraction_wilson": [0.8, 0.95],
+                "inside_20cm_episode_cluster_bootstrap": [0.4, 0.6],
+                "inside_12cm_episode_cluster_bootstrap": [0.1, 0.3],
+            },
+            "all_leave_one_episode_out_points_pass": True,
+        },
+        "act": {
+            "scientific_outcomes": 64,
+            "collision_free_task_success": 32,
+            "ordinary_task_success": 48,
+            "ordinary_task_success_rate": 0.75,
+            "ordinary_task_success_wilson_95": [0.63, 0.84],
+            "episodes_with_hazard_bar_contact": 20,
+            "episodes_with_other_environment_contact": 2,
+        },
+        "gate_b": {
+            "point_estimate": 0.5,
+            "wilson_95": [0.38, 0.62],
+            "one_outcome_stable": True,
+        },
+        "gate_c": {
+            "point_estimate": 0.3125,
+            "wilson_95": [0.21, 0.43],
+            "one_outcome_stable": True,
+        },
+        "science_gate_classifications": {
+            "surface_observability": "adequate",
+            "gate_b": "adequate",
+            "gate_c": "adequate",
+        },
+    }
+    text = reporter.render(
+        gate,
+        {"manifest_sha256": "m", "master_seed": 9},
+        {"route": "collision", "environment_version": "corridor"},
+    )
+    assert "neither rescored nor pooled" in text
+    assert text.rstrip().splitlines()[-1] == "PACT_ENVIRONMENT_ADEQUATE"
