@@ -1,0 +1,89 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026072902,
+    "fisher_exact_two_sided": [
+      "PACT_vs_ACT",
+      "PACT_vs_PACT_ZERO"
+    ],
+    "frozen_analysis_script_sha256": "fd3c7f2e91a1737e248fc3ebe803018dcb4f9455d2b4e413d56946a4aebe25be",
+    "instance_clustered": true,
+    "wilson_interval": 0.95
+  },
+  "authorization": {
+    "path": "/root/prox_learning_hybrid_safety/docs/PACT_R2_AUTHORIZATION.md",
+    "sha256": "0f6c44eadbdfbb799041f3aa9a0809db80a7c615a3b04bb300be92432bbe1300"
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "qualifying_live_condition": "all evaluator PIDs in the atomically frozen active cohort exit within five seconds and no cohort row has a valid result",
+    "qualifying_restart_condition": "durable active cohort has no live evaluator PID and no cohort row has a valid result",
+    "recovery_event_frozen_before_rerun": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "carried_forward": {
+    "act_checkpoint_sha256s": {
+      "3101": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+      "3102": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+    },
+    "environment_gate": "PACT_ENVIRONMENT_ADEQUATE",
+    "pact_checkpoint_sha256s": {
+      "3101": "a90cd4087c5666c665235f49b24ce8c9635475a9b9a40c213926d93a8c4e11cd",
+      "3102": "880f01b5a2cb6056bc522012c3cf261d0acde16575df402b072522b3dee34d86"
+    },
+    "pact_zero": "corresponding PACT checkpoint with all proximity tokens zeroed at inference",
+    "scene": "pact_collision_corridor_v1",
+    "surface_encoder_sha256": "d0ba9db102f2f7abe6eb46054f1a79ee292d9084bf7d1e38235b65fe600f9e6d"
+  },
+  "design": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_ZERO"
+    ],
+    "checkpoint_seeds": [
+      3101,
+      3102
+    ],
+    "fresh_subprocess_per_rollout": true,
+    "instances": 160,
+    "rollouts": 960,
+    "workers": 8
+  },
+  "fresh_population": {
+    "disjoint_from_all_r1_episode_ids": true,
+    "instances": 160,
+    "manifest_master_seed": 2026073001,
+    "manifest_schema": "pact_confirmatory_r2_manifest_v1",
+    "schedule_seed": 2026073002,
+    "side_balance": {
+      "left": 80,
+      "right": 80
+    }
+  },
+  "primary_endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0",
+  "preregistration_sha256": "509d926a8f0dcd0da053351979652aed7404945632a83314b7f2c0932672737a",
+  "r1_quarantine": {
+    "endpoint_inspected": false,
+    "pooled_into_r2": false,
+    "r1_decision": "PACT_EXPERIMENT_INCOMPLETE",
+    "r1_schedule_sha256": "b6d9b3f7a87fef328a87db725e405ab4c48fe88d720ef3f7da094fda05110a8f"
+  },
+  "schema_version": "pact_r2_preregistration_v1",
+  "supervisor": {
+    "durable_active_cohort": true,
+    "durable_heartbeat": true,
+    "durable_parent_log": true,
+    "durable_pid": true,
+    "launch": "setsid plus nohup with detached stdin",
+    "shell_kill_survival_required_during_smoke": true
+  },
+  "throughput": {
+    "measurement_elapsed_minutes": 20,
+    "outcome_fields_read": false,
+    "revise_eta_only": true
+  }
+}
