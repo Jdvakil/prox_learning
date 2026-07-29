@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -65,11 +66,35 @@ def test_evaluator_marks_boundary_after_reset_and_before_any_action():
     model_at = source.index("policy.prepare_model()")
     reset_at = source.index("initial_reset_result = task.reset()")
     boundary_at = source.index(
-        "_write_json_atomic(\n            boundary_path", reset_at
+        "_write_json_atomic(boundary_path, boundary)", reset_at
     )
     rollout_at = source.index(
         "ParallelRolloutRunner.run_single_rollout(", boundary_at
     )
     assert model_at < reset_at < boundary_at < rollout_at
     assert "initial_reset_result=initial_reset_result" in source[rollout_at:]
-    assert "initial observation was already accepted; this row is terminal" in source
+    assert (
+        "existing initial observation requires a frozen R2 group-recovery event"
+        in source
+    )
+
+
+def test_r2_recovery_archives_abandoned_payload_without_deleting_it(tmp_path):
+    (tmp_path / "trajectory.h5").write_bytes(b"trajectory")
+    (tmp_path / "episode_00000000_wrist_camera.mp4").write_bytes(b"video")
+    event = {
+        "recovery_event_sha256": "event",
+        "rows": [{"rollout_id": "row", "attempt_index": 3}],
+    }
+    record = evaluation.archive_abandoned_payload(
+        tmp_path, event, rollout_id="row"
+    )
+    assert record is not None
+    archive = tmp_path / "abandoned_payload_attempt_003"
+    assert not (tmp_path / "trajectory.h5").exists()
+    assert (archive / "trajectory.h5").read_bytes() == b"trajectory"
+    assert (
+        archive / "episode_00000000_wrist_camera.mp4"
+    ).read_bytes() == b"video"
+    manifest = json.loads((archive / "archive_manifest.json").read_text())
+    assert manifest["payload_deleted"] is False
