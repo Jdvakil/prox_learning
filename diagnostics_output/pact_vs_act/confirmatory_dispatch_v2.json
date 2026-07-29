@@ -1,0 +1,100 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026072902,
+    "detectable_absolute_increase": 0.15500000000000014,
+    "detectable_effect_statement": "Using the frozen pilot ACT collision-free rate 0.359, 160 independent instances per arm have approximately 80% power at two-sided alpha=0.05 for a 0.155 absolute increase under a conservative unpaired normal approximation. The second checkpoint seed per instance and pairing receive no power credit.",
+    "fisher_exact_two_sided": [
+      "PACT_vs_ACT",
+      "PACT_vs_PACT_ZERO"
+    ],
+    "instance_clustered": true,
+    "primary_endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0",
+    "wilson_interval": 0.95
+  },
+  "dispatch_contract_sha256": "81e99fe9e78cab1e19b019db396b149c396a7037a2121cf435b1ddea01f68151",
+  "execution": {
+    "confirmatory_outcomes_seen_before_freeze": false,
+    "fixed_worker_count": 8,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_reruns": true,
+    "output_root": "/root/pact_remediation_artifacts_v2/confirmatory_b6d9b3f7",
+    "pre_observation_infrastructure_retries_only": true
+  },
+  "frozen_inputs": {
+    "analysis_script_path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_confirmatory.py",
+    "analysis_script_sha256": "fd3c7f2e91a1737e248fc3ebe803018dcb4f9455d2b4e413d56946a4aebe25be",
+    "checkpoints": [
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+        "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+        "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/pact_seed3101/policy_best.ckpt",
+        "sha256": "a90cd4087c5666c665235f49b24ce8c9635475a9b9a40c213926d93a8c4e11cd"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/pact_seed3102/policy_best.ckpt",
+        "sha256": "880f01b5a2cb6056bc522012c3cf261d0acde16575df402b072522b3dee34d86"
+      }
+    ],
+    "dataset_stats": [
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/pact_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/pact_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      }
+    ],
+    "environment_gate_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/environment_gate.json",
+    "environment_gate_sha256": "082b5f57362b73078e18f8fb7abb7498837dad2a72fbb111126700d1be68027b",
+    "machine_preregistration_path": "/root/prox_learning_pact_remediation/configs/pact_collision_environment_v2.json",
+    "machine_preregistration_sha256": "ec454cfacd8c39d2d9c925ac988b39ee2ed6140db4c19571b136be2706d22afa",
+    "preregistration_path": "/root/prox_learning_pact_remediation/docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md",
+    "preregistration_sha256": "6313e636844de2804161f807b4db29ff3630ec33e95e509b02c994fcd8cd6190",
+    "surface_encoders": [
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/surface_encoder_seed2201/surface_encoder_frozen.pt",
+        "sha256": "d0ba9db102f2f7abe6eb46054f1a79ee292d9084bf7d1e38235b65fe600f9e6d"
+      }
+    ],
+    "training_summary_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/policy_training_summary_v2.json",
+    "training_summary_sha256": "bb303f25fd2a42422fffb23b2215a9d6f7c80f6975c18d71ea4fd4b0c6f1f447"
+  },
+  "launch_smoke": {
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "1a6a7a00cd1ca094a8c050ef3b446a720f7255e32ab6a95daae3f049aac84f5b",
+    "output_relpath": "rows/000_e8e5749edc739dde_act",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "e8e5749edc739dde95c3a035830cfa1733ee2a0903103dca13891689f06f83f0",
+    "schedule_index": 0,
+    "schedule_row_sha256": "a201fe7db035f3f3a5d48f2a6e3e9cb1330420cfbbdfbecc1b4878307b8d7c46"
+  },
+  "schema_version": "pact_confirmatory_dispatch_v2",
+  "scientific_schedule": {
+    "file_sha256": "069b3bc763c50e27f7211592655691244dba211af076cd4939dcac31a720348b",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_collision_candidate_manifest_v2.json",
+    "manifest_sha256": "5ddf1747086f2c346398e683aa8c54ed36b4eb50ccbe36ad5c4acca6cf146db8",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/schedule.json",
+    "rows": 960,
+    "rows_changed": 0,
+    "schedule_sha256": "b6d9b3f7a87fef328a87db725e405ab4c48fe88d720ef3f7da094fda05110a8f",
+    "workers": 8
+  }
+}

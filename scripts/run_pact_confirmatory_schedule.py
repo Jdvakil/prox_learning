@@ -151,6 +151,9 @@ def _validate_boundary(path: Path, row: dict[str, Any]) -> dict[str, Any]:
 def load_dispatch_contract(
     path: Path,
     schedule: dict[str, Any],
+    *,
+    manifest_path: Path | None = None,
+    output_root: Path | None = None,
 ) -> dict[str, Any]:
     contract = json.loads(path.read_text())
     payload = dict(contract)
@@ -165,6 +168,15 @@ def load_dispatch_contract(
         or scientific["rows_changed"] != 0
     ):
         raise RuntimeError("dispatch contract changes the scientific schedule")
+    if manifest_path is not None:
+        if (
+            Path(scientific["manifest_path"]).resolve() != manifest_path.resolve()
+            or scientific["manifest_sha256"] != sha256_file(manifest_path)
+        ):
+            raise RuntimeError("dispatch manifest differs from frozen contract")
+    if output_root is not None:
+        if Path(contract["execution"]["output_root"]).resolve() != output_root.resolve():
+            raise RuntimeError("dispatch output root differs from frozen contract")
     smoke = contract["launch_smoke"]
     matching = [
         row
@@ -474,7 +486,12 @@ def main() -> int:
         raise SystemExit("schedule self-hash mismatch")
     if int(schedule["workers"]) != 8:
         raise SystemExit("frozen schedule worker count is not 8")
-    contract = load_dispatch_contract(args.dispatch_contract, schedule)
+    contract = load_dispatch_contract(
+        args.dispatch_contract,
+        schedule,
+        manifest_path=args.manifest,
+        output_root=args.output_root,
+    )
     active = protected_eval_processes()
     if active:
         raise SystemExit(
