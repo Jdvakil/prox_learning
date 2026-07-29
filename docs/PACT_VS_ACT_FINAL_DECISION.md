@@ -1,51 +1,63 @@
 # PACT versus ACT final decision
 
-## Outcome
+## Experiment status
 
-Decision: `PACT_EXPERIMENT_INCOMPLETE`.
+Decision: `PACT_EXPERIMENT_INCOMPLETE`
 
-The remediation-v2 collision environment passed the surface-signal test and produced enough clean expert demonstrations. The fixed pilot ACT evaluation nevertheless produced no scientific policy outcomes because every fresh evaluator subprocess failed before loading the manifest. The preregistered process-outcome rule makes those 64 ledger entries terminal, so none was rerun and the experiment stopped before scale.
+## Environment adequacy gate
 
-This run therefore does not establish whether PACT beats ACT or PACT_ZERO.
+Phase 1 decision: `PACT_ENVIRONMENT_ADEQUATE`. Science classifications: {'gate_b': 'adequate', 'gate_c': 'adequate', 'surface_observability': 'adequate'}.
 
-## Environment evidence
+- Usable clean expert demonstrations: 58/64; ordinary task success: 59/64.
+- Active-panel surface signal: 54.0% of pre-grasp steps inside 20 cm, 18.1% inside 12 cm; 100.0% of scientific episodes active.
+- Pilot ACT collision-free task success: 23/64; ordinary task success: 23/64; intrusion contact in 23/64.
 
-| Measure | Result | Frozen threshold |
-|---|---:|---:|
-| Active-panel signal inside 20 cm | 54.0% (95% bootstrap 46.0%–61.9%) | >=30% |
-| Active-panel signal inside 12 cm | 18.1% (95% bootstrap 13.5%–22.8%) | >=5% |
-| Active scientific expert episodes | 62/62 | >=5/6 |
-| Usable clean demonstrations | 58/64 | >=48 |
-| Expert no-outcome rate | 2/64 (3.1%) | <5% |
+## Frozen proximity front-end
 
-Surface observability was robustly adequate and passed every leave-one-episode-out check. Gate A was not applicable because the predeclared route targets nearby surface geometry, not object position.
+The route-matched surface encoder has 819,172 parameters and checkpoint SHA-256 `d0ba9db102f2f7abe6eb46054f1a79ee292d9084bf7d1e38235b65fe600f9e6d`.
 
-## Pilot policy and terminal evaluation ledger
+- Held-out mean / median Euclidean error: 3.26 cm / 1.88 cm.
+- Within 2 cm: 51.3%; validity precision: 99.9%; recall: 99.9%.
 
-Vision-only ACT seed 1101 completed 2,000 epochs. Its frozen best checkpoint was epoch 1849 with validation loss 0.093538 and SHA-256 `4fca3b0b0542d6ae65c7d44f1fd562cd376199532f91b08aaf5722109a858db6`.
+## Policy training
 
-The immutable pilot schedule contains 64 ACT rows, uses eight workers, and has SHA-256 `e0515adf10a12cca22412d349d37b56ec5400446894b450b0e84edbe139b564e`. All 64 driver entries are `invocation_failure`; there are zero scientific `result.json` files. Each evaluator was launched from the ACT submodule while receiving the relative manifest path `configs/pact_collision_candidate_manifest_v2.json`, which was not resolvable from that working directory.
+| Arm | Seed | Best epoch | Validation loss | Checkpoint SHA-256 |
+|---|---:|---:|---:|---|
+| ACT | 3101 | 1904 | 0.084780 | `a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1` |
+| ACT | 3102 | 1829 | 0.099043 | `e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4` |
+| PACT | 3101 | 1968 | 0.083446 | `a90cd4087c5666c665235f49b24ce8c9635475a9b9a40c213926d93a8c4e11cd` |
+| PACT | 3102 | 1793 | 0.097197 | `880f01b5a2cb6056bc522012c3cf261d0acde16575df402b072522b3dee34d86` |
 
-The runner now resolves manifest and output paths before changing the evaluator working directory, with a focused regression test. That repair was made only after the terminal ledger existed and was not used to rerun any row.
+PACT_ZERO was not separately trained; it uses the corresponding PACT checkpoint with all 40 proximity tokens zeroed at inference.
 
-## What was not run
+## Frozen confirmatory design
 
-Gates B and C are inconclusive because 0/64 rows have scientific ACT outcomes; the frozen minimum was 61. The full train/validation collection, surface encoder, full ACT and PACT seeds, PACT_ZERO ablation, 960-rollout confirmatory schedule, Fisher tests, and instance bootstrap were not run.
+160 held-out instances × 3 arms × 2 checkpoint seeds = 960 rollouts, 8 fixed workers, one fresh subprocess per row. Schedule SHA-256: `b6d9b3f7a87fef328a87db725e405ab4c48fe88d720ef3f7da094fda05110a8f`.
 
-The pilot checkpoint is retained as provenance, but it is not one of the three final-arm checkpoints requested for a completed comparison. No claim is made from its validation loss.
+Using the frozen pilot ACT collision-free rate 0.359, 160 independent instances per arm have approximately 80% power at two-sided alpha=0.05 for a 0.155 absolute increase under a conservative unpaired normal approximation. The second checkpoint seed per instance and pairing receive no power credit.
 
-## Machine-readable artifacts
+The preregistered schedule did not reconcile, so no endpoint comparison was interpreted.
 
-- `diagnostics_output/pact_vs_act/provenance.json`
-- `diagnostics_output/pact_vs_act/schedule.json`
-- `diagnostics_output/pact_vs_act/analysis.json`
-- `diagnostics_output/pact_vs_act/final_decision.json`
-- `diagnostics_output/pact_vs_act/environment_gate.json`
+- Expected rows: 960
+- Valid rows: 1
+- Missing: 959
+- Non-complete driver rows: 0
+- Invalid rows: 0
 
-Analysis SHA-256: `27734a416142372043c9d8f8511eb035b0dd609779551eb742b61e479d2d1c25`. Final-decision SHA-256: `08060e5faacedc66d6dd61f465a467e632d62053106c8586cae74484792b6533`.
+## Dispatch integrity and interruption
+
+The predeclared launch-smoke row passed in one invocation and one attempt. Its boundary, result, driver, schedule-row, checkpoint, and recorded hashes reconcile. The smoke endpoint was not interpreted.
+
+After the full pool was released, eight additional rows accepted initial observations, but the evaluator process group disappeared before any of them wrote a scientific result. All eight logs stop after initial-observation acceptance without a traceback. No kernel OOM or GPU Xid was observed in the audit window; the exact external initiator is unknown.
+
+Under the frozen boundary rule, those eight rows are terminal post-boundary failures and cannot be replaced or rerun. The remaining 951 rows were never started after irrecoverability was known, because further rollouts could not restore a valid confirmatory decision.
+
+The frozen analyzer sees 1 valid row and 959 rows without valid results. The incident ledger resolves that latter count into 8 terminal post-boundary rows and 951 never-started rows. No endpoint comparison, Fisher test, or instance bootstrap was interpreted.
+
+Incident SHA-256: `901868dd06ada31c119f9bad3ca4882b0c72e9c43cd2d7a1cbfd1b74f5a64d54`.
 
 ## Decision
 
-The last line is the exact allowed decision token.
+The final line is the exact allowed decision token.
 
 PACT_EXPERIMENT_INCOMPLETE
