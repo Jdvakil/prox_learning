@@ -15,6 +15,8 @@ sys.path.insert(0, str(ROOT / "submodules/act"))
 
 import analyze_pact_valid_ablation as analyzer
 import build_pact_permuted_token_plan as token_builder
+import compact_pact_r2_storage as storage_implementation
+import compact_pact_valid_ablation_storage as storage_wrapper
 import eval_pact_valid_ablation_row as evaluator
 
 
@@ -155,3 +157,70 @@ def test_all_valid_ablation_tokens_are_nonconfirmatory():
         "PACT_NO_CONFIRMED_BENEFIT",
         "PACT_WORSE_THAN_ACT",
     }
+
+
+def test_frozen_schedule_dispatch_and_token_plan_bindings():
+    schedule = json.loads(
+        (
+            ROOT / "diagnostics_output/pact_valid_ablation/schedule.json"
+        ).read_text()
+    )
+    observed = schedule.pop("schedule_sha256")
+    assert observed == _hash(schedule)
+    assert len(schedule["rows"]) == 40
+    assert len(schedule["paired_pact_reference"]) == 40
+    assert {row["arm"] for row in schedule["rows"]} == {
+        "PACT_PERMUTED"
+    }
+    dispatch = json.loads(
+        (
+            ROOT / "diagnostics_output/pact_valid_ablation/dispatch.json"
+        ).read_text()
+    )
+    dispatch_hash = dispatch.pop("dispatch_contract_sha256")
+    assert dispatch_hash == _hash(dispatch)
+    committed_plan = json.loads(
+        (
+            ROOT
+            / "diagnostics_output/pact_valid_ablation/token_plan.json"
+        ).read_text()
+    )
+    external_plan = json.loads(
+        Path(
+            "/root/pact_valid_ablation_artifacts/token_plan_v1/token_plan.json"
+        ).read_text()
+    )
+    assert committed_plan == external_plan
+    plan_hash = committed_plan.pop("token_plan_sha256")
+    assert plan_hash == _hash(committed_plan)
+
+
+def test_frozen_storage_amendment_binds_screen_exclusions():
+    original = storage_implementation.EXCLUDED_SCHEDULE_INDICES
+    try:
+        storage_implementation.EXCLUDED_SCHEDULE_INDICES = set(
+            storage_wrapper.EXCLUDED_SCHEDULE_INDICES
+        )
+        config, schedule = storage_implementation.validate_inputs(
+            config_path=(
+                ROOT
+                / "configs/pact_valid_ablation_storage_amendment_v1.json"
+            ),
+            schedule_path=(
+                ROOT
+                / "diagnostics_output/pact_valid_ablation/schedule.json"
+            ),
+            output_root=Path(
+                "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0"
+            ),
+        )
+    finally:
+        storage_implementation.EXCLUDED_SCHEDULE_INDICES = original
+    assert schedule["schedule_sha256"] == config["schedule_sha256"]
+    assert config["excluded_intact_schedule_indices"] == [0, 39]
+    assert (
+        storage_implementation.sha256_file(
+            ROOT / "scripts/compact_pact_valid_ablation_storage.py"
+        )
+        == config["valid_ablation_compactor_wrapper_sha256"]
+    )

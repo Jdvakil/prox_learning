@@ -1,0 +1,159 @@
+{
+  "analysis": {
+    "decision_rule": {
+      "inconclusive": "VALID_ABLATION_INCONCLUSIVE iff the frozen 40-pair schedule does not reconcile",
+      "no_signal": "VALID_ABLATION_NO_SIGNAL iff difference < +0.05; the original +70 pp is treated as an OOD artifact",
+      "signal_present": "VALID_ABLATION_SIGNAL_PRESENT iff PACT minus PACT_PERMUTED >= +0.10 and paired bootstrap 95% CI lower bound > 0; this clears Step 1",
+      "weak_signal": "VALID_ABLATION_WEAK_SIGNAL iff difference >= +0.05 but signal-present rule is false; this does not authorize confirmation"
+    },
+    "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_valid_ablation.py",
+    "primary_contrast": "PACT_minus_PACT_PERMUTED",
+    "sha256": "ff44639fbe6957ff2ed2ef74dccbbd47e396a18cd60d04b2dc2816e2dab836ba"
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "detachment_proof": {
+    "endpoint_fields_inspected": false,
+    "kill_launching_shell_during_smoke": true,
+    "required_artifact": "detachment_proof.json",
+    "required_before_full_dispatch": true
+  },
+  "dispatch_contract_sha256": "c0fcc371e08990d27ff21883b48575f841c31d4df33bf01062c6b96da249ab94",
+  "execution": {
+    "detached_stdin": true,
+    "fixed_worker_count": 8,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_row_replacement": true,
+    "nohup": true,
+    "outcomes_seen_before_freeze": false,
+    "output_root": "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0",
+    "setsid": true
+  },
+  "frozen_inputs": {
+    "models": [
+      {
+        "label": "checkpoint",
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+      },
+      {
+        "label": "dataset_stats",
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "label": "surface_encoder",
+        "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ],
+    "runtime": {
+      "compactor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_valid_ablation_storage.py",
+        "sha256": "4703f53fe18ec7b30adf544983f5e49c1ecfd0d244668a65cc4d28ba9c3052c8"
+      },
+      "detachment_proof": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_valid_ablation_detachment.py",
+        "sha256": "4d30ccb17e84c7c00cc035ea3946f07416e984dd774e9c20495d1ad093081969"
+      },
+      "evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_valid_ablation_row.py",
+        "sha256": "02596afba3e9538cb91b2344ffffd91b98dfd30bc0808636caf030bc8e9c15c9"
+      },
+      "launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_valid_ablation_detached.py",
+        "sha256": "b15eea0482526aace40a87e82a022bedeb4df4d0f0e8c5cc1deb6520a387adf6"
+      },
+      "supervisor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_valid_ablation_supervisor.py",
+        "sha256": "73aafac84c74219eccbc6221d21bf758642175672c908e43c7e044457d837361"
+      },
+      "throughput": {
+        "path": "/root/prox_learning_pact_remediation/scripts/measure_pact_valid_ablation_throughput.py",
+        "sha256": "3acd2c3fde24bd3d809170174ef1a062c583c30623d46b6264e0695805d3f50e"
+      }
+    },
+    "token_plan": {
+      "path": "/root/pact_valid_ablation_artifacts/token_plan_v1/token_plan.json",
+      "sha256": "1f51f2417bc072ea979ca63fdeec11f430a276d5844dfe9d21eb85d3625ffe63",
+      "token_plan_sha256": "cfca8a92e0798e7744bf9b1e9af50f30b4f9bb7d10735e904015962c242def71"
+    }
+  },
+  "launch_smoke": {
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "5b4288fea1870475134ce93e8613654ffa3a535466789e50525f36b254722546",
+    "output_relpath": "rows/000_0822353beecb48b1_pact_permuted",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "0822353beecb48b13717970d7362f2b92dac22a2282342d050ff1bfbd6578251",
+    "schedule_index": 0,
+    "schedule_row_sha256": "d5c6d73b84d7ae8a91e6691ae5a433708ea15ba8919cae7839d144a1f10d0181"
+  },
+  "schema_version": "pact_valid_ablation_dispatch_v1",
+  "scientific_schedule": {
+    "file_sha256": "25391f1264a09497f9076661f542129e7ead1026807e1a3722a7985d1f9de2d6",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_frontend_screen_manifest_v1.json",
+    "manifest_sha256": "97d0a3d0941f9a1f7b63e416f9a7341c374a16b6e0c2738c7c74d5a7bb036893",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_valid_ablation/schedule.json",
+    "rows": 40,
+    "rows_changed": 0,
+    "schedule_sha256": "51be8ff07cbb58402e1a5b4c06de801f157e6942952a04fb14b4e388df87777b",
+    "workers": 8
+  },
+  "screen_not_confirmatory": true,
+  "storage": {
+    "eligible_rows_losslessly_compacted": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38
+    ],
+    "raw_final_schedule_index_preserved": 39,
+    "raw_smoke_schedule_index_preserved": 0
+  },
+  "throughput": {
+    "endpoint_fields_read": false,
+    "required_artifact": "throughput_first_20_minutes.json",
+    "required_measurement_elapsed_minutes": 20
+  }
+}
