@@ -1,0 +1,107 @@
+{
+  "analysis_script_sha256": "ff44639fbe6957ff2ed2ef74dccbbd47e396a18cd60d04b2dc2816e2dab836ba",
+  "analysis_sha256": "1d1519bbb277d411ad66d56c4f4d9145c1171d8b7cb11797a2a762f6ae63bed5",
+  "decision_rule": {
+    "inconclusive": "VALID_ABLATION_INCONCLUSIVE iff the frozen 40-pair schedule does not reconcile",
+    "no_signal": "VALID_ABLATION_NO_SIGNAL iff difference < +0.05; the original +70 pp is treated as an OOD artifact",
+    "signal_present": "VALID_ABLATION_SIGNAL_PRESENT iff PACT minus PACT_PERMUTED >= +0.10 and paired bootstrap 95% CI lower bound > 0; this clears Step 1",
+    "weak_signal": "VALID_ABLATION_WEAK_SIGNAL iff difference >= +0.05 but signal-present rule is false; this does not authorize confirmation"
+  },
+  "mcnemar_exact_primary": {
+    "arm_a": "PACT",
+    "arm_a_failure_arm_b_success": 3,
+    "arm_a_success_arm_b_failure": 8,
+    "arm_b": "PACT_PERMUTED",
+    "discordant_pairs": 11,
+    "p_value_exact_two_sided": 0.2265625
+  },
+  "paired_instance_bootstrap": {
+    "PACT_minus_PACT_PERMUTED": {
+      "arm_a": "PACT",
+      "arm_b": "PACT_PERMUTED",
+      "ci_95": [
+        -0.025,
+        0.275
+      ],
+      "difference": 0.125,
+      "n_instances": 40,
+      "replicates": 20000,
+      "seed": 2026073106
+    }
+  },
+  "pooled": {
+    "PACT": {
+      "collision_free_task_success": 29,
+      "collision_free_task_success_rate": 0.725,
+      "collision_free_task_success_wilson_95": [
+        0.5716504419378943,
+        0.8389198375233267
+      ],
+      "contact_pair_entry_totals": {
+        "grasp_target": 10622992,
+        "hazard_bar": 135165,
+        "other_environment": 0
+      },
+      "episodes_with_contact": {
+        "grasp_target": 37,
+        "hazard_bar": 2,
+        "other_environment": 0
+      },
+      "failure_taxonomy": {
+        "collision_free_task_success": 29,
+        "hazard_bar_contact": 2,
+        "target_contact_without_task_success": 8,
+        "task_failure_after_gripper_close": 1
+      },
+      "n": 40,
+      "ordinary_task_success": 29,
+      "ordinary_task_success_rate": 0.725,
+      "ordinary_task_success_wilson_95": [
+        0.5716504419378943,
+        0.8389198375233267
+      ]
+    },
+    "PACT_PERMUTED": {
+      "collision_free_task_success": 24,
+      "collision_free_task_success_rate": 0.6,
+      "collision_free_task_success_wilson_95": [
+        0.44595893660346186,
+        0.7365167431570808
+      ],
+      "contact_pair_entry_totals": {
+        "grasp_target": 8994813,
+        "hazard_bar": 137282,
+        "other_environment": 0
+      },
+      "episodes_with_contact": {
+        "grasp_target": 36,
+        "hazard_bar": 5,
+        "other_environment": 0
+      },
+      "failure_taxonomy": {
+        "collision_free_task_success": 24,
+        "hazard_bar_contact": 5,
+        "target_contact_without_task_success": 10,
+        "task_failure_after_gripper_close": 1
+      },
+      "n": 40,
+      "ordinary_task_success": 24,
+      "ordinary_task_success_rate": 0.6,
+      "ordinary_task_success_wilson_95": [
+        0.44595893660346186,
+        0.7365167431570808
+      ]
+    }
+  },
+  "reconciliation": {
+    "errors": [],
+    "expected_pairs": 40,
+    "reconciled": true,
+    "valid_pairs": 40
+  },
+  "results_available": true,
+  "schedule_sha256": "3ea97fe057317219bab00e2e287e87b504d669586816ebc21529576a916861d2",
+  "schema_version": "pact_valid_ablation_analysis_v1",
+  "screen_not_confirmatory": true,
+  "zero_ablation_not_used_for_decision": true
+}

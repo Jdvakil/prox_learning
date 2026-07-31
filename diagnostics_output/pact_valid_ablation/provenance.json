@@ -1,0 +1,74 @@
+{
+  "analysis": {
+    "analysis_file_sha256": "9e105642770e2104512a5d6a1f7d39f9140ca0300e7424c846c3a36796b480a4",
+    "analysis_script_sha256": "ff44639fbe6957ff2ed2ef74dccbbd47e396a18cd60d04b2dc2816e2dab836ba",
+    "analysis_sha256": "1d1519bbb277d411ad66d56c4f4d9145c1171d8b7cb11797a2a762f6ae63bed5",
+    "decision": "VALID_ABLATION_WEAK_SIGNAL",
+    "final_decision_file_sha256": "182fd75aad10a1a169b1c2be30abeb0744aec9661c8286bac609acfb9dbff119",
+    "final_decision_sha256": "6cb4b70d25c15e35820d12440ea45f9e0792a4aefc2c942981388f9d62ea9833",
+    "fresh_confirmatory_run_authorized": false
+  },
+  "audit": {
+    "act_retraining_required": false,
+    "audit_file_sha256": "eb4531fbbbf64bff8c6bd79931b1447b8c96cb95a7ea157f69d8f3f8f04e269a",
+    "audit_script_sha256": "5ed4b55544479d3cfe678830d65fb1462598ac6785b8e8b9f37b93109a2b1e8f",
+    "audit_sha256": "4a4c9f57f63067528390a302acbf4ae9eef4eeda301e1a1dc4bac5537e641eb5",
+    "data_equivalence_passed": true,
+    "new_32d_exact_zero_count": 0,
+    "old_3d_exact_zero_count": 1184764
+  },
+  "execution": {
+    "abort_present": false,
+    "attempt_ledgers": 40,
+    "compacted_rows": 38,
+    "detachment_proof_file_sha256": "e10b77f1947f2243872df5d1744d3e961c31ac3c25d7b3858f86eff6c510d1e0",
+    "detachment_proof_sha256": "4154acaf1177b89f4159fb85998d70ade5e99c455f156deba5bf8987bd792eb1",
+    "driver_results": 40,
+    "fixed_workers": 8,
+    "full_execution_summary_file_sha256": "6cc8de1655d196185c2c1bb8851d4c7597d79b3da786ba5bc1a4d1fae93ccf6e",
+    "output_root": "/root/pact_valid_ablation_artifacts/evaluation_3ea97fe0",
+    "raw_intact_schedule_indices": [
+      0,
+      39
+    ],
+    "scientific_results": 40,
+    "scientific_schedule_reconciled": true,
+    "storage_compaction_summary_file_sha256": "0a3d0fc32e212c1393a29b9bf621aa4b455ca096eacbbbf9593330e4b321629c",
+    "storage_compaction_summary_sha256": "cd2f741a45a938a61f019c85449b7cfe78d423ace156652b066550667044c772",
+    "throughput_file_sha256": "3d53b1a15514f9b57576f6836fb96843d5b7928153572c47281a0c3bdd04d570",
+    "throughput_rows_per_minute": 0.4,
+    "throughput_sha256": "7754c3b3bdd5995604ac9384eb14272c87a1b2d57ab2edcd49c6cf24194667fa"
+  },
+  "frozen_contract": {
+    "dispatch_contract_file_sha256": "834c0520a5aa88f8482557916c61f97be345f614659b8dee0b3d0ca3ed58a582",
+    "dispatch_contract_sha256": "41c636aa828220e06cb148ec5d344352d6488b00fb4f4edebfbef48110341312",
+    "horizon_amendment_file_sha256": "0d33d73f8032a69658111f95770e6be0ea281cf568fe4afe280812f7ea01efd5",
+    "horizon_amendment_sha256": "85fb6a8e776d3abe0256eae50ebabe2b923b1c315cbbb14722f0ce6d7b689786",
+    "preregistration_file_sha256": "ff62634dee9d81ef33dfabe3730350ff83318e71846b84ed548c3e32d92c380f",
+    "preregistration_sha256": "c9e3eb541d6dcfb004264f2be02e001d123c78fd9a00b317fdce856e9e46362d",
+    "schedule_file_sha256": "b6a594f5fe9a3105b871cacfddfa80d96815a7edc9a9b88d5a3284c52060e894",
+    "schedule_sha256": "3ea97fe057317219bab00e2e287e87b504d669586816ebc21529576a916861d2",
+    "storage_amendment_file_sha256": "b07f62bfa8ebe5689d770fc01d08a6123012a076b8e7f17493fcab76bb600988",
+    "storage_amendment_sha256": "9f51a21901a9bce606d2d43d2c4a9081b03989df12cc33a0d28e3831be914e62",
+    "token_plan_file_sha256": "67dc3942b2d76133d159859587cd4fc4ed8e7d429047f50b018a90b91acc4f82",
+    "token_plan_sha256": "a6cc273b8a1facd4745e137f9aee39dd7f61b5569e0465278010383ea22f8643"
+  },
+  "pre_outcome_failure": {
+    "endpoint_fields_inspected": false,
+    "old_output_root": "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0",
+    "reason": "512-frame token plan was shorter than the inherited 900-step task horizon",
+    "result_files_present": 0,
+    "retained_for_provenance": true
+  },
+  "provenance_sha256": "a55f94f10ca2c232409cd8546ea068032937b7e906ba47b7eca306b708243b82",
+  "repository": {
+    "act_commit": "0addcfc005ff641aaee115927d4fdd7dbe133970",
+    "branch": "experiment/pact-valid-ablation-followup-v1",
+    "frozen_dispatch_root_commit": "3d4aa68f66fb0b25cc67743e2ab3e03e900c95ae"
+  },
+  "schema_version": "pact_valid_ablation_provenance_v1",
+  "source_followup_plan": {
+    "path": "/root/prox_learning_hybrid_safety/docs/PACT_SCREEN_FOLLOWUP_PLAN.md",
+    "sha256": "2968854b25ffee3aa79c50a9ae0a94811b8d7228ec357fd8433ae3cef06c1ce5"
+  }
+}

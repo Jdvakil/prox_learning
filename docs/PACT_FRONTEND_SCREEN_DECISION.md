@@ -30,7 +30,38 @@ Decision: `FRONTEND_SCREEN_SIGNAL_PRESENT`
 Primary PACT − PACT_ZERO: +70.0 pp, paired bootstrap 95% CI [+55.0, +82.5] pp.
 Discordant pairs: PACT-only success 28, PACT_ZERO-only success 0; exact McNemar p=7.451e-09.
 
-The ACT comparison is a sanity reference only and is not decision-bearing in this screen.
+## Post-hoc instrument-validity amendment
+
+The frozen rule honestly awarded `FRONTEND_SCREEN_SIGNAL_PRESENT`, and that
+historical token is retained below. Its decision-bearing instrument was later
+shown to be invalid: zero is absent from all 1,247,040 new 32-D training tokens,
+whose norms occupy a tight shell around 6.31. The all-zero inference token is
+therefore a severe out-of-distribution input, not “PACT without proximity.” The
++70 pp PACT − PACT_ZERO result must not be reported as modality evidence.
+
+A preregistered distribution-matched replacement kept the identical PACT
+checkpoint and 40 instances while supplying real training-token frames with
+live-scene alignment destroyed:
+
+| Arm | Collision-free task success | Ordinary task success |
+|---|---:|---:|
+| PACT | 29/40 (72.5%, 95% Wilson 57.2–83.9%) | 29/40 (72.5%) |
+| PACT_PERMUTED | 24/40 (60.0%, 95% Wilson 44.6–73.7%) | 24/40 (60.0%) |
+
+PACT − PACT_PERMUTED was +12.5 pp, paired bootstrap 95% CI
+[-2.5, +27.5] pp; discordant pairs were 8 versus 3 and exact McNemar
+p=0.2266. The frozen result is `VALID_ABLATION_WEAK_SIGNAL`: suggestive, but it
+does not clear Step 1 and does not authorize a confirmatory run.
+
+The independent ACT conversion audit found all 255 episode lengths and all
+image, qpos, qvel, and action payloads exactly equal between the reused ACT and
+new PACT conversions; splits, normalization statistics, and recipes also match.
+ACT retraining is not required. In the old 3-D representation, 95.0% of tokens
+were exactly zero, confirming that old and new zero ablations are not comparable.
+
+The ACT comparison below remains a development-screen candidate signal only.
+It cannot replace the invalid frozen primary endpoint or the failed
+distribution-matched go/no-go rule.
 
 ## Secondary diagnostics
 
@@ -72,6 +103,8 @@ rows. The original result and trajectory payloads remain byte-exactly
 recoverable. Schedule rows 0 and 119 remain fully unpacked, and no endpoint value
 was emitted during compaction.
 
-This token is a screen decision only; no confirmatory PACT decision token may be inferred from it.
+This token is a screen decision only; it is retained as historical output of
+the frozen rule but rests on an invalid instrument. No confirmatory PACT
+decision token may be inferred from it.
 
 FRONTEND_SCREEN_SIGNAL_PRESENT

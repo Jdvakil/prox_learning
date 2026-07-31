@@ -17,6 +17,10 @@ The independently seeded recovery protocol is frozen in
 [`docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md`](docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md).
 The preregistered 32-D proximity-front-end development screen is reported in
 [`docs/PACT_FRONTEND_SCREEN_DECISION.md`](docs/PACT_FRONTEND_SCREEN_DECISION.md).
+Its distribution-matched validity follow-up is
+[`docs/PACT_VALID_ABLATION_DECISION.md`](docs/PACT_VALID_ABLATION_DECISION.md),
+with the conversion and zero-support audit in
+[`docs/PACT_ACT_DATA_EQUIVALENCE_AND_ZERO_SUPPORT.md`](docs/PACT_ACT_DATA_EQUIVALENCE_AND_ZERO_SUPPORT.md).
 
 ---
 

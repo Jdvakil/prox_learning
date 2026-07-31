@@ -1,0 +1,185 @@
+{
+  "act_retraining_required": false,
+  "audit_sha256": "4a4c9f57f63067528390a302acbf4ae9eef4eeda301e1a1dc4bac5537e641eb5",
+  "core_data_equivalence": {
+    "core_payload_digests": {
+      "action": {
+        "equal": true,
+        "new_sha256": "edbac49d55bcca09c7353d4f802ca744d0b4613b61da77e9014af323d467638c",
+        "old_sha256": "edbac49d55bcca09c7353d4f802ca744d0b4613b61da77e9014af323d467638c"
+      },
+      "observations/images/wrist_camera": {
+        "equal": true,
+        "new_sha256": "618e9796477c88576500a3adf70f7b175069a41b61a7a4f3cb63a99a004c009a",
+        "old_sha256": "618e9796477c88576500a3adf70f7b175069a41b61a7a4f3cb63a99a004c009a"
+      },
+      "observations/qpos": {
+        "equal": true,
+        "new_sha256": "0cb4910e5c56bf12a9656e0967addaf0f08e914141843b96d405e2112e6b80d3",
+        "old_sha256": "0cb4910e5c56bf12a9656e0967addaf0f08e914141843b96d405e2112e6b80d3"
+      },
+      "observations/qvel": {
+        "equal": true,
+        "new_sha256": "fd20c7194a82f64835131b7292056fc8447bb3c663418a4b0640df4816936096",
+        "old_sha256": "fd20c7194a82f64835131b7292056fc8447bb3c663418a4b0640df4816936096"
+      }
+    },
+    "episode_filenames_identical": true,
+    "episode_lengths_identical": true,
+    "key_mismatches": [],
+    "length_mismatches": [],
+    "new_episode_count": 255,
+    "old_episode_count": 255,
+    "only_added_dataset_is_proximity_embeddings": true,
+    "passed": true,
+    "payload_mismatches": [],
+    "shape_or_dtype_mismatches": []
+  },
+  "equivalence_passed": true,
+  "interpretation": {
+    "confirmatory_run_authorized": false,
+    "reason": "VALID_ABLATION_WEAK_SIGNAL does not clear Step 1",
+    "step_1_decision_is_not_changed_by_this_audit": true
+  },
+  "new_dataset": "/root/pact_frontend_screen_artifacts/dataset_embedding32_v1",
+  "new_pact_run_manifest": "/root/pact_frontend_screen_artifacts/policy_seed3101/run_manifest.json",
+  "normalization_statistics": {
+    "file_sha256_identical": true,
+    "new_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+    "new_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+    "old_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+    "old_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+    "semantic_payload_identical": true
+  },
+  "old_act_run_manifest": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/run_manifest.json",
+  "old_dataset": "/root/prox_learning_pact_remediation/assets/act_style_data/pact_collision_corridor_v2_full_cba7ff88",
+  "old_pact_run_manifest": "/root/pact_remediation_artifacts_v2/full/policies_v2/pact_seed3101/run_manifest.json",
+  "recipe_equivalence": {
+    "action_dim": {
+      "identical": true,
+      "new": 8,
+      "old": 8
+    },
+    "batch_size": {
+      "identical": true,
+      "new": 8,
+      "old": 8
+    },
+    "camera_names": {
+      "identical": true,
+      "new": [
+        "wrist_camera"
+      ],
+      "old": [
+        "wrist_camera"
+      ]
+    },
+    "chunk_size": {
+      "identical": true,
+      "new": 100,
+      "old": 100
+    },
+    "dim_feedforward": {
+      "identical": true,
+      "new": 3200,
+      "old": 3200
+    },
+    "episode_horizon": {
+      "identical": true,
+      "new": 195,
+      "old": 195
+    },
+    "hidden_dim": {
+      "identical": true,
+      "new": 512,
+      "old": 512
+    },
+    "kl_weight": {
+      "identical": true,
+      "new": 10,
+      "old": 10
+    },
+    "lr": {
+      "identical": true,
+      "new": 1e-05,
+      "old": 1e-05
+    },
+    "num_epochs": {
+      "identical": true,
+      "new": 2000,
+      "old": 2000
+    },
+    "policy_class": {
+      "identical": true,
+      "new": "ACT",
+      "old": "ACT"
+    },
+    "state_dim": {
+      "identical": true,
+      "new": 9,
+      "old": 9
+    }
+  },
+  "schema_version": "pact_act_data_and_zero_support_audit_v1",
+  "split_equivalence": {
+    "manifest_hashes_identical": false,
+    "new_manifest_sha256": "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486",
+    "old_manifest_sha256": "04684e802c2de63fd3a070680b51f90665f5e276821b05307897666ae231befc",
+    "train_act_indices_identical": true,
+    "train_episode_ids_identical": true,
+    "val_act_indices_identical": true,
+    "val_episode_ids_identical": true
+  },
+  "zero_support": {
+    "new_32d_representation": {
+      "dataset_path": "observations/proximity_embeddings",
+      "episode_count": 199,
+      "exact_zero_vector_count": 0,
+      "exact_zero_vector_fraction": 0.0,
+      "feature_dim": 32,
+      "norm": {
+        "count_below_0_1": 0,
+        "maximum": 6.375055313110352,
+        "mean": 6.312321186065674,
+        "median": 6.31820011138916,
+        "minimum": 6.015718460083008,
+        "p01": 6.12022066116333
+      },
+      "token_count": 1247040,
+      "zero_vector_distance_from_per_dim_mean": {
+        "dimensions_beyond_3_sigma": 10,
+        "maximum_abs_z": 5.891089650044611,
+        "median_abs_z": 2.195825924788963
+      }
+    },
+    "new_zero_empirically_observed": false,
+    "old_3d_representation": {
+      "dataset_path": "observations/proximity_positions",
+      "episode_count": 199,
+      "exact_zero_vector_count": 1184764,
+      "exact_zero_vector_fraction": 0.9500609443161406,
+      "feature_dim": 3,
+      "norm": {
+        "count_below_0_1": 1186598,
+        "maximum": 0.24055947363376617,
+        "mean": 0.009047964587807655,
+        "median": 0.0,
+        "minimum": 0.0,
+        "p01": 0.0
+      },
+      "token_count": 1247040,
+      "validity": {
+        "invalid_count": 1184764,
+        "invalid_exact_zero_count": 1184764,
+        "valid_count": 62276,
+        "valid_exact_zero_count": 0
+      },
+      "zero_vector_distance_from_per_dim_mean": {
+        "dimensions_beyond_3_sigma": 0,
+        "maximum_abs_z": 0.22496952805025808,
+        "median_abs_z": 0.13366852310322153
+      }
+    },
+    "old_zero_empirically_observed": true
+  }
+}
