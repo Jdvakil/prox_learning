@@ -10,8 +10,10 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "submodules" / "act"))
 
-from surface_proximity_encoder import (  # noqa: E402
+from surface_proximity_encoder import (
     CAUSAL_FRAMES,
+    SURFACE_EMBEDDING_DIM,
+    SurfaceEmbeddingEncoder,
     SurfaceProximityEncoder,
     causal_sensor_window,
     depth_to_closeness,
@@ -56,3 +58,19 @@ def test_model_shape_and_parameter_budget():
     assert xyz.shape == (2, 3)
     assert logits.shape == (2,)
     assert 800_000 <= parameter_count(model) <= 840_000
+
+
+def test_embedding_model_preserves_geometry_outputs_and_exposes_32d_policy_input():
+    model = SurfaceEmbeddingEncoder()
+    embedding, xyz, logits, reconstruction = model(
+        torch.zeros(2, CAUSAL_FRAMES, 8, 8)
+    )
+    assert embedding.shape == (2, SURFACE_EMBEDDING_DIM)
+    assert xyz.shape == (2, 3)
+    assert logits.shape == (2,)
+    assert reconstruction.shape == (2, 8, 8)
+    assert torch.all((0.0 <= reconstruction) & (reconstruction <= 1.0))
+    assert model.policy_features(
+        torch.zeros(2, CAUSAL_FRAMES, 8, 8)
+    ).shape == (2, SURFACE_EMBEDDING_DIM)
+    assert 800_000 <= parameter_count(model) <= 850_000

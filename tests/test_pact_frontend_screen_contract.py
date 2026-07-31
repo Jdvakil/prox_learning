@@ -1,0 +1,144 @@
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from pact_frontend_screen_contract import (
+    INSTANCE_COUNT,
+    build_manifest,
+    validate_manifest,
+)
+
+
+def _load(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+analysis = _load(
+    "analyze_pact_frontend_screen",
+    ROOT / "scripts/analyze_pact_frontend_screen.py",
+)
+
+
+def _instances(a_only: int, b_only: int, neither: int = 0):
+    instances = []
+    for _ in range(a_only):
+        instances.append(
+            {
+                "PACT": {"collision_free_task_success": True},
+                "PACT_ZERO": {"collision_free_task_success": False},
+            }
+        )
+    for _ in range(b_only):
+        instances.append(
+            {
+                "PACT": {"collision_free_task_success": False},
+                "PACT_ZERO": {"collision_free_task_success": True},
+            }
+        )
+    for _ in range(neither):
+        instances.append(
+            {
+                "PACT": {"collision_free_task_success": False},
+                "PACT_ZERO": {"collision_free_task_success": False},
+            }
+        )
+    return instances
+
+
+def test_screen_manifest_is_balanced_and_disjoint():
+    excluded = {"prior-a", "prior-b"}
+    manifest = build_manifest(
+        source_hashes={"test": "0" * 64},
+        sensor_names=[f"sensor_{index:02d}" for index in range(40)],
+        excluded_episode_ids=excluded,
+        excluded_manifests={"r1": "1" * 64, "r2": "2" * 64},
+    )
+    validate_manifest(manifest, excluded_episode_ids=excluded)
+    assert len(manifest["rows"]) == INSTANCE_COUNT
+    assert {
+        side: sum(
+            row["intrusion_side"] == side for row in manifest["rows"]
+        )
+        for side in ("left", "right")
+    } == {"left": 20, "right": 20}
+    assert not (
+        {row["episode_id"] for row in manifest["rows"]} & excluded
+    )
+
+
+def test_mcnemar_reports_directional_discordant_pairs():
+    result = analysis.discordant_pairs(
+        _instances(6, 1, 33), arm_a="PACT", arm_b="PACT_ZERO"
+    )
+    assert result["arm_a_success_arm_b_failure"] == 6
+    assert result["arm_a_failure_arm_b_success"] == 1
+    assert result["discordant_pairs"] == 7
+    assert 0.0 <= result["p_value_exact_two_sided"] <= 1.0
+
+
+def test_screen_decision_rule_cannot_emit_confirmatory_tokens():
+    present = {
+        "difference": 0.10,
+        "ci_95": [0.025, 0.20],
+    }
+    weak = {"difference": 0.075, "ci_95": [-0.05, 0.20]}
+    none = {"difference": 0.025, "ci_95": [-0.10, 0.15]}
+    assert (
+        analysis.choose_decision(
+            reconciled=True, pact_minus_zero=present
+        )
+        == "FRONTEND_SCREEN_SIGNAL_PRESENT"
+    )
+    assert (
+        analysis.choose_decision(
+            reconciled=True, pact_minus_zero=weak
+        )
+        == "FRONTEND_SCREEN_WEAK_SIGNAL"
+    )
+    assert (
+        analysis.choose_decision(
+            reconciled=True, pact_minus_zero=none
+        )
+        == "FRONTEND_SCREEN_NO_SIGNAL"
+    )
+    assert (
+        analysis.choose_decision(
+            reconciled=False, pact_minus_zero=None
+        )
+        == "FRONTEND_SCREEN_INCONCLUSIVE"
+    )
+
+
+def test_preregistration_self_hash_and_frozen_screen_rule():
+    path = (
+        ROOT
+        / "configs"
+        / "pact_frontend_screen_preregistration_v1.json"
+    )
+    document = json.loads(path.read_text())
+    observed = document.pop("preregistration_sha256")
+    expected = hashlib.sha256(
+        json.dumps(
+            document, sort_keys=True, separators=(",", ":")
+        ).encode()
+    ).hexdigest()
+    assert observed == expected
+    assert document["design"]["rollouts"] == 120
+    assert document["design"]["workers"] == 8
+    assert document["frontend"]["primary_variant"].startswith(
+        "embedding32"
+    )
+    assert document["decision_rule"][
+        "FRONTEND_SCREEN_SIGNAL_PRESENT"
+    ] == "PACT_minus_PACT_ZERO_ge_0.10_and_paired_CI_lower_gt_0"

@@ -10,7 +10,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "submodules" / "act"))
 
-from utils import EpisodicDataset  # noqa: E402
+from utils import EpisodicDataset
 
 
 def _dataset(path: Path, encoder_sha: str):
@@ -80,3 +80,32 @@ def test_pact_loader_rejects_wrong_encoder(tmp_path):
             n_proximity_sensors=40,
             expected_proximity_encoder_sha256="b" * 64,
         )
+
+
+def test_pact_loader_returns_frozen_32d_embeddings(tmp_path, monkeypatch):
+    sha = "c" * 64
+    path = tmp_path / "episode_0.hdf5"
+    _dataset(path, sha)
+    with h5py.File(path, "r+") as handle:
+        embeddings = np.zeros((2, 40, 32), dtype=np.float32)
+        embeddings[0, 9] = np.arange(32, dtype=np.float32)
+        handle["observations"].create_dataset(
+            "proximity_embeddings", data=embeddings
+        )
+    monkeypatch.setattr(np.random, "choice", lambda _: 0)
+    dataset = EpisodicDataset(
+        [0],
+        str(tmp_path),
+        ["wrist_camera"],
+        _stats(),
+        100,
+        use_proximity=True,
+        n_proximity_sensors=40,
+        proximity_feature_dim=32,
+        expected_proximity_encoder_sha256=sha,
+    )
+    sample = dataset[0]
+    assert tuple(sample[-1].shape) == (40, 32)
+    np.testing.assert_allclose(
+        sample[-1][9].numpy(), np.arange(32, dtype=np.float32)
+    )

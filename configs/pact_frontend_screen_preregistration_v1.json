@@ -1,0 +1,147 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026073103,
+    "fisher_exact_two_sided_secondary": [
+      "PACT_vs_ACT",
+      "PACT_vs_PACT_ZERO"
+    ],
+    "frozen_analysis_script_sha256": "cd4cbf07daf9bfdfbe2ed46b0c95c8d79fd70ef6f7080003f39ade1534e23534",
+    "mcnemar_exact_two_sided_primary": "PACT_vs_PACT_ZERO",
+    "paired_by_instance": true,
+    "wilson_interval": 0.95
+  },
+  "decision_rule": {
+    "FRONTEND_SCREEN_INCONCLUSIVE": "schedule_did_not_reconcile",
+    "FRONTEND_SCREEN_NO_SIGNAL": "PACT_minus_PACT_ZERO_lt_0.05",
+    "FRONTEND_SCREEN_SIGNAL_PRESENT": "PACT_minus_PACT_ZERO_ge_0.10_and_paired_CI_lower_gt_0",
+    "FRONTEND_SCREEN_WEAK_SIGNAL": "PACT_minus_PACT_ZERO_ge_0.05_and_signal_present_rule_false",
+    "confirmatory_tokens_prohibited": [
+      "PACT_BENEFIT_ESTABLISHED",
+      "PACT_NO_CONFIRMED_BENEFIT",
+      "PACT_WORSE_THAN_ACT"
+    ]
+  },
+  "design": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_ZERO"
+    ],
+    "checkpoint_seed": 3101,
+    "fresh_subprocess_per_rollout": true,
+    "instances": 40,
+    "repeats_per_instance_per_arm": 1,
+    "rollouts": 120,
+    "schedule_seed": 2026073102,
+    "screen_not_confirmatory": true,
+    "workers": 8
+  },
+  "environment": {
+    "adequacy_decision": "PACT_ENVIRONMENT_ADEQUATE",
+    "endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0",
+    "gate_remeasured": false,
+    "grasp_target_contact_exempt": true,
+    "scene": "pact_collision_corridor_v1",
+    "unchanged": true
+  },
+  "frontend": {
+    "architecture": {
+      "causal_frames": 32,
+      "embedding_dim": 32,
+      "heads": 4,
+      "input_per_sensor": [
+        32,
+        8,
+        8
+      ],
+      "layers": 4,
+      "policy_output": "per-sensor frozen 32-D embedding",
+      "shared_across_sensors": true
+    },
+    "baseline_3d_encoder": {
+      "mean_euclidean_error_m": 0.03261842578649521,
+      "median_euclidean_error_m": 0.018779858946800232,
+      "validity_precision": 0.9990777034816694,
+      "validity_recall": 0.9991928974979822,
+      "within_2cm_rate": 0.5125677389599907
+    },
+    "fallback": "requires_separate_outcome_blind_frozen_amendment_before_fallback_training",
+    "loss": {
+      "active_pixel_extra_weight": 4.0,
+      "reconstruction_smooth_l1_weight": 2.0,
+      "validity_bce_weight": 1.0,
+      "xyz_smooth_l1_weight": 5.0
+    },
+    "primary_variant": "embedding32_reconstruction_auxiliary_surface",
+    "quality_gate": {
+      "active_pixel_reconstruction_mae_max": 0.15,
+      "all_reported_metrics_finite": true,
+      "mean_euclidean_error_m_max": 0.05,
+      "validity_precision_min": 0.98,
+      "validity_recall_min": 0.98
+    },
+    "training": {
+      "batch_size": 256,
+      "epochs": 100,
+      "learning_rate": 0.0001,
+      "selection": "lowest held-out composite loss",
+      "seed": 4201
+    }
+  },
+  "frozen_code": {
+    "act_submodule_commit": "0d6b13a7f546139ec3c9d51c0d90b135a49671a4",
+    "dataset_encoder_sha256": "8cf50e487caf4736576330400b32bf609e1b6cbb924cd15505047a5b7c057c5f",
+    "dataset_rematerializer_sha256": "46b1500eb830cc9a4204aec9f155f3e08f2e4293004fbf7282fb007356c5b461",
+    "embedding_encoder_trainer_sha256": "9ad80f5d5bde89de6016567757bafb4ff2f4c61f814add61889d97489bdf9471",
+    "legacy_r2_evaluator_unchanged_sha256": "eaffdbbe22b1f1a0a435dfbfd05d837d438143a1fb3407602b22905153c351bf",
+    "policy_trainer_sha256": "1a71c98ac5df156be762d0f18ee75f5d2f20d03d328ced4a824a6d73b24d57cd",
+    "screen_contract_sha256": "d02831e9600a3ff32e462da799185c24006b53a19b7ed4320c5d436c940d0721",
+    "screen_evaluator_sha256": "e819d88807e0be278c96659112099e4cda0d98defbc886b7aca6e7379387ac55"
+  },
+  "frozen_inputs": {
+    "act_checkpoint": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+    "act_checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+    "act_retrained": false,
+    "act_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+    "base_conversion_manifest_sha256": "0b1fa9741a8087aa18c411938c7d7e4a47880e5d35a0da884d7fb220dc3fb674",
+    "base_dataset_semantic_tree_sha256": "8ddcc3dc1315eaa0bd3d7b226229f3f6bb9dc2652e999082cf481c4ab14577b1",
+    "split_manifest_sha256": "6635012f73432d9a79480e1b4c9d3cc5d6ae7d40bdc243d6b0c4b1a4360c4742"
+  },
+  "interpretation": {
+    "detectable_gap": "roughly 0.15 absolute PACT minus PACT_ZERO",
+    "negative_screen": "not worth confirmatory spend on this evidence; not proof that proximity never helps",
+    "primary_contrast": "PACT_minus_PACT_ZERO",
+    "secondary_contrast": "PACT_minus_ACT"
+  },
+  "policy_training": {
+    "arm": "PACT_only",
+    "batch_size": 8,
+    "beta": 10,
+    "checkpoint_every_epochs": 2000,
+    "chunk": 100,
+    "decoder_layers": 7,
+    "encoder_layers": 7,
+    "epochs": 2000,
+    "heads": 8,
+    "hidden_dim": 512,
+    "learning_rate": 1e-05,
+    "proximity_feature_dim": 32,
+    "seed": 3101
+  },
+  "preregistration_sha256": "ae089740ba5391c3025518ec06c77090e01a312d78e7a582fea48f2bf39c5c00",
+  "schema_version": "pact_frontend_screen_preregistration_v1",
+  "supervisor": {
+    "all_result_free_inflight_rows_recovered_together": true,
+    "detachment_proof_during_smoke": true,
+    "durable_heartbeat": true,
+    "durable_parent_log": true,
+    "durable_pid": true,
+    "final_schedule_index_kept_uncompacted": 119,
+    "launch": "setsid plus nohup with detached stdin",
+    "launch_smoke_schedule_index": 0,
+    "row_terminal_boundary": "valid scientific result.json",
+    "selected_post_observation_rerun": false,
+    "throughput_measurement_minutes": 20
+  }
+}
