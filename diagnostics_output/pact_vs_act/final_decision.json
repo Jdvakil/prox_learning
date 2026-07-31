@@ -1,6 +1,64 @@
 {
-  "decision": "PACT_EXPERIMENT_INCOMPLETE",
-  "reason": "The frozen schedule did not reconcile; outcomes are not analyzed.",
-  "schedule_sha256": "b6d9b3f7a87fef328a87db725e405ab4c48fe88d720ef3f7da094fda05110a8f",
+  "PACT_minus_ACT": {
+    "arm_a": "PACT",
+    "arm_b": "ACT",
+    "ci_95": [
+      -0.084375,
+      0.015625
+    ],
+    "difference": -0.034375,
+    "n_instances": 160,
+    "replicates": 20000,
+    "seed": 2026072902
+  },
+  "PACT_minus_PACT_ZERO": {
+    "arm_a": "PACT",
+    "arm_b": "PACT_ZERO",
+    "ci_95": [
+      -0.015625,
+      0.009375
+    ],
+    "difference": -0.003125,
+    "n_instances": 160,
+    "replicates": 20000,
+    "seed": 2026072903
+  },
+  "decision": "PACT_NO_CONFIRMED_BENEFIT",
+  "decision_rule": "benefit: both paired CI lower bounds > 0 and both Fisher p < .05; worse: PACT-ACT paired CI upper < 0 and Fisher p < .05; otherwise no confirmed benefit",
+  "fisher_exact": {
+    "PACT_vs_ACT": {
+      "arm_a": "PACT",
+      "arm_b": "ACT",
+      "odds_ratio": 0.8713920350748995,
+      "p_value_two_sided": 0.4290359704035298,
+      "table_success_failure": [
+        [
+          159,
+          161
+        ],
+        [
+          170,
+          150
+        ]
+      ]
+    },
+    "PACT_vs_PACT_ZERO": {
+      "arm_a": "PACT",
+      "arm_b": "PACT_ZERO",
+      "odds_ratio": 0.9875776397515528,
+      "p_value_two_sided": 1.0,
+      "table_success_failure": [
+        [
+          159,
+          161
+        ],
+        [
+          160,
+          160
+        ]
+      ]
+    }
+  },
+  "schedule_sha256": "35e1377c9029f4934ff816b2d04c15f9134f232c7baa7136545565ea6b0057ad",
   "schema_version": "pact_final_decision_v2"
 }

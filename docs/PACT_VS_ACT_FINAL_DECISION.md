@@ -2,7 +2,7 @@
 
 ## Experiment status
 
-Decision: `PACT_EXPERIMENT_INCOMPLETE`
+Decision: `PACT_NO_CONFIRMED_BENEFIT`
 
 ## Environment adequacy gate
 
@@ -32,32 +32,37 @@ PACT_ZERO was not separately trained; it uses the corresponding PACT checkpoint 
 
 ## Frozen confirmatory design
 
-160 held-out instances × 3 arms × 2 checkpoint seeds = 960 rollouts, 8 fixed workers, one fresh subprocess per row. Schedule SHA-256: `b6d9b3f7a87fef328a87db725e405ab4c48fe88d720ef3f7da094fda05110a8f`.
+160 held-out instances × 3 arms × 2 checkpoint seeds = 960 rollouts, 8 fixed workers, one fresh subprocess per row. Schedule SHA-256: `35e1377c9029f4934ff816b2d04c15f9134f232c7baa7136545565ea6b0057ad`.
 
 Using the frozen pilot ACT collision-free rate 0.359, 160 independent instances per arm have approximately 80% power at two-sided alpha=0.05 for a 0.155 absolute increase under a conservative unpaired normal approximation. The second checkpoint seed per instance and pairing receive no power credit.
 
-The preregistered schedule did not reconcile, so no endpoint comparison was interpreted.
+## Primary and secondary endpoints
 
-- Expected rows: 960
-- Valid rows: 1
-- Missing: 959
-- Non-complete driver rows: 0
-- Invalid rows: 0
+| Arm | Collision-free task success | Wilson 95% CI | Ordinary task success | Wilson 95% CI |
+|---|---:|---:|---:|---:|
+| ACT | 170/320 (53.1%) | [47.7%, 58.5%] | 177/320 (55.3%) | [49.8%, 60.7%] |
+| PACT | 159/320 (49.7%) | [44.2%, 55.1%] | 169/320 (52.8%) | [47.3%, 58.2%] |
+| PACT_ZERO | 160/320 (50.0%) | [44.6%, 55.4%] | 169/320 (52.8%) | [47.3%, 58.2%] |
 
-## Dispatch integrity and interruption
+## Preregistered comparisons
 
-The predeclared launch-smoke row passed in one invocation and one attempt. Its boundary, result, driver, schedule-row, checkpoint, and recorded hashes reconcile. The smoke endpoint was not interpreted.
+- PACT_minus_ACT: -3.4%, paired-instance bootstrap 95% CI [-8.4%, +1.6%], two-sided Fisher p=0.429036.
+- PACT_minus_PACT_ZERO: -0.3%, paired-instance bootstrap 95% CI [-1.6%, +0.9%], two-sided Fisher p=1.
 
-After the full pool was released, eight additional rows accepted initial observations, but the evaluator process group disappeared before any of them wrote a scientific result. All eight logs stop after initial-observation acceptance without a traceback. No kernel OOM or GPU Xid was observed in the audit window; the exact external initiator is unknown.
+## Contact totals
 
-Under the frozen boundary rule, those eight rows are terminal post-boundary failures and cannot be replaced or rerun. The remaining 951 rows were never started after irrecoverability was known, because further rollouts could not restore a valid confirmatory decision.
+- ACT: pair entries {'grasp_target': 70569690, 'hazard_bar': 1029374, 'other_environment': 771}; episodes {'grasp_target': 275, 'hazard_bar': 67, 'other_environment': 1}.
+- PACT: pair entries {'grasp_target': 72087757, 'hazard_bar': 1191065, 'other_environment': 1120}; episodes {'grasp_target': 280, 'hazard_bar': 69, 'other_environment': 2}.
+- PACT_ZERO: pair entries {'grasp_target': 70913878, 'hazard_bar': 1196616, 'other_environment': 1131}; episodes {'grasp_target': 278, 'hazard_bar': 71, 'other_environment': 2}.
 
-The frozen analyzer sees 1 valid row and 959 rows without valid results. The incident ledger resolves that latter count into 8 terminal post-boundary rows and 951 never-started rows. No endpoint comparison, Fisher test, or instance bootstrap was interpreted.
+## Failure taxonomy
 
-Incident SHA-256: `901868dd06ada31c119f9bad3ca4882b0c72e9c43cd2d7a1cbfd1b74f5a64d54`.
+- ACT: {'collision_free_task_success': 170, 'target_contact_without_task_success': 81, 'hazard_bar_contact': 67, 'other_environment_contact': 1, 'task_failure_after_gripper_close': 1}.
+- PACT: {'target_contact_without_task_success': 88, 'collision_free_task_success': 159, 'hazard_bar_contact': 69, 'other_environment_contact': 2, 'task_failure_after_gripper_close': 2}.
+- PACT_ZERO: {'target_contact_without_task_success': 85, 'collision_free_task_success': 160, 'hazard_bar_contact': 71, 'other_environment_contact': 2, 'task_failure_after_gripper_close': 2}.
 
 ## Decision
 
 The final line is the exact allowed decision token.
 
-PACT_EXPERIMENT_INCOMPLETE
+PACT_NO_CONFIRMED_BENEFIT
