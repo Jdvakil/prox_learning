@@ -4,6 +4,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import h5py
+import numpy as np
 from torch import nn
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,10 @@ def _load(name: str, path: Path):
 trainer = _load(
     "train_pact_frontend_screen_policy",
     ROOT / "scripts/train_pact_frontend_screen_policy.py",
+)
+preparer = _load(
+    "prepare_pact_embedding_dataset",
+    ROOT / "scripts/prepare_pact_embedding_dataset.py",
 )
 
 
@@ -119,3 +125,62 @@ def test_screen_evaluator_replaces_both_legacy_config_and_direct_policy():
     ) in source
     assert "legacy.load_eval_manifest = load_screen_manifest" in source
     assert "legacy.retry_seed_for = screen_retry_seed" in source
+
+
+def test_rematerialized_raw_semantic_hash_is_string_stable(tmp_path):
+    source = tmp_path / "source.hdf5"
+    destination = tmp_path / "destination.hdf5"
+    with h5py.File(source, "w") as handle:
+        handle.attrs["sim"] = True
+        handle.attrs["pact_surface_tokens_frozen"] = True
+        handle.create_dataset(
+            "action", data=np.zeros((1, 8), dtype=np.float32)
+        )
+        observations = handle.create_group("observations")
+        observations.create_dataset(
+            "qpos", data=np.zeros((1, 9), dtype=np.float32)
+        )
+        observations.create_dataset(
+            "qvel", data=np.zeros((1, 9), dtype=np.float32)
+        )
+        observations.create_dataset(
+            "proximity",
+            data=np.zeros((1, 40, 4, 8, 8), dtype=np.float32),
+        )
+        observations.create_dataset(
+            "proximity_extrinsic_cv",
+            data=np.zeros((1, 40, 3, 4), dtype=np.float64),
+        )
+        observations.create_dataset(
+            "proximity_intrinsic_cv",
+            data=np.zeros((1, 40, 3, 3), dtype=np.float64),
+        )
+        observations.create_dataset(
+            "proximity_sensor_names",
+            data=np.asarray(
+                [f"sensor_{index:02d}" for index in range(40)],
+                dtype=object,
+            ),
+            dtype=h5py.string_dtype("utf-8"),
+        )
+        observations.create_dataset(
+            "proximity_positions",
+            data=np.zeros((1, 40, 3), dtype=np.float32),
+        )
+        images = observations.create_group("images")
+        images.create_dataset(
+            "wrist_camera",
+            data=np.zeros((1, 2, 2, 3), dtype=np.uint8),
+        )
+        provenance = handle.create_group("pact_provenance")
+        provenance.create_dataset("row", data=b'{"row": 1}')
+        provenance.create_dataset(
+            "collection_result", data=b'{"status": "complete"}'
+        )
+    details = preparer.copy_episode(source, destination)
+    assert not details["legacy_surface_tokens_present"]
+    source_hash = preparer.semantic_sha256(
+        source, ignored_datasets=preparer.LEGACY_TOKEN_DATASETS
+    )
+    assert preparer.semantic_sha256(destination) == source_hash
+    assert preparer.semantic_sha256(destination) == source_hash

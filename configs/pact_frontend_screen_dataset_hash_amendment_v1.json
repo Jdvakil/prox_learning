@@ -1,0 +1,45 @@
+{
+  "amendment_sha256": "0dbafc0565f5d3124b29951e4ff39aa8b9d10d1d997fb402be15266d1216d363",
+  "changed_field": {
+    "new": "destination canonical H5 value hash must equal the preserved encoded source raw-view canonical H5 value hash",
+    "old": "destination must equal the original converter's recorded act_semantic_sha256"
+  },
+  "legacy_hash_bug": {
+    "cause": "NumPy object-array tobytes serialized process-local object pointers for HDF5 variable-length strings",
+    "same_source_fresh_process_hashes": [
+      "1e648344558e044be6b116080220d94060932bdefccdcf54e80bf73202321821",
+      "025f66711a5b66b6b539e4b59ff72a02f9670a0cb66fd0498b5835ec03fda5eb",
+      "b07311ff4a102ec6d321d08e48e6587f90bfd184161069d3a780a322d63b039f"
+    ]
+  },
+  "new_hash_contract": {
+    "excluded_derived_datasets_in_source_view": [
+      "observations/proximity_embeddings",
+      "observations/proximity_positions",
+      "observations/proximity_valid",
+      "observations/proximity_valid_probability"
+    ],
+    "numeric_arrays": "contiguous value bytes",
+    "strings": "UTF-8 content with eight-byte little-endian length prefix"
+  },
+  "outcome_blind_timing": {
+    "encoder_training_started": false,
+    "pact_policy_training_started": false,
+    "screen_endpoint_available": false,
+    "screen_rollouts_started": false
+  },
+  "preregistration_sha256": "ae089740ba5391c3025518ec06c77090e01a312d78e7a582fea48f2bf39c5c00",
+  "rematerializer_sha256_new": "20b9a3c7fc0f80416b614320923e8dab2b21311da42183cc567db52d651f54a0",
+  "rematerializer_sha256_superseded": "46b1500eb830cc9a4204aec9f155f3e08f2e4293004fbf7282fb007356c5b461",
+  "schema_version": "pact_frontend_screen_dataset_hash_amendment_v1",
+  "unchanged": [
+    "front-end architecture",
+    "front-end training and quality gate",
+    "policy recipe and seed",
+    "scene and sampler",
+    "screen population and arm count",
+    "primary endpoint",
+    "analysis",
+    "decision rule"
+  ]
+}

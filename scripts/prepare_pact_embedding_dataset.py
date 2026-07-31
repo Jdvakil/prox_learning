@@ -22,6 +22,12 @@ RAW_OBSERVATION_DATASETS = (
     "proximity_intrinsic_cv",
     "proximity_sensor_names",
 )
+LEGACY_TOKEN_DATASETS = {
+    "observations/proximity_positions",
+    "observations/proximity_valid",
+    "observations/proximity_valid_probability",
+    "observations/proximity_embeddings",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -32,14 +38,43 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def semantic_sha256(path: Path) -> str:
+def _update_array_content(
+    digest: Any, array: np.ndarray
+) -> None:
+    if array.dtype.kind not in {"O", "S", "U"}:
+        digest.update(array.tobytes())
+        return
+    for value in array.reshape(-1):
+        if isinstance(value, bytes):
+            encoded = value
+        elif isinstance(value, np.bytes_):
+            encoded = bytes(value)
+        else:
+            encoded = str(value).encode("utf-8")
+        digest.update(len(encoded).to_bytes(8, "little"))
+        digest.update(encoded)
+
+
+def semantic_sha256(
+    path: Path, *, ignored_datasets: set[str] | None = None
+) -> str:
+    """Hash values deterministically, including variable-length strings.
+
+    The original converter called ``ndarray.tobytes()`` on HDF5 object
+    arrays. That serializes process-local object pointers, so its recorded
+    semantic hash cannot be regenerated. This canonical version length-frames
+    string values and supports a raw view of an already tokenized file.
+    """
     digest = hashlib.sha256()
+    ignored = ignored_datasets or set()
     with h5py.File(path, "r") as handle:
         digest.update(f"sim={bool(handle.attrs['sim'])}".encode())
         names: list[str] = []
         handle.visititems(
             lambda name, obj: (
-                names.append(name) if isinstance(obj, h5py.Dataset) else None
+                names.append(name)
+                if isinstance(obj, h5py.Dataset) and name not in ignored
+                else None
             )
         )
         for name in sorted(names):
@@ -47,7 +82,7 @@ def semantic_sha256(path: Path) -> str:
             digest.update(name.encode())
             digest.update(str(array.dtype).encode())
             digest.update(str(array.shape).encode())
-            digest.update(array.tobytes())
+            _update_array_content(digest, array)
     return digest.hexdigest()
 
 
@@ -135,11 +170,14 @@ def main() -> int:
             or details["embedding_tokens_present"]
         ):
             raise RuntimeError(f"{destination}: token-free copy failed")
+        source_raw_semantic = semantic_sha256(
+            source_path, ignored_datasets=LEGACY_TOKEN_DATASETS
+        )
         semantic = semantic_sha256(destination)
-        if semantic != source_record["act_semantic_sha256"]:
+        if semantic != source_raw_semantic:
             raise RuntimeError(
-                f"{destination}: raw semantic hash {semantic} != "
-                f"{source_record['act_semantic_sha256']}"
+                f"{destination}: canonical raw semantic hash {semantic} != "
+                f"source raw view {source_raw_semantic}"
             )
         file_hash = sha256_file(destination)
         tree_file.update(f"{filename}\x1f{file_hash}\n".encode())
@@ -151,6 +189,12 @@ def main() -> int:
                 "act_file_sha256": file_hash,
                 "act_h5_sha256": file_hash,
                 "act_semantic_sha256": semantic,
+                "source_encoded_raw_semantic_sha256": (
+                    source_raw_semantic
+                ),
+                "legacy_recorded_semantic_sha256": source_record[
+                    "act_semantic_sha256"
+                ],
                 "legacy_encoded_source_file_sha256": sha256_file(
                     source_path
                 ),
@@ -163,6 +207,15 @@ def main() -> int:
         )
     document = {
         "schema_version": "pact_embedding_act_conversion_v1",
+        "semantic_hash_schema": (
+            "canonical_h5_values_v1_length_framed_strings"
+        ),
+        "legacy_semantic_hash_note": (
+            "The original converter hashed object-array pointer bytes, so "
+            "its per-file semantic hashes are process-dependent and cannot "
+            "be reproduced. Each destination instead equals a deterministic "
+            "raw-data view of its preserved encoded source."
+        ),
         "source_manifest_sha256": base["source_manifest_sha256"],
         "sensor_order_sha256": base["sensor_order_sha256"],
         "sensor_names": base["sensor_names"],

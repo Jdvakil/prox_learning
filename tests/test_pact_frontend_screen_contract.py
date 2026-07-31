@@ -142,3 +142,27 @@ def test_preregistration_self_hash_and_frozen_screen_rule():
     assert document["decision_rule"][
         "FRONTEND_SCREEN_SIGNAL_PRESENT"
     ] == "PACT_minus_PACT_ZERO_ge_0.10_and_paired_CI_lower_gt_0"
+
+
+def test_dataset_hash_amendment_is_outcome_blind_and_self_hashed():
+    path = (
+        ROOT
+        / "configs"
+        / "pact_frontend_screen_dataset_hash_amendment_v1.json"
+    )
+    document = json.loads(path.read_text())
+    observed = document.pop("amendment_sha256")
+    expected = hashlib.sha256(
+        json.dumps(
+            document, sort_keys=True, separators=(",", ":")
+        ).encode()
+    ).hexdigest()
+    assert observed == expected
+    assert not any(
+        document["outcome_blind_timing"].values()
+    )
+    assert document["rematerializer_sha256_new"] == hashlib.sha256(
+        (
+            ROOT / "scripts/prepare_pact_embedding_dataset.py"
+        ).read_bytes()
+    ).hexdigest()
