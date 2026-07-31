@@ -1,0 +1,115 @@
+{
+  "ablation": {
+    "consecutive_source_episode_differs": true,
+    "live_scene_alignment_destroyed": true,
+    "marginal_support_preserved": true,
+    "max_control_steps_per_row": 512,
+    "sampling": "without replacement from 31,176 training timesteps",
+    "sampling_seed": 2026073105,
+    "sampling_unit": "full 40-sensor by 32-D token frame",
+    "source_partition": "199 frozen training episodes only",
+    "zero_vector_injected": false
+  },
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026073106,
+    "contacts_and_failure_taxonomy_secondary": true,
+    "mcnemar_exact_two_sided": true,
+    "ordinary_task_success_secondary": true,
+    "paired_whole_instance_bootstrap": true,
+    "wilson_95_per_arm": true
+  },
+  "analysis_script_sha256": "ff44639fbe6957ff2ed2ef74dccbbd47e396a18cd60d04b2dc2816e2dab836ba",
+  "decision_rule": {
+    "inconclusive": "VALID_ABLATION_INCONCLUSIVE iff the frozen 40-pair schedule does not reconcile",
+    "no_signal": "VALID_ABLATION_NO_SIGNAL iff difference < +0.05; the original +70 pp is treated as an OOD artifact",
+    "signal_present": "VALID_ABLATION_SIGNAL_PRESENT iff PACT minus PACT_PERMUTED >= +0.10 and paired bootstrap 95% CI lower bound > 0; this clears Step 1",
+    "weak_signal": "VALID_ABLATION_WEAK_SIGNAL iff difference >= +0.05 but signal-present rule is false; this does not authorize confirmation"
+  },
+  "design": {
+    "arm": "PACT_PERMUTED",
+    "instances": 40,
+    "repeats_per_instance": 1,
+    "rollouts": 40,
+    "same_checkpoint_as_pact": true,
+    "same_instances_as_screen": true,
+    "screen_not_confirmatory": true,
+    "workers": 8
+  },
+  "execution": {
+    "all_inflight_group_recovery_only": true,
+    "fixed_workers": 8,
+    "fresh_subprocess_per_rollout": true,
+    "kill_launching_shell_during_smoke": true,
+    "launch_smoke_before_pool": true,
+    "no_outcome_based_row_replacement": true,
+    "outcome_blind_monitoring_until_reconciliation": true,
+    "setsid_nohup_detached_stdin": true,
+    "throughput_window_minutes": 20,
+    "unique_output_directory": true
+  },
+  "frozen_sources": {
+    "act_commit": "2add1cc60b9f43bd63e0e5bb4aab2f1fe142c9e9",
+    "encoded_dataset_manifest_file_sha256": "90d9938fc99c3fea70c913baf50c797f99c329815e560954f505f1161fc8dce7",
+    "manifest_file_sha256": "97d0a3d0941f9a1f7b63e416f9a7341c374a16b6e0c2738c7c74d5a7bb036893",
+    "root_commit": "2e90c678bdc9c30e876fa14649d4c11de361a326",
+    "screen_analysis_file_sha256": "3cce37320c7c1a54c60dff54174d3dfb0f94fb78ab3bdd9af6a53db8d79889cd",
+    "screen_schedule_file_sha256": "c02c443aa3c081a7bef278b14fcb092c4f22ef096fa7a329ed961776f4369047",
+    "split_manifest_file_sha256": "6635012f73432d9a79480e1b4c9d3cc5d6ae7d40bdc243d6b0c4b1a4360c4742",
+    "split_manifest_sha256": "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486",
+    "training_summary_file_sha256": "88a73b93d0ad9c5f56d0e6fd8a788f629d257c8c890f753668587d23d8f2976d"
+  },
+  "interpretation": {
+    "confirmatory_run_authorized_only_if": [
+      "VALID_ABLATION_SIGNAL_PRESENT",
+      "ACT data equivalence confound cleared",
+      "fresh confirmatory preregistration"
+    ],
+    "confirmatory_tokens_forbidden": [
+      "PACT_BENEFIT_ESTABLISHED",
+      "PACT_NO_CONFIRMED_BENEFIT",
+      "PACT_WORSE_THAN_ACT"
+    ],
+    "mean_token_arm": "not run in this primary replacement to minimize budget; may not be added outcome-conditionally",
+    "pact_zero_role": "OOD robustness diagnostic only; never a modality ablation"
+  },
+  "preregistration_sha256": "c9e3eb541d6dcfb004264f2be02e001d123c78fd9a00b317fdce856e9e46362d",
+  "primary_contrast": "PACT_minus_PACT_PERMUTED, paired by the identical 40 screen instances and identical PACT weights",
+  "primary_endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0",
+  "provenance": {
+    "decision_thresholds_reuse_original_screen_thresholds": true,
+    "existing_screen_pact_outcomes_already_known": true,
+    "pact_permuted_outcomes_seen_before_freeze": false,
+    "scene_endpoint_checkpoint_and_instances_unchanged": true,
+    "zero_ablation_primary_interpretation_withdrawn": true
+  },
+  "rationale": {
+    "invalidated_instrument": "PACT_ZERO with a 32-D all-zero token",
+    "reason": "zero token is outside the empirical training-token support and globally derailed task behavior",
+    "replacement": "PACT_PERMUTED distribution-matched frames"
+  },
+  "runtime_sha256": {
+    "compactor_wrapper": "4703f53fe18ec7b30adf544983f5e49c1ecfd0d244668a65cc4d28ba9c3052c8",
+    "detachment_proof": "4d30ccb17e84c7c00cc035ea3946f07416e984dd774e9c20495d1ad093081969",
+    "dispatch_freezer": "6215a34bce716ba69d660150493fcc1f76243b4cca756307dc9c74f1bc8f8450",
+    "evaluator": "02596afba3e9538cb91b2344ffffd91b98dfd30bc0808636caf030bc8e9c15c9",
+    "launcher": "b15eea0482526aace40a87e82a022bedeb4df4d0f0e8c5cc1deb6520a387adf6",
+    "schedule_builder": "82fa1595f9eccbdeb8b80d76f406adaa6c535008f58d93419aa93374cafee1f1",
+    "supervisor": "73aafac84c74219eccbc6221d21bf758642175672c908e43c7e044457d837361",
+    "throughput": "3acd2c3fde24bd3d809170174ef1a062c583c30623d46b6264e0695805d3f50e",
+    "token_plan_builder": "28ceb69d06d1cc741781b27cbbed142a4a0ebe40eedef1ea338aa4233ada2d56"
+  },
+  "schema_version": "pact_valid_ablation_preregistration_v1",
+  "screen_not_confirmatory": true,
+  "storage": {
+    "full_original_result_recoverable": true,
+    "full_original_trajectory_recoverable": true,
+    "lossless_zstd_compaction": true,
+    "outcome_based_selection": false,
+    "raw_schedule_indices": [
+      0,
+      39
+    ],
+    "videos_retained": true
+  }
+}
