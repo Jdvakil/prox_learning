@@ -286,3 +286,87 @@ def test_supervisor_command_uses_screen_evaluator_and_recovery(tmp_path):
         ]
         == str(recovery)
     )
+
+
+def test_frozen_analysis_reconciles_exact_pairs_and_emits_screen_token(
+    tmp_path,
+):
+    rows = []
+    for instance in range(40):
+        episode_id = f"episode-{instance:02d}"
+        outcomes = {
+            "ACT": instance < 4,
+            "PACT": instance < 8,
+            "PACT_ZERO": instance < 2,
+        }
+        for arm in ("ACT", "PACT", "PACT_ZERO"):
+            index = len(rows)
+            rollout_id = f"rollout-{index:03d}"
+            row = {
+                "schedule_index": index,
+                "instance_episode_id": episode_id,
+                "arm": arm,
+                "checkpoint_seed": 3101,
+                "checkpoint_sha256": f"{index:064x}",
+                "schedule_row_sha256": f"{index + 1:064x}",
+                "rollout_id": rollout_id,
+                "output_relpath": f"rows/{index:03d}",
+            }
+            rows.append(row)
+            row_dir = tmp_path / row["output_relpath"]
+            row_dir.mkdir(parents=True)
+            (row_dir / "driver_result.json").write_text(
+                json.dumps({"status": "complete"})
+            )
+            success = outcomes[arm]
+            result = {
+                "status": "complete",
+                "rollout_id": rollout_id,
+                "schedule_row_sha256": row[
+                    "schedule_row_sha256"
+                ],
+                "episode_id": episode_id,
+                "arm": arm,
+                "checkpoint_sha256": row["checkpoint_sha256"],
+                "checkpoint_seed": 3101,
+                "task_success": success,
+                "collision_free_task_success": success,
+                "contact_audit": {
+                    "contact_class_totals": {
+                        "grasp_target": int(success),
+                        "hazard_bar": 0,
+                        "other_environment": 0,
+                    }
+                },
+                "failure_taxonomy": (
+                    "collision_free_task_success"
+                    if success
+                    else "no_gripper_close"
+                ),
+            }
+            (row_dir / "result.json").write_text(
+                json.dumps(result)
+            )
+    schedule = {
+        "schedule_sha256": "schedule",
+        "instances": 40,
+        "rollouts": 120,
+        "workers": 8,
+        "fresh_subprocess_per_rollout": True,
+        "detectable_effect_statement": "screen",
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 2026073103,
+        "rows": rows,
+    }
+    report, decision = analysis.analyze(schedule, tmp_path)
+    assert report["reconciliation"]["valid"] == 120
+    assert report["mcnemar_exact_primary"][
+        "arm_a_success_arm_b_failure"
+    ] == 6
+    assert report["mcnemar_exact_primary"][
+        "arm_a_failure_arm_b_success"
+    ] == 0
+    assert (
+        decision["decision"]
+        == "FRONTEND_SCREEN_SIGNAL_PRESENT"
+    )
