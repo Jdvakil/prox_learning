@@ -18,7 +18,7 @@ import numpy as np
 
 SEED = 2026073105
 ROWS = 40
-MAX_CONTROL_STEPS = 512
+MAX_CONTROL_STEPS = 900
 SENSORS = 40
 FEATURE_DIM = 32
 
@@ -67,24 +67,33 @@ def select_sources(
     episode_indices: np.ndarray,
     timesteps: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
-    required = ROWS * MAX_CONTROL_STEPS
-    if len(episode_indices) < required:
-        raise ValueError("training split has too few unique token frames")
-    order = np.random.default_rng(SEED).permutation(len(episode_indices))
-    selected = order[:required].copy()
-    # Preserve sampling without replacement while preventing adjacent source
-    # frames inside a rollout from coming from the same episode.
+    if len(episode_indices) < MAX_CONTROL_STEPS:
+        raise ValueError("training split has too few unique per-row token frames")
+    rng = np.random.default_rng(SEED)
+    selected_rows = np.stack(
+        [
+            rng.choice(
+                len(episode_indices),
+                size=MAX_CONTROL_STEPS,
+                replace=False,
+            )
+            for _ in range(ROWS)
+        ]
+    )
+    # Preserve sampling without replacement within each rollout while
+    # preventing adjacent source frames from coming from the same episode.
+    # Cross-row reuse is necessary because 40 * the frozen 900-step task
+    # horizon exceeds the 31,176-frame training population.
     for row in range(ROWS):
-        start = row * MAX_CONTROL_STEPS
-        stop = start + MAX_CONTROL_STEPS
-        for position in range(start + 1, stop):
+        selected = selected_rows[row]
+        for position in range(1, MAX_CONTROL_STEPS):
             previous_episode = episode_indices[selected[position - 1]]
             if episode_indices[selected[position]] != previous_episode:
                 continue
             replacement = next(
                 (
                     candidate
-                    for candidate in range(position + 1, required)
+                    for candidate in range(position + 1, MAX_CONTROL_STEPS)
                     if episode_indices[selected[candidate]]
                     != previous_episode
                 ),
@@ -96,12 +105,8 @@ def select_sources(
                 selected[replacement],
                 selected[position],
             )
-    selected_episodes = episode_indices[selected].reshape(
-        ROWS, MAX_CONTROL_STEPS
-    )
-    selected_timesteps = timesteps[selected].reshape(
-        ROWS, MAX_CONTROL_STEPS
-    )
+    selected_episodes = episode_indices[selected_rows]
+    selected_timesteps = timesteps[selected_rows]
     if any(
         np.any(row[1:] == row[:-1]) for row in selected_episodes
     ):
@@ -193,7 +198,7 @@ def main() -> int:
         raise ValueError("published token tensor contains non-finite values")
     norms = np.linalg.norm(observed.reshape(-1, FEATURE_DIM), axis=1)
     manifest: dict[str, Any] = {
-        "schema_version": "pact_permuted_token_plan_v1",
+        "schema_version": "pact_permuted_token_plan_v2",
         "ablation": "PACT_PERMUTED",
         "seed": SEED,
         "rows": ROWS,
@@ -203,7 +208,9 @@ def main() -> int:
         "source_train_episode_count": len(train_indices),
         "source_train_frame_count": int(len(episode_indices)),
         "selected_frame_count": ROWS * MAX_CONTROL_STEPS,
-        "selection_without_replacement": True,
+        "selection_without_replacement_within_row": True,
+        "cross_row_source_reuse_allowed": True,
+        "global_selection_without_replacement": False,
         "consecutive_source_episode_differs": True,
         "live_scene_alignment_destroyed": True,
         "split_manifest_path": str(args.split_manifest.resolve()),

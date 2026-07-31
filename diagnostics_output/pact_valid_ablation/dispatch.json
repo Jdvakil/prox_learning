@@ -23,7 +23,7 @@
     "required_artifact": "detachment_proof.json",
     "required_before_full_dispatch": true
   },
-  "dispatch_contract_sha256": "c0fcc371e08990d27ff21883b48575f841c31d4df33bf01062c6b96da249ab94",
+  "dispatch_contract_sha256": "41c636aa828220e06cb148ec5d344352d6488b00fb4f4edebfbef48110341312",
   "execution": {
     "detached_stdin": true,
     "fixed_worker_count": 8,
@@ -31,7 +31,7 @@
     "no_outcome_based_row_replacement": true,
     "nohup": true,
     "outcomes_seen_before_freeze": false,
-    "output_root": "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0",
+    "output_root": "/root/pact_valid_ablation_artifacts/evaluation_3ea97fe0",
     "setsid": true
   },
   "frozen_inputs": {
@@ -63,7 +63,7 @@
       },
       "evaluator": {
         "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_valid_ablation_row.py",
-        "sha256": "02596afba3e9538cb91b2344ffffd91b98dfd30bc0808636caf030bc8e9c15c9"
+        "sha256": "ede6bd54b55ba143c0043ea80190eaf6449ed77b9e5d71b8af7dcebea8a502c4"
       },
       "launcher": {
         "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_valid_ablation_detached.py",
@@ -79,31 +79,36 @@
       }
     },
     "token_plan": {
-      "path": "/root/pact_valid_ablation_artifacts/token_plan_v1/token_plan.json",
-      "sha256": "1f51f2417bc072ea979ca63fdeec11f430a276d5844dfe9d21eb85d3625ffe63",
-      "token_plan_sha256": "cfca8a92e0798e7744bf9b1e9af50f30b4f9bb7d10735e904015962c242def71"
+      "path": "/root/pact_valid_ablation_artifacts/token_plan_v2/token_plan.json",
+      "sha256": "67dc3942b2d76133d159859587cd4fc4ed8e7d429047f50b018a90b91acc4f82",
+      "token_plan_sha256": "a6cc273b8a1facd4745e137f9aee39dd7f61b5569e0465278010383ea22f8643"
     }
+  },
+  "horizon_amendment": {
+    "file_sha256": "0d33d73f8032a69658111f95770e6be0ea281cf568fe4afe280812f7ea01efd5",
+    "horizon_amendment_sha256": "85fb6a8e776d3abe0256eae50ebabe2b923b1c315cbbb14722f0ce6d7b689786",
+    "path": "/root/prox_learning_pact_remediation/configs/pact_valid_ablation_horizon_amendment_v1.json"
   },
   "launch_smoke": {
     "full_dispatch_must_reconcile_without_rerun": true,
     "instance_episode_id": "5b4288fea1870475134ce93e8613654ffa3a535466789e50525f36b254722546",
-    "output_relpath": "rows/000_0822353beecb48b1_pact_permuted",
+    "output_relpath": "rows/000_5926b98b71b88926_pact_permuted",
     "required_artifact": "launch_smoke.json",
     "required_before_full_dispatch": true,
     "required_result_status": "complete",
-    "rollout_id": "0822353beecb48b13717970d7362f2b92dac22a2282342d050ff1bfbd6578251",
+    "rollout_id": "5926b98b71b889267e8d20e3be31a81d362f29db521a02f0ad6ff27374864a7c",
     "schedule_index": 0,
-    "schedule_row_sha256": "d5c6d73b84d7ae8a91e6691ae5a433708ea15ba8919cae7839d144a1f10d0181"
+    "schedule_row_sha256": "9690c89e70b7c70480480a24641d8a7f88dbb1b3503b1f7f9e3bcddf10a3c515"
   },
   "schema_version": "pact_valid_ablation_dispatch_v1",
   "scientific_schedule": {
-    "file_sha256": "25391f1264a09497f9076661f542129e7ead1026807e1a3722a7985d1f9de2d6",
+    "file_sha256": "b6a594f5fe9a3105b871cacfddfa80d96815a7edc9a9b88d5a3284c52060e894",
     "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_frontend_screen_manifest_v1.json",
     "manifest_sha256": "97d0a3d0941f9a1f7b63e416f9a7341c374a16b6e0c2738c7c74d5a7bb036893",
     "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_valid_ablation/schedule.json",
     "rows": 40,
     "rows_changed": 0,
-    "schedule_sha256": "51be8ff07cbb58402e1a5b4c06de801f157e6942952a04fb14b4e388df87777b",
+    "schedule_sha256": "3ea97fe057317219bab00e2e287e87b504d669586816ebc21529576a916861d2",
     "workers": 8
   },
   "screen_not_confirmatory": true,

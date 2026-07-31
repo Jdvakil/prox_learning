@@ -37,6 +37,7 @@ def main() -> int:
     parser.add_argument("--schedule", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--preregistration", required=True, type=Path)
+    parser.add_argument("--horizon-amendment", required=True, type=Path)
     parser.add_argument("--analysis-script", required=True, type=Path)
     parser.add_argument("--token-plan", required=True, type=Path)
     parser.add_argument("--supervisor", required=True, type=Path)
@@ -51,10 +52,16 @@ def main() -> int:
     schedule = json.loads(args.schedule.read_text())
     manifest = json.loads(args.manifest.read_text())
     prereg = json.loads(args.preregistration.read_text())
+    horizon_amendment = json.loads(args.horizon_amendment.read_text())
     token_plan = json.loads(args.token_plan.read_text())
     validate_hash(schedule, "schedule_sha256", "schedule")
     validate_hash(manifest, "manifest_sha256", "manifest")
     validate_hash(prereg, "preregistration_sha256", "preregistration")
+    horizon_amendment_sha = validate_hash(
+        horizon_amendment,
+        "horizon_amendment_sha256",
+        "horizon amendment",
+    )
     validate_hash(token_plan, "token_plan_sha256", "token plan")
     if (
         schedule["schema_version"] != "pact_valid_ablation_schedule_v1"
@@ -71,6 +78,8 @@ def main() -> int:
         raise ValueError("schedule manifest changed")
     if schedule["token_plan_sha256"] != token_plan["token_plan_sha256"]:
         raise ValueError("schedule token plan changed")
+    if schedule.get("horizon_amendment_sha256") != horizon_amendment_sha:
+        raise ValueError("schedule horizon amendment changed")
     if file_hash(args.analysis_script) != prereg["analysis_script_sha256"]:
         raise ValueError("analysis script changed after preregistration")
     if args.output_root.exists() and any(args.output_root.rglob("*")):
@@ -103,6 +112,11 @@ def main() -> int:
     document: dict[str, Any] = {
         "schema_version": "pact_valid_ablation_dispatch_v1",
         "screen_not_confirmatory": True,
+        "horizon_amendment": {
+            "path": str(args.horizon_amendment.resolve()),
+            "file_sha256": file_hash(args.horizon_amendment),
+            "horizon_amendment_sha256": horizon_amendment_sha,
+        },
         "scientific_schedule": {
             "path": str(args.schedule.resolve()),
             "file_sha256": file_hash(args.schedule),

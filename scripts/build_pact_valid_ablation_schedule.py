@@ -50,6 +50,7 @@ def main() -> int:
     parser.add_argument("--training-summary", required=True, type=Path)
     parser.add_argument("--token-plan", required=True, type=Path)
     parser.add_argument("--preregistration", required=True, type=Path)
+    parser.add_argument("--horizon-amendment", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
@@ -57,6 +58,7 @@ def main() -> int:
     training = json.loads(args.training_summary.read_text())
     token_plan = json.loads(args.token_plan.read_text())
     prereg = json.loads(args.preregistration.read_text())
+    horizon_amendment = json.loads(args.horizon_amendment.read_text())
     validate_self_hash(manifest, "manifest_sha256", "manifest")
     validate_self_hash(screen, "schedule_sha256", "screen schedule")
     token_plan_sha = validate_self_hash(
@@ -65,12 +67,19 @@ def main() -> int:
     prereg_sha = validate_self_hash(
         prereg, "preregistration_sha256", "preregistration"
     )
+    horizon_amendment_sha = validate_self_hash(
+        horizon_amendment,
+        "horizon_amendment_sha256",
+        "horizon amendment",
+    )
     if (
         token_plan["rows"] != INSTANCES
-        or token_plan["max_control_steps"] != 512
+        or token_plan["max_control_steps"] != 900
         or token_plan["ablation"] != ARM
     ):
         raise ValueError("token plan design changed")
+    if horizon_amendment["corrected_max_control_steps_per_row"] != 900:
+        raise ValueError("horizon amendment changed")
     if prereg["design"] != {
         "arm": ARM,
         "instances": INSTANCES,
@@ -169,6 +178,7 @@ def main() -> int:
         "token_plan_sha256": token_plan_sha,
         "token_plan_file_sha256": file_hash(args.token_plan),
         "preregistration_sha256": prereg_sha,
+        "horizon_amendment_sha256": horizon_amendment_sha,
         "instances": INSTANCES,
         "arms": [ARM],
         "checkpoint_seeds": [CHECKPOINT_SEED],

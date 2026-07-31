@@ -1,47 +1,49 @@
 {
   "ablation": "PACT_PERMUTED",
   "consecutive_source_episode_differs": true,
+  "cross_row_source_reuse_allowed": true,
   "dataset_manifest_file_sha256": "90d9938fc99c3fea70c913baf50c797f99c329815e560954f505f1161fc8dce7",
   "dataset_manifest_path": "/root/pact_frontend_screen_artifacts/manifests/encoded_conversion_v1.json",
   "dataset_tree_sha256": "7a95581dff2907da1720f17425b67244fd20cc934a88a83cb9b66e2ee1d6ce97",
   "files": {
     "source_episode_indices": {
-      "path": "/root/pact_valid_ablation_artifacts/token_plan_v1/source_episode_indices.npy",
-      "sha256": "63fe0374343054ddce48cfb947baa324cd659f0ff353a676972ace7e32a17f92",
-      "size_bytes": 41088
+      "path": "/root/pact_valid_ablation_artifacts/token_plan_v2/source_episode_indices.npy",
+      "sha256": "748e671f928d62db6090d4d341a0b5b70fbc97a556b338c97cbac4d794588c1b",
+      "size_bytes": 72128
     },
     "source_timesteps": {
-      "path": "/root/pact_valid_ablation_artifacts/token_plan_v1/source_timesteps.npy",
-      "sha256": "fd2cbec364a2ba74eba8838d0b070af07094cc21826e8652c4f973a7e06d1112",
-      "size_bytes": 41088
+      "path": "/root/pact_valid_ablation_artifacts/token_plan_v2/source_timesteps.npy",
+      "sha256": "2a3ddee57511a748e3dfcaf9ffce9f199cb3c5c52c3595a495df3d3f4c15e4cc",
+      "size_bytes": 72128
     },
     "tokens": {
-      "path": "/root/pact_valid_ablation_artifacts/token_plan_v1/permuted_tokens.npy",
-      "sha256": "e8ad9c569d1a60652f387854e678c45a957ae127a4bbd3678f859a0c8aced3c4",
-      "size_bytes": 104857728
+      "path": "/root/pact_valid_ablation_artifacts/token_plan_v2/permuted_tokens.npy",
+      "sha256": "6767753b5925efd74fc04c214933fa521aaf49b1b54a607e3d1cc20b89bc636f",
+      "size_bytes": 184320128
     }
   },
+  "global_selection_without_replacement": false,
   "live_scene_alignment_destroyed": true,
-  "max_control_steps": 512,
+  "max_control_steps": 900,
   "rows": 40,
-  "schema_version": "pact_permuted_token_plan_v1",
+  "schema_version": "pact_permuted_token_plan_v2",
   "seed": 2026073105,
-  "selected_frame_count": 20480,
+  "selected_frame_count": 36000,
   "selected_sensor_token_norm": {
-    "count": 819200,
+    "count": 1440000,
     "count_below_0_1": 0,
-    "maximum": 6.373265743255615,
-    "mean": 6.312319278717041,
+    "maximum": 6.375054836273193,
+    "mean": 6.3123345375061035,
     "minimum": 6.01571798324585,
-    "p01": 6.1199564933776855
+    "p01": 6.119792461395264
   },
-  "selection_without_replacement": true,
+  "selection_without_replacement_within_row": true,
   "source_partition": "train",
   "source_train_episode_count": 199,
   "source_train_frame_count": 31176,
   "split_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_act_split_v2.json",
   "split_manifest_sha256": "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486",
-  "token_plan_sha256": "cfca8a92e0798e7744bf9b1e9af50f30b4f9bb7d10735e904015962c242def71",
+  "token_plan_sha256": "a6cc273b8a1facd4745e137f9aee39dd7f61b5569e0465278010383ea22f8643",
   "token_shape": [
     40,
     32

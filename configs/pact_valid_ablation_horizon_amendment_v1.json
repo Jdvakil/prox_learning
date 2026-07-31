@@ -1,0 +1,60 @@
+{
+  "correction": {
+    "cross_row_source_reuse_allowed": true,
+    "endpoint_contrast_or_decision_changed": false,
+    "reason": "The frozen environment inherits task_horizon=900, but the first token plan contained only 512 frames per row.",
+    "sampling_seed_changed": false,
+    "sampling_without_replacement_within_each_row": true,
+    "scientific_arm_checkpoint_instances_and_workers_changed": false,
+    "token_frames_remain_real_frozen_training_frames": true
+  },
+  "corrected_max_control_steps_per_row": 900,
+  "failed_pre_outcome_dispatch": {
+    "accepted_scientific_results": 0,
+    "driver_results_present": 0,
+    "endpoint_fields_inspected": false,
+    "first_attempt_exception": "RuntimeError: rollout exceeded frozen 512-step token plan",
+    "first_attempt_log_file_sha256": "09cb115fce8cb528be12e3da6a02c378e830fc527d2b314c785d2274cff00765",
+    "first_attempt_reached_token_index": 512,
+    "old_dispatch_contract_sha256": "c0fcc371e08990d27ff21883b48575f841c31d4df33bf01062c6b96da249ab94",
+    "old_output_root": "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0",
+    "old_schedule_sha256": "51be8ff07cbb58402e1a5b4c06de801f157e6942952a04fb14b4e388df87777b",
+    "old_token_plan_sha256": "cfca8a92e0798e7744bf9b1e9af50f30b4f9bb7d10735e904015962c242def71",
+    "result_files_present": 0,
+    "second_attempt_log_file_sha256": "c6d2b5dbd0136277dda2aaa9078bd031127fbedd55e1a3da7ab0fdf4f8cc5488",
+    "second_attempt_operator_terminated_after_deterministic_defect_was_identified": true
+  },
+  "frozen_unchanged": {
+    "analysis_script_sha256": "ff44639fbe6957ff2ed2ef74dccbbd47e396a18cd60d04b2dc2816e2dab836ba",
+    "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+    "decision_rule": true,
+    "instances": 40,
+    "primary_contrast": "PACT_minus_PACT_PERMUTED",
+    "primary_endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0",
+    "sampling_seed": 2026073105,
+    "workers": 8
+  },
+  "horizon_amendment_sha256": "85fb6a8e776d3abe0256eae50ebabe2b923b1c315cbbb14722f0ce6d7b689786",
+  "new_act_commit": "0addcfc005ff641aaee115927d4fdd7dbe133970",
+  "new_runtime_sha256": {
+    "dispatch_freezer": "ca3d3a1a229f1653261426464f8ff09eb518ce0ae51c78e27d97f6d1702f1998",
+    "evaluator": "ede6bd54b55ba143c0043ea80190eaf6449ed77b9e5d71b8af7dcebea8a502c4",
+    "schedule_builder": "7c468582bbe6a160a084f7d68333dd65dd2346f1fcbecfa0b9d651f8e8b2ae56",
+    "token_plan_builder": "bf656f731dd390ec622aaaa776e98e5721a0997cb9f7d0010405a9c385697d4b"
+  },
+  "original_preregistration_sha256": "c9e3eb541d6dcfb004264f2be02e001d123c78fd9a00b317fdce856e9e46362d",
+  "required_new_dispatch": {
+    "new_output_root": true,
+    "new_schedule_and_dispatch_hashes": true,
+    "outcomes_seen_before_refreeze": false,
+    "repeat_detachment_smoke": true
+  },
+  "schema_version": "pact_valid_ablation_horizon_amendment_v1",
+  "source_task_horizon": {
+    "class": "FrankaSkinPACTCollisionCorridorConfig",
+    "inherited_from": "FrankaSkinEnclosureSmokeConfig.task_horizon",
+    "source_file": "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
+    "source_file_sha256": "87b17a05aa0189b0c34d853d69113a054c5060856ca82d067ad19d13686c86a5",
+    "task_horizon": 900
+  }
+}

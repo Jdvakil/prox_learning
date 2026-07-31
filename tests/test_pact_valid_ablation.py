@@ -32,15 +32,16 @@ def test_source_selection_is_unique_and_changes_episode_each_step():
     selected_episodes, selected_timesteps = token_builder.select_sources(
         episodes, timesteps
     )
-    assert selected_episodes.shape == (40, 512)
-    assert selected_timesteps.shape == (40, 512)
+    assert selected_episodes.shape == (40, 900)
+    assert selected_timesteps.shape == (40, 900)
     assert all(
         np.all(row[1:] != row[:-1]) for row in selected_episodes
     )
-    selected_pairs = set(
-        zip(selected_episodes.ravel(), selected_timesteps.ravel())
-    )
-    assert len(selected_pairs) == 40 * 512
+    for episode_row, timestep_row in zip(
+        selected_episodes, selected_timesteps
+    ):
+        selected_pairs = set(zip(episode_row, timestep_row))
+        assert len(selected_pairs) == 900
 
 
 def test_evaluator_consumes_frozen_permuted_frame(monkeypatch):
@@ -187,7 +188,7 @@ def test_frozen_schedule_dispatch_and_token_plan_bindings():
     )
     external_plan = json.loads(
         Path(
-            "/root/pact_valid_ablation_artifacts/token_plan_v1/token_plan.json"
+            "/root/pact_valid_ablation_artifacts/token_plan_v2/token_plan.json"
         ).read_text()
     )
     assert committed_plan == external_plan
@@ -204,14 +205,14 @@ def test_frozen_storage_amendment_binds_screen_exclusions():
         config, schedule = storage_implementation.validate_inputs(
             config_path=(
                 ROOT
-                / "configs/pact_valid_ablation_storage_amendment_v1.json"
+                / "configs/pact_valid_ablation_storage_amendment_v2.json"
             ),
             schedule_path=(
                 ROOT
                 / "diagnostics_output/pact_valid_ablation/schedule.json"
             ),
             output_root=Path(
-                "/root/pact_valid_ablation_artifacts/evaluation_51be8ff0"
+                "/root/pact_valid_ablation_artifacts/evaluation_3ea97fe0"
             ),
         )
     finally:
