@@ -1,0 +1,139 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026073103,
+    "confirmatory_tokens_prohibited": [
+      "PACT_BENEFIT_ESTABLISHED",
+      "PACT_NO_CONFIRMED_BENEFIT",
+      "PACT_WORSE_THAN_ACT"
+    ],
+    "fisher_exact_two_sided_secondary": true,
+    "mcnemar_exact_two_sided": true,
+    "paired_by_instance": true,
+    "primary_contrast": "PACT_minus_PACT_ZERO",
+    "secondary_contrast": "PACT_minus_ACT",
+    "wilson_interval": 0.95
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "recovery_event_frozen_before_rerun": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "detachment_proof": {
+    "endpoint_fields_inspected": false,
+    "heartbeat_must_advance_after_shell_death": true,
+    "kill_launching_shell_during_smoke": true,
+    "required_artifact": "detachment_proof.json",
+    "required_before_full_dispatch": true,
+    "supervisor_and_evaluator_must_survive_or_complete": true
+  },
+  "dispatch_contract_sha256": "69924c4cba7c5d52397e57bf2ee7f94000669d258b5753ba1900f34f621f95c9",
+  "execution": {
+    "detached_stdin": true,
+    "fixed_worker_count": 8,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_row_replacement": true,
+    "nohup": true,
+    "output_root": "/root/pact_frontend_screen_artifacts/evaluation_621764f8",
+    "screen_outcomes_seen_before_freeze": false,
+    "setsid": true
+  },
+  "frozen_inputs": {
+    "analysis_script_path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_frontend_screen.py",
+    "analysis_script_sha256": "cd4cbf07daf9bfdfbe2ed46b0c95c8d79fd70ef6f7080003f39ade1534e23534",
+    "checkpoints": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+        "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+      }
+    ],
+    "dataset_hash_amendment_path": "/root/prox_learning_pact_remediation/configs/pact_frontend_screen_dataset_hash_amendment_v1.json",
+    "dataset_hash_amendment_sha256": "ac69e6cfe824820a159802648ae4eeebeadb9e2c7786090247b4d351b63f3200",
+    "dataset_stats": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      }
+    ],
+    "encoder_report_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/encoder.json",
+    "encoder_report_sha256": "f15a1dae2ccd4c743b984dc83084f8c13eb329682499e13040427dbdf23fc64d",
+    "preregistration_path": "/root/prox_learning_pact_remediation/configs/pact_frontend_screen_preregistration_v1.json",
+    "preregistration_sha256": "64a2c131b1954175841d00a2302559c484fb3ef5ed960691e177cb9ec6080a6f",
+    "runtime": {
+      "detachment_proof_script": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_frontend_screen_detachment.py",
+        "sha256": "950fa361656a6426d267cf45d27046ec89f9e840088016ee119ec7815d6e5f56"
+      },
+      "evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_frontend_screen_row.py",
+        "sha256": "e819d88807e0be278c96659112099e4cda0d98defbc886b7aca6e7379387ac55"
+      },
+      "launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_frontend_screen_detached.py",
+        "sha256": "a78af0202a39a9ab328d2499ca5e8da917cc5acf61e6b3cf1575ca8ea8193f6f"
+      },
+      "supervisor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_frontend_screen_supervisor.py",
+        "sha256": "942dccf825c4395aa37e0077e85338802db2904b98154fd9af36b395869e57c3"
+      },
+      "throughput_script": {
+        "path": "/root/prox_learning_pact_remediation/scripts/measure_pact_frontend_screen_throughput.py",
+        "sha256": "c47e7f7121681024f57aea1e8826673b5c27a509583b9351a624cb40eac1306b"
+      }
+    },
+    "surface_encoders": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ],
+    "training_summary_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json",
+    "training_summary_sha256": "88a73b93d0ad9c5f56d0e6fd8a788f629d257c8c890f753668587d23d8f2976d"
+  },
+  "launch_smoke": {
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "5b4288fea1870475134ce93e8613654ffa3a535466789e50525f36b254722546",
+    "output_relpath": "rows/000_00683ce9e651981d_act",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "00683ce9e651981d0b40c9afca841474f1a368ac98388fd11b9f0de53c7d26c7",
+    "schedule_index": 0,
+    "schedule_row_sha256": "77284695cef449c811db12636f943904df7339a725d48e2c02e71ee238c4fc06"
+  },
+  "schema_version": "pact_frontend_screen_dispatch_v1",
+  "scientific_schedule": {
+    "file_sha256": "c02c443aa3c081a7bef278b14fcb092c4f22ef096fa7a329ed961776f4369047",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_frontend_screen_manifest_v1.json",
+    "manifest_sha256": "97d0a3d0941f9a1f7b63e416f9a7341c374a16b6e0c2738c7c74d5a7bb036893",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/schedule.json",
+    "rows": 120,
+    "rows_changed": 0,
+    "schedule_sha256": "621764f8dc314dbdb7c477d1bc1480980e82476f4519e28f4f3e65432aa1ed6c",
+    "workers": 8
+  },
+  "screen_not_confirmatory": true,
+  "storage": {
+    "raw_final_schedule_index_preserved": 119,
+    "raw_smoke_schedule_index_preserved": 0,
+    "weights_and_rollout_payloads_not_committed": true
+  },
+  "throughput": {
+    "endpoint_fields_read": false,
+    "required_artifact": "throughput_first_20_minutes.json",
+    "required_measurement_elapsed_minutes": 20,
+    "schedule_or_workers_changed": false,
+    "source": "completion ledger timestamps and row identities only"
+  }
+}
