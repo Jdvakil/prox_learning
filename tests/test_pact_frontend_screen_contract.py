@@ -12,7 +12,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from pact_frontend_screen_contract import (
     INSTANCE_COUNT,
     build_manifest,
+    sha256_payload,
     validate_manifest,
+    validate_recovery_event,
 )
 
 
@@ -20,6 +22,7 @@ def _load(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -31,6 +34,10 @@ analysis = _load(
 schedule_builder = _load(
     "build_pact_frontend_screen_schedule",
     ROOT / "scripts/build_pact_frontend_screen_schedule.py",
+)
+supervisor_module = _load(
+    "run_pact_frontend_screen_supervisor",
+    ROOT / "scripts/run_pact_frontend_screen_supervisor.py",
 )
 
 
@@ -207,3 +214,75 @@ def test_screen_runtime_sources_bind_detachment_and_group_recovery():
     assert '"/usr/bin/nohup"' in launcher
     assert "/root/prox_learning_pact_remediation/assets" in launcher
     assert "os.kill(launching_shell.pid, signal.SIGKILL)" in proof
+
+
+def test_screen_group_recovery_authorizes_every_recorded_row(tmp_path):
+    rows = [
+        {
+            "rollout_id": f"rollout-{index}",
+            "schedule_row_sha256": str(index) * 64,
+            "attempt_index": 0,
+            "result_present": False,
+        }
+        for index in (1, 2)
+    ]
+    event = {
+        "schema_version": (
+            "pact_frontend_screen_group_recovery_v1"
+        ),
+        "qualifying_indiscriminate_termination": True,
+        "all_inflight_rows_rerun": True,
+        "result_absent_for_all": True,
+        "active_cohort_size": 2,
+        "rows": rows,
+    }
+    event["recovery_event_sha256"] = sha256_payload(event)
+    path = tmp_path / "event.json"
+    path.write_text(json.dumps(event))
+    for row in rows:
+        assert (
+            validate_recovery_event(
+                path,
+                rollout_id=row["rollout_id"],
+                schedule_row_sha256=row[
+                    "schedule_row_sha256"
+                ],
+                attempt_index=1,
+            )["active_cohort_size"]
+            == 2
+        )
+
+
+def test_supervisor_command_uses_screen_evaluator_and_recovery(tmp_path):
+    supervisor = object.__new__(
+        supervisor_module.ScreenSupervisor
+    )
+    supervisor.manifest_path = tmp_path / "manifest.json"
+    supervisor.output_root = tmp_path / "output"
+    row = {
+        "arm": "PACT",
+        "instance_episode_id": "episode",
+        "checkpoint_path": str(tmp_path / "policy_best.ckpt"),
+        "checkpoint_sha256": "a" * 64,
+        "checkpoint_seed": 3101,
+        "dataset_stats_sha256": "b" * 64,
+        "schedule_row_sha256": "c" * 64,
+        "rollout_id": "rollout",
+        "surface_encoder_path": str(tmp_path / "encoder.pt"),
+        "surface_encoder_sha256": "d" * 64,
+        "output_relpath": "rows/000",
+    }
+    recovery = tmp_path / "recovery.json"
+    command = supervisor._command(
+        row, attempt_index=2, recovery_event=recovery
+    )
+    assert command[1].endswith(
+        "eval_pact_frontend_screen_row.py"
+    )
+    assert command[command.index("--attempt-index") + 1] == "2"
+    assert (
+        command[
+            command.index("--inflight-recovery-event") + 1
+        ]
+        == str(recovery)
+    )
