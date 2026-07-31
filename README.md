@@ -15,6 +15,8 @@ its Phase 1 environment gate is
 [`docs/PACT_ENVIRONMENT_ADEQUACY.md`](docs/PACT_ENVIRONMENT_ADEQUACY.md).
 The independently seeded recovery protocol is frozen in
 [`docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md`](docs/PACT_VS_ACT_REMEDIATION_PREREGISTRATION.md).
+The preregistered 32-D proximity-front-end development screen is reported in
+[`docs/PACT_FRONTEND_SCREEN_DECISION.md`](docs/PACT_FRONTEND_SCREEN_DECISION.md).
 
 ---
 

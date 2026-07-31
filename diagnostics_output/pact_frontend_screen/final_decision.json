@@ -1,0 +1,51 @@
+{
+  "PACT_minus_ACT_secondary": {
+    "arm_a": "PACT",
+    "arm_b": "ACT",
+    "ci_95": [
+      0.075,
+      0.425
+    ],
+    "difference": 0.25,
+    "n_instances": 40,
+    "replicates": 20000,
+    "seed": 2026073104
+  },
+  "PACT_minus_PACT_ZERO": {
+    "arm_a": "PACT",
+    "arm_b": "PACT_ZERO",
+    "ci_95": [
+      0.55,
+      0.825
+    ],
+    "difference": 0.7,
+    "n_instances": 40,
+    "replicates": 20000,
+    "seed": 2026073103
+  },
+  "analysis_sha256": "78a7a1518f872a5ab277c2ade35826ba906373bbb2150c4d0ff267a0286d38c1",
+  "confirmatory_tokens_prohibited": [
+    "PACT_BENEFIT_ESTABLISHED",
+    "PACT_NO_CONFIRMED_BENEFIT",
+    "PACT_WORSE_THAN_ACT"
+  ],
+  "decision": "FRONTEND_SCREEN_SIGNAL_PRESENT",
+  "decision_rule": {
+    "FRONTEND_SCREEN_INCONCLUSIVE": "schedule did not reconcile",
+    "FRONTEND_SCREEN_NO_SIGNAL": "PACT-PACT_ZERO < 0.05",
+    "FRONTEND_SCREEN_SIGNAL_PRESENT": "PACT-PACT_ZERO >= 0.10 and paired CI lower > 0",
+    "FRONTEND_SCREEN_WEAK_SIGNAL": "PACT-PACT_ZERO >= 0.05 but signal-present rule false"
+  },
+  "final_decision_sha256": "af0084dff3027166f21a9610584bb37597b0afee39fe3ca744ee49e246cbaa10",
+  "mcnemar_exact": {
+    "arm_a": "PACT",
+    "arm_a_failure_arm_b_success": 0,
+    "arm_a_success_arm_b_failure": 28,
+    "arm_b": "PACT_ZERO",
+    "discordant_pairs": 28,
+    "p_value_exact_two_sided": 7.450580596923828e-09
+  },
+  "schedule_sha256": "621764f8dc314dbdb7c477d1bc1480980e82476f4519e28f4f3e65432aa1ed6c",
+  "schema_version": "pact_frontend_screen_decision_v1",
+  "screen_not_confirmatory": true
+}

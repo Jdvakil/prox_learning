@@ -68,6 +68,15 @@ def main() -> int:
     parser.add_argument(
         "--dispatch-contract", required=True, type=Path
     )
+    parser.add_argument(
+        "--storage-amendment", required=True, type=Path
+    )
+    parser.add_argument(
+        "--storage-report", required=True, type=Path
+    )
+    parser.add_argument(
+        "--storage-summary", required=True, type=Path
+    )
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--analysis", required=True, type=Path)
     parser.add_argument("--final-decision", required=True, type=Path)
@@ -78,6 +87,10 @@ def main() -> int:
     analysis = json.loads(args.analysis.read_text())
     decision = json.loads(args.final_decision.read_text())
     dispatch = json.loads(args.dispatch_contract.read_text())
+    storage_amendment = json.loads(
+        args.storage_amendment.read_text()
+    )
+    storage_summary = json.loads(args.storage_summary.read_text())
     token = decision.get("decision")
     if token not in SCREEN_TOKENS or token in CONFIRMATORY_TOKENS:
         raise ValueError("final decision is not an allowed screen token")
@@ -97,6 +110,112 @@ def main() -> int:
         }
     ):
         raise ValueError("final decision self-hash mismatch")
+    for document, key, label in (
+        (
+            storage_amendment,
+            "storage_amendment_sha256",
+            "storage amendment",
+        ),
+        (
+            storage_summary,
+            "storage_compaction_summary_sha256",
+            "storage summary",
+        ),
+    ):
+        payload = {
+            item_key: value
+            for item_key, value in document.items()
+            if item_key != key
+        }
+        if document.get(key) != canonical_hash(payload):
+            raise ValueError(f"{label} self-hash mismatch")
+    if (
+        storage_amendment["schedule_sha256"]
+        != schedule["schedule_sha256"]
+        or storage_summary["schedule_sha256"]
+        != schedule["schedule_sha256"]
+        or storage_amendment["dispatch_contract_sha256"]
+        != dispatch["dispatch_contract_sha256"]
+    ):
+        raise ValueError("storage artifacts are not bound to dispatch")
+    exclusions = set(
+        storage_amendment["excluded_intact_schedule_indices"]
+    )
+    if exclusions != {0, 119}:
+        raise ValueError("unexpected raw storage exclusions")
+    storage_archives = []
+    for row in schedule["rows"]:
+        index = int(row["schedule_index"])
+        row_dir = args.output_root / row["output_relpath"]
+        archive_path = row_dir / "storage_archive.json"
+        if index in exclusions:
+            if archive_path.exists() or not (
+                row_dir / "trajectory.h5"
+            ).exists():
+                raise ValueError(
+                    f"raw excluded row {index} is not intact"
+                )
+            continue
+        archive = json.loads(archive_path.read_text())
+        payload = {
+            key: value
+            for key, value in archive.items()
+            if key != "storage_archive_sha256"
+        }
+        if archive.get(
+            "storage_archive_sha256"
+        ) != canonical_hash(payload):
+            raise ValueError(
+                f"row {index}: storage archive self-hash mismatch"
+            )
+        if (
+            archive["schedule_index"] != index
+            or archive["rollout_id"] != row["rollout_id"]
+            or archive["outcome_based_selection"] is not False
+            or archive["original_payloads_recoverable"] is not True
+        ):
+            raise ValueError(
+                f"row {index}: storage archive identity mismatch"
+            )
+        compact_record = archive["compact_result"]
+        result_path = row_dir / "result.json"
+        if (
+            result_path.stat().st_size
+            != compact_record["size_bytes"]
+            or file_hash(result_path) != compact_record["sha256"]
+        ):
+            raise ValueError(
+                f"row {index}: compact result changed"
+            )
+        for archive_key in (
+            "result_archive",
+            "trajectory_archive",
+        ):
+            record = archive[archive_key]
+            path = Path(record["archive_path"])
+            if (
+                not path.exists()
+                or path.stat().st_size != record["archive_size_bytes"]
+                or file_hash(path) != record["archive_sha256"]
+            ):
+                raise ValueError(
+                    f"row {index}: {archive_key} changed"
+                )
+        storage_archives.append(archive_path)
+    if (
+        len(storage_archives) != 118
+        or storage_summary["compacted_count"] != 118
+        or storage_summary["expected_compacted_count"] != 118
+        or storage_summary["excluded_intact_schedule_indices"]
+        != [0, 119]
+        or storage_summary["reconciled_execution_observed"] is not True
+        or storage_summary["outcome_based_selection"] is not False
+        or storage_summary[
+            "endpoint_values_emitted_during_compaction"
+        ]
+        is not False
+    ):
+        raise ValueError("storage compaction did not reconcile")
     report_lines = [
         line.strip()
         for line in args.report.read_text().splitlines()
@@ -127,6 +246,9 @@ def main() -> int:
         "training_summary": args.training_summary,
         "schedule": args.schedule,
         "dispatch_contract": args.dispatch_contract,
+        "storage_amendment": args.storage_amendment,
+        "storage_report": args.storage_report,
+        "storage_summary": args.storage_summary,
         "analysis": args.analysis,
         "final_decision": args.final_decision,
         "report": args.report,
@@ -140,6 +262,9 @@ def main() -> int:
         ),
         "completion_ledger": (
             args.output_root / "completion_ledger.json"
+        ),
+        "full_execution_summary": (
+            args.output_root / "full_execution_summary.json"
         ),
     }
     missing = [
@@ -182,6 +307,18 @@ def main() -> int:
             "checkpoints"
         ]
         + dispatch["frozen_inputs"]["surface_encoders"],
+        "storage": {
+            "compacted_rows_verified": len(storage_archives),
+            "excluded_intact_schedule_indices": sorted(exclusions),
+            "original_payloads_recoverable": True,
+            "outcome_based_selection": False,
+            "endpoint_values_emitted_during_compaction": False,
+            "compatibility_link": str(
+                (
+                    args.output_root / "execution_summary.json"
+                ).resolve()
+            ),
+        },
         "weights_committed": False,
         "rollout_h5_committed": False,
         "videos_committed": False,

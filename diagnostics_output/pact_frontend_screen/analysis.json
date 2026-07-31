@@ -1,0 +1,188 @@
+{
+  "analysis_script_sha256": "cd4cbf07daf9bfdfbe2ed46b0c95c8d79fd70ef6f7080003f39ade1534e23534",
+  "analysis_sha256": "78a7a1518f872a5ab277c2ade35826ba906373bbb2150c4d0ff267a0286d38c1",
+  "design": {
+    "detectable_effect_statement": "This 40-pair screen is intended to resolve a large PACT-minus-PACT_ZERO gap of roughly 0.15; smaller effects may not be detected and ACT is a non-decision-bearing reference.",
+    "fresh_subprocess_per_rollout": true,
+    "instances": 40,
+    "repeats_per_instance_per_arm": 1,
+    "rollouts": 120,
+    "workers": 8
+  },
+  "fisher_exact_secondary": {
+    "PACT_vs_ACT": {
+      "arm_a": "PACT",
+      "arm_b": "ACT",
+      "odds_ratio": 2.9138755980861246,
+      "p_value_two_sided": 0.03921004584553153,
+      "table_success_failure": [
+        [
+          29,
+          11
+        ],
+        [
+          19,
+          21
+        ]
+      ]
+    },
+    "PACT_vs_PACT_ZERO": {
+      "arm_a": "PACT",
+      "arm_b": "PACT_ZERO",
+      "odds_ratio": 102.81818181818181,
+      "p_value_two_sided": 2.1038299766019905e-11,
+      "table_success_failure": [
+        [
+          29,
+          11
+        ],
+        [
+          1,
+          39
+        ]
+      ]
+    }
+  },
+  "mcnemar_exact_primary": {
+    "arm_a": "PACT",
+    "arm_a_failure_arm_b_success": 0,
+    "arm_a_success_arm_b_failure": 28,
+    "arm_b": "PACT_ZERO",
+    "discordant_pairs": 28,
+    "p_value_exact_two_sided": 7.450580596923828e-09
+  },
+  "paired_instance_bootstrap": {
+    "PACT_minus_ACT_secondary": {
+      "arm_a": "PACT",
+      "arm_b": "ACT",
+      "ci_95": [
+        0.075,
+        0.425
+      ],
+      "difference": 0.25,
+      "n_instances": 40,
+      "replicates": 20000,
+      "seed": 2026073104
+    },
+    "PACT_minus_PACT_ZERO": {
+      "arm_a": "PACT",
+      "arm_b": "PACT_ZERO",
+      "ci_95": [
+        0.55,
+        0.825
+      ],
+      "difference": 0.7,
+      "n_instances": 40,
+      "replicates": 20000,
+      "seed": 2026073103
+    }
+  },
+  "pooled": {
+    "ACT": {
+      "collision_free_task_success": 19,
+      "collision_free_task_success_rate": 0.475,
+      "collision_free_task_success_wilson_95": [
+        0.329354701126789,
+        0.6250263789330753
+      ],
+      "contact_pair_entry_totals": {
+        "grasp_target": 7573898,
+        "hazard_bar": 163549,
+        "other_environment": 0
+      },
+      "episodes_with_contact": {
+        "grasp_target": 35,
+        "hazard_bar": 6,
+        "other_environment": 0
+      },
+      "failure_taxonomy": {
+        "collision_free_task_success": 19,
+        "hazard_bar_contact": 6,
+        "target_contact_without_task_success": 15
+      },
+      "n": 40,
+      "ordinary_task_success": 19,
+      "ordinary_task_success_rate": 0.475,
+      "ordinary_task_success_wilson_95": [
+        0.329354701126789,
+        0.6250263789330753
+      ]
+    },
+    "PACT": {
+      "collision_free_task_success": 29,
+      "collision_free_task_success_rate": 0.725,
+      "collision_free_task_success_wilson_95": [
+        0.5716504419378943,
+        0.8389198375233267
+      ],
+      "contact_pair_entry_totals": {
+        "grasp_target": 10622992,
+        "hazard_bar": 135165,
+        "other_environment": 0
+      },
+      "episodes_with_contact": {
+        "grasp_target": 37,
+        "hazard_bar": 2,
+        "other_environment": 0
+      },
+      "failure_taxonomy": {
+        "collision_free_task_success": 29,
+        "hazard_bar_contact": 2,
+        "target_contact_without_task_success": 8,
+        "task_failure_after_gripper_close": 1
+      },
+      "n": 40,
+      "ordinary_task_success": 29,
+      "ordinary_task_success_rate": 0.725,
+      "ordinary_task_success_wilson_95": [
+        0.5716504419378943,
+        0.8389198375233267
+      ]
+    },
+    "PACT_ZERO": {
+      "collision_free_task_success": 1,
+      "collision_free_task_success_rate": 0.025,
+      "collision_free_task_success_wilson_95": [
+        0.0044268315026814095,
+        0.1288136896347409
+      ],
+      "contact_pair_entry_totals": {
+        "grasp_target": 637970,
+        "hazard_bar": 215196,
+        "other_environment": 0
+      },
+      "episodes_with_contact": {
+        "grasp_target": 27,
+        "hazard_bar": 21,
+        "other_environment": 0
+      },
+      "failure_taxonomy": {
+        "collision_free_task_success": 1,
+        "hazard_bar_contact": 21,
+        "target_contact_without_task_success": 13,
+        "task_failure_after_gripper_close": 5
+      },
+      "n": 40,
+      "ordinary_task_success": 2,
+      "ordinary_task_success_rate": 0.05,
+      "ordinary_task_success_wilson_95": [
+        0.013820667386148344,
+        0.16503877369140962
+      ]
+    }
+  },
+  "primary_endpoint": "task_success and zero hazard_bar and other_environment contacts",
+  "reconciliation": {
+    "driver_noncomplete": [],
+    "expected": 120,
+    "invalid": [],
+    "missing": [],
+    "reconciled": true,
+    "valid": 120
+  },
+  "results_available": true,
+  "schedule_sha256": "621764f8dc314dbdb7c477d1bc1480980e82476f4519e28f4f3e65432aa1ed6c",
+  "schema_version": "pact_frontend_screen_analysis_v1",
+  "screen_not_confirmatory": true,
+  "target_contact_exempt": true
+}
