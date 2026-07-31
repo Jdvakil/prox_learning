@@ -28,6 +28,10 @@ analysis = _load(
     "analyze_pact_frontend_screen",
     ROOT / "scripts/analyze_pact_frontend_screen.py",
 )
+schedule_builder = _load(
+    "build_pact_frontend_screen_schedule",
+    ROOT / "scripts/build_pact_frontend_screen_schedule.py",
+)
 
 
 def _instances(a_only: int, b_only: int, neither: int = 0):
@@ -166,3 +170,40 @@ def test_dataset_hash_amendment_is_outcome_blind_and_self_hashed():
             ROOT / "scripts/prepare_pact_embedding_dataset.py"
         ).read_bytes()
     ).hexdigest()
+
+
+def test_screen_arm_orders_are_balanced_without_changing_n():
+    orders = schedule_builder.arm_orders(40)
+    assert len(orders) == 40
+    assert all(set(order) == {"ACT", "PACT", "PACT_ZERO"} for order in orders)
+    for position in range(3):
+        counts = {
+            arm: sum(order[position] == arm for order in orders)
+            for arm in ("ACT", "PACT", "PACT_ZERO")
+        }
+        assert max(counts.values()) - min(counts.values()) <= 1
+
+
+def test_screen_runtime_sources_bind_detachment_and_group_recovery():
+    supervisor = (
+        ROOT
+        / "scripts"
+        / "run_pact_frontend_screen_supervisor.py"
+    ).read_text()
+    launcher = (
+        ROOT
+        / "scripts"
+        / "launch_pact_frontend_screen_detached.py"
+    ).read_text()
+    proof = (
+        ROOT
+        / "scripts"
+        / "prove_pact_frontend_screen_detachment.py"
+    ).read_text()
+    assert "WORKERS = 8" in supervisor
+    assert "pact_frontend_screen_group_recovery_v1" in supervisor
+    assert "eval_pact_frontend_screen_row.py" in supervisor
+    assert '"/usr/bin/setsid"' in launcher
+    assert '"/usr/bin/nohup"' in launcher
+    assert "/root/prox_learning_pact_remediation/assets" in launcher
+    assert "os.kill(launching_shell.pid, signal.SIGKILL)" in proof
