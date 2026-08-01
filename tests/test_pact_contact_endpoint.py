@@ -143,6 +143,25 @@ def test_contact_endpoint_keeps_binary_and_magnitude_separate() -> None:
     assert analysis.contact_frames(plowing, "hazard_bar") == 1000
 
 
+def test_fisher_binary_is_reported_as_cluster_unaware() -> None:
+    instances = [
+        {
+            "PACT": scientific_result(task=True),
+            "ACT": scientific_result(task=index >= 2),
+        }
+        for index in range(4)
+    ]
+    observed = analysis.fisher_binary(
+        instances,
+        arm_a="PACT",
+        arm_b="ACT",
+        metric=analysis.METRICS["collision_free_task_success"][0],
+    )
+    assert observed["table_arm_by_binary_outcome"] == [[4, 0], [2, 2]]
+    assert observed["cluster_aware"] is False
+    assert 0.0 <= observed["two_sided_p"] <= 1.0
+
+
 def test_conditioned_contact_contrast_requires_both_arms_to_succeed() -> None:
     instances = [
         {

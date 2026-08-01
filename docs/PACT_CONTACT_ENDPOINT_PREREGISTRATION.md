@@ -18,6 +18,8 @@ The paired-normal design calculation used prior outcomes only for sizing. At n=1
 
 Every paired difference uses 20,000 deterministic bootstrap replicates. Whole instances are clusters: all arms and all seeds move together. Seeds are shown separately before pooling, and medians accompany heavy-tailed contact-frame means.
 
+Two-sided Fisher exact tests accompany binary contrasts, including PACT versus ACT and PACT versus PACT_ZERO. Pooled Fisher values are explicitly cluster-unaware descriptive tests; the whole-instance bootstrap remains the cluster-aware inference.
+
 `CONTACT_REDUCTION_ESTABLISHED` requires the pooled PACT-minus-PERMUTED hazard-frame 95% CI to be strictly below zero and a negative difference in every seed. `CONTACT_REDUCTION_WITH_TASK_BENEFIT` additionally requires positive PACT-minus-ACT collision-free task success pooled and in every seed. A CI strictly above zero yields `CONTACT_INCREASE`. A CI including zero, or a pooled reduction with inconsistent seed signs, yields `NO_CONTACT_REDUCTION`. The subset-only token is unavailable because the partition was dropped. An unreconciled schedule yields `CONTACT_EXPERIMENT_INCOMPLETE`.
 
-Frozen analyzer SHA-256: `ede36ee37f8b4c56a175a6d7ae1736ee4792e010bc20ec62d76842ab59c7afd0`. Preregistration SHA-256: `a7b956e5140ca3fab48494b2fdfced009cb9512244b584d849bedd511472c146`.
+Frozen analyzer SHA-256: `cdccb37357619c7cbce558e9761a10889bfca7aa48bbf3b31429b9ebc6940754`. Preregistration SHA-256: `108a1299aebc81b45cbc01daadd2ddce4b236028512322300fafb1fbe17d615c`.

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
+from scipy.stats import fisher_exact
 
 
 ARMS = ("ACT", "PACT", "PACT_ZERO", "PACT_PERMUTED")
@@ -144,6 +145,12 @@ METRICS: dict[str, tuple[Callable[[dict[str, Any]], float], str]] = {
         "higher_is_better",
     ),
 }
+BINARY_METRICS = {
+    "collision_free_task_success",
+    "hazard_bar_any_contact",
+    "manipulation_success",
+    "ordinary_task_success",
+}
 
 
 def _summary(values: np.ndarray, *, binary: bool) -> dict[str, Any]:
@@ -167,17 +174,11 @@ def _summary(values: np.ndarray, *, binary: bool) -> dict[str, Any]:
 
 
 def arm_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    binary_metrics = {
-        "collision_free_task_success",
-        "hazard_bar_any_contact",
-        "manipulation_success",
-        "ordinary_task_success",
-    }
     summary = {}
     for name, (metric, direction) in METRICS.items():
         values = np.asarray([metric(row) for row in rows], dtype=np.float64)
         summary[name] = {
-            **_summary(values, binary=name in binary_metrics),
+            **_summary(values, binary=name in BINARY_METRICS),
             "direction": direction,
         }
     successful = [row for row in rows if bool(row["task_success"])]
@@ -194,6 +195,29 @@ def arm_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
         sorted(Counter(row["failure_taxonomy"] for row in rows).items())
     )
     return summary
+
+
+def fisher_binary(
+    instances: list[dict[str, dict[str, Any]]],
+    *,
+    arm_a: str,
+    arm_b: str,
+    metric: Callable[[dict[str, Any]], float],
+) -> dict[str, Any]:
+    a_success = sum(int(metric(instance[arm_a]) > 0.5) for instance in instances)
+    b_success = sum(int(metric(instance[arm_b]) > 0.5) for instance in instances)
+    table = [
+        [a_success, len(instances) - a_success],
+        [b_success, len(instances) - b_success],
+    ]
+    odds_ratio, p_value = fisher_exact(table, alternative="two-sided")
+    return {
+        "table_arm_by_binary_outcome": table,
+        "odds_ratio": float(odds_ratio),
+        "two_sided_p": float(p_value),
+        "cluster_aware": False,
+        "role": "required descriptive exact test; whole-instance bootstrap CI remains the cluster-aware inference",
+    }
 
 
 def arm_mean_ci(
@@ -571,6 +595,13 @@ def analyze(
                         "pact_zero_ood_probe": "PACT_ZERO" in (arm_a, arm_b),
                     }
                 )
+                if metric_name in BINARY_METRICS:
+                    item["fisher_exact_unclustered"] = fisher_binary(
+                        instances,
+                        arm_a=arm_a,
+                        arm_b=arm_b,
+                        metric=metric,
+                    )
                 seed_contrasts[policy_seed][contrast_name][metric_name] = item
             seed_conditioned[str(policy_seed)][contrast_name] = paired_difference(
                 instances,
@@ -634,6 +665,17 @@ def analyze(
                     "pact_zero_ood_probe": "PACT_ZERO" in (arm_a, arm_b),
                 }
             )
+            if metric_name in BINARY_METRICS:
+                item["fisher_exact_unclustered"] = fisher_binary(
+                    [
+                        by_seed[policy_seed][instance_index]
+                        for instance_index in range(INSTANCES)
+                        for policy_seed in SEEDS
+                    ],
+                    arm_a=arm_a,
+                    arm_b=arm_b,
+                    metric=metric,
+                )
             pooled_contrasts[contrast_name][metric_name] = item
         pooled_conditioned[contrast_name] = pooled_cluster_difference(
             by_seed,
@@ -851,18 +893,12 @@ def render_report(analysis: dict[str, Any], decision: dict[str, Any]) -> str:
             "",
             "## Pooled full contrast set",
             "",
-            "Negative contact/count/depth differences favor the first arm; positive success differences favor it. PACT_ZERO rows remain OOD diagnostics.",
+            "Negative contact/count/depth differences favor the first arm; positive success differences favor it. PACT_ZERO rows remain OOD diagnostics. Fisher p-values are required cluster-unaware descriptive tests; the adjacent whole-instance bootstrap intervals are the cluster-aware inference.",
             "",
-            "| Contrast | Endpoint | Difference | Whole-instance 95% CI |",
-            "|---|---|---:|---:|",
+            "| Contrast | Endpoint | Difference | Whole-instance 95% CI | Fisher exact p |",
+            "|---|---|---:|---:|---:|",
         ]
     )
-    binary = {
-        "collision_free_task_success",
-        "hazard_bar_any_contact",
-        "manipulation_success",
-        "ordinary_task_success",
-    }
     for arm_a, arm_b, _bearing, _interpretation in CONTRASTS:
         contrast_name = f"{arm_a}_minus_{arm_b}"
         label = contrast_name.replace("_minus_", " − ")
@@ -871,7 +907,7 @@ def render_report(analysis: dict[str, Any], decision: dict[str, Any]) -> str:
         for metric_name in METRICS:
             item = analysis["pooled_contrasts"][contrast_name][metric_name]
             ci = item["instance_cluster_bootstrap_ci_95"]
-            percentage = metric_name in binary
+            percentage = metric_name in BINARY_METRICS
             if percentage:
                 difference = _difference(item["difference"], percentage=True)
                 interval = f"[{100 * ci[0]:+.1f}, {100 * ci[1]:+.1f}] pp"
@@ -881,7 +917,11 @@ def render_report(analysis: dict[str, Any], decision: dict[str, Any]) -> str:
             else:
                 difference = _difference(item["difference"], percentage=False)
                 interval = f"[{ci[0]:+.4g}, {ci[1]:+.4g}]"
-            lines.append(f"| {label} | {metric_name} | {difference} | {interval} |")
+            fisher = item.get("fisher_exact_unclustered")
+            fisher_text = f"{fisher['two_sided_p']:.4g}" if fisher else "—"
+            lines.append(
+                f"| {label} | {metric_name} | {difference} | {interval} | {fisher_text} |"
+            )
     lines.extend(
         [
             "",

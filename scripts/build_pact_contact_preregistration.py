@@ -160,6 +160,9 @@ def build(occlusion_path: Path, power_path: Path, analyzer_path: Path) -> dict[s
             "confidence_level": 0.95,
             "contact_medians_reported": True,
             "seed_specific_results_reported_before_pooled": True,
+            "fisher_exact": (
+                "two-sided Fisher exact tests accompany binary contrasts, including PACT versus ACT and PACT versus PACT_ZERO; pooled Fisher tests are labeled cluster-unaware descriptive statistics and never replace the whole-instance bootstrap"
+            ),
             "frozen_analysis_script": str(analyzer_path.resolve()),
             "frozen_analysis_script_sha256": file_hash(analyzer_path),
         },
@@ -226,6 +229,8 @@ The paired-normal design calculation used prior outcomes only for sizing. At n=1
 ## Frozen analysis and decisions
 
 Every paired difference uses 20,000 deterministic bootstrap replicates. Whole instances are clusters: all arms and all seeds move together. Seeds are shown separately before pooling, and medians accompany heavy-tailed contact-frame means.
+
+Two-sided Fisher exact tests accompany binary contrasts, including PACT versus ACT and PACT versus PACT_ZERO. Pooled Fisher values are explicitly cluster-unaware descriptive tests; the whole-instance bootstrap remains the cluster-aware inference.
 
 `CONTACT_REDUCTION_ESTABLISHED` requires the pooled PACT-minus-PERMUTED hazard-frame 95% CI to be strictly below zero and a negative difference in every seed. `CONTACT_REDUCTION_WITH_TASK_BENEFIT` additionally requires positive PACT-minus-ACT collision-free task success pooled and in every seed. A CI strictly above zero yields `CONTACT_INCREASE`. A CI including zero, or a pooled reduction with inconsistent seed signs, yields `NO_CONTACT_REDUCTION`. The subset-only token is unavailable because the partition was dropped. An unreconciled schedule yields `CONTACT_EXPERIMENT_INCOMPLETE`.
 
