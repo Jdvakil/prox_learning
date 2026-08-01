@@ -113,3 +113,50 @@ def test_pact_zero_is_absent_from_design_and_decisions() -> None:
         "SEED_REPLICATION_FAILED",
         "SEED_REPLICATION_INCOMPLETE",
     }
+
+
+def result(*, task_success: bool, hazard: int = 0, other: int = 0) -> dict:
+    collision_free = task_success and hazard == 0 and other == 0
+    return {
+        "task_success": task_success,
+        "collision_free_task_success": collision_free,
+        "contact_audit": {
+            "contact_class_totals": {
+                "grasp_target": 1 if task_success else 0,
+                "hazard_bar": hazard,
+                "other_environment": other,
+            }
+        },
+        "failure_taxonomy": ("collision_free_task_success" if collision_free else "failure"),
+    }
+
+
+def test_primary_endpoint_recomputed_from_task_and_non_target_contacts() -> None:
+    assert analysis.endpoint(result(task_success=True))
+    assert not analysis.endpoint(result(task_success=False))
+    assert not analysis.endpoint(result(task_success=True, hazard=1))
+    assert not analysis.endpoint(result(task_success=True, other=1))
+
+
+def test_pooled_bootstrap_clusters_both_seeds_by_instance() -> None:
+    by_seed = {3101: [], 3102: []}
+    for index in range(40):
+        for policy_seed in analysis.SEEDS:
+            by_seed[policy_seed].append(
+                {
+                    "PACT": result(task_success=index < 30),
+                    "PACT_PERMUTED": result(task_success=index < 20),
+                    "ACT": result(task_success=index < 10),
+                }
+            )
+    observed = analysis.pooled_cluster_analysis(
+        by_seed,
+        arm_a="PACT",
+        arm_b="PACT_PERMUTED",
+        replicates=1000,
+        seed=123,
+    )
+    assert observed["difference"] == pytest.approx(0.25)
+    assert observed["n_unique_instances"] == 40
+    assert observed["n_seed_instance_pairs"] == 80
+    assert observed["cluster_unit"] == "instance_identity_with_both_policy_seeds_resampled_together"
