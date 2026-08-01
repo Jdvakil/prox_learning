@@ -22,4 +22,4 @@ Two-sided Fisher exact tests accompany binary contrasts, including PACT versus A
 
 `CONTACT_REDUCTION_ESTABLISHED` requires the pooled PACT-minus-PERMUTED hazard-frame 95% CI to be strictly below zero and a negative difference in every seed. `CONTACT_REDUCTION_WITH_TASK_BENEFIT` additionally requires positive PACT-minus-ACT collision-free task success pooled and in every seed. A CI strictly above zero yields `CONTACT_INCREASE`. A CI including zero, or a pooled reduction with inconsistent seed signs, yields `NO_CONTACT_REDUCTION`. The subset-only token is unavailable because the partition was dropped. An unreconciled schedule yields `CONTACT_EXPERIMENT_INCOMPLETE`.
 
-Frozen analyzer SHA-256: `cdccb37357619c7cbce558e9761a10889bfca7aa48bbf3b31429b9ebc6940754`. Preregistration SHA-256: `108a1299aebc81b45cbc01daadd2ddce4b236028512322300fafb1fbe17d615c`.
+Frozen analyzer SHA-256: `e2d9a5061e3a26599fa03a9d4f147ceda8386eb8ad87481f5674d7022f681589`. Preregistration SHA-256: `e9bac4e397dfd9717cba59a800b89c1e125bcc09a2b1b75140a7bdf57755d510`.

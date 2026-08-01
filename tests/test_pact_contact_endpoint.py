@@ -162,6 +162,24 @@ def test_fisher_binary_is_reported_as_cluster_unaware() -> None:
     assert 0.0 <= observed["two_sided_p"] <= 1.0
 
 
+def test_fisher_binary_serializes_infinite_odds_as_null() -> None:
+    instances = [
+        {
+            "PACT": scientific_result(task=True),
+            "PACT_ZERO": scientific_result(task=False),
+        }
+        for _ in range(4)
+    ]
+    observed = analysis.fisher_binary(
+        instances,
+        arm_a="PACT",
+        arm_b="PACT_ZERO",
+        metric=analysis.METRICS["collision_free_task_success"][0],
+    )
+    assert observed["odds_ratio"] is None
+    assert "Infinity" not in json.dumps(observed)
+
+
 def test_conditioned_contact_contrast_requires_both_arms_to_succeed() -> None:
     instances = [
         {

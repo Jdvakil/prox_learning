@@ -213,7 +213,7 @@ def fisher_binary(
     odds_ratio, p_value = fisher_exact(table, alternative="two-sided")
     return {
         "table_arm_by_binary_outcome": table,
-        "odds_ratio": float(odds_ratio),
+        "odds_ratio": float(odds_ratio) if math.isfinite(float(odds_ratio)) else None,
         "two_sided_p": float(p_value),
         "cluster_aware": False,
         "role": "required descriptive exact test; whole-instance bootstrap CI remains the cluster-aware inference",
