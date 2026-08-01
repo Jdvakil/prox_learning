@@ -160,6 +160,14 @@ def main() -> int:
         "permuted_evaluator_dependency": ROOT / "submodules/act/eval_pact_valid_ablation_row.py",
         "legacy_evaluator_dependency": ROOT / "submodules/act/eval_pact_collision_row.py",
         "contact_taxonomy": ROOT / "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
+        "camera_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/camera_configs.py",
+        "robot_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/robot_configs.py",
+        "task_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/task_configs.py",
+        "datagen_config": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
+        "corridor_sampler": ROOT / "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+        "corridor_scene_xml": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+        "corridor_scene_metadata": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor_metadata.json",
+        "hybrid_robot_xml": ROOT / "assets/robots/franka_skin/model_hybrid.xml",
     }
     missing = [label for label, path in runtime_paths.items() if not path.is_file()]
     if missing:

@@ -32,9 +32,13 @@ SOURCE_FILES = {
     "scene_xml": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
     "scene_metadata": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor_metadata.json",
     "camera_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/camera_configs.py",
+    "robot_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/robot_configs.py",
+    "task_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/task_configs.py",
+    "datagen_config": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
     "sampler": ROOT / "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
     "contact_taxonomy": ROOT / "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
     "evaluation_runtime": ROOT / "submodules/act/eval_pact_contact_endpoint_row.py",
+    "hybrid_robot_xml": ROOT / "assets/robots/franka_skin/model_hybrid.xml",
 }
 
 
