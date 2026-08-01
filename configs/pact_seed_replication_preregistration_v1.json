@@ -1,0 +1,93 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026080102,
+    "contrasts": [
+      "PACT_minus_PACT_PERMUTED",
+      "PACT_PERMUTED_minus_ACT",
+      "PACT_minus_ACT"
+    ],
+    "exact_mcnemar_on_discordant_pairs": true,
+    "frozen_analysis_script_sha256": "67ad002e31a912b0d862c98fd468b7d6d12b7bf1850ab83a23b2eda995d1856c",
+    "pooled_bootstrap_cluster": "instance_identity_with_both_seeds_resampled_together",
+    "report_order": "seed_3101_and_seed_3102_side_by_side_unpooled_first_then_pooled",
+    "wilson_interval": 0.95
+  },
+  "checkpoint_inputs": {
+    "act_seed3102_sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4",
+    "encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+    "pact_seed3102": "train_once_under_frozen_recipe",
+    "pact_permuted_seed3102": "inference_alias_of_pact_seed3102"
+  },
+  "decision_rule": {
+    "confirmed": "SEED_REPLICATION_CONFIRMED iff seed-3102 PACT minus ACT is positive and >= +0.10, and PACT minus PACT_PERMUTED is positive on both seeds",
+    "failed": "SEED_REPLICATION_FAILED iff seed-3102 PACT minus ACT is < +0.10",
+    "incomplete": "SEED_REPLICATION_INCOMPLETE iff the frozen 240-cell two-seed matrix does not reconcile",
+    "partial": "SEED_REPLICATION_PARTIAL iff seed-3102 PACT minus ACT is positive and >= +0.10, but PACT minus PACT_PERMUTED is <= 0 on either seed"
+  },
+  "design": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seed": 3102,
+    "instances": 40,
+    "repeats_per_instance_per_arm": 1,
+    "rollouts": 120,
+    "schedule_seed": 2026080101,
+    "workers": 8
+  },
+  "execution": {
+    "boundary_rule": "scientific_result_is_terminal; indiscriminate_external_termination_reruns_every_inflight_result_free_row",
+    "fixed_workers": 8,
+    "fresh_subprocess_per_rollout": true,
+    "launch_smoke_arm": "PACT_PERMUTED",
+    "launch_smoke_required": true,
+    "lossless_storage_compaction": true,
+    "no_outcome_based_row_replacement": true,
+    "outcome_blind_first_20_minute_throughput": true,
+    "raw_rows_preserved": [
+      0,
+      119
+    ]
+  },
+  "frozen_inputs": {
+    "instance_manifest_file_sha256": "97d0a3d0941f9a1f7b63e416f9a7341c374a16b6e0c2738c7c74d5a7bb036893",
+    "permutation_manifest_file_sha256": "67dc3942b2d76133d159859587cd4fc4ed8e7d429047f50b018a90b91acc4f82",
+    "permutation_scheme_seed": 2026073105,
+    "permutation_tensor_sha256": "6767753b5925efd74fc04c214933fa521aaf49b1b54a607e3d1cc20b89bc636f",
+    "token_plan_horizon": 900
+  },
+  "frozen_utc": "2026-08-01T00:19:33Z",
+  "pact_zero": {
+    "excluded_from_all_primary_and_secondary_comparisons": true,
+    "reason": "zero is absent from the 32-D training-token support and is an invalid modality ablation"
+  },
+  "preregistration_sha256": "b05324d5b57601d5749388f1036228e2a1ff24bd4fc8a2cba5c58dea932d99f0",
+  "primary_endpoint": "task_success and hazard_bar contacts == 0 and other_environment contacts == 0; grasp_target exempt",
+  "question": "Does the PACT advantage replicate on independent policy seed 3102?",
+  "schema_version": "pact_seed_replication_preregistration_v1",
+  "training_recipe": {
+    "action_dim": 8,
+    "batch_size": 8,
+    "camera_names": [
+      "wrist_camera"
+    ],
+    "chunk_size": 100,
+    "decoder_layers": 7,
+    "dim_feedforward": 3200,
+    "encoder_layers": 7,
+    "episode_horizon": 195,
+    "epochs": 2000,
+    "heads": 8,
+    "hidden_dim": 512,
+    "kl_beta": 10,
+    "learning_rate": 0.00001,
+    "n_proximity_sensors": 40,
+    "proximity_feature_dim": 32,
+    "proximity_tokens_per_sensor": 1,
+    "seed": 3102,
+    "state_dim": 9
+  }
+}
