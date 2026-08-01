@@ -17,13 +17,12 @@ import analyze_pact_contact_endpoint as analysis
 import pact_contact_endpoint_contract as contact_contract
 import build_pact_contact_token_plan as token_plan
 import build_pact_contact_schedule as contact_schedule
+import build_pact_contact_worker_amendment as worker_amendment
 import compact_pact_contact_storage as contact_storage
 
 
 def identity_extrinsic() -> np.ndarray:
-    return np.array(
-        [[[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0]]]
-    )
+    return np.array([[[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0]]])
 
 
 def test_physical_landscape_frustum_uses_actual_video_aspect_ratio() -> None:
@@ -63,9 +62,7 @@ def test_aabb_blocks_only_before_target() -> None:
         (100, 0, "drop_subset_analysis_degenerate"),
     ],
 )
-def test_frozen_partition_boundaries(
-    occluded: int, non_occluded: int, expected: str
-) -> None:
+def test_frozen_partition_boundaries(occluded: int, non_occluded: int, expected: str) -> None:
     assert occlusion_module_action(occluded, non_occluded) == expected
 
 
@@ -90,9 +87,7 @@ def test_frozen_artifact_is_self_hashed_and_degenerate_if_present() -> None:
 
 def test_power_mde_and_required_instances_are_monotone() -> None:
     assert power.mde(100.0, 100) < power.mde(100.0, 40)
-    assert power.instances_for_effect(100.0, 50.0) < power.instances_for_effect(
-        100.0, 25.0
-    )
+    assert power.instances_for_effect(100.0, 50.0) < power.instances_for_effect(100.0, 25.0)
 
 
 def test_frozen_power_artifact_is_self_hashed_if_present() -> None:
@@ -107,9 +102,7 @@ def test_frozen_power_artifact_is_self_hashed_if_present() -> None:
     assert document["power"]["chosen_fresh_instances"] == 100
 
 
-def scientific_result(
-    *, task: bool, hazard_frames: int = 0, hazard_entries: int = 0
-) -> dict:
+def scientific_result(*, task: bool, hazard_frames: int = 0, hazard_entries: int = 0) -> dict:
     return {
         "task_success": task,
         "collision_free_task_success": task and hazard_entries == 0,
@@ -228,9 +221,7 @@ def decision_inputs(contact_difference: float, contact_ci: list[float], task: fl
     ],
 )
 def test_frozen_contact_decision_boundaries(difference, ci, task, expected) -> None:
-    contact, seeds_contact, task_value, seeds_task = decision_inputs(
-        difference, ci, task
-    )
+    contact, seeds_contact, task_value, seeds_task = decision_inputs(difference, ci, task)
     token, _ = analysis.choose_decision(
         True,
         modality_contact=contact,
@@ -266,9 +257,7 @@ def test_contact_report_ends_in_exact_token() -> None:
             "reason": "schedule_did_not_reconcile",
         },
     )
-    assert [line for line in report.splitlines() if line][-1] == (
-        "CONTACT_EXPERIMENT_INCOMPLETE"
-    )
+    assert [line for line in report.splitlines() if line][-1] == ("CONTACT_EXPERIMENT_INCOMPLETE")
 
 
 def test_contact_analysis_reconciles_full_matrix_and_awards_enhanced_token(
@@ -319,9 +308,7 @@ def test_contact_analysis_reconciles_full_matrix_and_awards_enhanced_token(
                 row_dir = tmp_path / row["output_relpath"]
                 row_dir.mkdir(parents=True)
                 (row_dir / "result.json").write_text(json.dumps(result))
-                (row_dir / "driver_result.json").write_text(
-                    json.dumps({"status": "complete"})
-                )
+                (row_dir / "driver_result.json").write_text(json.dumps({"status": "complete"}))
     schedule = {
         "schedule_sha256": "fixture",
         "occlusion_subset_sha256": "occlusion",
@@ -380,16 +367,64 @@ def test_contact_schedule_orders_are_balanced_and_smoke_is_permuted() -> None:
     assert orders[0][0] == (3101, "PACT_PERMUTED")
     assert all(len(order) == 12 and len(set(order)) == 12 for order in orders)
     assert all(
-        set(order) == {
-            (seed, arm)
-            for seed in contact_schedule.SEEDS
-            for arm in contact_schedule.ARMS
-        }
+        set(order)
+        == {(seed, arm) for seed in contact_schedule.SEEDS for arm in contact_schedule.ARMS}
         for order in orders
     )
     for position in range(12):
         counts = Counter(order[position] for order in orders)
         assert max(counts.values()) - min(counts.values()) <= 1
+
+
+def test_worker_amendment_formula_selects_ten_without_reading_outcomes(tmp_path) -> None:
+    document = worker_amendment.build(artifact_root=tmp_path, checked_utc="2026-08-01T00:00:00Z")
+    payload = dict(document)
+    observed = payload.pop("worker_amendment_sha256")
+    assert observed == worker_amendment.canonical_hash(payload)
+    assert document["amendment"] == {
+        "field": "design.workers",
+        "old_count": 8,
+        "new_count": 10,
+        "only_worker_count_changed": True,
+        "rows_changed": 0,
+    }
+    memory = document["memory_calculation"]
+    assert memory["peak_8_mib"] == 14170
+    assert memory["per_worker_mib"] == pytest.approx(1771.25)
+    assert memory["uncapped_worker_count"] == 10
+    assert memory["projected_selected_peak_mib"] == pytest.approx(17712.5)
+    assert document["zero_results_proof"]["result_file_count"] == 0
+    assert document["outcome_blinding"]["outcome_values_read"] is False
+
+
+def test_worker_amendment_refuses_any_existing_result(tmp_path) -> None:
+    result = tmp_path / "evaluation_v1/rows/0000/result.json"
+    result.parent.mkdir(parents=True)
+    result.write_text("{}")
+    with pytest.raises(ValueError, match="void after evaluation results exist"):
+        worker_amendment.build(artifact_root=tmp_path, checked_utc="2026-08-01T00:00:00Z")
+
+
+def test_frozen_worker_amendment_is_pre_outcome_and_analyzer_is_unchanged() -> None:
+    import hashlib
+
+    path = ROOT / "diagnostics_output/pact_contact_endpoint/worker_amendment_v1.json"
+    document = json.loads(path.read_text())
+    payload = dict(document)
+    observed = payload.pop("worker_amendment_sha256")
+    assert observed == worker_amendment.canonical_hash(payload)
+    assert document["amendment"]["new_count"] == 10
+    assert document["zero_results_proof"]["result_file_count"] == 0
+    analyzer_sha = hashlib.sha256(
+        (ROOT / "scripts/analyze_pact_contact_endpoint.py").read_bytes()
+    ).hexdigest()
+    assert analyzer_sha == document["unchanged_contract"]["analyzer_sha256"]
+    supervisor_source = (ROOT / "scripts/run_pact_contact_supervisor.py").read_text()
+    assert "WORKERS = 10" in supervisor_source
+    assert (
+        "GPU memory exceeded the frozen 20000 MiB guard"
+        in (ROOT / "scripts/launch_pact_contact_full_stack.py").read_text()
+    )
 
 
 def test_contact_storage_keeps_endpoint_fields_and_deletes_bulk_payload(tmp_path) -> None:
@@ -409,9 +444,7 @@ def test_contact_storage_keeps_endpoint_fields_and_deletes_bulk_payload(tmp_path
     video = row_dir / "video.mp4"
     trajectory.write_bytes(b"trajectory")
     video.write_bytes(b"video")
-    result = {
-        key: None for key in contact_storage.CORE_RESULT_KEYS
-    }
+    result = {key: None for key in contact_storage.CORE_RESULT_KEYS}
     result.update(
         {
             "schema_version": "fixture",

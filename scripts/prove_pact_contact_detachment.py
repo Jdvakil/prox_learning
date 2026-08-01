@@ -3,7 +3,10 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
+import threading
+from datetime import datetime, timezone
 from pathlib import Path
 
 import prove_pact_frontend_screen_detachment as implementation
@@ -11,6 +14,59 @@ import prove_pact_frontend_screen_detachment as implementation
 
 _base_validate_launch_smoke = implementation.validate_launch_smoke
 CONTACT_SMOKE_VALIDATION = None
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+class GpuMemorySampler:
+    def __init__(self) -> None:
+        self.stop_event = threading.Event()
+        self.samples: list[tuple[str, int]] = []
+        self.thread = threading.Thread(target=self._run, daemon=True)
+
+    def _sample(self) -> None:
+        completed = subprocess.run(
+            [
+                "/usr/bin/nvidia-smi",
+                "--query-gpu=memory.used",
+                "--format=csv,noheader,nounits",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        total_mib = sum(int(line.strip()) for line in completed.stdout.splitlines() if line.strip())
+        self.samples.append((utc_now(), total_mib))
+
+    def _run(self) -> None:
+        while not self.stop_event.is_set():
+            try:
+                self._sample()
+            except (OSError, subprocess.SubprocessError, ValueError):
+                pass
+            self.stop_event.wait(1.0)
+
+    def start(self) -> None:
+        self.thread.start()
+
+    def finish(self) -> dict:
+        self.stop_event.set()
+        self.thread.join(timeout=5.0)
+        if not self.samples:
+            raise RuntimeError("no GPU-memory sample was captured during contact smoke")
+        peak_timestamp, peak_mib = max(self.samples, key=lambda item: item[1])
+        return {
+            "query": "nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits",
+            "sample_interval_seconds": 1.0,
+            "sample_count": len(self.samples),
+            "first_sample_utc": self.samples[0][0],
+            "last_sample_utc": self.samples[-1][0],
+            "peak_sample_utc": peak_timestamp,
+            "peak_memory_used_mib": peak_mib,
+            "endpoint_fields_read": False,
+        }
 
 
 def validate_contact_launch_smoke(*, schedule, contract, output_root):
@@ -59,25 +115,27 @@ def validate_contact_launch_smoke(*, schedule, contract, output_root):
     return artifact
 
 
-implementation.LAUNCHER = (
-    implementation.ROOT / "scripts/launch_pact_contact_detached.py"
-)
+implementation.LAUNCHER = implementation.ROOT / "scripts/launch_pact_contact_detached.py"
 implementation.validate_launch_smoke = validate_contact_launch_smoke
 
 
 if __name__ == "__main__":
-    code = implementation.main()
+    sampler = GpuMemorySampler()
+    sampler.start()
+    try:
+        code = implementation.main()
+    finally:
+        gpu_memory = sampler.finish()
     if code == 0:
         if CONTACT_SMOKE_VALIDATION is None:
             raise RuntimeError("contact smoke structural validation was not recorded")
         arguments = sys.argv
-        output_root = Path(
-            arguments[arguments.index("--output-root") + 1]
-        ).resolve()
+        output_root = Path(arguments[arguments.index("--output-root") + 1]).resolve()
         proof_path = output_root / "detachment_proof.json"
         proof = implementation.json.loads(proof_path.read_text())
         proof.pop("detachment_proof_sha256", None)
         proof["contact_smoke_validation"] = CONTACT_SMOKE_VALIDATION
+        proof["smoke_gpu_memory"] = gpu_memory
         proof["endpoint_outcome_values_inspected"] = False
         proof["detachment_proof_sha256"] = implementation.canonical_hash(proof)
         implementation.write_json_atomic(proof_path, proof)

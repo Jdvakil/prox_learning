@@ -14,7 +14,7 @@ from typing import Any
 ARMS = ("ACT", "PACT", "PACT_ZERO", "PACT_PERMUTED")
 SEEDS = (3101, 3102, 3103)
 INSTANCES = 100
-WORKERS = 8
+ORIGINAL_WORKERS = 8
 MAX_CONTROL_STEPS = 900
 SCHEDULE_SEED = 2026080104
 BOOTSTRAP_SEED = 2026080105
@@ -69,11 +69,10 @@ def _validate_model_registry(registry: dict[str, Any]) -> None:
         records = registry["seeds"][str(policy_seed)]
         if set(records) != set(ARMS):
             raise ValueError(f"policy registry arms changed for {policy_seed}")
-        if records["PACT_ZERO"]["checkpoint_sha256"] != records["PACT"][
-            "checkpoint_sha256"
-        ] or records["PACT_PERMUTED"]["checkpoint_sha256"] != records["PACT"][
-            "checkpoint_sha256"
-        ]:
+        if (
+            records["PACT_ZERO"]["checkpoint_sha256"] != records["PACT"]["checkpoint_sha256"]
+            or records["PACT_PERMUTED"]["checkpoint_sha256"] != records["PACT"]["checkpoint_sha256"]
+        ):
             raise ValueError("PACT ablations must alias PACT weights")
         for arm, record in records.items():
             for path_key, sha_key in (
@@ -84,7 +83,9 @@ def _validate_model_registry(registry: dict[str, Any]) -> None:
                 raw_path = record.get(path_key)
                 expected = record.get(sha_key)
                 if raw_path is not None and file_hash(Path(raw_path)) != expected:
-                    raise ValueError(f"frozen model artifact changed: {policy_seed} {arm} {raw_path}")
+                    raise ValueError(
+                        f"frozen model artifact changed: {policy_seed} {arm} {raw_path}"
+                    )
         if records["ACT"]["proximity_feature_dim"] != 0:
             raise ValueError("ACT must have no proximity tokens")
         if any(
@@ -103,19 +104,28 @@ def build(
     occlusion: dict[str, Any],
     power: dict[str, Any],
     preregistration: dict[str, Any],
+    worker_amendment: dict[str, Any],
+    worker_amendment_path: Path,
 ) -> dict[str, Any]:
     manifest_sha = validate_self_hash(manifest, "manifest_sha256", "manifest")
-    registry_sha = validate_self_hash(
-        registry, "policy_registry_sha256", "policy registry"
-    )
+    registry_sha = validate_self_hash(registry, "policy_registry_sha256", "policy registry")
     token_sha = validate_self_hash(token_plan, "token_plan_sha256", "token plan")
-    occlusion_sha = validate_self_hash(
-        occlusion, "occlusion_subset_sha256", "occlusion partition"
-    )
+    occlusion_sha = validate_self_hash(occlusion, "occlusion_subset_sha256", "occlusion partition")
     power_sha = validate_self_hash(power, "power_sha256", "power calculation")
-    prereg_sha = validate_self_hash(
-        preregistration, "preregistration_sha256", "preregistration"
+    prereg_sha = validate_self_hash(preregistration, "preregistration_sha256", "preregistration")
+    worker_amendment_sha = validate_self_hash(
+        worker_amendment, "worker_amendment_sha256", "worker amendment"
     )
+    amended_workers = int(worker_amendment["amendment"]["new_count"])
+    if (
+        worker_amendment.get("schema_version") != "pact_contact_worker_amendment_v1"
+        or worker_amendment["amendment"].get("old_count") != ORIGINAL_WORKERS
+        or worker_amendment["amendment"].get("only_worker_count_changed") is not True
+        or worker_amendment["amendment"].get("rows_changed") != 0
+        or worker_amendment["zero_results_proof"].get("result_file_count") != 0
+        or worker_amendment["outcome_blinding"].get("no_outcome_had_been_observed") is not True
+    ):
+        raise ValueError("worker amendment contract changed")
     _validate_model_registry(registry)
     if (
         token_plan.get("schema_version") != "pact_contact_permuted_token_plan_v1"
@@ -138,7 +148,7 @@ def build(
         "repeats_per_instance_per_arm_seed": 1,
         "rollouts": INSTANCES * len(SEEDS) * len(ARMS),
         "schedule_seed": SCHEDULE_SEED,
-        "workers": WORKERS,
+        "workers": ORIGINAL_WORKERS,
     }
     if preregistration["design"] != expected_design:
         raise ValueError("preregistered design changed")
@@ -175,9 +185,7 @@ def build(
                     str(token_plan_path.resolve()) if arm == "PACT_PERMUTED" else None
                 ),
                 "token_plan_sha256": token_sha if arm == "PACT_PERMUTED" else None,
-                "token_plan_row": (
-                    int(instance["role_index"]) if arm == "PACT_PERMUTED" else None
-                ),
+                "token_plan_row": (int(instance["role_index"]) if arm == "PACT_PERMUTED" else None),
                 "max_control_steps": MAX_CONTROL_STEPS,
                 "rollout_id": rollout_id,
                 "output_relpath": (
@@ -186,19 +194,13 @@ def build(
             }
             row["schedule_row_sha256"] = canonical_hash(row)
             rows.append(row)
-    expected_count = Counter(
-        (row["checkpoint_seed"], row["arm"]) for row in rows
-    )
-    if expected_count != Counter(
-        {(seed, arm): INSTANCES for seed in SEEDS for arm in ARMS}
-    ):
+    expected_count = Counter((row["checkpoint_seed"], row["arm"]) for row in rows)
+    if expected_count != Counter({(seed, arm): INSTANCES for seed in SEEDS for arm in ARMS}):
         raise ValueError("seed-arm cells are not balanced")
     position_balance = {
         str(position): dict(
             sorted(
-                Counter(
-                    f"{order[position][0]}:{order[position][1]}" for order in orders
-                ).items()
+                Counter(f"{order[position][0]}:{order[position][1]}" for order in orders).items()
             )
         )
         for position in range(len(SEEDS) * len(ARMS))
@@ -212,13 +214,15 @@ def build(
         "occlusion_subset_sha256": occlusion_sha,
         "power_sha256": power_sha,
         "preregistration_sha256": prereg_sha,
+        "worker_amendment_sha256": worker_amendment_sha,
+        "worker_amendment_file_sha256": file_hash(worker_amendment_path),
         "instances": instances,
         "instance_count": INSTANCES,
         "arms": list(ARMS),
         "checkpoint_seeds": list(SEEDS),
         "repeats_per_instance_per_arm_seed": 1,
         "rollouts": len(rows),
-        "workers": WORKERS,
+        "workers": amended_workers,
         "fresh_subprocess_per_rollout": True,
         "no_outcome_based_row_replacement": True,
         "indiscriminate_all_inflight_recovery": True,
@@ -250,6 +254,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--occlusion-subset", required=True, type=Path)
     parser.add_argument("--power", required=True, type=Path)
     parser.add_argument("--preregistration", required=True, type=Path)
+    parser.add_argument("--worker-amendment", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args()
 
@@ -264,6 +269,8 @@ def main() -> int:
         occlusion=json.loads(args.occlusion_subset.read_text()),
         power=json.loads(args.power.read_text()),
         preregistration=json.loads(args.preregistration.read_text()),
+        worker_amendment=json.loads(args.worker_amendment.read_text()),
+        worker_amendment_path=args.worker_amendment,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")

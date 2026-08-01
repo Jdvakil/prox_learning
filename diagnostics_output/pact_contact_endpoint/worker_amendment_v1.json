@@ -1,0 +1,61 @@
+{
+  "amendment": {
+    "field": "design.workers",
+    "new_count": 10,
+    "old_count": 8,
+    "only_worker_count_changed": true,
+    "rows_changed": 0
+  },
+  "created_utc": "2026-08-01T09:03:21.159519Z",
+  "memory_calculation": {
+    "capped_worker_count": 10,
+    "ceiling_mib": 19000,
+    "formula": "floor(19000 / (peak_8 / 8)), capped at 12",
+    "peak_8_mib": 14170,
+    "peak_source": {
+      "observed_nvidia_smi_summary": "14170 MiB, 23028 MiB, 69 %",
+      "record_path": "/root/.codex/sessions/2026/07/28/rollout-2026-07-28T04-05-13-019fa6e5-ec5b-7cf0-80bd-6033dd450620.jsonl",
+      "record_timestamp_utc": "2026-07-28T04:07:03.521Z",
+      "worker_count": 8
+    },
+    "per_worker_mib": 1771.25,
+    "projected_ceiling_headroom_mib": 1287.5,
+    "projected_selected_peak_mib": 17712.5,
+    "runtime_abort_threshold_mib": 20000,
+    "selected_worker_count": 10,
+    "uncapped_worker_count": 10
+  },
+  "outcome_blinding": {
+    "endpoint_fields_read": false,
+    "no_outcome_had_been_observed": true,
+    "outcome_values_read": false
+  },
+  "reason": "Pre-dispatch throughput amendment selected from the largest recorded eight-worker GPU-memory peak, with the prescribed 19000 MiB ceiling.",
+  "schema_version": "pact_contact_worker_amendment_v1",
+  "unchanged_contract": {
+    "analyzer_sha256": "e2d9a5061e3a26599fa03a9d4f147ceda8386eb8ad87481f5674d7022f681589",
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_ZERO",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seeds": [
+      3101,
+      3102,
+      3103
+    ],
+    "endpoint_analysis_decision_thresholds_changed": false,
+    "instances": 100,
+    "max_control_steps": 900,
+    "rollouts": 1200
+  },
+  "worker_amendment_sha256": "de67841ba73f3cd14c633de5ec1cc53b87a66cc2fde980220e26a5eeb39d03de",
+  "zero_results_proof": {
+    "artifact_root": "/root/pact_contact_endpoint_artifacts",
+    "checked_utc": "2026-08-01T09:03:21.159519Z",
+    "matching_paths": [],
+    "pattern": "**/result.json",
+    "result_file_count": 0
+  }
+}

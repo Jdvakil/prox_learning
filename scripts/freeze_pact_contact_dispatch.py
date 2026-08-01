@@ -46,13 +46,9 @@ def verified_models(schedule: dict[str, Any]) -> dict[str, list[dict[str, str]]]
     }
     for row in schedule["rows"]:
         groups["checkpoints"][row["checkpoint_path"]] = row["checkpoint_sha256"]
-        groups["dataset_stats"][row["dataset_stats_path"]] = row[
-            "dataset_stats_sha256"
-        ]
+        groups["dataset_stats"][row["dataset_stats_path"]] = row["dataset_stats_sha256"]
         if row["surface_encoder_path"] is not None:
-            groups["surface_encoders"][row["surface_encoder_path"]] = row[
-                "surface_encoder_sha256"
-            ]
+            groups["surface_encoders"][row["surface_encoder_path"]] = row["surface_encoder_sha256"]
     output: dict[str, list[dict[str, str]]] = {}
     for label, records in groups.items():
         output[label] = []
@@ -71,6 +67,7 @@ def main() -> int:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--policy-registry", required=True, type=Path)
     parser.add_argument("--preregistration", required=True, type=Path)
+    parser.add_argument("--worker-amendment", required=True, type=Path)
     parser.add_argument("--token-plan", required=True, type=Path)
     parser.add_argument("--occlusion", required=True, type=Path)
     parser.add_argument("--power", required=True, type=Path)
@@ -82,30 +79,35 @@ def main() -> int:
     manifest = json.loads(args.manifest.read_text())
     registry = json.loads(args.policy_registry.read_text())
     preregistration = json.loads(args.preregistration.read_text())
+    worker_amendment = json.loads(args.worker_amendment.read_text())
     token_plan = json.loads(args.token_plan.read_text())
     occlusion = json.loads(args.occlusion.read_text())
     power = json.loads(args.power.read_text())
     schedule_sha = validate_self_hash(schedule, "schedule_sha256", "schedule")
     manifest_sha = validate_self_hash(manifest, "manifest_sha256", "manifest")
-    registry_sha = validate_self_hash(
-        registry, "policy_registry_sha256", "policy registry"
+    registry_sha = validate_self_hash(registry, "policy_registry_sha256", "policy registry")
+    prereg_sha = validate_self_hash(preregistration, "preregistration_sha256", "preregistration")
+    worker_amendment_sha = validate_self_hash(
+        worker_amendment, "worker_amendment_sha256", "worker amendment"
     )
-    prereg_sha = validate_self_hash(
-        preregistration, "preregistration_sha256", "preregistration"
-    )
+    workers = int(worker_amendment["amendment"]["new_count"])
+    if (
+        worker_amendment.get("schema_version") != "pact_contact_worker_amendment_v1"
+        or worker_amendment["amendment"].get("old_count") != 8
+        or worker_amendment["amendment"].get("only_worker_count_changed") is not True
+        or worker_amendment["zero_results_proof"].get("result_file_count") != 0
+        or worker_amendment["outcome_blinding"].get("outcome_values_read") is not False
+    ):
+        raise ValueError("worker amendment contract changed")
     token_sha = validate_self_hash(token_plan, "token_plan_sha256", "token plan")
-    occlusion_sha = validate_self_hash(
-        occlusion, "occlusion_subset_sha256", "occlusion partition"
-    )
+    occlusion_sha = validate_self_hash(occlusion, "occlusion_subset_sha256", "occlusion partition")
     power_sha = validate_self_hash(power, "power_sha256", "power")
-    expected_counts = Counter(
-        {(seed, arm): 100 for seed in SEEDS for arm in ARMS}
-    )
+    expected_counts = Counter({(seed, arm): 100 for seed in SEEDS for arm in ARMS})
     if (
         schedule.get("schema_version") != "pact_contact_endpoint_schedule_v1"
         or schedule.get("instance_count") != 100
         or schedule.get("rollouts") != 1200
-        or schedule.get("workers") != 8
+        or schedule.get("workers") != workers
         or len(schedule.get("rows", [])) != 1200
         or Counter((row["checkpoint_seed"], row["arm"]) for row in schedule["rows"])
         != expected_counts
@@ -120,11 +122,15 @@ def main() -> int:
         or schedule["token_plan_sha256"] != token_sha
         or schedule["occlusion_subset_sha256"] != occlusion_sha
         or schedule["power_sha256"] != power_sha
+        or schedule["worker_amendment_sha256"] != worker_amendment_sha
+        or schedule["worker_amendment_file_sha256"] != file_hash(args.worker_amendment)
     ):
         raise ValueError("schedule frozen-input binding changed")
     analyzer_sha = file_hash(args.analysis_script)
     if analyzer_sha != preregistration["analysis"]["frozen_analysis_script_sha256"]:
         raise ValueError("analysis script differs from preregistration")
+    if analyzer_sha != worker_amendment["unchanged_contract"]["analyzer_sha256"]:
+        raise ValueError("analysis script differs from worker amendment")
     token_record = token_plan["files"]["tokens"]
     if file_hash(Path(token_record["path"])) != token_record["sha256"]:
         raise ValueError("global token tensor differs from token plan")
@@ -151,6 +157,7 @@ def main() -> int:
         "contact_committer": ROOT / "scripts/commit_pact_contact_results.py",
         "contact_full_stack_launcher": ROOT / "scripts/launch_pact_contact_full_stack.py",
         "contact_preparation_controller": ROOT / "scripts/prepare_and_launch_pact_contact.py",
+        "contact_worker_amendment_builder": ROOT / "scripts/build_pact_contact_worker_amendment.py",
         "frontend_supervisor_dependency": ROOT / "scripts/run_pact_frontend_screen_supervisor.py",
         "frontend_launcher_dependency": ROOT / "scripts/launch_pact_frontend_screen_detached.py",
         "frontend_detachment_dependency": ROOT / "scripts/prove_pact_frontend_screen_detachment.py",
@@ -159,14 +166,18 @@ def main() -> int:
         "live_evaluator_dependency": ROOT / "submodules/act/eval_pact_frontend_screen_row.py",
         "permuted_evaluator_dependency": ROOT / "submodules/act/eval_pact_valid_ablation_row.py",
         "legacy_evaluator_dependency": ROOT / "submodules/act/eval_pact_collision_row.py",
-        "contact_taxonomy": ROOT / "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
+        "contact_taxonomy": ROOT
+        / "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
         "camera_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/camera_configs.py",
         "robot_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/robot_configs.py",
         "task_config": ROOT / "submodules/molmospaces/molmo_spaces/configs/task_configs.py",
-        "datagen_config": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
+        "datagen_config": ROOT
+        / "submodules/molmospaces/molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py",
         "corridor_sampler": ROOT / "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
-        "corridor_scene_xml": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
-        "corridor_scene_metadata": ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor_metadata.json",
+        "corridor_scene_xml": ROOT
+        / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+        "corridor_scene_metadata": ROOT
+        / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor_metadata.json",
         "hybrid_robot_xml": ROOT / "assets/robots/franka_skin/model_hybrid.xml",
     }
     missing = [label for label, path in runtime_paths.items() if not path.is_file()]
@@ -179,7 +190,7 @@ def main() -> int:
             "file_sha256": file_hash(args.schedule),
             "schedule_sha256": schedule_sha,
             "rows": 1200,
-            "workers": 8,
+            "workers": workers,
             "rows_changed": 0,
             "manifest_path": str(args.manifest.resolve()),
             "manifest_sha256": file_hash(args.manifest),
@@ -187,7 +198,7 @@ def main() -> int:
         "execution": {
             "output_root": str(output_root),
             "fresh_subprocess_per_rollout": True,
-            "fixed_worker_count": 8,
+            "fixed_worker_count": workers,
             "no_outcome_based_row_replacement": True,
             "outcomes_seen_before_freeze": False,
             "setsid": True,
@@ -220,6 +231,18 @@ def main() -> int:
             "required_measurement_elapsed_minutes": 20,
             "required_artifact": "throughput_first_20_minutes.json",
             "endpoint_fields_read": False,
+            "workers": workers,
+            "eta_must_use_remeasured_rate": True,
+        },
+        "gpu_memory_guard": {
+            "smoke_sampling_required": True,
+            "full_pool_sampling_required": True,
+            "full_pool_gate_seconds": 180,
+            "abort_threshold_mib": worker_amendment["memory_calculation"][
+                "runtime_abort_threshold_mib"
+            ],
+            "abort_before_auxiliary_finalization": True,
+            "outcome_fields_read": False,
         },
         "storage": {
             "summary_only_contact_instrumentation": True,
@@ -251,6 +274,13 @@ def main() -> int:
             "preregistration": {
                 "path": str(args.preregistration.resolve()),
                 "sha256": file_hash(args.preregistration),
+            },
+            "worker_amendment": {
+                "path": str(args.worker_amendment.resolve()),
+                "sha256": file_hash(args.worker_amendment),
+                "worker_amendment_sha256": worker_amendment_sha,
+                "old_count": 8,
+                "new_count": workers,
             },
             "token_plan": {
                 "path": str(args.token_plan.resolve()),

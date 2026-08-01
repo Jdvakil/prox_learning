@@ -57,7 +57,7 @@ def wait_for(path: Path, poll_seconds: float) -> dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def run_throughput(output_root: Path) -> None:
+def run_throughput(schedule: Path, output_root: Path) -> None:
     output = output_root / "throughput_first_20_minutes.json"
     if output.exists():
         return
@@ -70,6 +70,8 @@ def run_throughput(output_root: Path) -> None:
         [
             str(PYTHON),
             str(ROOT / "scripts/measure_pact_contact_throughput.py"),
+            "--schedule",
+            str(schedule),
             "--output-root",
             str(output_root),
             "--measurement-minutes",
@@ -151,9 +153,7 @@ def write_provenance(
         or analysis["reconciliation"].get("reconciled") is not True
     ):
         raise ValueError("contact experiment did not fully reconcile")
-    completion_by_id = {
-        item["rollout_id"]: item for item in ledger["completions"]
-    }
+    completion_by_id = {item["rollout_id"]: item for item in ledger["completions"]}
     for row in schedule["rows"]:
         index = int(row["schedule_index"])
         row_dir = output_root / row["output_relpath"]
@@ -192,9 +192,13 @@ def write_provenance(
         for label, path in {
             "preregistration": ROOT / "configs/pact_contact_endpoint_preregistration_v1.json",
             "preregistration_narrative": ROOT / "docs/PACT_CONTACT_ENDPOINT_PREREGISTRATION.md",
+            "worker_amendment": ROOT
+            / "diagnostics_output/pact_contact_endpoint/worker_amendment_v1.json",
             "manifest": manifest_path,
-            "policy_training": ROOT / "diagnostics_output/pact_contact_endpoint/policy_training.json",
-            "occlusion_subset": ROOT / "diagnostics_output/pact_contact_endpoint/occlusion_subset.json",
+            "policy_training": ROOT
+            / "diagnostics_output/pact_contact_endpoint/policy_training.json",
+            "occlusion_subset": ROOT
+            / "diagnostics_output/pact_contact_endpoint/occlusion_subset.json",
             "power": ROOT / "diagnostics_output/pact_contact_endpoint/power.json",
             "token_plan": ROOT / "diagnostics_output/pact_contact_endpoint/token_plan.json",
             "schedule": schedule_path,
@@ -207,6 +211,7 @@ def write_provenance(
             "detachment_proof": output_root / "detachment_proof.json",
             "full_launcher_receipt": output_root / "full_launcher_receipt.json",
             "full_stack_receipt": output_root / "full_stack_receipt.json",
+            "gpu_memory_first_minutes": output_root / "gpu_memory_first_minutes.json",
             "throughput": output_root / "throughput_first_20_minutes.json",
             "completion_ledger": output_root / "completion_ledger.json",
             "full_execution": output_root / "full_execution_summary.json",
@@ -259,7 +264,7 @@ def main() -> int:
         raise SystemExit("poll interval must be positive")
     schedule = args.schedule.resolve()
     output_root = args.output_root.resolve()
-    run_throughput(output_root)
+    run_throughput(schedule, output_root)
     execution = wait_for(output_root / "full_execution_summary.json", args.poll_seconds)
     if execution.get("scientific_schedule_reconciled") is not True:
         run_analysis(schedule, output_root)

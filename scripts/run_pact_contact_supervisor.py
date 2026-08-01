@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Durable eight-worker supervisor for the frozen contact experiment."""
+"""Durable amended-worker supervisor for the frozen contact experiment."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ import run_pact_frontend_screen_supervisor as screen
 ROOT = Path(__file__).resolve().parents[1]
 EVALUATOR = ROOT / "submodules/act/eval_pact_contact_endpoint_row.py"
 ROLL_OUTS = 1200
+WORKERS = 10
 ARMS = {"ACT", "PACT", "PACT_ZERO", "PACT_PERMUTED"}
 INTACT_ROWS = {0, 1199}
 
@@ -41,9 +42,8 @@ class ContactSupervisor(screen.ScreenSupervisor):
         if screen.canonical_hash(payload) != observed:
             raise RuntimeError("contact schedule self-hash mismatch")
         if (
-            self.schedule.get("schema_version")
-            != "pact_contact_endpoint_schedule_v1"
-            or self.schedule.get("workers") != screen.WORKERS
+            self.schedule.get("schema_version") != "pact_contact_endpoint_schedule_v1"
+            or self.schedule.get("workers") != WORKERS
             or self.schedule.get("rollouts") != ROLL_OUTS
             or len(self.schedule.get("rows", [])) != ROLL_OUTS
             or {row["arm"] for row in self.schedule["rows"]} != ARMS
@@ -58,6 +58,8 @@ class ContactSupervisor(screen.ScreenSupervisor):
         )
         if self.contract.get("schema_version") != "pact_contact_endpoint_dispatch_v1":
             raise RuntimeError("wrong contact dispatch contract")
+        if self.contract["execution"].get("fixed_worker_count") != WORKERS:
+            raise RuntimeError("contact dispatch worker count mismatch")
         for label, record in self.contract["frozen_inputs"]["runtime"].items():
             if screen.base.sha256_file(Path(record["path"])) != record["sha256"]:
                 raise RuntimeError(f"frozen contact runtime changed: {label}")
@@ -126,9 +128,7 @@ class ContactSupervisor(screen.ScreenSupervisor):
         self._heartbeat(force=True)
         target = 1 if self.mode == "smoke" else ROLL_OUTS
         while len(self.completed_ids) < target and not self.abort_reason:
-            while self.pending and len(self.active) < (
-                1 if self.mode == "smoke" else screen.WORKERS
-            ):
+            while self.pending and len(self.active) < (1 if self.mode == "smoke" else WORKERS):
                 self._launch(self.pending.popleft())
             self._handle_exits()
             self._write_state()
@@ -148,7 +148,7 @@ class ContactSupervisor(screen.ScreenSupervisor):
             "schedule_sha256": self.schedule["schedule_sha256"],
             "dispatch_contract_sha256": self.contract["dispatch_contract_sha256"],
             "mode": self.mode,
-            "workers": 1 if self.mode == "smoke" else screen.WORKERS,
+            "workers": 1 if self.mode == "smoke" else WORKERS,
             "expected": target,
             "complete_count": len(self.completed_ids),
             "scientific_schedule_reconciled": len(self.completed_ids) == target,

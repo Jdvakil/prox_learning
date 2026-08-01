@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PYTHON = Path("/root/act_retrain_venv/bin/python")
 TRAINING_SUMMARY = ROOT / "diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
 CONTACT_DIR = ROOT / "diagnostics_output/pact_contact_endpoint"
+WORKER_AMENDMENT = CONTACT_DIR / "worker_amendment_v1.json"
 TOKEN_DATA = Path("/root/pact_contact_endpoint_artifacts/token_plan_v1")
 OUTPUT_ROOT = Path("/root/pact_contact_endpoint_artifacts/evaluation_v1")
 STATUS = Path("/root/pact_contact_endpoint_artifacts/preparation_status.json")
@@ -173,6 +174,8 @@ def build_remaining_artifacts() -> None:
             str(CONTACT_DIR / "power.json"),
             "--preregistration",
             str(ROOT / "configs/pact_contact_endpoint_preregistration_v1.json"),
+            "--worker-amendment",
+            str(WORKER_AMENDMENT),
             "--output",
             str(CONTACT_DIR / "schedule.json"),
         ]
@@ -190,6 +193,8 @@ def build_remaining_artifacts() -> None:
             str(CONTACT_DIR / "policy_training.json"),
             "--preregistration",
             str(ROOT / "configs/pact_contact_endpoint_preregistration_v1.json"),
+            "--worker-amendment",
+            str(WORKER_AMENDMENT),
             "--token-plan",
             str(token_manifest),
             "--occlusion",
@@ -286,8 +291,13 @@ def main() -> int:
     args = parser.parse_args()
     if git("rev-parse", "HEAD") != args.expected_head:
         raise SystemExit("contact preparation started from an unexpected HEAD")
-    if git("status", "--porcelain"):
-        raise SystemExit("contact preparation requires a clean worktree")
+    status = git("status", "--porcelain").splitlines()
+    observed = {line[3:] for line in status if len(line) >= 4}
+    allowed_training_output = {str(TRAINING_SUMMARY.relative_to(ROOT))}
+    if observed and observed != allowed_training_output:
+        raise SystemExit(f"contact preparation has unexpected worktree paths: {sorted(observed)}")
+    if not WORKER_AMENDMENT.is_file():
+        raise SystemExit("frozen worker amendment is missing")
     if OUTPUT_ROOT.exists() or TOKEN_DATA.exists() or (CONTACT_DIR / "token_plan.json").exists():
         raise SystemExit("contact preparation targets are not fresh")
     write_status("waiting_for_seed3103_training")

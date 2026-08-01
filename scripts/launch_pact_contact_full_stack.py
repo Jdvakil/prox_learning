@@ -7,8 +7,10 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -51,8 +53,7 @@ def validate_proof(output_root: Path, contract: dict[str, Any]) -> dict[str, Any
         raise ValueError("detachment proof self-hash mismatch")
     if (
         proof.get("passed") is not True
-        or proof.get("dispatch_contract_sha256")
-        != contract["dispatch_contract_sha256"]
+        or proof.get("dispatch_contract_sha256") != contract["dispatch_contract_sha256"]
         or proof.get("endpoint_fields_inspected") is not False
         or proof.get("endpoint_outcome_values_inspected") is not False
         or proof.get("contact_smoke_validation", {}).get("passed") is not True
@@ -71,6 +72,99 @@ def detached(command: list[str], log_path: Path) -> subprocess.Popen:
             stderr=subprocess.STDOUT,
             start_new_session=False,
         )
+
+
+def file_hash(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def gpu_memory_used_mib() -> int:
+    completed = subprocess.run(
+        [
+            "/usr/bin/nvidia-smi",
+            "--query-gpu=memory.used",
+            "--format=csv,noheader,nounits",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return sum(int(line.strip()) for line in completed.stdout.splitlines() if line.strip())
+
+
+def full_pool_memory_gate(
+    *, output_root: Path, supervisor_pid: int, workers: int, seconds: int, threshold_mib: int
+) -> dict[str, Any]:
+    heartbeat_path = output_root / "heartbeat.json"
+    samples: list[tuple[str, int, int, int]] = []
+    wait_deadline = time.monotonic() + 300.0
+    gate_deadline: float | None = None
+    while gate_deadline is None or time.monotonic() < gate_deadline:
+        try:
+            os.kill(supervisor_pid, 0)
+        except ProcessLookupError as error:
+            raise RuntimeError("contact supervisor exited during GPU-memory gate") from error
+        active_count = 0
+        complete_count = 0
+        if heartbeat_path.is_file():
+            heartbeat = json.loads(heartbeat_path.read_text())
+            active_count = int(heartbeat.get("active_count", 0))
+            complete_count = int(heartbeat.get("complete_count", 0))
+            if active_count >= workers and gate_deadline is None:
+                gate_deadline = time.monotonic() + seconds
+        memory_mib = gpu_memory_used_mib()
+        samples.append((utc_now(), memory_mib, active_count, complete_count))
+        if memory_mib > threshold_mib:
+            os.kill(supervisor_pid, signal.SIGTERM)
+            artifact = {
+                "schema_version": "pact_contact_gpu_memory_gate_v1",
+                "workers": workers,
+                "threshold_mib": threshold_mib,
+                "gate_seconds_after_full_occupancy": seconds,
+                "sample_count": len(samples),
+                "peak_memory_used_mib": max(item[1] for item in samples),
+                "threshold_exceeded": True,
+                "passed": False,
+                "supervisor_terminated": True,
+                "complete_count_at_abort": complete_count,
+                "outcome_fields_read": False,
+                "first_sample_utc": samples[0][0],
+                "last_sample_utc": samples[-1][0],
+            }
+            artifact["gpu_memory_gate_sha256"] = canonical_hash(artifact)
+            write_json_atomic(output_root / "gpu_memory_first_minutes.json", artifact)
+            raise RuntimeError(
+                "GPU memory exceeded the frozen 20000 MiB guard; full pool was aborted "
+                "without reading outcomes and must be re-frozen once at the next lower count"
+            )
+        if gate_deadline is None and time.monotonic() >= wait_deadline:
+            os.kill(supervisor_pid, signal.SIGTERM)
+            raise RuntimeError("full worker pool did not form within five minutes")
+        time.sleep(1.0)
+    peak_sample = max(samples, key=lambda item: item[1])
+    artifact = {
+        "schema_version": "pact_contact_gpu_memory_gate_v1",
+        "workers": workers,
+        "threshold_mib": threshold_mib,
+        "gate_seconds_after_full_occupancy": seconds,
+        "sample_count": len(samples),
+        "peak_memory_used_mib": peak_sample[1],
+        "peak_sample_utc": peak_sample[0],
+        "maximum_active_count": max(item[2] for item in samples),
+        "threshold_exceeded": False,
+        "passed": True,
+        "supervisor_terminated": False,
+        "outcome_fields_read": False,
+        "first_sample_utc": samples[0][0],
+        "last_sample_utc": samples[-1][0],
+    }
+    artifact["gpu_memory_gate_sha256"] = canonical_hash(artifact)
+    write_json_atomic(output_root / "gpu_memory_first_minutes.json", artifact)
+    return artifact
 
 
 def main() -> int:
@@ -103,8 +197,7 @@ def main() -> int:
             "PYTHONUNBUFFERED": "1",
             "MLSPACES_ASSETS_DIR": "/root/prox_learning_pact_remediation/assets",
             "PYTHONPATH": (
-                f"{ROOT / 'submodules/molmospaces'}:{ROOT / 'submodules/act'}:"
-                f"{ROOT / 'scripts'}"
+                f"{ROOT / 'submodules/molmospaces'}:{ROOT / 'submodules/act'}:{ROOT / 'scripts'}"
             ),
         }
     )
@@ -131,6 +224,14 @@ def main() -> int:
         text=True,
     )
     supervisor_pid = int(completed.stdout.strip().splitlines()[-1])
+    memory_guard = contract["gpu_memory_guard"]
+    memory_gate = full_pool_memory_gate(
+        output_root=output_root,
+        supervisor_pid=supervisor_pid,
+        workers=int(contract["execution"]["fixed_worker_count"]),
+        seconds=int(memory_guard["full_pool_gate_seconds"]),
+        threshold_mib=int(memory_guard["abort_threshold_mib"]),
+    )
     commands = {
         "compactor": [
             str(PYTHON),
@@ -176,6 +277,13 @@ def main() -> int:
         "schedule_sha256": schedule["schedule_sha256"],
         "dispatch_contract_sha256": contract["dispatch_contract_sha256"],
         "detachment_proof_sha256": proof["detachment_proof_sha256"],
+        "gpu_memory_gate": {
+            "path": str(output_root / "gpu_memory_first_minutes.json"),
+            "file_sha256": file_hash(output_root / "gpu_memory_first_minutes.json"),
+            "gpu_memory_gate_sha256": memory_gate["gpu_memory_gate_sha256"],
+            "peak_memory_used_mib": memory_gate["peak_memory_used_mib"],
+            "passed": True,
+        },
         "expected_head": args.expected_head,
         "supervisor_pid": supervisor_pid,
         "auxiliary_pids": processes,
