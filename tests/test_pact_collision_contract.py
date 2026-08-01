@@ -84,6 +84,18 @@ def test_contact_taxonomy_exempts_only_target_and_separates_intrusion():
     assert contacts.classify_contact(wall) == "other_environment"
 
 
+def test_contact_audit_summary_reports_maximum_penetration(monkeypatch):
+    monkeypatch.setenv("PACT_CONTACT_AUDIT_SUMMARY_ONLY", "1")
+    audit = contacts.PactContactAudit()
+    audit._pair_totals["hazard_bar"] = 2
+    audit._frames_with["hazard_bar"] = 1
+    audit._maximum_penetration_depth_m["hazard_bar"] = 0.004
+    summary = audit.summary()
+    assert summary["maximum_penetration_depth_m"]["hazard_bar"] == 0.004
+    assert summary["contact_frame_payload_retained"] is False
+    assert summary["contact_frames"] == []
+
+
 def test_v2_is_new_data_with_byte_identical_scene():
     v1 = json.loads(
         (ROOT / "configs" / "pact_collision_candidate_manifest_v1.json").read_text()

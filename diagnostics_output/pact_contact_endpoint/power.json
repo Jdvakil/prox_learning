@@ -1,0 +1,162 @@
+{
+  "arm_statistics": {
+    "3101": {
+      "ACT": {
+        "maximum": 28325.0,
+        "mean": 2802.775,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 6,
+        "sample_sd": 7825.347422409451
+      },
+      "PACT": {
+        "maximum": 28037.0,
+        "mean": 1389.975,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 2,
+        "sample_sd": 6136.181041053935
+      },
+      "PACT_PERMUTED": {
+        "maximum": 28486.0,
+        "mean": 2231.375,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 5,
+        "sample_sd": 7455.704309668211
+      }
+    },
+    "3102": {
+      "ACT": {
+        "maximum": 27836.0,
+        "mean": 1986.525,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 6,
+        "sample_sd": 6087.50119670393
+      },
+      "PACT": {
+        "maximum": 27160.0,
+        "mean": 1272.55,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 4,
+        "sample_sd": 5275.551763341188
+      },
+      "PACT_PERMUTED": {
+        "maximum": 27600.0,
+        "mean": 2224.8,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 40,
+        "nonzero": 6,
+        "sample_sd": 6843.647820967696
+      }
+    }
+  },
+  "paired_statistics": {
+    "3101": {
+      "PACT_minus_ACT": {
+        "maximum": 23002.0,
+        "mean": -1412.8,
+        "median": 0.0,
+        "minimum": -28325.0,
+        "n": 40,
+        "nonzero": 6,
+        "sample_sd": 7823.560934930084
+      },
+      "PACT_minus_PACT_PERMUTED": {
+        "maximum": 50.0,
+        "mean": -841.4,
+        "median": 0.0,
+        "minimum": -28486.0,
+        "n": 40,
+        "nonzero": 5,
+        "sample_sd": 4521.270730158129
+      }
+    },
+    "3102": {
+      "PACT_minus_ACT": {
+        "maximum": 20079.0,
+        "mean": -713.975,
+        "median": 0.0,
+        "minimum": -27836.0,
+        "n": 40,
+        "nonzero": 9,
+        "sample_sd": 6354.942843001856
+      },
+      "PACT_minus_PACT_PERMUTED": {
+        "maximum": 678.0,
+        "mean": -952.25,
+        "median": 0.0,
+        "minimum": -22324.0,
+        "n": 40,
+        "nonzero": 7,
+        "sample_sd": 3765.4366501996374
+      }
+    }
+  },
+  "power": {
+    "alpha_two_sided": 0.05,
+    "any_contact_probability_mde_at_chosen_n": 0.06491333856804463,
+    "choice_rationale": "n=100 is the rounded-up design size that reaches approximately 80% power for the historical two-seed PACT-versus-permuted contact-frame reduction.",
+    "chosen_fresh_instances": 100,
+    "comparison": "The count endpoint requires approximately 99 instances for the historical effect versus 108 for the binary any-contact endpoint under the same approximation.",
+    "contact_frame_mde_at_chosen_n": 890.9552793130963,
+    "historical_absolute_any_contact_probability_difference": 0.0625,
+    "historical_absolute_contact_frame_difference": 896.825,
+    "instances_for_historical_any_contact_probability_difference": 108,
+    "instances_for_historical_contact_frame_difference": 99,
+    "method": "two-sided normal approximation for a paired mean, using the sample SD across prior two-seed instance-cluster means",
+    "target_power": 0.8
+  },
+  "power_sha256": "db0bf8473c70264f72d491b7855d91ffa34ab628fa6a849e41740bd7cf030571",
+  "schema_version": "pact_contact_endpoint_power_v1",
+  "source": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seeds": [
+      3101,
+      3102
+    ],
+    "endpoint_fields_loaded": [
+      "contact_audit.frames_with_contact"
+    ],
+    "instances": 40,
+    "replication_root": "/root/pact_seed_replication_artifacts/evaluation_1490160c",
+    "rows": 240,
+    "schedule_file_sha256": "f93c9ba6d3a188e07b344db88e27bd0cd42dbc051123b4edff64a0ee94aa0e7e",
+    "schedule_path": "diagnostics_output/pact_seed_replication/schedule.json",
+    "schedule_sha256": "1490160c44f48cf885ab1dc1fc83cd01554d82a5f83c81653bf11cfd49b3c7cb"
+  },
+  "status": "exploratory_prior_data_for_design_only",
+  "two_seed_instance_cluster": {
+    "PACT_minus_PACT_PERMUTED_any_contact": {
+      "maximum": 0.5,
+      "mean": -0.0625,
+      "median": 0.0,
+      "minimum": -1.0,
+      "n": 40,
+      "nonzero": 6,
+      "sample_sd": 0.23170217399907458
+    },
+    "PACT_minus_PACT_PERMUTED_contact_frames": {
+      "maximum": 339.0,
+      "mean": -896.825,
+      "median": 0.0,
+      "minimum": -16510.5,
+      "n": 40,
+      "nonzero": 8,
+      "sample_sd": 3180.1826821216837
+    },
+    "cluster_unit": "instance; both prior policy seeds move together"
+  }
+}

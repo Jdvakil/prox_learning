@@ -23,6 +23,10 @@ with the conversion and zero-support audit in
 [`docs/PACT_ACT_DATA_EQUIVALENCE_AND_ZERO_SUPPORT.md`](docs/PACT_ACT_DATA_EQUIVALENCE_AND_ZERO_SUPPORT.md).
 The independent-seed replication decision is reported in
 [`docs/PACT_SEED_REPLICATION_DECISION.md`](docs/PACT_SEED_REPLICATION_DECISION.md).
+The sharpened contact-count endpoint is frozen in
+[`docs/PACT_CONTACT_ENDPOINT_PREREGISTRATION.md`](docs/PACT_CONTACT_ENDPOINT_PREREGISTRATION.md)
+and its final decision will be reported in
+[`docs/PACT_CONTACT_ENDPOINT_DECISION.md`](docs/PACT_CONTACT_ENDPOINT_DECISION.md).
 
 ---
 

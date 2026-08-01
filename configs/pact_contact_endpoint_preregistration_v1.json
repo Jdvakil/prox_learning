@@ -1,0 +1,160 @@
+{
+  "allowed_tokens": [
+    "CONTACT_REDUCTION_ESTABLISHED",
+    "CONTACT_REDUCTION_WITH_TASK_BENEFIT",
+    "CONTACT_REDUCTION_SUBSET_ONLY",
+    "NO_CONTACT_REDUCTION",
+    "CONTACT_INCREASE",
+    "CONTACT_EXPERIMENT_INCOMPLETE"
+  ],
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "bootstrap_seed": 2026080105,
+    "cluster": "whole instance; all arms and all three policy seeds move together",
+    "confidence_level": 0.95,
+    "contact_medians_reported": true,
+    "frozen_analysis_script": "/root/prox_learning_pact_remediation/scripts/analyze_pact_contact_endpoint.py",
+    "frozen_analysis_script_sha256": "ede36ee37f8b4c56a175a6d7ae1736ee4792e010bc20ec62d76842ab59c7afd0",
+    "method": "paired mean differences with deterministic whole-instance cluster bootstrap",
+    "seed_specific_results_reported_before_pooled": true
+  },
+  "co_primary_endpoints": {
+    "collision_free_task_success": "task_success AND zero hazard_bar contact entries AND zero other_environment contact entries",
+    "hazard_bar_contact_frames_per_rollout": "number of physics audit frames containing one or more hazard_bar contacts"
+  },
+  "contrasts": [
+    [
+      "PACT",
+      "PACT_PERMUTED",
+      "modality_information",
+      true
+    ],
+    [
+      "PACT_PERMUTED",
+      "ACT",
+      "architecture_training_seed",
+      false
+    ],
+    [
+      "PACT",
+      "ACT",
+      "combined_policy_difference",
+      false
+    ],
+    [
+      "PACT",
+      "PACT_ZERO",
+      "sensor_failure_robustness_ood",
+      false
+    ],
+    [
+      "PACT_ZERO",
+      "ACT",
+      "failed_sensor_cost_ood",
+      false
+    ]
+  ],
+  "decision_rule": {
+    "decision_bearing_contrast": "PACT_minus_PACT_PERMUTED",
+    "decision_bearing_endpoint": "hazard_bar_contact_frames_per_rollout",
+    "evaluation_order": [
+      "incomplete",
+      "contact_increase",
+      "contact_reduction_with_seed_consistency",
+      "task_benefit_enhancement",
+      "no_contact_reduction_fallback"
+    ],
+    "exhaustive": true,
+    "lower_contact_is_better": true,
+    "pact_minus_act_decision_bearing_only_for_enhanced_token": true,
+    "pact_zero_decision_bearing": false,
+    "tokens": {
+      "CONTACT_EXPERIMENT_INCOMPLETE": "the fixed 1,200-row schedule does not reconcile",
+      "CONTACT_INCREASE": "pooled PACT-minus-PERMUTED contact-frame CI is strictly above zero",
+      "CONTACT_REDUCTION_ESTABLISHED": "pooled PACT-minus-PERMUTED contact-frame CI is strictly below zero and PACT-minus-PERMUTED contact-frame difference is negative in every seed, without satisfying the task-benefit clause",
+      "CONTACT_REDUCTION_SUBSET_ONLY": "reserved for reduction confined to a viable preregistered occlusion subset; unavailable because the geometry-only partition was degenerate and dropped before rollouts",
+      "CONTACT_REDUCTION_WITH_TASK_BENEFIT": "pooled PACT-minus-PERMUTED contact-frame CI is strictly below zero; PACT-minus-PERMUTED contact-frame difference is negative in every seed; pooled PACT-minus-ACT collision-free task-success difference is positive; and PACT-minus-ACT collision-free task-success difference is positive in every seed",
+      "NO_CONTACT_REDUCTION": "the pooled contact-frame CI includes zero, or a pooled reduction excludes zero but its sign is not negative in every seed"
+    }
+  },
+  "design": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_ZERO",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seeds": [
+      3101,
+      3102,
+      3103
+    ],
+    "instances": 100,
+    "repeats_per_instance_per_arm_seed": 1,
+    "rollouts": 1200,
+    "schedule_seed": 2026080104,
+    "workers": 8
+  },
+  "diagnostic": "hazard-bar contact-frame paired contrast restricted to seed-instance pairs in which both compared arms achieved manipulation success",
+  "encoder": "frozen validated 32-D surface-geometry encoder unchanged",
+  "environment": "pact_collision_corridor_v1 unchanged",
+  "execution": {
+    "all_inflight_rows_recovered_as_one_cohort_after_external_termination": true,
+    "first_20_minute_outcome_blind_throughput_required": true,
+    "fixed_workers": 8,
+    "fresh_subprocess_per_rollout": true,
+    "launch_smoke_and_shell_kill_detachment_proof_required": true,
+    "no_outcome_based_row_replacement": true,
+    "smoke_requires_900_step_token_plan_and_endpoint_instrumentation": true,
+    "unique_output_directory": true
+  },
+  "frozen_before_first_rollout": true,
+  "populations": {
+    "occlusion_partition_action": "drop_subset_analysis_degenerate",
+    "occlusion_partition_result": "285 of 285 eligible recorded episodes classified vision-disadvantaged",
+    "occlusion_rule": "active panel outside wrist frustum or occluded for at least 50% of pre-grasp steps",
+    "occlusion_subset_file_sha256": "2d3b185e1a233d471b665f6412ef60926f0192d2ab5f10ee2c6ee0ec5302ffa9",
+    "occlusion_subset_sha256": "a3ac51bf15aa4ecc1f31dfca3f1f6d59a446bdd7cf2323395ecb06fd6b73bdc2",
+    "primary": "full fresh held-out instance distribution",
+    "subset_token_available": false,
+    "threshold_tuned": false
+  },
+  "power": {
+    "alpha_two_sided": 0.05,
+    "chosen_fresh_instances": 100,
+    "contact_frame_mde": 890.9552793130963,
+    "historical_absolute_contact_frame_difference": 896.825,
+    "instances_for_historical_binary_effect": 108,
+    "instances_for_historical_contact_effect": 99,
+    "power_file_sha256": "c9c237a9750f5004343fd49ccad71bd6507e669a59c2e74886c1e0851efa08c7",
+    "power_sha256": "db0bf8473c70264f72d491b7855d91ffa34ab628fa6a849e41740bd7cf030571",
+    "prior_outcomes_used_for_design_only": true,
+    "target_power": 0.8
+  },
+  "preregistration_sha256": "a7b956e5140ca3fab48494b2fdfced009cb9512244b584d849bedd511472c146",
+  "rollout_outcomes_seen_before_freeze": false,
+  "schema_version": "pact_contact_endpoint_preregistration_v1",
+  "secondary_endpoints": [
+    "hazard_bar_contact_frames",
+    "hazard_bar_contact_entries",
+    "hazard_bar_any_contact",
+    "other_environment_contact_frames",
+    "other_environment_contact_entries",
+    "hazard_bar_maximum_penetration_depth_m",
+    "other_environment_maximum_penetration_depth_m",
+    "non_target_maximum_penetration_depth_m",
+    "manipulation_success",
+    "ordinary_task_success"
+  ],
+  "storage": {
+    "other_rows": "retain endpoint-complete result and SHA-256 inventory, then irreversibly delete trajectory/video payload bytes",
+    "preserve_full_rows": [
+      0,
+      1199
+    ],
+    "required_by_available_storage": true,
+    "selection_outcome_blind": true,
+    "summary_only_contact_frame_payload": true
+  },
+  "training": "existing seeds 3101/3102 plus independently initialized matched ACT/PACT seed 3103; identical 2000-epoch recipe"
+}
