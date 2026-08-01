@@ -25,6 +25,23 @@ ACT_CHECKPOINT = Path(
 ACT_CHECKPOINT_SHA256 = "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
 ACT_STATS = ACT_CHECKPOINT.parent / "dataset_stats.pkl"
 ACT_STATS_SHA256 = "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+MANIFEST_SHA256 = "e047641ec007ec86b91c577ce45d5932dbcc48e8f9667a4e2e5ddffcaa4ff65c"
+ENCODER_SHA256 = "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+TOKEN_PLAN_SHA256 = "a6cc273b8a1facd4745e137f9aee39dd7f61b5569e0465278010383ea22f8643"
+DATASET_TREE_SHA256 = "7a95581dff2907da1720f17425b67244fd20cc934a88a83cb9b66e2ee1d6ce97"
+SPLIT_SHA256 = "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486"
+TRAINING_RECIPE = {
+    "backbone": "resnet18",
+    "encoder_layers": 7,
+    "decoder_layers": 7,
+    "heads": 8,
+    "hidden_dim": 512,
+    "chunk": 100,
+    "learning_rate": 1e-5,
+    "batch": 8,
+    "epochs": 2000,
+    "kl_beta": 10,
+}
 
 
 def canonical_hash(value: Any) -> str:
@@ -66,7 +83,19 @@ def arm_orders(count: int) -> list[tuple[str, ...]]:
 
 
 def _model_records(training: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    if training.get("arm") != "PACT" or training.get("seed") != CHECKPOINT_SEED:
+    if (
+        training.get("schema_version") != "pact_seed_replication_policy_training_v1"
+        or training.get("arm") != "PACT"
+        or training.get("seed") != CHECKPOINT_SEED
+        or training.get("encoder_sha256") != ENCODER_SHA256
+        or training.get("policy_feature_dim") != 32
+        or training.get("dataset_tree_sha256") != DATASET_TREE_SHA256
+        or training.get("split_manifest_sha256") != SPLIT_SHA256
+        or training.get("dataset_stats_sha256") != ACT_STATS_SHA256
+        or training.get("recipe") != TRAINING_RECIPE
+        or training.get("only_recipe_difference_from_seed_3101") != "seed=3102"
+        or training.get("encoder_quality_gate", {}).get("passed") is not True
+    ):
         raise ValueError("training summary is not PACT seed 3102")
     records = {
         "ACT": {
@@ -164,6 +193,8 @@ def build(
     manifest_sha = validate_self_hash(manifest, "manifest_sha256", "manifest")
     prereg_sha = validate_self_hash(preregistration, "preregistration_sha256", "preregistration")
     token_sha = validate_self_hash(token_plan, "token_plan_sha256", "token plan")
+    if manifest_sha != MANIFEST_SHA256:
+        raise ValueError("the exact 40 screen instances changed")
     if preregistration["design"] != {
         "arms": list(ARMS),
         "checkpoint_seed": CHECKPOINT_SEED,
@@ -176,6 +207,7 @@ def build(
         raise ValueError("preregistered design changed")
     if (
         token_plan.get("schema_version") != "pact_permuted_token_plan_v2"
+        or token_sha != TOKEN_PLAN_SHA256
         or token_plan.get("seed") != 2026073105
         or token_plan.get("rows") != INSTANCES
         or token_plan.get("max_control_steps") != 900
