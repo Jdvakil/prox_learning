@@ -1,0 +1,178 @@
+{
+  "PACT_PERMUTED_label": "distribution-matched modality-information instrument",
+  "PACT_ZERO_label": "OOD sensor-failure probe; never modality evidence",
+  "arms": [
+    "ACT",
+    "PACT",
+    "PACT_ZERO",
+    "PACT_PERMUTED"
+  ],
+  "checkpoint_seeds": [
+    3101,
+    3102,
+    3103
+  ],
+  "encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+  "policy_registry_sha256": "d2e643d111d3d0abb7cb96d5643454e3c223fa9f68e5896ff29557702931e58e",
+  "recipe": {
+    "backbone": "resnet18",
+    "batch": 8,
+    "chunk": 100,
+    "decoder_layers": 7,
+    "encoder_layers": 7,
+    "epochs": 2000,
+    "heads": 8,
+    "hidden_dim": 512,
+    "kl_beta": 10,
+    "learning_rate": 1e-05
+  },
+  "schema_version": "pact_contact_policy_registry_v1",
+  "seeds": {
+    "3101": {
+      "ACT": {
+        "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+        "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 0,
+        "surface_encoder_path": null,
+        "surface_encoder_sha256": null,
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json"
+      },
+      "PACT": {
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json"
+      },
+      "PACT_PERMUTED": {
+        "ablation": "distribution_matched_scene_misaligned_tokens",
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json"
+      },
+      "PACT_ZERO": {
+        "ablation": "all_zero_32d_embedding_ood_sensor_failure_probe",
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json"
+      }
+    },
+    "3102": {
+      "ACT": {
+        "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+        "checkpoint_sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4",
+        "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 0,
+        "surface_encoder_path": null,
+        "surface_encoder_sha256": null,
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json"
+      },
+      "PACT": {
+        "checkpoint_path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "checkpoint_sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321",
+        "dataset_stats_path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json"
+      },
+      "PACT_PERMUTED": {
+        "ablation": "distribution_matched_scene_misaligned_tokens",
+        "checkpoint_path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "checkpoint_sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321",
+        "dataset_stats_path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json"
+      },
+      "PACT_ZERO": {
+        "ablation": "all_zero_32d_embedding_ood_sensor_failure_probe",
+        "checkpoint_path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "checkpoint_sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321",
+        "dataset_stats_path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json"
+      }
+    },
+    "3103": {
+      "ACT": {
+        "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+        "checkpoint_sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e",
+        "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 0,
+        "surface_encoder_path": null,
+        "surface_encoder_sha256": null,
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
+      },
+      "PACT": {
+        "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+        "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
+      },
+      "PACT_PERMUTED": {
+        "ablation": "distribution_matched_scene_misaligned_tokens",
+        "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+        "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
+      },
+      "PACT_ZERO": {
+        "ablation": "all_zero_32d_embedding_ood_sensor_failure_probe",
+        "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+        "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "proximity_feature_dim": 32,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "training_source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
+      }
+    }
+  },
+  "source_training_summaries": {
+    "3101": {
+      "file_sha256": "88a73b93d0ad9c5f56d0e6fd8a788f629d257c8c890f753668587d23d8f2976d",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/policy_training.json"
+    },
+    "3102": {
+      "file_sha256": "188d872ff0ce269b0fa97253dcc22c17a9937f0e59ecfb5aeea0316b4b368460",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json"
+    },
+    "3103": {
+      "file_sha256": "bf8e4a0c91bfa156c285185a91fcb9ca4296696cac5eec7be0de8290738da43d",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training_seed3103.json"
+    }
+  }
+}

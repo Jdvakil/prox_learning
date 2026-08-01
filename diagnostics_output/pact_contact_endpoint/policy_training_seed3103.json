@@ -1,0 +1,289 @@
+{
+  "PACT_PERMUTED": {
+    "checkpoint_alias": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+    "label": "distribution-matched modality-information instrument",
+    "separately_trained": false
+  },
+  "PACT_ZERO": {
+    "checkpoint_alias": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+    "label": "OOD sensor-failure probe",
+    "separately_trained": false
+  },
+  "arms": {
+    "ACT": {
+      "arm": "ACT",
+      "best_epoch": 1996,
+      "best_validation_loss": 0.08512871712446213,
+      "checkpoint": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+      "checkpoint_sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e",
+      "command": [
+        "/root/act_retrain_venv/bin/python",
+        "imitate_episodes.py",
+        "--task_name",
+        "obstacle_baseline",
+        "--ckpt_dir",
+        "/root/pact_contact_endpoint_artifacts/policies/act_seed3103",
+        "--exact_ckpt_dir",
+        "--policy_class",
+        "ACT",
+        "--batch_size",
+        "8",
+        "--seed",
+        "3103",
+        "--num_epochs",
+        "2000",
+        "--lr",
+        "1e-5",
+        "--kl_weight",
+        "10",
+        "--chunk_size",
+        "100",
+        "--hidden_dim",
+        "512",
+        "--dim_feedforward",
+        "3200",
+        "--enc_layers",
+        "7",
+        "--dec_layers",
+        "7",
+        "--camera_names",
+        "wrist_camera",
+        "--dataset_dir",
+        "/root/prox_learning_pact_remediation/assets/act_style_data/pact_collision_corridor_v2_full_cba7ff88",
+        "--split_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_act_split_encoded_v2.json",
+        "--dataset_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_conversion_encoded_v2.json",
+        "--expect_split_sha256",
+        "04684e802c2de63fd3a070680b51f90665f5e276821b05307897666ae231befc",
+        "--expect_dataset_tree_sha256",
+        "516472510c65632243c42d121f3f8eb9714cfe2a561e66552c0b78ea88b2065e",
+        "--episode_horizon",
+        "195",
+        "--state_dim",
+        "9",
+        "--action_dim",
+        "8",
+        "--num_workers",
+        "4",
+        "--ckpt_every",
+        "2000",
+        "--no_wandb"
+      ],
+      "completed_utc": "2026-08-01T09:09:50.623560Z",
+      "dataset_dir": "/root/prox_learning_pact_remediation/assets/act_style_data/pact_collision_corridor_v2_full_cba7ff88",
+      "dataset_manifest": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_conversion_encoded_v2.json",
+      "dataset_stats": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/dataset_stats.pkl",
+      "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+      "dataset_tree_sha256": "516472510c65632243c42d121f3f8eb9714cfe2a561e66552c0b78ea88b2065e",
+      "recipe": {
+        "backbone": "resnet18",
+        "batch": 8,
+        "chunk": 100,
+        "decoder_layers": 7,
+        "encoder_layers": 7,
+        "epochs": 2000,
+        "heads": 8,
+        "hidden_dim": 512,
+        "kl_beta": 10,
+        "learning_rate": 1e-05
+      },
+      "run_manifest": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/run_manifest.json",
+      "run_manifest_sha256": "fed57f34d9e073ace9010ff5916d9cd4a2ae633d65d1fa9b2579fe196927c7b6",
+      "seed": 3103,
+      "split_manifest": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_act_split_encoded_v2.json",
+      "split_manifest_sha256": "04684e802c2de63fd3a070680b51f90665f5e276821b05307897666ae231befc",
+      "started_utc": "2026-08-01T07:23:41.187870Z",
+      "storage_cleanup": {
+        "removed": [
+          {
+            "name": "policy_epoch_0_seed_3103.ckpt",
+            "size_bytes": 440099779
+          },
+          {
+            "name": "policy_epoch_1996_seed_3103.ckpt",
+            "size_bytes": 440101045
+          },
+          {
+            "name": "policy_epoch_1999_seed_3103.ckpt",
+            "size_bytes": 440101045
+          },
+          {
+            "name": "policy_last.ckpt",
+            "size_bytes": 440094229
+          },
+          {
+            "name": "resume_bundle.ckpt",
+            "size_bytes": 1806009173
+          }
+        ],
+        "rule": "retain policy_best.ckpt; remove duplicate epoch/last/resume ckpt files after best SHA-256 is recorded"
+      },
+      "surface_encoder": null,
+      "surface_encoder_sha256": null
+    },
+    "PACT": {
+      "arm": "PACT",
+      "best_epoch": 1956,
+      "best_validation_loss": 0.0876968652009964,
+      "checkpoint": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+      "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+      "command": [
+        "/root/act_retrain_venv/bin/python",
+        "imitate_episodes.py",
+        "--task_name",
+        "obstacle_baseline",
+        "--ckpt_dir",
+        "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103",
+        "--exact_ckpt_dir",
+        "--policy_class",
+        "ACT",
+        "--batch_size",
+        "8",
+        "--seed",
+        "3103",
+        "--num_epochs",
+        "2000",
+        "--lr",
+        "1e-5",
+        "--kl_weight",
+        "10",
+        "--chunk_size",
+        "100",
+        "--hidden_dim",
+        "512",
+        "--dim_feedforward",
+        "3200",
+        "--enc_layers",
+        "7",
+        "--dec_layers",
+        "7",
+        "--camera_names",
+        "wrist_camera",
+        "--dataset_dir",
+        "/root/pact_frontend_screen_artifacts/dataset_embedding32_v1",
+        "--split_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_act_split_v2.json",
+        "--dataset_manifest",
+        "/root/pact_frontend_screen_artifacts/manifests/encoded_conversion_v1.json",
+        "--expect_split_sha256",
+        "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486",
+        "--expect_dataset_tree_sha256",
+        "7a95581dff2907da1720f17425b67244fd20cc934a88a83cb9b66e2ee1d6ce97",
+        "--episode_horizon",
+        "195",
+        "--state_dim",
+        "9",
+        "--action_dim",
+        "8",
+        "--num_workers",
+        "4",
+        "--ckpt_every",
+        "2000",
+        "--no_wandb",
+        "--use_proximity",
+        "--n_proximity_sensors",
+        "40",
+        "--prox_tokens_per_sensor",
+        "1",
+        "--proximity_feature_dim",
+        "32",
+        "--proximity_encoder_sha256",
+        "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      ],
+      "completed_utc": "2026-08-01T11:02:08.219156Z",
+      "dataset_dir": "/root/pact_frontend_screen_artifacts/dataset_embedding32_v1",
+      "dataset_manifest": "/root/pact_frontend_screen_artifacts/manifests/encoded_conversion_v1.json",
+      "dataset_stats": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+      "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+      "dataset_tree_sha256": "7a95581dff2907da1720f17425b67244fd20cc934a88a83cb9b66e2ee1d6ce97",
+      "recipe": {
+        "backbone": "resnet18",
+        "batch": 8,
+        "chunk": 100,
+        "decoder_layers": 7,
+        "encoder_layers": 7,
+        "epochs": 2000,
+        "heads": 8,
+        "hidden_dim": 512,
+        "kl_beta": 10,
+        "learning_rate": 1e-05
+      },
+      "run_manifest": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/run_manifest.json",
+      "run_manifest_sha256": "3275b28cc364a120ed18bc9db6cd300f3d165638ea615c793199ffbd4c9cd741",
+      "seed": 3103,
+      "split_manifest": "/root/prox_learning_pact_remediation/diagnostics_output/pact_vs_act/full_act_split_v2.json",
+      "split_manifest_sha256": "7d25e88445cb4608238f71ddb0ea850ac78041f9d1a5dfdf252f16a27717a486",
+      "started_utc": "2026-08-01T09:09:50.627618Z",
+      "storage_cleanup": {
+        "removed": [
+          {
+            "name": "policy_epoch_0_seed_3103.ckpt",
+            "size_bytes": 440250027
+          },
+          {
+            "name": "policy_epoch_1956_seed_3103.ckpt",
+            "size_bytes": 440251299
+          },
+          {
+            "name": "policy_epoch_1999_seed_3103.ckpt",
+            "size_bytes": 440251299
+          },
+          {
+            "name": "policy_last.ckpt",
+            "size_bytes": 440244451
+          },
+          {
+            "name": "resume_bundle.ckpt",
+            "size_bytes": 1806610509
+          }
+        ],
+        "rule": "retain policy_best.ckpt; remove duplicate epoch/last/resume ckpt files after best SHA-256 is recorded"
+      },
+      "surface_encoder": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+      "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+    }
+  },
+  "encoder": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+  "encoder_quality_gate": {
+    "heldout_metrics": {
+      "active_pixel_reconstruction_mae": 0.013882620260119438,
+      "confusion": {
+        "fn": 15,
+        "fp": 111,
+        "tn": 331503,
+        "tp": 17331
+      },
+      "invalid_count": 331614,
+      "latest_closeness_reconstruction_mae": 0.0003229934081900865,
+      "loss": 0.03807048287519357,
+      "mean_euclidean_error_m": 0.03197291120886803,
+      "median_euclidean_error_m": 0.01689458079636097,
+      "reconstruction_weighted_smooth_l1": 4.232479870457422e-05,
+      "sample_count": 348960,
+      "valid_count": 17346,
+      "validity_bce": 0.0016759293064155223,
+      "validity_precision": 0.9936360509115927,
+      "validity_recall": 0.9991352473192667,
+      "validity_specificity": 0.999665273480613,
+      "within_2cm_rate": 0.5292286406087859,
+      "xyz_smooth_l1": 0.007261980794445329
+    },
+    "passed": true
+  },
+  "encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+  "recipe": {
+    "backbone": "resnet18",
+    "batch": 8,
+    "chunk": 100,
+    "decoder_layers": 7,
+    "encoder_layers": 7,
+    "epochs": 2000,
+    "heads": 8,
+    "hidden_dim": 512,
+    "kl_beta": 10,
+    "learning_rate": 1e-05
+  },
+  "schema_version": "pact_contact_seed3103_training_v1",
+  "seed": 3103
+}
