@@ -150,6 +150,7 @@ def main() -> int:
         "contact_finalizer": ROOT / "scripts/finalize_pact_contact_endpoint.py",
         "contact_committer": ROOT / "scripts/commit_pact_contact_results.py",
         "contact_full_stack_launcher": ROOT / "scripts/launch_pact_contact_full_stack.py",
+        "contact_preparation_controller": ROOT / "scripts/prepare_and_launch_pact_contact.py",
         "frontend_supervisor_dependency": ROOT / "scripts/run_pact_frontend_screen_supervisor.py",
         "frontend_launcher_dependency": ROOT / "scripts/launch_pact_frontend_screen_detached.py",
         "frontend_detachment_dependency": ROOT / "scripts/prove_pact_frontend_screen_detachment.py",

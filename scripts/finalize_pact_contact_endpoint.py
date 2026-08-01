@@ -205,6 +205,8 @@ def write_provenance(
             "decision_report": report_path,
             "launch_smoke": output_root / "launch_smoke.json",
             "detachment_proof": output_root / "detachment_proof.json",
+            "full_launcher_receipt": output_root / "full_launcher_receipt.json",
+            "full_stack_receipt": output_root / "full_stack_receipt.json",
             "throughput": output_root / "throughput_first_20_minutes.json",
             "completion_ledger": output_root / "completion_ledger.json",
             "full_execution": output_root / "full_execution_summary.json",

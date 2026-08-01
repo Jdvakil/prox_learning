@@ -54,6 +54,8 @@ def validate_proof(output_root: Path, contract: dict[str, Any]) -> dict[str, Any
         or proof.get("dispatch_contract_sha256")
         != contract["dispatch_contract_sha256"]
         or proof.get("endpoint_fields_inspected") is not False
+        or proof.get("endpoint_outcome_values_inspected") is not False
+        or proof.get("contact_smoke_validation", {}).get("passed") is not True
     ):
         raise ValueError("detachment proof is not valid for this dispatch")
     return proof
