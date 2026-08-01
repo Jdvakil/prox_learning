@@ -1,0 +1,484 @@
+{
+  "analysis_script_sha256": "67ad002e31a912b0d862c98fd468b7d6d12b7bf1850ab83a23b2eda995d1856c",
+  "analysis_sha256": "a1363a22dbb334992814fee90e6c4b53a195453d1e2677d10ea97081aa28b917",
+  "confirmatory_pact_tokens_prohibited": true,
+  "decision_rule": {
+    "confirmed": "SEED_REPLICATION_CONFIRMED iff seed-3102 PACT minus ACT is positive and >= +0.10, and PACT minus PACT_PERMUTED is positive on both seeds",
+    "failed": "SEED_REPLICATION_FAILED iff seed-3102 PACT minus ACT is < +0.10",
+    "incomplete": "SEED_REPLICATION_INCOMPLETE iff the frozen 240-cell two-seed matrix does not reconcile",
+    "partial": "SEED_REPLICATION_PARTIAL iff seed-3102 PACT minus ACT is positive and >= +0.10, but PACT minus PACT_PERMUTED is <= 0 on either seed"
+  },
+  "pact_zero_excluded": true,
+  "pooled_after_unpooled": {
+    "arms": {
+      "ACT": {
+        "collision_free_task_success": 43,
+        "collision_free_task_success_rate": 0.5375,
+        "collision_free_task_success_wilson_95": [
+          0.42904357591268794,
+          0.6425200643721475
+        ],
+        "contact_pair_entry_totals": {
+          "grasp_target": 16779159,
+          "hazard_bar": 258114,
+          "other_environment": 0
+        },
+        "episodes_with_contact": {
+          "grasp_target": 72,
+          "hazard_bar": 12,
+          "other_environment": 0
+        },
+        "failure_taxonomy": {
+          "collision_free_task_success": 43,
+          "hazard_bar_contact": 12,
+          "target_contact_without_task_success": 25
+        },
+        "n": 80,
+        "ordinary_task_success": 43,
+        "ordinary_task_success_rate": 0.5375,
+        "ordinary_task_success_wilson_95": [
+          0.42904357591268794,
+          0.6425200643721475
+        ]
+      },
+      "PACT": {
+        "collision_free_task_success": 50,
+        "collision_free_task_success_rate": 0.625,
+        "collision_free_task_success_wilson_95": [
+          0.5154872546314301,
+          0.7230582129846882
+        ],
+        "contact_pair_entry_totals": {
+          "grasp_target": 19200155,
+          "hazard_bar": 193989,
+          "other_environment": 0
+        },
+        "episodes_with_contact": {
+          "grasp_target": 75,
+          "hazard_bar": 6,
+          "other_environment": 0
+        },
+        "failure_taxonomy": {
+          "collision_free_task_success": 50,
+          "hazard_bar_contact": 6,
+          "target_contact_without_task_success": 23,
+          "task_failure_after_gripper_close": 1
+        },
+        "n": 80,
+        "ordinary_task_success": 51,
+        "ordinary_task_success_rate": 0.6375,
+        "ordinary_task_success_wilson_95": [
+          0.5281079450222215,
+          0.7342920693555084
+        ]
+      },
+      "PACT_PERMUTED": {
+        "collision_free_task_success": 39,
+        "collision_free_task_success_rate": 0.4875,
+        "collision_free_task_success_wilson_95": [
+          0.38107879540381073,
+          0.5950666578345774
+        ],
+        "contact_pair_entry_totals": {
+          "grasp_target": 15819244,
+          "hazard_bar": 253879,
+          "other_environment": 0
+        },
+        "episodes_with_contact": {
+          "grasp_target": 69,
+          "hazard_bar": 11,
+          "other_environment": 0
+        },
+        "failure_taxonomy": {
+          "collision_free_task_success": 39,
+          "hazard_bar_contact": 11,
+          "target_contact_without_task_success": 28,
+          "task_failure_after_gripper_close": 2
+        },
+        "n": 80,
+        "ordinary_task_success": 39,
+        "ordinary_task_success_rate": 0.4875,
+        "ordinary_task_success_wilson_95": [
+          0.38107879540381073,
+          0.5950666578345774
+        ]
+      }
+    },
+    "contrasts": {
+      "PACT_PERMUTED_minus_ACT": {
+        "arm_a": "PACT_PERMUTED",
+        "arm_b": "ACT",
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 2026080203,
+        "cluster_unit": "instance_identity_with_both_policy_seeds_resampled_together",
+        "difference": -0.05,
+        "n_seed_instance_pairs": 80,
+        "n_unique_instances": 40,
+        "pooled_discordant_pairs": {
+          "arm_a_failure_arm_b_success": 18,
+          "arm_a_success_arm_b_failure": 14,
+          "mcnemar_exact_two_sided_p": 0.5966148958541453,
+          "total": 32
+        },
+        "whole_instance_cluster_bootstrap_ci_95": [
+          -0.2,
+          0.1
+        ]
+      },
+      "PACT_minus_ACT": {
+        "arm_a": "PACT",
+        "arm_b": "ACT",
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 2026080204,
+        "cluster_unit": "instance_identity_with_both_policy_seeds_resampled_together",
+        "difference": 0.0875,
+        "n_seed_instance_pairs": 80,
+        "n_unique_instances": 40,
+        "pooled_discordant_pairs": {
+          "arm_a_failure_arm_b_success": 11,
+          "arm_a_success_arm_b_failure": 18,
+          "mcnemar_exact_two_sided_p": 0.26493089646101,
+          "total": 29
+        },
+        "whole_instance_cluster_bootstrap_ci_95": [
+          -0.05,
+          0.225
+        ]
+      },
+      "PACT_minus_PACT_PERMUTED": {
+        "arm_a": "PACT",
+        "arm_b": "PACT_PERMUTED",
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 2026080202,
+        "cluster_unit": "instance_identity_with_both_policy_seeds_resampled_together",
+        "difference": 0.1375,
+        "n_seed_instance_pairs": 80,
+        "n_unique_instances": 40,
+        "pooled_discordant_pairs": {
+          "arm_a_failure_arm_b_success": 4,
+          "arm_a_success_arm_b_failure": 15,
+          "mcnemar_exact_two_sided_p": 0.0192108154296875,
+          "total": 19
+        },
+        "whole_instance_cluster_bootstrap_ci_95": [
+          0.0375,
+          0.2375
+        ]
+      }
+    }
+  },
+  "reconciliation": {
+    "errors": [],
+    "expected_cells": 240,
+    "reconciled": true,
+    "valid_cells": 240
+  },
+  "results_available": true,
+  "schedule_sha256": "1490160c44f48cf885ab1dc1fc83cd01554d82a5f83c81653bf11cfd49b3c7cb",
+  "schema_version": "pact_seed_replication_analysis_v1",
+  "seed_results_unpooled_first": {
+    "3101": {
+      "arms": {
+        "ACT": {
+          "collision_free_task_success": 19,
+          "collision_free_task_success_rate": 0.475,
+          "collision_free_task_success_wilson_95": [
+            0.329354701126789,
+            0.6250263789330753
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 7573898,
+            "hazard_bar": 163549,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 35,
+            "hazard_bar": 6,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 19,
+            "hazard_bar_contact": 6,
+            "target_contact_without_task_success": 15
+          },
+          "n": 40,
+          "ordinary_task_success": 19,
+          "ordinary_task_success_rate": 0.475,
+          "ordinary_task_success_wilson_95": [
+            0.329354701126789,
+            0.6250263789330753
+          ]
+        },
+        "PACT": {
+          "collision_free_task_success": 29,
+          "collision_free_task_success_rate": 0.725,
+          "collision_free_task_success_wilson_95": [
+            0.5716504419378943,
+            0.8389198375233267
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 10622992,
+            "hazard_bar": 135165,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 37,
+            "hazard_bar": 2,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 29,
+            "hazard_bar_contact": 2,
+            "target_contact_without_task_success": 8,
+            "task_failure_after_gripper_close": 1
+          },
+          "n": 40,
+          "ordinary_task_success": 29,
+          "ordinary_task_success_rate": 0.725,
+          "ordinary_task_success_wilson_95": [
+            0.5716504419378943,
+            0.8389198375233267
+          ]
+        },
+        "PACT_PERMUTED": {
+          "collision_free_task_success": 24,
+          "collision_free_task_success_rate": 0.6,
+          "collision_free_task_success_wilson_95": [
+            0.44595893660346186,
+            0.7365167431570808
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 8994813,
+            "hazard_bar": 137282,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 36,
+            "hazard_bar": 5,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 24,
+            "hazard_bar_contact": 5,
+            "target_contact_without_task_success": 10,
+            "task_failure_after_gripper_close": 1
+          },
+          "n": 40,
+          "ordinary_task_success": 24,
+          "ordinary_task_success_rate": 0.6,
+          "ordinary_task_success_wilson_95": [
+            0.44595893660346186,
+            0.7365167431570808
+          ]
+        }
+      },
+      "contrasts": {
+        "PACT_PERMUTED_minus_ACT": {
+          "arm_a": "PACT_PERMUTED",
+          "arm_b": "ACT",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080103,
+          "difference": 0.125,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 6,
+            "arm_a_success_arm_b_failure": 11,
+            "mcnemar_exact_two_sided_p": 0.332305908203125,
+            "total": 17
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            -0.075,
+            0.325
+          ]
+        },
+        "PACT_minus_ACT": {
+          "arm_a": "PACT",
+          "arm_b": "ACT",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080104,
+          "difference": 0.25,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 2,
+            "arm_a_success_arm_b_failure": 12,
+            "mcnemar_exact_two_sided_p": 0.012939453125,
+            "total": 14
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            0.075,
+            0.425
+          ]
+        },
+        "PACT_minus_PACT_PERMUTED": {
+          "arm_a": "PACT",
+          "arm_b": "PACT_PERMUTED",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080102,
+          "difference": 0.125,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 3,
+            "arm_a_success_arm_b_failure": 8,
+            "mcnemar_exact_two_sided_p": 0.2265625,
+            "total": 11
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            -0.025,
+            0.275
+          ]
+        }
+      }
+    },
+    "3102": {
+      "arms": {
+        "ACT": {
+          "collision_free_task_success": 24,
+          "collision_free_task_success_rate": 0.6,
+          "collision_free_task_success_wilson_95": [
+            0.44595893660346186,
+            0.7365167431570808
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 9205261,
+            "hazard_bar": 94565,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 37,
+            "hazard_bar": 6,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 24,
+            "hazard_bar_contact": 6,
+            "target_contact_without_task_success": 10
+          },
+          "n": 40,
+          "ordinary_task_success": 24,
+          "ordinary_task_success_rate": 0.6,
+          "ordinary_task_success_wilson_95": [
+            0.44595893660346186,
+            0.7365167431570808
+          ]
+        },
+        "PACT": {
+          "collision_free_task_success": 21,
+          "collision_free_task_success_rate": 0.525,
+          "collision_free_task_success_wilson_95": [
+            0.3749736210669248,
+            0.670645298873211
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 8577163,
+            "hazard_bar": 58824,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 38,
+            "hazard_bar": 4,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 21,
+            "hazard_bar_contact": 4,
+            "target_contact_without_task_success": 15
+          },
+          "n": 40,
+          "ordinary_task_success": 22,
+          "ordinary_task_success_rate": 0.55,
+          "ordinary_task_success_wilson_95": [
+            0.39829091798932054,
+            0.6929469218909508
+          ]
+        },
+        "PACT_PERMUTED": {
+          "collision_free_task_success": 15,
+          "collision_free_task_success_rate": 0.375,
+          "collision_free_task_success_wilson_95": [
+            0.24222979167233266,
+            0.5296756086269889
+          ],
+          "contact_pair_entry_totals": {
+            "grasp_target": 6824431,
+            "hazard_bar": 116597,
+            "other_environment": 0
+          },
+          "episodes_with_contact": {
+            "grasp_target": 33,
+            "hazard_bar": 6,
+            "other_environment": 0
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 15,
+            "hazard_bar_contact": 6,
+            "target_contact_without_task_success": 18,
+            "task_failure_after_gripper_close": 1
+          },
+          "n": 40,
+          "ordinary_task_success": 15,
+          "ordinary_task_success_rate": 0.375,
+          "ordinary_task_success_wilson_95": [
+            0.24222979167233266,
+            0.5296756086269889
+          ]
+        }
+      },
+      "contrasts": {
+        "PACT_PERMUTED_minus_ACT": {
+          "arm_a": "PACT_PERMUTED",
+          "arm_b": "ACT",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080113,
+          "difference": -0.225,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 12,
+            "arm_a_success_arm_b_failure": 3,
+            "mcnemar_exact_two_sided_p": 0.03515625,
+            "total": 15
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            -0.4,
+            -0.05
+          ]
+        },
+        "PACT_minus_ACT": {
+          "arm_a": "PACT",
+          "arm_b": "ACT",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080114,
+          "difference": -0.075,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 9,
+            "arm_a_success_arm_b_failure": 6,
+            "mcnemar_exact_two_sided_p": 0.6072387695312499,
+            "total": 15
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            -0.25,
+            0.125
+          ]
+        },
+        "PACT_minus_PACT_PERMUTED": {
+          "arm_a": "PACT",
+          "arm_b": "PACT_PERMUTED",
+          "bootstrap_replicates": 20000,
+          "bootstrap_seed": 2026080112,
+          "difference": 0.15,
+          "discordant_pairs": {
+            "arm_a_failure_arm_b_success": 1,
+            "arm_a_success_arm_b_failure": 7,
+            "mcnemar_exact_two_sided_p": 0.0703125,
+            "total": 8
+          },
+          "n_instances": 40,
+          "paired_bootstrap_ci_95": [
+            0.025,
+            0.275
+          ]
+        }
+      }
+    }
+  }
+}

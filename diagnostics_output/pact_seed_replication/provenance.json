@@ -1,0 +1,109 @@
+{
+  "act_submodule_commit": "6710c77369e0ad37707ffea6929294a4b366f5c6",
+  "checkpoint_records": [
+    {
+      "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+      "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+    },
+    {
+      "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+      "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+    }
+  ],
+  "completion_records": 120,
+  "decision": "SEED_REPLICATION_FAILED",
+  "dispatch_contract_sha256": "a9980fe4f68d39bb1e5badd0ebefd90b68c4325660bc6ab9da4a2a08c1b90826",
+  "encoder_records": [
+    {
+      "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+      "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+    }
+  ],
+  "expected_rollouts": 120,
+  "frozen_artifacts": {
+    "analysis": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/analysis.json",
+      "sha256": "873769852494810282ead8b0bb5256c821319c87c0e048c5e5f1200f9eb48af1"
+    },
+    "completion_ledger": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/completion_ledger.json",
+      "sha256": "de94e7141071d7a839d56013fc94fbde03b56c5db7f1f01de4341ebbdb8f2837"
+    },
+    "decision_report": {
+      "path": "/root/prox_learning_pact_remediation/docs/PACT_SEED_REPLICATION_DECISION.md",
+      "sha256": "26857b1e74278c7955728c286fde65d895cf48625372eb0aa4934d1f206f8f5d"
+    },
+    "detachment_proof": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/detachment_proof.json",
+      "sha256": "fd04e042fbccf17bea6ec4d961c2d066c523e57db5fe1d588c9d30b0fc088ede"
+    },
+    "dispatch": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/dispatch.json",
+      "sha256": "34bfc0b4cf5c5baf6aaf31ebf95c9b35fc242d88b419ecfdac6a89e36e827df7"
+    },
+    "final_decision": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/final_decision.json",
+      "sha256": "8d1963d136e3441aded050ba6be923a6b479f4f93571577dc58db32f6a8ba07f"
+    },
+    "full_execution": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/full_execution_summary.json",
+      "sha256": "b3b5ecdf8515954858a5d3488c5126b989963c37ca8bcf415b9af3e9adda9af5"
+    },
+    "launch_smoke": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/launch_smoke.json",
+      "sha256": "830e498a5c0a35573230d4d21963cfb4b5cb99cb9cb6ff50fffd20f17c41a4dc"
+    },
+    "schedule": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/schedule.json",
+      "sha256": "f93c9ba6d3a188e07b344db88e27bd0cd42dbc051123b4edff64a0ee94aa0e7e"
+    },
+    "storage_compaction": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/storage_compaction_summary.json",
+      "sha256": "ee9ad3fe87e0064f11924d452cbd08f2599ef43efd1162ef9ef00bae61ac26cf"
+    },
+    "throughput_first_20_minutes": {
+      "path": "/root/pact_seed_replication_artifacts/evaluation_1490160c/throughput_first_20_minutes.json",
+      "sha256": "e1f4f5773ca952339f18de58810bb73f310bcbcfb5719e5ecfb55110f89aa7e6"
+    },
+    "training": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_seed_replication/policy_training.json",
+      "sha256": "188d872ff0ce269b0fa97253dcc22c17a9937f0e59ecfb5aeea0316b4b368460"
+    }
+  },
+  "generated_utc": "2026-08-01T06:01:31.529151Z",
+  "losslessly_compacted_rows": 118,
+  "output_root": "/root/pact_seed_replication_artifacts/evaluation_1490160c",
+  "provenance_sha256": "172313900f54d91fc1f500390ea0636035e18880405d943118e8d73a3e319424",
+  "pushed": false,
+  "raw_intact_schedule_indices": [
+    0,
+    119
+  ],
+  "rollout_payloads_committed": false,
+  "root_commit_at_finalization": "01a3e9454d1b18cc8f37f77820ef1aa37e4af490",
+  "schedule_sha256": "1490160c44f48cf885ab1dc1fc83cd01554d82a5f83c81653bf11cfd49b3c7cb",
+  "schema_version": "pact_seed_replication_provenance_v1",
+  "scientific_schedule_reconciled": true,
+  "storage_cleanup": {
+    "completed_act3102_redundant_training_state_removed_bytes": 11928321328,
+    "completed_pact3102_redundant_training_state_removed_bytes": 3567607585,
+    "required_policy_best_checkpoints_retained": true
+  },
+  "tests": {
+    "scoped_repository_tests": "763 passed, 52 warnings",
+    "unrestricted_collection": "13 pre-existing MolmoSpaces collection errors from duplicate module names, optional dependencies, missing legacy modules, and absent scene assets"
+  },
+  "training_preflight_failures": [
+    {
+      "log": "/root/pact_seed_replication_artifacts/training.log",
+      "model_output_created": false,
+      "reason": "parent audit shell false-positive protected-process match"
+    },
+    {
+      "log": "/root/pact_seed_replication_artifacts/training_run.log",
+      "model_output_created": false,
+      "reason": "relative split path rejected before data loading"
+    }
+  ],
+  "weights_committed": false
+}
