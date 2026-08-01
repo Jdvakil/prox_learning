@@ -160,3 +160,42 @@ def test_pooled_bootstrap_clusters_both_seeds_by_instance() -> None:
     assert observed["n_unique_instances"] == 40
     assert observed["n_seed_instance_pairs"] == 80
     assert observed["cluster_unit"] == "instance_identity_with_both_policy_seeds_resampled_together"
+
+
+def test_frozen_schedule_dispatch_and_storage_contracts() -> None:
+    schedule_path = ROOT / "diagnostics_output/pact_seed_replication/schedule.json"
+    dispatch_path = ROOT / "diagnostics_output/pact_seed_replication/dispatch.json"
+    storage_path = ROOT / "configs/pact_seed_replication_storage_amendment_v1.json"
+    frozen_schedule = json.loads(schedule_path.read_text())
+    frozen_dispatch = json.loads(dispatch_path.read_text())
+    storage = json.loads(storage_path.read_text())
+    for document, key in (
+        (frozen_schedule, "schedule_sha256"),
+        (frozen_dispatch, "dispatch_contract_sha256"),
+        (storage, "storage_amendment_sha256"),
+    ):
+        payload = dict(document)
+        observed = payload.pop(key)
+        assert observed == canonical_hash(payload)
+    assert frozen_schedule["schedule_sha256"] == (
+        "1490160c44f48cf885ab1dc1fc83cd01554d82a5f83c81653bf11cfd49b3c7cb"
+    )
+    assert Counter(row["arm"] for row in frozen_schedule["rows"]) == {
+        "ACT": 40,
+        "PACT": 40,
+        "PACT_PERMUTED": 40,
+    }
+    assert [row["schedule_index"] for row in frozen_schedule["rows"]] == list(range(120))
+    assert len(frozen_schedule["seed_3101_references"]) == 120
+    smoke = frozen_schedule["rows"][0]
+    assert smoke["arm"] == "PACT_PERMUTED"
+    assert smoke["max_control_steps"] == 900
+    assert smoke["token_plan_row"] == 0
+    assert frozen_dispatch["execution"]["fixed_worker_count"] == 8
+    assert frozen_dispatch["analysis"]["sha256"] == file_hash(
+        ROOT / "scripts/analyze_pact_seed_replication.py"
+    )
+    assert storage["excluded_intact_schedule_indices"] == [0, 119]
+    assert storage["seed_replication_compactor_wrapper_sha256"] == file_hash(
+        ROOT / "scripts/compact_pact_seed_replication_storage.py"
+    )
