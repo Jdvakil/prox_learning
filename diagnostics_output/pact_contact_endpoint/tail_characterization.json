@@ -1,0 +1,1936 @@
+{
+  "arms": {
+    "ACT": {
+      "concentration": {
+        "top_10_percent": {
+          "hazard_frames": 755286,
+          "rollout_count": 30,
+          "share_of_arm_hazard_frames": 0.8326995820438727
+        },
+        "top_1_percent": {
+          "hazard_frames": 86309,
+          "rollout_count": 3,
+          "share_of_arm_hazard_frames": 0.09515530305953587
+        },
+        "top_5_percent": {
+          "hazard_frames": 422839,
+          "rollout_count": 15,
+          "share_of_arm_hazard_frames": 0.4661781875631868
+        },
+        "total_hazard_frames": 907033
+      },
+      "distribution": {
+        "all_rollouts_mean_hazard_frames": 3023.443333333333,
+        "all_rollouts_median_hazard_frames": 0.0,
+        "nonzero_hazard_frames": {
+          "count": 67,
+          "fraction": 0.22333333333333333,
+          "percentiles_linear": {
+            "100": 29022.0,
+            "50": 11319.0,
+            "75": 27594.0,
+            "90": 28098.0,
+            "95": 28460.6,
+            "99": 28833.239999999998
+          }
+        },
+        "zero_hazard_frames": {
+          "count": 233,
+          "fraction": 0.7766666666666666
+        }
+      },
+      "high_contact_regime": {
+        "collision_free_task_success": {
+          "count": 0,
+          "fraction": 0.0
+        },
+        "definition": "hazard_frames > 500",
+        "entry_count": 59,
+        "entry_fraction": 0.19666666666666666,
+        "failure_taxonomy": {
+          "hazard_bar_contact": 59
+        },
+        "first_hazard_contact_step": {
+          "available_count": 59,
+          "maximum": 792,
+          "mean": 165.135593220339,
+          "median": 59.0,
+          "median_fraction_of_900_step_horizon": 0.06555555555555556,
+          "minimum": 21,
+          "percentile_25": 47.0,
+          "percentile_75": 148.0
+        },
+        "frames_to_pair_samples_ratio": {
+          "interpretation_limit": "Pair totals count simultaneous contact-pair samples, not contact-entry transitions; this ratio cannot distinguish a contiguous run from repeated brushing.",
+          "mean": 0.9101583740097294,
+          "median": 0.954298582593721,
+          "percentile_90": 0.9986953765284131
+        },
+        "hazard_frames_given_entry": {
+          "maximum": 29022,
+          "mean": 15363.305084745763,
+          "median": 15423.0,
+          "percentile_75": 27702.0,
+          "percentile_90": 28172.6
+        },
+        "hazard_pair_samples_given_entry": {
+          "mean": 17036.20338983051,
+          "median": 15423.0
+        },
+        "maximum_penetration_depth_m": {
+          "maximum": 0.010850282629783825,
+          "mean": 0.001997253485962903,
+          "median": 0.0008125043710621399
+        },
+        "share_of_all_hazard_frames": 0.999340707559703,
+        "task_success": {
+          "count": 6,
+          "fraction": 0.1016949152542373
+        }
+      },
+      "rollouts": 300
+    },
+    "PACT": {
+      "concentration": {
+        "top_10_percent": {
+          "hazard_frames": 496585,
+          "rollout_count": 30,
+          "share_of_arm_hazard_frames": 0.9863190280312947
+        },
+        "top_1_percent": {
+          "hazard_frames": 76411,
+          "rollout_count": 3,
+          "share_of_arm_hazard_frames": 0.15176782071729766
+        },
+        "top_5_percent": {
+          "hazard_frames": 310505,
+          "rollout_count": 15,
+          "share_of_arm_hazard_frames": 0.6167262196781158
+        },
+        "total_hazard_frames": 503473
+      },
+      "distribution": {
+        "all_rollouts_mean_hazard_frames": 1678.2433333333333,
+        "all_rollouts_median_hazard_frames": 0.0,
+        "nonzero_hazard_frames": {
+          "count": 42,
+          "fraction": 0.14,
+          "percentiles_linear": {
+            "100": 27852.0,
+            "50": 14747.5,
+            "75": 18746.0,
+            "90": 20744.4,
+            "95": 21503.4,
+            "99": 27517.030000000002
+          }
+        },
+        "zero_hazard_frames": {
+          "count": 258,
+          "fraction": 0.86
+        }
+      },
+      "high_contact_regime": {
+        "collision_free_task_success": {
+          "count": 0,
+          "fraction": 0.0
+        },
+        "definition": "hazard_frames > 500",
+        "entry_count": 33,
+        "entry_fraction": 0.11,
+        "failure_taxonomy": {
+          "hazard_bar_contact": 33
+        },
+        "first_hazard_contact_step": {
+          "available_count": 33,
+          "maximum": 567,
+          "mean": 274.6969696969697,
+          "median": 291.0,
+          "median_fraction_of_900_step_horizon": 0.3233333333333333,
+          "minimum": 49,
+          "percentile_25": 142.0,
+          "percentile_75": 344.0
+        },
+        "frames_to_pair_samples_ratio": {
+          "interpretation_limit": "Pair totals count simultaneous contact-pair samples, not contact-entry transitions; this ratio cannot distinguish a contiguous run from repeated brushing.",
+          "mean": 0.8129669738876124,
+          "median": 0.9057408668028137,
+          "percentile_90": 0.9953079487855715
+        },
+        "hazard_frames_given_entry": {
+          "maximum": 27852,
+          "mean": 15235.848484848484,
+          "median": 16549.0,
+          "percentile_75": 19958.0,
+          "percentile_90": 21042.600000000002
+        },
+        "hazard_pair_samples_given_entry": {
+          "mean": 20589.030303030304,
+          "median": 18053.0
+        },
+        "maximum_penetration_depth_m": {
+          "maximum": 0.008954522527021447,
+          "mean": 0.00088662827847223,
+          "median": 0.0005509259609213347
+        },
+        "share_of_all_hazard_frames": 0.9986295193585356,
+        "task_success": {
+          "count": 8,
+          "fraction": 0.24242424242424243
+        }
+      },
+      "rollouts": 300
+    },
+    "PACT_PERMUTED": {
+      "concentration": {
+        "top_10_percent": {
+          "hazard_frames": 786922,
+          "rollout_count": 30,
+          "share_of_arm_hazard_frames": 0.7170772424325816
+        },
+        "top_1_percent": {
+          "hazard_frames": 84872,
+          "rollout_count": 3,
+          "share_of_arm_hazard_frames": 0.07733902435023811
+        },
+        "top_5_percent": {
+          "hazard_frames": 416758,
+          "rollout_count": 15,
+          "share_of_arm_hazard_frames": 0.3797678517079429
+        },
+        "total_hazard_frames": 1097402
+      },
+      "distribution": {
+        "all_rollouts_mean_hazard_frames": 3658.0066666666667,
+        "all_rollouts_median_hazard_frames": 0.0,
+        "nonzero_hazard_frames": {
+          "count": 70,
+          "fraction": 0.23333333333333334,
+          "percentiles_linear": {
+            "100": 29098.0,
+            "50": 18628.0,
+            "75": 27150.75,
+            "90": 27698.6,
+            "95": 27866.5,
+            "99": 28266.550000000003
+          }
+        },
+        "zero_hazard_frames": {
+          "count": 230,
+          "fraction": 0.7666666666666667
+        }
+      },
+      "high_contact_regime": {
+        "collision_free_task_success": {
+          "count": 0,
+          "fraction": 0.0
+        },
+        "definition": "hazard_frames > 500",
+        "entry_count": 58,
+        "entry_fraction": 0.19333333333333333,
+        "failure_taxonomy": {
+          "hazard_bar_contact": 58
+        },
+        "first_hazard_contact_step": {
+          "available_count": 58,
+          "maximum": 716,
+          "mean": 154.41379310344828,
+          "median": 63.0,
+          "median_fraction_of_900_step_horizon": 0.07,
+          "minimum": 19,
+          "percentile_25": 54.0,
+          "percentile_75": 146.75
+        },
+        "frames_to_pair_samples_ratio": {
+          "interpretation_limit": "Pair totals count simultaneous contact-pair samples, not contact-entry transitions; this ratio cannot distinguish a contiguous run from repeated brushing.",
+          "mean": 0.7965931923730045,
+          "median": 0.9158111849608503,
+          "percentile_90": 0.9848659141423455
+        },
+        "hazard_frames_given_entry": {
+          "maximum": 29098,
+          "mean": 18893.706896551725,
+          "median": 20486.5,
+          "percentile_75": 27512.5,
+          "percentile_90": 27728.6
+        },
+        "hazard_pair_samples_given_entry": {
+          "mean": 28409.603448275862,
+          "median": 25447.0
+        },
+        "maximum_penetration_depth_m": {
+          "maximum": 0.010459787222261575,
+          "mean": 0.002254802861087955,
+          "median": 0.00089340430402844
+        },
+        "share_of_all_hazard_frames": 0.9985720820629086,
+        "task_success": {
+          "count": 7,
+          "fraction": 0.1206896551724138
+        }
+      },
+      "rollouts": 300
+    },
+    "PACT_ZERO": {
+      "concentration": {
+        "top_10_percent": {
+          "hazard_frames": 756429,
+          "rollout_count": 30,
+          "share_of_arm_hazard_frames": 0.6444346376301663
+        },
+        "top_1_percent": {
+          "hazard_frames": 87915,
+          "rollout_count": 3,
+          "share_of_arm_hazard_frames": 0.07489859744570353
+        },
+        "top_5_percent": {
+          "hazard_frames": 418799,
+          "rollout_count": 15,
+          "share_of_arm_hazard_frames": 0.35679301270162306
+        },
+        "total_hazard_frames": 1173787
+      },
+      "distribution": {
+        "all_rollouts_mean_hazard_frames": 3912.6233333333334,
+        "all_rollouts_median_hazard_frames": 0.0,
+        "nonzero_hazard_frames": {
+          "count": 107,
+          "fraction": 0.3566666666666667,
+          "percentiles_linear": {
+            "100": 29364.0,
+            "50": 5746.0,
+            "75": 20368.0,
+            "90": 27076.000000000004,
+            "95": 28635.500000000004,
+            "99": 29303.219999999998
+          }
+        },
+        "zero_hazard_frames": {
+          "count": 193,
+          "fraction": 0.6433333333333333
+        }
+      },
+      "high_contact_regime": {
+        "collision_free_task_success": {
+          "count": 0,
+          "fraction": 0.0
+        },
+        "definition": "hazard_frames > 500",
+        "entry_count": 98,
+        "entry_fraction": 0.32666666666666666,
+        "failure_taxonomy": {
+          "hazard_bar_contact": 98
+        },
+        "first_hazard_contact_step": {
+          "available_count": 98,
+          "maximum": 751,
+          "mean": 153.0612244897959,
+          "median": 68.0,
+          "median_fraction_of_900_step_horizon": 0.07555555555555556,
+          "minimum": 0,
+          "percentile_25": 24.25,
+          "percentile_75": 216.75
+        },
+        "frames_to_pair_samples_ratio": {
+          "interpretation_limit": "Pair totals count simultaneous contact-pair samples, not contact-entry transitions; this ratio cannot distinguish a contiguous run from repeated brushing.",
+          "mean": 0.9101656266998774,
+          "median": 0.9453973113992824,
+          "percentile_90": 1.0
+        },
+        "hazard_frames_given_entry": {
+          "maximum": 29364,
+          "mean": 11964.551020408164,
+          "median": 7354.0,
+          "percentile_75": 21117.75,
+          "percentile_90": 27401.5
+        },
+        "hazard_pair_samples_given_entry": {
+          "mean": 13928.020408163266,
+          "median": 8197.5
+        },
+        "maximum_penetration_depth_m": {
+          "maximum": 0.007580826669488698,
+          "mean": 0.0011480106973341022,
+          "median": 0.0005192255782211091
+        },
+        "share_of_all_hazard_frames": 0.9989256994667687,
+        "task_success": {
+          "count": 3,
+          "fraction": 0.030612244897959183
+        }
+      },
+      "rollouts": 300
+    }
+  },
+  "awarded_token": "CONTACT_REDUCTION_WITH_TASK_BENEFIT",
+  "awarded_token_changed": false,
+  "decision_bearing": false,
+  "instrumentation_limits": {
+    "contact_class_totals_semantics": "contact-pair samples accumulated at each audited physics frame; not transition entries",
+    "frames_to_pair_samples_ratio_can_establish_entrapment": false,
+    "longest_contiguous_contact_run_available": false,
+    "per_step_contact_payload_retained_rollouts": 0
+  },
+  "mechanism_characterization": {
+    "PACT_vs_ACT": {
+      "conditional_mean_hazard_frames_difference": -127.45659989727937,
+      "entry_fraction_difference": -0.08666666666666666,
+      "median_first_contact_step_difference": 232.0,
+      "relative_conditional_mean_hazard_frames_reduction": 0.008296170595728847,
+      "relative_entry_reduction": 0.44067796610169485
+    },
+    "PACT_vs_PACT_PERMUTED": {
+      "conditional_mean_hazard_frames_difference": -3657.8584117032406,
+      "entry_fraction_difference": -0.08333333333333333,
+      "median_first_contact_step_difference": 228.0,
+      "relative_conditional_mean_hazard_frames_reduction": 0.19360194543776021,
+      "relative_entry_reduction": 0.43103448275862066
+    },
+    "pact_high_rollouts_also_high_under_matched_permuted_condition": {
+      "count": 31,
+      "fraction": 0.9393939393939394,
+      "of_pact_high_rollouts": 33
+    },
+    "plain_statement": "The retained totals support proximity primarily preventing entry into the high-contact regime. PACT also has fewer conditional contact frames than PACT_PERMUTED, but the absence of per-step runs means shortened entrapment or faster escape cannot be established. Tail susceptibility is strongly instance-linked, while proximity changes whether susceptible cases trigger.",
+    "reason_shortening_not_established": "No per-step contact classes or contiguous-run lengths were retained, and pair totals are not transition-entry counts.",
+    "shortened_entrapment_established": false
+  },
+  "paired_instance_view": {
+    "PACT_vs_ACT": {
+      "better_instances": 24,
+      "instances": [
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "25d96dd30260534413867e3d233ac259731dba68b82ecdcddd9dd10d000348be",
+          "instance_role_index": 0,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "85c614337838ef12a7f81cd567cb9237a82e67b530cc40399ee111632ec72b2a",
+          "instance_role_index": 1,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "557fca30e4a2ca6479e2e9061959c4f7bd6e2a873c56703d61723456c1af5745",
+          "instance_role_index": 2,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 4406,
+          "episode_id": "6cd4ffe2ec8f72a6eca73cdf368d77d785dc7c10fda742b4fe86f7ff31a23999",
+          "instance_role_index": 3,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -4406
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "8962c98af5421dcde76d1fe878fa587749524b673ec8204ba98913af86ea2676",
+          "instance_role_index": 4,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 5817,
+          "episode_id": "00949ba03e9af99b553b7ff9bb84ea931fe3fb87638f363190d90c7a40546603",
+          "instance_role_index": 5,
+          "pact_hazard_frames_three_seed_sum": 6898,
+          "pact_minus_comparator_hazard_frames": 1081
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "94d8b22f7c4d598c58bba9b3faf773f9c94ca8914decb56c2e64f1b9c7b10f6f",
+          "instance_role_index": 6,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 55926,
+          "episode_id": "67cdc48f9f1091af18f86d40564a5d14548aa916bb376e81fe38eba7fd8219f1",
+          "instance_role_index": 7,
+          "pact_hazard_frames_three_seed_sum": 6056,
+          "pact_minus_comparator_hazard_frames": -49870
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "2d6ae5e24e43379596609b314f722ed519b319456626f0eca3c8f233d31c04aa",
+          "instance_role_index": 8,
+          "pact_hazard_frames_three_seed_sum": 11009,
+          "pact_minus_comparator_hazard_frames": 11009
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "bcf51776eb6cd0d62ab98933d43eab8bb7fa480e50cdb210e56a6b3f8a0ad2ee",
+          "instance_role_index": 9,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 37240,
+          "episode_id": "3ad5a34e26d939a527c2d7b85c24f7aa36b00b30f158a71e303edc385dbe99f3",
+          "instance_role_index": 10,
+          "pact_hazard_frames_three_seed_sum": 34071,
+          "pact_minus_comparator_hazard_frames": -3169
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "dc19755e3c9d32d5cab41560c335f1043237c8299304d88daf1159f19084838b",
+          "instance_role_index": 11,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "316a6ff2c2513f5408ebb6c31beff6704ef56d950a7cb5320a47fa2a51cf995d",
+          "instance_role_index": 12,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "902a6f6021aac9453e10d4df9d4d0abbfb647e43b82b884f1cb2f9dcf76c3988",
+          "instance_role_index": 13,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 2309,
+          "episode_id": "56a73992a3d3d829ab2b220864f011f68fa1e03f3c2a3f7f2c0f4c5e75813ec6",
+          "instance_role_index": 14,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -2309
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 40322,
+          "episode_id": "c3c7d129769806607bddbecf51e021f3c17ed62dad5efe5292a894730619341c",
+          "instance_role_index": 15,
+          "pact_hazard_frames_three_seed_sum": 27035,
+          "pact_minus_comparator_hazard_frames": -13287
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "d34fa679b25b2eef94a7e1d70de544fd12104fea4a9874c6d67e66de3922fe52",
+          "instance_role_index": 16,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "9b980b7085f99b1c1d5a75f905e622f63143fe7066fa6586bbc935e38527a6b8",
+          "instance_role_index": 17,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 27712,
+          "episode_id": "702059f25934826f45148c2afa800102904966358663c61848a09fb67c3ba93c",
+          "instance_role_index": 18,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -27712
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 78585,
+          "episode_id": "0094946a2ad265295c7ad8fcb7b571b977da414a67df3058f173908268c393af",
+          "instance_role_index": 19,
+          "pact_hazard_frames_three_seed_sum": 23128,
+          "pact_minus_comparator_hazard_frames": -55457
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "8564636d86d199ce62649f2773227a946c9282e64af99752a4d01bfeca9b5098",
+          "instance_role_index": 20,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "7dac269bf613264036140f490ea2fa5486a3e05f7e132db91bee2a43e40c76a9",
+          "instance_role_index": 21,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 10447,
+          "episode_id": "dae990bbb42eae9cbc3c7576b28fc452c32c46a53669c7fb2ec1dfe9ca9035d6",
+          "instance_role_index": 22,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -10447
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 66489,
+          "episode_id": "178a8383cda28da99d539d84364aa6cb758943bb51b8230b49627cf5cb6f63b4",
+          "instance_role_index": 23,
+          "pact_hazard_frames_three_seed_sum": 30362,
+          "pact_minus_comparator_hazard_frames": -36127
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3e0a986956e08960468ae46dfc7e03b8d3163aa37fff32895533a58347a9eadd",
+          "instance_role_index": 24,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 32424,
+          "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+          "instance_role_index": 25,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -32424
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "d3aed4dbd2c95abb74eb25d2655d55505fe1599d7ff484a4b1341fe18dfa3ae6",
+          "instance_role_index": 26,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "23566bac0e4862c426734ecc0d109b152b463be24ec843f76690fa2f151cbd51",
+          "instance_role_index": 27,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 25,
+          "episode_id": "7942ff85e42abbf8b7f40237948eef3ab3954df13fb4b9c7494eefc137ec3fc8",
+          "instance_role_index": 28,
+          "pact_hazard_frames_three_seed_sum": 23,
+          "pact_minus_comparator_hazard_frames": -2
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 19699,
+          "episode_id": "cc7b3510c7bc943b56a3de53dfe70344e74ded8b70cbe39c1636a315c1534f0b",
+          "instance_role_index": 29,
+          "pact_hazard_frames_three_seed_sum": 31115,
+          "pact_minus_comparator_hazard_frames": 11416
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "ed90130198dd1aea661839a52e5a13d571207af3ebb88be86aa3a256ba486733",
+          "instance_role_index": 30,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "43f851ccb5241128062151a1a5f5e24a5174864a13e491e48656255943812710",
+          "instance_role_index": 31,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a6ee70f29be0f9400af88daaa352e051a193ecb4fd8993beaf233694138ca340",
+          "instance_role_index": 32,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 59431,
+          "episode_id": "7ef3a7d01f4f55cc48008e282f4868fd1158313f24a98c4b340be928237c435e",
+          "instance_role_index": 33,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -59431
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a0ca712d71268b7abe23a18c1e0eeb5b0f9bb6f5e3f77c5b36577c6f7d696e69",
+          "instance_role_index": 34,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "0f11b3b7695878c192fa36dae05671ddb41d70f56afc70a8aa40dc49ff20b0f6",
+          "instance_role_index": 35,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "735483ddf41d264d92d01802cec9b7961abf2bb11a6f6455f3e0e9ddc4d82575",
+          "instance_role_index": 36,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "66ce8308ef7c4666651368a17df04eaea8f6795628ded40f73d533bf3c1d42e5",
+          "instance_role_index": 37,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "cbeeaf445dba8830d328316d0c7a4388cb7337dbd84389db53b0a112f7a89012",
+          "instance_role_index": 38,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "58a4f9c0f78caf7cd682bdfd2559b89f8ea35936a8563fd495e3b1873b582a70",
+          "instance_role_index": 39,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 135,
+          "episode_id": "09ac365acf4c0e19aea5a90b458f5068e8e58b6ee6cca3ffe127756f89c0c948",
+          "instance_role_index": 40,
+          "pact_hazard_frames_three_seed_sum": 1013,
+          "pact_minus_comparator_hazard_frames": 878
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a0e7022f9e61d51fc34d24a408971693e0dc771f8835a5d126c763a24743c9c9",
+          "instance_role_index": 41,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 4196,
+          "episode_id": "acade03fd52f03e2a3a5ac188c9dadc041b42c98a82023463203f79b9b3f4d10",
+          "instance_role_index": 42,
+          "pact_hazard_frames_three_seed_sum": 28925,
+          "pact_minus_comparator_hazard_frames": 24729
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "b2216f115820bcd90f81098523a6954d031adc9a3328d81a31515d7c307a9214",
+          "instance_role_index": 43,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "8f51318ea6f98a803d535ba2ddeeb0407163a1f49b04f7f0c89aa186e20ee335",
+          "instance_role_index": 44,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 83294,
+          "episode_id": "f330db0ac803b393a04d6dac070551cc963b32061b5202ee5ca493a90a1564d3",
+          "instance_role_index": 45,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -83294
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "039b1105f92816c10831e894cabe97b3518459b330f8ca5a790ee955e08bbd92",
+          "instance_role_index": 46,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3fd4fab10b10c59be9f3d453c4956073f738ab508974066da826a6a7a5829691",
+          "instance_role_index": 47,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 12101,
+          "episode_id": "30165534da36aa514f2571a6e1199fdc4b445574f95b4510c0e4172eeb42e11f",
+          "instance_role_index": 48,
+          "pact_hazard_frames_three_seed_sum": 37032,
+          "pact_minus_comparator_hazard_frames": 24931
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "f72067ad766b352ef2adf4637bdc517f82f2098f19f3e1ca6d3b9c713ab6ed24",
+          "instance_role_index": 49,
+          "pact_hazard_frames_three_seed_sum": 16549,
+          "pact_minus_comparator_hazard_frames": 16549
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a638fa96876b658d5fd73f2d2c704336be49e61a892916bb621b3479dfd4c217",
+          "instance_role_index": 50,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 43,
+          "episode_id": "bf5e959735ab9299e3a5118899e0651250fd44a444ac5d1ea2b4047a3610b767",
+          "instance_role_index": 51,
+          "pact_hazard_frames_three_seed_sum": 11,
+          "pact_minus_comparator_hazard_frames": -32
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3b0f0ce4da413abe3b6bd506814b358db71e243e61c8a7e160ce30c9893efd4a",
+          "instance_role_index": 52,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a1eadec899b8c9c821c0ed175f71ec69d81ca0c1aa9d677e9b8894331a1ff327",
+          "instance_role_index": 53,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "df90e3ef82a0c6a13666dc74bc7251968468a9c698c4b8a9e8bf619effa6ead3",
+          "instance_role_index": 54,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "f69236811609efaa358d4457861948c3bc8f47f20c46a2637ffee6717413d7b9",
+          "instance_role_index": 55,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3eddc6205a1275ca5dce701694f56a5d0018f59180a8e0973b3c16ff729b9368",
+          "instance_role_index": 56,
+          "pact_hazard_frames_three_seed_sum": 14820,
+          "pact_minus_comparator_hazard_frames": 14820
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "74758ac1475e8947a871e473ebd2d5ae79946c9aee7e13572135715fa252b2a2",
+          "instance_role_index": 57,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 31138,
+          "episode_id": "36a756384dd5640149b1301d36d83fd32cd42d86b0d0e4936de9a674d6512934",
+          "instance_role_index": 58,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -31138
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "0d7de16cfda7be763207432b49d1cbca0d5ab64a89c9e13ce94044a094af8b99",
+          "instance_role_index": 59,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "50ecee9497562600f0fd4a79478b904ccac0c1fdf61d95619bf2281225045337",
+          "instance_role_index": 60,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "a35f0a70a8ab12b3169babc06aceb4f547223e3729d8c90cf1ca2bc13b4190c0",
+          "instance_role_index": 61,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "9a095a0f99d68603236377d9ac2ce8ecf92b3b31af494f7e389432eb8d0fafa5",
+          "instance_role_index": 62,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "52998833539af5c93c974a93276c18312aeb2e18f63fec1f60e80a807ce22bd1",
+          "instance_role_index": 63,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 23554,
+          "episode_id": "f88af36095f4ed038f6169fa7d057e5ce65f00769503c3eccc9b4649f5aac176",
+          "instance_role_index": 64,
+          "pact_hazard_frames_three_seed_sum": 38194,
+          "pact_minus_comparator_hazard_frames": 14640
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "709247f4a0abe1bfb43d3d90da54ab8da0245140b60f309a0a3729f0404e4f21",
+          "instance_role_index": 65,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "f54f066d6e01f6aec8f9cbcc22f23c48dc385029ba6fbc65acd099af10a5202f",
+          "instance_role_index": 66,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 45624,
+          "episode_id": "356e8f7dc4ca1c9a126eeec6bc169a7664826492c05724e3392433fe92437396",
+          "instance_role_index": 67,
+          "pact_hazard_frames_three_seed_sum": 64774,
+          "pact_minus_comparator_hazard_frames": 19150
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "4902c0ccd8936636cfc778aa4a6833b3ce929004573cb1f2f7c1b2355db9d0ba",
+          "instance_role_index": 68,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "ed6304544782ef23fc70ef5d5acffb8353ff3539a11ae67c9fd76e4cd6460587",
+          "instance_role_index": 69,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "7da2640e490d2dd516ca239d47afbb3197f7d95810cdb8c6e6e2f20de97dc02a",
+          "instance_role_index": 70,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3cab1df4b6109ea66be8a6570ad5dec2b2c7427132e747d7f27e57db034c1ed0",
+          "instance_role_index": 71,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 3372,
+          "episode_id": "63d61784931f78ad1c4781b6f3d0dab58702072f6dd67da858b26ddaadd85847",
+          "instance_role_index": 72,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -3372
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 62129,
+          "episode_id": "50a1d996d5a58452e3fe17f6eb52dfdccd5b3c04baf9f3647d47f03b4c2e5371",
+          "instance_role_index": 73,
+          "pact_hazard_frames_three_seed_sum": 7328,
+          "pact_minus_comparator_hazard_frames": -54801
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "e0bc3e4b32371edeb8ce4d673c029df12115d645a5cdbab7e7a8e831953beb0f",
+          "instance_role_index": 74,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "4e292d627cef21877143c3aa3dc424fefb10c5052ffde5bc375235799182e4d0",
+          "instance_role_index": 75,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 31944,
+          "episode_id": "b4e4e7d948a2c299018cb2dacf6817c78dc57ab80a00673a8670f00faa80ab64",
+          "instance_role_index": 76,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -31944
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 34473,
+          "episode_id": "1ac13dfe606af9dc7659c94dfe5e25d55bfa18a58fb175622ce78f7cdcd2022e",
+          "instance_role_index": 77,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -34473
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "d1166ca8d717249fdd18d91caf64120021c7556d16e55b1f852d81652f23129c",
+          "instance_role_index": 78,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "984ff8647cfa36af744272213d0dcc5c4781340ea12bf6562a7089d7b53da48c",
+          "instance_role_index": 79,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 3491,
+          "episode_id": "cd9a885edc0f6b49bf14a7dc27cc50c689b13dc1053517cca40c0c19d68e402b",
+          "instance_role_index": 80,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -3491
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "fd210d341836ab11bbac1f0fb3cffea8c02ff7fe8ebcdbdebd9efb9aa6ffe11f",
+          "instance_role_index": 81,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 56747,
+          "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+          "instance_role_index": 82,
+          "pact_hazard_frames_three_seed_sum": 32284,
+          "pact_minus_comparator_hazard_frames": -24463
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 6276,
+          "episode_id": "705da3f11e32ba6ef073f58402c5c5ef25ee655af417ecb53d5c03e03345cec9",
+          "instance_role_index": 83,
+          "pact_hazard_frames_three_seed_sum": 16760,
+          "pact_minus_comparator_hazard_frames": 10484
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "c03e5b550fa8cfb156f865056118c6c71ee5418ae787ef0755f1b72db8f7d07b",
+          "instance_role_index": 84,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "11a4159f74544b46618b15681523ad0200bae1c9d730fafe3392cd55a57b9218",
+          "instance_role_index": 85,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 29448,
+          "episode_id": "d564bfef2efbd5b2b5edf383521d08025dae87e21eda9819b4233e13d2b3155a",
+          "instance_role_index": 86,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -29448
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "6316f517806854e7c1e4dcca3b092b63ad70d228dfea33b8ae9b772c994310b2",
+          "instance_role_index": 87,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 3011,
+          "episode_id": "b1e9047e51d3d1d7005b815ca479c4b2a1ed8a92c5a667ee079ce549acbc80a8",
+          "instance_role_index": 88,
+          "pact_hazard_frames_three_seed_sum": 149,
+          "pact_minus_comparator_hazard_frames": -2862
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "1d5f795db8006abaa5336064db109ed603792594bad228753588a4b6011adde1",
+          "instance_role_index": 89,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "ac96978300060fc2ebee7c8121d930e407332d32745a3b7e15bbe0440db884f5",
+          "instance_role_index": 90,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3367da47cfd2296833377cf47873924e2f7f7286c5f3e9448b924904ca257b33",
+          "instance_role_index": 91,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "82cd3200c22fdb666f282be52783385d5646445e03756f640c3027eebca12dbb",
+          "instance_role_index": 92,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "50c889afede1fc96c7f5f57d84f82ed37aa15e8c5778deaf9dee8d59f78bb35e",
+          "instance_role_index": 93,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 16739,
+          "episode_id": "3fe3a173f2bf117388f4bfd6f7035c3e4665d6ac9da6a0fef86b0cc2eb4aa236",
+          "instance_role_index": 94,
+          "pact_hazard_frames_three_seed_sum": 33957,
+          "pact_minus_comparator_hazard_frames": 17218
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "5b9681880f272f86b12979c0d8b2740d4d74d997bcaaa88f3d8946898246a2a6",
+          "instance_role_index": 95,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 7167,
+          "episode_id": "3a4224766f82ed74090d95bb9feb4d67e06d17fdf42e75edb68b038c1579acbe",
+          "instance_role_index": 96,
+          "pact_hazard_frames_three_seed_sum": 41980,
+          "pact_minus_comparator_hazard_frames": 34813
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "05c9a8fa2688509c45538819605be47112a1d84b82f9d80748f74578bc4191c1",
+          "instance_role_index": 97,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 0,
+          "episode_id": "3aed02a6354ad0846da806a31133c23eb30b3cce956fe3fada4f37f0bfa9f419",
+          "instance_role_index": 98,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0
+        },
+        {
+          "act_hazard_frames_three_seed_sum": 11319,
+          "episode_id": "35ccaa19d6b6ddd33f83fa54a3f30c014b162dbd82bf2391dc926a70ce01e2be",
+          "instance_role_index": 99,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -11319
+        }
+      ],
+      "mean_pact_minus_comparator_hazard_frames": -4035.6,
+      "median_pact_minus_comparator_hazard_frames": 0.0,
+      "tied_instances": 63,
+      "worse_instances": 13
+    },
+    "PACT_vs_PACT_PERMUTED": {
+      "better_instances": 26,
+      "instances": [
+        {
+          "episode_id": "25d96dd30260534413867e3d233ac259731dba68b82ecdcddd9dd10d000348be",
+          "instance_role_index": 0,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "85c614337838ef12a7f81cd567cb9237a82e67b530cc40399ee111632ec72b2a",
+          "instance_role_index": 1,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "557fca30e4a2ca6479e2e9061959c4f7bd6e2a873c56703d61723456c1af5745",
+          "instance_role_index": 2,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "6cd4ffe2ec8f72a6eca73cdf368d77d785dc7c10fda742b4fe86f7ff31a23999",
+          "instance_role_index": 3,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "8962c98af5421dcde76d1fe878fa587749524b673ec8204ba98913af86ea2676",
+          "instance_role_index": 4,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "00949ba03e9af99b553b7ff9bb84ea931fe3fb87638f363190d90c7a40546603",
+          "instance_role_index": 5,
+          "pact_hazard_frames_three_seed_sum": 6898,
+          "pact_minus_comparator_hazard_frames": -2361,
+          "pact_permuted_hazard_frames_three_seed_sum": 9259
+        },
+        {
+          "episode_id": "94d8b22f7c4d598c58bba9b3faf773f9c94ca8914decb56c2e64f1b9c7b10f6f",
+          "instance_role_index": 6,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "67cdc48f9f1091af18f86d40564a5d14548aa916bb376e81fe38eba7fd8219f1",
+          "instance_role_index": 7,
+          "pact_hazard_frames_three_seed_sum": 6056,
+          "pact_minus_comparator_hazard_frames": -76720,
+          "pact_permuted_hazard_frames_three_seed_sum": 82776
+        },
+        {
+          "episode_id": "2d6ae5e24e43379596609b314f722ed519b319456626f0eca3c8f233d31c04aa",
+          "instance_role_index": 8,
+          "pact_hazard_frames_three_seed_sum": 11009,
+          "pact_minus_comparator_hazard_frames": 927,
+          "pact_permuted_hazard_frames_three_seed_sum": 10082
+        },
+        {
+          "episode_id": "bcf51776eb6cd0d62ab98933d43eab8bb7fa480e50cdb210e56a6b3f8a0ad2ee",
+          "instance_role_index": 9,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3ad5a34e26d939a527c2d7b85c24f7aa36b00b30f158a71e303edc385dbe99f3",
+          "instance_role_index": 10,
+          "pact_hazard_frames_three_seed_sum": 34071,
+          "pact_minus_comparator_hazard_frames": -863,
+          "pact_permuted_hazard_frames_three_seed_sum": 34934
+        },
+        {
+          "episode_id": "dc19755e3c9d32d5cab41560c335f1043237c8299304d88daf1159f19084838b",
+          "instance_role_index": 11,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "316a6ff2c2513f5408ebb6c31beff6704ef56d950a7cb5320a47fa2a51cf995d",
+          "instance_role_index": 12,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "902a6f6021aac9453e10d4df9d4d0abbfb647e43b82b884f1cb2f9dcf76c3988",
+          "instance_role_index": 13,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "56a73992a3d3d829ab2b220864f011f68fa1e03f3c2a3f7f2c0f4c5e75813ec6",
+          "instance_role_index": 14,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "c3c7d129769806607bddbecf51e021f3c17ed62dad5efe5292a894730619341c",
+          "instance_role_index": 15,
+          "pact_hazard_frames_three_seed_sum": 27035,
+          "pact_minus_comparator_hazard_frames": -27911,
+          "pact_permuted_hazard_frames_three_seed_sum": 54946
+        },
+        {
+          "episode_id": "d34fa679b25b2eef94a7e1d70de544fd12104fea4a9874c6d67e66de3922fe52",
+          "instance_role_index": 16,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "9b980b7085f99b1c1d5a75f905e622f63143fe7066fa6586bbc935e38527a6b8",
+          "instance_role_index": 17,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "702059f25934826f45148c2afa800102904966358663c61848a09fb67c3ba93c",
+          "instance_role_index": 18,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -55658,
+          "pact_permuted_hazard_frames_three_seed_sum": 55658
+        },
+        {
+          "episode_id": "0094946a2ad265295c7ad8fcb7b571b977da414a67df3058f173908268c393af",
+          "instance_role_index": 19,
+          "pact_hazard_frames_three_seed_sum": 23128,
+          "pact_minus_comparator_hazard_frames": -56573,
+          "pact_permuted_hazard_frames_three_seed_sum": 79701
+        },
+        {
+          "episode_id": "8564636d86d199ce62649f2773227a946c9282e64af99752a4d01bfeca9b5098",
+          "instance_role_index": 20,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "7dac269bf613264036140f490ea2fa5486a3e05f7e132db91bee2a43e40c76a9",
+          "instance_role_index": 21,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "dae990bbb42eae9cbc3c7576b28fc452c32c46a53669c7fb2ec1dfe9ca9035d6",
+          "instance_role_index": 22,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "178a8383cda28da99d539d84364aa6cb758943bb51b8230b49627cf5cb6f63b4",
+          "instance_role_index": 23,
+          "pact_hazard_frames_three_seed_sum": 30362,
+          "pact_minus_comparator_hazard_frames": -49958,
+          "pact_permuted_hazard_frames_three_seed_sum": 80320
+        },
+        {
+          "episode_id": "3e0a986956e08960468ae46dfc7e03b8d3163aa37fff32895533a58347a9eadd",
+          "instance_role_index": 24,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+          "instance_role_index": 25,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -4369,
+          "pact_permuted_hazard_frames_three_seed_sum": 4369
+        },
+        {
+          "episode_id": "d3aed4dbd2c95abb74eb25d2655d55505fe1599d7ff484a4b1341fe18dfa3ae6",
+          "instance_role_index": 26,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "23566bac0e4862c426734ecc0d109b152b463be24ec843f76690fa2f151cbd51",
+          "instance_role_index": 27,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "7942ff85e42abbf8b7f40237948eef3ab3954df13fb4b9c7494eefc137ec3fc8",
+          "instance_role_index": 28,
+          "pact_hazard_frames_three_seed_sum": 23,
+          "pact_minus_comparator_hazard_frames": -3,
+          "pact_permuted_hazard_frames_three_seed_sum": 26
+        },
+        {
+          "episode_id": "cc7b3510c7bc943b56a3de53dfe70344e74ded8b70cbe39c1636a315c1534f0b",
+          "instance_role_index": 29,
+          "pact_hazard_frames_three_seed_sum": 31115,
+          "pact_minus_comparator_hazard_frames": -8631,
+          "pact_permuted_hazard_frames_three_seed_sum": 39746
+        },
+        {
+          "episode_id": "ed90130198dd1aea661839a52e5a13d571207af3ebb88be86aa3a256ba486733",
+          "instance_role_index": 30,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "43f851ccb5241128062151a1a5f5e24a5174864a13e491e48656255943812710",
+          "instance_role_index": 31,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "a6ee70f29be0f9400af88daaa352e051a193ecb4fd8993beaf233694138ca340",
+          "instance_role_index": 32,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "7ef3a7d01f4f55cc48008e282f4868fd1158313f24a98c4b340be928237c435e",
+          "instance_role_index": 33,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -13532,
+          "pact_permuted_hazard_frames_three_seed_sum": 13532
+        },
+        {
+          "episode_id": "a0ca712d71268b7abe23a18c1e0eeb5b0f9bb6f5e3f77c5b36577c6f7d696e69",
+          "instance_role_index": 34,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "0f11b3b7695878c192fa36dae05671ddb41d70f56afc70a8aa40dc49ff20b0f6",
+          "instance_role_index": 35,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "735483ddf41d264d92d01802cec9b7961abf2bb11a6f6455f3e0e9ddc4d82575",
+          "instance_role_index": 36,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "66ce8308ef7c4666651368a17df04eaea8f6795628ded40f73d533bf3c1d42e5",
+          "instance_role_index": 37,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "cbeeaf445dba8830d328316d0c7a4388cb7337dbd84389db53b0a112f7a89012",
+          "instance_role_index": 38,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "58a4f9c0f78caf7cd682bdfd2559b89f8ea35936a8563fd495e3b1873b582a70",
+          "instance_role_index": 39,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "09ac365acf4c0e19aea5a90b458f5068e8e58b6ee6cca3ffe127756f89c0c948",
+          "instance_role_index": 40,
+          "pact_hazard_frames_three_seed_sum": 1013,
+          "pact_minus_comparator_hazard_frames": -6021,
+          "pact_permuted_hazard_frames_three_seed_sum": 7034
+        },
+        {
+          "episode_id": "a0e7022f9e61d51fc34d24a408971693e0dc771f8835a5d126c763a24743c9c9",
+          "instance_role_index": 41,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "acade03fd52f03e2a3a5ac188c9dadc041b42c98a82023463203f79b9b3f4d10",
+          "instance_role_index": 42,
+          "pact_hazard_frames_three_seed_sum": 28925,
+          "pact_minus_comparator_hazard_frames": -34216,
+          "pact_permuted_hazard_frames_three_seed_sum": 63141
+        },
+        {
+          "episode_id": "b2216f115820bcd90f81098523a6954d031adc9a3328d81a31515d7c307a9214",
+          "instance_role_index": 43,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "8f51318ea6f98a803d535ba2ddeeb0407163a1f49b04f7f0c89aa186e20ee335",
+          "instance_role_index": 44,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "f330db0ac803b393a04d6dac070551cc963b32061b5202ee5ca493a90a1564d3",
+          "instance_role_index": 45,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -83291,
+          "pact_permuted_hazard_frames_three_seed_sum": 83291
+        },
+        {
+          "episode_id": "039b1105f92816c10831e894cabe97b3518459b330f8ca5a790ee955e08bbd92",
+          "instance_role_index": 46,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3fd4fab10b10c59be9f3d453c4956073f738ab508974066da826a6a7a5829691",
+          "instance_role_index": 47,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "30165534da36aa514f2571a6e1199fdc4b445574f95b4510c0e4172eeb42e11f",
+          "instance_role_index": 48,
+          "pact_hazard_frames_three_seed_sum": 37032,
+          "pact_minus_comparator_hazard_frames": 18037,
+          "pact_permuted_hazard_frames_three_seed_sum": 18995
+        },
+        {
+          "episode_id": "f72067ad766b352ef2adf4637bdc517f82f2098f19f3e1ca6d3b9c713ab6ed24",
+          "instance_role_index": 49,
+          "pact_hazard_frames_three_seed_sum": 16549,
+          "pact_minus_comparator_hazard_frames": 1327,
+          "pact_permuted_hazard_frames_three_seed_sum": 15222
+        },
+        {
+          "episode_id": "a638fa96876b658d5fd73f2d2c704336be49e61a892916bb621b3479dfd4c217",
+          "instance_role_index": 50,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "bf5e959735ab9299e3a5118899e0651250fd44a444ac5d1ea2b4047a3610b767",
+          "instance_role_index": 51,
+          "pact_hazard_frames_three_seed_sum": 11,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 11
+        },
+        {
+          "episode_id": "3b0f0ce4da413abe3b6bd506814b358db71e243e61c8a7e160ce30c9893efd4a",
+          "instance_role_index": 52,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "a1eadec899b8c9c821c0ed175f71ec69d81ca0c1aa9d677e9b8894331a1ff327",
+          "instance_role_index": 53,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "df90e3ef82a0c6a13666dc74bc7251968468a9c698c4b8a9e8bf619effa6ead3",
+          "instance_role_index": 54,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "f69236811609efaa358d4457861948c3bc8f47f20c46a2637ffee6717413d7b9",
+          "instance_role_index": 55,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3eddc6205a1275ca5dce701694f56a5d0018f59180a8e0973b3c16ff729b9368",
+          "instance_role_index": 56,
+          "pact_hazard_frames_three_seed_sum": 14820,
+          "pact_minus_comparator_hazard_frames": 174,
+          "pact_permuted_hazard_frames_three_seed_sum": 14646
+        },
+        {
+          "episode_id": "74758ac1475e8947a871e473ebd2d5ae79946c9aee7e13572135715fa252b2a2",
+          "instance_role_index": 57,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "36a756384dd5640149b1301d36d83fd32cd42d86b0d0e4936de9a674d6512934",
+          "instance_role_index": 58,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "0d7de16cfda7be763207432b49d1cbca0d5ab64a89c9e13ce94044a094af8b99",
+          "instance_role_index": 59,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "50ecee9497562600f0fd4a79478b904ccac0c1fdf61d95619bf2281225045337",
+          "instance_role_index": 60,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "a35f0a70a8ab12b3169babc06aceb4f547223e3729d8c90cf1ca2bc13b4190c0",
+          "instance_role_index": 61,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "9a095a0f99d68603236377d9ac2ce8ecf92b3b31af494f7e389432eb8d0fafa5",
+          "instance_role_index": 62,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "52998833539af5c93c974a93276c18312aeb2e18f63fec1f60e80a807ce22bd1",
+          "instance_role_index": 63,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -7295,
+          "pact_permuted_hazard_frames_three_seed_sum": 7295
+        },
+        {
+          "episode_id": "f88af36095f4ed038f6169fa7d057e5ce65f00769503c3eccc9b4649f5aac176",
+          "instance_role_index": 64,
+          "pact_hazard_frames_three_seed_sum": 38194,
+          "pact_minus_comparator_hazard_frames": -1164,
+          "pact_permuted_hazard_frames_three_seed_sum": 39358
+        },
+        {
+          "episode_id": "709247f4a0abe1bfb43d3d90da54ab8da0245140b60f309a0a3729f0404e4f21",
+          "instance_role_index": 65,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "f54f066d6e01f6aec8f9cbcc22f23c48dc385029ba6fbc65acd099af10a5202f",
+          "instance_role_index": 66,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "356e8f7dc4ca1c9a126eeec6bc169a7664826492c05724e3392433fe92437396",
+          "instance_role_index": 67,
+          "pact_hazard_frames_three_seed_sum": 64774,
+          "pact_minus_comparator_hazard_frames": -14649,
+          "pact_permuted_hazard_frames_three_seed_sum": 79423
+        },
+        {
+          "episode_id": "4902c0ccd8936636cfc778aa4a6833b3ce929004573cb1f2f7c1b2355db9d0ba",
+          "instance_role_index": 68,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "ed6304544782ef23fc70ef5d5acffb8353ff3539a11ae67c9fd76e4cd6460587",
+          "instance_role_index": 69,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "7da2640e490d2dd516ca239d47afbb3197f7d95810cdb8c6e6e2f20de97dc02a",
+          "instance_role_index": 70,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3cab1df4b6109ea66be8a6570ad5dec2b2c7427132e747d7f27e57db034c1ed0",
+          "instance_role_index": 71,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "63d61784931f78ad1c4781b6f3d0dab58702072f6dd67da858b26ddaadd85847",
+          "instance_role_index": 72,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "50a1d996d5a58452e3fe17f6eb52dfdccd5b3c04baf9f3647d47f03b4c2e5371",
+          "instance_role_index": 73,
+          "pact_hazard_frames_three_seed_sum": 7328,
+          "pact_minus_comparator_hazard_frames": -75313,
+          "pact_permuted_hazard_frames_three_seed_sum": 82641
+        },
+        {
+          "episode_id": "e0bc3e4b32371edeb8ce4d673c029df12115d645a5cdbab7e7a8e831953beb0f",
+          "instance_role_index": 74,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "4e292d627cef21877143c3aa3dc424fefb10c5052ffde5bc375235799182e4d0",
+          "instance_role_index": 75,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "b4e4e7d948a2c299018cb2dacf6817c78dc57ab80a00673a8670f00faa80ab64",
+          "instance_role_index": 76,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -16472,
+          "pact_permuted_hazard_frames_three_seed_sum": 16472
+        },
+        {
+          "episode_id": "1ac13dfe606af9dc7659c94dfe5e25d55bfa18a58fb175622ce78f7cdcd2022e",
+          "instance_role_index": 77,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "d1166ca8d717249fdd18d91caf64120021c7556d16e55b1f852d81652f23129c",
+          "instance_role_index": 78,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "984ff8647cfa36af744272213d0dcc5c4781340ea12bf6562a7089d7b53da48c",
+          "instance_role_index": 79,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "cd9a885edc0f6b49bf14a7dc27cc50c689b13dc1053517cca40c0c19d68e402b",
+          "instance_role_index": 80,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "fd210d341836ab11bbac1f0fb3cffea8c02ff7fe8ebcdbdebd9efb9aa6ffe11f",
+          "instance_role_index": 81,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+          "instance_role_index": 82,
+          "pact_hazard_frames_three_seed_sum": 32284,
+          "pact_minus_comparator_hazard_frames": -7643,
+          "pact_permuted_hazard_frames_three_seed_sum": 39927
+        },
+        {
+          "episode_id": "705da3f11e32ba6ef073f58402c5c5ef25ee655af417ecb53d5c03e03345cec9",
+          "instance_role_index": 83,
+          "pact_hazard_frames_three_seed_sum": 16760,
+          "pact_minus_comparator_hazard_frames": -20,
+          "pact_permuted_hazard_frames_three_seed_sum": 16780
+        },
+        {
+          "episode_id": "c03e5b550fa8cfb156f865056118c6c71ee5418ae787ef0755f1b72db8f7d07b",
+          "instance_role_index": 84,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "11a4159f74544b46618b15681523ad0200bae1c9d730fafe3392cd55a57b9218",
+          "instance_role_index": 85,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "d564bfef2efbd5b2b5edf383521d08025dae87e21eda9819b4233e13d2b3155a",
+          "instance_role_index": 86,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -34504,
+          "pact_permuted_hazard_frames_three_seed_sum": 34504
+        },
+        {
+          "episode_id": "6316f517806854e7c1e4dcca3b092b63ad70d228dfea33b8ae9b772c994310b2",
+          "instance_role_index": 87,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "b1e9047e51d3d1d7005b815ca479c4b2a1ed8a92c5a667ee079ce549acbc80a8",
+          "instance_role_index": 88,
+          "pact_hazard_frames_three_seed_sum": 149,
+          "pact_minus_comparator_hazard_frames": -659,
+          "pact_permuted_hazard_frames_three_seed_sum": 808
+        },
+        {
+          "episode_id": "1d5f795db8006abaa5336064db109ed603792594bad228753588a4b6011adde1",
+          "instance_role_index": 89,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "ac96978300060fc2ebee7c8121d930e407332d32745a3b7e15bbe0440db884f5",
+          "instance_role_index": 90,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3367da47cfd2296833377cf47873924e2f7f7286c5f3e9448b924904ca257b33",
+          "instance_role_index": 91,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "82cd3200c22fdb666f282be52783385d5646445e03756f640c3027eebca12dbb",
+          "instance_role_index": 92,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "50c889afede1fc96c7f5f57d84f82ed37aa15e8c5778deaf9dee8d59f78bb35e",
+          "instance_role_index": 93,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3fe3a173f2bf117388f4bfd6f7035c3e4665d6ac9da6a0fef86b0cc2eb4aa236",
+          "instance_role_index": 94,
+          "pact_hazard_frames_three_seed_sum": 33957,
+          "pact_minus_comparator_hazard_frames": -3354,
+          "pact_permuted_hazard_frames_three_seed_sum": 37311
+        },
+        {
+          "episode_id": "5b9681880f272f86b12979c0d8b2740d4d74d997bcaaa88f3d8946898246a2a6",
+          "instance_role_index": 95,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3a4224766f82ed74090d95bb9feb4d67e06d17fdf42e75edb68b038c1579acbe",
+          "instance_role_index": 96,
+          "pact_hazard_frames_three_seed_sum": 41980,
+          "pact_minus_comparator_hazard_frames": -32428,
+          "pact_permuted_hazard_frames_three_seed_sum": 74408
+        },
+        {
+          "episode_id": "05c9a8fa2688509c45538819605be47112a1d84b82f9d80748f74578bc4191c1",
+          "instance_role_index": 97,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "3aed02a6354ad0846da806a31133c23eb30b3cce956fe3fada4f37f0bfa9f419",
+          "instance_role_index": 98,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": 0,
+          "pact_permuted_hazard_frames_three_seed_sum": 0
+        },
+        {
+          "episode_id": "35ccaa19d6b6ddd33f83fa54a3f30c014b162dbd82bf2391dc926a70ce01e2be",
+          "instance_role_index": 99,
+          "pact_hazard_frames_three_seed_sum": 0,
+          "pact_minus_comparator_hazard_frames": -786,
+          "pact_permuted_hazard_frames_three_seed_sum": 786
+        }
+      ],
+      "mean_pact_minus_comparator_hazard_frames": -5939.29,
+      "median_pact_minus_comparator_hazard_frames": 0.0,
+      "tied_instances": 70,
+      "worse_instances": 4
+    }
+  },
+  "schema_version": "pact_contact_tail_characterization_v1",
+  "sources": {
+    "final_decision": {
+      "file_sha256": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+      "final_decision_sha256": "8956b24f04ce1c8eac2045f1157976a9d0fc50b5978fe7bf66b90b6b2b219a57",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/final_decision.json"
+    },
+    "output_root": "/root/pact_contact_endpoint_artifacts/evaluation_v1",
+    "result_file_inventory_sha256": "34c8394f7a89f2deb73690590b5dcfcdba9a19155d47c8459b3f9c7494420671",
+    "result_files": 1200,
+    "rollout_metric_records_sha256": "352e80296af9c3e16a59c70bc4d593b3c06ca7fc07ed99b1d8ab1e23aedf18be",
+    "schedule": {
+      "file_sha256": "3079c04ee806a535153675c8cb218d1969cc94b95c0e48940c768e4c79cb0dae",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/schedule.json",
+      "schedule_sha256": "f9451f5b58b3fb4cc4c4fe75f69f7ecea674a78cca0b66bbb954993696402fc2"
+    }
+  },
+  "statistical_scope": {
+    "confirmatory_p_values_computed": false,
+    "description": "All thresholds and groupings in this artifact are exploratory descriptions and do not modify the frozen confirmatory analysis.",
+    "post_hoc_confidence_intervals_computed": false
+  },
+  "status": "post_hoc_exploratory_descriptive",
+  "tail_characterization_sha256": "f0b14355e79aa6a0999029af7789654a1bff0882a5207cc0204087108fd15b54",
+  "tail_overlap": {
+    "definition": "hazard_frames > 500",
+    "instance_overlap_any_seed": {
+      "ACT_vs_PACT_PERMUTED": {
+        "fraction_of_left_also_right": 0.7741935483870968,
+        "fraction_of_right_also_left": 0.8275862068965517,
+        "intersection_count": 24,
+        "jaccard": 0.6666666666666666,
+        "left_count": 31,
+        "right_count": 29,
+        "union_count": 36
+      },
+      "PACT_vs_ACT": {
+        "fraction_of_left_also_right": 0.8,
+        "fraction_of_right_also_left": 0.5161290322580645,
+        "intersection_count": 16,
+        "jaccard": 0.45714285714285713,
+        "left_count": 20,
+        "right_count": 31,
+        "union_count": 35
+      },
+      "PACT_vs_PACT_PERMUTED": {
+        "fraction_of_left_also_right": 1.0,
+        "fraction_of_right_also_left": 0.6896551724137931,
+        "intersection_count": 20,
+        "jaccard": 0.6896551724137931,
+        "left_count": 20,
+        "right_count": 29,
+        "union_count": 29
+      },
+      "PACT_vs_PACT_ZERO": {
+        "fraction_of_left_also_right": 0.9,
+        "fraction_of_right_also_left": 0.36,
+        "intersection_count": 18,
+        "jaccard": 0.34615384615384615,
+        "left_count": 20,
+        "right_count": 50,
+        "union_count": 52
+      }
+    },
+    "instances_high_in_all_non_ood_arms": 16,
+    "instances_high_in_any_non_ood_arm": 36,
+    "matched_instance_seed_overlap": {
+      "ACT_vs_PACT_PERMUTED": {
+        "fraction_of_left_also_right": 0.7288135593220338,
+        "fraction_of_right_also_left": 0.7413793103448276,
+        "intersection_count": 43,
+        "jaccard": 0.581081081081081,
+        "left_count": 59,
+        "right_count": 58,
+        "union_count": 74
+      },
+      "PACT_vs_ACT": {
+        "fraction_of_left_also_right": 0.6666666666666666,
+        "fraction_of_right_also_left": 0.3728813559322034,
+        "intersection_count": 22,
+        "jaccard": 0.3142857142857143,
+        "left_count": 33,
+        "right_count": 59,
+        "union_count": 70
+      },
+      "PACT_vs_PACT_PERMUTED": {
+        "fraction_of_left_also_right": 0.9393939393939394,
+        "fraction_of_right_also_left": 0.5344827586206896,
+        "intersection_count": 31,
+        "jaccard": 0.5166666666666667,
+        "left_count": 33,
+        "right_count": 58,
+        "union_count": 60
+      },
+      "PACT_vs_PACT_ZERO": {
+        "fraction_of_left_also_right": 0.8787878787878788,
+        "fraction_of_right_also_left": 0.29591836734693877,
+        "intersection_count": 29,
+        "jaccard": 0.28431372549019607,
+        "left_count": 33,
+        "right_count": 98,
+        "union_count": 102
+      }
+    },
+    "non_ood_instance_tail_arm_multiplicity": {
+      "0": 64,
+      "1": 8,
+      "2": 12,
+      "3": 16
+    }
+  },
+  "threshold": {
+    "metric": "hazard_bar frames_with_contact",
+    "operator": ">",
+    "selected_before_row_level_tail_analysis": true,
+    "source": "docs/PACT_TAIL_CHARACTERIZATION_PLAN.md",
+    "units": "physics contact frames",
+    "value": 500
+  }
+}
