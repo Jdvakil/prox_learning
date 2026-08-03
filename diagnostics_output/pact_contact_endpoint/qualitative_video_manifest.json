@@ -1,7 +1,80 @@
 {
+  "completion": {
+    "completed_paired_videos": 0,
+    "remaining_selected_reruns_launched": 0,
+    "requested_paired_videos": 5,
+    "scientific_results_or_token_changed": false,
+    "stopped_by_predeclared_gate": true
+  },
   "composition_outputs": [],
   "decision_bearing": false,
   "determinism_check": {
+    "action": "stopped before the remaining nine reruns",
+    "additional_descriptive_differences": {
+      "contact_audit_sample_count": {
+        "original": 29701,
+        "rerun": 29701
+      },
+      "hazard_frames_with_contact": {
+        "original": 29022,
+        "rerun": 29024
+      },
+      "hazard_maximum_penetration_depth_m": {
+        "original": 0.0008325859297544908,
+        "rerun": 0.0008428650884164002
+      },
+      "initial_observation_boundary_sha256": {
+        "original": "3a0aa4cbf444bda29163a9f2af975e809756e5c1449e1bb613c8da7e81445167",
+        "rerun": "3a0aa4cbf444bda29163a9f2af975e809756e5c1449e1bb613c8da7e81445167"
+      }
+    },
+    "cause": "undetermined: the exact check cannot separate render perturbation from rollout non-determinism",
+    "comparisons": {
+      "contact_class_totals": {
+        "exact_match": false,
+        "original": {
+          "grasp_target": 0,
+          "hazard_bar": 29069,
+          "other_environment": 0
+        },
+        "rerun": {
+          "grasp_target": 0,
+          "hazard_bar": 29074,
+          "other_environment": 0
+        }
+      },
+      "first_contact_step": {
+        "exact_match": true,
+        "original": {
+          "grasp_target": null,
+          "hazard_bar": 21,
+          "other_environment": null
+        },
+        "rerun": {
+          "grasp_target": null,
+          "hazard_bar": 21,
+          "other_environment": null
+        }
+      },
+      "manipulation_success": {
+        "exact_match": true,
+        "original": false,
+        "rerun": false
+      },
+      "task_success": {
+        "exact_match": true,
+        "original": false,
+        "rerun": false
+      }
+    },
+    "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+    "exact_match": false,
+    "external_record": {
+      "determinism_check_sha256": "4ce93fb15cc4958aea84b9028bfd1da34d9f454430a79727b601142d2d3e9a19",
+      "file_sha256": "4dccfed76a99444c1b6cee46ee60482485330bd4733eeb88580dec1aecd4fade",
+      "path": "/root/pact_contact_endpoint_artifacts/qualitative_videos/determinism_check.json"
+    },
+    "policy_seed": 3101,
     "probe_arm": "ACT",
     "probe_video_id": "video_01",
     "required_exact_fields": [
@@ -10,10 +83,11 @@
       "manipulation_success (represented by task_success)",
       "contact_audit.first_contact_step"
     ],
-    "status": "pending"
+    "schedule_index": 308,
+    "status": "failed_mismatch_stop"
   },
   "illustrative_only": true,
-  "qualitative_video_manifest_sha256": "4787f96fc5c7c7644aaaa0fc38cc00710ec66669892e78536ba930902dccfd9c",
+  "qualitative_video_manifest_sha256": "709a93881475a50b888bb0df09ccc8d3c0e880eedbbd4a5b23dfea07455f615d",
   "render_contract": {
     "camera_pose": {
       "camera_offset_m": [
@@ -55,7 +129,33 @@
     ],
     "rng_calls_added": 0
   },
-  "render_outputs": [],
+  "render_outputs": [
+    {
+      "arm": "ACT",
+      "codec": "mpeg4",
+      "deliverable_video": false,
+      "duration_seconds": 59.464097,
+      "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+      "file_sha256": "f4d07e0bb5b0d4d69d69a2484bdd17ed799ddf90a4a491b06a6e95d826d1320e",
+      "fps": 15.151515151515152,
+      "frames": 901,
+      "independent_draw_warning_required_if_ever_published": true,
+      "labelled_as_analyzed_rollout": false,
+      "path": "/root/pact_contact_endpoint_artifacts/qualitative_videos/raw/video_01_act.mp4",
+      "policy_seed": 3101,
+      "rerun_result": {
+        "file_sha256": "478704c158e33e68a0762a7d4a68f2dd2c37fee9274042b8c97b0a9cda04eefd",
+        "path": "/root/pact_contact_endpoint_artifacts/qualitative_videos/reruns/video_01_act/result.json"
+      },
+      "resolution_width_height": [
+        624,
+        352
+      ],
+      "role": "unpublished_determinism_probe_only",
+      "size_bytes": 2889117,
+      "video_id": "video_01"
+    }
+  ],
   "schema_version": "pact_qualitative_video_manifest_v1",
   "selection_frozen_at_utc": "2026-08-03T00:57:02.770883+00:00",
   "selection_rule_verbatim": {
@@ -469,6 +569,6 @@
       "tail_characterization_sha256": "f0b14355e79aa6a0999029af7789654a1bff0882a5207cc0204087108fd15b54"
     }
   },
-  "status": "selection_frozen_pre_render",
+  "status": "aborted_determinism_mismatch",
   "video_root": "/root/pact_contact_endpoint_artifacts/qualitative_videos"
 }

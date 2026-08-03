@@ -54,12 +54,12 @@ def test_selection_rule_is_mechanical_and_includes_counterexample() -> None:
     assert observed[4]["category"] == "counterexample"
 
 
-def test_frozen_pre_render_manifest_is_self_hashed_and_has_ten_rows() -> None:
+def test_frozen_selection_manifest_is_self_hashed_and_has_ten_rows() -> None:
     document = json.loads(ARTIFACT.read_text())
     payload = dict(document)
     observed = payload.pop("qualitative_video_manifest_sha256")
     assert observed == selection.canonical_hash(payload)
-    assert document["status"] == "selection_frozen_pre_render"
+    assert document["status"] == "aborted_determinism_mismatch"
     assert document["illustrative_only"] is True
     assert document["decision_bearing"] is False
     assert len(document["selections"]) == 5
@@ -76,6 +76,17 @@ def test_frozen_pre_render_manifest_is_self_hashed_and_has_ten_rows() -> None:
         for record in item["arms"].values()
     ]
     assert len(rows) == len(set(rows)) == 10
+    assert document["determinism_check"]["exact_match"] is False
+    assert document["determinism_check"]["action"] == (
+        "stopped before the remaining nine reruns"
+    )
+    assert document["completion"] == {
+        "requested_paired_videos": 5,
+        "completed_paired_videos": 0,
+        "remaining_selected_reruns_launched": 0,
+        "stopped_by_predeclared_gate": True,
+        "scientific_results_or_token_changed": False,
+    }
 
 
 def test_render_contract_keeps_third_person_camera_out_of_policy() -> None:
