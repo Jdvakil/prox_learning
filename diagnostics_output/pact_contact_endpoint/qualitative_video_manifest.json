@@ -1,0 +1,474 @@
+{
+  "composition_outputs": [],
+  "decision_bearing": false,
+  "determinism_check": {
+    "probe_arm": "ACT",
+    "probe_video_id": "video_01",
+    "required_exact_fields": [
+      "contact_audit.contact_class_totals",
+      "task_success",
+      "manipulation_success (represented by task_success)",
+      "contact_audit.first_contact_step"
+    ],
+    "status": "pending"
+  },
+  "illustrative_only": true,
+  "qualitative_video_manifest_sha256": "4787f96fc5c7c7644aaaa0fc38cc00710ec66669892e78536ba930902dccfd9c",
+  "render_contract": {
+    "camera_pose": {
+      "camera_offset_m": [
+        -1.05,
+        -0.55,
+        1.3
+      ],
+      "lookat_offset_m": [
+        0.55,
+        0.0,
+        0.45
+      ],
+      "reference_body": "robot_0/fr3_link0",
+      "up_axis": "world_z",
+      "vertical_fov_degrees": 58.0
+    },
+    "camera_type": "MuJoCo free camera, offscreen render only",
+    "fps": 15.151515151515152,
+    "max_control_steps": 900,
+    "observation_key_added": false,
+    "policy_camera_names": [
+      "wrist_camera"
+    ],
+    "policy_inputs": {
+      "ACT": [
+        "wrist_camera",
+        "qpos"
+      ],
+      "PACT": [
+        "wrist_camera",
+        "qpos",
+        "40 skin streams"
+      ]
+    },
+    "registered_sensor_or_observation_camera": false,
+    "resolution_width_height": [
+      624,
+      352
+    ],
+    "rng_calls_added": 0
+  },
+  "render_outputs": [],
+  "schema_version": "pact_qualitative_video_manifest_v1",
+  "selection_frozen_at_utc": "2026-08-03T00:57:02.770883+00:00",
+  "selection_rule_verbatim": {
+    "counterexample": "among pairs where PACT hazard frames \u2265 ACT, take the one with the largest PACT total",
+    "mechanism": "among instance-seed pairs where ACT hazard frames > 500 and PACT = 0, take the three with the largest ACT hazard-frame total",
+    "routine": "among pairs where both arms have 0 hazard frames and both succeed at the task, take the lowest instance ID"
+  },
+  "selection_tie_breaks": {
+    "counterexample": "episode ID ascending, then policy seed ascending",
+    "mechanism": "episode ID ascending, then policy seed ascending",
+    "routine": "policy seed ascending within the lowest episode ID"
+  },
+  "selection_viewing_before_freeze": false,
+  "selections": [
+    {
+      "arms": {
+        "ACT": {
+          "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+          "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 0,
+              "hazard_bar": 29069,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "hazard_bar_contact",
+            "first_contact_step": {
+              "grasp_target": null,
+              "hazard_bar": 21,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 0,
+              "hazard_bar": 29022,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0308_66a8fc62c0f3ec7b_act_s3101/result.json",
+          "original_result_sha256": "51c4fe01f5a23d13dcc80d9b9925bce3002c365e3217cca84893d9a44e356d53",
+          "rollout_id": "66a8fc62c0f3ec7b587df2d418176d1e1d97d29d6588fc3882ca655b21453af0",
+          "schedule_index": 308,
+          "schedule_row_sha256": "1825a6afcb142a028903919bb0dffa3b7c2a68d3b2e01f7091db06768d187a73",
+          "surface_encoder_path": null,
+          "surface_encoder_sha256": null
+        },
+        "PACT": {
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": true,
+            "contact_class_totals": {
+              "grasp_target": 328124,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "collision_free_task_success",
+            "first_contact_step": {
+              "grasp_target": 151,
+              "hazard_bar": null,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 24598,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "task_success": true
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0310_6b7f11de957a9396_pact_s3101/result.json",
+          "original_result_sha256": "05ddd43ede89032cf8eb8db0c65a4c61191ed314008440d91f62ea631384186b",
+          "rollout_id": "6b7f11de957a93962471f161c81a6562e8839880e6cb55a5d24295c90ac9f374",
+          "schedule_index": 310,
+          "schedule_row_sha256": "8c59a9d18bb865b65773280030b163bc9f20e08d2e62bc3d5eaf86aba9e92271",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+        }
+      },
+      "category": "mechanism",
+      "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+      "instance_role_index": 25,
+      "policy_seed": 3101,
+      "selection_rule": "among instance-seed pairs where ACT hazard frames > 500 and PACT = 0, take the three with the largest ACT hazard-frame total",
+      "video_id": "video_01",
+      "video_index": 1
+    },
+    {
+      "arms": {
+        "ACT": {
+          "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+          "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 0,
+              "hazard_bar": 28815,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "hazard_bar_contact",
+            "first_contact_step": {
+              "grasp_target": null,
+              "hazard_bar": 30,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 0,
+              "hazard_bar": 28736,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/1039_cc1233a958aa2edf_act_s3101/result.json",
+          "original_result_sha256": "b0a6d909c57d54ecebe60be6b5c551fb63df230fd67f525a3d8f4c9a0865e858",
+          "rollout_id": "cc1233a958aa2edf5209a545571bfc9cc411f6d29e0bbcd6154bcfcd53a5eaeb",
+          "schedule_index": 1039,
+          "schedule_row_sha256": "6c169268d88607e476fedc765fd9c184a1b46151bf45a4c115d713d3836a1686",
+          "surface_encoder_path": null,
+          "surface_encoder_sha256": null
+        },
+        "PACT": {
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 731,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "target_contact_without_task_success",
+            "first_contact_step": {
+              "grasp_target": 103,
+              "hazard_bar": null,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 687,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/1037_f0844827df7aef85_pact_s3101/result.json",
+          "original_result_sha256": "fcce67753cdbef57fbd91669c87013d21bd7a9785b9f073a983be660e7f2240e",
+          "rollout_id": "f0844827df7aef859af62b9786af2bb3d62709f28b87f551adf7a3cbcb00dd60",
+          "schedule_index": 1037,
+          "schedule_row_sha256": "0f8f35f082975195f03a5b38db03e67dff68b117a747a6b5fe8809fce50b81c8",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+        }
+      },
+      "category": "mechanism",
+      "episode_id": "d564bfef2efbd5b2b5edf383521d08025dae87e21eda9819b4233e13d2b3155a",
+      "instance_role_index": 86,
+      "policy_seed": 3101,
+      "selection_rule": "among instance-seed pairs where ACT hazard frames > 500 and PACT = 0, take the three with the largest ACT hazard-frame total",
+      "video_id": "video_02",
+      "video_index": 2
+    },
+    {
+      "arms": {
+        "ACT": {
+          "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+          "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 0,
+              "hazard_bar": 28900,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "hazard_bar_contact",
+            "first_contact_step": {
+              "grasp_target": null,
+              "hazard_bar": 29,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 0,
+              "hazard_bar": 28551,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0707_3a29881a10ad176e_act_s3101/result.json",
+          "original_result_sha256": "4cab6e968bb1761293df84a8681e8b1732a81948d8a5562bba5a9cf912ff0e61",
+          "rollout_id": "3a29881a10ad176ee37bdd2239a9e51594cd7d1f81eceb3d9f940ad619c6ed28",
+          "schedule_index": 707,
+          "schedule_row_sha256": "e431da3b232d36339fc2ace86d12a9015d8fa33e40dae1711ebc640095dd4b3b",
+          "surface_encoder_path": null,
+          "surface_encoder_sha256": null
+        },
+        "PACT": {
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 4342,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "target_contact_without_task_success",
+            "first_contact_step": {
+              "grasp_target": 108,
+              "hazard_bar": null,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 1086,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0705_892867bdd437b9b7_pact_s3101/result.json",
+          "original_result_sha256": "053d3e20b3116a8c692a8395b1fee0137337b6798828db06b9ec56f10657b5e1",
+          "rollout_id": "892867bdd437b9b7aaf527219647171e2e5cc3a571f6fa50d315a85d481914c2",
+          "schedule_index": 705,
+          "schedule_row_sha256": "c49decba39d544dfd0d2dfc50cec84c8b48f5547a78e3b3e883410d3ea394e53",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+        }
+      },
+      "category": "mechanism",
+      "episode_id": "36a756384dd5640149b1301d36d83fd32cd42d86b0d0e4936de9a674d6512934",
+      "instance_role_index": 58,
+      "policy_seed": 3101,
+      "selection_rule": "among instance-seed pairs where ACT hazard frames > 500 and PACT = 0, take the three with the largest ACT hazard-frame total",
+      "video_id": "video_03",
+      "video_index": 3
+    },
+    {
+      "arms": {
+        "ACT": {
+          "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+          "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": true,
+            "contact_class_totals": {
+              "grasp_target": 352929,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "collision_free_task_success",
+            "first_contact_step": {
+              "grasp_target": 143,
+              "hazard_bar": null,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 24991,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "task_success": true
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/1172_fb5cd853546c5dc3_act_s3101/result.json",
+          "original_result_sha256": "de60f860d0c471f5a203735e23d891bf45f2afab7a3e388dbba885938eb14380",
+          "rollout_id": "fb5cd853546c5dc321ac44dd5ae8140a2ea92936266dda71c99aa2af362a6ea2",
+          "schedule_index": 1172,
+          "schedule_row_sha256": "ebb7c71ced3186e23c88004b3ef817e1a2dd7dc1a4f55256a14574ba7d9cf02e",
+          "surface_encoder_path": null,
+          "surface_encoder_sha256": null
+        },
+        "PACT": {
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": true,
+            "contact_class_totals": {
+              "grasp_target": 349404,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "collision_free_task_success",
+            "first_contact_step": {
+              "grasp_target": 143,
+              "hazard_bar": null,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 24910,
+              "hazard_bar": 0,
+              "other_environment": 0
+            },
+            "task_success": true
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/1174_17817c4e31cb2aaa_pact_s3101/result.json",
+          "original_result_sha256": "9a6f88f2df0fbdf045a221d3e5a3dd9f23fd7af4e9758a1bdae0314869e38793",
+          "rollout_id": "17817c4e31cb2aaa53c1f9d31b2a3bd5cfa68eafab273186af0ee0ddac9a8657",
+          "schedule_index": 1174,
+          "schedule_row_sha256": "3ac723fb6b90f00ba73f14a8b1ff826986f28b57e6532233c331ee663a2c7d12",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+        }
+      },
+      "category": "routine",
+      "episode_id": "05c9a8fa2688509c45538819605be47112a1d84b82f9d80748f74578bc4191c1",
+      "instance_role_index": 97,
+      "policy_seed": 3101,
+      "selection_rule": "among pairs where both arms have 0 hazard frames and both succeed at the task, take the lowest instance ID",
+      "video_id": "video_04",
+      "video_index": 4
+    },
+    {
+      "arms": {
+        "ACT": {
+          "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+          "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 0,
+              "hazard_bar": 10877,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "hazard_bar_contact",
+            "first_contact_step": {
+              "grasp_target": null,
+              "hazard_bar": 47,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 0,
+              "hazard_bar": 10477,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0814_904999a6e4500af8_act_s3101/result.json",
+          "original_result_sha256": "59742b0df092c9185a4ced6c9f4995b426f3bd5f73dad734b68e5033cdcbac35",
+          "rollout_id": "904999a6e4500af84eef8b8ee48561d713d0f3831198fc49c8d0c1762cdc2de3",
+          "schedule_index": 814,
+          "schedule_row_sha256": "e176a4805db4d7a1951a8c0faf8e196624197833966bb79bfaefa1061b7b4aa5",
+          "surface_encoder_path": null,
+          "surface_encoder_sha256": null
+        },
+        "PACT": {
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_outcome": {
+            "collision_free_task_success": false,
+            "contact_class_totals": {
+              "grasp_target": 0,
+              "hazard_bar": 76442,
+              "other_environment": 0
+            },
+            "failure_taxonomy": "hazard_bar_contact",
+            "first_contact_step": {
+              "grasp_target": null,
+              "hazard_bar": 55,
+              "other_environment": null
+            },
+            "frames_with_contact": {
+              "grasp_target": 0,
+              "hazard_bar": 27852,
+              "other_environment": 0
+            },
+            "task_success": false
+          },
+          "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0812_2a8ac6195c61b059_pact_s3101/result.json",
+          "original_result_sha256": "d524248efcf2a2588ad03936611b1cf17c95b608ba8e8eb631af53323214b349",
+          "rollout_id": "2a8ac6195c61b0592d7bad0918c12008f19adaa08bb94fdfbf1e53a2c14627be",
+          "schedule_index": 812,
+          "schedule_row_sha256": "c3d4cc5a9b825ebd4d1f5e2a8f1cfa6467a75ddc47fa4a672b5a94d6ddf0740c",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+        }
+      },
+      "category": "counterexample",
+      "episode_id": "356e8f7dc4ca1c9a126eeec6bc169a7664826492c05724e3392433fe92437396",
+      "instance_role_index": 67,
+      "policy_seed": 3101,
+      "selection_rule": "among pairs where PACT hazard frames \u2265 ACT, take the one with the largest PACT total",
+      "video_id": "video_05",
+      "video_index": 5
+    }
+  ],
+  "sources": {
+    "result_root": "/root/pact_contact_endpoint_artifacts/evaluation_v1",
+    "schedule": {
+      "file_sha256": "3079c04ee806a535153675c8cb218d1969cc94b95c0e48940c768e4c79cb0dae",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/schedule.json",
+      "schedule_sha256": "f9451f5b58b3fb4cc4c4fe75f69f7ecea674a78cca0b66bbb954993696402fc2"
+    },
+    "tail_characterization": {
+      "file_sha256": "1960863b50172f338c256fc2feffa56b7cdcee6b20f30cf1a61486293881e28f",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/tail_characterization.json",
+      "tail_characterization_sha256": "f0b14355e79aa6a0999029af7789654a1bff0882a5207cc0204087108fd15b54"
+    }
+  },
+  "status": "selection_frozen_pre_render",
+  "video_root": "/root/pact_contact_endpoint_artifacts/qualitative_videos"
+}
