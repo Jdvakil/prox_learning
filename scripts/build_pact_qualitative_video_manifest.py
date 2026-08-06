@@ -21,6 +21,18 @@ V2_OUTPUT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+V3_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v3_manifest.json"
+)
+V3_FALLBACK_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_manifest.json"
+)
+V3_FALLBACK2_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_rank2_manifest.json"
+)
 ACT_SUCCESS_SUPPLEMENT_OUTPUT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
@@ -98,6 +110,71 @@ V2_SELECTION_RULES = {
         "among the 34 instance-seeds where ACT succeeds and PACT fails, select "
         "the pair with the largest PACT hazard-frame total"
     ),
+}
+
+V3_FIXED_CLIPS = (
+    {
+        "clip_id": "clip3_e99dc657bfa7_act_success_s3102",
+        "pair_id": "instance_b_seed3102",
+        "arm": "ACT",
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "checkpoint_seed": 3102,
+        "intrusion_side": "left",
+        "source_directory": "0986_35da71238ef0ed1d_act_s3102",
+        "schedule_index": 986,
+        "hazard_frames": 18447,
+        "grasp_target_frames": 24923,
+        "first_hazard_contact_step": 340,
+        "first_grasp_target_contact_step": 145,
+        "task_success": True,
+        "selection_role": "task_success_while_scraping",
+    },
+    {
+        "clip_id": "clip4_e99dc657bfa7_pact_failure_s3102",
+        "pair_id": "instance_b_seed3102",
+        "arm": "PACT",
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "checkpoint_seed": 3102,
+        "intrusion_side": "left",
+        "source_directory": "0984_ee62f8041692665e_pact_s3102",
+        "schedule_index": 984,
+        "hazard_frames": 14675,
+        "grasp_target_frames": 809,
+        "first_hazard_contact_step": 456,
+        "first_grasp_target_contact_step": 147,
+        "task_success": False,
+        "selection_role": "matched_pact_failure_with_delayed_contact",
+    },
+)
+
+V3_FALLBACK_FIXED = {
+    "clip_id": "clip3_3fe3a173f2bf_act_success_s3103",
+    "arm": "ACT",
+    "episode_id": "3fe3a173f2bf117388f4bfd6f7035c3e4665d6ac9da6a0fef86b0cc2eb4aa236",
+    "checkpoint_seed": 3103,
+    "intrusion_side": "right",
+    "source_directory": "1133_c39a3a8fdd8c6ae4_act_s3103",
+    "schedule_index": 1133,
+    "hazard_frames": 16739,
+    "grasp_target_frames": 25126,
+    "first_hazard_contact_step": 393,
+    "first_grasp_target_contact_step": 135,
+    "task_success": True,
+}
+
+V3_FALLBACK2_FIXED = {
+    "clip_id": "clip3_178a8383cda2_act_success_s3101",
+    "arm": "ACT",
+    "episode_id": "178a8383cda28da99d539d84364aa6cb758943bb51b8230b49627cf5cb6f63b4",
+    "checkpoint_seed": 3101,
+    "intrusion_side": "right",
+    "source_directory": "0282_dfbef2c46b0cf55b_act_s3101",
+    "schedule_index": 282,
+    "hazard_frames": 12087,
+    "grasp_target_frames": 24686,
+    "first_hazard_contact_step": 137,
+    "first_grasp_target_contact_step": 119,
+    "task_success": True,
 }
 
 ACT_SUCCESS_SUPPLEMENT_FIXED = {
@@ -532,6 +609,440 @@ def build_v2_manifest(
     return document
 
 
+def build_v3_manifest(
+    schedule: dict[str, Any], result_root: Path, output: Path
+) -> dict[str, Any]:
+    rows = {int(row["schedule_index"]): row for row in schedule["rows"]}
+    clips = []
+    for fixed in V3_FIXED_CLIPS:
+        row = rows[int(fixed["schedule_index"])]
+        result, result_path = load_result(row, result_root)
+        audit = result["contact_audit"]
+        observed = {
+            "clip_id": fixed["clip_id"],
+            "pair_id": fixed["pair_id"],
+            "arm": result["arm"],
+            "episode_id": result["episode_id"],
+            "checkpoint_seed": int(result["checkpoint_seed"]),
+            "intrusion_side": result["intrusion_side"],
+            "source_directory": result_path.parent.name,
+            "schedule_index": int(row["schedule_index"]),
+            "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+            "grasp_target_frames": int(
+                audit["frames_with_contact"]["grasp_target"]
+            ),
+            "first_hazard_contact_step": audit["first_contact_step"][
+                "hazard_bar"
+            ],
+            "first_grasp_target_contact_step": audit["first_contact_step"][
+                "grasp_target"
+            ],
+            "task_success": bool(result["task_success"]),
+            "selection_role": fixed["selection_role"],
+        }
+        if observed != fixed:
+            raise ValueError(
+                f"fixed v3 clip {fixed['clip_id']} source mismatch: "
+                f"{observed} != {fixed}"
+            )
+        clips.append(
+            {
+                **observed,
+                "rollout_id": row["rollout_id"],
+                "schedule_row_sha256": row["schedule_row_sha256"],
+                "checkpoint_path": row["checkpoint_path"],
+                "checkpoint_sha256": row["checkpoint_sha256"],
+                "dataset_stats_path": row["dataset_stats_path"],
+                "dataset_stats_sha256": row["dataset_stats_sha256"],
+                "surface_encoder_path": row.get("surface_encoder_path"),
+                "surface_encoder_sha256": row.get("surface_encoder_sha256"),
+                "original_result_path": str(result_path.resolve()),
+                "original_result_sha256": file_hash(result_path),
+                "original_outcome": {
+                    "task_success": bool(result["task_success"]),
+                    "collision_free_task_success": bool(
+                        result["collision_free_task_success"]
+                    ),
+                    "hazard_contact": bool(
+                        audit["frames_with_contact"]["hazard_bar"]
+                    ),
+                    "hazard_frames": int(
+                        audit["frames_with_contact"]["hazard_bar"]
+                    ),
+                    "hazard_contact_pair_samples": int(
+                        audit["contact_class_totals"]["hazard_bar"]
+                    ),
+                    "grasp_target_frames": int(
+                        audit["frames_with_contact"]["grasp_target"]
+                    ),
+                    "first_contact_step": dict(audit["first_contact_step"]),
+                    "maximum_hazard_penetration_depth_m": float(
+                        audit["maximum_penetration_depth_m"]["hazard_bar"]
+                    ),
+                },
+            }
+        )
+    if len({(clip["episode_id"], clip["checkpoint_seed"]) for clip in clips}) != 1:
+        raise ValueError("v3 clips do not form one matched episode-seed pair")
+
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("schedule self-hash mismatch")
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_clips_v3_manifest",
+        "status": "selection_and_gate_frozen_pre_render",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "selection_rule": (
+            "replace Instance B with the same frozen episode at adjacent seed 3102, "
+            "where ACT succeeds while scraping and PACT fails after later, lower-total contact"
+        ),
+        "clips": clips,
+        "determinism_gate": {
+            "declared_before_render": True,
+            "task_success": {"comparison": "exact"},
+            "manipulation_success": {
+                "comparison": "exact",
+                "represented_by": "task_success",
+            },
+            "first_hazard_bar_contact_step": {"comparison": "exact"},
+            "first_grasp_target_contact_step": {
+                "comparison": "absolute_step_delta_lte",
+                "tolerance_steps": 2,
+                "rationale": (
+                    "the published caption claims exact hazard first-contact, not exact "
+                    "target first-contact"
+                ),
+            },
+            "contact_pair_sample_counts": {
+                "comparison": "informational_only",
+                "record_delta": True,
+            },
+            "on_breach": "drop_clip_without_retry",
+            "relaxation_scope": "grasp_target first-contact step only",
+        },
+        "fallback_order_if_seed3102_gate_fails": [
+            {
+                "rank": 1,
+                "episode_id": "3fe3a173f2bf117388f4bfd6f7035c3e4665d6ac9da6a0fef86b0cc2eb4aa236",
+                "checkpoint_seed": 3103,
+                "arm": "ACT",
+                "source_directory": "1133_c39a3a8fdd8c6ae4_act_s3103",
+                "hazard_frames": 16739,
+            },
+            {
+                "rank": 2,
+                "episode_id": "178a8383cda28da99d539d84364aa6cb758943bb51b8230b49627cf5cb6f63b4",
+                "checkpoint_seed": 3101,
+                "arm": "ACT",
+                "source_directory": "0282_dfbef2c46b0cf55b_act_s3101",
+                "hazard_frames": 12087,
+            },
+            {
+                "rank": 3,
+                "rule": (
+                    "among the 159 clean contact-endpoint ACT successes, choose the "
+                    "lowest schedule_index"
+                ),
+            },
+        ],
+        "render_contract": {
+            "camera_type": "MuJoCo free camera, offscreen render only",
+            "camera_pose_identical_to_clips_1_2_4_v2": True,
+            "registered_sensor_or_observation_camera": False,
+            "policy_camera_names": ["wrist_camera"],
+            "resolution_width_height": [624, 352],
+            "raw_fps": 1000.0 / 66.0,
+            "raw_frames": 901,
+            "playback_speed_factor": 3.0,
+            "expected_release_duration_seconds": 19.821366,
+            "overlay_fields": [
+                "policy arm and checkpoint seed",
+                "episode ID first 12 characters",
+                "task success yes/no",
+                "any hazard contact yes/no",
+                "hazard-contact frames running cumulative",
+                "maximum hazard penetration",
+                "constant playback speed factor",
+            ],
+        },
+        "sources": {
+            "schedule": {
+                "path": str(DEFAULT_SCHEDULE.resolve()),
+                "file_sha256": file_hash(DEFAULT_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(result_root.resolve()),
+            "qualitative_clips_v2_manifest": {
+                "path": str(V2_OUTPUT.resolve()),
+                "sha256": file_hash(V2_OUTPUT),
+            },
+            "frozen_qualitative_report": {
+                "path": str((ROOT / "docs/PACT_QUALITATIVE_VIDEOS.md").resolve()),
+                "sha256": file_hash(ROOT / "docs/PACT_QUALITATIVE_VIDEOS.md"),
+            },
+        },
+        "render_outputs": [],
+    }
+    document["qualitative_clips_v3_manifest_sha256"] = canonical_hash(document)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
+def build_v3_fallback_manifest(
+    schedule: dict[str, Any], result_root: Path, output: Path
+) -> dict[str, Any]:
+    v3 = json.loads(V3_OUTPUT.read_text())
+    v3_payload = dict(v3)
+    v3_hash = v3_payload.pop("qualitative_clips_v3_manifest_sha256")
+    if v3_hash != canonical_hash(v3_payload):
+        raise ValueError("v3 manifest self-hash mismatch")
+    if (
+        v3["status"] != "presentation_release_incomplete_gate_drop"
+        or v3["determinism_summary"]["dropped_clip_ids"]
+        != [clip["clip_id"] for clip in V3_FIXED_CLIPS]
+    ):
+        raise ValueError("v3 primary pair did not fail exactly as recorded")
+    fallback_order = v3["fallback_order_if_seed3102_gate_fails"]
+    if fallback_order[0]["source_directory"] != V3_FALLBACK_FIXED[
+        "source_directory"
+    ]:
+        raise ValueError("v3 fallback rank 1 changed")
+
+    row = next(
+        row
+        for row in schedule["rows"]
+        if int(row["schedule_index"]) == V3_FALLBACK_FIXED["schedule_index"]
+    )
+    result, result_path = load_result(row, result_root)
+    audit = result["contact_audit"]
+    observed = {
+        "clip_id": V3_FALLBACK_FIXED["clip_id"],
+        "arm": result["arm"],
+        "episode_id": result["episode_id"],
+        "checkpoint_seed": int(result["checkpoint_seed"]),
+        "intrusion_side": result["intrusion_side"],
+        "source_directory": result_path.parent.name,
+        "schedule_index": int(row["schedule_index"]),
+        "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+        "grasp_target_frames": int(
+            audit["frames_with_contact"]["grasp_target"]
+        ),
+        "first_hazard_contact_step": audit["first_contact_step"]["hazard_bar"],
+        "first_grasp_target_contact_step": audit["first_contact_step"][
+            "grasp_target"
+        ],
+        "task_success": bool(result["task_success"]),
+    }
+    if observed != V3_FALLBACK_FIXED:
+        raise ValueError(
+            f"v3 fallback rank-1 source mismatch: {observed} != "
+            f"{V3_FALLBACK_FIXED}"
+        )
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("schedule self-hash mismatch")
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_clip3_fallback_manifest_v1",
+        "status": "selection_and_gate_frozen_pre_render",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "fallback_rank": 1,
+        "selection_rule": (
+            "use the first predeclared fallback after the matched seed-3102 ACT and "
+            "PACT rerenders both failed the frozen v3 gate"
+        ),
+        "pairing_claim_allowed": False,
+        "clip": {
+            **observed,
+            "rollout_id": row["rollout_id"],
+            "schedule_row_sha256": row["schedule_row_sha256"],
+            "checkpoint_path": row["checkpoint_path"],
+            "checkpoint_sha256": row["checkpoint_sha256"],
+            "dataset_stats_path": row["dataset_stats_path"],
+            "dataset_stats_sha256": row["dataset_stats_sha256"],
+            "surface_encoder_path": row.get("surface_encoder_path"),
+            "surface_encoder_sha256": row.get("surface_encoder_sha256"),
+            "original_result_path": str(result_path.resolve()),
+            "original_result_sha256": file_hash(result_path),
+            "original_outcome": {
+                "task_success": True,
+                "collision_free_task_success": bool(
+                    result["collision_free_task_success"]
+                ),
+                "hazard_contact": True,
+                "hazard_frames": int(
+                    audit["frames_with_contact"]["hazard_bar"]
+                ),
+                "hazard_contact_pair_samples": int(
+                    audit["contact_class_totals"]["hazard_bar"]
+                ),
+                "grasp_target_frames": int(
+                    audit["frames_with_contact"]["grasp_target"]
+                ),
+                "first_contact_step": dict(audit["first_contact_step"]),
+                "maximum_hazard_penetration_depth_m": float(
+                    audit["maximum_penetration_depth_m"]["hazard_bar"]
+                ),
+            },
+        },
+        "determinism_gate": dict(v3["determinism_gate"]),
+        "remaining_fallback_order_on_gate_failure": fallback_order[1:],
+        "render_contract": dict(v3["render_contract"]),
+        "sources": {
+            "schedule": {
+                "path": str(DEFAULT_SCHEDULE.resolve()),
+                "file_sha256": file_hash(DEFAULT_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(result_root.resolve()),
+            "failed_v3_primary_manifest": {
+                "path": str(V3_OUTPUT.resolve()),
+                "file_sha256": file_hash(V3_OUTPUT),
+                "manifest_sha256": v3_hash,
+            },
+        },
+        "render_output": None,
+    }
+    document["qualitative_clip3_fallback_manifest_sha256"] = canonical_hash(
+        document
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
+def build_v3_fallback_rank2_manifest(
+    schedule: dict[str, Any], result_root: Path, output: Path
+) -> dict[str, Any]:
+    rank1 = json.loads(V3_FALLBACK_OUTPUT.read_text())
+    rank1_payload = dict(rank1)
+    rank1_hash = rank1_payload.pop("qualitative_clip3_fallback_manifest_sha256")
+    if rank1_hash != canonical_hash(rank1_payload):
+        raise ValueError("fallback-rank-1 manifest self-hash mismatch")
+    if rank1["status"] != "fallback_rank1_dropped_gate_failure":
+        raise ValueError("fallback rank 1 did not fail its frozen gate")
+    rank2_plan = rank1["remaining_fallback_order_on_gate_failure"][0]
+    if rank2_plan["source_directory"] != V3_FALLBACK2_FIXED[
+        "source_directory"
+    ]:
+        raise ValueError("fallback rank 2 changed")
+
+    row = next(
+        row
+        for row in schedule["rows"]
+        if int(row["schedule_index"]) == V3_FALLBACK2_FIXED["schedule_index"]
+    )
+    result, result_path = load_result(row, result_root)
+    audit = result["contact_audit"]
+    observed = {
+        "clip_id": V3_FALLBACK2_FIXED["clip_id"],
+        "arm": result["arm"],
+        "episode_id": result["episode_id"],
+        "checkpoint_seed": int(result["checkpoint_seed"]),
+        "intrusion_side": result["intrusion_side"],
+        "source_directory": result_path.parent.name,
+        "schedule_index": int(row["schedule_index"]),
+        "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+        "grasp_target_frames": int(
+            audit["frames_with_contact"]["grasp_target"]
+        ),
+        "first_hazard_contact_step": audit["first_contact_step"]["hazard_bar"],
+        "first_grasp_target_contact_step": audit["first_contact_step"][
+            "grasp_target"
+        ],
+        "task_success": bool(result["task_success"]),
+    }
+    if observed != V3_FALLBACK2_FIXED:
+        raise ValueError(
+            f"fallback-rank-2 source mismatch: {observed} != "
+            f"{V3_FALLBACK2_FIXED}"
+        )
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("schedule self-hash mismatch")
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_clip3_fallback_rank2_manifest_v1",
+        "status": "selection_and_gate_frozen_pre_render",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "fallback_rank": 2,
+        "selection_rule": (
+            "use the second predeclared fallback after the matched seed-3102 pair "
+            "and fallback rank 1 failed the frozen gate"
+        ),
+        "pairing_claim_allowed": False,
+        "clip": {
+            **observed,
+            "rollout_id": row["rollout_id"],
+            "schedule_row_sha256": row["schedule_row_sha256"],
+            "checkpoint_path": row["checkpoint_path"],
+            "checkpoint_sha256": row["checkpoint_sha256"],
+            "dataset_stats_path": row["dataset_stats_path"],
+            "dataset_stats_sha256": row["dataset_stats_sha256"],
+            "surface_encoder_path": row.get("surface_encoder_path"),
+            "surface_encoder_sha256": row.get("surface_encoder_sha256"),
+            "original_result_path": str(result_path.resolve()),
+            "original_result_sha256": file_hash(result_path),
+            "original_outcome": {
+                "task_success": True,
+                "collision_free_task_success": bool(
+                    result["collision_free_task_success"]
+                ),
+                "hazard_contact": True,
+                "hazard_frames": int(
+                    audit["frames_with_contact"]["hazard_bar"]
+                ),
+                "hazard_contact_pair_samples": int(
+                    audit["contact_class_totals"]["hazard_bar"]
+                ),
+                "grasp_target_frames": int(
+                    audit["frames_with_contact"]["grasp_target"]
+                ),
+                "first_contact_step": dict(audit["first_contact_step"]),
+                "maximum_hazard_penetration_depth_m": float(
+                    audit["maximum_penetration_depth_m"]["hazard_bar"]
+                ),
+            },
+        },
+        "determinism_gate": dict(rank1["determinism_gate"]),
+        "remaining_fallback_order_on_gate_failure": rank1[
+            "remaining_fallback_order_on_gate_failure"
+        ][1:],
+        "render_contract": dict(rank1["render_contract"]),
+        "sources": {
+            "schedule": {
+                "path": str(DEFAULT_SCHEDULE.resolve()),
+                "file_sha256": file_hash(DEFAULT_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(result_root.resolve()),
+            "failed_fallback_rank1_manifest": {
+                "path": str(V3_FALLBACK_OUTPUT.resolve()),
+                "file_sha256": file_hash(V3_FALLBACK_OUTPUT),
+                "manifest_sha256": rank1_hash,
+            },
+        },
+        "render_output": None,
+    }
+    document["qualitative_clip3_fallback_rank2_manifest_sha256"] = canonical_hash(
+        document
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
 def build_act_success_supplement(
     schedule: dict[str, Any], result_root: Path, output: Path
 ) -> dict[str, Any]:
@@ -788,6 +1299,9 @@ def main() -> int:
         choices=(
             "legacy-pairs-v1",
             "clips-v2",
+            "clips-v3",
+            "clips-v3-fallback",
+            "clips-v3-fallback-rank2",
             "act-success-supplement",
             "recorded-act-success",
         ),
@@ -802,6 +1316,12 @@ def main() -> int:
     if args.output is None:
         if args.mode == "clips-v2":
             args.output = V2_OUTPUT
+        elif args.mode == "clips-v3":
+            args.output = V3_OUTPUT
+        elif args.mode == "clips-v3-fallback":
+            args.output = V3_FALLBACK_OUTPUT
+        elif args.mode == "clips-v3-fallback-rank2":
+            args.output = V3_FALLBACK2_OUTPUT
         elif args.mode == "act-success-supplement":
             args.output = ACT_SUCCESS_SUPPLEMENT_OUTPUT
         elif args.mode == "recorded-act-success":
@@ -834,6 +1354,78 @@ def main() -> int:
                         }
                         for clip in document["clips"]
                     ],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    if args.mode == "clips-v3":
+        schedule = json.loads(args.schedule.read_text())
+        document = build_v3_manifest(schedule, args.result_root, args.output)
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document["qualitative_clips_v3_manifest_sha256"],
+                    "gate": document["determinism_gate"],
+                    "clips": [
+                        {
+                            "clip_id": clip["clip_id"],
+                            "arm": clip["arm"],
+                            "episode_id": clip["episode_id"],
+                            "checkpoint_seed": clip["checkpoint_seed"],
+                            "hazard_frames": clip["hazard_frames"],
+                            "grasp_target_frames": clip["grasp_target_frames"],
+                            "task_success": clip["task_success"],
+                        }
+                        for clip in document["clips"]
+                    ],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    if args.mode == "clips-v3-fallback":
+        schedule = json.loads(args.schedule.read_text())
+        document = build_v3_fallback_manifest(
+            schedule, args.result_root, args.output
+        )
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document[
+                        "qualitative_clip3_fallback_manifest_sha256"
+                    ],
+                    "fallback_rank": document["fallback_rank"],
+                    "clip": document["clip"],
+                    "gate": document["determinism_gate"],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    if args.mode == "clips-v3-fallback-rank2":
+        schedule = json.loads(args.schedule.read_text())
+        document = build_v3_fallback_rank2_manifest(
+            schedule, args.result_root, args.output
+        )
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document[
+                        "qualitative_clip3_fallback_rank2_manifest_sha256"
+                    ],
+                    "fallback_rank": document["fallback_rank"],
+                    "clip": document["clip"],
+                    "gate": document["determinism_gate"],
                 },
                 indent=2,
                 sort_keys=True,

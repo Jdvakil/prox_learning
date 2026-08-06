@@ -1,13 +1,13 @@
 {
-  "bundle_manifest_sha256": "2015fc6f3cda0a2b09cf47bd059ee8eac02554e2924259d7c2c74cbd9eabbae9",
+  "bundle_manifest_sha256": "58bb1811f13a2ede28c8a9f09731bff373fb4428c8877e13ac9b324a16d47aa3",
   "bundle_root": "/root/pact_slideshow_bundle",
   "complete_matched_instance_pairs": 1,
   "determinism_dropped_clip_files": 1,
   "entries": [
     {
       "path": "INDEX.md",
-      "sha256": "32295f1744b7c7e7f03c49820b4995f19d058de86214de661bde72f6e0fdbbdc",
-      "size_bytes": 6318
+      "sha256": "5533e5ccf93726532f78788b4a8925ec7d6c81519ac68c7e4f1e44ab1518fe11",
+      "size_bytes": 6430
     },
     {
       "path": "KEY_NUMBERS.md",
@@ -21,8 +21,8 @@
     },
     {
       "path": "VIDEO_SHOT_LIST.md",
-      "sha256": "293a5c51254667306e550395b211a95cd1534a94672d60464c89c17d98d1963e",
-      "size_bytes": 2743
+      "sha256": "7db54bcd62101e253ee796c1af29bf79474781b2bbad9949f037dc2324cd9320",
+      "size_bytes": 3292
     },
     {
       "path": "data/analysis.json",
@@ -85,9 +85,19 @@
       "size_bytes": 11413
     },
     {
-      "path": "data/qualitative_act_success_rerender_attempt.json",
-      "sha256": "064562599b3e635b6d716c2e462730b35ab3c3473a6853231fe49a4a9a1bc37d",
-      "size_bytes": 5582
+      "path": "data/qualitative_clip3_fallback_manifest.json",
+      "sha256": "27605ed6fe0420f8fb89bb6bbbe0d781a7d8fee7427a7dcf6a73ba68c473ec41",
+      "size_bytes": 6766
+    },
+    {
+      "path": "data/qualitative_clip3_fallback_rank2_check.json",
+      "sha256": "4e32d56dcb62af0bf105da19901a2b1747be37d2081f1feed1c756c3acf10a15",
+      "size_bytes": 2771
+    },
+    {
+      "path": "data/qualitative_clip3_fallback_rank2_manifest.json",
+      "sha256": "394dc38685652e390e87bdb4ae718a6bf7d9ab28bea7e16682f862ed2bc6450f",
+      "size_bytes": 8276
     },
     {
       "path": "data/qualitative_clips_v2_manifest.json",
@@ -95,9 +105,9 @@
       "size_bytes": 21280
     },
     {
-      "path": "data/qualitative_recorded_act_success_supplement.json",
-      "sha256": "32faf2a3794d22d7f044bea5fe01b91207969e3030ce42e87bb5d62ef1b88d95",
-      "size_bytes": 4986
+      "path": "data/qualitative_clips_v3_manifest.json",
+      "sha256": "e5a772e3909d32eed6c399a9bc925ec5d23112fcdd6fd5ccc55cf39d2de5cc76",
+      "size_bytes": 11383
     },
     {
       "path": "data/qualitative_video_manifest.json",
@@ -316,8 +326,8 @@
     },
     {
       "path": "videos/matched_pairs/README.md",
-      "sha256": "ea3de0cf0d63663409f5d5249dcc461ce8fa6a73c425c811ec056dfc918106e6",
-      "size_bytes": 3059
+      "sha256": "7c8758c1a6d947bcedbcc6769e3a34a50cf78f3495a07a8bfc3de1aaaf18af71",
+      "size_bytes": 1903
     },
     {
       "path": "videos/matched_pairs/clip1_54a6272f66ca_pact_success.mp4",
@@ -330,9 +340,9 @@
       "size_bytes": 332863
     },
     {
-      "path": "videos/matched_pairs/clip3_5b4288fea187_act_success_wrist.mp4",
-      "sha256": "ab99a8c3f13f117fdae9d315d9ce0b5c6ede50f3c9413fdb3196ff95dee92cc7",
-      "size_bytes": 428745
+      "path": "videos/matched_pairs/clip3_178a8383cda2_act_success_s3101.mp4",
+      "sha256": "2a0d449cc08cf57dd121dba77034f63b62e76ca43a603e7860320fe882de554a",
+      "size_bytes": 465717
     },
     {
       "path": "videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4",
@@ -346,7 +356,7 @@
     }
   ],
   "extension_counts": {
-    ".json": 21,
+    ".json": 23,
     ".jsonl": 6,
     ".md": 14,
     ".mp4": 6,
@@ -360,14 +370,14 @@
   "matched_single_arm_clip_files": 3,
   "optional_figure_10": "omitted_no_frozen_source_field_and_no_new_analysis_allowed",
   "paired_video_files": 2,
-  "paired_video_release": "Three original presentation clips were retained and one original-recording ACT success was separately frozen, yielding four shipped videos. One complete ACT/PACT pair is available; the original Instance-B ACT clip remains dropped by the exact determinism gate. The frozen scientific qualitative record is unchanged.",
-  "presentation_only_rollout_rerenders": 5,
+  "paired_video_release": "Four presentation clips use a common third-person camera and 3.0x playback. Clips 1 and 2 form one genuine matched pair. Clips 3 and 4 are explicitly unpaired after both seed-3102 primary-pair rerenders failed the frozen v3 gate, fallback rank 1 also failed, and fallback rank 2 was used for clip 3. The frozen scientific qualitative record is unchanged.",
+  "presentation_only_rollout_rerenders": 9,
   "rollouts_or_training_performed": true,
   "schema_version": "pact_slideshow_bundle_manifest_v1",
   "scientific_artifacts_modified": false,
   "shipped_qualitative_single_arm_clip_files": 4,
   "supplemental_act_success_clip_files": 1,
-  "total_payload_size_bytes_excluding_manifest": 16352300,
+  "total_payload_size_bytes_excluding_manifest": 16407405,
   "training_performed": false,
   "unpaired_independent_probe_files": 0,
   "video_files": 6,
@@ -398,14 +408,14 @@
         "width": 624
       }
     },
-    "clip3_5b4288fea187_act_success_wrist": {
-      "path": "videos/matched_pairs/clip3_5b4288fea187_act_success_wrist.mp4",
-      "sha256": "ab99a8c3f13f117fdae9d315d9ce0b5c6ede50f3c9413fdb3196ff95dee92cc7",
-      "size_bytes": 428745,
+    "clip3_178a8383cda2_act_success_s3101": {
+      "path": "videos/matched_pairs/clip3_178a8383cda2_act_success_s3101.mp4",
+      "sha256": "2a0d449cc08cf57dd121dba77034f63b62e76ca43a603e7860320fe882de554a",
+      "size_bytes": 465717,
       "video": {
-        "avg_frame_rate": "303/20",
+        "avg_frame_rate": "1894/125",
         "codec_name": "h264",
-        "duration": "20.000000",
+        "duration": "19.997360",
         "height": 352,
         "nb_frames": "303",
         "width": 624

@@ -21,6 +21,18 @@ CLIPS_V2_ARTIFACT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+CLIPS_V3_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v3_manifest.json"
+)
+CLIP3_FALLBACK_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_manifest.json"
+)
+CLIP3_FALLBACK2_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_rank2_manifest.json"
+)
 ACT_SUCCESS_SUPPLEMENT_ARTIFACT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
@@ -182,6 +194,108 @@ def test_v2_overlay_renders_frozen_outcome_and_running_contact_count() -> None:
     assert observed.shape == frame.shape
     assert observed.dtype == np.uint8
     assert np.count_nonzero(observed) > 0
+
+
+def test_v3_manifest_honestly_drops_seed3102_pair_under_frozen_gate() -> None:
+    document = json.loads(CLIPS_V3_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("qualitative_clips_v3_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "presentation_release_incomplete_gate_drop"
+    assert document["selection_and_gate_frozen_manifest_sha256"] == (
+        "4d0440f0feef4b2c39bdf1ca5e81da5d5402e9891cfd680f3bd6c936ca092b26"
+    )
+    gate = document["determinism_gate"]
+    assert gate["declared_before_render"] is True
+    assert gate["task_success"] == {"comparison": "exact"}
+    assert gate["first_hazard_bar_contact_step"] == {"comparison": "exact"}
+    assert gate["first_grasp_target_contact_step"]["tolerance_steps"] == 2
+    assert gate["contact_pair_sample_counts"]["comparison"] == (
+        "informational_only"
+    )
+    clips = document["clips"]
+    assert [(clip["arm"], clip["checkpoint_seed"]) for clip in clips] == [
+        ("ACT", 3102),
+        ("PACT", 3102),
+    ]
+    assert len({clip["episode_id"] for clip in clips}) == 1
+    assert [clip["hazard_frames"] for clip in clips] == [18447, 14675]
+    assert [clip["grasp_target_frames"] for clip in clips] == [24923, 809]
+    assert [clip["task_success"] for clip in clips] == [True, False]
+    summary = document["determinism_summary"]
+    assert summary["declared_gate_failed"] == 2
+    assert summary["all_clips_retained"] is False
+    assert len(document["render_outputs"]) == 0
+    for check in summary["per_clip_checks"].values():
+        assert check["declared_gate_passed"] is False
+        comparisons = check["required_gate_comparisons"]
+        assert comparisons["first_hazard_bar_contact_step"]["passed"] is False
+        assert comparisons["first_grasp_target_contact_step"]["passed"] is True
+
+
+def test_clip3_fallback_rank1_is_dropped_by_exact_hazard_gate() -> None:
+    document = json.loads(CLIP3_FALLBACK_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("qualitative_clip3_fallback_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "fallback_rank1_dropped_gate_failure"
+    assert document["selection_and_gate_frozen_manifest_sha256"] == (
+        "1a2bd102f6aa081a04dead53a6e36b1456fff48f218b1d59d5006971fb9042e8"
+    )
+    assert document["fallback_rank"] == 1
+    assert document["pairing_claim_allowed"] is False
+    clip = document["clip"]
+    assert clip["clip_id"] == "clip3_3fe3a173f2bf_act_success_s3103"
+    assert clip["source_directory"] == "1133_c39a3a8fdd8c6ae4_act_s3103"
+    assert clip["hazard_frames"] == 16739
+    assert clip["grasp_target_frames"] == 25126
+    assert clip["task_success"] is True
+    check = document["determinism_check"]
+    assert check["declared_gate_passed"] is False
+    comparisons = check["required_gate_comparisons"]
+    assert comparisons["task_success"]["passed"] is True
+    assert comparisons["first_hazard_bar_contact_step"]["original"] == 393
+    assert comparisons["first_hazard_bar_contact_step"]["rerun"] == 392
+    assert comparisons["first_hazard_bar_contact_step"]["passed"] is False
+    assert comparisons["first_grasp_target_contact_step"]["passed"] is True
+    assert document["render_output"] is None
+
+
+def test_clip3_fallback_rank2_passes_and_drops_pairing_claim() -> None:
+    document = json.loads(CLIP3_FALLBACK2_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("qualitative_clip3_fallback_rank2_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "presentation_release_verified_unmatched_fallback"
+    assert document["selection_and_gate_frozen_manifest_sha256"] == (
+        "ab299127500652285b3b32db4128ee04f6c73dd9f5e2dd795719e599a6b436b3"
+    )
+    assert document["fallback_rank"] == 2
+    assert document["pairing_claim_allowed"] is False
+    clip = document["clip"]
+    assert clip["clip_id"] == "clip3_178a8383cda2_act_success_s3101"
+    assert clip["source_directory"] == "0282_dfbef2c46b0cf55b_act_s3101"
+    assert clip["hazard_frames"] == 12087
+    assert clip["grasp_target_frames"] == 24686
+    assert clip["task_success"] is True
+    check = document["determinism_check"]
+    assert check["declared_gate_passed"] is True
+    comparisons = check["required_gate_comparisons"]
+    assert comparisons["task_success"]["passed"] is True
+    assert comparisons["first_hazard_bar_contact_step"]["passed"] is True
+    assert comparisons["first_grasp_target_contact_step"]["passed"] is True
+    check_document = json.loads(
+        Path(document["render_output"]["determinism_check_path"]).read_text()
+    )
+    assert check_document["informational_contact_frame_deltas"]["hazard_bar"] == {
+        "original": 12087,
+        "rerun": 12140,
+        "signed_delta": 53,
+    }
+    duration = float(
+        document["render_output"]["release_ffprobe"]["format"]["duration"]
+    )
+    assert 15.0 <= duration <= 25.0
 
 
 def test_contact_endpoint_act_success_attempt_is_honestly_dropped() -> None:

@@ -33,7 +33,7 @@ def test_committed_manifest_is_self_hashed_and_records_presentation_rerenders() 
     assert document["scientific_artifacts_modified"] is False
     assert document["gpu_work_performed"] is True
     assert document["rollouts_or_training_performed"] is True
-    assert document["presentation_only_rollout_rerenders"] == 5
+    assert document["presentation_only_rollout_rerenders"] == 9
     assert document["training_performed"] is False
 
 
@@ -41,7 +41,7 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
     document = load_manifest()
     entries = document["entries"]
     paths = [entry["path"] for entry in entries]
-    assert len(paths) == len(set(paths)) == 68
+    assert len(paths) == len(set(paths)) == 70
     assert document["figure_concepts"] == 10
     assert document["figure_files"] == 20
     assert document["video_files"] == 6
@@ -52,7 +52,7 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
     assert document["complete_matched_instance_pairs"] == 1
     assert document["determinism_dropped_clip_files"] == 1
     assert document["unpaired_independent_probe_files"] == 0
-    assert "original-recording ACT success" in document["paired_video_release"]
+    assert "explicitly unpaired" in document["paired_video_release"]
     assert document["optional_figure_10"] == (
         "omitted_no_frozen_source_field_and_no_new_analysis_allowed"
     )
@@ -74,12 +74,14 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
         "data/tail_characterization.json",
         "data/qualitative_video_manifest.json",
         "data/qualitative_clips_v2_manifest.json",
-        "data/qualitative_act_success_rerender_attempt.json",
-        "data/qualitative_recorded_act_success_supplement.json",
+        "data/qualitative_clips_v3_manifest.json",
+        "data/qualitative_clip3_fallback_manifest.json",
+        "data/qualitative_clip3_fallback_rank2_manifest.json",
+        "data/qualitative_clip3_fallback_rank2_check.json",
         "videos/matched_pairs/README.md",
         "videos/matched_pairs/clip1_54a6272f66ca_pact_success.mp4",
         "videos/matched_pairs/clip2_54a6272f66ca_act_failure.mp4",
-        "videos/matched_pairs/clip3_5b4288fea187_act_success_wrist.mp4",
+        "videos/matched_pairs/clip3_178a8383cda2_act_success_s3101.mp4",
         "videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4",
         "videos/sensor_heatmap/sensor_heatmap_40_skin_streams.mp4",
         "videos/expert_demo/expert_clean_demo_wrist_view.mp4",
@@ -120,14 +122,17 @@ def test_external_bundle_preserves_sources_and_frozen_states() -> None:
         (BUNDLE / "data/qualitative_clips_v2_manifest.json").read_text()
     )["status"] == "presentation_release_incomplete_determinism_drop"
     assert json.loads(
-        (BUNDLE / "data/qualitative_act_success_rerender_attempt.json").read_text()
-    )["status"] == "dropped_determinism_mismatch"
+        (BUNDLE / "data/qualitative_clips_v3_manifest.json").read_text()
+    )["status"] == "presentation_release_incomplete_gate_drop"
+    assert json.loads(
+        (BUNDLE / "data/qualitative_clip3_fallback_manifest.json").read_text()
+    )["status"] == "fallback_rank1_dropped_gate_failure"
     assert json.loads(
         (
             BUNDLE
-            / "data/qualitative_recorded_act_success_supplement.json"
+            / "data/qualitative_clip3_fallback_rank2_manifest.json"
         ).read_text()
-    )["status"] == "presentation_release_verified_original_recording"
+    )["status"] == "presentation_release_verified_unmatched_fallback"
 
 
 @pytest.mark.skipif(not BUNDLE.is_dir(), reason="external slideshow bundle absent")
@@ -146,10 +151,12 @@ def test_external_figures_are_exact_16_by_9_and_caveats_are_present() -> None:
     assert "task success directionally positive, not confirmed" in index
     assert "not modality evidence" in key_numbers
     assert "directionally positive but **not confirmed**" in one_page
-    assert "Instance A shares episode" in matched_readme
-    assert "Supplemental ACT success" in matched_readme
-    assert "clip3_5b4288fea187_act_success_wrist.mp4" in shot_list
+    assert "Instance A — episode" in matched_readme
+    assert "Unpaired ACT scraping success" in matched_readme
+    assert "clip3_178a8383cda2_act_success_s3101.mp4" in shot_list
     assert "clip4_e99dc657bfa7_pact_failure.mp4" in shot_list
-    assert "originally selected Instance-B ACT success remains dropped" in shot_list
+    assert "front-end-screen wrist-camera ACT success was retired" in shot_list
+    assert "absolute delta ≤2 steps" in shot_list
+    assert "must not be described as a pair" in shot_list
     assert "maximum hazard penetration, when available" in shot_list
     assert "Separate hybrid-skin safety/CVAE work" in shot_list

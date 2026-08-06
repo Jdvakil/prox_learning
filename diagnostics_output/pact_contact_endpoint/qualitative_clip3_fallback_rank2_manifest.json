@@ -1,0 +1,218 @@
+{
+  "camera_contract_observed": {
+    "camera_offset_m": [
+      -1.05,
+      -0.55,
+      1.3
+    ],
+    "camera_reference_body": "robot_0/fr3_link0",
+    "fps": 15.151515151515152,
+    "lookat_offset_m": [
+      0.55,
+      0.0,
+      0.45
+    ],
+    "playback_speed_factor": 3.0,
+    "resolution_width_height": [
+      624,
+      352
+    ]
+  },
+  "clip": {
+    "arm": "ACT",
+    "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+    "checkpoint_seed": 3101,
+    "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+    "clip_id": "clip3_178a8383cda2_act_success_s3101",
+    "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+    "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+    "episode_id": "178a8383cda28da99d539d84364aa6cb758943bb51b8230b49627cf5cb6f63b4",
+    "first_grasp_target_contact_step": 119,
+    "first_hazard_contact_step": 137,
+    "grasp_target_frames": 24686,
+    "hazard_frames": 12087,
+    "intrusion_side": "right",
+    "original_outcome": {
+      "collision_free_task_success": false,
+      "first_contact_step": {
+        "grasp_target": 119,
+        "hazard_bar": 137,
+        "other_environment": null
+      },
+      "grasp_target_frames": 24686,
+      "hazard_contact": true,
+      "hazard_contact_pair_samples": 12140,
+      "hazard_frames": 12087,
+      "maximum_hazard_penetration_depth_m": 0.0006318572048794879,
+      "task_success": true
+    },
+    "original_result_path": "/root/pact_contact_endpoint_artifacts/evaluation_v1/rows/0282_dfbef2c46b0cf55b_act_s3101/result.json",
+    "original_result_sha256": "9f4a30d8f8fe7340290ec0f09da096b70bbcf2f12b339668819203d8b4bc79b7",
+    "rollout_id": "dfbef2c46b0cf55b221238fdd05bb2d1d3afd613e7646917634c8f0504d5dd26",
+    "schedule_index": 282,
+    "schedule_row_sha256": "862df0672be9ffee947c59fadd04a39ec9ecde312ebd6a38d9cc519b47030a19",
+    "source_directory": "0282_dfbef2c46b0cf55b_act_s3101",
+    "surface_encoder_path": null,
+    "surface_encoder_sha256": null,
+    "task_success": true
+  },
+  "decision_bearing": false,
+  "determinism_check": {
+    "declared_gate_passed": true,
+    "informational_contact_pair_sample_deltas": {
+      "grasp_target": {
+        "original": 167858,
+        "rerun": 187131,
+        "signed_delta": 19273
+      },
+      "hazard_bar": {
+        "original": 12140,
+        "rerun": 12193,
+        "signed_delta": 53
+      },
+      "other_environment": {
+        "original": 0,
+        "rerun": 0,
+        "signed_delta": 0
+      }
+    },
+    "path": "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2/checks/clip3_178a8383cda2_act_success_s3101.json",
+    "required_gate_comparisons": {
+      "first_grasp_target_contact_step": {
+        "absolute_delta_steps": 0,
+        "original": 119,
+        "passed": true,
+        "requirement": "absolute step delta <= 2",
+        "rerun": 119,
+        "signed_delta_steps": 0,
+        "tolerance_steps": 2
+      },
+      "first_hazard_bar_contact_step": {
+        "original": 137,
+        "passed": true,
+        "requirement": "exact",
+        "rerun": 137
+      },
+      "manipulation_success": {
+        "original": true,
+        "passed": true,
+        "requirement": "exact (represented by task_success)",
+        "rerun": true
+      },
+      "task_success": {
+        "original": true,
+        "passed": true,
+        "requirement": "exact",
+        "rerun": true
+      }
+    },
+    "sha256": "e44e363572093b5ecaa3939d4d1a5cae8b296294b5c5c8dda02949218ef4b3e9"
+  },
+  "determinism_gate": {
+    "contact_pair_sample_counts": {
+      "comparison": "informational_only",
+      "record_delta": true
+    },
+    "declared_before_render": true,
+    "first_grasp_target_contact_step": {
+      "comparison": "absolute_step_delta_lte",
+      "rationale": "the published caption claims exact hazard first-contact, not exact target first-contact",
+      "tolerance_steps": 2
+    },
+    "first_hazard_bar_contact_step": {
+      "comparison": "exact"
+    },
+    "manipulation_success": {
+      "comparison": "exact",
+      "represented_by": "task_success"
+    },
+    "on_breach": "drop_clip_without_retry",
+    "relaxation_scope": "grasp_target first-contact step only",
+    "task_success": {
+      "comparison": "exact"
+    }
+  },
+  "fallback_rank": 2,
+  "pairing_claim_allowed": false,
+  "presentation_release": true,
+  "qualitative_clip3_fallback_rank2_manifest_sha256": "0b85beb7a58fd7e815e3f9335bea285a972e45df21f391c1e14b978aa9c0ad9a",
+  "remaining_fallback_order_on_gate_failure": [
+    {
+      "rank": 3,
+      "rule": "among the 159 clean contact-endpoint ACT successes, choose the lowest schedule_index"
+    }
+  ],
+  "render_contract": {
+    "camera_pose_identical_to_clips_1_2_4_v2": true,
+    "camera_type": "MuJoCo free camera, offscreen render only",
+    "expected_release_duration_seconds": 19.821366,
+    "overlay_fields": [
+      "policy arm and checkpoint seed",
+      "episode ID first 12 characters",
+      "task success yes/no",
+      "any hazard contact yes/no",
+      "hazard-contact frames running cumulative",
+      "maximum hazard penetration",
+      "constant playback speed factor"
+    ],
+    "playback_speed_factor": 3.0,
+    "policy_camera_names": [
+      "wrist_camera"
+    ],
+    "raw_fps": 15.151515151515152,
+    "raw_frames": 901,
+    "registered_sensor_or_observation_camera": false,
+    "resolution_width_height": [
+      624,
+      352
+    ]
+  },
+  "render_output": {
+    "determinism_check_path": "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2/checks/clip3_178a8383cda2_act_success_s3101.json",
+    "determinism_check_sha256": "e44e363572093b5ecaa3939d4d1a5cae8b296294b5c5c8dda02949218ef4b3e9",
+    "raw_video_path": "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2/raw/clip3_178a8383cda2_act_success_s3101.mp4",
+    "raw_video_sha256": "ecce37f0ba78b21edea2a2c46fea632e6fd5ff610dd597c166849890b854d0ab",
+    "release_ffprobe": {
+      "format": {
+        "bit_rate": "186311",
+        "duration": "19.997360",
+        "size": "465717"
+      },
+      "programs": [],
+      "streams": [
+        {
+          "avg_frame_rate": "1894/125",
+          "codec_name": "h264",
+          "duration": "19.997360",
+          "height": 352,
+          "nb_frames": "303",
+          "width": 624
+        }
+      ]
+    },
+    "release_video_path": "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2/release/clip3_178a8383cda2_act_success_s3101.mp4",
+    "release_video_sha256": "2a0d449cc08cf57dd121dba77034f63b62e76ca43a603e7860320fe882de554a",
+    "rerun_result_path": "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2/rerun/clip3_178a8383cda2_act_success_s3101/result.json",
+    "rerun_result_sha256": "45b38dac390e3bd37ad98f1634c1b72d849d7935168b9aaf8e77cf140f3ef7a2"
+  },
+  "rendered_at_utc": "2026-08-06T19:35:59.797384Z",
+  "schema_version": "pact_qualitative_clip3_fallback_rank2_manifest_v1",
+  "selection_and_gate_frozen_manifest_sha256": "ab299127500652285b3b32db4128ee04f6c73dd9f5e2dd795719e599a6b436b3",
+  "selection_frozen_at_utc": "2026-08-06T19:23:05.697741+00:00",
+  "selection_rule": "use the second predeclared fallback after the matched seed-3102 pair and fallback rank 1 failed the frozen gate",
+  "selection_viewing_before_freeze": false,
+  "sources": {
+    "failed_fallback_rank1_manifest": {
+      "file_sha256": "27605ed6fe0420f8fb89bb6bbbe0d781a7d8fee7427a7dcf6a73ba68c473ec41",
+      "manifest_sha256": "c172d5db27c2c1b56e1d894deb66793b45fde08c07931ac62c7b8aa3db1dcc9b",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_manifest.json"
+    },
+    "result_root": "/root/pact_contact_endpoint_artifacts/evaluation_v1",
+    "schedule": {
+      "file_sha256": "3079c04ee806a535153675c8cb218d1969cc94b95c0e48940c768e4c79cb0dae",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/schedule.json",
+      "schedule_sha256": "f9451f5b58b3fb4cc4c4fe75f69f7ecea674a78cca0b66bbb954993696402fc2"
+    }
+  },
+  "status": "presentation_release_verified_unmatched_fallback"
+}

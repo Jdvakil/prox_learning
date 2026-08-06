@@ -25,6 +25,18 @@ QUALITATIVE_CLIPS_V2_MANIFEST = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+QUALITATIVE_CLIPS_V3_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v3_manifest.json"
+)
+QUALITATIVE_CLIP3_FALLBACK_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_manifest.json"
+)
+QUALITATIVE_CLIP3_FALLBACK2_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clip3_fallback_rank2_manifest.json"
+)
 ACT_SUCCESS_SUPPLEMENT_MANIFEST = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
@@ -35,6 +47,13 @@ RECORDED_ACT_SUCCESS_MANIFEST = (
 )
 VIDEO_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_videos")
 CLIPS_V2_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_clips_v2")
+CLIPS_V3_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_clips_v3")
+CLIP3_FALLBACK_ROOT = Path(
+    "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback"
+)
+CLIP3_FALLBACK2_ROOT = Path(
+    "/root/pact_contact_endpoint_artifacts/qualitative_clip3_fallback_rank2"
+)
 ACT_SUCCESS_SUPPLEMENT_ROOT = Path(
     "/root/pact_contact_endpoint_artifacts/qualitative_act_success_supplement"
 )
@@ -120,6 +139,77 @@ def load_clips_v2_documents() -> tuple[dict[str, Any], dict[str, Any]]:
     if schedule_observed != qualitative["sources"]["schedule"]["schedule_sha256"]:
         raise RuntimeError("qualitative clips v2 references a different schedule")
     return qualitative, schedule
+
+
+def load_clips_v3_documents() -> tuple[dict[str, Any], dict[str, Any]]:
+    qualitative = json.loads(QUALITATIVE_CLIPS_V3_MANIFEST.read_text())
+    payload = dict(qualitative)
+    observed = payload.pop("qualitative_clips_v3_manifest_sha256", None)
+    if observed != canonical_hash(payload):
+        raise RuntimeError("qualitative clips v3 manifest self-hash mismatch")
+    if qualitative.get("status") != "selection_and_gate_frozen_pre_render":
+        raise RuntimeError("qualitative clips v3 selection/gate is not frozen")
+    gate = qualitative["determinism_gate"]
+    expected_gate = {
+        "task_success": {"comparison": "exact"},
+        "manipulation_success": {
+            "comparison": "exact",
+            "represented_by": "task_success",
+        },
+        "first_hazard_bar_contact_step": {"comparison": "exact"},
+        "first_grasp_target_contact_step": {
+            "comparison": "absolute_step_delta_lte",
+            "tolerance_steps": 2,
+            "rationale": (
+                "the published caption claims exact hazard first-contact, not exact "
+                "target first-contact"
+            ),
+        },
+        "contact_pair_sample_counts": {
+            "comparison": "informational_only",
+            "record_delta": True,
+        },
+        "declared_before_render": True,
+        "on_breach": "drop_clip_without_retry",
+        "relaxation_scope": "grasp_target first-contact step only",
+    }
+    if gate != expected_gate:
+        raise RuntimeError("qualitative clips v3 determinism gate changed")
+    schedule = json.loads(SCHEDULE.read_text())
+    schedule_payload = dict(schedule)
+    schedule_observed = schedule_payload.pop("schedule_sha256", None)
+    if schedule_observed != canonical_hash(schedule_payload):
+        raise RuntimeError("contact schedule self-hash mismatch")
+    if schedule_observed != qualitative["sources"]["schedule"]["schedule_sha256"]:
+        raise RuntimeError("qualitative clips v3 references a different schedule")
+    return qualitative, schedule
+
+
+def load_clip3_fallback_documents(
+    *,
+    manifest_path: Path = QUALITATIVE_CLIP3_FALLBACK_MANIFEST,
+    hash_key: str = "qualitative_clip3_fallback_manifest_sha256",
+    fallback_rank: int = 1,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    fallback = json.loads(manifest_path.read_text())
+    payload = dict(fallback)
+    observed = payload.pop(hash_key, None)
+    if observed != canonical_hash(payload):
+        raise RuntimeError("clip-3 fallback manifest self-hash mismatch")
+    if fallback.get("status") != "selection_and_gate_frozen_pre_render":
+        raise RuntimeError("clip-3 fallback selection/gate is not frozen")
+    if fallback.get("fallback_rank") != fallback_rank:
+        raise RuntimeError(
+            f"clip-3 fallback is not the predeclared rank-{fallback_rank} row"
+        )
+    schedule = json.loads(SCHEDULE.read_text())
+    schedule_payload = dict(schedule)
+    schedule_observed = schedule_payload.pop("schedule_sha256", None)
+    if schedule_observed != canonical_hash(schedule_payload):
+        raise RuntimeError("contact schedule self-hash mismatch")
+    if schedule_observed != fallback["sources"]["schedule"]["schedule_sha256"]:
+        raise RuntimeError("clip-3 fallback references a different schedule")
+    return fallback, schedule
 
 
 def load_act_success_supplement() -> tuple[dict[str, Any], dict[str, Any]]:
@@ -287,6 +377,93 @@ def selected_clips_v2_jobs(
     if len({job["clip_id"] for job in jobs}) != len(jobs):
         raise RuntimeError("v2 clip IDs are not unique")
     return jobs
+
+
+def selected_clips_v3_jobs(
+    qualitative: dict[str, Any], schedule: dict[str, Any]
+) -> list[dict[str, Any]]:
+    rows = {int(row["schedule_index"]): row for row in schedule["rows"]}
+    jobs = []
+    for clip in qualitative["clips"]:
+        row = rows[int(clip["schedule_index"])]
+        checks = {
+            "arm": clip["arm"],
+            "instance_episode_id": clip["episode_id"],
+            "checkpoint_seed": clip["checkpoint_seed"],
+            "rollout_id": clip["rollout_id"],
+            "schedule_row_sha256": clip["schedule_row_sha256"],
+            "checkpoint_sha256": clip["checkpoint_sha256"],
+            "dataset_stats_sha256": clip["dataset_stats_sha256"],
+        }
+        observed = {key: row.get(key) for key in checks}
+        if observed != checks:
+            raise RuntimeError(f"v3 manifest/schedule mismatch for {clip['clip_id']}")
+        clip_id = str(clip["clip_id"])
+        jobs.append(
+            {
+                "clip": clip,
+                "clip_id": clip_id,
+                "episode_id": clip["episode_id"],
+                "policy_seed": int(clip["checkpoint_seed"]),
+                "arm": clip["arm"],
+                "row": row,
+                "gate_manifest_sha256": qualitative[
+                    "qualitative_clips_v3_manifest_sha256"
+                ],
+                "output_dir": CLIPS_V3_ROOT / "reruns" / clip_id,
+                "video_output": CLIPS_V3_ROOT / "raw" / f"{clip_id}.mp4",
+                "release_output": CLIPS_V3_ROOT / "release" / f"{clip_id}.mp4",
+                "check_path": CLIPS_V3_ROOT / "checks" / f"{clip_id}.json",
+                "log_path": CLIPS_V3_ROOT / "logs" / f"{clip_id}.log",
+            }
+        )
+    if len(jobs) != 2:
+        raise RuntimeError(f"selected v3 clip count {len(jobs)} != 2")
+    pair_keys = {(job["episode_id"], job["policy_seed"]) for job in jobs}
+    if len(pair_keys) != 1 or {job["arm"] for job in jobs} != {"ACT", "PACT"}:
+        raise RuntimeError("v3 jobs do not form one matched ACT/PACT pair")
+    return jobs
+
+
+def selected_clip3_fallback_job(
+    fallback: dict[str, Any],
+    schedule: dict[str, Any],
+    *,
+    artifact_root: Path = CLIP3_FALLBACK_ROOT,
+    hash_key: str = "qualitative_clip3_fallback_manifest_sha256",
+) -> dict[str, Any]:
+    clip = fallback["clip"]
+    row = next(
+        row
+        for row in schedule["rows"]
+        if int(row["schedule_index"]) == int(clip["schedule_index"])
+    )
+    checks = {
+        "arm": clip["arm"],
+        "instance_episode_id": clip["episode_id"],
+        "checkpoint_seed": clip["checkpoint_seed"],
+        "rollout_id": clip["rollout_id"],
+        "schedule_row_sha256": clip["schedule_row_sha256"],
+        "checkpoint_sha256": clip["checkpoint_sha256"],
+        "dataset_stats_sha256": clip["dataset_stats_sha256"],
+    }
+    if {key: row.get(key) for key in checks} != checks:
+        raise RuntimeError("clip-3 fallback manifest/schedule mismatch")
+    clip_id = clip["clip_id"]
+    return {
+        "clip": clip,
+        "clip_id": clip_id,
+        "episode_id": clip["episode_id"],
+        "policy_seed": int(clip["checkpoint_seed"]),
+        "arm": clip["arm"],
+        "row": row,
+        "gate_manifest_sha256": fallback[hash_key],
+        "output_dir": artifact_root / "rerun" / clip_id,
+        "video_output": artifact_root / "raw" / f"{clip_id}.mp4",
+        "release_output": artifact_root / "release" / f"{clip_id}.mp4",
+        "check_path": artifact_root / "checks" / f"{clip_id}.json",
+        "log_path": artifact_root / "logs" / f"{clip_id}.log",
+    }
 
 
 def act_success_supplement_job(
@@ -599,6 +776,111 @@ def clips_v2_determinism_comparison(job: dict[str, Any]) -> dict[str, Any]:
         },
         "required_exact_match": passed,
         "release_action": "retain_clip" if passed else "drop_clip",
+    }
+    write_json(job["check_path"], document, "determinism_check_sha256")
+    return document
+
+
+def clips_v3_determinism_comparison(job: dict[str, Any]) -> dict[str, Any]:
+    original_path = Path(job["clip"]["original_result_path"])
+    rerun_path = job["output_dir"] / "result.json"
+    original = json.loads(original_path.read_text())
+    rerun = json.loads(rerun_path.read_text())
+    original_first = original["contact_audit"]["first_contact_step"]
+    rerun_first = rerun["contact_audit"]["first_contact_step"]
+    original_target = original_first["grasp_target"]
+    rerun_target = rerun_first["grasp_target"]
+    target_delta = (
+        0
+        if original_target is None and rerun_target is None
+        else None
+        if original_target is None or rerun_target is None
+        else int(rerun_target) - int(original_target)
+    )
+    target_passed = target_delta is not None and abs(target_delta) <= 2
+    comparisons = {
+        "task_success": {
+            "requirement": "exact",
+            "original": original["task_success"],
+            "rerun": rerun["task_success"],
+            "passed": original["task_success"] == rerun["task_success"],
+        },
+        "manipulation_success": {
+            "requirement": "exact (represented by task_success)",
+            "original": original["task_success"],
+            "rerun": rerun["task_success"],
+            "passed": original["task_success"] == rerun["task_success"],
+        },
+        "first_hazard_bar_contact_step": {
+            "requirement": "exact",
+            "original": original_first["hazard_bar"],
+            "rerun": rerun_first["hazard_bar"],
+            "passed": original_first["hazard_bar"] == rerun_first["hazard_bar"],
+        },
+        "first_grasp_target_contact_step": {
+            "requirement": "absolute step delta <= 2",
+            "tolerance_steps": 2,
+            "original": original_target,
+            "rerun": rerun_target,
+            "signed_delta_steps": target_delta,
+            "absolute_delta_steps": (
+                None if target_delta is None else abs(target_delta)
+            ),
+            "passed": target_passed,
+        },
+    }
+    passed = all(item["passed"] for item in comparisons.values())
+    original_audit = original["contact_audit"]
+    rerun_audit = rerun["contact_audit"]
+    contact_pair_deltas = {
+        contact_class: {
+            "original": int(original_audit["contact_class_totals"][contact_class]),
+            "rerun": int(rerun_audit["contact_class_totals"][contact_class]),
+            "signed_delta": int(rerun_audit["contact_class_totals"][contact_class])
+            - int(original_audit["contact_class_totals"][contact_class]),
+        }
+        for contact_class in ("grasp_target", "hazard_bar", "other_environment")
+    }
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_clips_determinism_v3",
+        "status": "passed_declared_gate" if passed else "failed_drop_clip",
+        "checked_at_utc": utc_now(),
+        "gate_declared_manifest_sha256": job["gate_manifest_sha256"],
+        "camera_render_only": True,
+        "clip_id": job["clip_id"],
+        "episode_id": job["episode_id"],
+        "policy_seed": job["policy_seed"],
+        "arm": job["arm"],
+        "schedule_index": int(job["row"]["schedule_index"]),
+        "original_result": {
+            "path": str(original_path.resolve()),
+            "sha256": file_hash(original_path),
+        },
+        "rerun_result": {
+            "path": str(rerun_path.resolve()),
+            "sha256": file_hash(rerun_path),
+        },
+        "raw_video": {
+            "path": str(job["video_output"].resolve()),
+            "sha256": file_hash(job["video_output"]),
+        },
+        "required_gate_comparisons": comparisons,
+        "informational_contact_pair_sample_deltas": contact_pair_deltas,
+        "informational_contact_frame_deltas": {
+            contact_class: {
+                "original": int(original_audit["frames_with_contact"][contact_class]),
+                "rerun": int(rerun_audit["frames_with_contact"][contact_class]),
+                "signed_delta": int(rerun_audit["frames_with_contact"][contact_class])
+                - int(original_audit["frames_with_contact"][contact_class]),
+            }
+            for contact_class in (
+                "grasp_target",
+                "hazard_bar",
+                "other_environment",
+            )
+        },
+        "declared_gate_passed": passed,
+        "release_action": "retain_clip" if passed else "drop_clip_without_retry",
     }
     write_json(job["check_path"], document, "determinism_check_sha256")
     return document
@@ -1189,6 +1471,280 @@ def run_clips_v2(
     return 0 if not mismatches else 2
 
 
+def finalize_clips_v3_manifest(
+    qualitative: dict[str, Any],
+    jobs: list[dict[str, Any]],
+    checks: dict[str, dict[str, Any]],
+    probes: dict[str, dict[str, Any]],
+) -> None:
+    frozen_hash = qualitative["qualitative_clips_v3_manifest_sha256"]
+    retained_jobs = [job for job in jobs if job["clip_id"] in probes]
+    camera_contracts = []
+    outputs = []
+    for job in retained_jobs:
+        result_path = job["output_dir"] / "result.json"
+        result = json.loads(result_path.read_text())
+        render = result["policy_info"]["qualitative_render"]
+        camera_contracts.append(
+            {
+                "camera_reference_body": render["camera_reference_body"],
+                "camera_offset_m": render["camera_offset_m"],
+                "lookat_offset_m": render["lookat_offset_m"],
+                "resolution_width_height": render["resolution_width_height"],
+                "fps": render["fps"],
+                "playback_speed_factor": render["playback_speed_factor"],
+            }
+        )
+        outputs.append(
+            {
+                "clip_id": job["clip_id"],
+                "rerun_result_path": str(result_path.resolve()),
+                "rerun_result_sha256": file_hash(result_path),
+                "raw_video_path": str(job["video_output"].resolve()),
+                "raw_video_sha256": file_hash(job["video_output"]),
+                "release_video_path": str(job["release_output"].resolve()),
+                "release_video_sha256": file_hash(job["release_output"]),
+                "release_ffprobe": probes[job["clip_id"]],
+                "determinism_check_path": str(job["check_path"].resolve()),
+                "determinism_check_sha256": checks[job["clip_id"]][
+                    "determinism_check_sha256"
+                ],
+            }
+        )
+    if camera_contracts and any(
+        contract != camera_contracts[0] for contract in camera_contracts[1:]
+    ):
+        raise RuntimeError("camera pose or playback contract differs across v3 clips")
+    if camera_contracts:
+        v2 = json.loads(QUALITATIVE_CLIPS_V2_MANIFEST.read_text())
+        if camera_contracts[0] != v2["camera_contract_observed"]:
+            raise RuntimeError("v3 camera/playback contract differs from v2 release")
+    dropped = [
+        clip_id
+        for clip_id, check in checks.items()
+        if check["declared_gate_passed"] is not True
+    ]
+    qualitative["status"] = (
+        "presentation_release_verified"
+        if not dropped
+        else "presentation_release_incomplete_gate_drop"
+    )
+    qualitative["rendered_at_utc"] = utc_now()
+    qualitative["selection_and_gate_frozen_manifest_sha256"] = frozen_hash
+    qualitative["determinism_summary"] = {
+        "declared_gate_passed": len(checks) - len(dropped),
+        "declared_gate_failed": len(dropped),
+        "all_clips_retained": not dropped,
+        "retained_clip_ids": [job["clip_id"] for job in retained_jobs],
+        "dropped_clip_ids": dropped,
+        "per_clip_checks": {
+            clip_id: {
+                "sha256": check["determinism_check_sha256"],
+                "declared_gate_passed": check["declared_gate_passed"],
+                "required_gate_comparisons": check[
+                    "required_gate_comparisons"
+                ],
+                "informational_contact_pair_sample_deltas": check[
+                    "informational_contact_pair_sample_deltas"
+                ],
+            }
+            for clip_id, check in checks.items()
+        },
+    }
+    qualitative["camera_contract_observed"] = (
+        camera_contracts[0] if camera_contracts else None
+    )
+    qualitative["render_outputs"] = outputs
+    write_json(
+        QUALITATIVE_CLIPS_V3_MANIFEST,
+        qualitative,
+        "qualitative_clips_v3_manifest_sha256",
+    )
+
+
+def run_clips_v3(
+    qualitative: dict[str, Any], jobs: list[dict[str, Any]]
+) -> int:
+    for job in jobs:
+        ensure_new_clips_v2_job(job)
+    pending = list(jobs)
+    active: list[tuple[dict[str, Any], subprocess.Popen[Any], Any]] = []
+    failure: str | None = None
+    while pending or active:
+        while pending and len(active) < WORKERS and failure is None:
+            job = pending.pop(0)
+            log = job["log_path"].open("w")
+            process = subprocess.Popen(
+                command_for_clips_v2(job),
+                cwd=ROOT / "submodules/act",
+                env=runtime_env(),
+                stdout=log,
+                stderr=subprocess.STDOUT,
+            )
+            active.append((job, process, log))
+            print(
+                json.dumps(
+                    {
+                        "event": "launched_v3",
+                        "clip_id": job["clip_id"],
+                        "arm": job["arm"],
+                        "pid": process.pid,
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+        for item in list(active):
+            job, process, log = item
+            returncode = process.poll()
+            if returncode is None:
+                continue
+            log.close()
+            active.remove(item)
+            if returncode != 0:
+                failure = (
+                    f"{job['clip_id']} exited {returncode}; see {job['log_path']}"
+                )
+            else:
+                validate_completed_clips_v2_job(job)
+                print(
+                    json.dumps(
+                        {"event": "completed_v3", "clip_id": job["clip_id"]},
+                        sort_keys=True,
+                    ),
+                    flush=True,
+                )
+        if failure is not None:
+            for _job, process, log in active:
+                if process.poll() is None:
+                    process.terminate()
+                log.close()
+            raise RuntimeError(failure)
+        time.sleep(0.25)
+
+    checks = {
+        job["clip_id"]: clips_v3_determinism_comparison(job) for job in jobs
+    }
+    retained_jobs = [
+        job
+        for job in jobs
+        if checks[job["clip_id"]]["declared_gate_passed"] is True
+    ]
+    probes = {
+        job["clip_id"]: compose_clips_v2_release(job) for job in retained_jobs
+    }
+    finalize_clips_v3_manifest(qualitative, jobs, checks, probes)
+    dropped = [
+        job["clip_id"] for job in jobs if job["clip_id"] not in probes
+    ]
+    print(
+        json.dumps(
+            {
+                "event": "v3_release_checked",
+                "retained_clip_ids": [job["clip_id"] for job in retained_jobs],
+                "dropped_clip_ids": dropped,
+                "release_directory": str(CLIPS_V3_ROOT / "release"),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    return 0 if not dropped else 2
+
+
+def run_clip3_fallback(
+    fallback: dict[str, Any],
+    job: dict[str, Any],
+    *,
+    manifest_path: Path = QUALITATIVE_CLIP3_FALLBACK_MANIFEST,
+    hash_key: str = "qualitative_clip3_fallback_manifest_sha256",
+    failure_status: str = "fallback_rank1_dropped_gate_failure",
+) -> int:
+    ensure_new_clips_v2_job(job)
+    with job["log_path"].open("w") as log:
+        completed = subprocess.run(
+            command_for_clips_v2(job),
+            cwd=ROOT / "submodules/act",
+            env=runtime_env(),
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"clip-3 fallback exited {completed.returncode}; see {job['log_path']}"
+        )
+    result = validate_completed_clips_v2_job(job)
+    check = clips_v3_determinism_comparison(job)
+    frozen_hash = fallback[hash_key]
+    fallback["selection_and_gate_frozen_manifest_sha256"] = frozen_hash
+    fallback["rendered_at_utc"] = utc_now()
+    fallback["determinism_check"] = {
+        "path": str(job["check_path"].resolve()),
+        "sha256": check["determinism_check_sha256"],
+        "declared_gate_passed": check["declared_gate_passed"],
+        "required_gate_comparisons": check["required_gate_comparisons"],
+        "informational_contact_pair_sample_deltas": check[
+            "informational_contact_pair_sample_deltas"
+        ],
+    }
+    if check["declared_gate_passed"] is not True:
+        fallback["status"] = failure_status
+        fallback["render_output"] = None
+        write_json(
+            manifest_path,
+            fallback,
+            hash_key,
+        )
+        return 2
+
+    probe = compose_clips_v2_release(job)
+    result_path = job["output_dir"] / "result.json"
+    render = result["policy_info"]["qualitative_render"]
+    camera_contract = {
+        "camera_reference_body": render["camera_reference_body"],
+        "camera_offset_m": render["camera_offset_m"],
+        "lookat_offset_m": render["lookat_offset_m"],
+        "resolution_width_height": render["resolution_width_height"],
+        "fps": render["fps"],
+        "playback_speed_factor": render["playback_speed_factor"],
+    }
+    v2 = json.loads(QUALITATIVE_CLIPS_V2_MANIFEST.read_text())
+    if camera_contract != v2["camera_contract_observed"]:
+        raise RuntimeError("clip-3 fallback camera/playback contract differs from v2")
+    fallback["status"] = "presentation_release_verified_unmatched_fallback"
+    fallback["camera_contract_observed"] = camera_contract
+    fallback["render_output"] = {
+        "rerun_result_path": str(result_path.resolve()),
+        "rerun_result_sha256": file_hash(result_path),
+        "raw_video_path": str(job["video_output"].resolve()),
+        "raw_video_sha256": file_hash(job["video_output"]),
+        "release_video_path": str(job["release_output"].resolve()),
+        "release_video_sha256": file_hash(job["release_output"]),
+        "release_ffprobe": probe,
+        "determinism_check_path": str(job["check_path"].resolve()),
+        "determinism_check_sha256": check["determinism_check_sha256"],
+    }
+    write_json(
+        manifest_path,
+        fallback,
+        hash_key,
+    )
+    print(
+        json.dumps(
+            {
+                "event": "clip3_fallback_release_verified",
+                "clip_id": job["clip_id"],
+                "release": str(job["release_output"]),
+                "duration_seconds": float(probe["format"]["duration"]),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    return 0
+
+
 def load_clips_v2_check(job: dict[str, Any]) -> dict[str, Any]:
     check = json.loads(job["check_path"].read_text())
     payload = dict(check)
@@ -1313,6 +1869,9 @@ def main() -> int:
         choices=(
             "legacy-v1",
             "clips-v2",
+            "clips-v3",
+            "clips-v3-fallback",
+            "clips-v3-fallback-rank2",
             "act-success-supplement",
             "recorded-act-success",
         ),
@@ -1341,6 +1900,40 @@ def main() -> int:
         supplement, schedule = load_act_success_supplement()
         job = act_success_supplement_job(supplement, schedule)
         return run_act_success_supplement(supplement, job)
+    if args.release == "clips-v3":
+        if args.mode != "all":
+            raise SystemExit("clips-v3 requires --mode all")
+        qualitative, schedule = load_clips_v3_documents()
+        jobs = selected_clips_v3_jobs(qualitative, schedule)
+        return run_clips_v3(qualitative, jobs)
+    if args.release == "clips-v3-fallback":
+        if args.mode != "all":
+            raise SystemExit("clips-v3-fallback requires --mode all")
+        fallback, schedule = load_clip3_fallback_documents()
+        job = selected_clip3_fallback_job(fallback, schedule)
+        return run_clip3_fallback(fallback, job)
+    if args.release == "clips-v3-fallback-rank2":
+        if args.mode != "all":
+            raise SystemExit("clips-v3-fallback-rank2 requires --mode all")
+        hash_key = "qualitative_clip3_fallback_rank2_manifest_sha256"
+        fallback, schedule = load_clip3_fallback_documents(
+            manifest_path=QUALITATIVE_CLIP3_FALLBACK2_MANIFEST,
+            hash_key=hash_key,
+            fallback_rank=2,
+        )
+        job = selected_clip3_fallback_job(
+            fallback,
+            schedule,
+            artifact_root=CLIP3_FALLBACK2_ROOT,
+            hash_key=hash_key,
+        )
+        return run_clip3_fallback(
+            fallback,
+            job,
+            manifest_path=QUALITATIVE_CLIP3_FALLBACK2_MANIFEST,
+            hash_key=hash_key,
+            failure_status="fallback_rank2_dropped_gate_failure",
+        )
     if args.release == "clips-v2":
         if args.mode not in ("all", "finalize-existing"):
             raise SystemExit("clips-v2 requires --mode all or --mode finalize-existing")
