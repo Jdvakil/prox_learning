@@ -1,0 +1,107 @@
+{
+  "clip": {
+    "arm": "ACT",
+    "checkpoint_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+    "checkpoint_seed": 3101,
+    "checkpoint_sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1",
+    "clip_id": "clip3_5b4288fea187_act_success_wrist",
+    "dataset_stats_path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+    "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+    "episode_id": "5b4288fea1870475134ce93e8613654ffa3a535466789e50525f36b254722546",
+    "grasp_target_frames": 24769,
+    "hazard_frames": 0,
+    "intrusion_side": "right",
+    "original_outcome": {
+      "collision_free_task_success": true,
+      "first_contact_step": {
+        "grasp_target": 149,
+        "hazard_bar": null,
+        "other_environment": null
+      },
+      "grasp_target_frames": 24769,
+      "hazard_contact": false,
+      "hazard_contact_pair_samples": 0,
+      "hazard_frames": 0,
+      "maximum_hazard_penetration_depth_m": null,
+      "task_success": true
+    },
+    "original_result_path": "/root/pact_frontend_screen_artifacts/evaluation_621764f8/rows/000_00683ce9e651981d_act/result.json",
+    "original_result_sha256": "0e2a72e736fe0b42bfaf2a965cc0867fe12dbf17ec57ca6102b46f3d0c8fe412",
+    "original_video_path": "/root/pact_frontend_screen_artifacts/evaluation_621764f8/rows/000_00683ce9e651981d_act/episode_00000000_wrist_camera.mp4",
+    "original_video_sha256": "4faa56095f87df581db3cd8abc269b62db6bfd4e1180651c6b69929911678f9a",
+    "rollout_id": "00683ce9e651981d0b40c9afca841474f1a368ac98388fd11b9f0de53c7d26c7",
+    "schedule_index": 0,
+    "schedule_row_sha256": "77284695cef449c811db12636f943904df7339a725d48e2c02e71ee238c4fc06",
+    "source_directory": "000_00683ce9e651981d_act",
+    "task_success": true
+  },
+  "decision_bearing": false,
+  "presentation_release": true,
+  "recorded_act_success_supplement_manifest_sha256": "8a46687c5ab4d0c51f6491db5b26c84e75bc77684a0378d2e4a683e20ea0421e",
+  "render_contract": {
+    "camera_identical_to_three_third_person_clips": false,
+    "expected_release_duration_seconds": 19.823982,
+    "maximum_hazard_penetration_overlay": "n/a (no hazard contact)",
+    "overlay_only_transcode": true,
+    "playback_speed_factor": 3.0,
+    "policy_rerun": false,
+    "raw_fps": 15.151515151515152,
+    "raw_frames": 901,
+    "resolution_width_height": [
+      624,
+      352
+    ],
+    "source": "original wrist_camera recording from the analyzed rollout"
+  },
+  "render_output": {
+    "overlay_text": [
+      "ACT | seed 3101 | episode 5b4288fea187",
+      "task success: yes | any hazard contact: no",
+      "hazard-contact frames: 0 | max penetration: n/a | playback: 3.0x"
+    ],
+    "policy_rerun": false,
+    "release_ffprobe": {
+      "format": {
+        "bit_rate": "171498",
+        "duration": "20.000000",
+        "size": "428745"
+      },
+      "programs": [],
+      "streams": [
+        {
+          "avg_frame_rate": "303/20",
+          "codec_name": "h264",
+          "duration": "20.000000",
+          "height": 352,
+          "nb_frames": "303",
+          "width": 624
+        }
+      ]
+    },
+    "release_video_path": "/root/pact_contact_endpoint_artifacts/qualitative_recorded_act_success/release/clip3_5b4288fea187_act_success_wrist.mp4",
+    "release_video_sha256": "ab99a8c3f13f117fdae9d315d9ce0b5c6ede50f3c9413fdb3196ff95dee92cc7",
+    "source_video_used_byte_for_byte_before_overlay": true
+  },
+  "rendered_at_utc": "2026-08-06T18:16:18.955730Z",
+  "schema_version": "pact_qualitative_recorded_act_success_supplement_v1",
+  "selection_candidate_count": 19,
+  "selection_frozen_at_utc": "2026-08-06T18:15:21.144130+00:00",
+  "selection_frozen_manifest_sha256": "b36c7dbcca32e2eca3bb3ed1f321daffae3436847ddb8dbeead2b34188dcc903",
+  "selection_rule": "among ACT task successes in the frozen 120-row front-end screen with an intact original wrist-camera recording, select the lowest schedule_index",
+  "selection_viewing_before_freeze": false,
+  "sources": {
+    "dropped_contact_endpoint_attempt": {
+      "file_sha256": "064562599b3e635b6d716c2e462730b35ab3c3473a6853231fe49a4a9a1bc37d",
+      "manifest_sha256": "1c695e62d11ced02ab8e84f10824fee444ee65635d721bdc3e774e1927def140",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json",
+      "reason": "first target contact differed by one step (154 to 153)"
+    },
+    "result_root": "/root/pact_frontend_screen_artifacts/evaluation_621764f8/rows",
+    "schedule": {
+      "file_sha256": "c02c443aa3c081a7bef278b14fcb092c4f22ef096fa7a329ed961776f4369047",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_frontend_screen/schedule.json",
+      "schedule_sha256": "621764f8dc314dbdb7c477d1bc1480980e82476f4519e28f4f3e65432aa1ed6c"
+    }
+  },
+  "status": "presentation_release_verified_original_recording"
+}

@@ -25,8 +25,22 @@ QUALITATIVE_CLIPS_V2_MANIFEST = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+ACT_SUCCESS_SUPPLEMENT_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
+)
+RECORDED_ACT_SUCCESS_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_recorded_act_success_supplement.json"
+)
 VIDEO_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_videos")
 CLIPS_V2_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_clips_v2")
+ACT_SUCCESS_SUPPLEMENT_ROOT = Path(
+    "/root/pact_contact_endpoint_artifacts/qualitative_act_success_supplement"
+)
+RECORDED_ACT_SUCCESS_ROOT = Path(
+    "/root/pact_contact_endpoint_artifacts/qualitative_recorded_act_success"
+)
 WORKERS = 8
 
 
@@ -106,6 +120,44 @@ def load_clips_v2_documents() -> tuple[dict[str, Any], dict[str, Any]]:
     if schedule_observed != qualitative["sources"]["schedule"]["schedule_sha256"]:
         raise RuntimeError("qualitative clips v2 references a different schedule")
     return qualitative, schedule
+
+
+def load_act_success_supplement() -> tuple[dict[str, Any], dict[str, Any]]:
+    supplement = json.loads(ACT_SUCCESS_SUPPLEMENT_MANIFEST.read_text())
+    payload = dict(supplement)
+    observed = payload.pop("act_success_supplement_manifest_sha256", None)
+    if observed != canonical_hash(payload):
+        raise RuntimeError("ACT-success supplement manifest self-hash mismatch")
+    if supplement.get("status") != "selection_frozen_pre_render":
+        raise RuntimeError("ACT-success supplement is not frozen pre-render")
+    schedule = json.loads(SCHEDULE.read_text())
+    schedule_payload = dict(schedule)
+    schedule_observed = schedule_payload.pop("schedule_sha256", None)
+    if schedule_observed != canonical_hash(schedule_payload):
+        raise RuntimeError("contact schedule self-hash mismatch")
+    if schedule_observed != supplement["sources"]["schedule"]["schedule_sha256"]:
+        raise RuntimeError("ACT-success supplement references a different schedule")
+    return supplement, schedule
+
+
+def load_recorded_act_success() -> dict[str, Any]:
+    supplement = json.loads(RECORDED_ACT_SUCCESS_MANIFEST.read_text())
+    payload = dict(supplement)
+    observed = payload.pop(
+        "recorded_act_success_supplement_manifest_sha256", None
+    )
+    if observed != canonical_hash(payload):
+        raise RuntimeError("recorded ACT-success supplement self-hash mismatch")
+    if supplement.get("status") != "selection_frozen_pre_overlay":
+        raise RuntimeError("recorded ACT-success selection is not frozen pre-overlay")
+    clip = supplement["clip"]
+    source_result = Path(clip["original_result_path"])
+    source_video = Path(clip["original_video_path"])
+    if file_hash(source_result) != clip["original_result_sha256"]:
+        raise RuntimeError("recorded ACT-success source-result hash mismatch")
+    if file_hash(source_video) != clip["original_video_sha256"]:
+        raise RuntimeError("recorded ACT-success source-video hash mismatch")
+    return supplement
 
 
 def selected_jobs(
@@ -235,6 +287,46 @@ def selected_clips_v2_jobs(
     if len({job["clip_id"] for job in jobs}) != len(jobs):
         raise RuntimeError("v2 clip IDs are not unique")
     return jobs
+
+
+def act_success_supplement_job(
+    supplement: dict[str, Any], schedule: dict[str, Any]
+) -> dict[str, Any]:
+    clip = supplement["clip"]
+    row = next(
+        row
+        for row in schedule["rows"]
+        if int(row["schedule_index"]) == int(clip["schedule_index"])
+    )
+    checks = {
+        "arm": clip["arm"],
+        "instance_episode_id": clip["episode_id"],
+        "checkpoint_seed": clip["checkpoint_seed"],
+        "rollout_id": clip["rollout_id"],
+        "schedule_row_sha256": clip["schedule_row_sha256"],
+        "checkpoint_sha256": clip["checkpoint_sha256"],
+        "dataset_stats_sha256": clip["dataset_stats_sha256"],
+    }
+    if {key: row.get(key) for key in checks} != checks:
+        raise RuntimeError("ACT-success supplement/schedule mismatch")
+    clip_id = clip["clip_id"]
+    return {
+        "clip": clip,
+        "clip_id": clip_id,
+        "episode_id": clip["episode_id"],
+        "policy_seed": int(clip["checkpoint_seed"]),
+        "arm": clip["arm"],
+        "row": row,
+        "output_dir": ACT_SUCCESS_SUPPLEMENT_ROOT / "rerun" / clip_id,
+        "video_output": ACT_SUCCESS_SUPPLEMENT_ROOT / "raw" / f"{clip_id}.mp4",
+        "release_output": ACT_SUCCESS_SUPPLEMENT_ROOT
+        / "release"
+        / f"{clip_id}.mp4",
+        "check_path": ACT_SUCCESS_SUPPLEMENT_ROOT
+        / "checks"
+        / f"{clip_id}.json",
+        "log_path": ACT_SUCCESS_SUPPLEMENT_ROOT / "logs" / f"{clip_id}.log",
+    }
 
 
 def command_for_clips_v2(job: dict[str, Any]) -> list[str]:
@@ -573,6 +665,108 @@ def compose_clips_v2_release(job: dict[str, Any]) -> dict[str, Any]:
     if [int(stream["width"]), int(stream["height"])] != [624, 352]:
         raise RuntimeError(f"release resolution mismatch: {release}")
     return probe
+
+
+def compose_recorded_act_success(supplement: dict[str, Any]) -> int:
+    clip = supplement["clip"]
+    source = Path(clip["original_video_path"])
+    release = (
+        RECORDED_ACT_SUCCESS_ROOT / "release" / f"{clip['clip_id']}.mp4"
+    )
+    if release.exists():
+        raise RuntimeError(f"refusing to replace recorded ACT-success clip: {release}")
+    release.parent.mkdir(parents=True, exist_ok=True)
+    filters = ",".join(
+        (
+            "drawbox=x=0:y=0:w=iw:h=94:color=black@0.66:t=fill",
+            (
+                "drawtext=fontcolor=white:fontsize=18:x=12:y=8:"
+                f"text='ACT | seed {clip['checkpoint_seed']} | "
+                f"episode {clip['episode_id'][:12]}'"
+            ),
+            (
+                "drawtext=fontcolor=white:fontsize=18:x=12:y=38:"
+                "text='task success\\: yes | any hazard contact\\: no'"
+            ),
+            (
+                "drawtext=fontcolor=white:fontsize=14:x=12:y=68:"
+                "text='hazard-contact frames\\: 0 | max penetration\\: n/a | "
+                "playback\\: 3.0x'"
+            ),
+            "setpts=PTS/3.0",
+        )
+    )
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            str(source),
+            "-vf",
+            filters,
+            "-an",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "medium",
+            "-crf",
+            "18",
+            "-pix_fmt",
+            "yuv420p",
+            "-movflags",
+            "+faststart",
+            str(release),
+        ],
+        check=True,
+    )
+    probe = ffprobe_video(release)
+    stream = probe["streams"][0]
+    duration = float(probe["format"]["duration"])
+    if not 15.0 <= duration <= 25.0:
+        raise RuntimeError(
+            f"recorded ACT-success duration {duration} outside 15-25 s"
+        )
+    if [int(stream["width"]), int(stream["height"])] != [624, 352]:
+        raise RuntimeError("recorded ACT-success release resolution mismatch")
+
+    selection_hash = supplement[
+        "recorded_act_success_supplement_manifest_sha256"
+    ]
+    supplement["selection_frozen_manifest_sha256"] = selection_hash
+    supplement["status"] = "presentation_release_verified_original_recording"
+    supplement["rendered_at_utc"] = utc_now()
+    supplement["render_output"] = {
+        "release_video_path": str(release.resolve()),
+        "release_video_sha256": file_hash(release),
+        "release_ffprobe": probe,
+        "policy_rerun": False,
+        "source_video_used_byte_for_byte_before_overlay": True,
+        "overlay_text": [
+            f"ACT | seed {clip['checkpoint_seed']} | episode {clip['episode_id'][:12]}",
+            "task success: yes | any hazard contact: no",
+            "hazard-contact frames: 0 | max penetration: n/a | playback: 3.0x",
+        ],
+    }
+    write_json(
+        RECORDED_ACT_SUCCESS_MANIFEST,
+        supplement,
+        "recorded_act_success_supplement_manifest_sha256",
+    )
+    print(
+        json.dumps(
+            {
+                "event": "recorded_act_success_release_verified",
+                "clip_id": clip["clip_id"],
+                "release": str(release),
+                "duration_seconds": duration,
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    return 0
 
 
 def write_clips_v2_readme(
@@ -1039,10 +1233,90 @@ def finalize_existing_clips_v2(
     return 0
 
 
+def run_act_success_supplement(
+    supplement: dict[str, Any], job: dict[str, Any]
+) -> int:
+    ensure_new_clips_v2_job(job)
+    with job["log_path"].open("w") as log:
+        completed = subprocess.run(
+            command_for_clips_v2(job),
+            cwd=ROOT / "submodules/act",
+            env=runtime_env(),
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"ACT-success supplement exited {completed.returncode}; "
+            f"see {job['log_path']}"
+        )
+    result = validate_completed_clips_v2_job(job)
+    check = clips_v2_determinism_comparison(job)
+    selection_hash = supplement["act_success_supplement_manifest_sha256"]
+    supplement["selection_frozen_manifest_sha256"] = selection_hash
+    supplement["rendered_at_utc"] = utc_now()
+    supplement["determinism_check"] = {
+        "path": str(job["check_path"].resolve()),
+        "sha256": check["determinism_check_sha256"],
+        "required_exact_match": check["required_exact_match"],
+        "required_exact_comparisons": check["required_exact_comparisons"],
+        "descriptive_contact_deltas": check["descriptive_contact_deltas"],
+    }
+    if check["required_exact_match"] is not True:
+        supplement["status"] = "dropped_determinism_mismatch"
+        supplement["render_output"] = None
+        write_json(
+            ACT_SUCCESS_SUPPLEMENT_MANIFEST,
+            supplement,
+            "act_success_supplement_manifest_sha256",
+        )
+        return 2
+
+    probe = compose_clips_v2_release(job)
+    result_path = job["output_dir"] / "result.json"
+    supplement["status"] = "presentation_release_verified"
+    supplement["render_output"] = {
+        "rerun_result_path": str(result_path.resolve()),
+        "rerun_result_sha256": file_hash(result_path),
+        "raw_video_path": str(job["video_output"].resolve()),
+        "raw_video_sha256": file_hash(job["video_output"]),
+        "release_video_path": str(job["release_output"].resolve()),
+        "release_video_sha256": file_hash(job["release_output"]),
+        "release_ffprobe": probe,
+        "observed_render_contract": result["policy_info"]["qualitative_render"],
+    }
+    write_json(
+        ACT_SUCCESS_SUPPLEMENT_MANIFEST,
+        supplement,
+        "act_success_supplement_manifest_sha256",
+    )
+    print(
+        json.dumps(
+            {
+                "event": "act_success_supplement_verified",
+                "clip_id": job["clip_id"],
+                "release": str(job["release_output"]),
+                "duration_seconds": float(probe["format"]["duration"]),
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--release", choices=("legacy-v1", "clips-v2"), default="legacy-v1"
+        "--release",
+        choices=(
+            "legacy-v1",
+            "clips-v2",
+            "act-success-supplement",
+            "recorded-act-success",
+        ),
+        default="legacy-v1",
     )
     parser.add_argument(
         "--mode",
@@ -1053,9 +1327,20 @@ def main() -> int:
     args = parser.parse_args()
     if args.workers != WORKERS:
         raise SystemExit(f"qualitative worker count is frozen at {WORKERS}")
+    if args.release == "recorded-act-success":
+        if args.mode != "all":
+            raise SystemExit("recorded-act-success requires --mode all")
+        supplement = load_recorded_act_success()
+        return compose_recorded_act_success(supplement)
     protected = protected_eval_processes()
     if protected:
         raise SystemExit(f"protected shared evaluation is active: {protected}")
+    if args.release == "act-success-supplement":
+        if args.mode != "all":
+            raise SystemExit("act-success-supplement requires --mode all")
+        supplement, schedule = load_act_success_supplement()
+        job = act_success_supplement_job(supplement, schedule)
+        return run_act_success_supplement(supplement, job)
     if args.release == "clips-v2":
         if args.mode not in ("all", "finalize-existing"):
             raise SystemExit("clips-v2 requires --mode all or --mode finalize-existing")

@@ -21,6 +21,14 @@ CLIPS_V2_ARTIFACT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+ACT_SUCCESS_SUPPLEMENT_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
+)
+RECORDED_ACT_SUCCESS_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_recorded_act_success_supplement.json"
+)
 
 
 def pair(episode: str, seed: int, act: int, pact: int, *, success: bool = True):
@@ -174,3 +182,51 @@ def test_v2_overlay_renders_frozen_outcome_and_running_contact_count() -> None:
     assert observed.shape == frame.shape
     assert observed.dtype == np.uint8
     assert np.count_nonzero(observed) > 0
+
+
+def test_contact_endpoint_act_success_attempt_is_honestly_dropped() -> None:
+    document = json.loads(ACT_SUCCESS_SUPPLEMENT_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("act_success_supplement_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "dropped_determinism_mismatch"
+    assert document["selection_frozen_manifest_sha256"] == (
+        "97097d1702683365afeb8ee0f3dd0b684f55156c343e348d32234cc05ab7534e"
+    )
+    assert document["selection_candidate_count"] == 169
+    clip = document["clip"]
+    assert clip["clip_id"] == "clip3_25d96dd30260_act_success"
+    assert clip["source_directory"] == "0011_429ae21412b1a318_act_s3103"
+    assert clip["schedule_index"] == 11
+    assert clip["task_success"] is True
+    assert clip["hazard_frames"] == 0
+    assert clip["grasp_target_frames"] == 24576
+    assert document["determinism_check"]["required_exact_match"] is False
+    comparisons = document["determinism_check"]["required_exact_comparisons"]
+    assert comparisons["task_success"]["exact_match"] is True
+    assert comparisons["first_contact_step"]["original"]["grasp_target"] == 154
+    assert comparisons["first_contact_step"]["rerun"]["grasp_target"] == 153
+    assert document["render_output"] is None
+
+
+def test_recorded_act_success_uses_original_frozen_footage() -> None:
+    document = json.loads(RECORDED_ACT_SUCCESS_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("recorded_act_success_supplement_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "presentation_release_verified_original_recording"
+    assert document["selection_frozen_manifest_sha256"] == (
+        "b36c7dbcca32e2eca3bb3ed1f321daffae3436847ddb8dbeead2b34188dcc903"
+    )
+    assert document["selection_candidate_count"] == 19
+    clip = document["clip"]
+    assert clip["clip_id"] == "clip3_5b4288fea187_act_success_wrist"
+    assert clip["source_directory"] == "000_00683ce9e651981d_act"
+    assert clip["schedule_index"] == 0
+    assert clip["task_success"] is True
+    assert clip["hazard_frames"] == 0
+    assert clip["grasp_target_frames"] == 24769
+    assert document["render_contract"]["policy_rerun"] is False
+    render = document["render_output"]
+    assert render["source_video_used_byte_for_byte_before_overlay"] is True
+    assert 15.0 <= float(render["release_ffprobe"]["format"]["duration"]) <= 25.0

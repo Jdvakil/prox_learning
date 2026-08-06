@@ -21,6 +21,18 @@ V2_OUTPUT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
+ACT_SUCCESS_SUPPLEMENT_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_act_success_supplement.json"
+)
+RECORDED_ACT_SUCCESS_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_recorded_act_success_supplement.json"
+)
+FRONTEND_SCREEN_SCHEDULE = ROOT / "diagnostics_output/pact_frontend_screen/schedule.json"
+FRONTEND_SCREEN_RESULT_ROOT = Path(
+    "/root/pact_frontend_screen_artifacts/evaluation_621764f8/rows"
+)
 DEFAULT_RESULT_ROOT = Path("/root/pact_contact_endpoint_artifacts/evaluation_v1")
 DEFAULT_VIDEO_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_videos")
 ARMS = ("ACT", "PACT")
@@ -86,6 +98,32 @@ V2_SELECTION_RULES = {
         "among the 34 instance-seeds where ACT succeeds and PACT fails, select "
         "the pair with the largest PACT hazard-frame total"
     ),
+}
+
+ACT_SUCCESS_SUPPLEMENT_FIXED = {
+    "clip_id": "clip3_25d96dd30260_act_success",
+    "arm": "ACT",
+    "episode_id": "25d96dd30260534413867e3d233ac259731dba68b82ecdcddd9dd10d000348be",
+    "checkpoint_seed": 3103,
+    "intrusion_side": "right",
+    "source_directory": "0011_429ae21412b1a318_act_s3103",
+    "schedule_index": 11,
+    "hazard_frames": 0,
+    "grasp_target_frames": 24576,
+    "task_success": True,
+}
+
+RECORDED_ACT_SUCCESS_FIXED = {
+    "clip_id": "clip3_5b4288fea187_act_success_wrist",
+    "arm": "ACT",
+    "episode_id": "5b4288fea1870475134ce93e8613654ffa3a535466789e50525f36b254722546",
+    "checkpoint_seed": 3101,
+    "intrusion_side": "right",
+    "source_directory": "000_00683ce9e651981d_act",
+    "schedule_index": 0,
+    "hazard_frames": 0,
+    "grasp_target_frames": 24769,
+    "task_success": True,
 }
 
 SELECTION_RULES = {
@@ -494,11 +532,265 @@ def build_v2_manifest(
     return document
 
 
+def build_act_success_supplement(
+    schedule: dict[str, Any], result_root: Path, output: Path
+) -> dict[str, Any]:
+    candidates = []
+    for row in schedule["rows"]:
+        if row["arm"] != "ACT":
+            continue
+        result, result_path = load_result(row, result_root)
+        if result["task_success"]:
+            candidates.append((int(row["schedule_index"]), row, result, result_path))
+    candidates.sort(key=lambda item: item[0])
+    if len(candidates) != 169:
+        raise ValueError(f"ACT-success candidate count {len(candidates)} != 169")
+    schedule_index, row, result, result_path = candidates[0]
+    audit = result["contact_audit"]
+    observed = {
+        "clip_id": ACT_SUCCESS_SUPPLEMENT_FIXED["clip_id"],
+        "arm": result["arm"],
+        "episode_id": result["episode_id"],
+        "checkpoint_seed": int(result["checkpoint_seed"]),
+        "intrusion_side": result["intrusion_side"],
+        "source_directory": result_path.parent.name,
+        "schedule_index": schedule_index,
+        "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+        "grasp_target_frames": int(
+            audit["frames_with_contact"]["grasp_target"]
+        ),
+        "task_success": bool(result["task_success"]),
+    }
+    if observed != ACT_SUCCESS_SUPPLEMENT_FIXED:
+        raise ValueError(
+            f"mechanically selected ACT success changed: {observed} != "
+            f"{ACT_SUCCESS_SUPPLEMENT_FIXED}"
+        )
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("schedule self-hash mismatch")
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_act_success_supplement_v1",
+        "status": "selection_frozen_pre_render",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "selection_rule": (
+            "among all registered ACT rollouts with task_success=true, select the "
+            "lowest schedule_index"
+        ),
+        "selection_candidate_count": len(candidates),
+        "clip": {
+            **observed,
+            "rollout_id": row["rollout_id"],
+            "schedule_row_sha256": row["schedule_row_sha256"],
+            "checkpoint_path": row["checkpoint_path"],
+            "checkpoint_sha256": row["checkpoint_sha256"],
+            "dataset_stats_path": row["dataset_stats_path"],
+            "dataset_stats_sha256": row["dataset_stats_sha256"],
+            "original_result_path": str(result_path.resolve()),
+            "original_result_sha256": file_hash(result_path),
+            "original_outcome": {
+                "task_success": True,
+                "collision_free_task_success": bool(
+                    result["collision_free_task_success"]
+                ),
+                "hazard_contact": False,
+                "hazard_frames": 0,
+                "hazard_contact_pair_samples": int(
+                    audit["contact_class_totals"]["hazard_bar"]
+                ),
+                "grasp_target_frames": int(
+                    audit["frames_with_contact"]["grasp_target"]
+                ),
+                "first_contact_step": dict(audit["first_contact_step"]),
+                "maximum_hazard_penetration_depth_m": float(
+                    audit["maximum_penetration_depth_m"]["hazard_bar"]
+                ),
+            },
+        },
+        "render_contract": {
+            "camera_type": "MuJoCo free camera, offscreen render only",
+            "camera_pose_identical_to_existing_release": True,
+            "registered_sensor_or_observation_camera": False,
+            "policy_camera_names": ["wrist_camera"],
+            "resolution_width_height": [624, 352],
+            "raw_fps": 1000.0 / 66.0,
+            "raw_frames": 901,
+            "playback_speed_factor": 3.0,
+            "expected_release_duration_seconds": 19.821366,
+        },
+        "determinism_contract": {
+            "required_exact_fields": [
+                "task_success",
+                "manipulation_success (represented by task_success)",
+                "contact_audit.first_contact_step",
+            ],
+            "drop_clip_on_required_field_mismatch": True,
+            "rerun_or_substitute_on_mismatch": False,
+        },
+        "sources": {
+            "schedule": {
+                "path": str(DEFAULT_SCHEDULE.resolve()),
+                "file_sha256": file_hash(DEFAULT_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(result_root.resolve()),
+            "qualitative_clips_v2_manifest": {
+                "path": str(V2_OUTPUT.resolve()),
+                "sha256": file_hash(V2_OUTPUT),
+            },
+        },
+        "render_output": None,
+    }
+    document["act_success_supplement_manifest_sha256"] = canonical_hash(document)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
+def build_recorded_act_success_supplement(output: Path) -> dict[str, Any]:
+    schedule = json.loads(FRONTEND_SCREEN_SCHEDULE.read_text())
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("front-end screen schedule self-hash mismatch")
+
+    candidates = []
+    for row in schedule["rows"]:
+        if row["arm"] != "ACT":
+            continue
+        result_path = FRONTEND_SCREEN_RESULT_ROOT / row["output_relpath"].split("/", 1)[1] / "result.json"
+        source_video = result_path.parent / "episode_00000000_wrist_camera.mp4"
+        if not result_path.is_file() or not source_video.is_file():
+            continue
+        result = json.loads(result_path.read_text())
+        if result["task_success"]:
+            candidates.append(
+                (int(row["schedule_index"]), row, result, result_path, source_video)
+            )
+    candidates.sort(key=lambda item: item[0])
+    if len(candidates) != 19:
+        raise ValueError(
+            f"recorded ACT-success candidate count {len(candidates)} != 19"
+        )
+    schedule_index, row, result, result_path, source_video = candidates[0]
+    audit = result["contact_audit"]
+    observed = {
+        "clip_id": RECORDED_ACT_SUCCESS_FIXED["clip_id"],
+        "arm": result["arm"],
+        "episode_id": result["episode_id"],
+        "checkpoint_seed": int(result["checkpoint_seed"]),
+        "intrusion_side": result["intrusion_side"],
+        "source_directory": result_path.parent.name,
+        "schedule_index": schedule_index,
+        "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+        "grasp_target_frames": int(audit["frames_with_contact"]["grasp_target"]),
+        "task_success": bool(result["task_success"]),
+    }
+    if observed != RECORDED_ACT_SUCCESS_FIXED:
+        raise ValueError(
+            f"mechanically selected recorded ACT success changed: {observed} != "
+            f"{RECORDED_ACT_SUCCESS_FIXED}"
+        )
+
+    failed_attempt = json.loads(ACT_SUCCESS_SUPPLEMENT_OUTPUT.read_text())
+    failed_payload = dict(failed_attempt)
+    failed_hash = failed_payload.pop("act_success_supplement_manifest_sha256")
+    if failed_hash != canonical_hash(failed_payload):
+        raise ValueError("contact-endpoint ACT-success attempt self-hash mismatch")
+    if failed_attempt["status"] != "dropped_determinism_mismatch":
+        raise ValueError("contact-endpoint ACT-success attempt was not frozen as dropped")
+
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_recorded_act_success_supplement_v1",
+        "status": "selection_frozen_pre_overlay",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "selection_rule": (
+            "among ACT task successes in the frozen 120-row front-end screen with "
+            "an intact original wrist-camera recording, select the lowest schedule_index"
+        ),
+        "selection_candidate_count": len(candidates),
+        "clip": {
+            **observed,
+            "rollout_id": row["rollout_id"],
+            "schedule_row_sha256": row["schedule_row_sha256"],
+            "checkpoint_path": row["checkpoint_path"],
+            "checkpoint_sha256": row["checkpoint_sha256"],
+            "dataset_stats_path": row["dataset_stats_path"],
+            "dataset_stats_sha256": row["dataset_stats_sha256"],
+            "original_result_path": str(result_path.resolve()),
+            "original_result_sha256": file_hash(result_path),
+            "original_video_path": str(source_video.resolve()),
+            "original_video_sha256": file_hash(source_video),
+            "original_outcome": {
+                "task_success": True,
+                "collision_free_task_success": bool(
+                    result["collision_free_task_success"]
+                ),
+                "hazard_contact": False,
+                "hazard_frames": 0,
+                "hazard_contact_pair_samples": int(
+                    audit["contact_class_totals"]["hazard_bar"]
+                ),
+                "grasp_target_frames": int(
+                    audit["frames_with_contact"]["grasp_target"]
+                ),
+                "first_contact_step": dict(audit["first_contact_step"]),
+                "maximum_hazard_penetration_depth_m": None,
+            },
+        },
+        "render_contract": {
+            "source": "original wrist_camera recording from the analyzed rollout",
+            "policy_rerun": False,
+            "overlay_only_transcode": True,
+            "camera_identical_to_three_third_person_clips": False,
+            "resolution_width_height": [624, 352],
+            "raw_fps": 1000.0 / 66.0,
+            "raw_frames": 901,
+            "playback_speed_factor": 3.0,
+            "expected_release_duration_seconds": 19.823982,
+            "maximum_hazard_penetration_overlay": "n/a (no hazard contact)",
+        },
+        "sources": {
+            "schedule": {
+                "path": str(FRONTEND_SCREEN_SCHEDULE.resolve()),
+                "file_sha256": file_hash(FRONTEND_SCREEN_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(FRONTEND_SCREEN_RESULT_ROOT.resolve()),
+            "dropped_contact_endpoint_attempt": {
+                "path": str(ACT_SUCCESS_SUPPLEMENT_OUTPUT.resolve()),
+                "file_sha256": file_hash(ACT_SUCCESS_SUPPLEMENT_OUTPUT),
+                "manifest_sha256": failed_hash,
+                "reason": "first target contact differed by one step (154 to 153)",
+            },
+        },
+        "render_output": None,
+    }
+    document["recorded_act_success_supplement_manifest_sha256"] = canonical_hash(
+        document
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--mode",
-        choices=("legacy-pairs-v1", "clips-v2"),
+        choices=(
+            "legacy-pairs-v1",
+            "clips-v2",
+            "act-success-supplement",
+            "recorded-act-success",
+        ),
         default="legacy-pairs-v1",
     )
     parser.add_argument("--schedule", type=Path, default=DEFAULT_SCHEDULE)
@@ -508,7 +800,14 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if args.output is None:
-        args.output = V2_OUTPUT if args.mode == "clips-v2" else DEFAULT_OUTPUT
+        if args.mode == "clips-v2":
+            args.output = V2_OUTPUT
+        elif args.mode == "act-success-supplement":
+            args.output = ACT_SUCCESS_SUPPLEMENT_OUTPUT
+        elif args.mode == "recorded-act-success":
+            args.output = RECORDED_ACT_SUCCESS_OUTPUT
+        else:
+            args.output = DEFAULT_OUTPUT
     if args.output.exists():
         raise SystemExit(f"refusing to replace frozen manifest: {args.output}")
 
@@ -535,6 +834,43 @@ def main() -> int:
                         }
                         for clip in document["clips"]
                     ],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    if args.mode == "act-success-supplement":
+        schedule = json.loads(args.schedule.read_text())
+        document = build_act_success_supplement(
+            schedule, args.result_root, args.output
+        )
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document[
+                        "act_success_supplement_manifest_sha256"
+                    ],
+                    "clip": document["clip"],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    if args.mode == "recorded-act-success":
+        document = build_recorded_act_success_supplement(args.output)
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document[
+                        "recorded_act_success_supplement_manifest_sha256"
+                    ],
+                    "clip": document["clip"],
                 },
                 indent=2,
                 sort_keys=True,
