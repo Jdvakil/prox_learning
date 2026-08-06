@@ -33,7 +33,7 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
     document = load_manifest()
     entries = document["entries"]
     paths = [entry["path"] for entry in entries]
-    assert len(paths) == len(set(paths)) == 61
+    assert len(paths) == len(set(paths)) == 62
     assert document["figure_concepts"] == 10
     assert document["figure_files"] == 20
     assert document["video_files"] == 3
@@ -56,6 +56,7 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
         "INDEX.md",
         "KEY_NUMBERS.md",
         "ONE_PAGE_SUMMARY.md",
+        "VIDEO_SHOT_LIST.md",
         "data/analysis.json",
         "data/tail_characterization.json",
         "data/qualitative_video_manifest.json",
@@ -110,7 +111,11 @@ def test_external_figures_are_exact_16_by_9_and_caveats_are_present() -> None:
     key_numbers = (BUNDLE / "KEY_NUMBERS.md").read_text()
     one_page = (BUNDLE / "ONE_PAGE_SUMMARY.md").read_text()
     unavailable = (BUNDLE / "videos/paired/UNAVAILABLE_PAIRED_VIDEOS.md").read_text()
+    shot_list = (BUNDLE / "VIDEO_SHOT_LIST.md").read_text()
     assert "task success directionally positive, not confirmed" in index
     assert "not modality evidence" in key_numbers
     assert "directionally positive but **not confirmed**" in one_page
     assert "no ACT/PACT pair can be produced honestly" in unavailable
+    assert "PACT_PERMUTED using the registered in-distribution" in shot_list
+    assert "maximum hazard penetration, when available" in shot_list
+    assert "Separate hybrid-skin safety/CVAE work" in shot_list

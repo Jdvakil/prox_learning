@@ -947,6 +947,45 @@ def make_summary_markdown(bundle: Path) -> None:
     )
 
 
+def make_video_shot_list(bundle: Path) -> None:
+    (bundle / "VIDEO_SHOT_LIST.md").write_text(
+        "# PACT slideshow — video shot list\n\n"
+        "> Production brief for future matched exports. This does not change the current "
+        "bundle status: no matched clips were generated, and no new rollouts were run.\n\n"
+        "The highest-value missing asset is a matched three-way rollout comparison.\n\n"
+        "## Make these three clips first\n\n"
+        "For the same evaluation instance, initial state, camera, playback speed, and policy "
+        "seed, export:\n\n"
+        "- **ACT**\n"
+        "- **PACT with correctly aligned 32-D proximity**\n"
+        "- **PACT_PERMUTED using the registered in-distribution permutation ablation**\n\n"
+        "Put them side by side in one 15–25 second video. Overlay only:\n\n"
+        "- policy arm and seed;\n"
+        "- evaluation instance ID;\n"
+        "- task success: yes/no;\n"
+        "- any hazard contact: yes/no;\n"
+        "- hazard-contact frames;\n"
+        "- maximum hazard penetration, when available.\n\n"
+        "## Select three representative cases\n\n"
+        "- **Discordant safety case:** PACT avoids or shortens contact while ACT/permuted "
+        "does not.\n"
+        "- **Both-success case:** all arms finish the task, showing whether proximity changes "
+        "an already successful trajectory.\n"
+        "- **Failure case:** an honest example where PACT still fails.\n\n"
+        "Do not use only the most flattering rollout. Use the registered evaluation outputs "
+        "and state why each example was selected.\n\n"
+        "## Existing repository video\n\n"
+        "A setup turntable is already committed at:\n\n"
+        "`diagnostics_output/20260611_skin_photoshoot/turntable.mp4`\n\n"
+        "Use it as a short visual introduction to the sensor-covered arm, not as evidence of "
+        "policy performance.\n\n"
+        "## Optional separate workstream\n\n"
+        "The Safety-CVAE demo videos under `assets/safety/` are useful only on a slide "
+        "explicitly titled **Separate hybrid-skin safety/CVAE work**. Do not mix those "
+        "metrics with the PACT-vs-ACT experiment.\n"
+    )
+
+
 def make_index(bundle: Path, video_records: dict[str, Any]) -> None:
     lines = [
         "# PACT slideshow bundle index",
@@ -969,6 +1008,10 @@ def make_index(bundle: Path, video_records: dict[str, Any]) -> None:
         "| `figures/fig09_training_curves.{png,svg}` | Six complete validation curves | Validation loss did not predict endpoint behavior | `data/training_logs/*.jsonl → val.loss` | Do not infer modality benefit from val loss |",
         "",
         "Optional Figure 10 (projection magnitudes) was deliberately omitted because no frozen source artifact contains the quoted fan-in-normalized norms and the plan forbids new analysis.",
+        "",
+        "## Future video shot list",
+        "",
+        "`VIDEO_SHOT_LIST.md` specifies the requested matched ACT / PACT / PACT_PERMUTED production sequence, representative-case rules, allowed overlays, and separation from Safety-CVAE work. It is a future production brief; no new rollouts were generated for this bundle.",
         "",
         "## Videos",
         "",
@@ -1088,6 +1131,7 @@ def build(bundle: Path) -> dict[str, Any]:
         video_records = package_videos(staging)
         make_key_numbers(staging, analysis, tail, env, frontend, valid, seed, early, training)
         make_summary_markdown(staging)
+        make_video_shot_list(staging)
         make_index(staging, video_records)
         document = bundle_manifest(staging, video_records)
         # Record the final destination rather than the temporary staging path.
