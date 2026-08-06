@@ -1,0 +1,1583 @@
+{
+  "absorbing_failure_characterization_sha256": "108cbf6706d4dc687eb959aa5a5cb204848d3e85ef1fdf43044ec562307a62b7",
+  "absorbing_state_primary": {
+    "definition": "hazard engaged and zero grasp_target contact frames",
+    "rollouts": 67,
+    "task_success_fraction": 0.0,
+    "task_successes": 0,
+    "unique_instance_seed_cells": 44,
+    "unique_instances": 22
+  },
+  "awarded_token": "CONTACT_REDUCTION_WITH_TASK_BENEFIT",
+  "awarded_token_changed": false,
+  "clip4_placement": {
+    "exact_values_verified": {
+      "first_grasp_target_contact_step": 151,
+      "first_hazard_contact_step": 128,
+      "grasp_target_frames": 12,
+      "hazard_frames": 17609
+    },
+    "pact_target_engagement_all_rollouts_percentile": {
+      "ascending_rank_max": 12,
+      "ascending_rank_min": 12,
+      "equal": 1,
+      "midrank_empirical_percentile": 0.03833333333333333,
+      "population_n": 300,
+      "strictly_less": 11,
+      "value": 12
+    },
+    "pact_target_engagement_high_contact_percentile": {
+      "ascending_rank_max": 5,
+      "ascending_rank_min": 5,
+      "equal": 1,
+      "midrank_empirical_percentile": 0.13636363636363635,
+      "population_n": 33,
+      "strictly_less": 4,
+      "value": 12
+    },
+    "record": {
+      "arm": "PACT",
+      "checkpoint_seed": 3103,
+      "contact_frame_payload_retained": false,
+      "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+      "first_grasp_target_contact_step": 151,
+      "first_hazard_contact_step": 128,
+      "grasp_target_frames": 12,
+      "hazard_frames": 17609,
+      "instance_role_index": 82,
+      "intrusion_side": "left",
+      "schedule_index": 991,
+      "task_success": false,
+      "trajectory_file_exists": false,
+      "trajectory_path_recorded": false
+    },
+    "same_instance_high_contact_counts": {
+      "all_arms": 10,
+      "all_arms_denominator": 12,
+      "non_ood": 8,
+      "non_ood_denominator": 9
+    },
+    "same_instance_operational_low_target_high_contact_cells": [
+      {
+        "arm": "PACT_ZERO",
+        "checkpoint_seed": 3102,
+        "grasp_target_frames": 0,
+        "hazard_frames": 16864,
+        "task_success": false
+      },
+      {
+        "arm": "PACT",
+        "checkpoint_seed": 3103,
+        "grasp_target_frames": 12,
+        "hazard_frames": 17609,
+        "task_success": false
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "checkpoint_seed": 3103,
+        "grasp_target_frames": 3,
+        "hazard_frames": 18385,
+        "task_success": false
+      }
+    ],
+    "same_instance_records": [
+      {
+        "arm": "ACT",
+        "checkpoint_seed": 3101,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 139,
+        "first_hazard_contact_step": 338,
+        "grasp_target_frames": 1128,
+        "hazard_frames": 18543,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 995,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT",
+        "checkpoint_seed": 3101,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 143,
+        "first_hazard_contact_step": null,
+        "grasp_target_frames": 954,
+        "hazard_frames": 0,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 993,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_ZERO",
+        "checkpoint_seed": 3101,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 86,
+        "first_hazard_contact_step": null,
+        "grasp_target_frames": 26771,
+        "hazard_frames": 0,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 992,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "checkpoint_seed": 3101,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 141,
+        "first_hazard_contact_step": 716,
+        "grasp_target_frames": 977,
+        "hazard_frames": 6086,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 994,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "ACT",
+        "checkpoint_seed": 3102,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 145,
+        "first_hazard_contact_step": 340,
+        "grasp_target_frames": 24923,
+        "hazard_frames": 18447,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 986,
+        "task_success": true,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT",
+        "checkpoint_seed": 3102,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 147,
+        "first_hazard_contact_step": 456,
+        "grasp_target_frames": 809,
+        "hazard_frames": 14675,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 984,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_ZERO",
+        "checkpoint_seed": 3102,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": null,
+        "first_hazard_contact_step": 389,
+        "grasp_target_frames": 0,
+        "hazard_frames": 16864,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 987,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "checkpoint_seed": 3102,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 147,
+        "first_hazard_contact_step": 432,
+        "grasp_target_frames": 810,
+        "hazard_frames": 15456,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 985,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "ACT",
+        "checkpoint_seed": 3103,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 110,
+        "first_hazard_contact_step": 302,
+        "grasp_target_frames": 25592,
+        "hazard_frames": 19757,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 989,
+        "task_success": true,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT",
+        "checkpoint_seed": 3103,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 151,
+        "first_hazard_contact_step": 128,
+        "grasp_target_frames": 12,
+        "hazard_frames": 17609,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 991,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_ZERO",
+        "checkpoint_seed": 3103,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 74,
+        "first_hazard_contact_step": 507,
+        "grasp_target_frames": 1187,
+        "hazard_frames": 12998,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 990,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "checkpoint_seed": 3103,
+        "contact_frame_payload_retained": false,
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "first_grasp_target_contact_step": 148,
+        "first_hazard_contact_step": 101,
+        "grasp_target_frames": 3,
+        "hazard_frames": 18385,
+        "instance_role_index": 82,
+        "intrusion_side": "left",
+        "schedule_index": 988,
+        "task_success": false,
+        "trajectory_file_exists": false,
+        "trajectory_path_recorded": false
+      }
+    ]
+  },
+  "confirmatory_p_values_computed": false,
+  "contact_pattern_sensitivity": {
+    "1": {
+      "by_arm": {
+        "ACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 17,
+            "task_success_fraction": 0.29411764705882354,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 4,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 229,
+            "task_success_fraction": 0.6943231441048034,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 16,
+            "task_success_fraction": 0.3125,
+            "task_successes": 5
+          }
+        },
+        "PACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 3,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 15,
+            "task_success_fraction": 0.3333333333333333,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 7,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 251,
+            "task_success_fraction": 0.6812749003984063,
+            "task_successes": 171
+          },
+          "target_first_then_hazard": {
+            "rollouts": 24,
+            "task_success_fraction": 0.2916666666666667,
+            "task_successes": 7
+          }
+        },
+        "PACT_PERMUTED": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 30,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 27,
+            "task_success_fraction": 0.25925925925925924,
+            "task_successes": 7
+          },
+          "neither_engaged": {
+            "rollouts": 9,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 221,
+            "task_success_fraction": 0.7194570135746606,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          }
+        },
+        "PACT_ZERO": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 41,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 22,
+            "task_success_fraction": 0.045454545454545456,
+            "task_successes": 1
+          },
+          "neither_engaged": {
+            "rollouts": 46,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 147,
+            "task_success_fraction": 0.1360544217687075,
+            "task_successes": 20
+          },
+          "target_first_then_hazard": {
+            "rollouts": 44,
+            "task_success_fraction": 0.06818181818181818,
+            "task_successes": 3
+          }
+        }
+      },
+      "high_contact_low_target_by_arm": {
+        "ACT": {
+          "high_contact_rollouts": 59,
+          "low_target_engagement_fraction_given_high_contact": 0.576271186440678,
+          "low_target_engagement_rollouts": 34,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 33,
+          "low_target_engagement_fraction_given_high_contact": 0.09090909090909091,
+          "low_target_engagement_rollouts": 3,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 58,
+          "low_target_engagement_fraction_given_high_contact": 0.5172413793103449,
+          "low_target_engagement_rollouts": 30,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "pooled_all_arms": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 108,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 81,
+          "task_success_fraction": 0.2222222222222222,
+          "task_successes": 18
+        },
+        "neither_engaged": {
+          "rollouts": 66,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 848,
+          "task_success_fraction": 0.6002358490566038,
+          "task_successes": 509
+        },
+        "target_first_then_hazard": {
+          "rollouts": 97,
+          "task_success_fraction": 0.20618556701030927,
+          "task_successes": 20
+        }
+      },
+      "pooled_non_ood": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 67,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 59,
+          "task_success_fraction": 0.288135593220339,
+          "task_successes": 17
+        },
+        "neither_engaged": {
+          "rollouts": 20,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 701,
+          "task_success_fraction": 0.6975748930099858,
+          "task_successes": 489
+        },
+        "target_first_then_hazard": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        }
+      }
+    },
+    "10": {
+      "by_arm": {
+        "ACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 17,
+            "task_success_fraction": 0.29411764705882354,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 4,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 229,
+            "task_success_fraction": 0.6943231441048034,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 16,
+            "task_success_fraction": 0.3125,
+            "task_successes": 5
+          }
+        },
+        "PACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 4,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 14,
+            "task_success_fraction": 0.35714285714285715,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 7,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 251,
+            "task_success_fraction": 0.6812749003984063,
+            "task_successes": 171
+          },
+          "target_first_then_hazard": {
+            "rollouts": 24,
+            "task_success_fraction": 0.2916666666666667,
+            "task_successes": 7
+          }
+        },
+        "PACT_PERMUTED": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 33,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 24,
+            "task_success_fraction": 0.2916666666666667,
+            "task_successes": 7
+          },
+          "neither_engaged": {
+            "rollouts": 9,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 221,
+            "task_success_fraction": 0.7194570135746606,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          }
+        },
+        "PACT_ZERO": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 41,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 22,
+            "task_success_fraction": 0.045454545454545456,
+            "task_successes": 1
+          },
+          "neither_engaged": {
+            "rollouts": 46,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 147,
+            "task_success_fraction": 0.1360544217687075,
+            "task_successes": 20
+          },
+          "target_first_then_hazard": {
+            "rollouts": 44,
+            "task_success_fraction": 0.06818181818181818,
+            "task_successes": 3
+          }
+        }
+      },
+      "high_contact_low_target_by_arm": {
+        "ACT": {
+          "high_contact_rollouts": 59,
+          "low_target_engagement_fraction_given_high_contact": 0.576271186440678,
+          "low_target_engagement_rollouts": 34,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 33,
+          "low_target_engagement_fraction_given_high_contact": 0.12121212121212122,
+          "low_target_engagement_rollouts": 4,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 58,
+          "low_target_engagement_fraction_given_high_contact": 0.5689655172413793,
+          "low_target_engagement_rollouts": 33,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "pooled_all_arms": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 112,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 77,
+          "task_success_fraction": 0.23376623376623376,
+          "task_successes": 18
+        },
+        "neither_engaged": {
+          "rollouts": 66,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 848,
+          "task_success_fraction": 0.6002358490566038,
+          "task_successes": 509
+        },
+        "target_first_then_hazard": {
+          "rollouts": 97,
+          "task_success_fraction": 0.20618556701030927,
+          "task_successes": 20
+        }
+      },
+      "pooled_non_ood": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 71,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 55,
+          "task_success_fraction": 0.3090909090909091,
+          "task_successes": 17
+        },
+        "neither_engaged": {
+          "rollouts": 20,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 701,
+          "task_success_fraction": 0.6975748930099858,
+          "task_successes": 489
+        },
+        "target_first_then_hazard": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        }
+      }
+    },
+    "100": {
+      "by_arm": {
+        "ACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 17,
+            "task_success_fraction": 0.29411764705882354,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 5,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 228,
+            "task_success_fraction": 0.6973684210526315,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 16,
+            "task_success_fraction": 0.3125,
+            "task_successes": 5
+          }
+        },
+        "PACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 5,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 8,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 250,
+            "task_success_fraction": 0.684,
+            "task_successes": 171
+          },
+          "target_first_then_hazard": {
+            "rollouts": 24,
+            "task_success_fraction": 0.2916666666666667,
+            "task_successes": 7
+          }
+        },
+        "PACT_PERMUTED": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 23,
+            "task_success_fraction": 0.30434782608695654,
+            "task_successes": 7
+          },
+          "neither_engaged": {
+            "rollouts": 9,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 221,
+            "task_success_fraction": 0.7194570135746606,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          }
+        },
+        "PACT_ZERO": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 42,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 21,
+            "task_success_fraction": 0.047619047619047616,
+            "task_successes": 1
+          },
+          "neither_engaged": {
+            "rollouts": 48,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 145,
+            "task_success_fraction": 0.13793103448275862,
+            "task_successes": 20
+          },
+          "target_first_then_hazard": {
+            "rollouts": 44,
+            "task_success_fraction": 0.06818181818181818,
+            "task_successes": 3
+          }
+        }
+      },
+      "high_contact_low_target_by_arm": {
+        "ACT": {
+          "high_contact_rollouts": 59,
+          "low_target_engagement_fraction_given_high_contact": 0.576271186440678,
+          "low_target_engagement_rollouts": 34,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 33,
+          "low_target_engagement_fraction_given_high_contact": 0.15151515151515152,
+          "low_target_engagement_rollouts": 5,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 58,
+          "low_target_engagement_fraction_given_high_contact": 0.5689655172413793,
+          "low_target_engagement_rollouts": 33,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "pooled_all_arms": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 115,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 74,
+          "task_success_fraction": 0.24324324324324326,
+          "task_successes": 18
+        },
+        "neither_engaged": {
+          "rollouts": 70,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 844,
+          "task_success_fraction": 0.6030805687203792,
+          "task_successes": 509
+        },
+        "target_first_then_hazard": {
+          "rollouts": 97,
+          "task_success_fraction": 0.20618556701030927,
+          "task_successes": 20
+        }
+      },
+      "pooled_non_ood": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 73,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        },
+        "neither_engaged": {
+          "rollouts": 22,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 699,
+          "task_success_fraction": 0.6995708154506438,
+          "task_successes": 489
+        },
+        "target_first_then_hazard": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        }
+      }
+    },
+    "50": {
+      "by_arm": {
+        "ACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 17,
+            "task_success_fraction": 0.29411764705882354,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 4,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 229,
+            "task_success_fraction": 0.6943231441048034,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 16,
+            "task_success_fraction": 0.3125,
+            "task_successes": 5
+          }
+        },
+        "PACT": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 5,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          },
+          "neither_engaged": {
+            "rollouts": 8,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 250,
+            "task_success_fraction": 0.684,
+            "task_successes": 171
+          },
+          "target_first_then_hazard": {
+            "rollouts": 24,
+            "task_success_fraction": 0.2916666666666667,
+            "task_successes": 7
+          }
+        },
+        "PACT_PERMUTED": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 34,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 23,
+            "task_success_fraction": 0.30434782608695654,
+            "task_successes": 7
+          },
+          "neither_engaged": {
+            "rollouts": 9,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 221,
+            "task_success_fraction": 0.7194570135746606,
+            "task_successes": 159
+          },
+          "target_first_then_hazard": {
+            "rollouts": 13,
+            "task_success_fraction": 0.38461538461538464,
+            "task_successes": 5
+          }
+        },
+        "PACT_ZERO": {
+          "hazard_engaged_target_not_engaged": {
+            "rollouts": 41,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "hazard_first_then_target": {
+            "rollouts": 22,
+            "task_success_fraction": 0.045454545454545456,
+            "task_successes": 1
+          },
+          "neither_engaged": {
+            "rollouts": 46,
+            "task_success_fraction": 0.0,
+            "task_successes": 0
+          },
+          "target_engaged_never_hazard": {
+            "rollouts": 147,
+            "task_success_fraction": 0.1360544217687075,
+            "task_successes": 20
+          },
+          "target_first_then_hazard": {
+            "rollouts": 44,
+            "task_success_fraction": 0.06818181818181818,
+            "task_successes": 3
+          }
+        }
+      },
+      "high_contact_low_target_by_arm": {
+        "ACT": {
+          "high_contact_rollouts": 59,
+          "low_target_engagement_fraction_given_high_contact": 0.576271186440678,
+          "low_target_engagement_rollouts": 34,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 33,
+          "low_target_engagement_fraction_given_high_contact": 0.15151515151515152,
+          "low_target_engagement_rollouts": 5,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 58,
+          "low_target_engagement_fraction_given_high_contact": 0.5689655172413793,
+          "low_target_engagement_rollouts": 33,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "pooled_all_arms": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 114,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 75,
+          "task_success_fraction": 0.24,
+          "task_successes": 18
+        },
+        "neither_engaged": {
+          "rollouts": 67,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 847,
+          "task_success_fraction": 0.6009445100354192,
+          "task_successes": 509
+        },
+        "target_first_then_hazard": {
+          "rollouts": 97,
+          "task_success_fraction": 0.20618556701030927,
+          "task_successes": 20
+        }
+      },
+      "pooled_non_ood": {
+        "hazard_engaged_target_not_engaged": {
+          "rollouts": 73,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "hazard_first_then_target": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        },
+        "neither_engaged": {
+          "rollouts": 21,
+          "task_success_fraction": 0.0,
+          "task_successes": 0
+        },
+        "target_engaged_never_hazard": {
+          "rollouts": 700,
+          "task_success_fraction": 0.6985714285714286,
+          "task_successes": 489
+        },
+        "target_first_then_hazard": {
+          "rollouts": 53,
+          "task_success_fraction": 0.32075471698113206,
+          "task_successes": 17
+        }
+      }
+    }
+  },
+  "decision_bearing": false,
+  "definitions": {
+    "hazard_engaged": "hazard_bar frames_with_contact > 0",
+    "high_contact": "hazard_bar frames_with_contact > 500",
+    "operational_sustained_target_engaged": "grasp_target frames_with_contact >= 50; fixed from the supplied scan, equivalent to about 100 ms cumulative audited contact at 2 ms/frame, not necessarily contiguous",
+    "strict_target_engaged": "grasp_target frames_with_contact >= 1",
+    "threshold_not_tuned": true
+  },
+  "high_contact_low_target_engagement": {
+    "bootstrap": {
+      "all_arms_and_seeds_within_sampled_instance_move_together": true,
+      "confirmatory": false,
+      "instances": 100,
+      "method": "paired whole-instance cluster percentile bootstrap",
+      "replicates": 20000,
+      "seed": 2026080601
+    },
+    "contrasts_seeds_unpooled_first": {
+      "3101": {
+        "PACT_minus_ACT": {
+          "bootstrap_valid_replicates": 19662,
+          "difference": -0.36904761904761907,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.7647058823529411,
+            0.30000000000000004
+          ],
+          "left_denominator": 4,
+          "left_fraction": 0.25,
+          "left_numerator": 1,
+          "right_denominator": 21,
+          "right_fraction": 0.6190476190476191,
+          "right_numerator": 13
+        },
+        "PACT_minus_PACT_PERMUTED": {
+          "bootstrap_valid_replicates": 19662,
+          "difference": -0.4833333333333333,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.8888888888888888,
+            0.19999999999999996
+          ],
+          "left_denominator": 4,
+          "left_fraction": 0.25,
+          "left_numerator": 1,
+          "right_denominator": 15,
+          "right_fraction": 0.7333333333333333,
+          "right_numerator": 11
+        }
+      },
+      "3102": {
+        "PACT_minus_ACT": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.33333333333333337,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.619596920289855,
+            -0.03030303030303033
+          ],
+          "left_denominator": 18,
+          "left_fraction": 0.16666666666666666,
+          "left_numerator": 3,
+          "right_denominator": 18,
+          "right_fraction": 0.5,
+          "right_numerator": 9
+        },
+        "PACT_minus_PACT_PERMUTED": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.33333333333333337,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.5614150741966477,
+            -0.10499596774193581
+          ],
+          "left_denominator": 18,
+          "left_fraction": 0.16666666666666666,
+          "left_numerator": 3,
+          "right_denominator": 26,
+          "right_fraction": 0.5,
+          "right_numerator": 13
+        }
+      },
+      "3103": {
+        "PACT_minus_ACT": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.509090909090909,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.8,
+            -0.19028340080971656
+          ],
+          "left_denominator": 11,
+          "left_fraction": 0.09090909090909091,
+          "left_numerator": 1,
+          "right_denominator": 20,
+          "right_fraction": 0.6,
+          "right_numerator": 12
+        },
+        "PACT_minus_PACT_PERMUTED": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.4385026737967914,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.7,
+            -0.18888888888888888
+          ],
+          "left_denominator": 11,
+          "left_fraction": 0.09090909090909091,
+          "left_numerator": 1,
+          "right_denominator": 17,
+          "right_fraction": 0.5294117647058824,
+          "right_numerator": 9
+        }
+      }
+    },
+    "matched_both_arms_high_subset": {
+      "PACT_minus_ACT": {
+        "by_seed": {
+          "3101": {
+            "bootstrap_valid_replicates": 17301,
+            "difference": -0.5,
+            "instance_cluster_bootstrap_ci_95": [
+              -1.0,
+              0.0
+            ],
+            "left_denominator": 2,
+            "left_fraction": 0.5,
+            "left_numerator": 1,
+            "right_denominator": 2,
+            "right_fraction": 1.0,
+            "right_numerator": 2
+          },
+          "3102": {
+            "bootstrap_valid_replicates": 20000,
+            "difference": -0.3,
+            "instance_cluster_bootstrap_ci_95": [
+              -0.7142857142857143,
+              0.125
+            ],
+            "left_denominator": 10,
+            "left_fraction": 0.2,
+            "left_numerator": 2,
+            "right_denominator": 10,
+            "right_fraction": 0.5,
+            "right_numerator": 5
+          },
+          "3103": {
+            "bootstrap_valid_replicates": 20000,
+            "difference": -0.30000000000000004,
+            "instance_cluster_bootstrap_ci_95": [
+              -0.7142857142857143,
+              0.125
+            ],
+            "left_denominator": 10,
+            "left_fraction": 0.1,
+            "left_numerator": 1,
+            "right_denominator": 10,
+            "right_fraction": 0.4,
+            "right_numerator": 4
+          }
+        },
+        "pooled": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.3181818181818182,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.6,
+            0.0
+          ],
+          "left_denominator": 22,
+          "left_fraction": 0.18181818181818182,
+          "left_numerator": 4,
+          "right_denominator": 22,
+          "right_fraction": 0.5,
+          "right_numerator": 11
+        }
+      },
+      "PACT_minus_PACT_PERMUTED": {
+        "by_seed": {
+          "3101": {
+            "bootstrap_valid_replicates": 19044,
+            "difference": -0.6666666666666667,
+            "instance_cluster_bootstrap_ci_95": [
+              -1.0,
+              0.0
+            ],
+            "left_denominator": 3,
+            "left_fraction": 0.3333333333333333,
+            "left_numerator": 1,
+            "right_denominator": 3,
+            "right_fraction": 1.0,
+            "right_numerator": 3
+          },
+          "3102": {
+            "bootstrap_valid_replicates": 20000,
+            "difference": -0.16666666666666666,
+            "instance_cluster_bootstrap_ci_95": [
+              -0.4117647058823529,
+              0.06666666666666665
+            ],
+            "left_denominator": 18,
+            "left_fraction": 0.16666666666666666,
+            "left_numerator": 3,
+            "right_denominator": 18,
+            "right_fraction": 0.3333333333333333,
+            "right_numerator": 6
+          },
+          "3103": {
+            "bootstrap_valid_replicates": 20000,
+            "difference": -0.30000000000000004,
+            "instance_cluster_bootstrap_ci_95": [
+              -0.625,
+              0.0
+            ],
+            "left_denominator": 10,
+            "left_fraction": 0.1,
+            "left_numerator": 1,
+            "right_denominator": 10,
+            "right_fraction": 0.4,
+            "right_numerator": 4
+          }
+        },
+        "pooled": {
+          "bootstrap_valid_replicates": 20000,
+          "difference": -0.25806451612903225,
+          "instance_cluster_bootstrap_ci_95": [
+            -0.44999999999999996,
+            -0.08333333333333334
+          ],
+          "left_denominator": 31,
+          "left_fraction": 0.16129032258064516,
+          "left_numerator": 5,
+          "right_denominator": 31,
+          "right_fraction": 0.41935483870967744,
+          "right_numerator": 13
+        }
+      }
+    },
+    "pooled_by_arm": {
+      "ACT": {
+        "high_contact_rollouts": 59,
+        "low_target_engagement_fraction_given_high_contact": 0.576271186440678,
+        "low_target_engagement_rollouts": 34,
+        "task_successes_in_low_target_group": 0
+      },
+      "PACT": {
+        "high_contact_rollouts": 33,
+        "low_target_engagement_fraction_given_high_contact": 0.15151515151515152,
+        "low_target_engagement_rollouts": 5,
+        "task_successes_in_low_target_group": 0
+      },
+      "PACT_PERMUTED": {
+        "high_contact_rollouts": 58,
+        "low_target_engagement_fraction_given_high_contact": 0.5689655172413793,
+        "low_target_engagement_rollouts": 33,
+        "task_successes_in_low_target_group": 0
+      }
+    },
+    "pooled_contrasts": {
+      "PACT_minus_ACT": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.4247560349255265,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.6120715892053973,
+          -0.2306816809398331
+        ],
+        "left_denominator": 33,
+        "left_fraction": 0.15151515151515152,
+        "left_numerator": 5,
+        "right_denominator": 59,
+        "right_fraction": 0.576271186440678,
+        "right_numerator": 34
+      },
+      "PACT_minus_PACT_PERMUTED": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.41745036572622785,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.5739135516987269,
+          -0.25
+        ],
+        "left_denominator": 33,
+        "left_fraction": 0.15151515151515152,
+        "left_numerator": 5,
+        "right_denominator": 58,
+        "right_fraction": 0.5689655172413793,
+        "right_numerator": 33
+      }
+    },
+    "seeds_unpooled_first": {
+      "3101": {
+        "ACT": {
+          "high_contact_rollouts": 21,
+          "low_target_engagement_fraction_given_high_contact": 0.6190476190476191,
+          "low_target_engagement_rollouts": 13,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 4,
+          "low_target_engagement_fraction_given_high_contact": 0.25,
+          "low_target_engagement_rollouts": 1,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 15,
+          "low_target_engagement_fraction_given_high_contact": 0.7333333333333333,
+          "low_target_engagement_rollouts": 11,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "3102": {
+        "ACT": {
+          "high_contact_rollouts": 18,
+          "low_target_engagement_fraction_given_high_contact": 0.5,
+          "low_target_engagement_rollouts": 9,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 18,
+          "low_target_engagement_fraction_given_high_contact": 0.16666666666666666,
+          "low_target_engagement_rollouts": 3,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 26,
+          "low_target_engagement_fraction_given_high_contact": 0.5,
+          "low_target_engagement_rollouts": 13,
+          "task_successes_in_low_target_group": 0
+        }
+      },
+      "3103": {
+        "ACT": {
+          "high_contact_rollouts": 20,
+          "low_target_engagement_fraction_given_high_contact": 0.6,
+          "low_target_engagement_rollouts": 12,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT": {
+          "high_contact_rollouts": 11,
+          "low_target_engagement_fraction_given_high_contact": 0.09090909090909091,
+          "low_target_engagement_rollouts": 1,
+          "task_successes_in_low_target_group": 0
+        },
+        "PACT_PERMUTED": {
+          "high_contact_rollouts": 17,
+          "low_target_engagement_fraction_given_high_contact": 0.5294117647058824,
+          "low_target_engagement_rollouts": 9,
+          "task_successes_in_low_target_group": 0
+        }
+      }
+    },
+    "target_threshold_frames": 50
+  },
+  "mechanism_assessment": {
+    "discovery_update_warranted": true,
+    "plain_statement": "PACT's low-target fraction is much smaller than PACT_PERMUTED's, and the difference persists in the thin matched subset where both arms are already high-contact. That is evidence consistent with proximity keeping the policy on task during contact, not just preventing contact entry. But high-contact membership is itself changed by the modality, the grouping is post-treatment, and trajectory/target-distance instrumentation is absent; these data cannot fully separate a within-contact on-task mechanism from selection.",
+    "selected_statement": "data_cannot_fully_separate_on_task_effect_from_selection"
+  },
+  "ordering_negative_result": {
+    "by_arm": {
+      "ACT": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.01838235294117646,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.38690476190476186,
+          0.40996721877156406
+        ],
+        "left_denominator": 17,
+        "left_fraction": 0.29411764705882354,
+        "left_numerator": 5,
+        "right_denominator": 16,
+        "right_fraction": 0.3125,
+        "right_numerator": 5
+      },
+      "PACT": {
+        "bootstrap_valid_replicates": 19998,
+        "difference": 0.04166666666666663,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.35097870879120874,
+          0.4323430859758092
+        ],
+        "left_denominator": 15,
+        "left_fraction": 0.3333333333333333,
+        "left_numerator": 5,
+        "right_denominator": 24,
+        "right_fraction": 0.2916666666666667,
+        "right_numerator": 7
+      },
+      "PACT_PERMUTED": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.1253561253561254,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.4666666666666666,
+          0.21380541871921074
+        ],
+        "left_denominator": 27,
+        "left_fraction": 0.25925925925925924,
+        "left_numerator": 7,
+        "right_denominator": 13,
+        "right_fraction": 0.38461538461538464,
+        "right_numerator": 5
+      }
+    },
+    "interpretation": "Hazard-first and target-first success rates are observational post-contact groups. Whole instances are resampled together, but ordering is not randomized.",
+    "pooled_non_ood": {
+      "bootstrap_valid_replicates": 20000,
+      "difference": -0.03261912376079307,
+      "instance_cluster_bootstrap_ci_95": [
+        -0.2840322871572872,
+        0.25095653487158076
+      ],
+      "left_denominator": 59,
+      "left_fraction": 0.288135593220339,
+      "left_numerator": 17,
+      "right_denominator": 53,
+      "right_fraction": 0.32075471698113206,
+      "right_numerator": 17
+    },
+    "target_threshold_frames": 1,
+    "threshold_sensitivity_pooled_non_ood": {
+      "1": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.03261912376079307,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.2840322871572872,
+          0.25095653487158076
+        ],
+        "left_denominator": 59,
+        "left_fraction": 0.288135593220339,
+        "left_numerator": 17,
+        "right_denominator": 53,
+        "right_fraction": 0.32075471698113206,
+        "right_numerator": 17
+      },
+      "10": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": -0.011663807890222977,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.2757941899585922,
+          0.28048949864498635
+        ],
+        "left_denominator": 55,
+        "left_fraction": 0.3090909090909091,
+        "left_numerator": 17,
+        "right_denominator": 53,
+        "right_fraction": 0.32075471698113206,
+        "right_numerator": 17
+      },
+      "100": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": 0.0,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.2694566286854464,
+          0.2926627778486121
+        ],
+        "left_denominator": 53,
+        "left_fraction": 0.32075471698113206,
+        "left_numerator": 17,
+        "right_denominator": 53,
+        "right_fraction": 0.32075471698113206,
+        "right_numerator": 17
+      },
+      "50": {
+        "bootstrap_valid_replicates": 20000,
+        "difference": 0.0,
+        "instance_cluster_bootstrap_ci_95": [
+          -0.2694566286854464,
+          0.2926627778486121
+        ],
+        "left_denominator": 53,
+        "left_fraction": 0.32075471698113206,
+        "left_numerator": 17,
+        "right_denominator": 53,
+        "right_fraction": 0.32075471698113206,
+        "right_numerator": 17
+      }
+    }
+  },
+  "schema_version": "pact_absorbing_failure_characterization_v1",
+  "sources": {
+    "final_decision": {
+      "file_sha256": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+      "final_decision_sha256": "8956b24f04ce1c8eac2045f1157976a9d0fc50b5978fe7bf66b90b6b2b219a57",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/final_decision.json"
+    },
+    "output_root": "/root/pact_contact_endpoint_artifacts/evaluation_v1",
+    "result_file_inventory_sha256": "aa2ec5cae8868941932ef5be8a979cee7bf3f32b3280f755701571e48be68705",
+    "result_files_reparsed": 1200,
+    "rollout_records_sha256": "2299baf2fb072dbb1039b5ab3cbdf3c80ef840db9664471c4e2482856ad6e8b5",
+    "schedule": {
+      "file_sha256": "3079c04ee806a535153675c8cb218d1969cc94b95c0e48940c768e4c79cb0dae",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/schedule.json",
+      "schedule_sha256": "f9451f5b58b3fb4cc4c4fe75f69f7ecea674a78cca0b66bbb954993696402fc2"
+    }
+  },
+  "status": "post_hoc_exploratory_descriptive",
+  "verification": {
+    "all_arm_pattern_counts_sum": 1200,
+    "clip4_exact": true,
+    "non_ood_pattern_counts_sum": 900,
+    "strict_absorbing_expected_0_of_67": true
+  },
+  "where_it_diverges": {
+    "distance_travelled_before_first_hazard": {
+      "available": false,
+      "reason": "Only 2/1200 trajectory files survive and neither is an absorbing-state rollout. One is a successful control in a relevant instance-seed cell, but its matched absorbing ACT trajectory is absent, so no paired distance comparison is possible."
+    },
+    "strict_absorbing_first_hazard_contact_step": {
+      "count": 67,
+      "maximum": 134.0,
+      "mean": 54.26865671641791,
+      "median": 55.0,
+      "minimum": 19.0,
+      "percentile_25": 46.5,
+      "percentile_75": 59.5
+    },
+    "successful_rollouts_on_same_instance_seed_cells": {
+      "first_hazard_contact_step_when_available": {
+        "count": 4,
+        "maximum": 269.0,
+        "mean": 174.5,
+        "median": 146.0,
+        "minimum": 137.0,
+        "percentile_25": 137.75,
+        "percentile_75": 182.75
+      },
+      "rollouts": 26,
+      "with_hazard_contact": 4
+    },
+    "successful_rollouts_on_same_instances": {
+      "first_hazard_contact_step_when_available": {
+        "count": 11,
+        "maximum": 509.0,
+        "mean": 219.36363636363637,
+        "median": 154.0,
+        "minimum": 34.0,
+        "percentile_25": 139.5,
+        "percentile_75": 281.0
+      },
+      "rollouts": 63,
+      "unique_instances": 15,
+      "with_hazard_contact": 11,
+      "without_hazard_contact": 52
+    },
+    "target_neighbourhood_reached": {
+      "available": false,
+      "reason": "No target-distance, end-effector-distance, or neighbourhood-reach summary was retained in result.json."
+    },
+    "trajectory_payload_inventory": {
+      "surviving_records": [
+        {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_seed": 3101,
+          "episode_id": "25d96dd30260534413867e3d233ac259731dba68b82ecdcddd9dd10d000348be",
+          "schedule_index": 0
+        },
+        {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_seed": 3103,
+          "episode_id": "35ccaa19d6b6ddd33f83fa54a3f30c014b162dbd82bf2391dc926a70ce01e2be",
+          "schedule_index": 1199
+        }
+      ],
+      "surviving_trajectory_files": 2
+    }
+  }
+}

@@ -65,6 +65,26 @@ than transitions into contact. Longest contiguous runs cannot be reconstructed. 
 term is therefore **high-contact regime**, not proven entanglement. See
 [the full post-hoc characterization](../PACT_TAIL_CHARACTERIZATION.md).
 
+### A second exploratory mechanism: retaining target engagement
+
+A later post-hoc raw-file sweep found that combining hazard contact with no target contact is an
+absorbing failure state: **0/67** non-OOD rollouts that touched the hazard but never touched the
+target succeeded. Using the scan's more tolerant definition—more than 500 hazard frames and fewer
+than 50 target frames—PACT enters this state in **5/33 (15.2%)** tail rollouts, versus **34/59
+(57.6%)** for ACT and **33/58 (56.9%)** for PACT_PERMUTED.
+
+This difference is not only caused by PACT having a smaller tail. Among the 31 matched
+instance-seed cells where both PACT and the same-weights PACT_PERMUTED control are high-contact,
+the low-target rates are **5/31 versus 13/31**, an exploratory whole-instance bootstrap difference
+of **−25.8 pp [−45.0, −8.3]**. The same direction appears at 10, 50, and 100 target frames.
+
+This is consistent with proximity helping the policy remain target-directed when contact occurs,
+but it is not a cleanly identified causal mechanism. High-contact membership is changed by the
+modality, making the grouping post-treatment, and 1,198/1,200 trajectories were deleted. The data
+cannot show whether the policy stalls en route, reaches the target neighbourhood and is diverted,
+or recovers differently after impact. See
+[the absorbing-failure characterization](../PACT_ABSORBING_FAILURE_CHARACTERIZATION.md).
+
 The honest claim is therefore narrower than "proximity improves obstacle avoidance":
 
 > **Proximity sensing reduces the frequency and severity of catastrophic contact events. It does
