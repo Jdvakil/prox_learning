@@ -1,8 +1,12 @@
 """Convert the hybrid-skin OBSTACLE datagen run into ACT-style per-episode HDF5s.
 
-This is the *vanilla ACT baseline* converter: RGB (exo + wrist) + proprioception
-(qpos) only. No proximity / skin channels are exported — that is deliberately the
-no-proximity baseline the safety experiments are compared against.
+Default mode is the *vanilla ACT baseline*: RGB (exo + wrist) + proprioception (qpos)
+only. Pass --with_proximity to ALSO export the 40-sensor skin depths as
+/observations/proximity (T, 40, 8, 8) in meters, stacked in the Safety-CVAE's
+meta.json sensor order (the single source of truth — note link5_back precedes
+link5_front there). The proximity group is what P+ACT (PACT) feeds to the frozen
+Safety-CVAE feature extractor; vanilla ACT simply ignores it, so ONE --with_proximity
+dataset serves both arms of the comparison with byte-identical RGB/qpos/action.
 
 Source layout (one datagen run dir):
   <run>/house_<k>/trajectories_batch_1_of_1.h5     groups traj_0, traj_1, ...
@@ -57,6 +61,43 @@ GRIP_DIM_OBS = 2  # qpos/qvel: two finger joints
 GRIP_DIM_ACT = 1  # joint_pos action: one gripper command
 QPOS_DIM = ARM_DIM + GRIP_DIM_OBS  # 9
 ACTION_DIM = ARM_DIM + GRIP_DIM_ACT  # 8
+DEFAULT_PROX_META = "assets/safety/cvae_v3/meta.json"
+
+
+def _load_sensor_order(meta_path: Path) -> list[str]:
+    """The authoritative 40-sensor stacking order = cvae_v3 meta.json['sensors']."""
+    meta = json.loads(Path(meta_path).read_text())
+    order = list(meta["sensors"])
+    print(f"[convert] proximity sensor order from {meta_path}: {len(order)} sensors")
+    return order
+
+
+def _episode_proximity(grp: h5py.Group, T: int, sensor_order: list[str]) -> np.ndarray:
+    """Read obs/proximity/<sensor> for each sensor in order -> (T, 40, 8, 8) float32 (m).
+
+    Source per-sensor shape is (T_full, n_substeps, 8, 8); substeps are mean-pooled
+    (the downstream convention) and the first T rows are kept to align with action/qpos.
+    """
+    prox_grp = grp.get("obs/proximity")
+    if prox_grp is None:
+        raise SystemExit(
+            "--with_proximity: source has no obs/proximity group. This run was not "
+            "collected with the hybrid skin (model_hybrid.xml / 40 sensors)."
+        )
+    chans = []
+    for name in sensor_order:
+        if name not in prox_grp:
+            raise SystemExit(
+                f"--with_proximity: sensor {name!r} missing from obs/proximity (run has "
+                f"{len(prox_grp)} sensors, not the 40-sensor hybrid skin the CVAE expects)."
+            )
+        d = np.asarray(prox_grp[name][:T], dtype=np.float32)
+        if d.ndim == 4:        # (T, n_substeps, 8, 8) -> mean-pool substeps
+            d = d.mean(axis=1)
+        elif d.ndim != 3:      # expect (T, 8, 8)
+            raise SystemExit(f"sensor {name!r} has unexpected shape {d.shape}")
+        chans.append(d)        # (T, 8, 8)
+    return np.stack(chans, axis=1)  # (T, 40, 8, 8)
 
 
 def _decode_jsonrow(blob: np.ndarray) -> dict:
@@ -153,10 +194,14 @@ def convert(
     image_w: int | None,
     only_success: bool,
     max_episodes: int | None,
+    with_proximity: bool = False,
+    prox_meta: Path | None = None,
 ) -> None:
     dst_dir.mkdir(parents=True, exist_ok=True)
     h5_files = _find_h5_files(src)
     print(f"[convert] {len(h5_files)} h5 file(s) under {src}")
+
+    sensor_order = _load_sensor_order(prox_meta or DEFAULT_PROX_META) if with_proximity else None
 
     global_idx = 0
     n_skipped_fail = 0
@@ -213,6 +258,10 @@ def convert(
                 if not ok_videos:
                     continue
 
+                proximity = None
+                if with_proximity:
+                    proximity = _episode_proximity(grp, T, sensor_order)  # (T, 40, 8, 8)
+
                 out_path = dst_dir / f"episode_{global_idx}.hdf5"
                 with h5py.File(out_path, "w") as dst:
                     dst.attrs["sim"] = True
@@ -220,6 +269,15 @@ def convert(
                     obs = dst.create_group("observations")
                     obs.create_dataset("qpos", data=qpos.astype(np.float32))
                     obs.create_dataset("qvel", data=qvel.astype(np.float32))
+                    if proximity is not None:
+                        obs.create_dataset(
+                            "proximity",
+                            data=proximity.astype(np.float32),
+                            dtype="float32",
+                            chunks=(1, proximity.shape[1], proximity.shape[2], proximity.shape[3]),
+                            compression="gzip",
+                            compression_opts=4,
+                        )
                     imgs = obs.create_group("images")
                     for cam, arr in images.items():
                         imgs.create_dataset(
@@ -259,6 +317,17 @@ def main() -> None:
         help="keep episodes whose fail[-1] is set (default: drop them, train on successes only)",
     )
     p.add_argument("--max_episodes", type=int, default=None, help="cap total episodes (smoke test)")
+    p.add_argument(
+        "--with_proximity",
+        action="store_true",
+        help="also export /observations/proximity (T,40,8,8) for P+ACT (PACT)",
+    )
+    p.add_argument(
+        "--prox_meta",
+        type=Path,
+        default=Path(DEFAULT_PROX_META),
+        help="Safety-CVAE meta.json giving the authoritative 40-sensor stacking order",
+    )
     args = p.parse_args()
     convert(
         args.src,
@@ -267,6 +336,8 @@ def main() -> None:
         args.image_w,
         only_success=not args.keep_failures,
         max_episodes=args.max_episodes,
+        with_proximity=args.with_proximity,
+        prox_meta=args.prox_meta,
     )
 
 
