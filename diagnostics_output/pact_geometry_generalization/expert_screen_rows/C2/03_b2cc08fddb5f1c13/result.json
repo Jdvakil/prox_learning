@@ -1,0 +1,188 @@
+{
+  "clean_success": true,
+  "condition_id": "C2",
+  "condition_label": "tighter",
+  "contact_audit": {
+    "collision_free": true,
+    "contact_class_totals": {
+      "grasp_target": 7873,
+      "hazard_bar": 0,
+      "other_environment": 0
+    },
+    "contact_frame_payload_retained": false,
+    "contact_frames": [],
+    "contact_taxonomy_version": "pact_robot_environment_v1",
+    "first_contact_step": {
+      "grasp_target": 144,
+      "hazard_bar": null,
+      "other_environment": null
+    },
+    "frames_with_contact": {
+      "grasp_target": 822,
+      "hazard_bar": 0,
+      "other_environment": 0
+    },
+    "maximum_penetration_depth_m": {
+      "grasp_target": 0.0006164624625884011,
+      "hazard_bar": 0.0,
+      "other_environment": 0.0
+    },
+    "non_target_contact_entries": 0,
+    "sample_count": 5578,
+    "sampling_level": "every_2ms_control_physics_step_plus_episode_boundaries"
+  },
+  "episode_id": "b2cc08fddb5f1c13cee7a4d56a1d92e445e53502e4edbf37a17fc0de9b87e3fb",
+  "expert_storage_compaction": {
+    "content_transform": "drop_contact_pair_samples_keep_all_frozen_gate_and_contact_summary_fields",
+    "original_sha256": "ecc07f5f83d432beff5d2f131275a0b76f2c5f3fa4cdcdb5ac3d72362f93d025",
+    "original_size_bytes": 3134735,
+    "outcome_based_selection": false,
+    "path": "diagnostics_output/pact_geometry_generalization/expert_screen_rows/C2/03_b2cc08fddb5f1c13/result.json",
+    "raw_contact_pair_payload_recoverable": false
+  },
+  "instance_cluster_id": "expert_screen:03",
+  "instance_index": 3,
+  "intrusion_side": "left",
+  "manifest_sha256": "33e48ab83dfe398fbeb78f64565312c48a5a8b09cb1a873a2a2521e06fcbe7b2",
+  "realized_geometry": {
+    "aperture_width_m": 0.7,
+    "base_forward_m": 0.14,
+    "panel_half_extents_m": [
+      0.055,
+      0.24,
+      0.09
+    ],
+    "panel_inner_face_y_m": 0.07,
+    "panel_x_m": 0.6141547597109713,
+    "panel_z_m": 0.89
+  },
+  "result_sha256": "37a6d8d1efd658dde0642cf915917b10de89c7094779ade08bce9a2d9f2a4d86",
+  "retry_history": [],
+  "row_sha256": "d08cdbc3820b60efe3e9972e99e78745d45f4111ebeef61f7f6184edb1ea7a8c",
+  "scene_params": {
+    "ap_h": 0.7,
+    "ap_w": 0.7,
+    "cam_visible": true,
+    "cell": "pact_collision_corridor",
+    "clearance": 0.0719158358066191,
+    "depth": 0.20859757800929085,
+    "grasp_pitch_deg": 50.0,
+    "light_scale": 1.0,
+    "obstacle_aabbs": [
+      [
+        [
+          0.58,
+          0.0,
+          1.4449999999999998
+        ],
+        [
+          0.015,
+          0.44,
+          0.025
+        ]
+      ],
+      [
+        [
+          0.58,
+          0.53,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.58,
+          -0.53,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.95,
+          0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.95,
+          -0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          1.36,
+          0.0,
+          1.12
+        ],
+        [
+          0.012,
+          0.46,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.6141547597109713,
+          0.31,
+          0.89
+        ],
+        [
+          0.055,
+          0.24,
+          0.09
+        ]
+      ]
+    ],
+    "pact_environment_version": "pact_collision_corridor_v1",
+    "pact_geometry_condition": "C2",
+    "pact_geometry_generalization_version": "v1",
+    "pact_intrusion_side": "left",
+    "pact_panel_inner_face_y_m": 0.07,
+    "protr_center": [
+      0.6141547597109713,
+      0.31,
+      0.89
+    ],
+    "protr_half": [
+      0.055,
+      0.24,
+      0.09
+    ],
+    "protr_name": "pact_intrusion_left",
+    "protr_pos_frac": NaN,
+    "protr_wall": "left",
+    "protrusion_present": true,
+    "residual_margin": NaN,
+    "target_frac": 0.5461446416346487,
+    "target_uid": "Cup_10"
+  },
+  "schema_version": "pact_geometry_expert_screen_row_v1",
+  "seed": {
+    "seed_u32": 3124967602,
+    "seed_u64": 11773933730144663730
+  },
+  "status": "complete",
+  "task_sampler_class": "PactCollisionCorridorTighterSampler",
+  "task_success": true
+}

@@ -27,6 +27,8 @@ The sharpened contact-count endpoint is frozen in
 [`docs/PACT_CONTACT_ENDPOINT_PREREGISTRATION.md`](docs/PACT_CONTACT_ENDPOINT_PREREGISTRATION.md)
 and its final decision will be reported in
 [`docs/PACT_CONTACT_ENDPOINT_DECISION.md`](docs/PACT_CONTACT_ENDPOINT_DECISION.md).
+The held-out scene-geometry generalization gate and decision are reported in
+[`docs/PACT_GEOMETRY_GENERALIZATION.md`](docs/PACT_GEOMETRY_GENERALIZATION.md).
 
 ---
 
