@@ -10,7 +10,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCHEDULE = ROOT / "diagnostics_output/pact_contact_endpoint/schedule.json"
 DEFAULT_TAIL = ROOT / "diagnostics_output/pact_contact_endpoint/tail_characterization.json"
@@ -18,10 +17,76 @@ DEFAULT_OUTPUT = (
     ROOT
     / "diagnostics_output/pact_contact_endpoint/qualitative_video_manifest.json"
 )
+V2_OUTPUT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
+)
 DEFAULT_RESULT_ROOT = Path("/root/pact_contact_endpoint_artifacts/evaluation_v1")
 DEFAULT_VIDEO_ROOT = Path("/root/pact_contact_endpoint_artifacts/qualitative_videos")
 ARMS = ("ACT", "PACT")
 THRESHOLD = 500
+
+V2_FIXED_CLIPS = (
+    {
+        "clip_id": "clip1_54a6272f66ca_pact_success",
+        "pair_id": "instance_a",
+        "arm": "PACT",
+        "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+        "checkpoint_seed": 3101,
+        "intrusion_side": "right",
+        "source_directory": "0310_6b7f11de957a9396_pact_s3101",
+        "hazard_frames": 0,
+        "task_success": True,
+        "selection_role": "discordant_safety_pact_success",
+    },
+    {
+        "clip_id": "clip2_54a6272f66ca_act_failure",
+        "pair_id": "instance_a",
+        "arm": "ACT",
+        "episode_id": "54a6272f66ca3c7bb57dc603550a4c29d35605e3fe65aaef627a9a06bad00b6f",
+        "checkpoint_seed": 3101,
+        "intrusion_side": "right",
+        "source_directory": "0308_66a8fc62c0f3ec7b_act_s3101",
+        "hazard_frames": 29022,
+        "task_success": False,
+        "selection_role": "discordant_safety_act_failure",
+    },
+    {
+        "clip_id": "clip3_e99dc657bfa7_act_success",
+        "pair_id": "instance_b",
+        "arm": "ACT",
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "checkpoint_seed": 3103,
+        "intrusion_side": "left",
+        "source_directory": "0989_2a7bc05291d96619_act_s3103",
+        "hazard_frames": 19757,
+        "task_success": True,
+        "selection_role": "task_success_with_contact_act",
+    },
+    {
+        "clip_id": "clip4_e99dc657bfa7_pact_failure",
+        "pair_id": "instance_b",
+        "arm": "PACT",
+        "episode_id": "e99dc657bfa703eac0d75566c733613ca0ffede3a4bbc394a35c350c753a4391",
+        "checkpoint_seed": 3103,
+        "intrusion_side": "left",
+        "source_directory": "0991_a0ffe52e049f6a3b_pact_s3103",
+        "hazard_frames": 17609,
+        "task_success": False,
+        "selection_role": "honest_pact_failure",
+    },
+)
+
+V2_SELECTION_RULES = {
+    "instance_a": (
+        "among the 48 instance-seeds where PACT succeeds and ACT fails, select "
+        "the pair with the largest ACT hazard-frame total"
+    ),
+    "instance_b": (
+        "among the 34 instance-seeds where ACT succeeds and PACT fails, select "
+        "the pair with the largest PACT hazard-frame total"
+    ),
+}
 
 SELECTION_RULES = {
     "mechanism": (
@@ -214,16 +279,268 @@ def select(records: dict[tuple[str, int], dict[str, Any]]) -> list[dict[str, Any
     return output
 
 
+def build_v2_manifest(
+    schedule: dict[str, Any], result_root: Path, output: Path
+) -> dict[str, Any]:
+    records = pair_records(schedule, result_root)
+    pairs = list(records.values())
+    instance_a_candidates = sorted(
+        (
+            pair
+            for pair in pairs
+            if task_success(pair, "PACT") and not task_success(pair, "ACT")
+        ),
+        key=lambda pair: (
+            -hazard_frames(pair, "ACT"),
+            pair["episode_id"],
+            pair["policy_seed"],
+        ),
+    )
+    instance_b_candidates = sorted(
+        (
+            pair
+            for pair in pairs
+            if task_success(pair, "ACT") and not task_success(pair, "PACT")
+        ),
+        key=lambda pair: (
+            -hazard_frames(pair, "PACT"),
+            pair["episode_id"],
+            pair["policy_seed"],
+        ),
+    )
+    if len(instance_a_candidates) != 48:
+        raise ValueError(
+            f"instance A candidate count {len(instance_a_candidates)} != 48"
+        )
+    if len(instance_b_candidates) != 34:
+        raise ValueError(
+            f"instance B candidate count {len(instance_b_candidates)} != 34"
+        )
+    expected_a = (V2_FIXED_CLIPS[0]["episode_id"], 3101)
+    expected_b = (V2_FIXED_CLIPS[2]["episode_id"], 3103)
+    observed_a = (
+        instance_a_candidates[0]["episode_id"],
+        instance_a_candidates[0]["policy_seed"],
+    )
+    observed_b = (
+        instance_b_candidates[0]["episode_id"],
+        instance_b_candidates[0]["policy_seed"],
+    )
+    if observed_a != expected_a or observed_b != expected_b:
+        raise ValueError(
+            "fixed v2 selections are no longer the mechanically ranked maxima: "
+            f"A={observed_a}, B={observed_b}"
+        )
+
+    clips = []
+    for clip_index, fixed in enumerate(V2_FIXED_CLIPS, start=1):
+        key = (fixed["episode_id"], int(fixed["checkpoint_seed"]))
+        pair = records[key]
+        arm = str(fixed["arm"])
+        frozen = pair["arms"][arm]
+        result_path = Path(frozen["original_result_path"])
+        result = json.loads(result_path.read_text())
+        source_directory = result_path.parent.name
+        audit = result["contact_audit"]
+        observed = {
+            "arm": result["arm"],
+            "episode_id": result["episode_id"],
+            "checkpoint_seed": int(result["checkpoint_seed"]),
+            "intrusion_side": result["intrusion_side"],
+            "source_directory": source_directory,
+            "hazard_frames": int(audit["frames_with_contact"]["hazard_bar"]),
+            "task_success": bool(result["task_success"]),
+        }
+        expected = {
+            key: fixed[key]
+            for key in (
+                "arm",
+                "episode_id",
+                "checkpoint_seed",
+                "intrusion_side",
+                "source_directory",
+                "hazard_frames",
+                "task_success",
+            )
+        }
+        if observed != expected:
+            raise ValueError(
+                f"fixed v2 clip {fixed['clip_id']} source mismatch: "
+                f"{observed} != {expected}"
+            )
+        clips.append(
+            {
+                "clip_index": clip_index,
+                "clip_id": fixed["clip_id"],
+                "pair_id": fixed["pair_id"],
+                "selection_role": fixed["selection_role"],
+                "selection_rule": V2_SELECTION_RULES[fixed["pair_id"]],
+                "episode_id": fixed["episode_id"],
+                "checkpoint_seed": int(fixed["checkpoint_seed"]),
+                "intrusion_side": fixed["intrusion_side"],
+                "arm": arm,
+                "source_directory": source_directory,
+                "schedule_index": int(frozen["schedule_index"]),
+                "rollout_id": frozen["rollout_id"],
+                "schedule_row_sha256": frozen["schedule_row_sha256"],
+                "checkpoint_path": frozen["checkpoint_path"],
+                "checkpoint_sha256": frozen["checkpoint_sha256"],
+                "dataset_stats_path": frozen["dataset_stats_path"],
+                "dataset_stats_sha256": frozen["dataset_stats_sha256"],
+                "surface_encoder_path": frozen["surface_encoder_path"],
+                "surface_encoder_sha256": frozen["surface_encoder_sha256"],
+                "original_result_path": str(result_path.resolve()),
+                "original_result_sha256": file_hash(result_path),
+                "original_outcome": {
+                    "task_success": bool(result["task_success"]),
+                    "collision_free_task_success": bool(
+                        result["collision_free_task_success"]
+                    ),
+                    "hazard_contact": bool(
+                        audit["frames_with_contact"]["hazard_bar"]
+                    ),
+                    "hazard_frames": int(
+                        audit["frames_with_contact"]["hazard_bar"]
+                    ),
+                    "hazard_contact_pair_samples": int(
+                        audit["contact_class_totals"]["hazard_bar"]
+                    ),
+                    "first_hazard_contact_step": audit["first_contact_step"][
+                        "hazard_bar"
+                    ],
+                    "maximum_hazard_penetration_depth_m": audit[
+                        "maximum_penetration_depth_m"
+                    ]["hazard_bar"],
+                },
+            }
+        )
+
+    schedule_payload = dict(schedule)
+    schedule_hash = schedule_payload.pop("schedule_sha256")
+    if schedule_hash != canonical_hash(schedule_payload):
+        raise ValueError("schedule self-hash mismatch")
+    frozen_manifest = DEFAULT_OUTPUT
+    frozen_report = ROOT / "docs/PACT_QUALITATIVE_VIDEOS.md"
+    determinism_check = DEFAULT_VIDEO_ROOT / "determinism_check.json"
+    document: dict[str, Any] = {
+        "schema_version": "pact_qualitative_clips_v2",
+        "status": "selection_frozen_pre_render",
+        "decision_bearing": False,
+        "presentation_release": True,
+        "selection_frozen_at_utc": datetime.now(timezone.utc).isoformat(),
+        "selection_viewing_before_freeze": False,
+        "selection_rules": dict(V2_SELECTION_RULES),
+        "selection_candidate_counts": {"instance_a": 48, "instance_b": 34},
+        "clips": clips,
+        "caption_text": (
+            "Re-rendered from the analyzed rollout. Task success, manipulation "
+            "success, and first-contact step reproduce exactly; contact-pair "
+            "samples differ by 0.017%."
+        ),
+        "render_contract": {
+            "camera_type": "MuJoCo free camera, offscreen render only",
+            "camera_pose_identical_across_clips": True,
+            "registered_sensor_or_observation_camera": False,
+            "policy_camera_names": ["wrist_camera"],
+            "resolution_width_height": [624, 352],
+            "raw_fps": 1000.0 / 66.0,
+            "raw_frames": 901,
+            "playback_speed_factor": 3.0,
+            "expected_release_duration_seconds": 19.821366,
+            "overlay_fields": [
+                "policy arm and checkpoint seed",
+                "episode ID first 12 characters",
+                "task success yes/no",
+                "any hazard contact yes/no",
+                "hazard-contact frames running cumulative",
+                "maximum hazard penetration",
+                "constant playback speed factor",
+            ],
+        },
+        "determinism_contract": {
+            "required_exact_fields": [
+                "task_success",
+                "manipulation_success (represented by task_success)",
+                "contact_audit.first_contact_step",
+            ],
+            "contact_pair_samples_are_descriptive": True,
+            "drop_clip_on_required_field_mismatch": True,
+        },
+        "sources": {
+            "schedule": {
+                "path": str(DEFAULT_SCHEDULE.resolve()),
+                "file_sha256": file_hash(DEFAULT_SCHEDULE),
+                "schedule_sha256": schedule_hash,
+            },
+            "result_root": str(result_root.resolve()),
+            "frozen_qualitative_manifest": {
+                "path": str(frozen_manifest.resolve()),
+                "sha256": file_hash(frozen_manifest),
+            },
+            "frozen_qualitative_report": {
+                "path": str(frozen_report.resolve()),
+                "sha256": file_hash(frozen_report),
+            },
+            "prior_determinism_check": {
+                "path": str(determinism_check.resolve()),
+                "sha256": file_hash(determinism_check),
+            },
+        },
+        "render_outputs": [],
+    }
+    document["qualitative_clips_v2_manifest_sha256"] = canonical_hash(document)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    return document
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--mode",
+        choices=("legacy-pairs-v1", "clips-v2"),
+        default="legacy-pairs-v1",
+    )
     parser.add_argument("--schedule", type=Path, default=DEFAULT_SCHEDULE)
     parser.add_argument("--tail", type=Path, default=DEFAULT_TAIL)
     parser.add_argument("--result-root", type=Path, default=DEFAULT_RESULT_ROOT)
     parser.add_argument("--video-root", type=Path, default=DEFAULT_VIDEO_ROOT)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    if args.output is None:
+        args.output = V2_OUTPUT if args.mode == "clips-v2" else DEFAULT_OUTPUT
     if args.output.exists():
         raise SystemExit(f"refusing to replace frozen manifest: {args.output}")
+
+    if args.mode == "clips-v2":
+        schedule = json.loads(args.schedule.read_text())
+        document = build_v2_manifest(schedule, args.result_root, args.output)
+        print(
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "sha256": document["qualitative_clips_v2_manifest_sha256"],
+                    "clips": [
+                        {
+                            "clip_id": clip["clip_id"],
+                            "arm": clip["arm"],
+                            "episode_id": clip["episode_id"],
+                            "checkpoint_seed": clip["checkpoint_seed"],
+                            "hazard_frames": clip["original_outcome"][
+                                "hazard_frames"
+                            ],
+                            "task_success": clip["original_outcome"][
+                                "task_success"
+                            ],
+                        }
+                        for clip in document["clips"]
+                    ],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
 
     tail = json.loads(args.tail.read_text())
     tail_hash = validate_self_hash(

@@ -6,7 +6,6 @@ from pathlib import Path
 
 import numpy as np
 
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "submodules/act"))
@@ -15,9 +14,12 @@ sys.path.insert(0, str(ROOT / "submodules/molmospaces"))
 import build_pact_qualitative_video_manifest as selection
 import eval_pact_qualitative_row as qualitative
 
-
 ARTIFACT = (
     ROOT / "diagnostics_output/pact_contact_endpoint/qualitative_video_manifest.json"
+)
+CLIPS_V2_ARTIFACT = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
 )
 
 
@@ -110,6 +112,64 @@ def test_overlay_renders_required_identity_and_contact_state() -> None:
         cumulative_hazard_frames=456,
         episode_id="a" * 64,
         policy_seed=3101,
+    )
+    assert observed.shape == frame.shape
+    assert observed.dtype == np.uint8
+    assert np.count_nonzero(observed) > 0
+
+
+def test_v2_manifest_freezes_four_fixed_single_arm_clips() -> None:
+    document = json.loads(CLIPS_V2_ARTIFACT.read_text())
+    payload = dict(document)
+    observed = payload.pop("qualitative_clips_v2_manifest_sha256")
+    assert observed == selection.canonical_hash(payload)
+    assert document["status"] == "presentation_release_incomplete_determinism_drop"
+    assert document["selection_candidate_counts"] == {
+        "instance_a": 48,
+        "instance_b": 34,
+    }
+    assert [clip["clip_id"] for clip in document["clips"]] == [
+        "clip1_54a6272f66ca_pact_success",
+        "clip2_54a6272f66ca_act_failure",
+        "clip3_e99dc657bfa7_act_success",
+        "clip4_e99dc657bfa7_pact_failure",
+    ]
+    assert [clip["original_outcome"]["hazard_frames"] for clip in document["clips"]] == [
+        0,
+        29022,
+        19757,
+        17609,
+    ]
+    assert [clip["original_outcome"]["task_success"] for clip in document["clips"]] == [
+        True,
+        False,
+        True,
+        False,
+    ]
+    assert document["render_contract"]["playback_speed_factor"] == 3.0
+    assert document["selection_frozen_manifest_sha256"] == (
+        "febdaffb8ca9b6b9c9eb7b39ad7557eb4f44cca7ad815fbf17214a3e528b1351"
+    )
+    assert document["determinism_summary"]["required_exact_fields_failed"] == 1
+    assert document["determinism_summary"]["all_four_clips_retained"] is False
+    assert document["determinism_summary"]["dropped_clip_ids"] == [
+        "clip3_e99dc657bfa7_act_success"
+    ]
+    assert len(document["render_outputs"]) == 3
+
+
+def test_v2_overlay_renders_frozen_outcome_and_running_contact_count() -> None:
+    frame = np.zeros((352, 624, 3), dtype=np.uint8)
+    observed = qualitative.overlay_frame_v2(
+        frame,
+        arm="ACT",
+        cumulative_hazard_frames=29022,
+        episode_id="54a6272f66ca" + "0" * 52,
+        policy_seed=3101,
+        task_success=False,
+        any_hazard_contact=True,
+        maximum_hazard_penetration_m=0.0008325859297544908,
+        playback_speed_factor=3.0,
     )
     assert observed.shape == frame.shape
     assert observed.dtype == np.uint8

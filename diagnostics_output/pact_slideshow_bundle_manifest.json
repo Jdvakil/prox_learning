@@ -1,11 +1,13 @@
 {
-  "bundle_manifest_sha256": "3751875b5df3154b6323877ea62009729f4a4387aae624757058b0c904ed5c20",
+  "bundle_manifest_sha256": "d85578e2e513ffe1a977d206ce668a3b19cd9eb4fa759e9780363a69bad43c5f",
   "bundle_root": "/root/pact_slideshow_bundle",
+  "complete_matched_instance_pairs": 1,
+  "determinism_dropped_clip_files": 1,
   "entries": [
     {
       "path": "INDEX.md",
-      "sha256": "59de1a986d898d95e1b38c9fb6be04758f3d3e3daaa4fa014918e53c8fbd628e",
-      "size_bytes": 5397
+      "sha256": "8dc0317bca43ef2e70fbc84983b2e722b37df9bac75e9a67ffc9a0d1c021df6f",
+      "size_bytes": 6237
     },
     {
       "path": "KEY_NUMBERS.md",
@@ -19,8 +21,8 @@
     },
     {
       "path": "VIDEO_SHOT_LIST.md",
-      "sha256": "110bb04952516a023be7e60bab78b35ff7eac850ee98403bc32917ac35b34869",
-      "size_bytes": 1690
+      "sha256": "4f5392bafb7f2583a175e953c16cec3f8878392dda2c6e625039ea37a850008b",
+      "size_bytes": 2184
     },
     {
       "path": "data/analysis.json",
@@ -81,6 +83,11 @@
       "path": "data/policy_training_registry.json",
       "sha256": "b644b3c1307ab296d4424a502820c1c6b776c2818d7cd5ab463a8b931d86d5f7",
       "size_bytes": 11413
+    },
+    {
+      "path": "data/qualitative_clips_v2_manifest.json",
+      "sha256": "4447c5b40b7bc92bb46cb36ff4754ea790bde841c33aa54890a6f56fd0d4db01",
+      "size_bytes": 21280
     },
     {
       "path": "data/qualitative_video_manifest.json",
@@ -298,14 +305,24 @@
       "size_bytes": 147944
     },
     {
-      "path": "videos/paired/UNAVAILABLE_PAIRED_VIDEOS.md",
-      "sha256": "36c80c0b58201f9b5499a3c4e7a395a4ec42acb42d8b4f3d68f72a908b644779",
-      "size_bytes": 699
+      "path": "videos/matched_pairs/README.md",
+      "sha256": "a6c705acbb9c348f936e6042ab9a5008c12236546a4ee30b60bb111c66f80b90",
+      "size_bytes": 2416
     },
     {
-      "path": "videos/paired/video01_ACT_ONLY_independent_draw.mp4",
-      "sha256": "7f92ee06ab5bb5ed7b12c89e709be58af4985699459287cecb14ba4f6cfca8cd",
-      "size_bytes": 730139
+      "path": "videos/matched_pairs/clip1_54a6272f66ca_pact_success.mp4",
+      "sha256": "c2a61d4dc9ff120b91f2d05e8151df51b7522ae7dce0ed0374c07dd7ba246a0d",
+      "size_bytes": 455452
+    },
+    {
+      "path": "videos/matched_pairs/clip2_54a6272f66ca_act_failure.mp4",
+      "sha256": "77fe67b8a1d30e89381470717fdae91fe3cdb711d5d1802d39f50319d0fadcf7",
+      "size_bytes": 332863
+    },
+    {
+      "path": "videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4",
+      "sha256": "bace094397f09e155c00479a5c856c4470e19093c71c6f31dbf5628ce7b03aa5",
+      "size_bytes": 508636
     },
     {
       "path": "videos/sensor_heatmap/sensor_heatmap_40_skin_streams.mp4",
@@ -314,27 +331,69 @@
     }
   ],
   "extension_counts": {
-    ".json": 18,
+    ".json": 19,
     ".jsonl": 6,
     ".md": 14,
-    ".mp4": 3,
+    ".mp4": 5,
     ".png": 10,
     ".svg": 10,
     ".xml": 1
   },
   "figure_concepts": 10,
   "figure_files": 20,
-  "gpu_work_performed": false,
+  "gpu_work_performed": true,
+  "matched_single_arm_clip_files": 3,
   "optional_figure_10": "omitted_no_frozen_source_field_and_no_new_analysis_allowed",
-  "paired_video_files": 0,
-  "paired_video_limitation": "Five ACT/PACT third-person pairs could not be reconstructed from existing media; only one ACT probe exists, and no reruns were permitted.",
-  "rollouts_or_training_performed": false,
+  "paired_video_files": 2,
+  "paired_video_release": "Three presentation-only single-arm clips were retained; one complete ACT/PACT pair is available and clip 3 was dropped by the exact determinism gate. The frozen aborted scientific qualitative record remains unchanged.",
+  "presentation_only_rollout_rerenders": 4,
+  "rollouts_or_training_performed": true,
   "schema_version": "pact_slideshow_bundle_manifest_v1",
   "scientific_artifacts_modified": false,
-  "total_payload_size_bytes_excluding_manifest": 15319143,
-  "unpaired_independent_probe_files": 1,
-  "video_files": 3,
+  "total_payload_size_bytes_excluding_manifest": 15910286,
+  "training_performed": false,
+  "unpaired_independent_probe_files": 0,
+  "video_files": 5,
   "video_records": {
+    "clip1_54a6272f66ca_pact_success": {
+      "path": "videos/matched_pairs/clip1_54a6272f66ca_pact_success.mp4",
+      "sha256": "c2a61d4dc9ff120b91f2d05e8151df51b7522ae7dce0ed0374c07dd7ba246a0d",
+      "size_bytes": 455452,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.997360",
+        "height": 352,
+        "nb_frames": "303",
+        "width": 624
+      }
+    },
+    "clip2_54a6272f66ca_act_failure": {
+      "path": "videos/matched_pairs/clip2_54a6272f66ca_act_failure.mp4",
+      "sha256": "77fe67b8a1d30e89381470717fdae91fe3cdb711d5d1802d39f50319d0fadcf7",
+      "size_bytes": 332863,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.997360",
+        "height": 352,
+        "nb_frames": "303",
+        "width": 624
+      }
+    },
+    "clip4_e99dc657bfa7_pact_failure": {
+      "path": "videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4",
+      "sha256": "bace094397f09e155c00479a5c856c4470e19093c71c6f31dbf5628ce7b03aa5",
+      "size_bytes": 508636,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.997360",
+        "height": 352,
+        "nb_frames": "303",
+        "width": 624
+      }
+    },
     "expert_demo": {
       "path": "videos/expert_demo/expert_clean_demo_wrist_view.mp4",
       "sha256": "97b085ab69dbb85bd30172177516ef2998ac9564ea504ac81247e15ffe717707",
@@ -345,19 +404,6 @@
         "duration": "10.231023",
         "height": 352,
         "nb_frames": "155",
-        "width": 624
-      }
-    },
-    "independent_act_probe": {
-      "path": "videos/paired/video01_ACT_ONLY_independent_draw.mp4",
-      "sha256": "7f92ee06ab5bb5ed7b12c89e709be58af4985699459287cecb14ba4f6cfca8cd",
-      "size_bytes": 730139,
-      "video": {
-        "avg_frame_rate": "1894/125",
-        "codec_name": "h264",
-        "duration": "59.464097",
-        "height": 352,
-        "nb_frames": "901",
         "width": 624
       }
     },

@@ -47,6 +47,10 @@ POLICY_REGISTRY = ROOT / "diagnostics_output/pact_contact_endpoint/policy_traini
 QUALITATIVE_MANIFEST = (
     ROOT / "diagnostics_output/pact_contact_endpoint/qualitative_video_manifest.json"
 )
+QUALITATIVE_CLIPS_V2_MANIFEST = (
+    ROOT
+    / "diagnostics_output/pact_contact_endpoint/qualitative_clips_v2_manifest.json"
+)
 CORRIDOR_XML = (
     ROOT
     / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/"
@@ -57,8 +61,14 @@ HEATMAP_SOURCE = Path(
     "/root/pact_contact_endpoint_artifacts/qualitative_videos/reruns/video_01_act/"
     "episode_00000000_sensors_depth8_heatmap.mp4"
 )
-PROBE_SOURCE = Path(
-    "/root/pact_contact_endpoint_artifacts/qualitative_videos/raw/video_01_act.mp4"
+QUALITATIVE_CLIPS_V2_RELEASE = Path(
+    "/root/pact_contact_endpoint_artifacts/qualitative_clips_v2/release"
+)
+QUALITATIVE_CLIPS_V2_NAMES = (
+    "clip1_54a6272f66ca_pact_success",
+    "clip2_54a6272f66ca_act_failure",
+    "clip3_e99dc657bfa7_act_success",
+    "clip4_e99dc657bfa7_pact_failure",
 )
 EXPERT_RESULT = (
     ROOT
@@ -106,6 +116,7 @@ SOURCE_COPIES = {
     "early_3d_final_decision.json": EARLY_DECISION,
     "policy_training_registry.json": POLICY_REGISTRY,
     "qualitative_video_manifest.json": QUALITATIVE_MANIFEST,
+    "qualitative_clips_v2_manifest.json": QUALITATIVE_CLIPS_V2_MANIFEST,
     "pact_collision_corridor.xml": CORRIDOR_XML,
     "expert_demo_result.json": EXPERT_RESULT,
 }
@@ -166,7 +177,16 @@ def load(path: Path) -> dict[str, Any]:
 def require_sources() -> None:
     required = list(SOURCE_COPIES.values()) + list(REPORT_COPIES.values())
     required += list(TRAINING_LOGS.values())
-    required += [HEATMAP_SOURCE, PROBE_SOURCE, EXPERT_VIDEO]
+    required += [
+        HEATMAP_SOURCE,
+        EXPERT_VIDEO,
+        QUALITATIVE_CLIPS_V2_RELEASE / "README.md",
+    ]
+    release_manifest = load(QUALITATIVE_CLIPS_V2_MANIFEST)
+    required += [
+        Path(record["release_video_path"])
+        for record in release_manifest.get("render_outputs", [])
+    ]
     missing = [str(path) for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError("missing slideshow sources:\n" + "\n".join(missing))
@@ -671,69 +691,49 @@ def ffprobe(path: Path) -> dict[str, Any]:
     return streams[0]
 
 
-def label_independent_probe(source: Path, output: Path) -> None:
-    text_line_1 = "INDEPENDENT RE-RENDER - ILLUSTRATIVE ONLY"
-    text_line_2 = "NOT THE REGISTERED ROW - CONTACT TOTALS DIFFERED BY 0.02 PERCENT"
-    filter_text = (
-        "drawbox=x=0:y=ih-42:w=iw:h=42:color=black@0.72:t=fill,"
-        f"drawtext=text='{text_line_1}':fontcolor=white:fontsize=13:"
-        "x=(w-text_w)/2:y=h-39,"
-        f"drawtext=text='{text_line_2}':fontcolor=white:fontsize=13:"
-        "x=(w-text_w)/2:y=h-21"
-    )
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-i",
-            str(source),
-            "-vf",
-            filter_text,
-            "-an",
-            "-c:v",
-            "libx264",
-            "-preset",
-            "medium",
-            "-crf",
-            "18",
-            "-movflags",
-            "+faststart",
-            str(output),
-        ],
-        check=True,
-    )
-
-
 def package_videos(bundle: Path) -> dict[str, Any]:
-    paired = bundle / "videos/paired"
+    matched = bundle / "videos/matched_pairs"
     heatmap = bundle / "videos/sensor_heatmap"
     expert = bundle / "videos/expert_demo"
-    for directory in (paired, heatmap, expert):
+    for directory in (matched, heatmap, expert):
         directory.mkdir(parents=True)
 
     heatmap_output = heatmap / "sensor_heatmap_40_skin_streams.mp4"
     expert_output = expert / "expert_clean_demo_wrist_view.mp4"
-    probe_output = paired / "video01_ACT_ONLY_independent_draw.mp4"
     shutil.copy2(HEATMAP_SOURCE, heatmap_output)
     shutil.copy2(EXPERT_VIDEO, expert_output)
-    label_independent_probe(PROBE_SOURCE, probe_output)
-    unavailable = paired / "UNAVAILABLE_PAIRED_VIDEOS.md"
-    unavailable.write_text(
-        "# Paired third-person videos unavailable under the no-rerun constraint\n\n"
-        "The frozen selection names five ACT/PACT pairs, but only one ACT third-person probe "
-        "exists on disk. Historical evaluation and collection footage is wrist-only, and the "
-        "selected scientific payloads were compacted. The slideshow plan forbids GPU work and "
-        "reruns, so no ACT/PACT pair can be produced honestly from existing media.\n\n"
-        "`video01_ACT_ONLY_independent_draw.mp4` is the one surviving third-person probe. It is "
-        "explicitly labelled as an independent illustrative re-render and must not be presented "
-        "as a pair or as footage of the analyzed rollout. The scientific qualitative manifest "
-        "remains `aborted_determinism_mismatch`.\n"
-    )
+    release_manifest = json.loads(QUALITATIVE_CLIPS_V2_MANIFEST.read_text())
+    if release_manifest.get("status") not in {
+        "presentation_release_verified",
+        "presentation_release_incomplete_determinism_drop",
+    }:
+        raise ValueError("qualitative clips v2 presentation release is not finalized")
+    release_records = {
+        item["clip_id"]: item for item in release_manifest["render_outputs"]
+    }
     outputs = {}
+    selected_names = [clip["clip_id"] for clip in release_manifest["clips"]]
+    if selected_names != list(QUALITATIVE_CLIPS_V2_NAMES):
+        raise ValueError("qualitative clips v2 manifest has unexpected slide order")
+    retained = set(release_manifest["determinism_summary"]["retained_clip_ids"])
+    retained_names = [clip_id for clip_id in selected_names if clip_id in retained]
+    if retained_names != list(release_records):
+        raise ValueError("qualitative clips v2 retained/release order mismatch")
+    for clip_id in retained_names:
+        source = QUALITATIVE_CLIPS_V2_RELEASE / f"{clip_id}.mp4"
+        output = matched / source.name
+        record = release_records[clip_id]
+        if file_hash(source) != record["release_video_sha256"]:
+            raise ValueError(f"qualitative release hash mismatch: {source}")
+        shutil.copy2(source, output)
+        outputs[clip_id] = {
+            "path": str(output.relative_to(bundle)),
+            "sha256": file_hash(output),
+            "size_bytes": output.stat().st_size,
+            "video": ffprobe(output),
+        }
+    shutil.copy2(QUALITATIVE_CLIPS_V2_RELEASE / "README.md", matched / "README.md")
     for key, path in {
-        "independent_act_probe": probe_output,
         "sensor_heatmap": heatmap_output,
         "expert_demo": expert_output,
     }.items():
@@ -949,31 +949,30 @@ def make_summary_markdown(bundle: Path) -> None:
 
 def make_video_shot_list(bundle: Path) -> None:
     (bundle / "VIDEO_SHOT_LIST.md").write_text(
-        "# PACT slideshow — video shot list\n\n"
-        "> Production brief for future matched exports. This does not change the current "
-        "bundle status: no matched clips were generated, and no new rollouts were run.\n\n"
-        "The highest-value missing asset is a matched three-way rollout comparison.\n\n"
-        "## Make these three clips first\n\n"
-        "For the same evaluation instance, initial state, camera, playback speed, and policy "
-        "seed, export:\n\n"
-        "- **ACT**\n"
-        "- **PACT with correctly aligned 32-D proximity**\n"
-        "- **PACT_PERMUTED using the registered in-distribution permutation ablation**\n\n"
-        "Put them side by side in one 15–25 second video. Overlay only:\n\n"
-        "- policy arm and seed;\n"
-        "- evaluation instance ID;\n"
-        "- task success: yes/no;\n"
-        "- any hazard contact: yes/no;\n"
-        "- hazard-contact frames;\n"
-        "- maximum hazard penetration, when available.\n\n"
-        "## Select three representative cases\n\n"
-        "- **Discordant safety case:** PACT avoids or shortens contact while ACT/permuted "
-        "does not.\n"
-        "- **Both-success case:** all arms finish the task, showing whether proximity changes "
-        "an already successful trajectory.\n"
-        "- **Failure case:** an honest example where PACT still fails.\n\n"
-        "Do not use only the most flattering rollout. Use the registered evaluation outputs "
-        "and state why each example was selected.\n\n"
+        "# PACT slideshow — matched qualitative release\n\n"
+        "The former three-way production brief is superseded by four fixed single-arm "
+        "selections from two matched frozen-evaluation instances. Three passed the exact "
+        "determinism gate and are shipped. Each source pair shares the episode, policy seed, "
+        "intrusion side, camera, and 3.0x playback factor.\n\n"
+        "## Slide order\n\n"
+        "1. **PACT success:** `clip1_54a6272f66ca_pact_success.mp4` — 0 hazard frames, task success.\n"
+        "2. **ACT failure:** `clip2_54a6272f66ca_act_failure.mp4` — 29,022 hazard frames, task failure.\n"
+        "3. **ACT success (dropped; no MP4 shipped):** fixed row had 19,757 hazard frames and task success, but the rerender changed task success to no and first contact 302→295.\n"
+        "4. **PACT failure:** `clip4_e99dc657bfa7_pact_failure.mp4` — 17,609 hazard frames, task failure.\n\n"
+        "Instance A was selected as the largest ACT-contact member of the 48 instance-seeds "
+        "where PACT succeeds and ACT fails. Instance B was selected as the largest PACT-contact "
+        "member of the 34 instance-seeds where ACT succeeds and PACT fails. Keeping the PACT "
+        "failure is deliberate: these are examples, not aggregate evidence.\n\n"
+        "## Overlay\n\n"
+        "Every clip shows only policy arm and seed, episode ID, task success, any hazard "
+        "contact, running hazard-contact frames, maximum hazard penetration, when available, "
+        "and the common playback factor.\n\n"
+        "## Required caption\n\n"
+        "> Re-rendered from the analyzed rollout. Task success, manipulation success, and "
+        "first-contact step reproduce exactly; contact-pair samples differ by 0.017%.\n\n"
+        "The original `PACT_QUALITATIVE_VIDEOS.md` remains "
+        "`aborted_determinism_mismatch`; this is a presentation release under a separate "
+        "manifest, not a revision of the scientific record.\n\n"
         "## Existing repository video\n\n"
         "A setup turntable is already committed at:\n\n"
         "`diagnostics_output/20260611_skin_photoshoot/turntable.mp4`\n\n"
@@ -1009,18 +1008,24 @@ def make_index(bundle: Path, video_records: dict[str, Any]) -> None:
         "",
         "Optional Figure 10 (projection magnitudes) was deliberately omitted because no frozen source artifact contains the quoted fan-in-normalized norms and the plan forbids new analysis.",
         "",
-        "## Future video shot list",
+        "## Matched qualitative clips",
         "",
-        "`VIDEO_SHOT_LIST.md` specifies the requested matched ACT / PACT / PACT_PERMUTED production sequence, representative-case rules, allowed overlays, and separation from Safety-CVAE work. It is a future production brief; no new rollouts were generated for this bundle.",
+        "`VIDEO_SHOT_LIST.md` and `videos/matched_pairs/README.md` record the two matched instances, four fixed selections, the clip-3 determinism drop, overlays, and presentation-only checks. Three clips are shipped; the aggregate evidence remains the 1,200-rollout analysis.",
+        "",
+        "> Re-rendered from the analyzed rollout. Task success, manipulation success, and first-contact step reproduce exactly; contact-pair samples differ by 0.017%.",
+        "",
+        "The quotation is the predeclared caption from the earlier probe. Per-clip deltas are in `data/qualitative_clips_v2_manifest.json`; do not generalize 0.017% to all four rerenders.",
         "",
         "## Videos",
         "",
         "| File | What it shows | Claim supported | Source | Required caveat |",
         "|---|---|---|---|---|",
+        "| `videos/matched_pairs/clip1_54a6272f66ca_pact_success.mp4` | Instance A, PACT | PACT avoids the panel and succeeds in this selected case | `data/qualitative_clips_v2_manifest.json → clips[0]` | Pair with clip 2; selected example, not aggregate evidence |",
+        "| `videos/matched_pairs/clip2_54a6272f66ca_act_failure.mp4` | Instance A, ACT | ACT sustains 29,022 hazard frames and fails on the same instance/seed | `data/qualitative_clips_v2_manifest.json → clips[1]` | Pair with clip 1; presentation re-render |",
+        "| **Clip 3 not shipped** | Instance B, ACT | Its rerender changed task success yes→no and first contact 302→295 | `data/qualitative_clips_v2_manifest.json → determinism_summary` | Mandatory determinism-gate drop; not rerun or replaced |",
+        "| `videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4` | Instance B, PACT | PACT still fails in an honestly retained counterexample | `data/qualitative_clips_v2_manifest.json → clips[3]` | Pair with clip 3; PACT reduces contact incidence, not eliminates it |",
         "| `videos/sensor_heatmap/sensor_heatmap_40_skin_streams.mp4` | All 40 skin streams over one rollout | The whole-body sensors carry spatially localized surface signal | Existing determinism-probe heatmap | Visual illustration only; ACT did not consume these streams |",
         "| `videos/expert_demo/expert_clean_demo_wrist_view.mp4` | Clean scripted-expert task execution | The task is solvable by a collision-free expert | `data/expert_demo_result.json` | Wrist view does not show the full-body bow or panel |",
-        "| `videos/paired/video01_ACT_ONLY_independent_draw.mp4` | Third-person ACT probe | A high-contact ACT trajectory can persist against the panel | Existing qualitative ACT probe | **Not paired; independent re-render; 0.017% contact-total discrepancy; illustrative only** |",
-        "| `videos/paired/UNAVAILABLE_PAIRED_VIDEOS.md` | Why five pairs are absent | The no-rerun constraint prevents honest reconstruction of missing PACT third-person views | `data/qualitative_video_manifest.json` | Never call the ACT-only probe a comparison |",
         "",
         "## One-page text summary",
         "",
@@ -1062,19 +1067,25 @@ def bundle_manifest(bundle: Path, video_records: dict[str, Any]) -> dict[str, An
         "schema_version": "pact_slideshow_bundle_manifest_v1",
         "bundle_root": str(bundle.resolve()),
         "scientific_artifacts_modified": False,
-        "gpu_work_performed": False,
-        "rollouts_or_training_performed": False,
+        "gpu_work_performed": True,
+        "rollouts_or_training_performed": True,
+        "presentation_only_rollout_rerenders": 4,
+        "training_performed": False,
         "figure_concepts": len(figure_stems),
         "figure_files": sum(1 for entry in entries if entry["path"].startswith("figures/")),
         "video_files": sum(1 for entry in entries if entry["path"].endswith(".mp4")),
-        "paired_video_files": 0,
-        "unpaired_independent_probe_files": 1,
+        "paired_video_files": 2,
+        "matched_single_arm_clip_files": 3,
+        "complete_matched_instance_pairs": 1,
+        "determinism_dropped_clip_files": 1,
+        "unpaired_independent_probe_files": 0,
         "total_payload_size_bytes_excluding_manifest": sum(entry["size_bytes"] for entry in entries),
         "extension_counts": dict(sorted(extension_counts.items())),
         "video_records": video_records,
-        "paired_video_limitation": (
-            "Five ACT/PACT third-person pairs could not be reconstructed from existing media; "
-            "only one ACT probe exists, and no reruns were permitted."
+        "paired_video_release": (
+            "Three presentation-only single-arm clips were retained; one complete ACT/PACT "
+            "pair is available and clip 3 was dropped by the exact determinism gate. The "
+            "frozen aborted scientific qualitative record remains unchanged."
         ),
         "optional_figure_10": "omitted_no_frozen_source_field_and_no_new_analysis_allowed",
         "entries": entries,
