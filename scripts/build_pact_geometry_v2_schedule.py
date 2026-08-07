@@ -84,7 +84,10 @@ def build(
     if expert_screen.get("continue_to_policy_evaluation") is not True:
         raise ValueError("expert screen did not authorize policy evaluation")
     surviving = list(expert_screen["surviving_condition_ids"])
-    if surviving != list(manifest["conditions"]):
+    # JSON is serialized with sorted keys, so mapping iteration order is not a
+    # scientific identifier.  The manifest rows retain their frozen numeric
+    # condition_index; compare the authorized condition IDs as a set here.
+    if set(surviving) != set(manifest["conditions"]):
         raise ValueError("surviving conditions differ from frozen main manifest")
     rows = []
     for instance in manifest["rows"]:
