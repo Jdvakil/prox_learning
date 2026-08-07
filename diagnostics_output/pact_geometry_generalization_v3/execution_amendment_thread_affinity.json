@@ -1,0 +1,48 @@
+{
+  "amendment_sha256": "6d234e2e6d0c05212292b6de4e373992c7c1df868eae9ccfdceb6b67dd004a62",
+  "changed_scientific_schedule": false,
+  "endpoint_fields_read": false,
+  "fixed_worker_count": 12,
+  "intervention": {
+    "future_child_cpu_affinity": "0-31",
+    "pre_observation_process_groups_to_terminate": [
+      3282802,
+      3288559
+    ],
+    "supervisor_pid": 3282775
+  },
+  "observed_execution_constraint": {
+    "accepted_full_run_workers": 10,
+    "active_workers": 12,
+    "cgroup_pids_current": 3724,
+    "cgroup_pids_max": 3840,
+    "gpu_memory_used_mib": 15485,
+    "representative_initialized_worker_tasks": 321,
+    "startup_error": "libgomp: Thread creation failed: Resource temporarily unavailable"
+  },
+  "reason": "Two workers could not finish initialization under the container task limit despite adequate GPU and CPU compute headroom. Restricting future child affinity reduces library thread-pool fanout while retaining twelve rollout subprocesses.",
+  "rows": [
+    {
+      "attempt_index": 1,
+      "initial_observation_accepted": false,
+      "pid": 3288559,
+      "result_present": false,
+      "rollout_id": "858515ef900a025997d2065bc5e1e73f9bae35c36f9ace917b228e830c99ed55",
+      "schedule_index": 5,
+      "schedule_row_sha256": "cd7e9b55ea80bbbc62302c145c17ffafa6cbf268d38a92e54c5231b4d1dc611d"
+    },
+    {
+      "attempt_index": 0,
+      "initial_observation_accepted": false,
+      "pid": 3282802,
+      "result_present": false,
+      "rollout_id": "26ea4710eb52d9f1bf06ff8728ab47dd88c175596f5dfeda8e9df045289d1770",
+      "schedule_index": 9,
+      "schedule_row_sha256": "2230f9a0fd2492114dc7937fc49c6c2bdfb31e3fb17d1c522fbf914bd19bc6ed"
+    }
+  ],
+  "schema_version": "pact_geometry_generalization_v3_execution_amendment_v1",
+  "scientific_boundary_rule": "individual pre-observation infrastructure failure may retry; no post-observation row may be individually retried",
+  "scientific_result_files_opened": false,
+  "timestamp_utc": "2026-08-07T01:45:20Z"
+}
