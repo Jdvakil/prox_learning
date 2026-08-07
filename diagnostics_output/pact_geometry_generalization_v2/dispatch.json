@@ -1,0 +1,275 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "cluster": "instance; all included arms, seeds, and conditions move together",
+    "decision_rule": {
+      "GEOMETRY_DOES_NOT_GENERALIZE": "C0 reproduces but no shifted condition has both negative gaps, either pooled-shifted contact CI includes zero, or either pooled-shifted contact gap reverses",
+      "GEOMETRY_GENERALIZES": "C0 reproduces; both contact modality gaps are negative in every surviving shifted condition; and both pooled-shifted 95% CIs exclude zero below zero",
+      "GEOMETRY_PARTIAL": "C0 reproduces and both contact modality gaps are negative in at least one but not every shifted condition",
+      "GEOMETRY_TEST_INCONCLUSIVE": "C0 does not reproduce, fewer than two shifted conditions survive, or the schedule does not reconcile",
+      "precedence": [
+        "GEOMETRY_TEST_INCONCLUSIVE",
+        "GEOMETRY_GENERALIZES",
+        "GEOMETRY_PARTIAL",
+        "GEOMETRY_DOES_NOT_GENERALIZE"
+      ]
+    },
+    "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_geometry_generalization.py",
+    "seeds_unpooled_first": true,
+    "sha256": "7549d9c302d58a89c62d18a2549de2cf54019eaadf80a67242e8d91ea7e4a1f0"
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "detachment_proof": {
+    "endpoint_outcome_fields_inspected": false,
+    "kill_launching_shell_during_smoke": true,
+    "required_artifact": "detachment_proof.json",
+    "required_before_full_dispatch": true
+  },
+  "dispatch_contract_sha256": "aed8c8fa3bb370c28120b66f89726f46f49222730d55bd09b69ea54590e7d503",
+  "execution": {
+    "detached_stdin": true,
+    "fixed_worker_count": 8,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_row_replacement": true,
+    "nohup": true,
+    "output_root": "/root/pact_geometry_generalization_v2_artifacts/evaluation_v1",
+    "policy_outcomes_seen_before_freeze": false,
+    "setsid": true
+  },
+  "frozen_contact_endpoint_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "/root/prox_learning_pact_remediation/docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b"
+  },
+  "frozen_inputs": {
+    "checkpoints": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+        "sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e"
+      },
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+        "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+        "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+      }
+    ],
+    "dataset_stats": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      }
+    ],
+    "expert_screen": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v2/expert_screen.json",
+      "sha256": "9b5a05872f7f832b41dce180d9a54743b3e536cea4e5556ebf10152ba4b77832"
+    },
+    "manifest": {
+      "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v2.json",
+      "sha256": "8ef5cd329753aa0ed80f43581a501b593d55cad637051776ab1d7c9216b94c53"
+    },
+    "phase0_manifest": {
+      "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v2_phase0.json",
+      "sha256": "ff4a08bb695067040923e7e122d5658f686bb4173194cbdf47fbd4e6ac257777"
+    },
+    "policy_registry": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training.json",
+      "sha256": "b644b3c1307ab296d4424a502820c1c6b776c2818d7cd5ab463a8b931d86d5f7"
+    },
+    "runtime": {
+      "analysis": {
+        "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_geometry_generalization.py",
+        "sha256": "7549d9c302d58a89c62d18a2549de2cf54019eaadf80a67242e8d91ea7e4a1f0"
+      },
+      "contact_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_contact_endpoint_row.py",
+        "sha256": "e9188f4e97beca874d45f48b4f185cffaadba0e50d978720f1558ca8f6d5fdab"
+      },
+      "contact_taxonomy": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
+        "sha256": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd"
+      },
+      "detached_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_geometry_v2_detached.py",
+        "sha256": "850bdc15767b3006cfd140c8e1e76f238739c9fba0c5d0c5c9027a5940bd7a72"
+      },
+      "detachment_proof": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_geometry_v2_detachment.py",
+        "sha256": "eb4fd499eaec3403aa4eec73793aa3fd150d5b1c5bfb21273e0060732ec18d10"
+      },
+      "dispatch_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/freeze_pact_geometry_v2_dispatch.py",
+        "sha256": "09ba8ee8ea2428ca60433ce6420aff186ebff16b50b0f37dc0871f62df30ee3e"
+      },
+      "evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_geometry_generalization_v2_row.py",
+        "sha256": "a7fa936e5c0d2faaab2bc822f90ccca50400b92a8fd909860064675dd9d037f8"
+      },
+      "full_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_geometry_v2_full.py",
+        "sha256": "2c180969fe3810fda9a55da6508f8fd9333acdfd3371d3cc1abfbfcea1a2096d"
+      },
+      "generic_schedule_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_confirmatory_schedule.py",
+        "sha256": "901cdb55eb034d585e3f4aebe760246efb4c24d35723e39b48258857b1efb580"
+      },
+      "geometry_supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_supervisor.py",
+        "sha256": "df4b756109c3f1a921a4d1264fa353a18e81d53f7a0a780bc6909ed19c3f16a8"
+      },
+      "legacy_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_collision_row.py",
+        "sha256": "0aca5c279ee79c2fe38dc9b9e6ceafdb816885d3b21e083482f624be7dcec444"
+      },
+      "live_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_frontend_screen_row.py",
+        "sha256": "e819d88807e0be278c96659112099e4cda0d98defbc886b7aca6e7379387ac55"
+      },
+      "main_contract": {
+        "path": "/root/prox_learning_pact_remediation/scripts/pact_geometry_generalization_v2_main_contract.py",
+        "sha256": "030e1b1f5157ff387d0417df03942b3ffd8325dcd6d0804b87eff7796b07450f"
+      },
+      "manifest_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_geometry_v2_manifest.py",
+        "sha256": "97435b6c8c01feb561ee2bc12ca491d95c7156b5b6f207d8fc770886f87fcd1a"
+      },
+      "permuted_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_valid_ablation_row.py",
+        "sha256": "ede6bd54b55ba143c0043ea80190eaf6449ed77b9e5d71b8af7dcebea8a502c4"
+      },
+      "proof_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_frontend_screen_detachment.py",
+        "sha256": "950fa361656a6426d267cf45d27046ec89f9e840088016ee119ec7815d6e5f56"
+      },
+      "samplers": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+        "sha256": "7cbf2f3fb876547aaa6f47109475b5f0b1bfcd850b02f71878b150f941db4653"
+      },
+      "scene_xml": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+        "sha256": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540"
+      },
+      "schedule_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_geometry_v2_schedule.py",
+        "sha256": "5fa337c208caaed1237ce4a05b7773321a35973d4ff29998d5db6d4612a00bc4"
+      },
+      "storage_compactor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_geometry_storage.py",
+        "sha256": "f63eea785646bd784e6423b5836ee7ae9a43152d1efb92df24c261fe95cb6222"
+      },
+      "storage_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_contact_storage.py",
+        "sha256": "e4efcf0ce40b37d35e12e4e4f4b80d72ca8001d7a96f2b6663f7be94cb0debc8"
+      },
+      "supervisor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_v2_supervisor.py",
+        "sha256": "1c2452f37ed9726e877e84b5bf1132d4d151f4a2204c377ad45a1395a5a097d2"
+      },
+      "supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_frontend_screen_supervisor.py",
+        "sha256": "942dccf825c4395aa37e0077e85338802db2904b98154fd9af36b395869e57c3"
+      },
+      "throughput": {
+        "path": "/root/prox_learning_pact_remediation/scripts/measure_pact_geometry_throughput.py",
+        "sha256": "f7fb188ef71f88ae918d667188872ea1e62590cb84ad161cc627781e0c46be47"
+      }
+    },
+    "surface_encoders": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ],
+    "token_plan": {
+      "global_tensor": {
+        "path": "/root/pact_contact_endpoint_artifacts/token_plan_v1/permuted_tokens.npy",
+        "sha256": "6b3dbb41bf31b9c175586cc9e4eb5b6ce9deb1374ab9a5874365942fbd312eef",
+        "size_bytes": 460800128
+      },
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+      "sha256": "f4843f696d2c9cb21531668bbcc6c7507da8226d4165cd0c023ca61caf8e8784",
+      "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+    }
+  },
+  "launch_smoke": {
+    "arm": "PACT_PERMUTED",
+    "checkpoint_seed": 3101,
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "72aa63edd52a35511c8a29f15ad30b7706f424b40f75558dafef9b894cee6ca9",
+    "output_relpath": "rows/0000_7e375ff47bb1a418_c0_pact_permuted_s3101",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "7e375ff47bb1a418e79f9406dcae5b0648cf8972db507d7c80316678ef8fb663",
+    "schedule_index": 0,
+    "schedule_row_sha256": "b2b23c5ed823ce042a9ad22cbcba78ec1fd2fbc4a48ef2dc5bdeca8e14d9eb74"
+  },
+  "schema_version": "pact_geometry_generalization_v2_dispatch",
+  "scientific_schedule": {
+    "file_sha256": "ee8967fc8b118ceac55ee40bb9a830b3a2ef1dfd7a9a7c7e55ea35369c237109",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v2.json",
+    "manifest_sha256": "8ef5cd329753aa0ed80f43581a501b593d55cad637051776ab1d7c9216b94c53",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v2/schedule.json",
+    "rows": 900,
+    "rows_changed": 0,
+    "schedule_sha256": "725908201f3213198bc2ead1e0ea23a0b553ae2157c7aa74e8d1f74aed8cb8e3",
+    "workers": 8
+  },
+  "storage": {
+    "compact_every_completed_row": true,
+    "outcome_based_selection": false,
+    "retain_raw_rollout_payloads": false,
+    "summary_only_contact_instrumentation": true
+  },
+  "throughput": {
+    "artifact": "throughput_first_20_minutes.json",
+    "endpoint_fields_read": false,
+    "outcome_blind_window_minutes": 20
+  },
+  "watchdog": {
+    "event_log_directory": "watchdog_events",
+    "no_completion_seconds": 600,
+    "restart_all_active_rows_never_subset": true,
+    "restart_only_if_no_active_initial_observation_accepted": true
+  }
+}
