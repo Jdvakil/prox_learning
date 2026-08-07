@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(MOLMO))
 
 import pact_geometry_generalization_v2_contract as contract
+import pact_geometry_generalization_v2_main_contract as main_contract
 from build_pact_geometry_v2_phase0_manifest import class_source
 
 
@@ -158,3 +159,83 @@ def test_generated_phase0_manifest_regenerates_if_present() -> None:
     if not path.exists():
         pytest.skip("attempt-2 Phase-0 manifest has not been generated")
     contract.validate_manifest(json.loads(path.read_text()))
+
+
+def test_phase0_results_reconcile_and_authorize_exact_conditions() -> None:
+    root = ROOT / "diagnostics_output/pact_geometry_generalization_v2"
+    screen_path = root / "expert_screen.json"
+    if not screen_path.exists():
+        pytest.skip("attempt-2 expert screen has not completed")
+    envelope = json.loads((root / "envelope_map.json").read_text())
+    selection = json.loads((root / "phase0b_selection.json").read_text())
+    screen = json.loads(screen_path.read_text())
+    assert envelope["row_count"] == 56
+    assert envelope["selected_candidate_ids_by_frozen_priority"] == [
+        "Z_093",
+        "HALF_Y_030",
+    ]
+    assert selection["selected_candidate_ids"] == ["Z_093", "HALF_Y_030"]
+    assert screen["phase0b_conditions"]["Z_093"]["clean_successes"] == 11
+    assert screen["phase0b_conditions"]["HALF_Y_030"]["clean_successes"] == 11
+    assert screen["surviving_condition_ids"] == ["C0", "C2", "Z_093", "HALF_Y_030"]
+    assert screen["main_policy_rollout_count"] == 900
+    assert screen["continue_to_policy_evaluation"] is True
+
+
+def test_main_policy_instances_are_fresh_paired_and_single_axis_where_declared() -> None:
+    phase0 = json.loads(
+        (ROOT / "configs/pact_geometry_generalization_v2_phase0.json").read_text()
+    )
+    expert = json.loads(
+        (ROOT / "diagnostics_output/pact_geometry_generalization_v2/expert_screen.json").read_text()
+    )
+    document = main_contract.build_manifest(
+        phase0_manifest=phase0,
+        expert_screen=expert,
+        source_hashes={"fixture": "0" * 64},
+    )
+    main_contract.validate_manifest(document)
+    assert len(document["rows"]) == 100
+    assert Counter(row["intrusion_side"] for row in document["rows"]) == {
+        "left": 50,
+        "right": 50,
+    }
+    for instance_index in range(25):
+        cell = [row for row in document["rows"] if row["instance_index"] == instance_index]
+        assert len(cell) == 4
+        assert len({(row["task_seed_u32"], row["task_seed_u64"]) for row in cell}) == 1
+    assert main_contract.CONDITIONS["Z_093"]["moved_axes"] == ["panel_z_m"]
+    assert main_contract.CONDITIONS["HALF_Y_030"]["moved_axes"] == [
+        "panel_half_y_m"
+    ]
+    for row in document["rows"]:
+        condition = main_contract.CONDITIONS[row["condition_id"]]
+        for axis in condition["moved_axes"]:
+            low, high = main_contract.TRAINING_SUPPORT[axis]
+            assert row["realized_geometry"][axis] < low or row["realized_geometry"][axis] > high
+
+
+def test_main_manifest_and_schedule_validate_if_present() -> None:
+    manifest_path = ROOT / "configs/pact_geometry_generalization_v2.json"
+    schedule_path = ROOT / "diagnostics_output/pact_geometry_generalization_v2/schedule.json"
+    if not manifest_path.exists():
+        pytest.skip("attempt-2 main manifest has not been generated")
+    main_contract.validate_manifest(json.loads(manifest_path.read_text()))
+    if not schedule_path.exists():
+        pytest.skip("attempt-2 main schedule has not been generated")
+    schedule = json.loads(schedule_path.read_text())
+    payload = dict(schedule)
+    observed = payload.pop("schedule_sha256")
+    assert observed == main_contract.sha256_payload(payload)
+    assert schedule["rollouts"] == len(schedule["rows"]) == 900
+    assert schedule["workers"] == 8
+    assert Counter(
+        (row["condition_id"], row["checkpoint_seed"], row["arm"])
+        for row in schedule["rows"]
+    ) == Counter(
+        (condition, seed, arm)
+        for condition in main_contract.CONDITIONS
+        for seed in (3101, 3102, 3103)
+        for arm in ("ACT", "PACT", "PACT_PERMUTED")
+        for _ in range(25)
+    )
