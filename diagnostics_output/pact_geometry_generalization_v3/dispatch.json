@@ -1,0 +1,256 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "cluster": "instance; all included arms, seeds, and conditions move together",
+    "decision_rule": {
+      "GEOMETRY_DOES_NOT_GENERALIZE": "C0 reproduces but no shifted condition has both negative gaps, either pooled-shifted contact CI includes zero, or either pooled-shifted contact gap reverses",
+      "GEOMETRY_GENERALIZES": "C0 reproduces; both contact modality gaps are negative in every surviving shifted condition; and both pooled-shifted 95% CIs exclude zero below zero",
+      "GEOMETRY_PARTIAL": "C0 reproduces and both contact modality gaps are negative in at least one but not every shifted condition",
+      "GEOMETRY_TEST_INCONCLUSIVE": "C0 does not reproduce, fewer than two shifted conditions survive, or the schedule does not reconcile",
+      "precedence": [
+        "GEOMETRY_TEST_INCONCLUSIVE",
+        "GEOMETRY_GENERALIZES",
+        "GEOMETRY_PARTIAL",
+        "GEOMETRY_DOES_NOT_GENERALIZE"
+      ]
+    },
+    "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_geometry_generalization_v3.py",
+    "seeds_unpooled_first": true,
+    "sha256": "992eb6671004299df335e6b95f54186f7225dcc5790544cea042554105f5f4a1"
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "detachment_proof": {
+    "endpoint_outcome_fields_inspected": false,
+    "kill_launching_shell_during_smoke": true,
+    "required_artifact": "detachment_proof.json",
+    "required_before_full_dispatch": true
+  },
+  "dispatch_contract_sha256": "d8f8bc9b108f3170f38ab7d7bdb1349b0fffa12ce30ae53f34d6b9dd4c7e9e3a",
+  "execution": {
+    "detached_stdin": true,
+    "fixed_worker_count": 12,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_row_replacement": true,
+    "nohup": true,
+    "output_root": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1",
+    "policy_outcomes_seen_before_freeze": false,
+    "setsid": true
+  },
+  "frozen_contact_endpoint_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "/root/prox_learning_pact_remediation/docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b"
+  },
+  "frozen_inputs": {
+    "checkpoints": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+      }
+    ],
+    "dataset_stats": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      }
+    ],
+    "expert_screen": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v2/expert_screen.json",
+      "sha256": "9b5a05872f7f832b41dce180d9a54743b3e536cea4e5556ebf10152ba4b77832"
+    },
+    "manifest": {
+      "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v3.json",
+      "sha256": "04fb4854dc1bd69f0495bc171a1231135ccde3f9a1cdb48b01bbfd363c326ddb"
+    },
+    "phase0_manifest": {
+      "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v2_phase0.json",
+      "sha256": "ff4a08bb695067040923e7e122d5658f686bb4173194cbdf47fbd4e6ac257777"
+    },
+    "policy_registry": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training.json",
+      "sha256": "b644b3c1307ab296d4424a502820c1c6b776c2818d7cd5ab463a8b931d86d5f7"
+    },
+    "runtime": {
+      "analysis": {
+        "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_geometry_generalization_v3.py",
+        "sha256": "992eb6671004299df335e6b95f54186f7225dcc5790544cea042554105f5f4a1"
+      },
+      "contact_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_contact_endpoint_row.py",
+        "sha256": "e9188f4e97beca874d45f48b4f185cffaadba0e50d978720f1558ca8f6d5fdab"
+      },
+      "contact_taxonomy": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
+        "sha256": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd"
+      },
+      "detached_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_geometry_v3_detached.py",
+        "sha256": "dabac9718f69e6258e8f603ec3305b5371c5c32027807e7dc8bc258482e50a1a"
+      },
+      "detachment_proof": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_geometry_v3_detachment.py",
+        "sha256": "a82345c245cb1daf27aa80b66310882414dc8f7afcb77c8e0fe47f1a05ea51eb"
+      },
+      "dispatch_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/freeze_pact_geometry_v3_dispatch.py",
+        "sha256": "e4a41b6afe7f9807e67fd456dbcc38e8c7cc3ee6a5b2e3650e02ec087159747b"
+      },
+      "evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_geometry_generalization_v3_row.py",
+        "sha256": "13c71b41b48a3d87aaa9e8273de2bb7a67cc1c8e73ae0b5659b194801154f412"
+      },
+      "full_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_geometry_v3_full.py",
+        "sha256": "f094e898cf26d82f24ad928087e09dd046a4f35aaa4e58a106e0adbb1e38ecea"
+      },
+      "generic_schedule_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_confirmatory_schedule.py",
+        "sha256": "901cdb55eb034d585e3f4aebe760246efb4c24d35723e39b48258857b1efb580"
+      },
+      "geometry_supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_supervisor.py",
+        "sha256": "df4b756109c3f1a921a4d1264fa353a18e81d53f7a0a780bc6909ed19c3f16a8"
+      },
+      "legacy_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_collision_row.py",
+        "sha256": "0aca5c279ee79c2fe38dc9b9e6ceafdb816885d3b21e083482f624be7dcec444"
+      },
+      "live_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_frontend_screen_row.py",
+        "sha256": "e819d88807e0be278c96659112099e4cda0d98defbc886b7aca6e7379387ac55"
+      },
+      "main_contract": {
+        "path": "/root/prox_learning_pact_remediation/scripts/pact_geometry_generalization_v3_contract.py",
+        "sha256": "09ed7b242ee5e0ba2e55f7d0af6e22d5f4b781b6859725b48bf91b1ebbe11c8a"
+      },
+      "manifest_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_geometry_v3_manifest.py",
+        "sha256": "31c0a31b74edb02bad2f07351befe22fdc5ccc42d33d7e96f213412e940526ce"
+      },
+      "permuted_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_valid_ablation_row.py",
+        "sha256": "ede6bd54b55ba143c0043ea80190eaf6449ed77b9e5d71b8af7dcebea8a502c4"
+      },
+      "proof_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_frontend_screen_detachment.py",
+        "sha256": "950fa361656a6426d267cf45d27046ec89f9e840088016ee119ec7815d6e5f56"
+      },
+      "samplers": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+        "sha256": "7cbf2f3fb876547aaa6f47109475b5f0b1bfcd850b02f71878b150f941db4653"
+      },
+      "scene_xml": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+        "sha256": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540"
+      },
+      "schedule_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_geometry_v3_schedule.py",
+        "sha256": "414b0c131b47c56d4d4b421a93ded7bbeef4e7b6dc3ad9db3ba3dbefde9b72e9"
+      },
+      "storage_compactor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_geometry_storage.py",
+        "sha256": "f63eea785646bd784e6423b5836ee7ae9a43152d1efb92df24c261fe95cb6222"
+      },
+      "storage_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_contact_storage.py",
+        "sha256": "e4efcf0ce40b37d35e12e4e4f4b80d72ca8001d7a96f2b6663f7be94cb0debc8"
+      },
+      "supervisor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_v3_supervisor.py",
+        "sha256": "4a322e538a2c3dfaaf13e939e6c39785e257db2933794338a9ee92dc235d3741"
+      },
+      "supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_frontend_screen_supervisor.py",
+        "sha256": "942dccf825c4395aa37e0077e85338802db2904b98154fd9af36b395869e57c3"
+      },
+      "throughput": {
+        "path": "/root/prox_learning_pact_remediation/scripts/measure_pact_geometry_throughput.py",
+        "sha256": "f7fb188ef71f88ae918d667188872ea1e62590cb84ad161cc627781e0c46be47"
+      }
+    },
+    "surface_encoders": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ],
+    "token_plan": {
+      "global_tensor": {
+        "path": "/root/pact_contact_endpoint_artifacts/token_plan_v1/permuted_tokens.npy",
+        "sha256": "6b3dbb41bf31b9c175586cc9e4eb5b6ce9deb1374ab9a5874365942fbd312eef",
+        "size_bytes": 460800128
+      },
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+      "sha256": "f4843f696d2c9cb21531668bbcc6c7507da8226d4165cd0c023ca61caf8e8784",
+      "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+    },
+    "worker_sizing": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/worker_sizing.json",
+      "sha256": "de4d778dc8d2896357096fd8b8a20979813d60e8be90dbcbbd48be29af550b13",
+      "worker_sizing_sha256": "f1e9557ac43be9d559ebad810b5c3327cdc2578f288ce7d1677d5a13d19bf3b8"
+    }
+  },
+  "launch_smoke": {
+    "arm": "PACT_PERMUTED",
+    "checkpoint_seed": 3101,
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "fb6a033ad09e5f32db94550dd4f65fe5608dd7246864128ef2a6cea2820fee34",
+    "output_relpath": "rows/0000_c4d92442365c3d00_c0_pact_permuted_s3101",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "c4d92442365c3d00c21088beef56443d586941dfbb477a04b02c1228d8767af1",
+    "schedule_index": 0,
+    "schedule_row_sha256": "c5187f6670baaefec743f45b64c360cd01c88258f3632a7c1ca5b8b4455fda44"
+  },
+  "schema_version": "pact_geometry_generalization_v3_dispatch",
+  "scientific_schedule": {
+    "file_sha256": "d44c70434b1cfb31670aaa4b29f2ac61479ca1f6df854cd58b4ead6941334167",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v3.json",
+    "manifest_sha256": "04fb4854dc1bd69f0495bc171a1231135ccde3f9a1cdb48b01bbfd363c326ddb",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/schedule.json",
+    "rows": 720,
+    "rows_changed": 0,
+    "schedule_sha256": "00a4190a6ba4af021dd2e6f4cc1f0bd3b79d79fcfd36e3547935d0e0f98f1f79",
+    "workers": 12
+  },
+  "storage": {
+    "compact_every_completed_row": true,
+    "outcome_based_selection": false,
+    "retain_raw_rollout_payloads": false,
+    "summary_only_contact_instrumentation": true
+  },
+  "throughput": {
+    "artifact": "throughput_first_20_minutes.json",
+    "endpoint_fields_read": false,
+    "outcome_blind_window_minutes": 20
+  },
+  "watchdog": {
+    "event_log_directory": "watchdog_events",
+    "no_completion_seconds": 600,
+    "restart_all_active_rows_never_subset": true,
+    "restart_only_if_no_active_initial_observation_accepted": true
+  }
+}
