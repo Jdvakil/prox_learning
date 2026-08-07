@@ -1,6 +1,6 @@
-# PACT held-out geometry generalization — attempt 3 progress
+# PACT held-out geometry generalization — attempt 3 execution record
 
-Attempt 3 is frozen and running. It replaces the abandoned, uninterpreted attempt-2 policy run
+Attempt 3 completed and reconciled. It replaces the abandoned, uninterpreted attempt-2 policy run
 with a more efficient and better-powered allocation. No v2 policy result was opened, no v2 outcome
 was analyzed, and all v2 artifacts remain preserved.
 
@@ -56,6 +56,12 @@ projection is 23.63 hours; allow roughly 24–25 hours end to end for execution,
 frozen analysis, the final report, and commits. The measurement used completion identities and
 timestamps only and records `endpoint_fields_read=false` and `schedule_changed=false`.
 
-Frozen analysis will run only after all 720 rows reconcile.
+## Completion
 
-EVALUATION_IN_PROGRESS
+All 720/720 rows reconciled at 2026-08-07 16:53:47 UTC with no abort and no missing schedule cell.
+Execution took approximately 15 hours 15 minutes from full dispatch. The preregistered analysis
+then returned `GEOMETRY_GENERALIZES`: C0 reproduced, C2 and `Z_093` both favored PACT on both
+contact endpoints, and both pooled-shifted modality confidence intervals excluded zero below zero.
+The final report is `docs/PACT_GEOMETRY_GENERALIZATION_V3.md`.
+
+EVALUATION_COMPLETE

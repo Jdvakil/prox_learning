@@ -1,0 +1,3431 @@
+{
+  "C0_reproduction": {
+    "any_contact": {
+      "bootstrap_replicates": 20000,
+      "bootstrap_seed": 2026130703,
+      "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+      "difference": -0.1,
+      "direction": "lower_is_better",
+      "instance_cluster_bootstrap_ci_95": [
+        -0.19166666666666668,
+        -0.016666666666666666
+      ],
+      "interpretation": "modality",
+      "median_pair_difference": 0.0,
+      "n_pairs": 120,
+      "n_unique_instances": 40
+    },
+    "checks": {
+      "any_contact_point_negative": true,
+      "contact_frames_point_negative": true,
+      "original_any_contact_reference_inside_C0_CI": true,
+      "original_contact_frames_reference_inside_C0_CI": true
+    },
+    "hazard_contact_frames": {
+      "bootstrap_replicates": 20000,
+      "bootstrap_seed": 2026130702,
+      "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+      "difference": -1293.2916666666667,
+      "direction": "lower_is_better",
+      "instance_cluster_bootstrap_ci_95": [
+        -2755.7166666666667,
+        -139.81500000000014
+      ],
+      "interpretation": "modality",
+      "median_pair_difference": 0.0,
+      "n_pairs": 120,
+      "n_unique_instances": 40
+    },
+    "original_reference": {
+      "PACT_minus_PACT_PERMUTED_any_hazard_contact_rate": -0.093,
+      "PACT_minus_PACT_PERMUTED_hazard_contact_frames": -1980.0
+    },
+    "reproduces": true
+  },
+  "analysis_script_sha256": "992eb6671004299df335e6b95f54186f7225dcc5790544cea042554105f5f4a1",
+  "analysis_sha256": "eaf2107882fd1e2efbacedd810d78b2ad4ea5ac233bd913abff67c0b441c0f43",
+  "condition_results": {
+    "C0": {
+      "absolute": {
+        "PACT": {
+          "collision_free_task_success": {
+            "count": 70,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.5833333333333334,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.5833333333333334,
+            "wilson_95": [
+              0.49388032700164236,
+              0.6676164785952404
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 70,
+            "hazard_bar_contact": 10,
+            "target_contact_without_task_success": 36,
+            "task_failure_after_gripper_close": 4
+          },
+          "hazard_bar_any_contact": {
+            "count": 10,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.08333333333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.08333333333333333,
+            "wilson_95": [
+              0.045893650374929706,
+              0.14662232164065653
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 20828.0,
+            "mean": 635.1833333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 20144.0,
+            "mean": 610.4083333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.0008952017792578659,
+            "mean": 4.189954080793688e-05,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 75,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.625,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.625,
+            "wilson_95": [
+              0.5357695062597921,
+              0.706475702135532
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        },
+        "PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "count": 63,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.525,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.525,
+            "wilson_95": [
+              0.43626995305824834,
+              0.6121790886208165
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 63,
+            "hazard_bar_contact": 22,
+            "target_contact_without_task_success": 32,
+            "task_failure_after_gripper_close": 3
+          },
+          "hazard_bar_any_contact": {
+            "count": 22,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.18333333333333332,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.18333333333333332,
+            "wilson_95": [
+              0.12430300356014223,
+              0.2620091351717033
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 50589.0,
+            "mean": 2294.675,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 27763.0,
+            "mean": 1903.7,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.010761330324480456,
+            "mean": 0.0005205421914621387,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 66,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.55,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.55,
+            "wilson_95": [
+              0.4608154341968757,
+              0.6360826491612539
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        }
+      },
+      "pooled": {
+        "PACT_minus_PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130704,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.058333333333333334,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              0.0,
+              0.11666666666666667
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_any_contact": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130703,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.1,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.19166666666666668,
+              -0.016666666666666666
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_entries": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130705,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -1659.4916666666666,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -3525.8564583333336,
+              -182.5168750000007
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130702,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -1293.2916666666667,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -2755.7166666666667,
+              -139.81500000000014
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130706,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.00047864265065420184,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.0008833255721501962,
+              -0.00014107423267450142
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "manipulation_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130708,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.075,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              0.016666666666666666,
+              0.13333333333333333
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "other_environment_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026130707,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.0,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              0.0,
+              0.0
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          }
+        }
+      },
+      "seeds_unpooled_first": {
+        "3101": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 28,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.7,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.7,
+                "wilson_95": [
+                  0.5456998118185507,
+                  0.8192515477025347
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 28,
+                "hazard_bar_contact": 2,
+                "target_contact_without_task_success": 9,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 2,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.05,
+                "wilson_95": [
+                  0.013820667386148344,
+                  0.16503877369140962
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 9940.0,
+                "mean": 248.625,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 8632.0,
+                "mean": 215.925,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578659,
+                "mean": 3.233885830883426e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 29,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.725,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.725,
+                "wilson_95": [
+                  0.5716504419378943,
+                  0.8389198375233267
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 26,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.65,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.65,
+                "wilson_95": [
+                  0.49505880837257693,
+                  0.7786547112682372
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 26,
+                "hazard_bar_contact": 6,
+                "target_contact_without_task_success": 6,
+                "task_failure_after_gripper_close": 2
+              },
+              "hazard_bar_any_contact": {
+                "count": 6,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.15,
+                "wilson_95": [
+                  0.07061187717320358,
+                  0.2907232436648971
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 50589.0,
+                "mean": 3887.625,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27763.0,
+                "mean": 2838.1,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.008261911230127615,
+                "mean": 0.00034817725714688606,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 27,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.675,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.675,
+                "wilson_95": [
+                  0.5201774618987768,
+                  0.799154977682173
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.07562499999999943,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.1,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.2,
+                  -0.025
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -3639.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -7604.8,
+                  -559.125
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -2622.175,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -5385.28,
+                  -551.7206250000178
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.0003158383988380518,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0008145160557218317,
+                  -1.743200551142999e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.075,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026080707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3102": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 18,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.45,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.45,
+                "wilson_95": [
+                  0.3070530781090492,
+                  0.6017090820106794
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 18,
+                "hazard_bar_contact": 5,
+                "target_contact_without_task_success": 16,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 5,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.125,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.125,
+                "wilson_95": [
+                  0.05459500250945401,
+                  0.261121198388511
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 20828.0,
+                "mean": 911.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 20144.0,
+                "mean": 882.55,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578659,
+                "mean": 5.6880288671637156e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 20,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.5,
+                "median": 0.5,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.5,
+                "wilson_95": [
+                  0.35199526933465386,
+                  0.6480047306653461
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 18,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.45,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.45,
+                "wilson_95": [
+                  0.3070530781090492,
+                  0.6017090820106794
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 18,
+                "hazard_bar_contact": 7,
+                "target_contact_without_task_success": 15
+              },
+              "hazard_bar_any_contact": {
+                "count": 7,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.175,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.175,
+                "wilson_95": [
+                  0.0874541374603592,
+                  0.31949990331787714
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 26748.0,
+                "mean": 1106.3,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 25224.0,
+                "mean": 1042.375,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.005432852410180954,
+                "mean": 0.0003781047195423468,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 19,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.475,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.475,
+                "wilson_95": [
+                  0.329354701126789,
+                  0.6250263789330753
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.075,
+                  0.075
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.05,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.175,
+                  0.075
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -195.15,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -1046.831875,
+                  788.5293749999996
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -159.825,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -950.099375,
+                  786.7187499999961
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.0003212244308707096,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0007170039578756738,
+                  -1.4089870815617154e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.025,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.05,
+                  0.125
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026081707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3103": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 24,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.6,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.6,
+                "wilson_95": [
+                  0.44595893660346186,
+                  0.7365167431570808
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 24,
+                "hazard_bar_contact": 3,
+                "target_contact_without_task_success": 11,
+                "task_failure_after_gripper_close": 2
+              },
+              "hazard_bar_any_contact": {
+                "count": 3,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.075,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.075,
+                "wilson_95": [
+                  0.025836025774588198,
+                  0.19864233524310543
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 15147.0,
+                "mean": 745.775,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 14679.0,
+                "mean": 732.75,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578659,
+                "mean": 3.647947544333921e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 26,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.65,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.65,
+                "wilson_95": [
+                  0.49505880837257693,
+                  0.7786547112682372
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 19,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.475,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.475,
+                "wilson_95": [
+                  0.329354701126789,
+                  0.6250263789330753
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 19,
+                "hazard_bar_contact": 9,
+                "target_contact_without_task_success": 11,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 9,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.225,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.225,
+                "wilson_95": [
+                  0.12316091323540743,
+                  0.37503096742310027
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 26204.0,
+                "mean": 1890.1,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 25451.0,
+                "mean": 1830.625,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.010761330324480456,
+                "mean": 0.0008353445976971834,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 20,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.5,
+                "median": 0.5,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.5,
+                "wilson_95": [
+                  0.35199526933465386,
+                  0.6480047306653461
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.125,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.025,
+                  0.275
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.15,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.275,
+                  -0.05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1144.325,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -2706.711875,
+                  -163.39937500000005
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1097.875,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -2596.83875,
+                  -161.76875000000055
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.0007988651222538441,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.00164134411483478,
+                  -0.00012475277333301227
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.15,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.3
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026082707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        }
+      }
+    },
+    "C2": {
+      "absolute": {
+        "PACT": {
+          "collision_free_task_success": {
+            "count": 50,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.4166666666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.4166666666666667,
+            "wilson_95": [
+              0.33238352140475963,
+              0.5061196729983577
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 50,
+            "hazard_bar_contact": 23,
+            "other_environment_contact": 3,
+            "target_contact_without_task_success": 40,
+            "task_failure_after_gripper_close": 4
+          },
+          "hazard_bar_any_contact": {
+            "count": 23,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.19166666666666668,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.19166666666666668,
+            "wilson_95": [
+              0.13125025924950934,
+              0.27121156004202457
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 51256.0,
+            "mean": 2843.9166666666665,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 27660.0,
+            "mean": 2047.4166666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.011926828348333605,
+            "mean": 0.0006025190977241271,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 55,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.4583333333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.4583333333333333,
+            "wilson_95": [
+              0.3718612878252585,
+              0.5473903093763002
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 2740.0,
+            "mean": 47.358333333333334,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        },
+        "PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "count": 41,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.3416666666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.3416666666666667,
+            "wilson_95": [
+              0.26290438368564517,
+              0.4302516856802777
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 41,
+            "hazard_bar_contact": 37,
+            "target_contact_without_task_success": 37,
+            "task_failure_after_gripper_close": 5
+          },
+          "hazard_bar_any_contact": {
+            "count": 37,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.30833333333333335,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.30833333333333335,
+            "wilson_95": [
+              0.23272736988916298,
+              0.39582997723800684
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 74747.0,
+            "mean": 5142.116666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 28083.0,
+            "mean": 3793.7083333333335,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.011926828348333605,
+            "mean": 0.0009669348275424554,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 46,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.38333333333333336,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.38333333333333336,
+            "wilson_95": [
+              0.30124527754856906,
+              0.47265919461579525
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        }
+      },
+      "pooled": {
+        "PACT_minus_PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131704,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.075,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.041666666666666664,
+              0.19166666666666668
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_any_contact": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131703,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.11666666666666667,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.20833333333333334,
+              -0.03333333333333333
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_entries": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131705,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -2298.2,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -4357.4452083333335,
+              -415.37062500000036
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131702,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -1746.2916666666667,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -3403.8327083333334,
+              -374.7741666666689
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131706,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.00036441572981832826,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.0007487151331795615,
+              -7.738963894935955e-05
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "manipulation_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131708,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.075,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.041666666666666664,
+              0.19166666666666668
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "other_environment_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026131707,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 47.358333333333334,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              0.0,
+              114.81666666666666
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          }
+        }
+      },
+      "seeds_unpooled_first": {
+        "3101": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 22,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.55,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.55,
+                "wilson_95": [
+                  0.39829091798932054,
+                  0.6929469218909508
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 22,
+                "hazard_bar_contact": 6,
+                "target_contact_without_task_success": 11,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 6,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.15,
+                "wilson_95": [
+                  0.07061187717320358,
+                  0.2907232436648971
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 34092.0,
+                "mean": 1542.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27453.0,
+                "mean": 1342.275,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0005690936372017566,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 25,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.625,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.625,
+                "wilson_95": [
+                  0.47032439137301096,
+                  0.7577702083276673
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 20,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.5,
+                "median": 0.5,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.5,
+                "wilson_95": [
+                  0.35199526933465386,
+                  0.6480047306653461
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 20,
+                "hazard_bar_contact": 12,
+                "target_contact_without_task_success": 7,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 12,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.3,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.3,
+                "wilson_95": [
+                  0.18074845229746528,
+                  0.45430018818144935
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 74747.0,
+                "mean": 5876.125,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 28083.0,
+                "mean": 4318.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0008235658933509549,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 23,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.575,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.575,
+                "wilson_95": [
+                  0.42195068541991065,
+                  0.7149060744004962
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.1,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.15,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.275,
+                  -0.05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -4333.8,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -8110.46375,
+                  -1175.2081250000015
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -2975.875,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -5806.11625,
+                  -634.1693750000004
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.00025447225614919826,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0004992581798149392,
+                  -5.823608799667463e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.1,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026090707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3102": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 13,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.325,
+                "wilson_95": [
+                  0.200845022317827,
+                  0.47982253810122333
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 13,
+                "hazard_bar_contact": 11,
+                "target_contact_without_task_success": 14,
+                "task_failure_after_gripper_close": 2
+              },
+              "hazard_bar_any_contact": {
+                "count": 11,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.275,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.275,
+                "wilson_95": [
+                  0.16108016247667337,
+                  0.42834955806210573
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 50929.0,
+                "mean": 4699.275,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27660.0,
+                "mean": 3260.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0006503389007161558,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 13,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.325,
+                "wilson_95": [
+                  0.200845022317827,
+                  0.47982253810122333
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 8,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.2,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.2,
+                "wilson_95": [
+                  0.10499989725437704,
+                  0.347573063463995
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 8,
+                "hazard_bar_contact": 13,
+                "target_contact_without_task_success": 16,
+                "task_failure_after_gripper_close": 3
+              },
+              "hazard_bar_any_contact": {
+                "count": 13,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.325,
+                "wilson_95": [
+                  0.200845022317827,
+                  0.47982253810122333
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 51238.0,
+                "mean": 4483.1,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27646.0,
+                "mean": 3389.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0009550789497089516,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 8,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.2,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.2,
+                "wilson_95": [
+                  0.10499989725437704,
+                  0.347573063463995
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.125,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.025,
+                  0.275
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.05,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.15,
+                  0.05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 216.175,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -612.6893749999999,
+                  1076.5781249999975
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -129.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -887.483125,
+                  671.8337499999993
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.0003047400489927958,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0008830190784815567,
+                  3.4399189236308285e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.125,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.025,
+                  0.275
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026091707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3103": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 15,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.375,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.375,
+                "wilson_95": [
+                  0.24222979167233266,
+                  0.5296756086269889
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 15,
+                "hazard_bar_contact": 6,
+                "other_environment_contact": 3,
+                "target_contact_without_task_success": 15,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 6,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.15,
+                "wilson_95": [
+                  0.07061187717320358,
+                  0.2907232436648971
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 51256.0,
+                "mean": 2290.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27559.0,
+                "mean": 1539.825,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0005881247552544692,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 17,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.425,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.425,
+                "wilson_95": [
+                  0.28509392559950375,
+                  0.5780493145800892
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 2740.0,
+                "mean": 142.075,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 13,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.325,
+                "wilson_95": [
+                  0.200845022317827,
+                  0.47982253810122333
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 13,
+                "hazard_bar_contact": 12,
+                "target_contact_without_task_success": 14,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 12,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.3,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.3,
+                "wilson_95": [
+                  0.18074845229746528,
+                  0.45430018818144935
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 50212.0,
+                "mean": 5067.125,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27884.0,
+                "mean": 3673.825,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.011926828348333605,
+                "mean": 0.0011221596395674597,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 15,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.375,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.375,
+                "wilson_95": [
+                  0.24222979167233266,
+                  0.5296756086269889
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.1,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.15,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.275,
+                  -0.05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -2776.975,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -7122.858749999999,
+                  943.936874999999
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -2134.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -4651.826875,
+                  -66.62750000000197
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.0005340348843129907,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0011632577929263004,
+                  -2.7577489482238976e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.125,
+                  0.225
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026092707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 142.075,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  339.375
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        }
+      }
+    },
+    "Z_093": {
+      "absolute": {
+        "PACT": {
+          "collision_free_task_success": {
+            "count": 55,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.4583333333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.4583333333333333,
+            "wilson_95": [
+              0.3718612878252585,
+              0.5473903093763002
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 55,
+            "hazard_bar_contact": 20,
+            "target_contact_without_task_success": 39,
+            "task_failure_after_gripper_close": 6
+          },
+          "hazard_bar_any_contact": {
+            "count": 20,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.16666666666666666,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.16666666666666666,
+            "wilson_95": [
+              0.11055996367984616,
+              0.24345281393262286
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 21838.0,
+            "mean": 2075.5,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 20302.0,
+            "mean": 2049.358333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.0008952017792578651,
+            "mean": 4.803138183444631e-05,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 67,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.5583333333333333,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.5583333333333333,
+            "wilson_95": [
+              0.4690452309131966,
+              0.6440025330046214
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        },
+        "PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "count": 56,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.4666666666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.4666666666666667,
+            "wilson_95": [
+              0.37982917045799003,
+              0.555572107303257
+            ]
+          },
+          "failure_taxonomy": {
+            "collision_free_task_success": 56,
+            "hazard_bar_contact": 34,
+            "target_contact_without_task_success": 26,
+            "task_failure_after_gripper_close": 4
+          },
+          "hazard_bar_any_contact": {
+            "count": 34,
+            "direction": "lower_is_better",
+            "maximum": 1.0,
+            "mean": 0.2833333333333333,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.2833333333333333,
+            "wilson_95": [
+              0.21040628091756453,
+              0.36970202453054035
+            ]
+          },
+          "hazard_bar_contact_entries": {
+            "direction": "lower_is_better",
+            "maximum": 53853.0,
+            "mean": 4155.791666666667,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 28460.0,
+            "mean": 3795.175,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "direction": "lower_is_better",
+            "maximum": 0.0071781831164718325,
+            "mean": 0.00024812978339708986,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          },
+          "manipulation_success": {
+            "count": 66,
+            "direction": "higher_is_better",
+            "maximum": 1.0,
+            "mean": 0.55,
+            "median": 1.0,
+            "minimum": 0.0,
+            "n": 120,
+            "rate": 0.55,
+            "wilson_95": [
+              0.4608154341968757,
+              0.6360826491612539
+            ]
+          },
+          "other_environment_contact_frames": {
+            "direction": "lower_is_better",
+            "maximum": 0.0,
+            "mean": 0.0,
+            "median": 0.0,
+            "minimum": 0.0,
+            "n": 120
+          }
+        }
+      },
+      "pooled": {
+        "PACT_minus_PACT_PERMUTED": {
+          "collision_free_task_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132704,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.008333333333333333,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.10833333333333334,
+              0.1
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_any_contact": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132703,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.11666666666666667,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.21666666666666667,
+              -0.025
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_entries": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132705,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -2080.2916666666665,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -4023.967291666667,
+              -470.9237500000001
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132702,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -1745.8166666666666,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -3354.1241666666665,
+              -415.4072916666689
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "hazard_bar_maximum_penetration_depth_m": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132706,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": -0.00020009840156264355,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.0004031036154344886,
+              -5.926848713407296e-05
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "manipulation_success": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132708,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.008333333333333333,
+            "direction": "higher_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              -0.09166666666666666,
+              0.10833333333333334
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          },
+          "other_environment_contact_frames": {
+            "bootstrap_replicates": 20000,
+            "bootstrap_seed": 2026132707,
+            "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+            "difference": 0.0,
+            "direction": "lower_is_better",
+            "instance_cluster_bootstrap_ci_95": [
+              0.0,
+              0.0
+            ],
+            "interpretation": "modality",
+            "median_pair_difference": 0.0,
+            "n_pairs": 120,
+            "n_unique_instances": 40
+          }
+        }
+      },
+      "seeds_unpooled_first": {
+        "3101": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 21,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.525,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.525,
+                "wilson_95": [
+                  0.3749736210669248,
+                  0.670645298873211
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 21,
+                "hazard_bar_contact": 6,
+                "target_contact_without_task_success": 11,
+                "task_failure_after_gripper_close": 2
+              },
+              "hazard_bar_any_contact": {
+                "count": 6,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.15,
+                "wilson_95": [
+                  0.07061187717320358,
+                  0.2907232436648971
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 17858.0,
+                "mean": 1862.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 17858.0,
+                "mean": 1862.15,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578651,
+                "mean": 4.208201143473662e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 26,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.65,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.65,
+                "wilson_95": [
+                  0.49505880837257693,
+                  0.7786547112682372
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 24,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.6,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.6,
+                "wilson_95": [
+                  0.44595893660346186,
+                  0.7365167431570808
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 24,
+                "hazard_bar_contact": 9,
+                "target_contact_without_task_success": 5,
+                "task_failure_after_gripper_close": 2
+              },
+              "hazard_bar_any_contact": {
+                "count": 9,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.225,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.225,
+                "wilson_95": [
+                  0.12316091323540743,
+                  0.37503096742310027
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 53853.0,
+                "mean": 4472.6,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 28460.0,
+                "mean": 3778.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0016169027141483357,
+                "mean": 0.00014365310985972984,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 28,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.7,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.7,
+                "wilson_95": [
+                  0.5456998118185507,
+                  0.8192515477025347
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.075,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.225,
+                  0.075
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.075,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.175,
+                  0.025
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -2610.45,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -5522.91375,
+                  -288.9031250000019
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1916.175,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -4137.205,
+                  -204.7193750000005
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.00010157109842499319,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.00020590224765841756,
+                  -2.177935311716148e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.2,
+                  0.1
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026100707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3102": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 16,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.4,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.4,
+                "wilson_95": [
+                  0.2634832568429192,
+                  0.5540410633965381
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 16,
+                "hazard_bar_contact": 7,
+                "target_contact_without_task_success": 16,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 7,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.175,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.175,
+                "wilson_95": [
+                  0.0874541374603592,
+                  0.31949990331787714
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 21838.0,
+                "mean": 1542.5,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 20302.0,
+                "mean": 1482.175,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578651,
+                "mean": 4.6510593371895313e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 19,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.475,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.475,
+                "wilson_95": [
+                  0.329354701126789,
+                  0.6250263789330753
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 15,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.375,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.375,
+                "wilson_95": [
+                  0.24222979167233266,
+                  0.5296756086269889
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 15,
+                "hazard_bar_contact": 12,
+                "target_contact_without_task_success": 12,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 12,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.3,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.3,
+                "wilson_95": [
+                  0.18074845229746528,
+                  0.45430018818144935
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 33517.0,
+                "mean": 3390.85,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 28010.0,
+                "mean": 3195.175,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0071781831164718325,
+                "mean": 0.00035611024425482305,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 18,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.45,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.45,
+                "wilson_95": [
+                  0.3070530781090492,
+                  0.6017090820106794
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.025,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.125,
+                  0.175
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.125,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.275,
+                  0.025
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1848.35,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -4096.993750000001,
+                  47.05937499998608
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1713.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -3640.65125,
+                  20.544374999998308
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.00030959965088292777,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0007165465407532542,
+                  -5.311279879417689e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.025,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.125,
+                  0.175
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026101707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        },
+        "3103": {
+          "absolute": {
+            "PACT": {
+              "collision_free_task_success": {
+                "count": 18,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.45,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.45,
+                "wilson_95": [
+                  0.3070530781090492,
+                  0.6017090820106794
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 18,
+                "hazard_bar_contact": 7,
+                "target_contact_without_task_success": 12,
+                "task_failure_after_gripper_close": 3
+              },
+              "hazard_bar_any_contact": {
+                "count": 7,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.175,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.175,
+                "wilson_95": [
+                  0.0874541374603592,
+                  0.31949990331787714
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 17636.0,
+                "mean": 2821.85,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 17636.0,
+                "mean": 2803.75,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0008952017792578651,
+                "mean": 5.550154069670697e-05,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 22,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.55,
+                "median": 1.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.55,
+                "wilson_95": [
+                  0.39829091798932054,
+                  0.6929469218909508
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            },
+            "PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "count": 17,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.425,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.425,
+                "wilson_95": [
+                  0.28509392559950375,
+                  0.5780493145800892
+                ]
+              },
+              "failure_taxonomy": {
+                "collision_free_task_success": 17,
+                "hazard_bar_contact": 13,
+                "target_contact_without_task_success": 9,
+                "task_failure_after_gripper_close": 1
+              },
+              "hazard_bar_any_contact": {
+                "count": 13,
+                "direction": "lower_is_better",
+                "maximum": 1.0,
+                "mean": 0.325,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.325,
+                "wilson_95": [
+                  0.200845022317827,
+                  0.47982253810122333
+                ]
+              },
+              "hazard_bar_contact_entries": {
+                "direction": "lower_is_better",
+                "maximum": 28707.0,
+                "mean": 4603.925,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 27883.0,
+                "mean": 4412.025,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "direction": "lower_is_better",
+                "maximum": 0.0017613665649017373,
+                "mean": 0.00024462599607671666,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              },
+              "manipulation_success": {
+                "count": 20,
+                "direction": "higher_is_better",
+                "maximum": 1.0,
+                "mean": 0.5,
+                "median": 0.5,
+                "minimum": 0.0,
+                "n": 40,
+                "rate": 0.5,
+                "wilson_95": [
+                  0.35199526933465386,
+                  0.6480047306653461
+                ]
+              },
+              "other_environment_contact_frames": {
+                "direction": "lower_is_better",
+                "maximum": 0.0,
+                "mean": 0.0,
+                "median": 0.0,
+                "minimum": 0.0,
+                "n": 40
+              }
+            }
+          },
+          "contrasts": {
+            "PACT_minus_PACT_PERMUTED": {
+              "collision_free_task_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102704,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.025,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.15,
+                  0.2
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_any_contact": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102703,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.15,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.275,
+                  -0.025
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_entries": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102705,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1782.075,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -4152.328750000001,
+                  181.71999999999824
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102702,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -1608.275,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -3826.7893750000003,
+                  244.05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "hazard_bar_maximum_penetration_depth_m": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102706,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": -0.00018912445538000968,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.0003252132448097,
+                  -7.247057546634949e-05
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "manipulation_success": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102708,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.05,
+                "direction": "higher_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  -0.125,
+                  0.225
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              },
+              "other_environment_contact_frames": {
+                "bootstrap_replicates": 20000,
+                "bootstrap_seed": 2026102707,
+                "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+                "difference": 0.0,
+                "direction": "lower_is_better",
+                "instance_cluster_bootstrap_ci_95": [
+                  0.0,
+                  0.0
+                ],
+                "interpretation": "modality",
+                "median_pair_difference": 0.0,
+                "n_pairs": 40,
+                "n_unique_instances": 40
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "contact_taxonomy": [
+    "grasp_target",
+    "hazard_bar",
+    "other_environment"
+  ],
+  "decision": "GEOMETRY_GENERALIZES",
+  "decision_reason": "all_shifted_conditions_favor_PACT_and_both_pooled_shifted_contact_CIs_exclude_zero",
+  "exploratory": false,
+  "pooled_shifted_modality": {
+    "hazard_bar_any_contact": {
+      "bootstrap_replicates": 20000,
+      "bootstrap_seed": 2026170702,
+      "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+      "difference": -0.11666666666666667,
+      "instance_cluster_bootstrap_ci_95": [
+        -0.18333333333333332,
+        -0.05416666666666667
+      ],
+      "median_pair_difference": 0.0,
+      "n_pairs": 240,
+      "n_unique_instances": 40
+    },
+    "hazard_bar_contact_frames": {
+      "bootstrap_replicates": 20000,
+      "bootstrap_seed": 2026170703,
+      "cluster_unit": "instance; all included arms, seeds, and conditions move together",
+      "difference": -1746.0541666666666,
+      "instance_cluster_bootstrap_ci_95": [
+        -2794.31875,
+        -811.7529166666683
+      ],
+      "median_pair_difference": 0.0,
+      "n_pairs": 240,
+      "n_unique_instances": 40
+    }
+  },
+  "reconciliation": {
+    "errors": [],
+    "expected_cells": 720,
+    "reconciled": true,
+    "valid_cells": 720
+  },
+  "results_available": true,
+  "retraining_performed": false,
+  "schedule_sha256": "00a4190a6ba4af021dd2e6f4cc1f0bd3b79d79fcfd36e3547935d0e0f98f1f79",
+  "schema_version": "pact_geometry_generalization_analysis_v3",
+  "seeds_unpooled_first": true,
+  "shifted_condition_both_contact_gaps_negative": {
+    "C2": true,
+    "Z_093": true
+  }
+}
