@@ -1,7 +1,8 @@
 # PACT held-out geometry generalization — attempt 2 progress
 
-Attempt 2 passed both preregistered expert-solvability stages and its frozen 900-row zero-shot
-policy evaluation is running. This is a distinct experiment from attempt 1; attempt 1 and its
+Attempt 2 passed both preregistered expert-solvability stages, then was deliberately stopped and
+abandoned before interpretation after an outcome-blind power audit showed that its decision-bearing
+C0 control was underpowered. This is a distinct experiment from attempt 1; attempt 1 and its
 `GEOMETRY_TEST_INCONCLUSIVE` decision remain unchanged.
 
 ## Phase 0a: expert envelope map
@@ -53,11 +54,20 @@ The outcome-blind first-20-minute measurement recorded 8 policy rows at 0.4 rows
 schedule was unchanged and no endpoint fields had been read. Allow roughly one additional hour
 after execution for reconciliation, frozen analysis, the final report, and commits.
 
-## Current status
+## Pre-interpretation abandonment
 
-As of 2026-08-07 01:00 UTC, the detached supervisor was healthy with 9/900 total rows complete
-(including the registered smoke), eight active rows, 883 pending, `abort_reason=null`, and all nine
-completed rows compacted. No policy outcome has been inspected or analyzed. The final geometry
-decision is intentionally not assigned until all 900 rows reconcile and the frozen analysis runs.
+The v2 bootstrap clusters on instances, so 25—not 225 arm/seed rollouts—was the effective sample
+size per condition. Scaling the established in-distribution modality gap of −9.3 percentage points
+(95% CI [−14.3, −5.0] at 100 instances) to 25 instances doubles its approximate standard error and
+gives an approximate interval of [−18.6, 0.0] percentage points. The frozen rule would have returned
+`GEOMETRY_TEST_INCONCLUSIVE` whenever C0 did not reproduce, so v2 had roughly coin-flip odds of
+discarding the shifted-condition evidence even if the known C0 effect remained real.
 
-EVALUATION_IN_PROGRESS
+The evaluation was stopped at 9/900 completed rows on 2026-08-07 01:17 UTC. No `result.json`,
+endpoint field, or outcome was opened; no analysis was run. The design decision was made solely from
+the preregistered sample sizes and the already-published C0 reference. All v2 manifests, execution
+artifacts, and the nine uninterpreted rows remain preserved under their original namespaces. The
+machine-readable record is
+`diagnostics_output/pact_geometry_generalization_v2/abandonment.json`.
+
+ABANDONED_PRE_INTERPRETATION

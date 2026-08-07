@@ -1,0 +1,23 @@
+{
+  "arithmetic_worker_limit": 12,
+  "ceiling_mib": 19456,
+  "fallback_to_10_required_by_arithmetic": false,
+  "formula": "floor(ceiling_mib / (observed_peak_mib / observed_workers)), capped at 12",
+  "headroom_mib": 976.0,
+  "measurement": {
+    "cpu_load": 8.5,
+    "gpu_utilization_percent": 43.0,
+    "logical_cpu_cores": 128,
+    "peak_gpu_memory_mib": 12320.0,
+    "source": "outcome-blind v2 eight-worker runtime telemetry",
+    "workers": 8
+  },
+  "outcome_fields_read": false,
+  "per_worker_peak_mib": 1540.0,
+  "projected_peak_gib": 18.046875,
+  "projected_peak_mib": 18480.0,
+  "schema_version": "pact_geometry_generalization_v3_worker_sizing_v1",
+  "selected_workers": 12,
+  "worker_cap": 12,
+  "worker_sizing_sha256": "f1e9557ac43be9d559ebad810b5c3327cdc2578f288ce7d1677d5a13d19bf3b8"
+}

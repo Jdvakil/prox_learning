@@ -1,0 +1,44 @@
+{
+  "abandonment_sha256": "2c016b5ab9e8b346090614d98243ccc4f66f43ae80b42147ceced3126a32a1db",
+  "analysis_run": false,
+  "completed_rows_known_from_outcome_blind_supervisor_state": 9,
+  "decision": "ABANDONED_PRE_INTERPRETATION",
+  "endpoint_fields_read": false,
+  "power_calculation": {
+    "effective_instance_clusters_per_condition_v2": 25,
+    "known_C0_modality_gap_any_contact_pp": -9.3,
+    "known_C0_n_instances": 100,
+    "known_C0_wilson_or_bootstrap_ci_pp": [
+      -14.3,
+      -5.0
+    ],
+    "normal_approximation_C0_ci_at_n25_pp": [
+      -18.6,
+      0.0
+    ],
+    "standard_error_scale_from_n100_to_n25": 2.0
+  },
+  "reason": "The preregistered C0 effective n of 25 put zero on the approximate upper confidence bound for the already-established -9.3 percentage-point modality gap, making the decision-bearing control materially underpowered.",
+  "replacement_design_chosen_without_outcome_inspection": "pact_geometry_generalization_v3",
+  "result_files_opened": false,
+  "schema_version": "pact_geometry_generalization_v2_abandonment_v1",
+  "selection_influenced_by_v2_outcomes": false,
+  "stopped_processes": {
+    "all_v2_rollout_workers_absent_after_stop": true,
+    "compactor_pid": 3250803,
+    "supervisor_pid": 3250802,
+    "throughput_monitor_pid": 3250804
+  },
+  "stopped_utc": "2026-08-07T01:17:04Z",
+  "v2_artifacts_preserved": true,
+  "v2_bindings": {
+    "dispatch_file_sha256": "e3aeb7dac235be35d93901229229bcc2ec0f6a30a5de2bdb7d579bc0e38cc4bb",
+    "dispatch_self_sha256": "aed8c8fa3bb370c28120b66f89726f46f49222730d55bd09b69ea54590e7d503",
+    "manifest_file_sha256": "8ef5cd329753aa0ed80f43581a501b593d55cad637051776ab1d7c9216b94c53",
+    "manifest_self_sha256": "5a31600a8b4d11798d4062d960d3906207bdb6f6a8030a61475c92e5ecdcd37e",
+    "output_root": "/root/pact_geometry_generalization_v2_artifacts/evaluation_v1",
+    "schedule_file_sha256": "ee8967fc8b118ceac55ee40bb9a830b3a2ef1dfd7a9a7c7e55ea35369c237109",
+    "schedule_self_sha256": "725908201f3213198bc2ead1e0ea23a0b553ae2157c7aa74e8d1f74aed8cb8e3",
+    "throughput_file_sha256": "db3a242f13137f1ecf7bde04c0e1967f1287d3151c0ffd4ae206f4a4b000e03e"
+  }
+}
