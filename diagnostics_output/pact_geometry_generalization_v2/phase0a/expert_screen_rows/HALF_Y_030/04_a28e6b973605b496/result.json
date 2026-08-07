@@ -1,0 +1,190 @@
+{
+  "clean_success": true,
+  "condition_id": "HALF_Y_030",
+  "condition_label": "single_axis_panel_half_y_m_0.3",
+  "contact_audit": {
+    "collision_free": true,
+    "contact_class_totals": {
+      "grasp_target": 8564,
+      "hazard_bar": 0,
+      "other_environment": 0
+    },
+    "contact_frame_payload_retained": false,
+    "contact_frames": [],
+    "contact_taxonomy_version": "pact_robot_environment_v1",
+    "first_contact_step": {
+      "grasp_target": 129,
+      "hazard_bar": null,
+      "other_environment": null
+    },
+    "frames_with_contact": {
+      "grasp_target": 808,
+      "hazard_bar": 0,
+      "other_environment": 0
+    },
+    "maximum_penetration_depth_m": {
+      "grasp_target": 0.0003253546967396209,
+      "hazard_bar": 0.0,
+      "other_environment": 0.0
+    },
+    "non_target_contact_entries": 0,
+    "sample_count": 5083,
+    "sampling_level": "every_2ms_control_physics_step_plus_episode_boundaries"
+  },
+  "episode_id": "a28e6b973605b49630e70ebf666b5ce17fd4f3865f7b506e262bc00e41c6b251",
+  "instance_cluster_id": "phase0a_envelope:04",
+  "instance_index": 4,
+  "intrusion_side": "left",
+  "manifest_sha256": "15518337df1c23c282822025f17e4bcd96bc06e71c0598c2da9d4fd5f5b3b0d6",
+  "realized_geometry": {
+    "aperture_width_m": 0.85,
+    "base_forward_m": 0.14,
+    "panel_half_extents_m": [
+      0.055,
+      0.3,
+      0.09
+    ],
+    "panel_half_y_m": 0.3,
+    "panel_inner_face_y_m": 0.1,
+    "panel_x_m": 0.615,
+    "panel_z_m": 0.89
+  },
+  "result_sha256": "377524087ddfd5341dfdf67a6c378c5b4ccc9b74928fbdaaa261eb4564c7cb65",
+  "retry_history": [
+    {
+      "reason": "pre_boundary:ValueError:IK failed for lift pose",
+      "retry_index": 0,
+      "seed": {
+        "seed_u32": 1895486153,
+        "seed_u64": 9855719549754331849
+      }
+    }
+  ],
+  "row_sha256": "f56a6b7f5ddb6d78aa4ddf853e66c05d53a082a2ff8e29b47640d0bff9db8c64",
+  "scene_params": {
+    "ap_h": 0.7,
+    "ap_w": 0.85,
+    "cam_visible": true,
+    "cell": "pact_collision_corridor",
+    "clearance": 0.09068197051106433,
+    "depth": 0.21540504604201088,
+    "grasp_pitch_deg": 50.0,
+    "light_scale": 1.0,
+    "obstacle_aabbs": [
+      [
+        [
+          0.58,
+          0.0,
+          1.4449999999999998
+        ],
+        [
+          0.015,
+          0.44,
+          0.025
+        ]
+      ],
+      [
+        [
+          0.58,
+          0.605,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.58,
+          -0.605,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.95,
+          0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.95,
+          -0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          1.36,
+          0.0,
+          1.12
+        ],
+        [
+          0.012,
+          0.46,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.615,
+          0.4,
+          0.89
+        ],
+        [
+          0.055,
+          0.3,
+          0.09
+        ]
+      ]
+    ],
+    "pact_environment_version": "pact_collision_corridor_v1",
+    "pact_geometry_condition": "HALF_Y_030",
+    "pact_geometry_generalization_version": "v1",
+    "pact_intrusion_side": "left",
+    "pact_panel_inner_face_y_m": 0.1,
+    "protr_center": [
+      0.615,
+      0.4,
+      0.89
+    ],
+    "protr_half": [
+      0.055,
+      0.3,
+      0.09
+    ],
+    "protr_name": "pact_intrusion_left",
+    "protr_pos_frac": NaN,
+    "protr_wall": "left",
+    "protrusion_present": true,
+    "residual_margin": NaN,
+    "target_frac": 0.6191318775448572,
+    "target_uid": "Cup_10"
+  },
+  "schema_version": "pact_geometry_expert_screen_row_v1",
+  "seed": {
+    "seed_u32": 3615045618,
+    "seed_u64": 10349518371061053426
+  },
+  "status": "complete",
+  "task_sampler_class": "PactCollisionCorridorPanelHalfY030Sampler",
+  "task_success": true
+}

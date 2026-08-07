@@ -1,0 +1,69 @@
+{
+  "carried_screen": {
+    "C0": {
+      "clean_successes": 11,
+      "n": 12,
+      "passed": true
+    },
+    "C2": {
+      "clean_successes": 12,
+      "n": 12,
+      "passed": true
+    },
+    "attempt1_expert_screen_file_sha256": "4d13c9237505b48b2a127a565eff43307fd932b952e2119585c3ef35c724b813",
+    "attempt1_expert_screen_sha256": "3bf7d5c8f86814b9c10308c10cf1576488e992d0d20564359cb911d312d78a2c",
+    "attempt1_manifest_file_sha256": "0aa4fc24b4981830ec6c9045000cdd9c6f6defb18dacd26c5302480e658c1613",
+    "attempt1_manifest_sha256": "33e48ab83dfe398fbeb78f64565312c48a5a8b09cb1a873a2a2521e06fcbe7b2"
+  },
+  "envelope_map_sha256": "b8cc4c589dba3a08c7107a5ca7958014c64b26a669f3e5c9a5bcdefa72b1f86a",
+  "manifest_sha256": "15518337df1c23c282822025f17e4bcd96bc06e71c0598c2da9d4fd5f5b3b0d6",
+  "phase0b_authorized": true,
+  "phase0b_selection_sha256": "96e561e181de44c18e3b620a0fb891f4ce952f618b3cf3c5bd1535d47499d9b7",
+  "schema_version": "pact_geometry_generalization_v2_phase0b_selection",
+  "selected_candidate_axes": [
+    "panel_z_m",
+    "panel_half_y_m"
+  ],
+  "selected_candidate_ids": [
+    "Z_093",
+    "HALF_Y_030"
+  ],
+  "selection_inputs_pass_fail_only": {
+    "AP_W_095": false,
+    "HALF_Y_018": false,
+    "HALF_Y_030": true,
+    "X_058": false,
+    "X_065": false,
+    "Z_085": true,
+    "Z_093": true
+  },
+  "selection_rule": {
+    "axis_order": [
+      "panel_z_m",
+      "panel_half_y_m",
+      "panel_x_m",
+      "aperture_width_m"
+    ],
+    "candidate_order_within_axis": {
+      "aperture_width_m": [
+        "AP_W_095"
+      ],
+      "panel_half_y_m": [
+        "HALF_Y_030",
+        "HALF_Y_018"
+      ],
+      "panel_x_m": [
+        "X_065",
+        "X_058"
+      ],
+      "panel_z_m": [
+        "Z_093",
+        "Z_085"
+      ]
+    },
+    "distinct_axes_required": true,
+    "selection_uses": "pass/fail only; never clean-success rank above threshold",
+    "slots": 2
+  },
+  "stop_reason": null
+}
