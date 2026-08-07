@@ -48,7 +48,14 @@ observations. GPU use was 18,576 MiB, below the 19,456 MiB ceiling; the fixed wo
 12. The machine-readable amendment and audit contain no endpoint fields.
 
 At this launch audit the state was 1/720 complete (the smoke), 12 active, 707 pending,
-`abort_reason=null`. The outcome-blind 20-minute throughput monitor will replace the planning ETA
-with a measured projection. Frozen analysis will run only after all 720 rows reconcile.
+`abort_reason=null`.
+
+The fixed outcome-blind 20-minute window completed at 01:58:41 UTC. Ten full-run rows completed in
+the window, or 0.50 rows/minute. With 709 rows remaining at the cutoff, the measured execution
+projection is 23.63 hours; allow roughly 24–25 hours end to end for execution, reconciliation,
+frozen analysis, the final report, and commits. The measurement used completion identities and
+timestamps only and records `endpoint_fields_read=false` and `schedule_changed=false`.
+
+Frozen analysis will run only after all 720 rows reconcile.
 
 EVALUATION_IN_PROGRESS
