@@ -33,7 +33,7 @@ def test_committed_manifest_is_self_hashed_and_records_presentation_rerenders() 
     assert document["scientific_artifacts_modified"] is False
     assert document["gpu_work_performed"] is True
     assert document["rollouts_or_training_performed"] is True
-    assert document["presentation_only_rollout_rerenders"] == 9
+    assert document["presentation_only_rollout_rerenders"] == 13
     assert document["training_performed"] is False
 
 
@@ -41,29 +41,35 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
     document = load_manifest()
     entries = document["entries"]
     paths = [entry["path"] for entry in entries]
-    assert len(paths) == len(set(paths)) == 70
-    assert document["figure_concepts"] == 10
-    assert document["figure_files"] == 20
-    assert document["video_files"] == 6
-    assert document["paired_video_files"] == 2
-    assert document["matched_single_arm_clip_files"] == 3
-    assert document["shipped_qualitative_single_arm_clip_files"] == 4
+    assert len(paths) == len(set(paths)) == 85
+    assert document["figure_concepts"] == 11
+    assert document["figure_files"] == 22
+    assert document["video_files"] == 12
+    assert document["paired_video_files"] == 6
+    assert document["matched_single_arm_clip_files"] == 7
+    assert document["shipped_qualitative_single_arm_clip_files"] == 8
     assert document["supplemental_act_success_clip_files"] == 1
-    assert document["complete_matched_instance_pairs"] == 1
+    assert document["complete_matched_instance_pairs"] == 3
+    assert document["geometry_v3_complete_matched_pairs"] == 2
+    assert document["geometry_v3_individual_clip_files"] == 4
+    assert document["geometry_v3_side_by_side_files"] == 2
     assert document["determinism_dropped_clip_files"] == 1
     assert document["unpaired_independent_probe_files"] == 0
     assert "explicitly unpaired" in document["paired_video_release"]
+    assert "all four rank-1 rerenders passed" in document["paired_video_release"]
     assert document["optional_figure_10"] == (
         "omitted_no_frozen_source_field_and_no_new_analysis_allowed"
     )
 
     figure_paths = [path for path in paths if path.startswith("figures/")]
     stems = {str(Path(path).with_suffix("")) for path in figure_paths}
-    assert len(stems) == 10
+    assert len(stems) == 11
     for stem in stems:
         assert f"{stem}.png" in figure_paths
         assert f"{stem}.svg" in figure_paths
     assert not any("fig10" in path for path in paths)
+    assert "figures/fig11_geometry_conditions.png" in figure_paths
+    assert "figures/fig11_geometry_conditions.svg" in figure_paths
 
     required = {
         "INDEX.md",
@@ -85,6 +91,19 @@ def test_committed_manifest_has_required_figures_and_honest_media_counts() -> No
         "videos/matched_pairs/clip4_e99dc657bfa7_pact_failure.mp4",
         "videos/sensor_heatmap/sensor_heatmap_40_skin_streams.mp4",
         "videos/expert_demo/expert_clean_demo_wrist_view.mp4",
+        "data/geometry_v3_manifest.json",
+        "data/geometry_v3_schedule.json",
+        "data/geometry_v3_analysis.json",
+        "data/geometry_v3_final_decision.json",
+        "data/geometry_v3_qualitative_video_manifest.json",
+        "reports/PACT_GEOMETRY_GENERALIZATION_V3.md",
+        "videos/geometry_v3/README.md",
+        "videos/geometry_v3/pairA_c2_pact.mp4",
+        "videos/geometry_v3/pairA_c2_permuted.mp4",
+        "videos/geometry_v3/pairA_c2_side_by_side.mp4",
+        "videos/geometry_v3/pairB_z093_pact.mp4",
+        "videos/geometry_v3/pairB_z093_permuted.mp4",
+        "videos/geometry_v3/pairB_z093_side_by_side.mp4",
     }
     assert required <= set(paths)
 
@@ -138,7 +157,7 @@ def test_external_bundle_preserves_sources_and_frozen_states() -> None:
 @pytest.mark.skipif(not BUNDLE.is_dir(), reason="external slideshow bundle absent")
 def test_external_figures_are_exact_16_by_9_and_caveats_are_present() -> None:
     pngs = sorted((BUNDLE / "figures").glob("*.png"))
-    assert len(pngs) == 10
+    assert len(pngs) == 11
     for path in pngs:
         with Image.open(path) as image:
             assert image.size == (3200, 1800), path.name
@@ -147,6 +166,7 @@ def test_external_figures_are_exact_16_by_9_and_caveats_are_present() -> None:
     key_numbers = (BUNDLE / "KEY_NUMBERS.md").read_text()
     one_page = (BUNDLE / "ONE_PAGE_SUMMARY.md").read_text()
     matched_readme = (BUNDLE / "videos/matched_pairs/README.md").read_text()
+    geometry_readme = (BUNDLE / "videos/geometry_v3/README.md").read_text()
     shot_list = (BUNDLE / "VIDEO_SHOT_LIST.md").read_text()
     assert "task success directionally positive, not confirmed" in index
     assert "not modality evidence" in key_numbers
@@ -160,3 +180,17 @@ def test_external_figures_are_exact_16_by_9_and_caveats_are_present() -> None:
     assert "must not be described as a pair" in shot_list
     assert "maximum hazard penetration, when available" in shot_list
     assert "Separate hybrid-skin safety/CVAE work" in shot_list
+    assert "pairA_c2_side_by_side.mp4" in shot_list
+    assert "pairB_z093_side_by_side.mp4" in shot_list
+    assert "held-out obstacle geometry within one scene" in shot_list
+    assert "selected/rerender hazard frames 28,083/28,089 (+6)" in geometry_readme
+    assert "selected/rerender hazard frames 28,460/28,455 (−5)" in geometry_readme
+    geometry_manifest = json.loads(
+        (BUNDLE / "data/geometry_v3_qualitative_video_manifest.json").read_text()
+    )
+    assert geometry_manifest["status"] == "presentation_release_verified"
+    assert geometry_manifest["retained_conditions"] == ["C2", "Z_093"]
+    assert all(
+        check["declared_gate_passed"]
+        for check in geometry_manifest["determinism_checks"].values()
+    )

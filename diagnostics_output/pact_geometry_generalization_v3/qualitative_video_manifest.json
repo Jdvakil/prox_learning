@@ -1,5 +1,289 @@
 {
+  "bundle_documentation": {
+    "INDEX.md": {
+      "path": "/root/pact_slideshow_bundle/INDEX.md",
+      "sha256": "50dbc6047b16927c4547a12b46c493b4b99c74b0a12d364d58f77df4bc16c6b1"
+    },
+    "VIDEO_SHOT_LIST.md": {
+      "path": "/root/pact_slideshow_bundle/VIDEO_SHOT_LIST.md",
+      "sha256": "0be858903902d39e6ccef7db32477c99e19123c51096fa5dd53d78df5e839be2"
+    }
+  },
   "created_at_utc": "2026-08-09T00:26:53.180294Z",
+  "determinism_checks": {
+    "pairA_c2_rank1_pact": {
+      "declared_gate_passed": true,
+      "informational_contact_frame_deltas": {
+        "grasp_target": {
+          "original": 24053,
+          "rerun": 24052,
+          "signed_delta": -1
+        },
+        "hazard_bar": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "informational_contact_pair_sample_deltas": {
+        "grasp_target": {
+          "original": 333586,
+          "rerun": 333658,
+          "signed_delta": 72
+        },
+        "hazard_bar": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/checks/pairA_c2_rank1_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 171,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 171,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": true
+        },
+        "task_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": true
+        }
+      },
+      "sha256": "d0a0690bb0ff82419ac716a14253fa3801438175c7a435d3c107e158f540d384"
+    },
+    "pairA_c2_rank1_pact_permuted": {
+      "declared_gate_passed": true,
+      "informational_contact_frame_deltas": {
+        "grasp_target": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "hazard_bar": {
+          "original": 28083,
+          "rerun": 28089,
+          "signed_delta": 6
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "informational_contact_pair_sample_deltas": {
+        "grasp_target": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "hazard_bar": {
+          "original": 28703,
+          "rerun": 28604,
+          "signed_delta": -99
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/checks/pairA_c2_rank1_pact_permuted.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": null,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": null,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": 49,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": 49
+        },
+        "manipulation_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": false
+        },
+        "task_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": false
+        }
+      },
+      "sha256": "b5aad46f731236c6f304f2fd2f48c3dff9d0191e41a29f8c6783cff107156523"
+    },
+    "pairB_z093_rank1_pact": {
+      "declared_gate_passed": true,
+      "informational_contact_frame_deltas": {
+        "grasp_target": {
+          "original": 24424,
+          "rerun": 24423,
+          "signed_delta": -1
+        },
+        "hazard_bar": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "informational_contact_pair_sample_deltas": {
+        "grasp_target": {
+          "original": 338852,
+          "rerun": 338661,
+          "signed_delta": -191
+        },
+        "hazard_bar": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/checks/pairB_z093_rank1_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 160,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 160,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": true
+        },
+        "task_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": true
+        }
+      },
+      "sha256": "ad825f73f929c828ea9f6c97506ee20e673bcb8ecd17a0f0b9b1a9ac22cb295e"
+    },
+    "pairB_z093_rank1_pact_permuted": {
+      "declared_gate_passed": true,
+      "informational_contact_frame_deltas": {
+        "grasp_target": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "hazard_bar": {
+          "original": 28460,
+          "rerun": 28455,
+          "signed_delta": -5
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "informational_contact_pair_sample_deltas": {
+        "grasp_target": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        },
+        "hazard_bar": {
+          "original": 29270,
+          "rerun": 29289,
+          "signed_delta": 19
+        },
+        "other_environment": {
+          "original": 0,
+          "rerun": 0,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/checks/pairB_z093_rank1_pact_permuted.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": null,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": null,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": 38,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": 38
+        },
+        "manipulation_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": false
+        },
+        "task_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": false
+        }
+      },
+      "sha256": "79cebcd54cc59aa3a3f2e5c2852064cb0bf9fc4bbf9ee71a0226d0039f10e3ca"
+    }
+  },
   "determinism_gate": {
     "contact_pair_sample_counts": {
       "comparison": "informational_only",
@@ -41,8 +325,16 @@
     ],
     "fixed_arm_pose": "initial control step 0"
   },
+  "post_render_audit": {
+    "all_four_exact_first_hazard_contact": true,
+    "all_four_exact_manipulation_success": true,
+    "all_four_exact_task_success": true,
+    "all_four_first_target_contact_delta_steps": 0,
+    "fallbacks_rendered": 0,
+    "key_numbers_unchanged_sha256": "dc53f32937a517b55d327e51ad428b736a8e71f11e60b06bd9cb939a56c7aca2"
+  },
   "presentation_release_only": true,
-  "qualitative_video_manifest_sha256": "c62398b949d8f565ee6b7a33749e8cf28cf87e4c6ca3866e103776120b453309",
+  "qualitative_video_manifest_sha256": "47ac2ecd7bfdd6aafb44edb3b7bf3f7afb3def730ef17f1e2f23a38751f8c149",
   "ranked_selections": [
     {
       "arms": {
@@ -549,6 +841,308 @@
       "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
     }
   ],
+  "release_outputs": {
+    "bundle_files": [
+      {
+        "arm": "PACT",
+        "condition_id": "C2",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "163503",
+            "duration": "19.997360",
+            "size": "408704"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 624
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairA_c2_pact.mp4",
+        "sha256": "b3d009483c620cc03a6ae8f9b1414255c3abfe6814b053103cee7e6bebc8aefe"
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "condition_id": "C2",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "148732",
+            "duration": "19.997360",
+            "size": "371782"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 624
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairA_c2_permuted.mp4",
+        "sha256": "444c8adae3d6ca4c7f43fcdd062ee1de2ffebc2ca63846040f82c58d176b7f23"
+      },
+      {
+        "arm": "SIDE_BY_SIDE",
+        "condition_id": "C2",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "288598",
+            "duration": "19.997360",
+            "size": "721401"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 1248
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairA_c2_side_by_side.mp4",
+        "sha256": "82c11dc12ec1507d1ba2c49e62b9cb721af24e60045e5909c43d271b074e9f54"
+      },
+      {
+        "arm": "PACT",
+        "condition_id": "Z_093",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "163683",
+            "duration": "19.997360",
+            "size": "409154"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 624
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairB_z093_pact.mp4",
+        "sha256": "6170b2d870051643e0ce6a4e0ad8037b9c0e020d11a8512391557623e62fa16c"
+      },
+      {
+        "arm": "PACT_PERMUTED",
+        "condition_id": "Z_093",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "173790",
+            "duration": "19.997360",
+            "size": "434418"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 624
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairB_z093_permuted.mp4",
+        "sha256": "5fb251395a1f29156d18720483e4790a76d392e0a298034526418607a5d107c2"
+      },
+      {
+        "arm": "SIDE_BY_SIDE",
+        "condition_id": "Z_093",
+        "ffprobe": {
+          "format": {
+            "bit_rate": "308553",
+            "duration": "19.997360",
+            "size": "771281"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 1248
+            }
+          ]
+        },
+        "path": "/root/pact_slideshow_bundle/videos/geometry_v3/pairB_z093_side_by_side.mp4",
+        "sha256": "aa42883ad7b1a587353c9fd6280ba858cfef732006d6d73dbe9035213a5cce8c"
+      }
+    ],
+    "geometry_figure": {
+      "png": {
+        "path": "/root/pact_slideshow_bundle/figures/fig11_geometry_conditions.png",
+        "sha256": "53ab2a7f7077902ca6e8b86adc46998529506b51b9e82e527dd0222c0cbdaa2e"
+      },
+      "svg": {
+        "path": "/root/pact_slideshow_bundle/figures/fig11_geometry_conditions.svg",
+        "sha256": "6216c1542338fe66690a300021144cd017502aadeb71336abde8c61ea103638e"
+      }
+    },
+    "individual_ffprobes": {
+      "pairA_c2_rank1_pact": {
+        "format": {
+          "bit_rate": "163503",
+          "duration": "19.997360",
+          "size": "408704"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.997360",
+            "height": 352,
+            "nb_frames": "303",
+            "width": 624
+          }
+        ]
+      },
+      "pairA_c2_rank1_pact_permuted": {
+        "format": {
+          "bit_rate": "148732",
+          "duration": "19.997360",
+          "size": "371782"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.997360",
+            "height": 352,
+            "nb_frames": "303",
+            "width": 624
+          }
+        ]
+      },
+      "pairB_z093_rank1_pact": {
+        "format": {
+          "bit_rate": "163683",
+          "duration": "19.997360",
+          "size": "409154"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.997360",
+            "height": 352,
+            "nb_frames": "303",
+            "width": 624
+          }
+        ]
+      },
+      "pairB_z093_rank1_pact_permuted": {
+        "format": {
+          "bit_rate": "173790",
+          "duration": "19.997360",
+          "size": "434418"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.997360",
+            "height": 352,
+            "nb_frames": "303",
+            "width": 624
+          }
+        ]
+      }
+    },
+    "readme": {
+      "path": "/root/pact_slideshow_bundle/videos/geometry_v3/README.md",
+      "sha256": "8ce0bdaf203aad342d566da0ccde3d276fb5bfc6ee6a17dc6df2f7c50afe0841"
+    },
+    "side_by_side": {
+      "C2": {
+        "ffprobe": {
+          "format": {
+            "bit_rate": "288598",
+            "duration": "19.997360",
+            "size": "721401"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 1248
+            }
+          ]
+        },
+        "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/release/pairA_c2_side_by_side.mp4",
+        "sha256": "82c11dc12ec1507d1ba2c49e62b9cb721af24e60045e5909c43d271b074e9f54"
+      },
+      "Z_093": {
+        "ffprobe": {
+          "format": {
+            "bit_rate": "308553",
+            "duration": "19.997360",
+            "size": "771281"
+          },
+          "programs": [],
+          "streams": [
+            {
+              "avg_frame_rate": "1894/125",
+              "codec_name": "h264",
+              "duration": "19.997360",
+              "height": 352,
+              "nb_frames": "303",
+              "width": 1248
+            }
+          ]
+        },
+        "path": "/root/pact_geometry_generalization_v3_artifacts/qualitative_videos/release/pairB_z093_side_by_side.mp4",
+        "sha256": "aa42883ad7b1a587353c9fd6280ba858cfef732006d6d73dbe9035213a5cce8c"
+      }
+    }
+  },
+  "render_attempts": [
+    {
+      "clip_ids": [
+        "pairA_c2_rank1_pact",
+        "pairA_c2_rank1_pact_permuted"
+      ],
+      "condition_id": "C2",
+      "pair_passed": true,
+      "rank": 1
+    },
+    {
+      "clip_ids": [
+        "pairB_z093_rank1_pact",
+        "pairB_z093_rank1_pact_permuted"
+      ],
+      "condition_id": "Z_093",
+      "pair_passed": true,
+      "rank": 1
+    }
+  ],
   "render_contract": {
     "camera_offset_m": [
       -1.05,
@@ -587,8 +1181,14 @@
     ],
     "synchronized_on": "control_step"
   },
+  "rendered_at_utc": "2026-08-09T00:39:28.696903Z",
+  "retained_conditions": [
+    "C2",
+    "Z_093"
+  ],
   "schema_version": "pact_geometry_v3_qualitative_video_manifest_v1",
   "scientific_record_reopened": false,
+  "selection_and_gate_frozen_manifest_sha256": "c62398b949d8f565ee6b7a33749e8cf28cf87e4c6ca3866e103776120b453309",
   "selection_contract": {
     "arms": [
       "PACT",
@@ -652,5 +1252,5 @@
       "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v3.json"
     }
   },
-  "status": "selection_and_gate_frozen_pre_render"
+  "status": "presentation_release_verified"
 }
