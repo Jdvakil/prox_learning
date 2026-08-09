@@ -1,0 +1,656 @@
+{
+  "created_at_utc": "2026-08-09T00:26:53.180294Z",
+  "determinism_gate": {
+    "contact_pair_sample_counts": {
+      "comparison": "informational_only",
+      "record_delta": true
+    },
+    "declared_before_render": true,
+    "fallback_ranks": [
+      2,
+      3
+    ],
+    "first_grasp_target_contact_step": {
+      "comparison": "absolute_step_delta_lte",
+      "tolerance_steps": 2
+    },
+    "first_hazard_bar_contact_step": {
+      "comparison": "exact"
+    },
+    "if_all_three_fail": "ship the other condition alone and disclose the drop",
+    "manipulation_success": {
+      "comparison": "exact",
+      "represented_by": "task_success"
+    },
+    "on_pair_breach": "drop both clips without retry and advance mechanically to the next predeclared rank in the same condition",
+    "task_success": {
+      "comparison": "exact"
+    }
+  },
+  "geometry_figure_contract": {
+    "annotations": {
+      "C0": "baseline: aperture 0.85 m; inner face 0.100 m; panel z 0.89 m",
+      "C2": "aperture 0.85 to 0.70 m; inner face 0.100 to 0.070 m",
+      "Z_093": "panel z 0.89 to 0.93 m"
+    },
+    "camera": "same render-only third-person camera",
+    "conditions": [
+      "C0",
+      "C2",
+      "Z_093"
+    ],
+    "fixed_arm_pose": "initial control step 0"
+  },
+  "presentation_release_only": true,
+  "qualitative_video_manifest_sha256": "c62398b949d8f565ee6b7a33749e8cf28cf87e4c6ca3866e103776120b453309",
+  "ranked_selections": [
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0269_45f6d80ece740813_c2_pact_s3101/result.json",
+          "original_result_sha256": "65e2bc0312f7f87ec3f74ec69dd8dad1c57624e11f560c220ff871b009b3041d",
+          "outcome": {
+            "first_grasp_target_contact_step": 171,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 24053,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": true,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": true
+          },
+          "rollout_id": "45f6d80ece740813b8c335af9daf2920345d43b2164a6b38827cfdc4aab11a9f",
+          "schedule_index": 269,
+          "schedule_row_sha256": "252e9b16347c08a9294b643b511c4f09550c96a84c9eae410a2f3d0ba94615ce",
+          "source_directory": "0269_45f6d80ece740813_c2_pact_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0268_88657a1e7a83afaa_c2_pact_permuted_s3101/result.json",
+          "original_result_sha256": "a5604fa3f7d1c6a560301e3cbd3a05f0018ee7241ee07f6e3a98eb4f752feeb9",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 49,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 28083,
+            "hazard_contact_pair_samples": 28703,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0007550164454694267,
+            "task_success": false
+          },
+          "rollout_id": "88657a1e7a83afaa7993fead72ec3ae6c9bebebf4e28534993e600cc0ecad9be",
+          "schedule_index": 268,
+          "schedule_row_sha256": "67196a3c9cf7b1265523f6241f4aceb2916c9f7a9f8c6a08de6660ee4f3f8b52",
+          "source_directory": "0268_88657a1e7a83afaa_c2_pact_permuted_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 68,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3101,
+      "condition_id": "C2",
+      "condition_label": "tighter: aperture 0.70 m, inner face 0.070 m",
+      "episode_id": "41c6e3f2f5b575e2c7ea27587fa2c8441201f39be51a199882036636937171d0",
+      "intrusion_side": "right",
+      "pair_id": "pairA_c2",
+      "permuted_hazard_frames_sort_key": 28083,
+      "realized_geometry": {
+        "aperture_width_m": 0.7,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.07,
+        "panel_x_m": 0.6282799979723908,
+        "panel_z_m": 0.89
+      },
+      "selection_rank": 1,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    },
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0330_b1192d0bdb30b239_c2_pact_s3101/result.json",
+          "original_result_sha256": "766defc9c6cfa1e1d306ef3c3d68f7a99e3c122d9853eb02063e8b18d0ea88fb",
+          "outcome": {
+            "first_grasp_target_contact_step": 172,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 23998,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": true,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": true
+          },
+          "rollout_id": "b1192d0bdb30b2395fa554d6d2447a75d7eca526f6874a65fcd4137c0d8eb6ff",
+          "schedule_index": 330,
+          "schedule_row_sha256": "575ae1a73a38b567b4d5fb41c03a9f5772e035afd16e8395a4ed5a3b61e7f078",
+          "source_directory": "0330_b1192d0bdb30b239_c2_pact_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0331_e29d8e3d04f11855_c2_pact_permuted_s3101/result.json",
+          "original_result_sha256": "70dbc10b2f5a50c282c567ac40734a37340e4a164d0521358327f188d73dcfcf",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 52,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 27991,
+            "hazard_contact_pair_samples": 28416,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.000863081941294599,
+            "task_success": false
+          },
+          "rollout_id": "e29d8e3d04f11855ac1d472a1b180175cf6e0139fead96d1725f574102c96dd2",
+          "schedule_index": 331,
+          "schedule_row_sha256": "d53baaacb146e6e8872b43486e66fe6ae78031c3457987065ead349c38d1d5bd",
+          "source_directory": "0331_e29d8e3d04f11855_c2_pact_permuted_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 61,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3101,
+      "condition_id": "C2",
+      "condition_label": "tighter: aperture 0.70 m, inner face 0.070 m",
+      "episode_id": "5e5c92ed7cece278f13bd865d876f9b22b2337716b0d24e86a422ae370a7365d",
+      "intrusion_side": "right",
+      "pair_id": "pairA_c2",
+      "permuted_hazard_frames_sort_key": 27991,
+      "realized_geometry": {
+        "aperture_width_m": 0.7,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.07,
+        "panel_x_m": 0.629058945801744,
+        "panel_z_m": 0.89
+      },
+      "selection_rank": 2,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    },
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0341_df6aacba65b5602b_c2_pact_s3101/result.json",
+          "original_result_sha256": "c4c135cdd126aef8b6b06219db9a5653dad06543c4364d2badec5445806e04ec",
+          "outcome": {
+            "first_grasp_target_contact_step": 164,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 24262,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": true,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": true
+          },
+          "rollout_id": "df6aacba65b5602bf66ef90c8da2d3dc52577550050cd2e9f8161403a14edc61",
+          "schedule_index": 341,
+          "schedule_row_sha256": "576e5d1d0d94ee04e28877770d2cff6e7955d7db1d2b785434d6253ba9683d24",
+          "source_directory": "0341_df6aacba65b5602b_c2_pact_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0340_f79c32d15e1ec7b1_c2_pact_permuted_s3101/result.json",
+          "original_result_sha256": "09957b5b374200343444203c4c8b77e66f040d30d9dc10cc7bbf4b1663730571",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 49,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 27957,
+            "hazard_contact_pair_samples": 36936,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0032010847604130033,
+            "task_success": false
+          },
+          "rollout_id": "f79c32d15e1ec7b14649186128911b9616c0a5451695dde88960e53dd7b6c4f3",
+          "schedule_index": 340,
+          "schedule_row_sha256": "3ac0728556975836777f2b130f45c2944be23679768c79732cd533c5d03d0aab",
+          "source_directory": "0340_f79c32d15e1ec7b1_c2_pact_permuted_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 54,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3101,
+      "condition_id": "C2",
+      "condition_label": "tighter: aperture 0.70 m, inner face 0.070 m",
+      "episode_id": "744720a72fe7a75c55f19ca7d0ac84b0e093f4d71422e813e37b8f971ca4a1be",
+      "intrusion_side": "right",
+      "pair_id": "pairA_c2",
+      "permuted_hazard_frames_sort_key": 27957,
+      "realized_geometry": {
+        "aperture_width_m": 0.7,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.07,
+        "panel_x_m": 0.6139977010138313,
+        "panel_z_m": 0.89
+      },
+      "selection_rank": 3,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    },
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0607_0f6ae5a33528fc94_z_093_pact_s3101/result.json",
+          "original_result_sha256": "b7cc7a587dc4b135a7877487f8967d3412dbc8e2a8968ac46916aca1b069876e",
+          "outcome": {
+            "first_grasp_target_contact_step": 160,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 24424,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": true,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": true
+          },
+          "rollout_id": "0f6ae5a33528fc941e93670ba3ea5ea1810ffdf3b9860738dc46446d8a01ccab",
+          "schedule_index": 607,
+          "schedule_row_sha256": "790f010df58d53bdc813915caf3e7878aa376716b62731a19847e61485850b0f",
+          "source_directory": "0607_0f6ae5a33528fc94_z_093_pact_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0606_df3368644e716a38_z_093_pact_permuted_s3101/result.json",
+          "original_result_sha256": "a1ee3cd518128cad6a93814b6babf1a42611476179d50b4d535fc5b5edf14e4c",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 38,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 28460,
+            "hazard_contact_pair_samples": 29270,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0008403097464950255,
+            "task_success": false
+          },
+          "rollout_id": "df3368644e716a38b826731b7c75e0411d8deb8e659e013a1133752b82586b65",
+          "schedule_index": 606,
+          "schedule_row_sha256": "ffdd86c4a04f527d0f49893f54625a58db070103dec09e7f6467293d5d47f28c",
+          "source_directory": "0606_df3368644e716a38_z_093_pact_permuted_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 32,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3101,
+      "condition_id": "Z_093",
+      "condition_label": "panel 4 cm higher: z 0.89 to 0.93 m",
+      "episode_id": "f024c124bc3c0f5f51711d1a7b4afb1b4873feab76a9534eee5f83463ec1f218",
+      "intrusion_side": "right",
+      "pair_id": "pairB_z093",
+      "permuted_hazard_frames_sort_key": 28460,
+      "realized_geometry": {
+        "aperture_width_m": 0.85,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.09873387292955589,
+        "panel_x_m": 0.6273627408199488,
+        "panel_z_m": 0.93
+      },
+      "selection_rank": 1,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    },
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+          "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+          "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0520_f96089f1d8f1dcbe_z_093_pact_s3103/result.json",
+          "original_result_sha256": "57a4de091753611e873d2b694e87e658bf9ac057242f9db2202d65bd27a238ce",
+          "outcome": {
+            "first_grasp_target_contact_step": 156,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 24533,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": false
+          },
+          "rollout_id": "f96089f1d8f1dcbe70db649f884ec6dd91a06511f35af6c09779bb3ef765669c",
+          "schedule_index": 520,
+          "schedule_row_sha256": "b89ba8eebd2cc42fd7f71e06e4311497667eac971a075d2fd75f998e52f6d605",
+          "source_directory": "0520_f96089f1d8f1dcbe_z_093_pact_s3103",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+          "checkpoint_sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f",
+          "dataset_stats_path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0521_2efdd7e19bdc5f8d_z_093_pact_permuted_s3103/result.json",
+          "original_result_sha256": "891d1d49d20e39397b7f90b42045da2fe0854308ad0271c233da790a8b91fe2b",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 56,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 27883,
+            "hazard_contact_pair_samples": 27929,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0008378797755101378,
+            "task_success": false
+          },
+          "rollout_id": "2efdd7e19bdc5f8d4f208c82e9b8091907ef659b3f525f9dfdc37bd9fc61c2f6",
+          "schedule_index": 521,
+          "schedule_row_sha256": "16c4b47c60e6a9ba698d602506f4f85a52ef4d2988ef30dab25d7ca4ef093e38",
+          "source_directory": "0521_2efdd7e19bdc5f8d_z_093_pact_permuted_s3103",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 50,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3103,
+      "condition_id": "Z_093",
+      "condition_label": "panel 4 cm higher: z 0.89 to 0.93 m",
+      "episode_id": "a79d16a877cb4ff3a9a3ff983e223e1ede931ef77b467452b072eccc4fb68157",
+      "intrusion_side": "right",
+      "pair_id": "pairB_z093",
+      "permuted_hazard_frames_sort_key": 27883,
+      "realized_geometry": {
+        "aperture_width_m": 0.85,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.09610728648010382,
+        "panel_x_m": 0.6054320644719642,
+        "panel_z_m": 0.93
+      },
+      "selection_rank": 2,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    },
+    {
+      "arms": {
+        "PACT": {
+          "arm": "PACT",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0643_30cd55f1f4a5d95e_z_093_pact_s3101/result.json",
+          "original_result_sha256": "c0fa1a718d0b39492e7adf6a16ed91c36fa8a93b05a378c79bdb21f69a7b8fa2",
+          "outcome": {
+            "first_grasp_target_contact_step": 158,
+            "first_hazard_bar_contact_step": null,
+            "grasp_target_contact_frames": 24515,
+            "hazard_contact": false,
+            "hazard_contact_frames": 0,
+            "hazard_contact_pair_samples": 0,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0,
+            "task_success": false
+          },
+          "rollout_id": "30cd55f1f4a5d95e418c663a99703dd6c6adf834cb90ada20dccdb99ae244d5e",
+          "schedule_index": 643,
+          "schedule_row_sha256": "7b507f359a8c3e4654696696080715605e6c1d25089ef69bd7bbf81c12b94b72",
+          "source_directory": "0643_30cd55f1f4a5d95e_z_093_pact_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": null,
+          "token_plan_row": null,
+          "token_plan_sha256": null
+        },
+        "PACT_PERMUTED": {
+          "arm": "PACT_PERMUTED",
+          "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+          "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+          "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+          "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+          "original_result_path": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1/rows/0642_a5b044fe4baafd6d_z_093_pact_permuted_s3101/result.json",
+          "original_result_sha256": "fa571ff1f6f4c531ee4b8eff0846a0501ccd7c73afaaaaf9b7a03cbe71b5c501",
+          "outcome": {
+            "first_grasp_target_contact_step": null,
+            "first_hazard_bar_contact_step": 55,
+            "grasp_target_contact_frames": 0,
+            "hazard_contact": true,
+            "hazard_contact_frames": 27823,
+            "hazard_contact_pair_samples": 28277,
+            "manipulation_success": false,
+            "maximum_hazard_penetration_depth_m": 0.0016169027141483357,
+            "task_success": false
+          },
+          "rollout_id": "a5b044fe4baafd6d361696784c4d7505b429696738b62c3423db4a49c7a3fd31",
+          "schedule_index": 642,
+          "schedule_row_sha256": "80a4a87f7385f231035682310b21405605ec3d366836359e306938481ebf5035",
+          "source_directory": "0642_a5b044fe4baafd6d_z_093_pact_permuted_s3101",
+          "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+          "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+          "token_plan_manifest_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+          "token_plan_row": 43,
+          "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+        }
+      },
+      "checkpoint_seed": 3101,
+      "condition_id": "Z_093",
+      "condition_label": "panel 4 cm higher: z 0.89 to 0.93 m",
+      "episode_id": "2d026eb67c0972abea435828206f93e331f5c11eba83980e0010828ec8ba16c7",
+      "intrusion_side": "right",
+      "pair_id": "pairB_z093",
+      "permuted_hazard_frames_sort_key": 27823,
+      "realized_geometry": {
+        "aperture_width_m": 0.85,
+        "base_forward_m": 0.14,
+        "panel_half_extents_m": [
+          0.055,
+          0.24,
+          0.09
+        ],
+        "panel_half_y_m": 0.24,
+        "panel_inner_face_y_m": 0.09644703482617162,
+        "panel_x_m": 0.6146568421121098,
+        "panel_z_m": 0.93
+      },
+      "selection_rank": 3,
+      "selection_rule": "within condition, among matched instance-seeds with PACT hazard frames equal to 0 and PACT_PERMUTED hazard frames greater than 500, order by descending PACT_PERMUTED hazard frames; break ties by episode ID then seed"
+    }
+  ],
+  "render_contract": {
+    "camera_offset_m": [
+      -1.05,
+      -0.55,
+      1.3
+    ],
+    "camera_reference_body": "robot_0/fr3_link0",
+    "camera_source": "submodules/act/eval_pact_qualitative_row.py",
+    "fov_degrees": 58.0,
+    "lookat_offset_m": [
+      0.55,
+      0.0,
+      0.45
+    ],
+    "max_control_steps": 900,
+    "overlay_fields": [
+      "policy arm and checkpoint seed",
+      "condition ID",
+      "episode ID first 12 characters",
+      "task success yes/no",
+      "any hazard contact yes/no",
+      "hazard-contact frames running cumulative",
+      "maximum hazard penetration",
+      "constant playback speed factor"
+    ],
+    "playback_speed_factor": 3.0,
+    "raw_fps": 15.151515151515152,
+    "render_only_third_person_camera": true,
+    "resolution_width_height": [
+      624,
+      352
+    ],
+    "side_by_side_order": [
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "synchronized_on": "control_step"
+  },
+  "schema_version": "pact_geometry_v3_qualitative_video_manifest_v1",
+  "scientific_record_reopened": false,
+  "selection_contract": {
+    "arms": [
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "conditions": [
+      "C2",
+      "Z_093"
+    ],
+    "fallback_order": [
+      2,
+      3
+    ],
+    "frozen_ranks_per_condition": 3,
+    "initial_rank": 1,
+    "no_substitution_after_footage_review": true,
+    "qualifying_counts": {
+      "C2": 14,
+      "Z_093": 18
+    }
+  },
+  "sources": {
+    "analysis": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/analysis.json",
+      "sha256": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1"
+    },
+    "final_decision": {
+      "decision": "GEOMETRY_GENERALIZES",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/final_decision.json",
+      "sha256": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c"
+    },
+    "report": {
+      "path": "/root/prox_learning_pact_remediation/docs/PACT_GEOMETRY_GENERALIZATION_V3.md",
+      "sha256": "1434977069bb45d3d0548d25a0f6fd7ce73d5dad6523d383226f58d4a59c2d49"
+    },
+    "result_root": "/root/pact_geometry_generalization_v3_artifacts/evaluation_v1",
+    "runtime_code": {
+      "builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_geometry_v3_video_manifest.py",
+        "sha256": "88e722ab1650ce4e596b1cab50b0d447449938d34905b9a8ac1c98bd9cad741e"
+      },
+      "geometry_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_geometry_v3_qualitative_row.py",
+        "sha256": "815c3c40cba50ca2d594c94f14293da49895c4bb1d325192a3193c3c8c84256d"
+      },
+      "qualitative_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_qualitative_row.py",
+        "sha256": "ac642780c21403ff3bb3d99ad3b3d70e610f8453a8f9da8a3625add9a18ee412"
+      },
+      "runner": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_v3_videos.py",
+        "sha256": "30041b7daea4d870f91a0b622781b490af40aaf58ab387637887088b0e8c3e2f"
+      }
+    },
+    "schedule": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/schedule.json",
+      "schedule_sha256": "00a4190a6ba4af021dd2e6f4cc1f0bd3b79d79fcfd36e3547935d0e0f98f1f79"
+    },
+    "scientific_manifest": {
+      "manifest_sha256": "800339f5b651664d4ed9ea5a3cbed2822c4426033d4b1c2e15c9c6b47460891c",
+      "path": "/root/prox_learning_pact_remediation/configs/pact_geometry_generalization_v3.json"
+    }
+  },
+  "status": "selection_and_gate_frozen_pre_render"
+}
