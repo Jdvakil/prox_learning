@@ -1,0 +1,257 @@
+{
+  "checks": {
+    "ACT": {
+      "informational": {
+        "independent_rerender_sharp_hash_matched": false,
+        "interpretation": "independent GPU renders are not required to be byte-identical; the within-call sharp-versus-policy-input hash is the direct blur test"
+      },
+      "required": {
+        "action_trace_changed": true,
+        "proximity_first_frame_unchanged": true,
+        "sigma_two_visual_input_changed": true,
+        "sigma_zero_visual_exact_identity": true
+      }
+    },
+    "PACT": {
+      "informational": {
+        "independent_rerender_sharp_hash_matched": false,
+        "interpretation": "independent GPU renders are not required to be byte-identical; the within-call sharp-versus-policy-input hash is the direct blur test"
+      },
+      "required": {
+        "action_trace_changed": true,
+        "proximity_first_frame_unchanged": true,
+        "sigma_two_visual_input_changed": true,
+        "sigma_zero_visual_exact_identity": true
+      }
+    },
+    "PACT_PERMUTED": {
+      "informational": {
+        "independent_rerender_sharp_hash_matched": false,
+        "interpretation": "independent GPU renders are not required to be byte-identical; the within-call sharp-versus-policy-input hash is the direct blur test"
+      },
+      "required": {
+        "action_trace_changed": true,
+        "proximity_first_frame_unchanged": true,
+        "sigma_two_visual_input_changed": true,
+        "sigma_zero_visual_exact_identity": true
+      }
+    }
+  },
+  "fixed_selection": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seed": 3101,
+    "instance_index": 0,
+    "selected_before_execution": true,
+    "sigmas": [
+      0.0,
+      2.0
+    ]
+  },
+  "initial_overstrict_audit": {
+    "passed": false,
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/preflight_initial_overstrict.json",
+    "preflight_sha256": "ce4c8efa9fd12e26e6deed86e8b821006abc7c9c430ba018de269eb639a9af02",
+    "reason_for_finalizer": "the initial helper accidentally required byte-identical independent RGB rerenders and the full grasp-target sampling payload; neither is a declared scientific endpoint or required intervention invariant"
+  },
+  "passed": true,
+  "policy_outcome_values_used_for_parameter_selection": false,
+  "preflight_sha256": "66fd712439b597256f249b2bbd06947c12990258a66059518059a57791ef98f7",
+  "raw_payload_cleanup": [
+    {
+      "arm": "ACT",
+      "blur_sigma": 0.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_act/trajectory.h5",
+          "sha256": "d4d57b76d7abd2bf388b3e6844c4fd8e735ee4d13d8bafb47717317c949c60bf",
+          "size_bytes": 47292927
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_act/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "8f0d18de0bd8e6ddbf3f99a212046b1ed4570d8f48e0076d8f51c03822ccfbe6",
+          "size_bytes": 567318
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_act/episode_00000000_wrist_camera.mp4",
+          "sha256": "2a1a61f6173b73083e02a2eb6391c299cbd1b6f270df23662dd82a35c4b08f11",
+          "size_bytes": 482014
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_act/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "5c8c17bcd10b6be3a7d9a841558d4bbb20e4c118ac249d856a557e6f16e8a18e",
+          "size_bytes": 5795868
+        }
+      ]
+    },
+    {
+      "arm": "ACT",
+      "blur_sigma": 2.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_act/trajectory.h5",
+          "sha256": "165fa86b7f94144a50fbe25692c1f7e8b7a23073ba2ab1334bf3ed0bb3c31eaa",
+          "size_bytes": 47297366
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_act/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "cee11a3d08fa00b1c21f5ea279785f481987ed23b8b0b9d043c767572c9b1b89",
+          "size_bytes": 560218
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_act/episode_00000000_wrist_camera.mp4",
+          "sha256": "7388040f225ecdfdca799c65e6b24347250d93e39957ff9553ac9728553fa6d4",
+          "size_bytes": 489106
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_act/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "c089697f5fad4b398a4f7a0ef559088c389fa00bb3f7cdbd5fc075514c055e30",
+          "size_bytes": 5391488
+        }
+      ]
+    },
+    {
+      "arm": "PACT",
+      "blur_sigma": 0.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact/trajectory.h5",
+          "sha256": "b2937ba2ec05dfcafccd1e1fe84216675b728a07748c6cce7d26744e84032e05",
+          "size_bytes": 47396661
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "ab81846b505af37008090517a963fc15d4b9792e83b64c2c4ea03aaeaad4f60e",
+          "size_bytes": 608857
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact/episode_00000000_wrist_camera.mp4",
+          "sha256": "1f5548f47e9d9938bc33b559dcb6d49377e92a29698e675ca6e5c11a0df9d5ef",
+          "size_bytes": 516276
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "b709e540d4c9ced52fc936d6542fce5c1efa07d3ed7de2e5531d0d1377e25131",
+          "size_bytes": 6146531
+        }
+      ]
+    },
+    {
+      "arm": "PACT",
+      "blur_sigma": 2.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact/trajectory.h5",
+          "sha256": "6176fccb2951f50442fdb201cfcb59330685d8ecd37b69d07e3cb3b335c1aab2",
+          "size_bytes": 47238021
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "33d36b88da23148287d7a1d744e8855c631b6b1269f80cc1c8aff1e969b0da4a",
+          "size_bytes": 578083
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact/episode_00000000_wrist_camera.mp4",
+          "sha256": "ae835de5ff96b2267002b4de97caa0e62994ac742b045ff07d6fabea222f9571",
+          "size_bytes": 531413
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "d7e5837de183fa69492bd10b5e2118420b6288aff04d36319202fecc032dcd42",
+          "size_bytes": 6518793
+        }
+      ]
+    },
+    {
+      "arm": "PACT_PERMUTED",
+      "blur_sigma": 0.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact_permuted/trajectory.h5",
+          "sha256": "ede595ccc2478f62182d298e9d42a0c3a1274fac7b5c173b9eefa571aaea8e3b",
+          "size_bytes": 47366725
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact_permuted/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "44b44e88be17e410fb08cf9f3604670a670add356cff64ed4bfd0ca8d7f0f8a4",
+          "size_bytes": 616313
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact_permuted/episode_00000000_wrist_camera.mp4",
+          "sha256": "c3d258eaf1d69971f4408214a91cb2505ac438c1cf930e95865078eb927b8070",
+          "size_bytes": 515740
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact_permuted/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "68cde33ae165dc8b6bfce8f96fc59588ce0289ca2ae7f4b43f3e1d6ec2d69559",
+          "size_bytes": 6231649
+        }
+      ]
+    },
+    {
+      "arm": "PACT_PERMUTED",
+      "blur_sigma": 2.0,
+      "removed_after_hashing": [
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact_permuted/trajectory.h5",
+          "sha256": "add62f0c2ca11513a3f4bd3aa13619c0c8952504623d87224dcc0e50e8f32a54",
+          "size_bytes": 47257673
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact_permuted/episode_00000000_sensors_depth8_heatmap.mp4",
+          "sha256": "e9fbad13d3711f218fda66c124e15a4b937b73c1e203d77de39f568f50267397",
+          "size_bytes": 571252
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact_permuted/episode_00000000_wrist_camera.mp4",
+          "sha256": "0331542436f4db7e8abb0cf5f6aedc47733cbcdbbfc734ed234bfd1255b085fe",
+          "size_bytes": 529536
+        },
+        {
+          "path": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact_permuted/episode_00000000_wrist_camera_depth.mp4",
+          "sha256": "c586b89887846f174fd8392ead807017449888815ef3d2b9e86ed7ec9d586397",
+          "size_bytes": 7040904
+        }
+      ]
+    }
+  ],
+  "row_substitution": false,
+  "same_six_rollouts_reused_without_rerun": true,
+  "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
+  "schema_version": "pact_blur_sweep_preflight_v2",
+  "sharp_v3_reproduction": {
+    "PACT": {
+      "current_scientific_outcome_sha256": "22ef934dfac790fc73826b8ee8d930ccb32f695ad4802150303ec82c1106a764",
+      "informational_grasp_target_sampling_delta": {
+        "contact_frames": 2,
+        "contact_pair_samples": 92,
+        "excluded_from_endpoint": true,
+        "first_contact_step": {
+          "current": 170,
+          "v3": 170
+        },
+        "reason": "grasp-target contact is expected and never counts against a policy"
+      },
+      "scientific_outcome_exact_match": true,
+      "v3_scientific_outcome_sha256": "22ef934dfac790fc73826b8ee8d930ccb32f695ad4802150303ec82c1106a764"
+    },
+    "PACT_PERMUTED": {
+      "current_scientific_outcome_sha256": "22ef934dfac790fc73826b8ee8d930ccb32f695ad4802150303ec82c1106a764",
+      "informational_grasp_target_sampling_delta": {
+        "contact_frames": 3,
+        "contact_pair_samples": 2576,
+        "excluded_from_endpoint": true,
+        "first_contact_step": {
+          "current": 157,
+          "v3": 157
+        },
+        "reason": "grasp-target contact is expected and never counts against a policy"
+      },
+      "scientific_outcome_exact_match": true,
+      "v3_scientific_outcome_sha256": "22ef934dfac790fc73826b8ee8d930ccb32f695ad4802150303ec82c1106a764"
+    }
+  }
+}

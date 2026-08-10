@@ -1,0 +1,100 @@
+{
+  "checks": {
+    "ACT": {
+      "action_trace_changed": true,
+      "proximity_first_frame_unchanged": true,
+      "same_unblurred_first_visual_input": false,
+      "sigma_two_visual_input_changed": true,
+      "sigma_zero_visual_exact_identity": true
+    },
+    "PACT": {
+      "action_trace_changed": true,
+      "proximity_first_frame_unchanged": true,
+      "same_unblurred_first_visual_input": false,
+      "sigma_two_visual_input_changed": true,
+      "sigma_zero_visual_exact_identity": true
+    },
+    "PACT_PERMUTED": {
+      "action_trace_changed": true,
+      "proximity_first_frame_unchanged": true,
+      "same_unblurred_first_visual_input": false,
+      "sigma_two_visual_input_changed": true,
+      "sigma_zero_visual_exact_identity": true
+    }
+  },
+  "endpoint_values_used_for_parameter_selection": false,
+  "fixed_selection": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seed": 3101,
+    "instance_index": 0,
+    "selected_before_execution": true,
+    "sigmas": [
+      0.0,
+      2.0
+    ]
+  },
+  "passed": false,
+  "preflight_sha256": "ce4c8efa9fd12e26e6deed86e8b821006abc7c9c430ba018de269eb639a9af02",
+  "runs": [
+    {
+      "arm": "PACT_PERMUTED",
+      "blur_sigma": 0.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact_permuted",
+      "rollout_id": "74038ab4c022c7f72ce89e826db7aa0a61525696cd3c023ae014eba909f95c0a",
+      "trajectory_payloads_removed_after_hashing": []
+    },
+    {
+      "arm": "ACT",
+      "blur_sigma": 0.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_act",
+      "rollout_id": "7c241e3a91405dfb11cdde06bcdbe84222dd5a5f93c12f939306e0bf39c95f92",
+      "trajectory_payloads_removed_after_hashing": []
+    },
+    {
+      "arm": "PACT",
+      "blur_sigma": 0.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_0p0_pact",
+      "rollout_id": "cd65fae5dcb2495282cc548b856a8a449ba210ed89cfa124383ba37ced04a4f8",
+      "trajectory_payloads_removed_after_hashing": []
+    },
+    {
+      "arm": "ACT",
+      "blur_sigma": 2.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_act",
+      "rollout_id": "de73f1e23d3666a412781117cff1057ee49488b6ae5b2616092ad4a3e346bc80",
+      "trajectory_payloads_removed_after_hashing": []
+    },
+    {
+      "arm": "PACT",
+      "blur_sigma": 2.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact",
+      "rollout_id": "5ce4d8cf9803b0ad19c347ca89f95c3c6f4d512636ef4367a9c32f653eb86317",
+      "trajectory_payloads_removed_after_hashing": []
+    },
+    {
+      "arm": "PACT_PERMUTED",
+      "blur_sigma": 2.0,
+      "output": "/root/pact_blur_sweep_artifacts/preflight_v1/sigma_2p0_pact_permuted",
+      "rollout_id": "7a02f699f5efa13a0efb9533b3ec56428d83601f8762bd55ff1ba60ca99914e0",
+      "trajectory_payloads_removed_after_hashing": []
+    }
+  ],
+  "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
+  "schema_version": "pact_blur_sweep_preflight_v1",
+  "sharp_v3_reproduction": {
+    "PACT": {
+      "current_endpoint_sha256": "32da6a13ed3545a0abb43873852390715f5f6a908e10fcad41efd783c5874a7d",
+      "exact_endpoint_match": false,
+      "v3_endpoint_sha256": "f2eeb37f99f6f5a37f0aca1126af69339c7a0a9a4d3831215897d13e6e06660b"
+    },
+    "PACT_PERMUTED": {
+      "current_endpoint_sha256": "60be3730c0bef384e18064c10308f46d83df65211b744d4485da8f480559a512",
+      "exact_endpoint_match": false,
+      "v3_endpoint_sha256": "483cb8b286203a29b594178ebbaeea13bf11e7948ecae3d32d6bd28073efdb27"
+    }
+  }
+}
