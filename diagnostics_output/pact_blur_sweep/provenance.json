@@ -1,0 +1,152 @@
+{
+  "calibrated_sigmas": [
+    0.0,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "checkpoint_records": [
+    {
+      "arm": "ACT",
+      "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+      "seed": 3101,
+      "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+      "seed": 3101,
+      "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+    },
+    {
+      "arm": "ACT",
+      "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+      "seed": 3102,
+      "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+      "seed": 3102,
+      "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+    },
+    {
+      "arm": "ACT",
+      "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+      "seed": 3103,
+      "sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+      "seed": 3103,
+      "sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f"
+    }
+  ],
+  "decision_rule": {
+    "BLUR_EXPERIMENT_INCOMPLETE": "the 900-row schedule does not reconcile",
+    "BLUR_PARTIAL": "not established, but at least one sigma>0 has PACT-minus-ACT collision-free-success CI lower bound above zero",
+    "BLUR_ROBUSTNESS_ESTABLISHED": "PACT-minus-ACT collision-free-success point estimate is positive at every sigma>0, strictly increases at each successive positive sigma, and its 95% instance-cluster bootstrap CI lower bound exceeds zero at the largest sigma where pooled ACT and PACT are each >=0.10",
+    "BLUR_UNINFORMATIVE_COLLAPSE": "every arm has pooled collision-free success <0.10 at every sigma>0",
+    "NO_BLUR_ROBUSTNESS": "not collapsed and no sigma>0 has PACT-minus-ACT collision-free-success CI lower bound above zero",
+    "token_priority": [
+      "BLUR_EXPERIMENT_INCOMPLETE",
+      "BLUR_UNINFORMATIVE_COLLAPSE",
+      "BLUR_ROBUSTNESS_ESTABLISHED",
+      "BLUR_PARTIAL",
+      "NO_BLUR_ROBUSTNESS"
+    ]
+  },
+  "frozen_documents": {
+    "calibration": {
+      "file_sha256": "726825e3308783e8600c40d7c531620b0e2cd0f3d646e230f80e5894e1c05e95",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/calibration.json",
+      "self_sha256": "56bba0c5d736a884a05d999a57d0b51ff193256ce5d974117636f7f6f3fd266e"
+    },
+    "dispatch": {
+      "file_sha256": "1ffea405629e4775603a0152e160253f72857ce78258445ba7dcde486504920c",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/dispatch.json",
+      "self_sha256": "b31fb2e74330c6ef700725822aed025c7d5caa65c408ed42d7e3cba9d6c3d98f"
+    },
+    "manifest": {
+      "file_sha256": "07d1922c23a0964023953685aff8cbb7d1719535c291100dfc11cfe30eba8a04",
+      "path": "/root/prox_learning_pact_remediation/configs/pact_blur_sweep_v1.json",
+      "self_sha256": "4c12f49d38fac7ab760cb5a0170b4798fff1427b9636819591feaef2fd57afbe"
+    },
+    "schedule": {
+      "file_sha256": "8b4eda7ed0264e8d6f6ff01aaa08c872f6d734952eb684475221011c0402368f",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/schedule.json",
+      "self_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5"
+    }
+  },
+  "no_new_demonstrations": true,
+  "no_new_encoder": true,
+  "no_retraining": true,
+  "no_upstream_merge_model_construction_hashes": {
+    "submodules/act/detr/main.py": "2d60e617c6d1613cce12d3be7b59be25c1d69c62f6765754669bf59ca2cde641",
+    "submodules/act/detr/models/detr_vae.py": "4a4c79677318935e627792735222f07632a063d92ea57b6082cf2562b5d5dde8",
+    "submodules/act/policy.py": "02a6ac5620596fe99b227fd06eeed7e7c61921a4a2cb0a1813511cf37165f444"
+  },
+  "protected_scientific_artifacts": {
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION_V3.md": "1434977069bb45d3d0548d25a0f6fd7ce73d5dad6523d383226f58d4a59c2d49"
+  },
+  "provenance_sha256": "30db8d0225500bae2f9f26a4720135fe2c6d81b458a6225f5aff6256337a4fa8",
+  "repository": {
+    "act_submodule_head": "2f355d031d03632c725eb2319c9dd2b0d406162b",
+    "branch": "experiment/pact-valid-ablation-followup-v1",
+    "head": "de2829bf8bb05f1825470151aacaf2c180bda2b6",
+    "no_push_performed": true,
+    "path": "/root/prox_learning_pact_remediation"
+  },
+  "rollouts": 900,
+  "schema_version": "pact_blur_sweep_provenance_v1",
+  "scientific_design": {
+    "bootstrap_replicates_minimum": 20000,
+    "cluster": "instance; all sigmas, arms, and seeds move together",
+    "co_primary": [
+      "collision_free_task_success",
+      "hazard_bar_contact_frames_per_rollout"
+    ],
+    "contrast_order": [
+      "PACT_minus_ACT",
+      "PACT_minus_PACT_PERMUTED",
+      "PACT_PERMUTED_minus_ACT"
+    ],
+    "secondary": [
+      "any_hazard_contact_rate",
+      "contact_entries",
+      "maximum_hazard_penetration_depth_m",
+      "task_success"
+    ],
+    "seeds_unpooled_before_pooling": true,
+    "within_instance_sigma_slope": true
+  },
+  "surface_encoder": {
+    "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+    "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+  },
+  "token_plan": {
+    "file_sha256": "f4843f696d2c9cb21531668bbcc6c7507da8226d4165cd0c023ca61caf8e8784",
+    "global_tensor": {
+      "path": "/root/pact_contact_endpoint_artifacts/token_plan_v1/permuted_tokens.npy",
+      "sha256": "6b3dbb41bf31b9c175586cc9e4eb5b6ce9deb1374ab9a5874365942fbd312eef",
+      "size_bytes": 460800128
+    },
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+    "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+  },
+  "upstream_blur_primitive": {
+    "commit": "ec447930e1d025fed549ef2f58354aa87001c28c",
+    "copied_source_exact_match": true,
+    "function_source_sha256": "e3410d9740142cdbaaa272aba45c0de4e9b76bf2eb7919ab621a661bb5cbab43",
+    "repository": "/root/prox_learning/submodules/act",
+    "source": "imitate_episodes.py:blur_images",
+    "upstream_branch_merged": false
+  },
+  "workers": 12
+}
