@@ -8,9 +8,11 @@ molmospaces `main` @ `4a938b2`) with the four requested extensions:
 | Clutter detected by the skin | 0–9 items per episode on the bench, kept out of the mouth→object corridor so the skin grazes them instead of them blocking the grasp; positions + AABBs logged in `scene_params` (`n_clutter_placed`, `clutter_aabbs`) | `cluttered_fumehood.py` |
 | Hood size varied a lot | 27 scene variants: interior width 0.64–1.16 m × depth 0.58–1.00 m × height 0.52–1.05 m, one per house index, so a single run sweeps every geometry | `gen_fumehood_variants.py`, `custom_scenes/` |
 | Motions that get the robot in more | object depth drawn 6–34 cm past the mouth every episode (`reach_frac` in `scene_params`); was pinned at ~10 cm | `cluttered_fumehood.py` |
-| More tasks | pick-and-place: a mocap `place_tray` in every scene + a sampler that returns a `PickAndPlaceTask` targeting it (pattern follows `FridgePickAndPlaceTaskSampler`) | `ClutteredFumehoodPickAndPlaceSampler` |
+| More tasks | **pick-and-place** (mocap `place_tray` in every scene, sampler returns a `PickAndPlaceTask`; pattern follows `FridgePickAndPlaceTaskSampler`), **push** (closed-gripper sweep toward a per-episode goal, deeper or lateral), and **pull** (grasp + drag toward the mouth). Push/pull success is displacement-based (>=8 cm along the commanded direction) | `ClutteredFumehoodPickAndPlaceSampler`, `push_pull.py` |
 
 ![size variants](figs/fumehood_size_variants.png)
+
+![env design](figs/env_design_topdown.png)
 
 ## Running
 
@@ -27,10 +29,12 @@ python fumehood_env/collect_dense.py \
     --config FrankaSkinClutteredFumehoodCheckConfig \
     --houses 1,313,625 --samples 2 --output_dir /tmp/clutter_check
 
-# 2. preflight, pick-and-place: 2 hood sizes x 2 episodes
-python fumehood_env/collect_dense.py \
-    --config FrankaSkinClutteredFumehoodPnPCheckConfig \
-    --houses 1,313 --samples 2 --output_dir /tmp/pnp_check
+# 2. preflights for the other tasks: 2 hood sizes x 2 episodes each
+for CFG in PnP Push Pull; do
+  python fumehood_env/collect_dense.py \
+      --config FrankaSkinClutteredFumehood${CFG}CheckConfig \
+      --houses 1,313 --samples 2 --output_dir /tmp/${CFG}_check
+done
 
 # 3. full runs (27 sizes x 5 episodes = up to 135 each)
 H=$(python3 -c "print(','.join(str(1+24*k) for k in range(27)))")
@@ -38,7 +42,14 @@ python fumehood_env/collect_dense.py --config FrankaSkinClutteredFumehoodConfig 
     --houses "$H" --samples 5 --output_dir <out>/cluttered_v1
 python fumehood_env/collect_dense.py --config FrankaSkinClutteredFumehoodPnPConfig \
     --houses "$H" --samples 5 --output_dir <out>/cluttered_pnp_v1
+# likewise ...PushConfig / ...PullConfig
 ```
+
+Every collection run writes per-episode multi-camera MP4s next to the h5s, so
+rollout videos come for free from the preflights onward. After any run,
+`analysis/plot_clutter_activation.py` produces the clutter-vs-skin-activation
+figure (the quantitative "clutter is detected by the sensors" check), and
+`analysis/plot_env_design.py` regenerates the design overview above.
 
 House index ↔ variant mapping: house `1+24k` → `custom_scenes/fumehood_v{k:02d}.xml`
 (indices stay ≡ 1 mod 24 so every episode remains the same red-cup task; the
@@ -58,6 +69,13 @@ compilation fails.
   yet — the workstation it was built on started killing every collection
   process on Aug 7 (hardware/OS issue, not code) before a run could finish.
   Expect the first run to be a genuine first run.
+* **Push / pull**: code-complete, syntax-verified, and written strictly
+  against the upstream primitive API (`GripperAction` / `TCPMoveSequence` /
+  `compute_grasp_pose`, same IK checks as the pick planner; every referenced
+  config field verified to exist upstream). Never executed — same machine
+  issue. Run their Check configs first; the most likely first-run issue is
+  IK rejection of push waypoints in the smallest hood, which the sampler
+  retry loop should absorb.
 * `collect_dense.py` forces `num_workers=1`; see its docstring for why
   (fixed-seed workers replay identical episodes — the same defect the
   hybrid_obstacle_v1 audit found).

@@ -126,3 +126,77 @@ class FrankaSkinClutteredFumehoodPnPCheckConfig(FrankaSkinClutteredFumehoodPnPCo
     @property
     def tag(self) -> str:
         return "franka_skin_cluttered_fumehood_pnp_check"
+
+
+# --------------------------------------------------------------------------- #
+# Push / pull                                                                 #
+# --------------------------------------------------------------------------- #
+from fumehood_env.push_pull import (  # noqa: E402
+    ClutteredFumehoodPullSampler,
+    ClutteredFumehoodPushSampler,
+    PullPlannerPolicyConfig,
+    PushPlannerPolicyConfig,
+)
+
+
+@register_config("FrankaSkinClutteredFumehoodPushConfig")
+class FrankaSkinClutteredFumehoodPushConfig(FrankaSkinClutteredFumehoodConfig):
+    """Push the object along the bench (deeper into the hood or laterally) with
+    a closed gripper; success is >=8cm displacement along the commanded
+    direction. Same clutter / hood sizes / deep placement as the pick config."""
+
+    policy_config: BasePolicyConfig = PushPlannerPolicyConfig()
+    task_sampler_config: PickTaskSamplerConfig = (
+        FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(
+            update={"task_sampler_class": ClutteredFumehoodPushSampler}))
+    output_dir: Path = ASSETS_DIR / "datagen" / "cluttered_fumehood_push_v1"
+
+    @property
+    def tag(self) -> str:
+        return "franka_skin_cluttered_fumehood_push_v1"
+
+
+@register_config("FrankaSkinClutteredFumehoodPushCheckConfig")
+class FrankaSkinClutteredFumehoodPushCheckConfig(FrankaSkinClutteredFumehoodPushConfig):
+    """Preflight: two hood sizes x 2 episodes."""
+
+    task_sampler_config: PickTaskSamplerConfig = (
+        FrankaSkinClutteredFumehoodPushConfig.model_fields["task_sampler_config"].default.model_copy(
+            update={"house_inds": [_HOUSES[0], _HOUSES[len(_HOUSES) // 2]],
+                    "samples_per_house": 2}))
+    output_dir: Path = ASSETS_DIR / "datagen" / "cluttered_fumehood_push_check"
+
+    @property
+    def tag(self) -> str:
+        return "franka_skin_cluttered_fumehood_push_check"
+
+
+@register_config("FrankaSkinClutteredFumehoodPullConfig")
+class FrankaSkinClutteredFumehoodPullConfig(FrankaSkinClutteredFumehoodConfig):
+    """Grasp and drag the object toward the mouth without lifting; success is
+    >=8cm displacement toward the front."""
+
+    policy_config: BasePolicyConfig = PullPlannerPolicyConfig()
+    task_sampler_config: PickTaskSamplerConfig = (
+        FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(
+            update={"task_sampler_class": ClutteredFumehoodPullSampler}))
+    output_dir: Path = ASSETS_DIR / "datagen" / "cluttered_fumehood_pull_v1"
+
+    @property
+    def tag(self) -> str:
+        return "franka_skin_cluttered_fumehood_pull_v1"
+
+
+@register_config("FrankaSkinClutteredFumehoodPullCheckConfig")
+class FrankaSkinClutteredFumehoodPullCheckConfig(FrankaSkinClutteredFumehoodPullConfig):
+    """Preflight: two hood sizes x 2 episodes."""
+
+    task_sampler_config: PickTaskSamplerConfig = (
+        FrankaSkinClutteredFumehoodPullConfig.model_fields["task_sampler_config"].default.model_copy(
+            update={"house_inds": [_HOUSES[0], _HOUSES[len(_HOUSES) // 2]],
+                    "samples_per_house": 2}))
+    output_dir: Path = ASSETS_DIR / "datagen" / "cluttered_fumehood_pull_check"
+
+    @property
+    def tag(self) -> str:
+        return "franka_skin_cluttered_fumehood_pull_check"

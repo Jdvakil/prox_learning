@@ -92,7 +92,8 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
     def _apply_theta(self, env, th):
         super()._apply_theta(env, th)
         m, d = env.current_model, env.current_data
-        half_w, depth, _ = self._hood_dims(m)
+        half_w, depth, height = self._hood_dims(m)
+        th["hood_dims"] = [float(half_w), float(depth), float(height)]
         z0 = SHELF_TOP_Z
 
         obj = th.get("obj_rest") or [TUBE_X0 + 0.20, 0.0, z0]
@@ -117,7 +118,11 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
             if th.get("protrusion_present") and th.get("protr_center"):
                 pc = th["protr_center"]
                 near_bar = float(np.hypot(x - pc[0], y - pc[1])) < 0.08
-            if in_corridor or near_obj or near_bar:
+            # keep the place tray clear too (front-right corner in every scene),
+            # otherwise pick-and-place episodes can start with clutter on the pad
+            near_tray = float(np.hypot(x - (TUBE_X0 + 0.14),
+                                       y - (-(half_w - 0.12)))) < 0.16
+            if in_corridor or near_obj or near_bar or near_tray:
                 self._park(env, i)
                 continue
             pos = [float(x), float(y), float(z0 + hz)]
