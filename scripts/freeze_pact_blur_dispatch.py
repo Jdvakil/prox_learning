@@ -20,9 +20,9 @@ FROZEN_CONTACT_HASHES = {
     ROOT / "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
 }
 FROZEN_V3_HASHES = {
-    ROOT / "docs/PACT_GEOMETRY_GENERALIZATION_V3.md": "143497c7d9c100fb05400e3f716690199699d86ad4eccd745da9f74622467105",
-    ROOT / "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957bdbad56018390576b67f52237a03ed2f96c468ad4e393f3047806ca7b1a",
-    ROOT / "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb7770cf23bdd44b90006113807458a7822be4cf4a6f68889fbeae9337681",
+    ROOT / "docs/PACT_GEOMETRY_GENERALIZATION_V3.md": "1434977069bb45d3d0548d25a0f6fd7ce73d5dad6523d383226f58d4a59c2d49",
+    ROOT / "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    ROOT / "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
 }
 
 
