@@ -88,3 +88,15 @@ def test_collision_driver_records_and_threads_sigma() -> None:
     assert 'parser.add_argument("--blur-sigma", type=float, default=0.0)' in source
     assert '"blur_sigma": float(args.blur_sigma)' in source
     assert "blur_sigma=float(args.blur_sigma)" in source
+
+
+def test_runtime_records_visual_proximity_and_action_diagnostics() -> None:
+    collision = COLLISION_PATH.read_text()
+    frontend = FRONTEND_PATH.read_text()
+    assert "self._record_blur_diagnostic(sharp_image_tensor, image_tensor)" in frontend
+    assert '"first_visual_input_changed": sharp_sha != input_sha' in collision
+    assert '"first_raw_proximity_sha256"' in collision
+    assert '"model_output_trace_sha256"' in collision
+    assert collision.index("self._record_blur_diagnostic") < collision.index(
+        "raw = self._raw_proximity(observation)"
+    )
