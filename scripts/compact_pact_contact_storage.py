@@ -34,6 +34,7 @@ CORE_RESULT_KEYS = (
     "checkpoint_sha256",
     "stats_sha256",
     "surface_encoder_sha256",
+    "blur_sigma",
     "attempt_index",
     "inflight_recovery_event_sha256",
     "abandoned_payload_archive",
@@ -55,6 +56,11 @@ POLICY_SUMMARY_KEYS = (
     "live_proximity_aligned_with_action",
     "token_plan_sha256",
     "token_plan_frames_consumed",
+    "blur_sigma",
+    "blur_diagnostic",
+    "first_raw_proximity_sha256",
+    "model_output_trace_sha256",
+    "model_output_trace_steps",
 )
 
 

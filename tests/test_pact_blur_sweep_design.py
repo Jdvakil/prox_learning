@@ -21,6 +21,8 @@ V3_SCHEDULE = ROOT / "diagnostics_output/pact_geometry_generalization_v3/schedul
 REGISTRY = ROOT / "diagnostics_output/pact_contact_endpoint/policy_training.json"
 TOKEN_PLAN = ROOT / "diagnostics_output/pact_contact_endpoint/token_plan.json"
 ANALYSIS_SCRIPT = ROOT / "scripts/analyze_pact_blur_sweep.py"
+SUPERVISOR = ROOT / "scripts/run_pact_blur_supervisor.py"
+COMPACTOR = ROOT / "scripts/compact_pact_contact_storage.py"
 
 
 def build_manifest() -> dict:
@@ -153,3 +155,17 @@ def test_result_validation_rejects_a_silently_dropped_sigma() -> None:
         assert "blur_sigma" in str(error)
     else:
         raise AssertionError("a mismatched recorded blur sigma was accepted")
+
+
+def test_supervisor_threads_sigma_and_compactor_retains_audit_fields() -> None:
+    supervisor = SUPERVISOR.read_text()
+    compactor = COMPACTOR.read_text()
+    assert 'command.extend(["--blur-sigma", str(row["blur_sigma"])])' in supervisor
+    assert 'result.get("blur_sigma") != active.row["blur_sigma"]' in supervisor
+    for field in (
+        '"blur_sigma"',
+        '"blur_diagnostic"',
+        '"first_raw_proximity_sha256"',
+        '"model_output_trace_sha256"',
+    ):
+        assert field in compactor
