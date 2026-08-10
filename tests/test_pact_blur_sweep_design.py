@@ -169,3 +169,4 @@ def test_supervisor_threads_sigma_and_compactor_retains_audit_fields() -> None:
         '"model_output_trace_sha256"',
     ):
         assert field in compactor
+    assert 'compact["policy_info"] = policy_summary' in compactor

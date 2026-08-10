@@ -239,9 +239,13 @@ def compact_row(row: dict[str, Any], output_root: Path) -> dict[str, Any]:
     compact = {key: original[key] for key in CORE_RESULT_KEYS}
     compact["contact_audit"] = compact_contact_audit(original["contact_audit"])
     policy_info = original.get("policy_info", {})
-    compact["policy_info_summary"] = {
+    policy_summary = {
         key: policy_info[key] for key in POLICY_SUMMARY_KEYS if key in policy_info
     }
+    compact["policy_info_summary"] = policy_summary
+    # New studies validate intervention metadata through the original key.
+    # Preserve the compact summary under both names; no endpoint payload is added.
+    compact["policy_info"] = policy_summary
     compact["trajectory_path"] = None
     compact["videos"] = []
     compact["storage_compaction"] = {

@@ -1,0 +1,315 @@
+{
+  "analysis": {
+    "bootstrap_replicates": 20000,
+    "cluster": "instance; all sigmas, arms, and seeds move together",
+    "decision_rule": {
+      "BLUR_EXPERIMENT_INCOMPLETE": "the 900-row schedule does not reconcile",
+      "BLUR_PARTIAL": "not established, but at least one sigma>0 has PACT-minus-ACT collision-free-success CI lower bound above zero",
+      "BLUR_ROBUSTNESS_ESTABLISHED": "PACT-minus-ACT collision-free-success point estimate is positive at every sigma>0, strictly increases at each successive positive sigma, and its 95% instance-cluster bootstrap CI lower bound exceeds zero at the largest sigma where pooled ACT and PACT are each >=0.10",
+      "BLUR_UNINFORMATIVE_COLLAPSE": "every arm has pooled collision-free success <0.10 at every sigma>0",
+      "NO_BLUR_ROBUSTNESS": "not collapsed and no sigma>0 has PACT-minus-ACT collision-free-success CI lower bound above zero",
+      "token_priority": [
+        "BLUR_EXPERIMENT_INCOMPLETE",
+        "BLUR_UNINFORMATIVE_COLLAPSE",
+        "BLUR_ROBUSTNESS_ESTABLISHED",
+        "BLUR_PARTIAL",
+        "NO_BLUR_ROBUSTNESS"
+      ]
+    },
+    "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_blur_sweep.py",
+    "seeds_unpooled_first": true,
+    "sha256": "3c6ab124a659b00b1402add63eb39735e564324c18a0163ba662bfaafa2bbe86"
+  },
+  "boundary_amendment": {
+    "all_inflight_rows_rerun": true,
+    "cohort_exit_window_seconds": 5,
+    "individual_post_observation_retry": false,
+    "pre_observation_retry": true,
+    "row_terminal_boundary": "valid scientific result.json"
+  },
+  "detachment_proof": {
+    "endpoint_outcome_fields_inspected": false,
+    "kill_launching_shell_during_smoke": true,
+    "required_artifact": "detachment_proof.json",
+    "required_before_full_dispatch": true
+  },
+  "dispatch_contract_sha256": "b31fb2e74330c6ef700725822aed025c7d5caa65c408ed42d7e3cba9d6c3d98f",
+  "execution": {
+    "detached_stdin": true,
+    "fixed_worker_count": 12,
+    "fresh_subprocess_per_rollout": true,
+    "no_outcome_based_row_replacement": true,
+    "nohup": true,
+    "output_root": "/root/pact_blur_sweep_artifacts/evaluation_v1",
+    "policy_outcomes_seen_before_freeze": false,
+    "setsid": true
+  },
+  "frozen_contact_endpoint_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "/root/prox_learning_pact_remediation/docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b"
+  },
+  "frozen_geometry_v3_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "/root/prox_learning_pact_remediation/docs/PACT_GEOMETRY_GENERALIZATION_V3.md": "1434977069bb45d3d0548d25a0f6fd7ce73d5dad6523d383226f58d4a59c2d49"
+  },
+  "frozen_inputs": {
+    "calibration": {
+      "calibration_sha256": "56bba0c5d736a884a05d999a57d0b51ff193256ce5d974117636f7f6f3fd266e",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/calibration.json",
+      "sha256": "726825e3308783e8600c40d7c531620b0e2cd0f3d646e230f80e5894e1c05e95"
+    },
+    "checkpoints": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+        "sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e"
+      },
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+        "sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+        "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+        "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+        "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+      }
+    ],
+    "dataset_stats": [
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      },
+      {
+        "path": "/root/pact_seed_replication_artifacts/policy_seed3102/dataset_stats.pkl",
+        "sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec"
+      }
+    ],
+    "manifest": {
+      "path": "/root/prox_learning_pact_remediation/configs/pact_blur_sweep_v1.json",
+      "sha256": "07d1922c23a0964023953685aff8cbb7d1719535c291100dfc11cfe30eba8a04"
+    },
+    "policy_registry": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/policy_training.json",
+      "sha256": "b644b3c1307ab296d4424a502820c1c6b776c2818d7cd5ab463a8b931d86d5f7"
+    },
+    "runtime": {
+      "analysis": {
+        "path": "/root/prox_learning_pact_remediation/scripts/analyze_pact_blur_sweep.py",
+        "sha256": "3c6ab124a659b00b1402add63eb39735e564324c18a0163ba662bfaafa2bbe86"
+      },
+      "blur_primitive": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/pact_blur.py",
+        "sha256": "f9f21c0719559b9a96926e3659f6d53b47442705a67b98363b60bf0733ee140f"
+      },
+      "calibration": {
+        "path": "/root/prox_learning_pact_remediation/scripts/calibrate_pact_blur.py",
+        "sha256": "9cdfdec7f6e7bd47879dbd6f13e26158c8888555600f04ab646251dc05bfc1d5"
+      },
+      "contact_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_contact_endpoint_row.py",
+        "sha256": "e9188f4e97beca874d45f48b4f185cffaadba0e50d978720f1558ca8f6d5fdab"
+      },
+      "contact_taxonomy": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
+        "sha256": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd"
+      },
+      "detached_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_blur_detached.py",
+        "sha256": "df3cc9435a4827ed145dce7f7e62b127ea674deaadbb90275fbad2bcfc9b95e3"
+      },
+      "detachment_proof": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_blur_detachment.py",
+        "sha256": "b22bb91c15d6e35f8eb44ebcb61be4353c398b28c03bef74ff8f230a7635d7aa"
+      },
+      "dispatch_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/freeze_pact_blur_dispatch.py",
+        "sha256": "40f09b276b259db3b7e7292b33a7248b71df9669218c402a805a08b93d70d1c8"
+      },
+      "evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_blur_sweep_row.py",
+        "sha256": "6f2a18046d29f506a064281c40e99ae2a33171fa4d78b00c33b0fa660b1a9282"
+      },
+      "full_launcher": {
+        "path": "/root/prox_learning_pact_remediation/scripts/launch_pact_blur_full.py",
+        "sha256": "07b9c1f390c47c226e32651b03e874ccb4307071944e42e3bc38b2204139479f"
+      },
+      "generic_schedule_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_confirmatory_schedule.py",
+        "sha256": "901cdb55eb034d585e3f4aebe760246efb4c24d35723e39b48258857b1efb580"
+      },
+      "geometry_supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_geometry_supervisor.py",
+        "sha256": "df4b756109c3f1a921a4d1264fa353a18e81d53f7a0a780bc6909ed19c3f16a8"
+      },
+      "intervention_preflight": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_blur_preflight.py",
+        "sha256": "01aadaa2e8e5338aaf3560b4e96fb916ab1d5cb96442021c88e11d3feaf9a5de"
+      },
+      "legacy_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_collision_row.py",
+        "sha256": "c163d7598cd331d7c3bdbc5c0d0c7b0d40a0857c994dbe4d38773efef6ddeafb"
+      },
+      "live_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_frontend_screen_row.py",
+        "sha256": "97d26866c488ccf6e5417d83a09812bc5f50eba8518f90fd64da329fff41cca8"
+      },
+      "main_contract": {
+        "path": "/root/prox_learning_pact_remediation/scripts/pact_blur_sweep_contract.py",
+        "sha256": "133caf1d671f65bebc053610e8f4764108f8b5e4b28b3d2e7ea9d0805edbc38d"
+      },
+      "manifest_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_blur_manifest.py",
+        "sha256": "e0ed88da465c2551213ac9557b12790cbb928c406e3de8827a45900f7f7adbc7"
+      },
+      "permuted_evaluator": {
+        "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_valid_ablation_row.py",
+        "sha256": "ede6bd54b55ba143c0043ea80190eaf6449ed77b9e5d71b8af7dcebea8a502c4"
+      },
+      "proof_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/prove_pact_frontend_screen_detachment.py",
+        "sha256": "950fa361656a6426d267cf45d27046ec89f9e840088016ee119ec7815d6e5f56"
+      },
+      "samplers": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py",
+        "sha256": "7cbf2f3fb876547aaa6f47109475b5f0b1bfcd850b02f71878b150f941db4653"
+      },
+      "scene_xml": {
+        "path": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml",
+        "sha256": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540"
+      },
+      "schedule_builder": {
+        "path": "/root/prox_learning_pact_remediation/scripts/build_pact_blur_schedule.py",
+        "sha256": "6abcc697be81bbe92d8c7c62b641980f6ecc6c66c220a723893be1849b60a202"
+      },
+      "storage_compactor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_geometry_storage.py",
+        "sha256": "f63eea785646bd784e6423b5836ee7ae9a43152d1efb92df24c261fe95cb6222"
+      },
+      "storage_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_contact_storage.py",
+        "sha256": "1d573c40cc7f4e76ebc3372e18188d5ac7fd2f2be100a4793056245f5561bd72"
+      },
+      "supervisor": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_blur_supervisor.py",
+        "sha256": "425dd500c29545db9d98b7354158f79fb51dbbba97bfc7121470bea18c89ec0c"
+      },
+      "supervisor_dependency": {
+        "path": "/root/prox_learning_pact_remediation/scripts/run_pact_frontend_screen_supervisor.py",
+        "sha256": "942dccf825c4395aa37e0077e85338802db2904b98154fd9af36b395869e57c3"
+      },
+      "throughput": {
+        "path": "/root/prox_learning_pact_remediation/scripts/measure_pact_geometry_throughput.py",
+        "sha256": "f7fb188ef71f88ae918d667188872ea1e62590cb84ad161cc627781e0c46be47"
+      }
+    },
+    "surface_encoders": [
+      {
+        "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ],
+    "token_plan": {
+      "global_tensor": {
+        "path": "/root/pact_contact_endpoint_artifacts/token_plan_v1/permuted_tokens.npy",
+        "sha256": "6b3dbb41bf31b9c175586cc9e4eb5b6ce9deb1374ab9a5874365942fbd312eef",
+        "size_bytes": 460800128
+      },
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+      "sha256": "f4843f696d2c9cb21531668bbcc6c7507da8226d4165cd0c023ca61caf8e8784",
+      "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+    },
+    "worker_sizing": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/worker_sizing.json",
+      "sha256": "d34ee9663450ec8d5bc4be644a1c72e8b296c47f99a33fec8c1541d409128462",
+      "worker_sizing_sha256": "6b33172dcdb2095315bbbd12f427297343bbb908e49b9a22a8d6cef70a8e48ab"
+    }
+  },
+  "intervention_preflight": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "endpoint_values_used_for_parameter_selection": false,
+    "require_action_trace_change": true,
+    "require_proximity_identity": true,
+    "require_sharp_v3_endpoint_identity": true,
+    "require_visual_change": true,
+    "required_artifact": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/preflight.json",
+    "required_before_full_dispatch": true,
+    "same_instance_and_seed": true,
+    "sigmas": [
+      0.0,
+      2.0
+    ]
+  },
+  "launch_smoke": {
+    "arm": "PACT_PERMUTED",
+    "checkpoint_seed": 3101,
+    "full_dispatch_must_reconcile_without_rerun": true,
+    "instance_episode_id": "65f2ab175bedf3c89542d314259ec47f04290b628bd34ef0d2202632f1f67b1b",
+    "output_relpath": "rows/0000_74038ab4c022c7f7_sigma_0p0_pact_permuted_s3101",
+    "required_artifact": "launch_smoke.json",
+    "required_before_full_dispatch": true,
+    "required_result_status": "complete",
+    "rollout_id": "74038ab4c022c7f72ce89e826db7aa0a61525696cd3c023ae014eba909f95c0a",
+    "schedule_index": 0,
+    "schedule_row_sha256": "4fd2737e558e1e4325eb9d59acdb9bb0140d882c096f4c8506a9a6d3e3be6b63"
+  },
+  "schema_version": "pact_blur_sweep_dispatch",
+  "scientific_schedule": {
+    "file_sha256": "8b4eda7ed0264e8d6f6ff01aaa08c872f6d734952eb684475221011c0402368f",
+    "manifest_path": "/root/prox_learning_pact_remediation/configs/pact_blur_sweep_v1.json",
+    "manifest_sha256": "07d1922c23a0964023953685aff8cbb7d1719535c291100dfc11cfe30eba8a04",
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/schedule.json",
+    "rows": 900,
+    "rows_changed": 0,
+    "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
+    "workers": 12
+  },
+  "storage": {
+    "compact_every_completed_row": true,
+    "outcome_based_selection": false,
+    "retain_raw_rollout_payloads": false,
+    "summary_only_contact_instrumentation": true
+  },
+  "throughput": {
+    "artifact": "throughput_first_20_minutes.json",
+    "endpoint_fields_read": false,
+    "outcome_blind_window_minutes": 20
+  },
+  "watchdog": {
+    "event_log_directory": "watchdog_events",
+    "no_completion_seconds": 600,
+    "restart_all_active_rows_never_subset": true,
+    "restart_only_if_no_active_initial_observation_accepted": true
+  }
+}
