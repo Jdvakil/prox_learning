@@ -1,5 +1,5 @@
 {
-  "amendment_sha256": "3ec6482b71b214f053a91bb10c1cff39a7bf6eb30cd782ea7bde26f97c56932e",
+  "amendment_sha256": "b3cc1a9166b0472cc4aa36ef3013f0f9f0a917d84ed5fd8180fe46c80bb002ac",
   "act_submodule": {
     "new_commit": "87686b7",
     "old_commit": "2f355d0",
@@ -32,7 +32,7 @@
     "event_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/recovery_events/group_000_abort_recovery.json",
     "event_sha256": "f0bbdfca941d2614bd51826590bc54056db7692ff051ab318d75d9137418e11b",
     "launcher_path": "/root/prox_learning_pact_remediation/scripts/launch_pact_blur_resume.py",
-    "launcher_sha256": "1c21ae1d4f31b0270fe29c79016db9dfb2b0c31e5cfe3eea46b8945db9f590ec",
+    "launcher_sha256": "b63ed98d875ecab7b419e6fc8f4eea183a841ee7d11b824bc15fc837e4871b7f",
     "result_absent_for_all": true,
     "row_subset_rerun": false
   },
@@ -49,7 +49,7 @@
       "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_contact_storage.py"
     },
     "supervisor": {
-      "new_sha256": "fa2ca864fe5b8fb6ccddd2cc8d15252219aaff433c4e3083c1c9ecbace1b0df9",
+      "new_sha256": "ed99b24164554363727d5f471c6d829f19f07d9ca73d50678ce25f7ce8e21267",
       "old_sha256": "425dd500c29545db9d98b7354158f79fb51dbbba97bfc7121470bea18c89ec0c",
       "path": "/root/prox_learning_pact_remediation/scripts/run_pact_blur_supervisor.py"
     }
@@ -58,6 +58,12 @@
   "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
   "schema_version": "pact_blur_sweep_execution_recovery_amendment_v1",
   "scientific_result_files_opened": false,
+  "resume_validation": {
+    "first_resume_attempt_launched_workers": 0,
+    "first_resume_attempt_stopped_at": "launch-smoke result hash changed by completed storage compaction",
+    "resolution": "validate the compact result through its original-result SHA-256 and storage-archive hash chain",
+    "scientific_outcome_fields_read": false
+  },
   "storage_change": {
     "raw_payloads_retained": false,
     "reason": "endpoint-complete result.json is the scientific record; skip H5/video export that the frozen storage contract immediately deletes",
