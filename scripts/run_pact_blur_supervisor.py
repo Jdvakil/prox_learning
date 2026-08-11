@@ -20,6 +20,10 @@ EVALUATOR = ROOT / "submodules/act/eval_pact_blur_sweep_row.py"
 WORKERS = 12
 WATCHDOG_SECONDS = 600.0
 ARMS = {"ACT", "PACT", "PACT_PERMUTED"}
+EXECUTION_AMENDMENT = (
+    ROOT
+    / "diagnostics_output/pact_blur_sweep/execution_recovery_amendment.json"
+)
 
 
 class BlurSweepSupervisor(v1.GeometrySupervisor):
@@ -31,6 +35,7 @@ class BlurSweepSupervisor(v1.GeometrySupervisor):
         manifest_path: Path,
         output_root: Path,
         mode: str,
+        resume_recovery_event: Path | None = None,
     ) -> None:
         self.schedule_path = schedule_path.resolve()
         self.contract_path = contract_path.resolve()
@@ -65,9 +70,43 @@ class BlurSweepSupervisor(v1.GeometrySupervisor):
             raise RuntimeError("blur worker count changed")
         if float(self.contract["watchdog"]["no_completion_seconds"]) != WATCHDOG_SECONDS:
             raise RuntimeError("blur watchdog interval changed")
+        amendment = None
+        if EXECUTION_AMENDMENT.is_file():
+            amendment = json.loads(EXECUTION_AMENDMENT.read_text())
+            amendment_payload = dict(amendment)
+            amendment_sha = amendment_payload.pop("amendment_sha256", None)
+            if (
+                screen.canonical_hash(amendment_payload) != amendment_sha
+                or amendment.get("schema_version")
+                != "pact_blur_sweep_execution_recovery_amendment_v1"
+                or amendment.get("schedule_sha256")
+                != self.schedule["schedule_sha256"]
+                or amendment.get("dispatch_contract_sha256")
+                != self.contract["dispatch_contract_sha256"]
+            ):
+                raise RuntimeError("blur execution amendment is invalid")
         for label, record in self.contract["frozen_inputs"]["runtime"].items():
-            if screen.base.sha256_file(Path(record["path"])) != record["sha256"]:
+            current_sha = screen.base.sha256_file(Path(record["path"]))
+            if current_sha == record["sha256"]:
+                continue
+            override = (amendment or {}).get("runtime_overrides", {}).get(label)
+            if (
+                override is None
+                or override.get("path") != record["path"]
+                or override.get("old_sha256") != record["sha256"]
+                or override.get("new_sha256") != current_sha
+            ):
                 raise RuntimeError(f"frozen RGB-blur runtime changed: {label}")
+        if amendment is not None:
+            publisher = amendment["publisher_runtime"]
+            if screen.base.sha256_file(Path(publisher["path"])) != publisher[
+                "new_sha256"
+            ]:
+                raise RuntimeError("amended no-video publisher changed")
+            requested_affinity = set(amendment["thread_affinity"]["cpu_ids"])
+            os.sched_setaffinity(0, requested_affinity)
+            if os.sched_getaffinity(0) != requested_affinity:
+                raise RuntimeError("amended supervisor CPU affinity did not apply")
         protected = screen.protected_eval_processes()
         if protected:
             raise RuntimeError(f"protected shared evaluation is active: {protected}")
@@ -85,12 +124,158 @@ class BlurSweepSupervisor(v1.GeometrySupervisor):
         self.completions = self._load_completions()
         self.completed_ids = {item["rollout_id"] for item in self.completions}
         self.authorized_recovery = {}
+        self.resume_recovery_event = (
+            resume_recovery_event.resolve()
+            if resume_recovery_event is not None
+            else None
+        )
+        self.resume_event = self._load_resume_event()
         self.abort_reason = None
         self.started_utc = screen.utc_now()
         self.full_dispatch_started_utc = self.started_utc if mode == "full" else None
         self.last_heartbeat = 0.0
         self.last_finalization = time.monotonic()
         self._install_signals()
+
+    def _load_resume_event(self) -> dict | None:
+        if self.resume_recovery_event is None:
+            return None
+        event = json.loads(self.resume_recovery_event.read_text())
+        payload = dict(event)
+        observed = payload.pop("recovery_event_sha256", None)
+        if (
+            observed != screen.canonical_hash(payload)
+            or event.get("schema_version")
+            != "pact_frontend_screen_group_recovery_v1"
+            or event.get("schedule_sha256") != self.schedule["schedule_sha256"]
+            or event.get("qualifying_indiscriminate_termination") is not True
+            or event.get("all_inflight_rows_rerun") is not True
+            or event.get("result_absent_for_all") is not True
+            or event.get("active_cohort_size") != len(event.get("rows", []))
+            or event.get("resume_after_supervisor_abort") is not True
+        ):
+            raise RuntimeError("blur resume recovery event is invalid")
+        rollout_ids = [row["rollout_id"] for row in event["rows"]]
+        if len(rollout_ids) != len(set(rollout_ids)) or len(rollout_ids) != WORKERS:
+            raise RuntimeError("blur resume cohort is not exactly twelve unique rows")
+        schedule_by_id = {row["rollout_id"]: row for row in self.schedule["rows"]}
+        for event_row in event["rows"]:
+            row = schedule_by_id.get(event_row["rollout_id"])
+            if (
+                row is None
+                or row["schedule_row_sha256"]
+                != event_row["schedule_row_sha256"]
+                or (self.output_root / row["output_relpath"] / "result.json").exists()
+            ):
+                raise RuntimeError("blur resume row identity/result state changed")
+        return event
+
+    def _record_interrupted_attempt(self, row: dict, event_row: dict) -> None:
+        _path, attempts = self._attempts(row)
+        previous = int(event_row["attempt_index"])
+        event_sha = self.resume_event["recovery_event_sha256"]
+        if len(attempts) == previous + 1:
+            if attempts[-1].get("recovery_event_sha256") != event_sha:
+                raise RuntimeError("existing interrupted-attempt audit differs")
+            return
+        if len(attempts) != previous:
+            raise RuntimeError("interrupted attempt ledger is not append-only")
+        log_path = Path(event_row["process_log"])
+        if not log_path.is_file():
+            raise RuntimeError("interrupted attempt process log is absent")
+        self._write_attempt(
+            row,
+            {
+                "attempt_index": previous,
+                "status": (
+                    "indiscriminate_supervisor_abort_post_observation"
+                    if event_row["initial_observation_accepted"]
+                    else "indiscriminate_supervisor_abort_pre_observation"
+                ),
+                "returncode": None,
+                "process_log": str(log_path),
+                "process_log_sha256": screen.base.sha256_file(log_path),
+                "initial_observation_accepted": event_row[
+                    "initial_observation_accepted"
+                ],
+                "scientific_result_written": False,
+                "recovery_event_sha256": event_sha,
+                "finished_utc": self.resume_event["frozen_utc"],
+            },
+        )
+
+    def _prepare(self) -> None:
+        if self.mode == "smoke":
+            if self.resume_event is not None:
+                raise RuntimeError("smoke cannot use a resume recovery event")
+            return super()._prepare()
+        screen.base.validate_launch_smoke(
+            schedule=self.schedule,
+            contract=self.contract,
+            output_root=self.output_root,
+        )
+        proof = self.output_root / self.contract["detachment_proof"][
+            "required_artifact"
+        ]
+        if not proof.exists():
+            raise RuntimeError("full dispatch requires detachment proof")
+        recovery_rows = {
+            row["rollout_id"]: row for row in (self.resume_event or {}).get("rows", [])
+        }
+        for row in self.schedule["rows"]:
+            if row["rollout_id"] in self.completed_ids:
+                continue
+            if self._valid_result(row):
+                row_dir = self._row_dir(row)
+                if not (row_dir / "driver_result.json").exists():
+                    screen.base.write_json_atomic(
+                        row_dir / "driver_result.json",
+                        {
+                            "status": "complete",
+                            "rollout_id": row["rollout_id"],
+                            "schedule_row_sha256": row["schedule_row_sha256"],
+                            "resume_action": "reconciled_existing_result",
+                        },
+                    )
+                self.completions.append(
+                    {
+                        "schedule_index": row["schedule_index"],
+                        "rollout_id": row["rollout_id"],
+                        "schedule_row_sha256": row["schedule_row_sha256"],
+                        "arm": row["arm"],
+                        "completed_utc": screen.utc_now(),
+                        "result_sha256": screen.base.sha256_file(
+                            row_dir / "result.json"
+                        ),
+                        "driver_result_sha256": screen.base.sha256_file(
+                            row_dir / "driver_result.json"
+                        ),
+                    }
+                )
+                self.completed_ids.add(row["rollout_id"])
+                continue
+            event_row = recovery_rows.get(row["rollout_id"])
+            boundary = self._row_dir(row) / "initial_observation_accepted.json"
+            if event_row is not None:
+                if boundary.exists() != bool(event_row["initial_observation_accepted"]):
+                    raise RuntimeError("recovery boundary state changed")
+                self._record_interrupted_attempt(row, event_row)
+                self.authorized_recovery[row["rollout_id"]] = (
+                    self.resume_recovery_event
+                )
+                self.pending.append(row)
+                continue
+            if boundary.exists():
+                raise RuntimeError(
+                    "result-free boundary exists outside frozen recovery: "
+                    f"{row['rollout_id']}"
+                )
+            self.pending.append(row)
+        if recovery_rows and set(recovery_rows) - {
+            row["rollout_id"] for row in self.schedule["rows"]
+        }:
+            raise RuntimeError("recovery event contains an unknown row")
+        self._write_completions()
 
     def _command(self, row, *, attempt_index: int, recovery_event: Path | None):
         command = screen.base.command_for(
@@ -279,6 +464,7 @@ def main() -> int:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--mode", required=True, choices=("smoke", "full"))
+    parser.add_argument("--resume-recovery-event", type=Path)
     args = parser.parse_args()
     return BlurSweepSupervisor(
         schedule_path=args.schedule,
@@ -286,6 +472,7 @@ def main() -> int:
         manifest_path=args.manifest,
         output_root=args.output_root,
         mode=args.mode,
+        resume_recovery_event=args.resume_recovery_event,
     ).run()
 
 

@@ -147,7 +147,12 @@ def _publish_episode(
             task.get_history(),
             task.sensor_suite,
             fps=config.fps,
-            save_dir=staging,
+            # prepare_episode_for_saving writes videos whenever save_dir is
+            # non-null.  Passing a staging directory while save_videos=False
+            # therefore still spawned ffmpeg and could fail after the
+            # scientific rollout.  The H5-only path needs no pre-batching
+            # camera export, so leave save_dir unset here.
+            save_dir=staging if save_videos else None,
             episode_idx=0,
             save_file_suffix="",
         )

@@ -23,6 +23,7 @@ TOKEN_PLAN = ROOT / "diagnostics_output/pact_contact_endpoint/token_plan.json"
 ANALYSIS_SCRIPT = ROOT / "scripts/analyze_pact_blur_sweep.py"
 SUPERVISOR = ROOT / "scripts/run_pact_blur_supervisor.py"
 COMPACTOR = ROOT / "scripts/compact_pact_contact_storage.py"
+PUBLISHER = ROOT / "scripts/run_pact_collision_collection.py"
 
 
 def build_manifest() -> dict:
@@ -170,3 +171,16 @@ def test_supervisor_threads_sigma_and_compactor_retains_audit_fields() -> None:
     ):
         assert field in compactor
     assert 'compact["policy_info"] = policy_summary' in compactor
+
+
+def test_no_video_publisher_does_not_invoke_prebatch_ffmpeg() -> None:
+    publisher = PUBLISHER.read_text()
+    assert "save_dir=staging if save_videos else None" in publisher
+
+
+def test_resume_is_all_inflight_and_inherits_v3_affinity_guard() -> None:
+    supervisor = SUPERVISOR.read_text()
+    assert "os.sched_setaffinity(0, requested_affinity)" in supervisor
+    assert 'len(rollout_ids) != WORKERS' in supervisor
+    assert 'self.authorized_recovery[row["rollout_id"]]' in supervisor
+    assert '"indiscriminate_supervisor_abort_post_observation"' in supervisor
