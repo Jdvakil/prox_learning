@@ -1,0 +1,105 @@
+{
+  "amendment_sha256": "3ec6482b71b214f053a91bb10c1cff39a7bf6eb30cd782ea7bde26f97c56932e",
+  "act_submodule": {
+    "new_commit": "87686b7",
+    "old_commit": "2f355d0",
+    "scope": "skip discarded raw rollout export when --save-video is absent"
+  },
+  "completed_results_retained_unchanged": 33,
+  "decision_rule_changed": false,
+  "dispatch_contract_sha256": "07713ca6ad959cc9679cd9e0f3accd405d3bbf4766324e8095f16103919895fa",
+  "endpoint_fields_changed": false,
+  "endpoint_fields_read": false,
+  "fixed_worker_count": 12,
+  "no_row_substitution": true,
+  "publisher_runtime": {
+    "new_sha256": "31690077b15fd6835df5f8e2b615a016393b8ad23c39105f979961c95330ac78",
+    "old_sha256": "26f141d27710094339ae422adb53f03cd40d8ea77e7d967ed37b3a102946618f",
+    "path": "/root/prox_learning_pact_remediation/scripts/run_pact_collision_collection.py"
+  },
+  "reason": {
+    "post_observation_failure": "row 37 reached the scientific boundary but failed result-free in unintended H.264 export even though save_video was false",
+    "pre_observation_pressure": "four rows could not initialize reliably under cgroup task pressure; two logged libgomp thread creation failures",
+    "supervisor_action": "the isolated post-observation infrastructure exit caused the supervisor to abort and terminate its whole active cohort"
+  },
+  "recovery": {
+    "active_cohort_size": 12,
+    "all_inflight_rows_rerun": true,
+    "builder_path": "/root/prox_learning_pact_remediation/scripts/build_pact_blur_abort_recovery.py",
+    "builder_sha256": "441a5f0af4ddbadafc7f789bdb712d3ac2d912ba9c2d5af2eea7f4cfd8ce48e1",
+    "completed_rows_preserved": 33,
+    "event_file_sha256": "eb8fe4fd03b83c6d0b08345ae3a0d52f02288d328d485d700dd1eceb841a25fc",
+    "event_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/recovery_events/group_000_abort_recovery.json",
+    "event_sha256": "f0bbdfca941d2614bd51826590bc54056db7692ff051ab318d75d9137418e11b",
+    "launcher_path": "/root/prox_learning_pact_remediation/scripts/launch_pact_blur_resume.py",
+    "launcher_sha256": "1c21ae1d4f31b0270fe29c79016db9dfb2b0c31e5cfe3eea46b8945db9f590ec",
+    "result_absent_for_all": true,
+    "row_subset_rerun": false
+  },
+  "recorded_utc": "2026-08-11T01:58:13Z",
+  "runtime_overrides": {
+    "legacy_evaluator": {
+      "new_sha256": "50f7c02bd55eeda9ba0fd380521b4d6b09fa1251de49569d767b37068182ae62",
+      "old_sha256": "c163d7598cd331d7c3bdbc5c0d0c7b0d40a0857c994dbe4d38773efef6ddeafb",
+      "path": "/root/prox_learning_pact_remediation/submodules/act/eval_pact_collision_row.py"
+    },
+    "storage_dependency": {
+      "new_sha256": "44d0990ff9662ceaefa4a6619542a65ce0570a4c142e6dd3a76c13fc04031115",
+      "old_sha256": "4ad5eca0120074eeb98e012dbca0fa7b292615262f79586e657a1ecba4c4b3c5",
+      "path": "/root/prox_learning_pact_remediation/scripts/compact_pact_contact_storage.py"
+    },
+    "supervisor": {
+      "new_sha256": "fa2ca864fe5b8fb6ccddd2cc8d15252219aaff433c4e3083c1c9ecbace1b0df9",
+      "old_sha256": "425dd500c29545db9d98b7354158f79fb51dbbba97bfc7121470bea18c89ec0c",
+      "path": "/root/prox_learning_pact_remediation/scripts/run_pact_blur_supervisor.py"
+    }
+  },
+  "schedule_changed": false,
+  "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
+  "schema_version": "pact_blur_sweep_execution_recovery_amendment_v1",
+  "scientific_result_files_opened": false,
+  "storage_change": {
+    "raw_payloads_retained": false,
+    "reason": "endpoint-complete result.json is the scientific record; skip H5/video export that the frozen storage contract immediately deletes",
+    "replacement_compactor_required": true
+  },
+  "thread_affinity": {
+    "cpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "inherited_by_all_future_workers": true,
+    "matches_geometry_v3_execution_safeguard": true
+  },
+  "worker_count_changed": false
+}
