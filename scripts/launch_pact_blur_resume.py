@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import subprocess
+import time
 from pathlib import Path
 
 from run_pact_confirmatory_schedule import canonical_hash, write_json_atomic
@@ -67,6 +69,21 @@ def main() -> int:
         raise ValueError("blur resume bindings changed")
     if process_identity(int(state["supervisor_pid"])) is not None:
         raise ValueError("aborted supervisor is unexpectedly still alive")
+    original_receipt = json.loads(
+        (output_root / "full_launcher_receipt.json").read_text()
+    )
+    old_compactor_pid = int(original_receipt["compactor_pid"])
+    old_compactor = process_identity(old_compactor_pid)
+    if old_compactor is not None:
+        command_line = Path(f"/proc/{old_compactor_pid}/cmdline").read_bytes()
+        if b"compact_pact_geometry_storage.py" not in command_line:
+            raise ValueError("recorded compactor PID belongs to another process")
+        os.kill(old_compactor_pid, signal.SIGTERM)
+        deadline = time.monotonic() + 10.0
+        while process_identity(old_compactor_pid) is not None and time.monotonic() < deadline:
+            time.sleep(0.1)
+        if process_identity(old_compactor_pid) is not None:
+            raise RuntimeError("old compactor did not stop after SIGTERM")
     command = [
         "/usr/bin/setsid",
         "/usr/bin/nohup",
@@ -107,9 +124,34 @@ def main() -> int:
             env=environment,
             start_new_session=False,
         )
+    compactor_log = output_root / "resume_storage_compactor.log"
+    with compactor_log.open("ab") as stream:
+        compactor = subprocess.Popen(
+            [
+                "/usr/bin/setsid",
+                "/usr/bin/nohup",
+                str(PYTHON),
+                str(ROOT / "scripts/compact_pact_geometry_storage.py"),
+                "--schedule",
+                str(args.schedule.resolve()),
+                "--dispatch",
+                str(args.dispatch.resolve()),
+                "--output-root",
+                str(output_root),
+            ],
+            cwd=ROOT,
+            stdin=subprocess.DEVNULL,
+            stdout=stream,
+            stderr=subprocess.STDOUT,
+            env=environment,
+            start_new_session=False,
+        )
     receipt = {
         "schema_version": "pact_blur_sweep_resume_launcher_v1",
         "supervisor_pid": process.pid,
+        "old_compactor_pid": old_compactor_pid,
+        "old_compactor_was_alive_and_stopped": old_compactor is not None,
+        "replacement_compactor_pid": compactor.pid,
         "schedule_sha256": schedule_sha,
         "dispatch_contract_sha256": dispatch_sha,
         "recovery_event_sha256": recovery_sha,
