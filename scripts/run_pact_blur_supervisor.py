@@ -204,16 +204,62 @@ class BlurSweepSupervisor(v1.GeometrySupervisor):
             },
         )
 
+    def _validate_compacted_launch_smoke(self) -> dict:
+        smoke_contract = self.contract["launch_smoke"]
+        artifact_path = self.output_root / smoke_contract["required_artifact"]
+        artifact = json.loads(artifact_path.read_text())
+        payload = dict(artifact)
+        observed = payload.pop("launch_smoke_sha256", None)
+        if observed != screen.canonical_hash(payload):
+            raise RuntimeError("launch-smoke self-hash mismatch")
+        expected = {
+            "dispatch_contract_sha256": self.contract["dispatch_contract_sha256"],
+            "scientific_schedule_sha256": self.schedule["schedule_sha256"],
+            "passed": True,
+            "schedule_index": smoke_contract["schedule_index"],
+            "rollout_id": smoke_contract["rollout_id"],
+            "schedule_row_sha256": smoke_contract["schedule_row_sha256"],
+            "driver_status": "complete",
+        }
+        for key, value in expected.items():
+            if artifact.get(key) != value:
+                raise RuntimeError(f"launch smoke {key} mismatch")
+        row = self.schedule["rows"][artifact["schedule_index"]]
+        row_dir = self._row_dir(row)
+        result_path = row_dir / "result.json"
+        screen.base._validate_scientific_result(result_path, row)
+        screen.base._validate_boundary(
+            row_dir / "initial_observation_accepted.json", row
+        )
+        current_result_sha = screen.base.sha256_file(result_path)
+        if current_result_sha != artifact["scientific_result_sha256"]:
+            result = json.loads(result_path.read_text())
+            storage = result.get("storage_compaction", {})
+            archive_path = row_dir / "storage_archive.json"
+            archive = json.loads(archive_path.read_text())
+            archive_payload = dict(archive)
+            archive_sha = archive_payload.pop("storage_archive_sha256", None)
+            if (
+                storage.get("original_result", {}).get("sha256")
+                != artifact["scientific_result_sha256"]
+                or archive_sha != screen.canonical_hash(archive_payload)
+                or archive.get("status") != "complete"
+                or archive.get("compact_result_sha256") != current_result_sha
+            ):
+                raise RuntimeError("compacted launch-smoke hash chain is invalid")
+        if (
+            screen.base.sha256_file(row_dir / "driver_result.json")
+            != artifact["driver_result_sha256"]
+        ):
+            raise RuntimeError("launch-smoke driver result changed")
+        return artifact
+
     def _prepare(self) -> None:
         if self.mode == "smoke":
             if self.resume_event is not None:
                 raise RuntimeError("smoke cannot use a resume recovery event")
             return super()._prepare()
-        screen.base.validate_launch_smoke(
-            schedule=self.schedule,
-            contract=self.contract,
-            output_root=self.output_root,
-        )
+        self._validate_compacted_launch_smoke()
         proof = self.output_root / self.contract["detachment_proof"][
             "required_artifact"
         ]

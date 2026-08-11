@@ -38,9 +38,13 @@ def main() -> int:
     parser.add_argument("--output-root", required=True, type=Path)
     args = parser.parse_args()
     output_root = args.output_root.resolve()
-    receipt_path = output_root / "resume_launcher_receipt.json"
-    if receipt_path.exists():
-        raise SystemExit("resume launcher receipt already exists")
+    prior_receipts = sorted(output_root.glob("resume_launcher_receipt*.json"))
+    resume_attempt_index = len(prior_receipts)
+    receipt_path = output_root / (
+        "resume_launcher_receipt.json"
+        if resume_attempt_index == 0
+        else f"resume_launcher_receipt_{resume_attempt_index:03d}.json"
+    )
     schedule = json.loads(args.schedule.read_text())
     schedule_sha = validate_hash(schedule, "schedule_sha256", "schedule")
     dispatch = json.loads(args.dispatch.read_text())
@@ -69,10 +73,15 @@ def main() -> int:
         raise ValueError("blur resume bindings changed")
     if process_identity(int(state["supervisor_pid"])) is not None:
         raise ValueError("aborted supervisor is unexpectedly still alive")
-    original_receipt = json.loads(
-        (output_root / "full_launcher_receipt.json").read_text()
-    )
-    old_compactor_pid = int(original_receipt["compactor_pid"])
+    if prior_receipts:
+        previous_receipt = json.loads(prior_receipts[-1].read_text())
+        validate_hash(previous_receipt, "resume_launcher_sha256", "prior resume receipt")
+        old_compactor_pid = int(previous_receipt["replacement_compactor_pid"])
+    else:
+        original_receipt = json.loads(
+            (output_root / "full_launcher_receipt.json").read_text()
+        )
+        old_compactor_pid = int(original_receipt["compactor_pid"])
     old_compactor = process_identity(old_compactor_pid)
     if old_compactor is not None:
         command_line = Path(f"/proc/{old_compactor_pid}/cmdline").read_bytes()
@@ -148,6 +157,7 @@ def main() -> int:
         )
     receipt = {
         "schema_version": "pact_blur_sweep_resume_launcher_v1",
+        "resume_attempt_index": resume_attempt_index,
         "supervisor_pid": process.pid,
         "old_compactor_pid": old_compactor_pid,
         "old_compactor_was_alive_and_stopped": old_compactor is not None,
