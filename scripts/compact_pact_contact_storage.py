@@ -227,9 +227,11 @@ def compact_row(row: dict[str, Any], output_root: Path) -> dict[str, Any]:
     if original["contact_audit"].get("contact_frames") not in ([], None):
         raise ContactStorageError("unexpected full contact-frame payload")
     deleted_paths = []
-    trajectory = Path(original["trajectory_path"])
-    if trajectory.is_file():
-        deleted_paths.append(trajectory)
+    trajectory_raw = original.get("trajectory_path")
+    if trajectory_raw:
+        trajectory = Path(trajectory_raw)
+        if trajectory.is_file():
+            deleted_paths.append(trajectory)
     for raw_path in original.get("videos", []):
         path = Path(raw_path)
         if path.is_file():

@@ -100,3 +100,9 @@ def test_runtime_records_visual_proximity_and_action_diagnostics() -> None:
     assert collision.index("self._record_blur_diagnostic") < collision.index(
         "raw = self._raw_proximity(observation)"
     )
+
+
+def test_confirmatory_no_video_path_skips_raw_payload_export() -> None:
+    collision = COLLISION_PATH.read_text()
+    assert "if args.save_video:" in collision
+    assert "trajectory_path, videos = None, []" in collision
