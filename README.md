@@ -31,6 +31,8 @@ The held-out scene-geometry generalization gate and decision are reported in
 [`docs/PACT_GEOMETRY_GENERALIZATION.md`](docs/PACT_GEOMETRY_GENERALIZATION.md).
 The powered zero-shot geometry follow-up is reported in
 [`docs/PACT_GEOMETRY_GENERALIZATION_V3.md`](docs/PACT_GEOMETRY_GENERALIZATION_V3.md).
+The preregistered inference-time RGB-blur robustness sweep is reported in
+[`docs/PACT_BLUR_SWEEP.md`](docs/PACT_BLUR_SWEEP.md).
 
 ---
 

@@ -17,6 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 ACT = ROOT / "submodules/act"
 UPSTREAM = Path("/root/prox_learning/submodules/act")
 UPSTREAM_COMMIT = "ec447930e1d025fed549ef2f58354aa87001c28c"
+EXECUTION_AMENDMENT = (
+    ROOT
+    / "diagnostics_output/pact_blur_sweep/execution_recovery_amendment.json"
+)
 
 
 def git(path: Path, *args: str) -> str:
@@ -126,6 +130,26 @@ def main() -> int:
         "surface_encoder": manifest["frozen_artifacts"]["surface_encoder"],
         "token_plan": manifest["frozen_artifacts"]["token_plan"],
     }
+    if EXECUTION_AMENDMENT.exists():
+        amendment = json.loads(EXECUTION_AMENDMENT.read_text())
+        if amendment["schedule_sha256"] != schedule["schedule_sha256"]:
+            raise SystemExit("execution amendment belongs to a different schedule")
+        if amendment["dispatch_contract_sha256"] != dispatch["dispatch_contract_sha256"]:
+            raise SystemExit("execution amendment belongs to a different dispatch")
+        document["execution_recovery_amendment"] = {
+            "path": str(EXECUTION_AMENDMENT),
+            "file_sha256": sha256_file(EXECUTION_AMENDMENT),
+            "self_sha256": amendment["amendment_sha256"],
+            "schedule_changed": amendment["schedule_changed"],
+            "endpoint_fields_changed": amendment["endpoint_fields_changed"],
+            "worker_count_changed": amendment["worker_count_changed"],
+            "all_inflight_rows_rerun": amendment["recovery"][
+                "all_inflight_rows_rerun"
+            ],
+            "completed_rows_preserved": amendment["recovery"][
+                "completed_rows_preserved"
+            ],
+        }
     document["provenance_sha256"] = sha256_payload(document)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
