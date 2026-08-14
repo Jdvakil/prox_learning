@@ -28,6 +28,19 @@ ACT_DIR="/home/jaydv/code/prox_learning/submodules/act"
 REPO="/home/jaydv/code/prox_learning"
 PYTHON="${PYTHON:-/opt/conda/envs/mlspaces/bin/python}"
 
+# Preflight: a driver/library version mismatch (e.g. the kernel module upgraded
+# without a reboot) makes every rollout raise cudaGetDeviceCount error 804 while
+# the loop happily continues, burning hours and writing no eval_summary.json.
+# Fail loudly up front instead.
+if ! "$PYTHON" -c 'import torch,sys; sys.exit(0 if torch.cuda.is_available() else 1)' 2>/dev/null; then
+  echo "[blur-eval] FATAL: torch.cuda.is_available() is False -- refusing to run."
+  echo "[blur-eval] Most likely an NVIDIA driver/library version mismatch."
+  echo "[blur-eval]   loaded module : $(cat /proc/driver/nvidia/version 2>/dev/null | head -1)"
+  echo "[blur-eval]   nvidia-smi    : $(nvidia-smi --query-gpu=driver_version --format=csv,noheader 2>&1 | head -1)"
+  echo "[blur-eval] Fix: sudo reboot   (or reload the modules, then re-run this script)"
+  exit 1
+fi
+
 N="${1:-50}"
 shift || true
 CELLS=("$@")
@@ -74,20 +87,27 @@ def load(run, cell):
     d = json.load(open(f))
     c = d.get("collision", {})
     return (d.get("success_rate"), c.get("collision_rate"), c.get("strict_success_rate"), d.get("total"))
-# blur models, sorted by sigma
+# blur models, sorted by sigma. NOTE: run dirs carry a timestamp prefix
+# (20260724_010935_vanilla_blurC2_v2), so the glob must not be anchored on
+# "vanilla" and the captured run name must include that prefix -- it is part of
+# the eval_output directory name that load() reconstructs.
 runs = sorted(
-    {re.search(r"(vanilla_blurC\d+_v2)", os.path.basename(p)).group(1)
-     for p in glob.glob(os.path.join(repo, "eval_output", "vanilla_blurC*_v2_*"))},
+    {re.match(r"(.*blurC\d+_v2)_(?:" + "|".join(map(re.escape, cells)) + r")$",
+              os.path.basename(p)).group(1)
+     for p in glob.glob(os.path.join(repo, "eval_output", "*blurC*_v2_*"))
+     if re.match(r"(.*blurC\d+_v2)_(?:" + "|".join(map(re.escape, cells)) + r")$",
+                 os.path.basename(p))},
     key=lambda r: int(re.search(r"blurC(\d+)", r).group(1)))
-hdr = "model".ljust(22) + "".join(f"{c:>24}" for c in cells)
+w = max([22] + [len(r) + 2 for r in runs])
+hdr = "model".ljust(w) + "".join(f"{c:>26}" for c in cells)
 print(hdr); print("-"*len(hdr))
 def fmt(v):
     s,c,ss,n = v if v else (None,)*4
-    if s is None: return "     --        "
-    return f"succ {s*100:4.0f}% coll {c*100:3.0f}%"
+    if s is None: return "--"
+    return f"succ {s*100:3.0f}% coll {c*100:3.0f}% n={n}"
 for r in runs + ["vanilla_v2"]:
     label = r + ("  (sharp anchor)" if r=="vanilla_v2" else "")
-    print(label.ljust(22) + "".join(f"{fmt(load(r,c)):>24}" for c in cells))
+    print(label.ljust(w) + "".join(f"{fmt(load(r,c)):>26}" for c in cells))
 print("\n(strict_success = grasped+lifted AND contact-free; see each eval_summary.json)")
 print("README sharp vanilla_v2 @50: collision free/invis/visible = 60/66/64%, success 22/36/28%")
 PY
