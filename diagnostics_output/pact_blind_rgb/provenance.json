@@ -1,0 +1,162 @@
+{
+  "checkpoint_records": [
+    {
+      "arm": "ACT",
+      "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3101/policy_best.ckpt",
+      "seed": 3101,
+      "sha256": "a5ebbf3d5537315337e17e0f28951de068ce6960974d0f282b77fcfcca672eb1"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+      "seed": 3101,
+      "sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457"
+    },
+    {
+      "arm": "ACT",
+      "path": "/root/pact_remediation_artifacts_v2/full/policies_v2/act_seed3102/policy_best.ckpt",
+      "seed": 3102,
+      "sha256": "e98d98bad87e2762cef37eb953d9ab55fcb65ed6355d2d8e9a881f38ef48c8d4"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_seed_replication_artifacts/policy_seed3102/policy_best.ckpt",
+      "seed": 3102,
+      "sha256": "a4490963c5e6ae0c83430b42c2d1aa8c06aab33a679f912c372d3014d0d00321"
+    },
+    {
+      "arm": "ACT",
+      "path": "/root/pact_contact_endpoint_artifacts/policies/act_seed3103/policy_best.ckpt",
+      "seed": 3103,
+      "sha256": "6f7262bc2b19740b66976514125d4e05f9a2c7d999d0411a9e162fc6cdac988e"
+    },
+    {
+      "arm": "PACT",
+      "path": "/root/pact_contact_endpoint_artifacts/policies/pact_seed3103/policy_best.ckpt",
+      "seed": 3103,
+      "sha256": "3c619fa35eb455329540ada2dbdb06b96cda83c79d0e69c1191495ff4081850f"
+    }
+  ],
+  "decision_rule": {
+    "BLIND_EXPERIMENT_INCOMPLETE": "the 450-row schedule does not reconcile",
+    "BLIND_UNINFORMATIVE_COLLAPSE": "all blind arms are below 10% collision-free success and 5% manipulation success, and the standalone contact benefit is not established",
+    "NO_STANDALONE_BENEFIT": "the schedule reconciles, the collapse rule does not apply, and either decision-bearing blind contact CI includes zero or reverses",
+    "PROXIMITY_STANDALONE_CONTACT_BENEFIT": "in blind rows, the pooled 95% instance-cluster bootstrap CI upper bound for PACT-minus-ACT hazard-bar contact frames is below zero and the CI upper bound for PACT-minus-PACT_PERMUTED is below zero",
+    "PROXIMITY_STANDALONE_TASK_BENEFIT": "the standalone-contact condition holds, the pooled PACT-minus-ACT collision-free-success CI lower bound exceeds zero, and blind PACT manipulation success is at least 5%",
+    "priority_clarification": "collapse is uninformative only when no contact benefit is measurable; this resolves overlap with the predeclared expected safety-only result",
+    "token_priority": [
+      "BLIND_EXPERIMENT_INCOMPLETE",
+      "PROXIMITY_STANDALONE_TASK_BENEFIT",
+      "PROXIMITY_STANDALONE_CONTACT_BENEFIT",
+      "BLIND_UNINFORMATIVE_COLLAPSE",
+      "NO_STANDALONE_BENEFIT"
+    ]
+  },
+  "frozen_documents": {
+    "dispatch": {
+      "file_sha256": "d14167f02133645493fb26541893939942c2e93644c377c11e38cda2bd484bbe",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blind_rgb/dispatch.json",
+      "self_sha256": "b1b3c52e780450742ad72fb324ccea56bcbbf8f484f51320d236b04e0fea23d4"
+    },
+    "manifest": {
+      "file_sha256": "8a719e8bbf965850f2524bd8099941767d6c840ea04c70784b6fc9947709815b",
+      "path": "/root/prox_learning_pact_remediation/configs/pact_blind_rgb_v1.json",
+      "self_sha256": "d181eda7554ebdbc339a18a949211bea20fd9c178e2c0ccd1273a40904df7e0e"
+    },
+    "schedule": {
+      "file_sha256": "6430d8975078ec1ebc89753cf4cb822dbe7f3198dfecd72f8d5c08eba79e8caf",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blind_rgb/schedule.json",
+      "self_sha256": "93b9bd009c93fa4f56ff82a2419fef185a25ad3f6c4b38ba2cd9a9cbe8cbbed3"
+    }
+  },
+  "intervention": {
+    "blind_fill_rgb_0_to_1": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "blur_and_blind_mutually_exclusive": true,
+    "field": "wrist RGB only",
+    "inference_only": true,
+    "rationale": "ImageNet mean becomes exactly zero after ACT normalization"
+  },
+  "no_new_demonstrations": true,
+  "no_new_encoder": true,
+  "no_retraining": true,
+  "predeclared_expected_outcome": {
+    "hazard_contact": "PACT_BLIND remains lower than ACT_BLIND",
+    "permitted_claim_if_observed": "proximity alone keeps the arm safe but cannot do the task",
+    "task_success": "collapses for every blind arm because proximity does not localize the cup",
+    "task_success_win_claim_precluded_by_expectation": true
+  },
+  "protected_scientific_artifacts": {
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION_V3.md": "1434977069bb45d3d0548d25a0f6fd7ce73d5dad6523d383226f58d4a59c2d49"
+  },
+  "provenance_sha256": "59ead7512dcc9bcd920e39bdca28473640c24e7d8cfff382c23294de79bb5ba5",
+  "repository": {
+    "act_submodule_head_at_freeze": "01751759c49d7237f2b14ff8a16fd3c10ae4c089",
+    "branch": "experiment/pact-valid-ablation-followup-v1",
+    "head_at_freeze": "13391886bdd4999c638a139c5690188096ac28f0",
+    "no_push_performed_by_this_experiment": true,
+    "path": "/root/prox_learning_pact_remediation"
+  },
+  "rgb_only_intervention": true,
+  "rollouts": 450,
+  "schema_version": "pact_blind_rgb_provenance_v1",
+  "scientific_design": {
+    "bootstrap_replicates_minimum": 20000,
+    "cluster": "instance; both conditions, all arms, and all seeds move together",
+    "co_primary": [
+      "collision_free_task_success",
+      "hazard_bar_contact_frames_per_rollout"
+    ],
+    "headline_contrast": "PACT_BLIND_minus_ACT_BLIND",
+    "modality_instrument": "PACT_BLIND_minus_PACT_PERMUTED_BLIND",
+    "paired_degradation": "blind_minus_sighted_per_arm",
+    "secondary": [
+      "any_hazard_contact_rate",
+      "contact_entries",
+      "maximum_hazard_penetration_depth_m",
+      "manipulation_success"
+    ],
+    "seeds_unpooled_before_pooling": true
+  },
+  "surface_encoder": {
+    "path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+    "sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+  },
+  "token_plan": {
+    "file_sha256": "f4843f696d2c9cb21531668bbcc6c7507da8226d4165cd0c023ca61caf8e8784",
+    "global_tensor": {
+      "path": "/root/pact_contact_endpoint_artifacts/token_plan_v1/permuted_tokens.npy",
+      "sha256": "6b3dbb41bf31b9c175586cc9e4eb5b6ce9deb1374ab9a5874365942fbd312eef",
+      "size_bytes": 460800128
+    },
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_contact_endpoint/token_plan.json",
+    "token_plan_sha256": "9788a5a28c8df9cb5065d3258a3ee7e01c4deb0418743a785773a31edf6edd51"
+  },
+  "worker_sizing": {
+    "arithmetic_worker_limit": 12,
+    "ceiling_mib": 19456,
+    "headroom_mib": 976.0,
+    "logical_cpu_cores": 128,
+    "observed_cpu_load": 8.5,
+    "observed_gpu_utilization_percent": 43.0,
+    "observed_peak_gpu_memory_mib": 12320.0,
+    "observed_workers": 8,
+    "per_worker_peak_mib": 1540.0,
+    "projected_peak_mib": 18480.0,
+    "selected_workers": 12,
+    "source": "outcome-blind v2 eight-worker telemetry reused by the blur sweep",
+    "worker_cap": 12
+  },
+  "workers": 12
+}
