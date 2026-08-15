@@ -121,6 +121,7 @@ def main() -> int:
         "main_contract": ROOT / "scripts/pact_blind_rgb_contract.py",
         "config_builder": ROOT / "scripts/build_pact_blind_rgb_config.py",
         "schedule_builder": ROOT / "scripts/build_pact_blind_rgb_schedule.py",
+        "provenance_builder": ROOT / "scripts/build_pact_blind_rgb_provenance.py",
         "dispatch_builder": Path(__file__),
         "supervisor": ROOT / "scripts/run_pact_blind_rgb_supervisor.py",
         "detached_launcher": ROOT / "scripts/launch_pact_blind_rgb_detached.py",
