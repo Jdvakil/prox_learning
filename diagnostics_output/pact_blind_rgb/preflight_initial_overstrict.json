@@ -1,0 +1,106 @@
+{
+  "checks": {
+    "ACT": {
+      "action_trace_changed": true,
+      "blind_input_constant_shape_1_1_3_240_320": true,
+      "blind_input_exact_imagenet_mean": true,
+      "blind_visual_changed": true,
+      "raw_proximity_byte_identical": true,
+      "same_unmodified_first_camera_frame": false,
+      "sighted_action_trace_bit_identical_to_no_flag": false,
+      "sighted_scientific_outcome_bit_identical_to_no_flag": false,
+      "sighted_visual_bit_identical_to_no_flag": false
+    },
+    "PACT": {
+      "action_trace_changed": true,
+      "blind_input_constant_shape_1_1_3_240_320": true,
+      "blind_input_exact_imagenet_mean": true,
+      "blind_visual_changed": true,
+      "raw_proximity_byte_identical": true,
+      "same_unmodified_first_camera_frame": false,
+      "sighted_action_trace_bit_identical_to_no_flag": false,
+      "sighted_scientific_outcome_bit_identical_to_no_flag": false,
+      "sighted_visual_bit_identical_to_no_flag": false
+    },
+    "PACT_PERMUTED": {
+      "action_trace_changed": true,
+      "blind_input_constant_shape_1_1_3_240_320": true,
+      "blind_input_exact_imagenet_mean": true,
+      "blind_visual_changed": true,
+      "raw_proximity_byte_identical": true,
+      "same_unmodified_first_camera_frame": false,
+      "sighted_action_trace_bit_identical_to_no_flag": false,
+      "sighted_scientific_outcome_bit_identical_to_no_flag": false,
+      "sighted_visual_bit_identical_to_no_flag": false
+    }
+  },
+  "fixed_selection": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seed": 3101,
+    "instance_index": 0,
+    "selected_before_execution": true,
+    "vision_conditions": [
+      "sighted",
+      "blind"
+    ]
+  },
+  "passed": false,
+  "policy_endpoint_values_used_for_design_or_selection": false,
+  "preflight_sha256": "a1d31e3213b8ea3b73242824491ce65efbe234f666bc22064e916e2aacdf1c0e",
+  "runs": [
+    {
+      "arm": "PACT_PERMUTED",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_pact_permuted",
+      "rollout_id": "3c6c4d305dcc5889eec93a113747e9eed6cc69f1190aff5944a46b804d169101",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    },
+    {
+      "arm": "ACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_act",
+      "rollout_id": "22f1741d6bc9d970abb72254f4751a47b492f4bb9a7aec5c3427a595a96ebfad",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "PACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_pact",
+      "rollout_id": "c8d0b25a398037c972f400cf640a462603622d0c75a79f384b631c59247deaed",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "PACT_PERMUTED",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_pact_permuted",
+      "rollout_id": "fb1f45b0f74aca2347255c6650e307c14677d556a2b2fc9974e1217fca392445",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "ACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_act",
+      "rollout_id": "2ad2fa15045ccfc22488895ce79bf16621e51e84d39ebcd267b2ef21b9156fa3",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    },
+    {
+      "arm": "PACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_pact",
+      "rollout_id": "deb64defe88147bcbae7b52ae7c0198dffd3d40628c779396feb9fc4d91ff04a",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    }
+  ],
+  "schedule_sha256": "93b9bd009c93fa4f56ff82a2419fef185a25ad3f6c4b38ba2cd9a9cbe8cbbed3",
+  "schema_version": "pact_blind_rgb_preflight_v1",
+  "sighted_reference": {
+    "experiment": "frozen blur sweep sigma=0",
+    "no_flag": true,
+    "output_root": "/root/pact_blur_sweep_artifacts/evaluation_v1",
+    "same_instances": true
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "amendment_sha256": "874ac42a7d3a72504526c6a4a990f3d2cc2b0e79d4ae8de397507d71468981fc",
+  "checks": {
+    "ACT": {
+      "informational": {
+        "independent_sighted_vs_blind_sharp_render_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_action_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_scientific_outcome_matched": false,
+        "independent_sighted_vs_frozen_no_flag_visual_hash_matched": false,
+        "interpretation": "independent EGL rerenders are not byte-identical; the within-call sharp-versus-policy-input hashes are the direct no-flag identity test"
+      },
+      "required": {
+        "action_trace_changed_sighted_vs_blind": true,
+        "blind_flag_recorded_end_to_end": true,
+        "blind_input_exact_imagenet_mean": true,
+        "blind_input_shape_1_1_3_240_320": true,
+        "blind_sigma_remains_zero": true,
+        "blind_visual_input_changed": true,
+        "raw_proximity_byte_identical_sighted_vs_blind": true,
+        "sighted_no_flag_recorded_end_to_end": true,
+        "sighted_no_flag_visual_input_bit_identical_within_call": true
+      }
+    },
+    "PACT": {
+      "informational": {
+        "independent_sighted_vs_blind_sharp_render_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_action_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_scientific_outcome_matched": false,
+        "independent_sighted_vs_frozen_no_flag_visual_hash_matched": false,
+        "interpretation": "independent EGL rerenders are not byte-identical; the within-call sharp-versus-policy-input hashes are the direct no-flag identity test"
+      },
+      "required": {
+        "action_trace_changed_sighted_vs_blind": true,
+        "blind_flag_recorded_end_to_end": true,
+        "blind_input_exact_imagenet_mean": true,
+        "blind_input_shape_1_1_3_240_320": true,
+        "blind_sigma_remains_zero": true,
+        "blind_visual_input_changed": true,
+        "raw_proximity_byte_identical_sighted_vs_blind": true,
+        "sighted_no_flag_recorded_end_to_end": true,
+        "sighted_no_flag_visual_input_bit_identical_within_call": true
+      }
+    },
+    "PACT_PERMUTED": {
+      "informational": {
+        "independent_sighted_vs_blind_sharp_render_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_action_hash_matched": false,
+        "independent_sighted_vs_frozen_no_flag_scientific_outcome_matched": false,
+        "independent_sighted_vs_frozen_no_flag_visual_hash_matched": false,
+        "interpretation": "independent EGL rerenders are not byte-identical; the within-call sharp-versus-policy-input hashes are the direct no-flag identity test"
+      },
+      "required": {
+        "action_trace_changed_sighted_vs_blind": true,
+        "blind_flag_recorded_end_to_end": true,
+        "blind_input_exact_imagenet_mean": true,
+        "blind_input_shape_1_1_3_240_320": true,
+        "blind_sigma_remains_zero": true,
+        "blind_visual_input_changed": true,
+        "raw_proximity_byte_identical_sighted_vs_blind": true,
+        "sighted_no_flag_recorded_end_to_end": true,
+        "sighted_no_flag_visual_input_bit_identical_within_call": true
+      }
+    }
+  },
+  "fixed_selection": {
+    "arms": [
+      "ACT",
+      "PACT",
+      "PACT_PERMUTED"
+    ],
+    "checkpoint_seed": 3101,
+    "instance_index": 0,
+    "selected_before_execution": true,
+    "vision_conditions": [
+      "sighted",
+      "blind"
+    ]
+  },
+  "initial_overstrict_audit": {
+    "path": "diagnostics_output/pact_blind_rgb/preflight_initial_overstrict.json",
+    "preflight_sha256": "a1d31e3213b8ea3b73242824491ce65efbe234f666bc22064e916e2aacdf1c0e"
+  },
+  "passed": true,
+  "policy_endpoint_values_used_for_design_or_selection": false,
+  "preflight_sha256": "7db8b0a957cf8954c3c64c4358c97e71d989c2ce51d09d7b934646c6ca157b1c",
+  "rollouts_rerun": 0,
+  "runs": [
+    {
+      "arm": "PACT_PERMUTED",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_pact_permuted",
+      "rollout_id": "3c6c4d305dcc5889eec93a113747e9eed6cc69f1190aff5944a46b804d169101",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    },
+    {
+      "arm": "ACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_act",
+      "rollout_id": "22f1741d6bc9d970abb72254f4751a47b492f4bb9a7aec5c3427a595a96ebfad",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "PACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_pact",
+      "rollout_id": "c8d0b25a398037c972f400cf640a462603622d0c75a79f384b631c59247deaed",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "PACT_PERMUTED",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/sighted_pact_permuted",
+      "rollout_id": "fb1f45b0f74aca2347255c6650e307c14677d556a2b2fc9974e1217fca392445",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "sighted"
+    },
+    {
+      "arm": "ACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_act",
+      "rollout_id": "2ad2fa15045ccfc22488895ce79bf16621e51e84d39ebcd267b2ef21b9156fa3",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    },
+    {
+      "arm": "PACT",
+      "output": "/root/pact_blind_rgb_artifacts/preflight_v1/blind_pact",
+      "rollout_id": "deb64defe88147bcbae7b52ae7c0198dffd3d40628c779396feb9fc4d91ff04a",
+      "trajectory_payloads_removed_after_hashing": [],
+      "vision_condition": "blind"
+    }
+  ],
+  "schedule_sha256": "93b9bd009c93fa4f56ff82a2419fef185a25ad3f6c4b38ba2cd9a9cbe8cbbed3",
+  "schema_version": "pact_blind_rgb_preflight_v1"
+}
