@@ -1,6 +1,240 @@
 {
   "caption": "Re-rendered from the analyzed rollout. Task success, manipulation success, and first hazard-contact step reproduce exactly; first target contact is within the declared two-step tolerance; contact-pair counts are informational.",
   "created_at_utc": "2026-08-15T06:16:01.365286Z",
+  "determinism_checks": {
+    "0.0": {
+      "declared_gate_passed": true,
+      "informational_contact_pair_counts": {
+        "contact_class_totals": {
+          "grasp_target": {
+            "original": 334052,
+            "rerun": 333903,
+            "signed_delta": -149
+          },
+          "hazard_bar": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          },
+          "other_environment": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          }
+        },
+        "sample_count": {
+          "original": 29701,
+          "rerun": 29701,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_blur_sweep_artifacts/media_v1/checks/sigma_0p0_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 170,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 170,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": true
+        },
+        "task_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": true
+        }
+      },
+      "sha256": "fa16de519e00bf8d2f7af5cb9f32cbd4159b6710150bdf7f25ec0ba70748c3d5"
+    },
+    "0.5": {
+      "declared_gate_passed": true,
+      "informational_contact_pair_counts": {
+        "contact_class_totals": {
+          "grasp_target": {
+            "original": 333633,
+            "rerun": 333545,
+            "signed_delta": -88
+          },
+          "hazard_bar": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          },
+          "other_environment": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          }
+        },
+        "sample_count": {
+          "original": 29701,
+          "rerun": 29701,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_blur_sweep_artifacts/media_v1/checks/sigma_0p5_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 170,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 170,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": true
+        },
+        "task_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": true
+        }
+      },
+      "sha256": "8cca0a706ca4ba5d13615d636ecacb60ddec7bc71fb8e5eabec627a8c5eb9c15"
+    },
+    "1.0": {
+      "declared_gate_passed": true,
+      "informational_contact_pair_counts": {
+        "contact_class_totals": {
+          "grasp_target": {
+            "original": 332522,
+            "rerun": 332550,
+            "signed_delta": 28
+          },
+          "hazard_bar": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          },
+          "other_environment": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          }
+        },
+        "sample_count": {
+          "original": 29701,
+          "rerun": 29701,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_blur_sweep_artifacts/media_v1/checks/sigma_1p0_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 173,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 173,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": true
+        },
+        "task_success": {
+          "original": true,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": true
+        }
+      },
+      "sha256": "ca4f8e033a04e49aa08d496675637e9da7b98a6fc0528254f7daf5bb31348f1b"
+    },
+    "2.0": {
+      "declared_gate_passed": true,
+      "informational_contact_pair_counts": {
+        "contact_class_totals": {
+          "grasp_target": {
+            "original": 129054,
+            "rerun": 126364,
+            "signed_delta": -2690
+          },
+          "hazard_bar": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          },
+          "other_environment": {
+            "original": 0,
+            "rerun": 0,
+            "signed_delta": 0
+          }
+        },
+        "sample_count": {
+          "original": 29701,
+          "rerun": 29701,
+          "signed_delta": 0
+        }
+      },
+      "path": "/root/pact_blur_sweep_artifacts/media_v1/checks/sigma_2p0_pact.json",
+      "required_gate_comparisons": {
+        "first_grasp_target_contact_step": {
+          "absolute_delta_steps": 0,
+          "original": 151,
+          "passed": true,
+          "requirement": "absolute step delta <= 2",
+          "rerun": 151,
+          "signed_delta_steps": 0,
+          "tolerance_steps": 2
+        },
+        "first_hazard_bar_contact_step": {
+          "original": null,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": null
+        },
+        "manipulation_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact (represented by task_success)",
+          "rerun": false
+        },
+        "task_success": {
+          "original": false,
+          "passed": true,
+          "requirement": "exact",
+          "rerun": false
+        }
+      },
+      "sha256": "48b2e43e22cccdd8c54956897363170f1b6b710b7801e9ce308e82d7e531ac88"
+    }
+  },
   "determinism_gate": {
     "contact_pair_sample_counts": {
       "comparison": "informational_only",
@@ -49,7 +283,7 @@
       }
     }
   },
-  "media_manifest_sha256": "9d175c63eec6764a1f18c44e8e17e0a3d043d8ce252bcf1749a2da33b04795b2",
+  "media_manifest_sha256": "c69945a9c638d937556cdcd9739430d08a5c6a237ce7ecc45d184ae8a9eea330",
   "planned_video_outputs": [
     "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p0_pact.mp4",
     "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p5_pact.mp4",
@@ -57,6 +291,97 @@
     "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_2p0_pact.mp4"
   ],
   "qualifying_instance_seed_count": 62,
+  "release_videos": {
+    "0.0": {
+      "ffprobe": {
+        "format": {
+          "bit_rate": "388606",
+          "duration": "19.931362",
+          "size": "968183"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.931362",
+            "height": 352,
+            "nb_frames": "302",
+            "width": 1248
+          }
+        ]
+      },
+      "path": "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p0_pact.mp4",
+      "sha256": "418e4d8b6b417cd7900f2b1b1f3e175e3175e6ec1e5b7273ae44085ca0236c57"
+    },
+    "0.5": {
+      "ffprobe": {
+        "format": {
+          "bit_rate": "371119",
+          "duration": "19.931362",
+          "size": "924614"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.931362",
+            "height": 352,
+            "nb_frames": "302",
+            "width": 1248
+          }
+        ]
+      },
+      "path": "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p5_pact.mp4",
+      "sha256": "af44cf33a785f0de5ea1bc11491e97b5391b05e8db4f545914313ae5cbe78d34"
+    },
+    "1.0": {
+      "ffprobe": {
+        "format": {
+          "bit_rate": "358761",
+          "duration": "19.931362",
+          "size": "893826"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.931362",
+            "height": 352,
+            "nb_frames": "302",
+            "width": 1248
+          }
+        ]
+      },
+      "path": "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_1p0_pact.mp4",
+      "sha256": "e67021bbef07efd88e59caddd8c8416e7bad189d06d7cbc14bc2b27d8b727ee8"
+    },
+    "2.0": {
+      "ffprobe": {
+        "format": {
+          "bit_rate": "325667",
+          "duration": "19.931362",
+          "size": "811375"
+        },
+        "programs": [],
+        "streams": [
+          {
+            "avg_frame_rate": "1894/125",
+            "codec_name": "h264",
+            "duration": "19.931362",
+            "height": 352,
+            "nb_frames": "302",
+            "width": 1248
+          }
+        ]
+      },
+      "path": "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_2p0_pact.mp4",
+      "sha256": "d81d2b193a442300dfa660aeec3e3921e9cab1c6141a4c5cf040478e5b280a10"
+    }
+  },
+  "rendered_at_utc": "2026-08-15T06:33:12.199987Z",
   "schema_version": "pact_blur_media_manifest_v1",
   "scientific_record_changed": false,
   "selection": {
@@ -193,7 +518,7 @@
       "sha256": "8b4eda7ed0264e8d6f6ff01aaa08c872f6d734952eb684475221011c0402368f"
     }
   },
-  "status": "selection_and_gate_frozen_pre_render",
+  "status": "presentation_release_verified",
   "visual_contract": {
     "left_pane": "wrist camera after the exact policy-input blur primitive",
     "overlay_fields": [

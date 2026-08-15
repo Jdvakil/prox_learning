@@ -1,18 +1,20 @@
 {
-  "bundle_manifest_sha256": "2dba7402ee77635a1b9bffe22422e5d2820cb40994f389df0b8bdae9eb100b50",
+  "blur_media_figure_concepts": 2,
+  "blur_media_individual_clip_files": 4,
+  "bundle_manifest_sha256": "273b45ea84cc23fe1cce4279642b7b43492b151a710d637cae06d7fd20df2607",
   "bundle_root": "/root/pact_slideshow_bundle",
   "complete_matched_instance_pairs": 3,
   "determinism_dropped_clip_files": 1,
   "entries": [
     {
       "path": "INDEX.md",
-      "sha256": "50dbc6047b16927c4547a12b46c493b4b99c74b0a12d364d58f77df4bc16c6b1",
-      "size_bytes": 7886
+      "sha256": "108eb05570b460ad90c64517fabd91503b6f1da50fe34cc3352731de997338ff",
+      "size_bytes": 9548
     },
     {
       "path": "KEY_NUMBERS.md",
-      "sha256": "dc53f32937a517b55d327e51ad428b736a8e71f11e60b06bd9cb939a56c7aca2",
-      "size_bytes": 8029
+      "sha256": "c273756156ff3e89ab4054fd64bd57f296f95f0d197491de40d2633cf0fabe21",
+      "size_bytes": 9133
     },
     {
       "path": "ONE_PAGE_SUMMARY.md",
@@ -28,6 +30,26 @@
       "path": "data/analysis.json",
       "sha256": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
       "size_bytes": 273422
+    },
+    {
+      "path": "data/blur_analysis.json",
+      "sha256": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+      "size_bytes": 296874
+    },
+    {
+      "path": "data/blur_calibration.json",
+      "sha256": "726825e3308783e8600c40d7c531620b0e2cd0f3d646e230f80e5894e1c05e95",
+      "size_bytes": 3249
+    },
+    {
+      "path": "data/blur_final_decision.json",
+      "sha256": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+      "size_bytes": 475
+    },
+    {
+      "path": "data/blur_media_manifest.json",
+      "sha256": "9db5f3b82fe57ee4d9fbfa99118a4faae5c82ee52999fb26aa85e75a0ea212aa",
+      "size_bytes": 20006
     },
     {
       "path": "data/early_3d_analysis.json",
@@ -310,9 +332,34 @@
       "size_bytes": 1602949
     },
     {
+      "path": "figures/fig_blur_sigma_0p5.png",
+      "sha256": "a39b5705c7a502fe4736f64ede63f2ff26922c683ea77c1aec75cb40b67a57d9",
+      "size_bytes": 214004
+    },
+    {
+      "path": "figures/fig_blur_sigma_0p5.svg",
+      "sha256": "9234f854e9b5b7cd3b8930c2c076a44ee111afc9802041207cdf61867fe11fb7",
+      "size_bytes": 285539
+    },
+    {
+      "path": "figures/fig_blur_sigma_panel.png",
+      "sha256": "1d362b73d2929db5d282bc6a0166691ee24c4c091f3393d2103448b3344a227f",
+      "size_bytes": 445375
+    },
+    {
+      "path": "figures/fig_blur_sigma_panel.svg",
+      "sha256": "d0ef0eaea3d68e7aaa46fba0b2412f8d8840f768a88e9ed1a485ad80c33e7234",
+      "size_bytes": 594039
+    },
+    {
       "path": "reports/DISCOVERY_CONTACT_TAIL.md",
       "sha256": "14b40eed4652494cdb9b1b62f004de816726d3a849c0e44102dd64a6c8ff17a0",
       "size_bytes": 9715
+    },
+    {
+      "path": "reports/PACT_BLUR_SWEEP.md",
+      "sha256": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+      "size_bytes": 4679
     },
     {
       "path": "reports/PACT_CONTACT_ENDPOINT_DECISION.md",
@@ -358,6 +405,26 @@
       "path": "reports/PACT_VS_ACT_FINAL_DECISION.md",
       "sha256": "84ba1848d63739c5444c4893285c1ed22acb38a1ec02797e90c1099ac368cd6e",
       "size_bytes": 3940
+    },
+    {
+      "path": "videos/blur_sweep/sigma_0p0_pact.mp4",
+      "sha256": "418e4d8b6b417cd7900f2b1b1f3e175e3175e6ec1e5b7273ae44085ca0236c57",
+      "size_bytes": 968183
+    },
+    {
+      "path": "videos/blur_sweep/sigma_0p5_pact.mp4",
+      "sha256": "af44cf33a785f0de5ea1bc11491e97b5391b05e8db4f545914313ae5cbe78d34",
+      "size_bytes": 924614
+    },
+    {
+      "path": "videos/blur_sweep/sigma_1p0_pact.mp4",
+      "sha256": "e67021bbef07efd88e59caddd8c8416e7bad189d06d7cbc14bc2b27d8b727ee8",
+      "size_bytes": 893826
+    },
+    {
+      "path": "videos/blur_sweep/sigma_2p0_pact.mp4",
+      "sha256": "d81d2b193a442300dfa660aeec3e3921e9cab1c6141a4c5cf040478e5b280a10",
+      "size_bytes": 811375
     },
     {
       "path": "videos/expert_demo/expert_clean_demo_wrist_view.mp4",
@@ -431,16 +498,16 @@
     }
   ],
   "extension_counts": {
-    ".json": 28,
+    ".json": 32,
     ".jsonl": 6,
-    ".md": 16,
-    ".mp4": 12,
-    ".png": 11,
-    ".svg": 11,
+    ".md": 17,
+    ".mp4": 16,
+    ".png": 13,
+    ".svg": 13,
     ".xml": 1
   },
-  "figure_concepts": 11,
-  "figure_files": 22,
+  "figure_concepts": 13,
+  "figure_files": 26,
   "geometry_figure_11": "C0_C2_Z_093_fixed_camera_initial_pose",
   "geometry_v3_complete_matched_pairs": 2,
   "geometry_v3_individual_clip_files": 4,
@@ -450,17 +517,69 @@
   "optional_figure_10": "omitted_no_frozen_source_field_and_no_new_analysis_allowed",
   "paired_video_files": 6,
   "paired_video_release": "The original contact-endpoint release retains one matched pair and two explicitly unpaired examples. Geometry v3 adds two matched PACT versus PACT_PERMUTED pairs, four individual clips, and two synchronized side-by-side exports; all four rank-1 rerenders passed the frozen gate.",
-  "presentation_only_rollout_rerenders": 13,
+  "presentation_only_rollout_rerenders": 17,
   "rollouts_or_training_performed": true,
   "schema_version": "pact_slideshow_bundle_manifest_v1",
   "scientific_artifacts_modified": false,
   "shipped_qualitative_single_arm_clip_files": 8,
   "supplemental_act_success_clip_files": 1,
-  "total_payload_size_bytes_excluding_manifest": 24533854,
+  "total_payload_size_bytes_excluding_manifest": 29998858,
   "training_performed": false,
   "unpaired_independent_probe_files": 0,
-  "video_files": 12,
+  "video_files": 16,
   "video_records": {
+    "videos__blur_sweep__sigma_0p0_pact": {
+      "path": "videos/blur_sweep/sigma_0p0_pact.mp4",
+      "sha256": "418e4d8b6b417cd7900f2b1b1f3e175e3175e6ec1e5b7273ae44085ca0236c57",
+      "size_bytes": 968183,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.931362",
+        "height": 352,
+        "nb_frames": "302",
+        "width": 1248
+      }
+    },
+    "videos__blur_sweep__sigma_0p5_pact": {
+      "path": "videos/blur_sweep/sigma_0p5_pact.mp4",
+      "sha256": "af44cf33a785f0de5ea1bc11491e97b5391b05e8db4f545914313ae5cbe78d34",
+      "size_bytes": 924614,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.931362",
+        "height": 352,
+        "nb_frames": "302",
+        "width": 1248
+      }
+    },
+    "videos__blur_sweep__sigma_1p0_pact": {
+      "path": "videos/blur_sweep/sigma_1p0_pact.mp4",
+      "sha256": "e67021bbef07efd88e59caddd8c8416e7bad189d06d7cbc14bc2b27d8b727ee8",
+      "size_bytes": 893826,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.931362",
+        "height": 352,
+        "nb_frames": "302",
+        "width": 1248
+      }
+    },
+    "videos__blur_sweep__sigma_2p0_pact": {
+      "path": "videos/blur_sweep/sigma_2p0_pact.mp4",
+      "sha256": "d81d2b193a442300dfa660aeec3e3921e9cab1c6141a4c5cf040478e5b280a10",
+      "size_bytes": 811375,
+      "video": {
+        "avg_frame_rate": "1894/125",
+        "codec_name": "h264",
+        "duration": "19.931362",
+        "height": 352,
+        "nb_frames": "302",
+        "width": 1248
+      }
+    },
     "videos__expert_demo__expert_clean_demo_wrist_view": {
       "path": "videos/expert_demo/expert_clean_demo_wrist_view.mp4",
       "sha256": "97b085ab69dbb85bd30172177516ef2998ac9564ea504ac81247e15ffe717707",
