@@ -1,0 +1,215 @@
+{
+  "caption": "Re-rendered from the analyzed rollout. Task success, manipulation success, and first hazard-contact step reproduce exactly; first target contact is within the declared two-step tolerance; contact-pair counts are informational.",
+  "created_at_utc": "2026-08-15T06:16:01.365286Z",
+  "determinism_gate": {
+    "contact_pair_sample_counts": {
+      "comparison": "informational_only",
+      "record_delta": true
+    },
+    "declared_before_render": true,
+    "first_grasp_target_contact_step": {
+      "comparison": "absolute_step_delta_lte",
+      "tolerance_steps": 2
+    },
+    "first_hazard_bar_contact_step": {
+      "comparison": "exact"
+    },
+    "manipulation_success": {
+      "comparison": "exact",
+      "represented_by": "task_success"
+    },
+    "on_breach": "drop_clip_without_retry",
+    "task_success": {
+      "comparison": "exact"
+    }
+  },
+  "figures": {
+    "sigma_0p5": {
+      "png": {
+        "path": "/root/pact_slideshow_bundle/figures/fig_blur_sigma_0p5.png",
+        "sha256": "a39b5705c7a502fe4736f64ede63f2ff26922c683ea77c1aec75cb40b67a57d9",
+        "size_bytes": 214004
+      },
+      "svg": {
+        "path": "/root/pact_slideshow_bundle/figures/fig_blur_sigma_0p5.svg",
+        "sha256": "9234f854e9b5b7cd3b8930c2c076a44ee111afc9802041207cdf61867fe11fb7",
+        "size_bytes": 285539
+      }
+    },
+    "sigma_panel": {
+      "png": {
+        "path": "/root/pact_slideshow_bundle/figures/fig_blur_sigma_panel.png",
+        "sha256": "1d362b73d2929db5d282bc6a0166691ee24c4c091f3393d2103448b3344a227f",
+        "size_bytes": 445375
+      },
+      "svg": {
+        "path": "/root/pact_slideshow_bundle/figures/fig_blur_sigma_panel.svg",
+        "sha256": "d0ef0eaea3d68e7aaa46fba0b2412f8d8840f768a88e9ed1a485ad80c33e7234",
+        "size_bytes": 594039
+      }
+    }
+  },
+  "media_manifest_sha256": "9d175c63eec6764a1f18c44e8e17e0a3d043d8ce252bcf1749a2da33b04795b2",
+  "planned_video_outputs": [
+    "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p0_pact.mp4",
+    "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_0p5_pact.mp4",
+    "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_1p0_pact.mp4",
+    "/root/pact_slideshow_bundle/videos/blur_sweep/sigma_2p0_pact.mp4"
+  ],
+  "qualifying_instance_seed_count": 62,
+  "schema_version": "pact_blur_media_manifest_v1",
+  "scientific_record_changed": false,
+  "selection": {
+    "arm": "PACT",
+    "checkpoint_seed": 3101,
+    "episode_id": "65f2ab175bedf3c89542d314259ec47f04290b628bd34ef0d2202632f1f67b1b",
+    "intrusion_side": "right",
+    "rows": [
+      {
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "original_result_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/rows/0002_cd65fae5dcb24952_sigma_0p0_pact_s3101/result.json",
+        "original_result_sha256": "d77bfd1a0bf78c3d471f25090a83dd9928badc83a86c7926dbcbdaad7f8962a0",
+        "outcome": {
+          "contact_class_totals": {
+            "grasp_target": 334052,
+            "hazard_bar": 0,
+            "other_environment": 0
+          },
+          "contact_pair_sample_count": 29701,
+          "first_grasp_target_contact_step": 170,
+          "first_hazard_bar_contact_step": null,
+          "hazard_contact_frames": 0,
+          "manipulation_success": true,
+          "task_success": true
+        },
+        "rollout_id": "cd65fae5dcb2495282cc548b856a8a449ba210ed89cfa124383ba37ced04a4f8",
+        "schedule_index": 2,
+        "schedule_row_sha256": "cb1c5ba84c237e392e33f3030967762ebfd23fef40602e7b21b02b4510609eaa",
+        "sigma": 0.0,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      },
+      {
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "original_result_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/rows/0016_39332ccae9a080f6_sigma_0p5_pact_s3101/result.json",
+        "original_result_sha256": "daa92e6e272bb07e4a558f9a6a53687d5c578c386f57a754b530a8f6c853e1b1",
+        "outcome": {
+          "contact_class_totals": {
+            "grasp_target": 333633,
+            "hazard_bar": 0,
+            "other_environment": 0
+          },
+          "contact_pair_sample_count": 29701,
+          "first_grasp_target_contact_step": 170,
+          "first_hazard_bar_contact_step": null,
+          "hazard_contact_frames": 0,
+          "manipulation_success": true,
+          "task_success": true
+        },
+        "rollout_id": "39332ccae9a080f6965d7008a12d944144cf5a660f7b02e0297b93a243dddab5",
+        "schedule_index": 16,
+        "schedule_row_sha256": "10ed4018a4a34cbb22583231a71ab25fa5da4be44e7ad5d99c61beb9dfbe15bd",
+        "sigma": 0.5,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      },
+      {
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "original_result_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/rows/0022_5bdcabbab2c767a0_sigma_1p0_pact_s3101/result.json",
+        "original_result_sha256": "8d81c92b1ddab3a10f08767d0989c439fa024bce230ed66bf2eb8d5bf9284910",
+        "outcome": {
+          "contact_class_totals": {
+            "grasp_target": 332522,
+            "hazard_bar": 0,
+            "other_environment": 0
+          },
+          "contact_pair_sample_count": 29701,
+          "first_grasp_target_contact_step": 173,
+          "first_hazard_bar_contact_step": null,
+          "hazard_contact_frames": 0,
+          "manipulation_success": true,
+          "task_success": true
+        },
+        "rollout_id": "5bdcabbab2c767a0792cc2a1c2179e687e1cd54728451737f35596980e51b497",
+        "schedule_index": 22,
+        "schedule_row_sha256": "89d55e376bb555a55cd1bb007538a005d20a97547538a12bda95039e4f662c1f",
+        "sigma": 1.0,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      },
+      {
+        "checkpoint_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/policy_best.ckpt",
+        "checkpoint_sha256": "9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457",
+        "dataset_stats_path": "/root/pact_frontend_screen_artifacts/policy_seed3101/dataset_stats.pkl",
+        "dataset_stats_sha256": "1fff47c6d6e75fce68d953bfef5029ffbad5794d08854ea9d0f7dafadc7be6ec",
+        "original_result_path": "/root/pact_blur_sweep_artifacts/evaluation_v1/rows/0028_5ce4d8cf9803b0ad_sigma_2p0_pact_s3101/result.json",
+        "original_result_sha256": "e960e9119cfa97248627d0e6a8302b94e9e88f46eab66c1f3c933ef4662d5897",
+        "outcome": {
+          "contact_class_totals": {
+            "grasp_target": 129054,
+            "hazard_bar": 0,
+            "other_environment": 0
+          },
+          "contact_pair_sample_count": 29701,
+          "first_grasp_target_contact_step": 151,
+          "first_hazard_bar_contact_step": null,
+          "hazard_contact_frames": 0,
+          "manipulation_success": false,
+          "task_success": false
+        },
+        "rollout_id": "5ce4d8cf9803b0ad19c347ca89f95c3c6f4d512636ef4367a9c32f653eb86317",
+        "schedule_index": 28,
+        "schedule_row_sha256": "d36804330b16ae8a366557dd95757edbd2dd01139be6af9f69d4a9fb16127fd0",
+        "sigma": 2.0,
+        "surface_encoder_path": "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt",
+        "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      }
+    ]
+  },
+  "selection_rule": "among episode-seed groups where PACT has zero hazard frames at sigma 0 and sigma 2, choose the group whose sigma-0 row has the smallest frozen schedule index; break any remaining tie by episode ID then checkpoint seed",
+  "sources": {
+    "calibration": {
+      "calibration_sha256": "56bba0c5d736a884a05d999a57d0b51ff193256ce5d974117636f7f6f3fd266e",
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/calibration.json",
+      "sha256": "726825e3308783e8600c40d7c531620b0e2cd0f3d646e230f80e5894e1c05e95"
+    },
+    "protected_scientific_artifacts": {
+      "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+      "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+      "/root/prox_learning_pact_remediation/docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf"
+    },
+    "schedule": {
+      "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_blur_sweep/schedule.json",
+      "schedule_sha256": "748a44d8034361857d6fae4e9ce684baa9a3b8dd078fc932cc8bc9aee6d105a5",
+      "sha256": "8b4eda7ed0264e8d6f6ff01aaa08c872f6d734952eb684475221011c0402368f"
+    }
+  },
+  "status": "selection_and_gate_frozen_pre_render",
+  "visual_contract": {
+    "left_pane": "wrist camera after the exact policy-input blur primitive",
+    "overlay_fields": [
+      "arm and checkpoint seed",
+      "blur sigma and retained-detail percent",
+      "episode ID first 12 characters",
+      "task success yes/no",
+      "hazard-contact frames running cumulative"
+    ],
+    "playback_speed_factor": 3.0,
+    "retained_detail_percent_by_sigma": {
+      "0.0": 100.0,
+      "0.5": 46.198099213949405,
+      "1.0": 9.279910435162428,
+      "2.0": 1.684125196626018
+    },
+    "right_pane": "unblurred render-only third-person camera"
+  }
+}
