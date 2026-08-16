@@ -149,10 +149,9 @@ reports/2026-08-14/  the current progress report
 paper/               one section draft
 synthetic_verify/    proximity ground-truth check (29-sensor era)
 
+reports/eval_summaries/  all 24 eval_summary.json, archived out of eval_output/
 train_blur_baseline.sh   trains one vanilla arm per constant blur sigma
 eval_blur_baseline.sh    the 9-condition blur test + summary table
-blur_eval.log            log from the 2026-08-09/10 run
-pointcloud.ipynb         DEAD — reads a deleted dataset, unrelated kernel
 ```
 
 ---
@@ -219,8 +218,12 @@ Flinch is the base library (posture pick, aperture, render, mosaic, HUD). Keep t
 | `enclosure_report.py` | Date-tagged report bundle for an enclosure run. Shells out to `dataset_probes.py`. | ARCHIVE |
 | `cavity_scene.py` | Cabinet/drawer-cavity MJCF generator. Loads the **29-sensor** `model.xml`. Its geometry logic was absorbed into the MolmoSpaces cavity sampler. | ARCHIVE |
 | `wandb_upload_dataset.py` | One-time upload of the frozen 2026-06-10 dataset to wandb. | ARCHIVE |
-| `assemble_overnight_report.py` | Stitches the 2026-06-11 renders into contact sheets. **DEAD:** line 50 reads `20260610_hybrid_skin_rich/` but the directory is `20260611_…`, and two of its inputs have no generator anywhere in the repo. | DEAD |
-| `pointcloud.ipynb` (top level) | **DEAD:** reads `assets/datagen/pick_planner_v1/…` which does not exist, uses the `ilab` kernel, superseded by `foxglove_viz.py`. | DEAD |
+
+**Deleted 2026-08-16** (recoverable from git history at `f6a3085`):
+`assemble_overnight_report.py` (read `20260610_hybrid_skin_rich/` — the directory is `20260611_…`,
+and two of its inputs had no generator anywhere in the repo), `pointcloud.ipynb` (read
+`assets/datagen/pick_planner_v1/…`, which does not exist; `ilab` kernel; superseded by
+`foxglove_viz.py`), `blur_eval.log` (5.3 MB run log that should never have been committed).
 
 ### `figures.py` — the 334 KB file
 
@@ -276,10 +279,9 @@ environments (`make_pipe_tunnel_fig`, `panel_env_cluttered_shelf`, `env_corner_c
 
 ### Dead references (verified by `stat`, not inferred)
 
-- `pointcloud.ipynb` → `assets/datagen/pick_planner_v1/…` — gone.
-- `assemble_overnight_report.py:50` → `20260610_hybrid_skin_rich/` — actual dir is `20260611_…`.
-- `assemble_overnight_report.py` → `fov_coverage_map.png`, `use_cloud_accumulation.png` — the PNGs
-  exist but **no generator survives anywhere in the repo**; these two figures cannot be rebuilt.
+- `fov_coverage_map.png`, `use_cloud_accumulation.png` — the PNGs exist but **no generator survives
+  anywhere in the repo**; these two figures cannot be rebuilt. (They were the outputs of the
+  now-deleted `assemble_overnight_report.py`, which could not run either.)
 - `foxglove_viz.py:5` docstring → `scripts/foxglove_layout.json` — does not exist (docs only).
 - `safety_sweep.py:32` usage example → `assets/datagen/hybrid_pnp5_mass/…` — the data actually
   lives under `assets/prox_learning_data/`.
@@ -322,16 +324,27 @@ modality-dropout curricula.
 `visualize_episodes.py` (only `save_videos` is imported), `detr/models/__init__.py`,
 `detr/setup.py`, `detr/util/*`.
 
-### The eval scripts — only one is current
+### The eval scripts — there is now exactly one
 
-| file | verdict |
+**`eval_act_obstacle.py`** is the only evaluator. It has PACT support, collision metrics,
+`--eval_cell`, `--eval_blur_sigma`, `--end_on_collision`, the `viz_sensor_rgb=False` OOM guard,
+`eval_summary.json` output, and the fixed `--temp_agg_off`.
+
+**Deleted 2026-08-16** (recoverable from the ACT fork's history at `20cfa94`). All five referenced
+only each other; `eval_act_obstacle.py` imports none of them and still runs.
+
+| file | why it went |
 |---|---|
-| **`eval_act_obstacle.py`** | **CANONICAL.** The only one with PACT support, collision metrics, `--eval_cell`, `--eval_blur_sigma`, `--end_on_collision`, the `viz_sensor_rgb=False` OOM guard, `eval_summary.json` output, and the fixed `--temp_agg_off`. |
-| `eval_act_house1.py` | Historic (mug task). Still imported by `eval_act_house1_dup250.py`. |
-| `eval_act_house10_cup.py` | Historic copy of house1, different house/object. No `TASK_CONFIGS` entry at all. |
-| `eval_act_house1_dup250.py` | Dead one-off; its dataset is gone. |
-| `eval_act_mug_random.py` | Historic. `samples_per_house=1`, so one rollout per process — you launch N and aggregate via `--wandb_group`. |
-| `eval_act_with_prox.py` | **BROKEN.** Imports `pla.prox_residual_head`; no `pla/` package exists. This was the *old* design (a residual head added to the action chunk), superseded by in-transformer conditioning. |
+| `eval_act_with_prox.py` | **Was broken.** Imported `pla.prox_residual_head`; no `pla/` package exists, so it had not been runnable since that package was removed. It implemented the superseded design — a residual head bolted onto the action chunk, rather than in-transformer conditioning. |
+| `eval_act_house1.py` | The abandoned mug task. |
+| `eval_act_house1_dup250.py` | One-off; its dataset is gone. |
+| `eval_act_house10_cup.py` | Copy of house1, different house/object. Never had a `TASK_CONFIGS` entry. |
+| `eval_act_mug_random.py` | Mug task, `samples_per_house=1`. |
+
+`constants.py` was pruned in the same commit: seven of its ten `TASK_CONFIGS` entries pointed at
+`act_style_data/` directories that no longer exist. The three obstacle tasks remain, and their
+dataset paths are now derived from the file's own location instead of a hardcoded
+`/home/jaydv/code/prox_learning`.
 
 ### How proximity actually enters the network
 
@@ -366,8 +379,12 @@ train/eval parity needs no flags.
 | `obstacle_baseline` | `act_style_data/obstacle_v1` | 100 | 169 | **yes** |
 | `obstacle_pact` | `act_style_data/obstacle_prox_v1` | 100 | 168 | **yes** |
 | `obstacle_pact_v2` | `act_style_data/obstacle_prox_v2` | 105 | 185 | **yes** |
-| `test`, `proximity_learning`, `pla_house1_mug`, `pla_smoke`, `pla_house1_mug_random`, `pla_house3_mug_random`, `pla_houses_1_3_mug_random` | old `pla_*` paths | — | — | **no — all dead** |
-| `SIM_TASK_CONFIGS` (4 ALOHA tasks) | `DATA_DIR` | — | — | **no — dead** |
+| `SIM_TASK_CONFIGS` (4 ALOHA tasks) | `DATA_DIR` | — | — | **no — dead, kept only because three upstream files import the name** |
+
+Seven further entries (`test`, `proximity_learning`, `pla_house1_mug`, `pla_smoke`,
+`pla_house1_mug_random`, `pla_house3_mug_random`, `pla_houses_1_3_mug_random`) all pointed at
+deleted `act_style_data/` directories and were removed on 2026-08-16. Paths are now built from
+`ACT_DATA_DIR = REPO_ROOT / 'act_style_data'` rather than hardcoded.
 
 `episode_len` is only read by the dead `--eval` path; the dataloader pads to `chunk_size`. The
 169-vs-168 discrepancy for the same source run is a harmless off-by-one.
@@ -409,9 +426,9 @@ clean sharp frames.
 
 ### Breakage and gotchas in the fork
 
-1. `eval_act_with_prox.py` — import error on startup (`pla/` gone).
-2. 8 of 10 `TASK_CONFIGS` dataset dirs do not exist.
-3. `constants.py` cites `scripts/build_combined_h1_h3.py` — that script is gone.
+Items 1–3 were fixed on 2026-08-16 (dead evaluators deleted, `TASK_CONFIGS` pruned to the three
+tasks that resolve, the `build_combined_h1_h3.py` citation removed with its entry). What remains:
+
 4. `imitate_episodes.py --eval` is dead for every fork task: it takes the real-robot branch and
    ImportErrors, and it never passes `proximity_positions`. **Always use `eval_act_obstacle.py`.**
 5. `detr/main.py` comments reference a `pact.act_prox` package that does not exist;
@@ -1085,13 +1102,30 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
 
 ## 17. Repo state and housekeeping
 
+### What the 2026-08-16 cleanup actually did
+
+Everything below is committed and reversible from git history.
+
+| step | result |
+|---|---|
+| Committed `reports/2026-08-14/` | the progress report was the only unbacked-up deliverable in the repo; it is now tracked |
+| Fixed the stale `submodules/act` pointer | `git status` is clean of the phantom `M submodules/act` |
+| **Archived all 24 `eval_summary.json` → `reports/eval_summaries/`** | 244 KB, now tracked. `eval_output/` is gitignored, so this is the only durable copy of every published number — and it is what makes the blob directories safe to prune |
+| Purged `__pycache__` / `.egg-info` / `.pytest_cache` | 281 MB |
+| Deleted 24 dead `eval_output/` run dirs | 5 GB. Smoke runs, `diag10` debug runs (n=10, below the n=50 floor), the abandoned mug task, the pre-PACT baseline, and the superseded v1 PACT evals whose `eq50_*` family ran with temporal aggregation ON |
+| Deleted 3 dead files from the main repo | `pointcloud.ipynb`, `scripts/assemble_overnight_report.py`, `blur_eval.log` (a 5.3 MB run log that should never have been committed) |
+| Deleted 5 dead evaluators from the ACT fork | see §6 — including `eval_act_with_prox.py`, which had been un-runnable since `pla/` was removed |
+| Pruned `constants.py` | 7 of 10 `TASK_CONFIGS` pointed at deleted directories; paths are now repo-relative |
+| Moved `check.md` out of the repo | a Jetson AGX security-audit checklist, unrelated to this project → `~/jetson_agx_security_audit.md` |
+| Hardened `.gitignore` | `*.ckpt`, `ckpts/`, `*.log` — with an explicit un-ignore for `reports/eval_summaries/` |
+
+**Verified after the deletions:** `eval_act_obstacle.py --help` and `imitate_episodes.py --help`
+both run, `constants.py` imports with all three tasks resolving to real directories, and all 28
+`scripts/*.py` parse.
+
 ### Git
 
-- Branch `main`. **`submodules/act` pointer is one commit stale** — `git add submodules/act` fixes
-  the `M submodules/act` in `git status`.
-- **Untracked:** `reports/2026-08-14/` (the current progress report and its 9 figures — the only
-  unbacked-up deliverable in the repo; commit it before any cleanup) and `check.md`, a Jetson AGX
-  security-audit checklist unrelated to this project.
+- Branch `main`, synced with `origin/main`.
 - **Fully merged into `main`, safe to delete:** `Cleanup`, `clean` (local); `origin/Cleanup`,
   `origin/clean`, `origin/cleanup`, `origin/main_old` (remote).
 - **Two branches carry work that is NOT on `main`:**
@@ -1106,41 +1140,41 @@ skin, and is proximity what makes it work". It is worth merging deliberately.
 `origin/environments` should be **cherry-picked** — merging it whole drags back `analysis_output/`
 blobs and bumps the molmospaces submodule to a different commit.
 
-### Disk — 166 GB total
+### Disk — 161 GB, down from 166 GB
 
-| path | size | what |
-|---|---|---|
-| `submodules/act/ckpts` | 97 G | 12 runs × ~28 checkpoints each |
-| `.git` | 29 G | history still carries deleted `.h5` datasets |
-| `eval_output` | 15 G | 46 run dirs; 14.74 of 14.78 GB is `.h5` + `.mp4` that nothing reads |
-| `submodules/MolmoBot/*/.venv` | 15 G | two virtualenvs for a submodule nothing imports |
-| `assets/datagen` | 6.7 G | demo datasets |
-| `assets/prox_learning_data` | 4.5 G | older datasets + a 2.6 GB HF-LFS `.git` |
-| `act_style_data` | 2.5 G | 3 converted ACT datasets |
-| `assets/.lmdb` | 1.3 G | regenerable MolmoSpaces cache |
-| 1584 `__pycache__` dirs | 283 M | cache |
+| path | size | what | still reclaimable |
+|---|---|---|---|
+| `submodules/act/ckpts` | 97 G | 12 runs. **285 `policy_epoch_*.ckpt` = 96 GB; the 24 `policy_best`/`policy_last` that everything actually reads = 8.1 GB** | **96 GB** |
+| `.git` | 29 G | history still carries deleted `.h5` datasets | ~20 GB, but only via a history rewrite |
+| `eval_output` | 10 G | 21 real n=50 run dirs. 7.7 GB `.h5` + 2.9 GB `.mp4`; metrics already archived to `reports/eval_summaries/` | ~10 GB |
+| `submodules/MolmoBot` | 8.7 G | two virtualenvs for a submodule nothing imports | 8.7 GB |
+| `assets/datagen` | 6.7 G | demo datasets — **keep** | — |
+| `assets/prox_learning_data` | 4.5 G | older datasets + a 2.5 GB HF-LFS `.git` that duplicates the checkout byte for byte | 2.5 GB |
+| `act_style_data` | 2.5 G | 3 converted ACT datasets; `obstacle_prox_v2` is live | 1.7 GB (v1 pair, regenerable) |
+| `assets/.lmdb` | 1.3 G | regenerable MolmoSpaces cache | 1.3 GB |
+| `assets/safety` | 376 M | canonical CVAE weights + demo videos — **keep** | — |
 
-### `scripts/housekeeping.sh`
+### `scripts/housekeeping.sh` — the remaining 120 GB
 
-Tiered, **dry-run by default**, prints exactly what it would remove and how much it saves.
+Tiered, **dry-run by default**, prints exactly what it would remove and how much it saves. Tier 1
+has already been applied; the rest are still on disk.
 
 ```bash
-scripts/housekeeping.sh --tier1                 # preview
-scripts/housekeeping.sh --tier1 --apply         # do it
-scripts/housekeeping.sh --all --apply           # tiers 1-4
+scripts/housekeeping.sh --tier2                 # preview
+scripts/housekeeping.sh --tier2 --apply         # do it
 ```
 
 | tier | reclaims | what | risk |
 |---|---|---|---|
-| `--tier1` | 6.7 GB | `__pycache__`, `.egg-info`, smoke + `diag10` eval dirs, abandoned mug + pre-PACT runs, superseded v1 PACT evals, local wandb mirrors, orphaned checkpoints, leftover git temp packs | none |
-| `--tier2` | 90 GB | intermediate `policy_epoch_*.ckpt`. **Nothing in the repo reads them**: every evaluator hardcodes `policy_best.ckpt` and all 24 `eval_summary.json` record it. Only two write-sites exist. `--keep-every-500` saves 72 GB instead and keeps a coarse ladder. | none proven; irreversible if you ever want a mid-training probe |
-| `--tier3` | 15 GB | eval `.h5` and `.mp4`. `eval_summary.json` (0.21 MB total) holds every metric and is untouched. `--keep-headline` keeps the two invisible-cell demo videos. | loses qualitative video and the ability to re-derive new metrics from old rollouts |
+| `--tier1` | — | **already applied 2026-08-16** | — |
+| `--tier2` | **96 GB** | intermediate `policy_epoch_*.ckpt`. **Nothing in the repo reads them:** every evaluator hardcodes `policy_best.ckpt`, all 24 `eval_summary.json` record `policy_best.ckpt`, and `grep -rIn policy_epoch` finds exactly two hits, both *writes* (`imitate_episodes.py:645` and `:653`). All 12 runs were verified to have both `policy_best` and `policy_last` before this was proposed. `--keep-every-500` saves 72 GB instead and keeps a coarse ladder. | no read path exists; irreversible if you ever want a mid-training probe |
+| `--tier3` | 10 GB | eval `.h5` and `.mp4`. Metrics are already archived in `reports/eval_summaries/` and are not touched. `--keep-headline` keeps the two invisible-cell demo videos (1.5 GB). | loses qualitative video and the ability to re-derive new metrics from old rollouts |
 | `--tier4` | 1.7 GB | `act_style_data/{obstacle_v1,obstacle_prox_v1}` — regenerable from the datagen run | breaks two `constants.py` entries until regenerated |
-| `--assets` | 3.9 GB | `assets/prox_learning_data/.git` (re-cloneable from HF) and `assets/.lmdb` (rebuilds on demand) | none |
-| `--venvs` | 9 GB | the two MolmoBot virtualenvs | only if you never run MolmoBot |
+| `--assets` | 3.8 GB | `assets/prox_learning_data/.git` (re-cloneable from HF) and `assets/.lmdb` (rebuilds on demand) | none |
+| `--venvs` | 8.7 GB | the two MolmoBot virtualenvs | only if you never run MolmoBot |
 | `--gitgc` | ~4 GB | `git gc --prune=now`; does **not** rewrite history | none |
 
-Total: **125 GB of 166 GB.**
+Still available: **~120 GB of the remaining 161 GB.**
 
 ### Not automated, on purpose
 
@@ -1148,13 +1182,14 @@ Total: **125 GB of 166 GB.**
   (`rollout_output/`, `analysis_output/`, `reports/demo_pnp/`, old `eval_output/` — all from
   commits `a5ffcf4 add eval output` → `6cfb928 remove eval output`). Needs `git-filter-repo` and a
   force-push across 8 branches. Real 20 GB, real risk. Your call.
-- **Deleting git-tracked dead files.** These are repo changes, not disk cleanup:
-  `assets/mjcf/*` (broken), `assets/urdf/fr3_full_skin*.urdf`, `assets/urdf/robotiq.urdf`,
+- **Dead files under `assets/`.** Still present, still dead, but they are model inputs and the
+  risk/reward of touching that tree is poor: `assets/mjcf/*` (broken),
+  `assets/urdf/fr3_full_skin*.urdf`, `assets/urdf/robotiq.urdf`,
   `assets/robots/franka_skin/model.xml.bak_before_orientation_fix`,
   `assets/mjthor_data_type_to_source_to_versions.json.bak` (byte-identical to the live file),
-  `assets/reference_images/annotated/_fr3_skin_patched.xml`, `pointcloud.ipynb`,
-  `scripts/assemble_overnight_report.py`, `submodules/act/eval_act_with_prox.py`.
-  `diagnostics_output/` is 225 MB of tracked files — deleting it changes the repo for very little.
+  `assets/reference_images/annotated/_fr3_skin_patched.xml`.
+- **`diagnostics_output/`** is 225 MB across 242 tracked files — deleting it changes the repo for
+  very little disk.
 - **`assets/README.md`** describes a deleted `pla/` package end to end. It should be replaced by a
   pointer to §8 of this file rather than left to mislead.
 
@@ -1163,4 +1198,8 @@ Total: **125 GB of 166 GB.**
 `franka_assets/` (symlink target of the live model) · `assets/datagen/hybrid_obstacle_v1` ·
 `assets/datagen/hybrid_invis_obstacle_v1` · `assets/safety/` · `assets/robots/franka_skin/` ·
 `assets/robots/fr3_hybrid_skin/meshes/skin/` · `assets/urdf/fr3_hybrid_skin.urdf` ·
-`act_style_data/obstacle_prox_v2` · `reports/2026-08-14/` (commit it first).
+`act_style_data/obstacle_prox_v2` · `reports/` (report + the archived eval summaries) ·
+every `policy_best.ckpt` and `policy_last.ckpt`.
+
+**`policy_best.ckpt` and `policy_epoch_<best>.ckpt` are not byte-identical.** Never substitute one
+for the other when reproducing a number.

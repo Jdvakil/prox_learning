@@ -49,3 +49,16 @@ eval_output/**
 analysis_output/
 rollout_output/
 experiments_output/
+
+# Training checkpoints, ~340 MB each and hundreds of them. The ACT fork ignores its
+# own ckpts/ already; this covers any that land in the parent repo.
+ckpts/
+*.ckpt
+
+# Stray run logs. blur_eval.log (5.3 MB) was committed once by accident.
+*.log
+
+# Archived eval metrics ARE tracked. eval_output/ is ignored above, so these 244 KB of
+# eval_summary.json are the only durable record of every published number.
+!reports/eval_summaries/
+!reports/eval_summaries/*.json
