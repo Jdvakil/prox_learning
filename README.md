@@ -131,7 +131,7 @@ STATUS.md            the same project in plain language — read this first if y
 CLAUDE.md            agent working agreement
 pyproject.toml       dependency declaration (NOT installed; see §3)
 
-scripts/             29 analysis / training / figure scripts + housekeeping.sh   §5
+scripts/             28 analysis / training / figure scripts + housekeeping.sh   §5
 submodules/act/      ACT fork — trains and evaluates the policies                §6
 submodules/molmospaces/  the simulator + demonstration collection                §7
 submodules/MolmoBot/ unused; nothing in this project imports it
@@ -141,8 +141,8 @@ assets/              MolmoSpaces asset root AND this project's artifacts        
   safety/cvae_v3/                        the reflex net weights + sensor order
   datagen/                               collected demonstration datasets
 franka_assets/       mesh store; reached only through symlinks — DO NOT DELETE   §8
-act_style_data/      converted ACT training sets
-eval_output/         rollout videos + eval_summary.json per test
+act_style_data/      converted ACT training sets (obstacle_prox_v2 only; see §17)
+eval_output/         rollout videos — mostly pruned; the metrics live in reports/ now
 experiments_output/  per-run output folders (sweep.h5, cvae/, demos/, figures/)
 diagnostics_output/  committed legacy renders (242 tracked files)
 reports/2026-08-14/  the current progress report
@@ -158,8 +158,9 @@ eval_blur_baseline.sh    the 9-condition blur test + summary table
 
 ## 5. File-by-file: `scripts/`
 
-All 29 files compile and every sibling import resolves. Status is one of **ACTIVE** (part of a
-current recipe), **ARCHIVE** (worked, but its era is over), **DEAD** (broken or unreachable).
+All 28 files parse and every sibling import resolves (re-checked 2026-08-16, after the cleanup).
+Status is one of **ACTIVE** (part of a current recipe) or **ARCHIVE** (worked, but its era is
+over). Nothing dead is left in this directory.
 
 ### Core pipeline
 
@@ -1118,70 +1119,88 @@ Everything below is committed and reversible from git history.
 | Pruned `constants.py` | 7 of 10 `TASK_CONFIGS` pointed at deleted directories; paths are now repo-relative |
 | Moved `check.md` out of the repo | a Jetson AGX security-audit checklist, unrelated to this project → `~/jetson_agx_security_audit.md` |
 | Hardened `.gitignore` | `*.ckpt`, `ckpts/`, `*.log` — with an explicit un-ignore for `reports/eval_summaries/` |
+| Ran all `housekeeping.sh` tiers | 285 `policy_epoch_*.ckpt` (96 GB), eval `.h5` + non-headline `.mp4` (10 GB), the two v1 ACT datasets (1.7 GB), the HF-LFS store and LMDB cache (3.8 GB), both MolmoBot venvs (8.7 GB) |
 
-**Verified after the deletions:** `eval_act_obstacle.py --help` and `imitate_episodes.py --help`
-both run, `constants.py` imports with all three tasks resolving to real directories, and all 28
-`scripts/*.py` parse.
+**Verified after every deletion:** `eval_act_obstacle.py --help` and `imitate_episodes.py --help`
+run · `constants.py` imports · all 28 `scripts/*.py` parse · `scripts/figures.py --list` works ·
+`model_hybrid.xml` compiles (nbody 29, ncam 42, nq 13) · `cvae_v3/model.pt` loads (12 tensors,
+`label_scale` 11.359) · the `franka_assets/` symlinks resolve · all 24 `policy_best`/`policy_last`
+and all 24 archived summaries are present · both headline invisible-cell video sets survive
+(500 MP4s, 405 MB).
+
+**One consequence to know about:** tier 4 removed `act_style_data/obstacle_v1` and
+`obstacle_prox_v1`, so the `obstacle_baseline` and `obstacle_pact` task configs no longer resolve.
+Their checkpoints survive, so published numbers stay reproducible; only retraining needs the data.
+Both `constants.py` entries now carry the exact `convert_obstacle_to_act.py` command that rebuilds
+them from `assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855`,
+which is still on disk. `obstacle_prox_v2`, the live training set, was never touched.
 
 ### Git
 
-- Branch `main`, synced with `origin/main`.
-- **Fully merged into `main`, safe to delete:** `Cleanup`, `clean` (local); `origin/Cleanup`,
-  `origin/clean`, `origin/cleanup`, `origin/main_old` (remote).
-- **Two branches carry work that is NOT on `main`:**
+`main` is the trunk. The remote carries **13 branches**, but the local remote-tracking refs were
+badly stale until `git fetch --prune` on 2026-08-16 — an earlier audit of this file saw only 8 and
+missed the entire `causal_parked_skin/` line of work. Re-run `git fetch --prune` before trusting
+any branch listing.
 
-| branch | unique commits | what is on it |
-|---|---|---|
-| `origin/encoder_eval` | 3 | **1756 lines of Safety-CVAE ablation infrastructure**: `safety_eval_lib.py` (546 L, batched closed-loop evaluator), `safety_ablation_eval.py` (matched-seed collision-course benchmark), `safety_openloop_ablation.py` (arm frozen, encoder direction vs the analytic oracle), `safety_sweep_ablation.py`, `safety_ablation_stats.py` (Wilson CI + **McNemar paired test**), `plot_safety_ablation.py` (figures + LaTeX table), `safety_probe_head.py`, plus a patched `safety_sweep.py` (+81/−34) |
-| `origin/environments` | 8 | `scripts/audit_sensor_activation.py` (1482 L, read-only per-sensor activation audit) + activation audits for six datagen configs, from a collaborator |
+Once ancestry is worked out, only **five** branches matter:
 
-`origin/encoder_eval` is the direct answer to the open question "does the head actually use the
-skin, and is proximity what makes it work". It is worth merging deliberately.
-`origin/environments` should be **cherry-picked** — merging it whole drags back `analysis_output/`
-blobs and bumps the molmospaces submodule to a different commit.
-
-### Disk — 161 GB, down from 166 GB
-
-| path | size | what | still reclaimable |
+| branch | unique commits | last | what is on it |
 |---|---|---|---|
-| `submodules/act/ckpts` | 97 G | 12 runs. **285 `policy_epoch_*.ckpt` = 96 GB; the 24 `policy_best`/`policy_last` that everything actually reads = 8.1 GB** | **96 GB** |
-| `.git` | 29 G | history still carries deleted `.h5` datasets | ~20 GB, but only via a history rewrite |
-| `eval_output` | 10 G | 21 real n=50 run dirs. 7.7 GB `.h5` + 2.9 GB `.mp4`; metrics already archived to `reports/eval_summaries/` | ~10 GB |
-| `submodules/MolmoBot` | 8.7 G | two virtualenvs for a submodule nothing imports | 8.7 GB |
-| `assets/datagen` | 6.7 G | demo datasets — **keep** | — |
-| `assets/prox_learning_data` | 4.5 G | older datasets + a 2.5 GB HF-LFS `.git` that duplicates the checkout byte for byte | 2.5 GB |
-| `act_style_data` | 2.5 G | 3 converted ACT datasets; `obstacle_prox_v2` is live | 1.7 GB (v1 pair, regenerable) |
-| `assets/.lmdb` | 1.3 G | regenerable MolmoSpaces cache | 1.3 GB |
-| `assets/safety` | 376 M | canonical CVAE weights + demo videos — **keep** | — |
+| `experiment/pact-valid-ablation-followup-v1` | 139 | 2026-08-07 | **The tip of the `causal_parked_skin/` line** — a full package (`abstention.py`, `activity_gate.py`, `gates.py`, `joint_gate.py`, `losses.py`, `metrics.py`, `model.py`, `threshold.py`, `engine.py`) plus `tests/` and `EVAL.md`. ~99 k lines of `.py`/`.md`. **Contains `pact-vs-act-collision-v1`, `pact-vs-act-remediation-v2`, `repair/hybrid-obstacle-canonical-selection` and `deep_cavity_v2` outright** — those four are redundant |
+| `qualify/hybrid-obstacle-three-pair-live-v1` | 32 | 2026-08-02 | independent `causal_parked_skin/` line; **not** contained in the tip |
+| `fumehood-env-tasks` | 3 | 2026-08-10 | the newest commit anywhere on the remote |
+| `encoder_eval` | 3 | 2026-06-16 | **1756 lines of Safety-CVAE ablation infrastructure**: `safety_eval_lib.py` (546 L, batched closed-loop evaluator), `safety_ablation_eval.py` (matched-seed collision-course benchmark), `safety_openloop_ablation.py` (arm frozen, encoder direction vs the analytic oracle), `safety_sweep_ablation.py`, `safety_ablation_stats.py` (Wilson CI + **McNemar paired test**), `plot_safety_ablation.py` (figures + LaTeX table), `safety_probe_head.py`, plus a patched `safety_sweep.py` (+81/−34) |
+| `environments` | 8 | 2026-06-15 | `scripts/audit_sensor_activation.py` (1482 L, read-only per-sensor activation audit) + activation audits for six datagen configs, from a collaborator |
 
-### `scripts/housekeeping.sh` — the remaining 120 GB
+**Disposable:** `cleanup`, `main_old` (0 commits ahead of `main`), plus the four branches contained
+in the followup tip.
 
-Tiered, **dry-run by default**, prints exactly what it would remove and how much it saves. Tier 1
-has already been applied; the rest are still on disk.
+`encoder_eval` is the direct answer to the open question "does the head actually use the skin".
+`environments` should be **cherry-picked** — merging it whole drags back `analysis_output/` blobs
+and bumps the molmospaces submodule to a different commit.
+
+**The ACT fork must be pushed separately.** It is `git@github.com:jdvakil/act.git`, a real second
+repository. A parent commit that bumps the submodule pointer is broken for every fresh clone until
+the fork itself is pushed:
 
 ```bash
-scripts/housekeeping.sh --tier2                 # preview
-scripts/housekeeping.sh --tier2 --apply         # do it
+cd submodules/act && git push origin main && cd ../..
+git push origin main
 ```
 
-| tier | reclaims | what | risk |
-|---|---|---|---|
-| `--tier1` | — | **already applied 2026-08-16** | — |
-| `--tier2` | **96 GB** | intermediate `policy_epoch_*.ckpt`. **Nothing in the repo reads them:** every evaluator hardcodes `policy_best.ckpt`, all 24 `eval_summary.json` record `policy_best.ckpt`, and `grep -rIn policy_epoch` finds exactly two hits, both *writes* (`imitate_episodes.py:645` and `:653`). All 12 runs were verified to have both `policy_best` and `policy_last` before this was proposed. `--keep-every-500` saves 72 GB instead and keeps a coarse ladder. | no read path exists; irreversible if you ever want a mid-training probe |
-| `--tier3` | 10 GB | eval `.h5` and `.mp4`. Metrics are already archived in `reports/eval_summaries/` and are not touched. `--keep-headline` keeps the two invisible-cell demo videos (1.5 GB). | loses qualitative video and the ability to re-derive new metrics from old rollouts |
-| `--tier4` | 1.7 GB | `act_style_data/{obstacle_v1,obstacle_prox_v1}` — regenerable from the datagen run | breaks two `constants.py` entries until regenerated |
-| `--assets` | 3.8 GB | `assets/prox_learning_data/.git` (re-cloneable from HF) and `assets/.lmdb` (rebuilds on demand) | none |
-| `--venvs` | 8.7 GB | the two MolmoBot virtualenvs | only if you never run MolmoBot |
-| `--gitgc` | ~4 GB | `git gc --prune=now`; does **not** rewrite history | none |
+### Disk — 48 GB, down from 166 GB
 
-Still available: **~120 GB of the remaining 161 GB.**
+| path | size | what |
+|---|---|---|
+| **`.git`** | **29 G** | **now 60% of the repo.** History still carries the deleted `.h5` datasets. `git gc` was run and did **not** shrink it, and never will: gc only prunes *unreachable* objects, and these blobs are reachable from real commits. Only a history rewrite removes them |
+| `assets/datagen` | 6.7 G | demo datasets — **keep**. `hybrid_obstacle_v1` and `hybrid_invis_obstacle_v1` are the sources every ACT dataset regenerates from |
+| `submodules/act/ckpts` | 7.6 G | 24 `policy_best`/`policy_last`, one pair per run. The 285 intermediate epoch checkpoints (96 GB) are gone |
+| `assets/prox_learning_data` | 2.0 G | older datasets; the HF-LFS `.git` that duplicated them is gone |
+| `act_style_data` | 918 M | `obstacle_prox_v2` only — the live training set |
+| `eval_output` | 419 M | 21 run dirs. All `.h5` gone; 500 MP4s kept for the two headline invisible-cell runs |
+| `assets/safety` | 376 M | canonical CVAE weights + demo videos — **keep** |
+| `diagnostics_output` | 225 M | committed legacy renders, 242 tracked files |
+| `experiments_output` | 222 M | per-run outputs |
+| `reports` | 2.6 M | the progress report + the 24 archived eval summaries |
 
-### Not automated, on purpose
+`scripts/housekeeping.sh` has been run to completion. Every tier is applied; re-running it is
+harmless but will report nothing. It stays in the repo because output accumulates again with each
+training and eval campaign — after the next one, start at `--tier1` and work down.
 
-- **Rewriting git history** to drop the ~20 GB of deleted `.h5` blobs still in `.git`
-  (`rollout_output/`, `analysis_output/`, `reports/demo_pnp/`, old `eval_output/` — all from
-  commits `a5ffcf4 add eval output` → `6cfb928 remove eval output`). Needs `git-filter-repo` and a
-  force-push across 8 branches. Real 20 GB, real risk. Your call.
+### The one thing left: `.git` is 29 GB
+
+Commits `a5ffcf4 add eval output` → `6cfb928 remove eval output` added and then removed whole
+`.h5` datasets, plus `rollout_output/`, `analysis_output/` and `reports/demo_pnp/`. Deleting a file
+in a later commit does not remove the blob; it stays reachable from the commit that added it.
+
+Reclaiming it means **rewriting history** with `git-filter-repo`, then force-pushing. That is a
+genuinely disruptive operation here, because the remote carries 13 branches and every one of them
+would need rewriting in the same pass — including the 139-commit `causal_parked_skin/` line. It is
+worth ~20 GB and it is not urgent now that the repo fits in 48 GB. Deliberate decision, not a
+default.
+
+### Deliberately left alone
+
 - **Dead files under `assets/`.** Still present, still dead, but they are model inputs and the
   risk/reward of touching that tree is poor: `assets/mjcf/*` (broken),
   `assets/urdf/fr3_full_skin*.urdf`, `assets/urdf/robotiq.urdf`,
@@ -1202,4 +1221,7 @@ Still available: **~120 GB of the remaining 161 GB.**
 every `policy_best.ckpt` and `policy_last.ckpt`.
 
 **`policy_best.ckpt` and `policy_epoch_<best>.ckpt` are not byte-identical.** Never substitute one
-for the other when reproducing a number.
+for the other when reproducing a number — and the `policy_epoch_*` files no longer exist anyway.
+
+**Never delete `reports/eval_summaries/`.** `eval_output/` is gitignored and most of it has now
+been pruned; those 24 JSON files are the only surviving record of every published number.
