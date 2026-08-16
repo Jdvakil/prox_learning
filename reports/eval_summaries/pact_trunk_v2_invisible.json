@@ -1,0 +1,531 @@
+{
+  "ckpt_dir": "/home/jaydv/code/prox_learning/submodules/act/ckpts/obstacle_pact_v2/20260704_000632_pact_trunk_v2",
+  "ckpt_name": "policy_best.ckpt",
+  "eval_cell": "invisible",
+  "task_sampler_class": "InvisibleObstacleFumehoodPickCheckSampler",
+  "num_rollouts": 50,
+  "house_ind": 1,
+  "task_horizon": 200,
+  "temp_agg_off": true,
+  "end_on_collision": false,
+  "use_proximity": true,
+  "success": 17,
+  "total": 50,
+  "success_rate": 0.34,
+  "collision": {
+    "episodes": 50,
+    "mean_contact_steps": 45.52,
+    "mean_contact_fraction": 0.22646766169154234,
+    "mean_peak_contacts": 0.74,
+    "contact_free_rate": 0.28,
+    "collision_rate": 0.72,
+    "strict_success": 5,
+    "strict_success_rate": 0.1,
+    "mean_contact_steps_success": 46.8235294117647,
+    "mean_contact_steps_fail": 44.84848484848485
+  },
+  "episodes": [
+    {
+      "episode_idx": 0,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 1,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 2,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 131,
+      "obstacle_contact_fraction": 0.6517412935323383,
+      "obstacle_peak_contacts": 2,
+      "obstacle_first_contact_step": 20,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 3,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 3,
+      "obstacle_contact_fraction": 0.014925373134328358,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 166,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 4,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 5,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 111,
+      "obstacle_contact_fraction": 0.5522388059701493,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 21,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 6,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 20,
+      "obstacle_contact_fraction": 0.09950248756218906,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 96,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 7,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 33,
+      "obstacle_contact_fraction": 0.16417910447761194,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 167,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 8,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 24,
+      "obstacle_contact_fraction": 0.11940298507462686,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 168,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 9,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 18,
+      "obstacle_contact_fraction": 0.08955223880597014,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 100,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 10,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 90,
+      "obstacle_contact_fraction": 0.44776119402985076,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 18,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 11,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 189,
+      "obstacle_contact_fraction": 0.9402985074626866,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 12,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 12,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 54,
+      "obstacle_contact_fraction": 0.26865671641791045,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 86,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 13,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 184,
+      "obstacle_contact_fraction": 0.9154228855721394,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 16,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 14,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 96,
+      "obstacle_contact_fraction": 0.47761194029850745,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 67,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 15,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 127,
+      "obstacle_contact_fraction": 0.6318407960199005,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 52,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 16,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 17,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 18,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 62,
+      "obstacle_contact_fraction": 0.30845771144278605,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 137,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 19,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 20,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 21,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 22,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 184,
+      "obstacle_contact_fraction": 0.9154228855721394,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 16,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 23,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 79,
+      "obstacle_contact_fraction": 0.39303482587064675,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 73,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 24,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 7,
+      "obstacle_contact_fraction": 0.03482587064676617,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 193,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 25,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 110,
+      "obstacle_contact_fraction": 0.5472636815920398,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 54,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 26,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 2,
+      "obstacle_contact_fraction": 0.009950248756218905,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 199,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 27,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 28,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 22,
+      "obstacle_contact_fraction": 0.10945273631840796,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 58,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 29,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 43,
+      "obstacle_contact_fraction": 0.21393034825870647,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 89,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 30,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 61,
+      "obstacle_contact_fraction": 0.3034825870646766,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 134,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 31,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 50,
+      "obstacle_contact_fraction": 0.24875621890547264,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 86,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 32,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 77,
+      "obstacle_contact_fraction": 0.38308457711442784,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 60,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 33,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 34,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 59,
+      "obstacle_contact_fraction": 0.2935323383084577,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 105,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 35,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 29,
+      "obstacle_contact_fraction": 0.14427860696517414,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 93,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 36,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 77,
+      "obstacle_contact_fraction": 0.38308457711442784,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 82,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 37,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 10,
+      "obstacle_contact_fraction": 0.04975124378109453,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 186,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 38,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 2,
+      "obstacle_contact_fraction": 0.009950248756218905,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 99,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 39,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 60,
+      "obstacle_contact_fraction": 0.29850746268656714,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 100,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 40,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 64,
+      "obstacle_contact_fraction": 0.31840796019900497,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 132,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 41,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 82,
+      "obstacle_contact_fraction": 0.4079601990049751,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 77,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 42,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 43,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 32,
+      "obstacle_contact_fraction": 0.15920398009950248,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 159,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 44,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 45,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 28,
+      "obstacle_contact_fraction": 0.13930348258706468,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 98,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 46,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 55,
+      "obstacle_contact_fraction": 0.2736318407960199,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 144,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 47,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 1,
+      "obstacle_contact_fraction": 0.004975124378109453,
+      "obstacle_peak_contacts": 1,
+      "obstacle_first_contact_step": 98,
+      "obstacle_contact_free": 0
+    },
+    {
+      "episode_idx": 48,
+      "success": 0,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    },
+    {
+      "episode_idx": 49,
+      "success": 1,
+      "length": 201,
+      "obstacle_contact_steps": 0,
+      "obstacle_contact_fraction": 0.0,
+      "obstacle_peak_contacts": 0,
+      "obstacle_first_contact_step": -1,
+      "obstacle_contact_free": 1
+    }
+  ],
+  "obstacle_p": 1.0,
+  "invis_p": 1.0
+}
