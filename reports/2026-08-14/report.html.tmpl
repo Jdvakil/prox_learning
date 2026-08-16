@@ -1,0 +1,431 @@
+<title>Feeling in the Dark</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ground:   #f6f7f9;
+    --surface:  #ffffff;
+    --ink:      #12161c;
+    --ink-2:    #414a56;
+    --ink-3:    #6b7480;
+    --rule:     #dde2e9;
+    --rule-2:   #eaeef3;
+    --accent:   #2a78d6;
+    --accent-2: #c9541f;
+    --alarm:    #c0322f;
+    --plate:    #ffffff;
+    --plate-rule: #e4e8ee;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, "DejaVu Sans Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground:   #101317;
+      --surface:  #171b21;
+      --ink:      #eef1f5;
+      --ink-2:    #b9c1cc;
+      --ink-3:    #8b95a3;
+      --rule:     #272d36;
+      --rule-2:   #1e232a;
+      --accent:   #6ba5f0;
+      --accent-2: #f0895a;
+      --alarm:    #e8706d;
+      --plate:    #ffffff;
+      --plate-rule: #2b323c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:   #101317;
+    --surface:  #171b21;
+    --ink:      #eef1f5;
+    --ink-2:    #b9c1cc;
+    --ink-3:    #8b95a3;
+    --rule:     #272d36;
+    --rule-2:   #1e232a;
+    --accent:   #6ba5f0;
+    --accent-2: #f0895a;
+    --alarm:    #e8706d;
+    --plate:    #ffffff;
+    --plate-rule: #2b323c;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 20px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1000px; margin: 0 auto; }
+  .col  { max-width: 68ch; }
+
+  /* ---------- masthead ---------- */
+  header {
+    padding: 56px 0 30px;
+    border-bottom: 2px solid var(--ink);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--ink-3); margin: 0;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400; font-size: clamp(34px, 6vw, 52px); line-height: 1.06;
+    letter-spacing: -.015em; margin: 0; text-wrap: balance;
+  }
+  .byline {
+    font-family: var(--mono); font-size: 12.5px; color: var(--ink-2);
+    margin: 0; display: flex; flex-wrap: wrap; gap: 6px 18px;
+  }
+  .lede {
+    font-family: var(--serif); font-size: 20px; line-height: 1.5;
+    color: var(--ink); margin: 6px 0 0; max-width: 62ch;
+  }
+  .lede strong { font-weight: 700; }
+  .lede .no { color: var(--alarm); font-weight: 700; }
+
+  /* ---------- stat row ---------- */
+  .kpis {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 2px; margin: 34px 0 0;
+    background: var(--rule); border: 1px solid var(--rule);
+  }
+  .kpi { background: var(--surface); padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 5px; }
+  .kpi-val {
+    font-family: var(--mono); font-size: 27px; font-weight: 600;
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1;
+  }
+  .kpi:nth-child(1) .kpi-val { color: var(--accent); }
+  .kpi:nth-child(2) .kpi-val { color: var(--ink); }
+  .kpi:nth-child(3) .kpi-val { color: var(--alarm); }
+  .kpi-lab { font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+  .kpi-sub {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 46px 0 0; }
+  .shead { display: flex; gap: 16px; align-items: baseline; margin: 0 0 18px; }
+  .snum {
+    font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent);
+    flex: 0 0 auto; padding-top: 6px; font-variant-numeric: tabular-nums;
+  }
+  h2 {
+    font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 1.2;
+    letter-spacing: -.01em; margin: 0; text-wrap: balance;
+  }
+  h3 {
+    font-size: 16.5px; font-weight: 650; margin: 0 0 4px; line-height: 1.4;
+  }
+  p { margin: 0 0 15px; }
+  section > p, section > .col { margin-left: 29px; }
+  @media (max-width: 620px) { section > p, section > .col { margin-left: 0; } .shead { gap: 10px; } }
+  strong { font-weight: 650; }
+  .u { color: var(--accent-2); font-weight: 650; }
+
+  /* ---------- figure plates ---------- */
+  figure { margin: 26px 0 30px; }
+  .plate {
+    background: var(--plate); border: 1px solid var(--plate-rule);
+    padding: 14px; border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(9,14,22,.05);
+  }
+  .plate img { display: block; width: 100%; height: auto; }
+  figcaption {
+    font-size: 13.5px; color: var(--ink-3); line-height: 1.5;
+    margin: 10px 0 0; max-width: 78ch;
+  }
+  figcaption b { color: var(--ink-2); font-weight: 650; }
+  .arm { max-width: 430px; }
+
+  /* ---------- lessons ---------- */
+  .lesson {
+    border-left: 3px solid var(--rule); padding: 2px 0 2px 20px;
+    margin: 0 0 26px;
+  }
+  .lesson.bad { border-left-color: var(--alarm); }
+  .lesson .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .11em;
+    text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 4px;
+  }
+  .lesson p:last-child { margin-bottom: 0; }
+
+  /* ---------- tables ---------- */
+  .tw { overflow-x: auto; margin: 20px 0 8px; }
+  table {
+    border-collapse: collapse; width: 100%; font-size: 14.5px;
+    font-variant-numeric: tabular-nums; background: var(--surface);
+  }
+  caption {
+    text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: .11em;
+    text-transform: uppercase; color: var(--ink-3); padding: 0 0 8px;
+  }
+  th, td { padding: 9px 14px; border-bottom: 1px solid var(--rule-2); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .05em; font-weight: 600;
+    color: var(--ink-3); text-transform: uppercase; border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { font-family: var(--mono); }
+  .win { color: var(--accent); font-weight: 700; }
+  .note { font-size: 13.5px; color: var(--ink-3); margin: 8px 0 0; }
+
+  /* ---------- lists ---------- */
+  ol, ul { margin: 0 0 15px; padding-left: 22px; }
+  li { margin: 0 0 10px; }
+  ol { counter-reset: item; list-style: none; padding-left: 0; }
+  ol > li { position: relative; padding-left: 30px; counter-increment: item; }
+  ol > li::before {
+    content: counter(item);
+    position: absolute; left: 0; top: 1px;
+    font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--ink-3);
+  }
+
+  /* ---------- ask ---------- */
+  .ask {
+    margin: 34px 0 0; padding: 22px 24px;
+    background: var(--surface); border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+  }
+  .ask .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .11em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 8px;
+  }
+  .ask p:last-child { margin-bottom: 0; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 44px 0 0; }
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Progress report · proximity skin for robot arms</p>
+    <h1>Feeling in the dark</h1>
+    <p class="byline"><span>Jay Vakil</span><span>24 July – 14 August 2026</span><span>weekly from here</span></p>
+    <p class="lede">The main result held up and is figure-ready: a proximity skin cuts crashes from
+      <strong>66 out of 100 tries down to 40</strong> when the cameras cannot see the obstacle. The last
+      three weeks went into a follow-up experiment that <span class="no">did not work</span> — and the
+      reason it failed changed how I plan to run the next one.</p>
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="kpi-val">66% &rarr; 40%</span>
+        <span class="kpi-lab">Crashes, with the obstacle hidden from the cameras</span>
+        <span class="kpi-sub">p = 0.016 · 50 tries</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-val">225 tries</span>
+        <span class="kpi-lab">Blur follow-up: 13.4 hours of GPU, no usable pattern</span>
+        <span class="kpi-sub">negative result</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-val">&plusmn;40 pts</span>
+        <span class="kpi-lab">How much of a 25-try number is luck. Now measured.</span>
+        <span class="kpi-sub">50 tries is the new floor</span>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="shead"><span class="snum">01</span><h2>What we build, in one picture</h2></div>
+    <figure class="arm">
+      <div class="plate"><img src="{{IMG:00_arm.png}}" alt="Simulated Franka arm covered in blue sensor pads with red sensor dots"></div>
+      <figcaption>40 small distance sensors (red dots) spread over the whole arm. Each answers only one
+        question — <b>how close is something, right here?</b> No colour, no shape. Think 40 parking
+        sensors. A camera cannot see past the arm's own body; these can.</figcaption>
+    </figure>
+    <p class="col">Every robot is tested in three setups: <b>no obstacle</b>, an obstacle the cameras
+      <b>can</b> see, and an obstacle the cameras <b>cannot</b> see. We hide it from the camera renderer
+      only — the physics is unchanged and the skin still feels it. That last setup is the clean version
+      of an everyday failure: fog, dim light, a dirty lens, an obstacle the same colour as the wall.</p>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">02</span><h2>The result that matters</h2></div>
+    <figure>
+      <div class="plate"><img src="{{IMG:01_main_result.png}}" alt="Grouped bar charts of crash rate and task success for cameras only versus cameras plus skin"></div>
+    </figure>
+    <figure>
+      <div class="plate"><img src="{{IMG:02_graded_benefit.png}}" alt="Bar chart: skin benefit is 2 points with no bar, 14 points with a visible bar, 26 points with a hidden bar"></div>
+      <figcaption>The benefit lines up with how blind the cameras are: <b>2 points, then 14, then
+        26</b>. Luck does not sort itself into an order like that. This is the strongest evidence in
+        the project and it is new this week.</figcaption>
+    </figure>
+    <p class="col">One more thing worth flagging: the camera-only robot crashes just as much when the
+      obstacle is <b>fully visible</b> to it (64% vs 66%). It never learned obstacle avoidance from the
+      cameras at all. So the skin is not a backup sense here — it is the only sense doing avoidance.</p>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">03</span><h2>What I did in these three weeks</h2></div>
+    <figure>
+      <div class="plate"><img src="{{IMG:07_timeline.png}}" alt="Timeline of the three weeks from 24 July to 14 August"></div>
+    </figure>
+    <p class="col">The plan was simple: if the story is <em>“the skin matters because cameras fail,”</em>
+      then break the cameras and watch what happens. I trained three camera-only robots with every
+      training image blurred, then tested them on clear images.</p>
+    <figure>
+      <div class="plate"><img src="{{IMG:08_what_blur_looks_like.png}}" alt="Four camera frames at increasing blur, room camera on top and wrist camera below"></div>
+      <figcaption>What the robot saw while training. Left to right: no blur, then increasing blur. Top
+        row is the room camera, bottom row the wrist camera.</figcaption>
+    </figure>
+    <figure>
+      <div class="plate"><img src="{{IMG:03_blur_no_pattern.png}}" alt="Bar charts showing task success and crash rate across blur levels with no orderly pattern"></div>
+      <figcaption>225 test runs, 13.4 hours, and <b>no usable pattern in either direction</b>. Mild
+        blur wipes the robot out; more blur brings it back.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">04</span><h2>Lessons learned</h2></div>
+    <p class="col">This is the useful part of the three weeks.</p>
+
+    <div class="col">
+      <div class="lesson bad">
+        <span class="tag">Lesson 1 · measurement</span>
+        <h3>A low crash rate can mean “broken”, not “careful”.</h3>
+        <p>The mildly-blurred robot has the fewest crashes of anything I have trained. It also almost
+          never finishes the task — it learned to barely move. Only the strict score, <b>did the job AND
+          never touched anything</b>, tells careful apart from broken.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="plate"><img src="{{IMG:05_low_crashes_not_safe.png}}" alt="Bar chart contrasting crash rate against strict success for each blur level"></div>
+    </figure>
+
+    <div class="col">
+      <div class="lesson bad">
+        <span class="tag">Lesson 2 · what to trust</span>
+        <h3>Training numbers did not predict what the robot did.</h3>
+        <p>The prediction errors formed a perfect ladder. The behaviour didn't. The robot with the
+          second-worst score on paper was the best robot in the room.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="plate"><img src="{{IMG:06_training_error_lied.png}}" alt="Two panels: training error rises in a clean ladder while task success zig-zags"></div>
+    </figure>
+
+    <div class="col">
+      <div class="lesson bad">
+        <span class="tag">Lesson 3 · how much is luck</span>
+        <h3>25 tries is not enough — and now I know by how much.</h3>
+        <p>Below is one robot in three setups that differ only in whether an obstacle exists. Blur cannot
+          cause that gap, so <b>40 points is what luck looks like at 25 tries</b>. Everything from here
+          uses 50 minimum.</p>
+      </div>
+    </div>
+    <figure>
+      <div class="plate"><img src="{{IMG:04_noise_proof.png}}" alt="Bar chart: same brain, 28 percent crashes with no bar versus 68 percent in both bar setups"></div>
+    </figure>
+
+    <div class="col">
+      <div class="lesson">
+        <span class="tag">Lesson 4 · process</span>
+        <h3>Two habits, each already paid for with a lost night.</h3>
+        <p>A graphics-driver mismatch let all 25 runs fail silently overnight — there is now a two-second
+          check that refuses to start. And a 13-hour job printed an empty summary table because of a
+          one-line bug in the part that runs <em>last</em>. Test the summary step before launching the
+          long part.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">05</span><h2>Numbers</h2></div>
+    <div class="tw">
+      <table>
+        <caption>50 tries per number</caption>
+        <thead>
+          <tr><th>Measure</th><th>No obstacle</th><th>Obstacle visible</th><th>Obstacle hidden</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Crashes — cameras only</td><td class="num">60%</td><td class="num">64%</td><td class="num">66%</td></tr>
+          <tr><td>Crashes — cameras + skin</td><td class="num">58%</td><td class="num">50%</td><td class="num win">40%</td></tr>
+          <tr><td>Task success — cameras only</td><td class="num">22%</td><td class="num">28%</td><td class="num">36%</td></tr>
+          <tr><td>Task success — cameras + skin</td><td class="num">18%</td><td class="num">16%</td><td class="num">30%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The 66% &rarr; 40% gap has p = 0.016. Every success difference is within noise (p &ge; 0.23).</p>
+
+    <div class="tw">
+      <table>
+        <caption>Everything else</caption>
+        <tbody>
+          <tr><td>Skin sensors</td><td class="num">40, each an 8&times;8 depth patch</td></tr>
+          <tr><td>Directions the skin senses vs the wrist camera</td><td class="num">83% vs 10%</td></tr>
+          <tr><td>Skin readings under blur and near-darkness</td><td class="num">identical, bit for bit</td></tr>
+          <tr><td>Training demonstrations collected</td><td class="num">105 (wanted 200)</td></tr>
+          <tr><td>Prediction error — skin / cameras only / processed reflex</td><td class="num"><span class="win">0.0595</span> / 0.0755 / 0.0830</td></tr>
+          <tr><td>Test speed</td><td class="num">3.6 min per try &rarr; 3 h per 50-try number</td></tr>
+          <tr><td>Measured luck at 25 tries</td><td class="num">&plusmn;40 points</td></tr>
+          <tr><td>Blur experiment</td><td class="num">225 tries, 13.4 h, no pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">06</span><h2>Progress towards a paper</h2></div>
+    <ul class="col">
+      <li><b>Two figures are done and real</b> — sections 02 and 04 above. The graded 2 / 14 / 26 pattern
+        is the single strongest thing we have, and it is new this week.</li>
+      <li><b>The headline figure is now defined:</b> two crash curves as the cameras get worse — one flat
+        and low with the skin, one flat and high without — with task success collapsing underneath both.
+        It answers the question a reviewer actually asks: <em>why add a skin if you already have
+        cameras?</em> Because cameras have a failure mode the skin does not, and it isn't exotic.</li>
+      <li><b>The tool for it was built and verified this week.</b> I can now blur the cameras at
+        <em>test</em> time on a finished robot, leaving the skin untouched. Same robot, same test
+        scenarios, only camera quality changes — which removes the exact weakness that killed the blur
+        experiment. First answer costs 12 hours of GPU.</li>
+      <li><b>Still missing before it is submittable:</b> more than one training run per result, and a
+        crash counter that can tell “hit the obstacle” from “brushed the wall”.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">07</span><h2>Blockers</h2></div>
+    <ol class="col">
+      <li><b>The crash counter is too blunt.</b> It counts any contact with the environment. About 60 of
+        those 66 points are the arm brushing the tight space it was told to reach into; the obstacle
+        itself only adds about 5. I am measuring a small effect through a noisy instrument. The code
+        already works out <em>what</em> it touched, then throws the name away — a five-line fix, but old
+        runs can't be recovered, so it costs a re-run.</li>
+      <li><b>One GPU, and tests can't run in parallel</b> (memory). At 3.6 minutes per try, one
+        experiment is 12–47 hours. This is the real limit on how much I can support statistically.</li>
+      <li><b>The dataset is stuck at 105 demonstrations</b> instead of 200 — three of four collection
+        workers get killed for using too much memory. Fixable by running fewer, slower.</li>
+      <li><b>Every result is a single training run.</b> Three seeds each would turn “promising” into
+        “defensible”, and triples the GPU time.</li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="shead"><span class="snum">08</span><h2>Next week</h2></div>
+    <ol class="col">
+      <li>Fix the crash counter so crashes are split by what was actually hit, then re-run.</li>
+      <li>Run the 12-hour version of the new experiment: two robots, clear vs blurred cameras at test
+        time, 50 tries each. Enough to see whether the two crash curves separate at all.</li>
+      <li>Start repeat runs with different random seeds on the main result.</li>
+    </ol>
+
+    <div class="ask col">
+      <span class="tag">One question for you</span>
+      <p>Limited GPU means I can do <em>either</em> repeat-runs of the existing result <em>or</em> the new
+        camera-corruption experiment first, not both. My instinct is the new experiment, because it turns
+        one condition into a curve and that is the figure a paper needs — but repeat-runs are what make
+        the existing number safe to publish. Which would you rather see first?</p>
+    </div>
+  </section>
+
+  <hr>
+</div>
