@@ -1000,6 +1000,18 @@ approach height, so the geometry that is known to grasp is the geometry that pla
 requires the object within `PLACE_TOL = 0.12 m` of the cart-top centre and resting, not still in
 the gripper.
 
+> **`[ObstacleDiag] success=False` next to `completed with success=True` is correct here, not a
+> contradiction.** The `ObstacleDiag` line prints the *inherited* criterion from
+> `PickTask.get_info` — lift height with the object touching only robot geoms — which is
+> necessarily False once the object has been released onto the cart. The episode's recorded
+> outcome comes from `judge_success`, which scores the placement. On a successful pick-and-place
+> you should expect exactly that pairing.
+
+**Verified end to end** on `FrankaSkinHybridClutterPnPCheckConfig` (2026-08-16): a full episode
+completed `success=True` with **`obstacle_contact_steps=0/240`** — the arm carried the cup out of
+the hood, across the bay and onto the cart without touching any of the 14 clutter items — and zero
+`Unknown phase` warnings.
+
 **Knobs**, all class attributes on the sampler: `OBSTACLE_P` (0.60 — hazard bar as well as
 clutter; set 0.0 for clutter only), `INVIS_P` (0.5, inherited — bar hidden from RGB but not the
 skin), `N_CLUTTER` (9–15), `CLUT_MIN_GAP`, `PLACE_TOL`.
