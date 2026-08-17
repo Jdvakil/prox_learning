@@ -29,7 +29,7 @@ what to run, and what will bite you.
 9. [Data formats](#9-data-formats)
 10. [Method & math — the Safety-CVAE](#10-method--math--the-safety-cvae)
 11. [Recipe A — Safety-CVAE and the demos](#11-recipe-a--safety-cvae-and-the-demos)
-12. [Recipe B — datagen](#12-recipe-b--datagen)
+12. [Recipe B — datagen](#12-recipe-b--datagen) · [12.1 Cluttered-bay pick-and-place](#121-cluttered-bay-pick-and-place)
 13. [Recipe C — ACT and PACT](#13-recipe-c--act-and-pact)
 14. [Every number in one place](#14-every-number-in-one-place)
 15. [Traps](#15-traps)
@@ -45,6 +45,7 @@ what to run, and what will bite you.
 | understand the result in plain English | read `STATUS.md` | — |
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
 | collect new demonstrations | `python -m molmo_spaces.data_generation.main <Config>` | [12](#12-recipe-b--datagen) |
+| collect cluttered pick-and-place | `… main FrankaSkinHybridClutterPnPConfig` | [12.1](#121-cluttered-bay-pick-and-place) |
 | convert demos into training files | `python -m scripts.convert_obstacle_to_act` | [13](#13-recipe-c--act-and-pact) |
 | train a policy | `submodules/act/imitate_episodes.py` | [13](#13-recipe-c--act-and-pact) |
 | test a policy | `submodules/act/eval_act_obstacle.py` | [13](#13-recipe-c--act-and-pact) |
@@ -472,9 +473,12 @@ concrete and runnable** — the "base" ones are simply configs that others also 
 | **`FrankaSkinHybridObstacleConfig`** | 2222 | ↑ | **the main ACT dataset.** 8 house indices × 25 | `datagen/hybrid_obstacle_v1` |
 | `FrankaSkinHybridInvisObstacleCheckConfig` | 2262 | `HybridObstacleCheck` | preflight, bar present and invisible | `datagen/hybrid_invis_obstacle_check` |
 | **`FrankaSkinHybridInvisObstacleConfig`** | 2293 | ↑ | **the v2 invisible-bar dataset** | `datagen/hybrid_invis_obstacle_v1` |
+| `FrankaSkinHybridClutterPnPCheckConfig` | 2349 | `HybridObstacleCheck` | preflight, max clutter, bar on and invisible | `datagen/hybrid_clutter_pnp_check` |
+| **`FrankaSkinHybridClutterPnPConfig`** | 2390 | ↑ | **cluttered-bay pick-and-place** (§12.1). Different scene: `fumehood_clutter.xml` | `datagen/hybrid_clutter_pnp_v1` |
 
 Full chain: `HybridObstacle ← HybridObstacleCheck ← HybridPnP5 ← HybridFumehoodSmoke ←
-FumehoodSmoke ← EnclosureSmoke ← CabinetCavitySmoke ← PickBaseConfig`.
+FumehoodSmoke ← EnclosureSmoke ← CabinetCavitySmoke ← PickBaseConfig`. The two ClutterPnP configs
+hang off `HybridObstacleCheck` as well, so they inherit the same 40-sensor robot and camera rig.
 
 **The 29-sensor task-shape line** (`FrankaSkinEnclosureSmokeConfig` :1886,
 `FrankaSkinEnclosureGenConfig` :1916, `FrankaSkinFumehoodSmokeConfig` :1944,
@@ -489,8 +493,10 @@ pillar/real-table family (:1458–:1828) and the iTHOR pick-and-place family (:2
 ### Task samplers — the knobs you override
 
 Chain: `PickTaskSampler → CavityPickTaskSampler → EnclosureReachSampler → FumehoodSampler →
-BigFumehoodPickSampler → ObstacleFumehoodPickSampler → InvisibleObstacleFumehoodPickSampler`.
-All in `tasks/enclosure_reach.py` unless noted.
+BigFumehoodPickSampler → ObstacleFumehoodPickSampler → InvisibleObstacleFumehoodPickSampler →
+ClutteredFumehoodPickPlaceSampler`. All in `tasks/enclosure_reach.py` except the last, which is in
+`tasks/fumehood_clutter.py` (§12.1) — it inherits the whole chain, so `OBSTACLE_P` and `INVIS_P`
+still work there unchanged.
 
 | sampler | line | key class attributes (defaults) |
 |---|---|---|
@@ -883,12 +889,124 @@ Keep `num_workers <= 2` or workers get OOM-killed (15–29 GB RSS each on a 62 G
 |---|---|
 | `FrankaSkinHybridObstacleConfig` | The main obstacle dataset (v1) |
 | `FrankaSkinHybridInvisObstacleConfig` | The invisible-bar dataset (v2) |
+| **`FrankaSkinHybridClutterPnPConfig`** | **Cluttered-bay pick-and-place (see §12.1)** |
 | `FrankaSkinHybridFumehoodSmokeConfig` | Fumehood whole-arm-clearance reach, 40-sensor skin |
 | `FrankaSkinEnclosureGenConfig`, `FrankaSkinEnclosureSmokeConfig` | General enclosure reach (full / smoke) |
 
 To backfill houses that a crashed run missed, re-run the config with `num_workers` lowered —
 `setup_house_dirs` skips houses that already have an h5, so it resumes rather than restarting.
 The corollary: re-running into a directory that is already complete does nothing at all.
+
+### 12.1 Cluttered-bay pick-and-place
+
+**What it is.** The obstacle line puts one hazard bar beside the approach corridor and ends the
+episode at the lift. That loads a handful of wrist and hand sensors for a second or two; the rest
+of the skin reads empty room for the rest of the episode. This task loads all six links for the
+whole episode and then makes the arm *travel*: it retrieves the cup from inside the fume hood and
+sets it down on a rolling cart on the robot's other side, sweeping the full width of a cluttered
+lab bay on the way.
+
+**Run it:**
+
+```bash
+conda activate mlspaces
+cd submodules/molmospaces
+MUJOCO_GL=egl python -m molmo_spaces.data_generation.main FrankaSkinHybridClutterPnPCheckConfig  # preflight, 2 episodes
+MUJOCO_GL=egl python -m molmo_spaces.data_generation.main FrankaSkinHybridClutterPnPConfig       # 200 episodes
+```
+
+**The three new files:**
+
+| file | what it holds |
+|---|---|
+| `data_generation/custom_scenes/fumehood_clutter.xml` | `fumehood.xml` plus the bay: a three-tier shelving unit on the robot's left, a floor cabinet behind it, the cart on its right, and 16 mocap clutter items |
+| `tasks/fumehood_clutter.py` | `ClutteredFumehoodPickPlaceSampler` (+ `…CheckSampler`), `ClutteredPickPlacePolicy`, `ClutteredPickPlaceTask` |
+| configs `FrankaSkinHybridClutterPnP{Check,}Config` | preflight (2 episodes, max clutter, bar forced on and invisible) and the collection run (200 episodes, 4 workers) |
+
+**Scene layout** — world coords, pedestal near `(0.08, 0)`, top at `z = 0.35`:
+
+| element | where | why |
+|---|---|---|
+| shelving unit | left, boards at `z = 0.40 / 0.80 / 1.20`, near face `y = +0.46` | constant structured return across the whole arm height, ~0.21 m outside the swept surface |
+| floor cabinet | rear, front face `x = -0.35`, top `z = 0.86` | rear-facing link1/link2 sensors when J1 rotates |
+| rolling cart | right, top `z = 0.62`, centre `(0.32, -0.56)` | **the place destination** — position is reach-constrained, see below |
+| 16 mocap items | on those surfaces + the bench inside the hood | re-posed per episode: 5 shelf bottles, 4 in-hood bottles, 3 cabinet boxes, 2 floor drums, 2 full-height gas cylinders |
+
+**Two design rules, both load-bearing:**
+
+1. **Nothing floats.** Every item's `z` is pinned to `surface height + its own half-height`. Rejected
+   alternatives — a floating grid of cubes like `custom_scenes/clutter_reach.xml` — produce depth a
+   real SPAD could never return, and the advisor has rejected abstract clutter before.
+2. **Clutter is never on the demonstrated path.** Poses are rejection-sampled twice: against three
+   coarse keep-out volumes (`KEEPOUT_BASE_R` cylinder around the pedestal, the reach corridor into
+   the hood, the transport corridor across to the cart) at `CLUT_MIN_GAP = 0.06 m`, **and** against
+   the episode's own nominal TCP polyline (`nominal_tcp_path`) at `PATH_CLEAR = 0.10 + 0.07 m` —
+   the open gripper's half-extent plus margin. So the expert never touches clutter and every
+   demonstration is clean, while the skin stays loaded throughout. A policy that ignores the skin
+   drifts off the corridor and hits something, and `PickTask._accumulate_obstacle_diag` already
+   counts that: each clutter item is its own body.
+
+**Measured over 400 simulated episodes** (`_place_clutter` driven in isolation against a coarse
+arm-volume proxy): **11.7 items placed per episode, zero keep-out violations**, clutter
+surface-to-arm distance median 0.43 m / p10 0.26 m / min 0.13 m — **69% inside the skin's
+`D_MAX = 0.5 m`** and 19% in the 0.03–0.30 m band where closeness is strong. The proxy is coarse,
+so treat these as an order-of-magnitude check; the real number is whatever the collected
+`obs/proximity` shows.
+
+The first draft of the placement code scored far worse and the failures are worth knowing about,
+because both are silent:
+
+- **In-hood clutter never placed at all.** Every candidate was rejected, and nothing said so — the
+  family was simply always parked off-scene. Two causes: the reach corridor was ±0.34 wide (it is
+  the hand's 0.18 m envelope plus margin, so ±0.22), and an item resting exactly on the bench
+  shares a face with it, which put the AABB test on a floating-point tie. Items are now lifted
+  4 mm for the furniture check only.
+- **Everything sat too far out.** `KEEPOUT_BASE_R` was 0.30 with a 0.07 gap, so nothing could come
+  within 0.37 m of the pedestal axis; combined with drums that top out at 0.56 — below the arm's
+  working height — the median distance was 0.55 m and *nothing* landed in the strong band. Now
+  0.26/0.06, and two of the four floor items are full-height gas cylinders that present a surface
+  across the whole span the arm occupies.
+- **Box keep-outs alone left a thin collision tail.** With only the coarse volumes, 400 sampled
+  episodes produced no outright collision but a worst-case clearance of 0.001 m, and a live rollout
+  did register `obstacle_contact_steps=22/319`. Raising `CLUT_MIN_GAP` to fix that pushes *all*
+  clutter away and costs signal everywhere, so the sampler now also rejects against the episode's
+  actual TCP polyline. Re-measured against a **perturbed** path (±0.05 m jitter at every waypoint,
+  so the test is not just checking the sampler against its own construction): **0 collisions in
+  1200 episodes**, and the in-range fraction is unchanged at 70%.
+
+**The expert's place leg** (`ClutteredPickPlacePolicy`) appends to the inherited pick:
+`retract` straight back out of the hood before any lateral motion (else the object swings into a
+jamb) → `swing` across the bay at `TRANSPORT_Z` → `descend` onto the cart → release → `retreat`.
+The descent reuses the grasp's height above its own support surface rather than inventing a new
+approach height, so the geometry that is known to grasp is the geometry that places.
+
+> **The cart position and `TRANSPORT_Z` are a reach constraint, not a styling choice.** Carrying
+> the object *high* and *wide* at the same time puts the wrist outside the FR3's 0.855 m envelope.
+> The first draft put the cart at `(0.30, -0.62)` and swept across at `z = 1.00` — 0.925 m from the
+> shoulder at `(0.08, 0, 0.35)` — and **every** episode died mid-swing with `⚠️ IK failed, holding
+> current position` followed by `ValueError: IK failed for pregrasp pose`. Cart `(0.32, -0.56)` with
+> `TRANSPORT_Z = 0.78` keeps the whole sequence inside 0.75 m (over-cart 0.746, release 0.707). If
+> you move the cart, re-check both, and change it in **two** places: the geoms in
+> `fumehood_clutter.xml` and `CART_XY` in `tasks/fumehood_clutter.py`.
+
+> **Segment names must come from the phase vocabulary.**
+> `BaseObjectManipulationPlannerPolicy.get_all_phases()` allows only `gripper-open / pregrasp /
+> grasp / gripper-close / lift / preplace / place / retreat / go_home`. `PolicyPhaseSensor` writes
+> `-1` into `obs/policy_phase` for anything else and logs `Unknown phase …` once per step. The
+> first draft named its segments `retract` and `transport`, which silently blanked the phase
+> channel every downstream analysis reads. The legs now map to `lift → preplace → place → retreat`.
+
+**Success** is scored at the destination, not at the lift: `ClutteredPickPlaceTask.judge_success`
+requires the object within `PLACE_TOL = 0.12 m` of the cart-top centre and resting, not still in
+the gripper.
+
+**Knobs**, all class attributes on the sampler: `OBSTACLE_P` (0.60 — hazard bar as well as
+clutter; set 0.0 for clutter only), `INVIS_P` (0.5, inherited — bar hidden from RGB but not the
+skin), `N_CLUTTER` (9–15), `CLUT_MIN_GAP`, `PLACE_TOL`.
+
+**`viz_sensor_rgb` is forced off on the collection config** and left on for the preflight. It adds
+nothing to the h5 and costs ~3 GB/episode; the place leg makes episodes longer, and this is the
+setting that OOM-killed 3 of 8 houses on the v2 run (§7, §15).
 
 ---
 
@@ -1042,6 +1160,16 @@ Every one of these has already cost real time.
     `assets/robots/franka_skin/`.
 11. **n = 25 is inside the noise band.** Measured noise at 25 rollouts is ±40 points. 50 is the
     declared floor for any real result.
+12. **Any new waypoint must be checked against the 0.855 m reach.** The FR3 shoulder sits at
+    `(0.08, 0, 0.35)`. High *and* wide is what kills it: the cluttered-place cart at
+    `(0.30, -0.62)` carried at `z = 1.00` is 0.925 m out, and every episode failed with `⚠️ IK
+    failed, holding current position`. Compute `‖p − (0.08, 0, 0.35)‖` before trusting a pose (§12.1).
+13. **Planner segment names are a closed vocabulary.** Only `gripper-open / pregrasp / grasp /
+    gripper-close / lift / preplace / place / retreat / go_home` exist. Any other name writes `-1`
+    into `obs/policy_phase` and only warns (§12.1).
+14. **Deleting `assets/.lmdb` costs ~10 minutes on the next datagen run.** The August cleanup
+    dropped it as a regenerable cache, which it is — but the rebuild happens on the first run
+    afterwards, before any episode starts, and the process looks hung while it happens.
 
 ---
 
