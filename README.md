@@ -1007,10 +1007,41 @@ the gripper.
 > outcome comes from `judge_success`, which scores the placement. On a successful pick-and-place
 > you should expect exactly that pairing.
 
-**Verified end to end** on `FrankaSkinHybridClutterPnPCheckConfig` (2026-08-16): a full episode
-completed `success=True` with **`obstacle_contact_steps=0/240`** — the arm carried the cup out of
-the hood, across the bay and onto the cart without touching any of the 14 clutter items — and zero
-`Unknown phase` warnings.
+**Verified end to end** on `FrankaSkinHybridClutterPnPCheckConfig` (2026-08-16): `Success count: 2,
+Total count: 2`, zero `Unknown phase` warnings, and the collected `obs/proximity` shows the skin
+genuinely loaded rather than staring at empty room:
+
+| measured on the collected h5 | episode 1 | episode 2 |
+|---|---|---|
+| sensor-steps with a return closer than `D_MAX = 0.50 m` | **79.0%** | **72.4%** |
+| sensor-steps closer than `D_ACT = 0.18 m` | 1.9% | 10.0% |
+| mean closeness `c = 1 − d/0.5` over all 40 sensors | 0.270 | 0.300 |
+| **sensors loaded for >25% of the episode** | **37 / 40** | **34 / 40** |
+| steps with ≥8 sensors in range | 100% | 100% |
+
+That is the whole point of the task: on the obstacle line most of the skin reads empty room for
+most of the episode, and here 34–37 of the 40 sensors carry signal for most of it.
+
+**No clutter is touched, and that is measured rather than assumed.** Episode 1 ran
+`obstacle_contact_steps=0/240`; episode 2 ran `17/249`, which looked alarming until it was
+attributed. `PickTask._accumulate_obstacle_diag` counts *any* non-robot body, so that number alone
+cannot separate brushing the cart while setting the object down, clipping the hazard bar, and
+hitting a clutter item — and only the last one would mean the placement rules had failed.
+`ClutteredPickPlaceTask` therefore extends the diagnostic to name the bodies:
+
+```
+[ClutterPnP] contacts by body: sash:34   (no clutter touched)
+```
+
+Every contact in that episode was the **sash rail**, not clutter. That is pre-existing fume-hood
+behaviour rather than anything this task introduced: the sash bottom sits at `0.72 + ap_h`
+(1.17–1.34 m), well above the TCP, but the elbow rides higher than the hand on the way out of the
+hood, so link3/link4 can graze it during extraction. It is precisely the whole-arm-clearance
+hazard the fumehood scene exists to pose. Raise `ap_h` in the sampler if you want it gone.
+
+Any `clut_*` name in that line is flagged as `*** CLUTTER TOUCHED ***`. Static scene geometry
+(bench, hood, shelf, cabinet, cart) hangs off the world body, so it is named by its geom rather
+than reported as `world`. Check that line before trusting a collection run.
 
 **Knobs**, all class attributes on the sampler: `OBSTACLE_P` (0.60 — hazard bar as well as
 clutter; set 0.0 for clutter only), `INVIS_P` (0.5, inherited — bar hidden from RGB but not the
@@ -1019,6 +1050,13 @@ skin), `N_CLUTTER` (9–15), `CLUT_MIN_GAP`, `PLACE_TOL`.
 **`viz_sensor_rgb` is forced off on the collection config** and left on for the preflight. It adds
 nothing to the h5 and costs ~3 GB/episode; the place leg makes episodes longer, and this is the
 setting that OOM-killed 3 of 8 houses on the v2 run (§7, §15).
+
+> **Kill orphaned workers before re-running.** `pkill` on the parent does not always take the
+> MuJoCo worker with it, and an orphan holds its whole observation buffer — 10–12 GB each with
+> `viz_sensor_rgb` on. Two survivors from earlier aborted preflights took this 62 GB box down to
+> 11 GB free and stretched a rollout step from 2 s to 13 min without any error being logged; the
+> run then exited 0 having written no `.h5`. If datagen is inexplicably slow, check
+> `ps aux | grep data_generation.main` first, and `pkill -9 -f data_generation.main` between runs.
 
 ---
 
@@ -1182,6 +1220,9 @@ Every one of these has already cost real time.
 14. **Deleting `assets/.lmdb` costs ~10 minutes on the next datagen run.** The August cleanup
     dropped it as a regenerable cache, which it is — but the rebuild happens on the first run
     afterwards, before any episode starts, and the process looks hung while it happens.
+15. **Killing a datagen run can leave the MuJoCo worker alive, holding 10–12 GB.** Nothing logs an
+    error; the next run just gets slower and slower as memory runs out, and can exit 0 having
+    written no `.h5`. `pkill -9 -f data_generation.main` between runs (§12.1).
 
 ---
 
