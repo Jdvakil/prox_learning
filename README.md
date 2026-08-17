@@ -946,12 +946,12 @@ MUJOCO_GL=egl python -m molmo_spaces.data_generation.main FrankaSkinHybridClutte
    drifts off the corridor and hits something, and `PickTask._accumulate_obstacle_diag` already
    counts that: each clutter item is its own body.
 
-**Measured over 400 simulated episodes** (`_place_clutter` driven in isolation against a coarse
-arm-volume proxy): **11.7 items placed per episode, zero keep-out violations**, clutter
-surface-to-arm distance median 0.43 m / p10 0.26 m / min 0.13 m — **69% inside the skin's
-`D_MAX = 0.5 m`** and 19% in the 0.03–0.30 m band where closeness is strong. The proxy is coarse,
-so treat these as an order-of-magnitude check; the real number is whatever the collected
-`obs/proximity` shows.
+**Measured over 400 simulated episodes** in the final configuration (`_place_clutter` driven in
+isolation against a coarse arm-volume proxy): **11.4 items placed per episode, zero keep-out
+violations**, clutter surface-to-arm distance median 0.43 m / p10 0.26 m / min 0.12 m — **70%
+inside the skin's `D_MAX = 0.5 m`** and 18% in the 0.03–0.30 m band where closeness is strong. The
+proxy is coarse, so treat these as an order-of-magnitude check; the real number is whatever the
+collected `obs/proximity` shows.
 
 The first draft of the placement code scored far worse and the failures are worth knowing about,
 because both are silent:
