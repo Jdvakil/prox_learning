@@ -40,8 +40,20 @@ The expert-fix re-screen (5 mm release clearance; both gates failed) is reported
 [`docs/PACT_PLACE_EXPERT_FIX.md`](docs/PACT_PLACE_EXPERT_FIX.md);
 the fresh-seed gate ledger is
 [`docs/PACT_PLACE_CORRIDOR_GATE_V2.md`](docs/PACT_PLACE_CORRIDOR_GATE_V2.md).
-Join v1 and v2 place-corridor rows on `(config_sha256, role_index)`, never on
-`episode_id`. The original-seed re-run is a diagnostic, not a gate.
+The attempt-3 screen (named repairs; still 18/24 clean) is reported in
+[`docs/PACT_PLACE_ATTEMPT3.md`](docs/PACT_PLACE_ATTEMPT3.md);
+the v3 gate ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V3.md`](docs/PACT_PLACE_CORRIDOR_GATE_V3.md).
+All three decisions are `PACT_PLACE_CORRIDOR_PHASE0_FAIL`. Join place-corridor
+rows on `(config_sha256, role_index)`, never on `episode_id`. The original-seed
+re-run is a diagnostic, not a gate.
+Rows 6 and 12 of the v2 gate are an initial-state panel overlap, not inbound
+scraping; see [`docs/PACT_PLACE_HAZARD_ROWS_6_12.md`](docs/PACT_PLACE_HAZARD_ROWS_6_12.md).
+The 24 attempt-3 episodes can be watched as qpos-replay clips (no physics
+step, no expert re-run) from
+[`diagnostics_output/pact_place_corridor_v3_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v3_videos/CRIB.md);
+the renderer is `scripts/run_pact_place_v3_replay_videos.py`. The MP4s are
+generated locally and are not committed.
 
 ---
 
