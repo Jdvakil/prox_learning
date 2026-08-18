@@ -34,6 +34,9 @@ The powered zero-shot geometry follow-up is reported in
 The preregistered inference-time RGB-blur robustness sweep is reported in
 [`docs/PACT_BLUR_SWEEP.md`](docs/PACT_BLUR_SWEEP.md).
 
+The pick-and-place corridor Phase-0 expert gate is reported in
+[`docs/PACT_PLACE_CORRIDOR_GATE.md`](docs/PACT_PLACE_CORRIDOR_GATE.md).
+
 ---
 
 ## What the Safety-CVAE is

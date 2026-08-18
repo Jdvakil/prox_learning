@@ -1,0 +1,382 @@
+{
+  "config_sha256": "46dff849dd16eb3b6c0baf169053829bc66203a39866f14a4667e8eaef559e40",
+  "created_utc": "2026-08-18T00:00:00Z",
+  "expert": {
+    "action_noise": false,
+    "class": "PactPlaceCorridorPolicy",
+    "expert_rollout_sensor_polling": [
+      "qpos",
+      "tcp_pose"
+    ],
+    "grasp_servo_duration_s": 2.0,
+    "inbound_safe_gap_m": 0.1,
+    "observation_sensors_rationale": "normal sensor/camera geometry is built during sampling, then the privileged expert's polling suite is reduced to the qpos and tcp_pose sensors required by the upstream planner/config freezer; physics, contacts, robot, scene, and sensor bodies remain unchanged",
+    "outbound_carried_envelope_half_y_m": 0.15,
+    "outbound_carry_raise_m": 0.0,
+    "outbound_pass_speed_m_s": 0.045,
+    "outbound_safe_gap_m": 0.14,
+    "task_horizon": 900
+  },
+  "expert_screen_rows": [
+    {
+      "episode_id": "84054858899b293a466a5c57405b4050a574f845b84230f92a7cf68bde4e3655",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002565847,
+      "panel_x_jitter_m": 0.000550941,
+      "role_index": 0,
+      "row_sha256": "3a3929ac6975014d29ea09f5a2a6bda4c5ecc7652b618951d93a104a514d3e33",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1785934046,
+      "task_seed_u64": 7670528323445460237
+    },
+    {
+      "episode_id": "b852218578ffc5274f0a1d86e8bad1586f3e63468e0e5d0efd937e63368478a7",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000222608,
+      "panel_x_jitter_m": 0.002091639,
+      "role_index": 1,
+      "row_sha256": "7eb0b96b2a1c526591ac55259b0eaa167f190f3aa5c476bc9d056e96c462e3a1",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2781427244,
+      "task_seed_u64": 11946139052999386498
+    },
+    {
+      "episode_id": "8ec228f56d11124e13ba7498ea3818c0e9c571170eed8be418089f4fc61cc067",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00232028,
+      "panel_x_jitter_m": 0.008168428,
+      "role_index": 2,
+      "row_sha256": "160caea4fb3dfae34e2d5ea56b3c3f25e4aad39d07c61d4671dd73a2f6be304f",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1218570710,
+      "task_seed_u64": 5233721350448891617
+    },
+    {
+      "episode_id": "2eb73ef8687c68eff34da05455c385633631465e11d5da2c46ddc7e01edc4a5b",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002350621,
+      "panel_x_jitter_m": 0.014138065,
+      "role_index": 3,
+      "row_sha256": "4bf75f5035abeeb0000d2b618c8deff610328cebee9611b4999b148a96572bdd",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1180704360,
+      "task_seed_u64": 5071086612645677288
+    },
+    {
+      "episode_id": "19b940316438d65d6ff790b61ef3d42a9b118bdb084c4d6467d5b38adf19c9e4",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004325042,
+      "panel_x_jitter_m": -0.013597309,
+      "role_index": 4,
+      "row_sha256": "ae1706a65731891ca57d9be3d9014eed9ddf158b41cb02b6655329caa94a6275",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2251714099,
+      "task_seed_u64": 9671038416621295669
+    },
+    {
+      "episode_id": "0a0e39be0777044ed2ead1b2c483b8255fe1c2d19329d1d0a212fb5032e3474b",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003917256,
+      "panel_x_jitter_m": -0.011000524,
+      "role_index": 5,
+      "row_sha256": "e645aea064d97bff8dda6879880ae4f5dba2f228d58781b966ce314c5f740eed",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1208977664,
+      "task_seed_u64": 5192519528757190635
+    },
+    {
+      "episode_id": "7d1e440e7f203003495ef1834124c1b5f07b5c0f9df69ec906300962c54f9672",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001576163,
+      "panel_x_jitter_m": -0.009798203,
+      "role_index": 6,
+      "row_sha256": "4575f074f56d4aa6173c18af55189b6b7a93459890fdd6ff43e7680168fe3a4f",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4241653520,
+      "task_seed_u64": 18217763152374878965
+    },
+    {
+      "episode_id": "216c6e9c7282e004bef6960051c3f8a72f94fdff75222018acd0be8b51fc1fa8",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00129283,
+      "panel_x_jitter_m": -0.008110239,
+      "role_index": 7,
+      "row_sha256": "d75b6e33e51b614e079dd87fd33ddbf651cb6865d8e571af093c5db753e6af31",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2416331231,
+      "task_seed_u64": 10378063614593873251
+    },
+    {
+      "episode_id": "75f5d268935454cd78c67119d9059419d47405a5b317f547d7dbfad64391fcbe",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00060946,
+      "panel_x_jitter_m": -0.002070821,
+      "role_index": 8,
+      "row_sha256": "594b6be53dd5841bf1d1ee6f1a37ce71062f64c935433649d40b455d4994001f",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3149440785,
+      "task_seed_u64": 13526745176185943222
+    },
+    {
+      "episode_id": "e8b045f28b824f74d68845681c5e0aed2a95677db661b6ad5bddc4e71d54cd26",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003464943,
+      "panel_x_jitter_m": 0.001125368,
+      "role_index": 9,
+      "row_sha256": "b2e166f0dc2558bcac13cd7242bc3a6261a642d1d592e23542d8413c80b4b531",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 634236660,
+      "task_seed_u64": 2724025716701394450
+    },
+    {
+      "episode_id": "aceb084c8e8c246f6c440618ca2bd60f0ff0686624d96e444f6e5136446b99aa",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000676775,
+      "panel_x_jitter_m": 0.001264046,
+      "role_index": 10,
+      "row_sha256": "f80ce766b8a49539819474cc16ec0202fc9a5ddc72c6201fee1828bcb0b677f2",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1833609046,
+      "task_seed_u64": 7875290889191936950
+    },
+    {
+      "episode_id": "84ecc51654ac440af5f9783ffb67f988769380495804dc3d5c0e747c991ffcd5",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00483211,
+      "panel_x_jitter_m": 0.006480305,
+      "role_index": 11,
+      "row_sha256": "3f0a49b4d51d4ba38ad0c7307e57a39d35e849a2bc1fcdd0324cbd595eaccd52",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3065932686,
+      "task_seed_u64": 13168080619534468227
+    },
+    {
+      "episode_id": "0f9c2bb77b0b41f13680f03132c13d04d95f2cbb43372c708f96994e9fefc34b",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003253964,
+      "panel_x_jitter_m": 0.000741826,
+      "role_index": 12,
+      "row_sha256": "ec20c36796ec74f5ecc1f9a79b6a606e4ee970e445b8b0fb3c67314d5f681884",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4078637243,
+      "task_seed_u64": 17517613571631505605
+    },
+    {
+      "episode_id": "75c33cf9aedd5f4596c1dc96f23a5c6874457f9464a91bf5575ea3b785c29e08",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002004561,
+      "panel_x_jitter_m": -0.001720189,
+      "role_index": 13,
+      "row_sha256": "5ad6326ba3dbff6fcc54077c3aecf41f6bd5f2236869ae7ea26d2d1821cd1165",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2106828701,
+      "task_seed_u64": 9048760371920046620
+    },
+    {
+      "episode_id": "564a2e539d2a135cc9aae6fa5ecb499d339d4699ba9dc5a611b68619120cff79",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001225789,
+      "panel_x_jitter_m": 0.00341478,
+      "role_index": 14,
+      "row_sha256": "7a6f5751e26966473031b8b1474a975e41bcbc05ee7e044a11a5e7610baf9038",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3792802470,
+      "task_seed_u64": 16289962571818019458
+    },
+    {
+      "episode_id": "c2916ec449045440abac4380cf27c2fd073296ad8c5e4dabfb5f9b58cb0aee53",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001654317,
+      "panel_x_jitter_m": 0.005434449,
+      "role_index": 15,
+      "row_sha256": "57998bafc4780d380556758a5d780fda026fef18cb9989ac2ae5c19d05d7692e",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2040354073,
+      "task_seed_u64": 8763254018182317797
+    },
+    {
+      "episode_id": "966da9edf6b1a53a1abcc15dc2313e01bca12db4c5c8f6304dd6567314331b27",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000281812,
+      "panel_x_jitter_m": 0.006201549,
+      "role_index": 16,
+      "row_sha256": "02874d5ef0883cb294530c3c06685cdc2ab4ff3252b42deaf15c12eac29d1b08",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2423490307,
+      "task_seed_u64": 10408811611605255685
+    },
+    {
+      "episode_id": "ed17bd4fdc6ff1f40719096080402866dc94e2f7593ecc420407644a5eb6cee9",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000879923,
+      "panel_x_jitter_m": 0.0010421,
+      "role_index": 17,
+      "row_sha256": "7ebcb8db0ed273621a47eb6a0ba505d557ac9e470cdec33efcc8d873a61a4561",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2973382876,
+      "task_seed_u64": 12770582214086390519
+    },
+    {
+      "episode_id": "4a1277796db2445dd2c8561fe7d923be14f2fe5ed30e8a75ac25d7a82fd28985",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 8.8745e-05,
+      "panel_x_jitter_m": 0.008592696,
+      "role_index": 18,
+      "row_sha256": "b9dd1cd097011b1f12b09e07ff2860550f2bfc3cde112e23e2025f4edbba0525",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1169177620,
+      "task_seed_u64": 5021579643556401943
+    },
+    {
+      "episode_id": "8a46bcca70bc3b1afff554b3a58f6448070318cdb5d81c34c11c60ed66f2ad5a",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00390477,
+      "panel_x_jitter_m": -0.010677459,
+      "role_index": 19,
+      "row_sha256": "50ac5a75c5c9c6de52f5370ac45ba6370320b79567ef718db6a614ebbeb3e298",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1068150551,
+      "task_seed_u64": 4587671686837303739
+    },
+    {
+      "episode_id": "4b96fdbf0e55b710d83afd739629fd7db610842eb2117a2c70cdcf0d86ab5779",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002298307,
+      "panel_x_jitter_m": 0.013209897,
+      "role_index": 20,
+      "row_sha256": "fee2828d7fc4b24bd920a466afcf00c1c510e3ccb406a3744f80c10b5cde4b76",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3784902099,
+      "task_seed_u64": 16256030734270527642
+    },
+    {
+      "episode_id": "2544ed6d46f6531e5d4c5154078dc292bdabbf429eb20e824c2c25384ae8e547",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.0016071,
+      "panel_x_jitter_m": 0.012409629,
+      "role_index": 21,
+      "row_sha256": "251def34c4d6356a13ec767b77bfa42b975f2a4055234d137b90fde90b690185",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1682167682,
+      "task_seed_u64": 7224855181489264595
+    },
+    {
+      "episode_id": "3cc34a7c467684d2686ab132722ee3244c19d66870b981171c665710e94a520d",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002702444,
+      "panel_x_jitter_m": -0.006340057,
+      "role_index": 22,
+      "row_sha256": "db8cd82e07071bc527a4fc5e528cc780c92a510a96127c25717bab21cdeaf206",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2182479513,
+      "task_seed_u64": 9373678134601393191
+    },
+    {
+      "episode_id": "8d5145594bd25badc7b6cdc4debb1a16dd62e967eb87497015b908da9cadb133",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003148882,
+      "panel_x_jitter_m": -0.001179162,
+      "role_index": 23,
+      "row_sha256": "d02eb8450a8177d7eff2593c7ce220d4a0140d0d584e5ffa8f7b5016e71816cb",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1140637761,
+      "task_seed_u64": 4899001880387358345
+    }
+  ],
+  "master_seed": 2026081801,
+  "phase0_gate": {
+    "clean_success_definition": "task_success and zero hazard_bar entries and zero other_environment entries; place_receptacle contact exempt",
+    "fail_token": "PACT_PLACE_CORRIDOR_PHASE0_FAIL",
+    "minimum_clean_successes": 20,
+    "n": 24,
+    "on_fail": "stop_without_collection_or_training",
+    "pass_token": "PACT_PLACE_CORRIDOR_PHASE0_PASS",
+    "report_separately": [
+      "grasp_phase_success",
+      "place_phase_success_given_grasp",
+      "inbound_hazard_contact",
+      "outbound_hazard_contact"
+    ]
+  },
+  "protected_artifact_sha256_before": {
+    "diagnostics_output/pact_blind_rgb/analysis.json": "ec940960bb93358184a979be2d73a5bf303819a0ab8b09f41c94a7a1d3f1eda7",
+    "diagnostics_output/pact_blind_rgb/final_decision.json": "3defb51f71995c3af3985ef31ebd526edfa4840777fb412ee91d84ad86d26cdb",
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLIND_RGB.md": "29e2f8e44c819fe8040dc8f443bce1ed61fe61822c6ed289a4cb35291285efbb",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION.md": "952cadf34434017d03b73215c3c1e05b6c8ede1a6f205490e5f00b729f5f6daa"
+  },
+  "route": "collision_route_pick_and_place",
+  "scene": {
+    "aperture_plane_x_m": 0.58,
+    "base_forward_m": 0.14,
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "place_receptacle_center_xyz_m": [
+      0.35,
+      0.0,
+      0.0
+    ],
+    "place_receptacle_contact_exempt": true,
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
+  },
+  "schema_version": "pact_place_corridor_v1",
+  "source_sha256": {
+    "scripts/pact_place_corridor_contract.py": "fd7953f86973d858e35075bc1a31e0684acba05d76422e82fabcb1e5e431a4f7",
+    "scripts/run_pact_place_expert_screen.py": "3faf0a83ed284ae2117a9cd926c3994651b50aaf8750b82b7083a784543a689b",
+    "submodules/molmospaces/molmo_spaces/configs/task_configs.py": "785d4b5b2a2430fb4fd2273bb59e54b5b13c8f2271255f0829a6ca144a3b257f",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml": "d853e27ca453a246a73a7fa590e3a05f5c93db0893805cd41067e73441aba942",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py": "f1f967f0362b9e94ec42156d071c88c5cdb771f93673720cfb729a72c158b574",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py": "1fb412ca36953e14db9746774a35e8404f4dee1b4a337a859120aabdedb3ef93",
+    "submodules/molmospaces/molmo_spaces/tasks/pick_and_place_task.py": "7d4ad29a589902ed8ddd29c388714efe068d84cd908e825480da4c4435a5cf26"
+  },
+  "status": "phase0_preregistered",
+  "success_criterion": {
+    "implementation": "PickAndPlaceTask.get_info",
+    "lift_one_centimetre_criterion_on_success_path": false,
+    "max_receptacle_position_displacement_m": 0.1,
+    "max_receptacle_tilt_radians": 0.7853981633974483,
+    "robot_no_longer_touching_target": true,
+    "supported_weight_fraction": 0.5
+  }
+}
