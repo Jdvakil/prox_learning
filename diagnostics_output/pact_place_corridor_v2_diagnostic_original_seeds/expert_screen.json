@@ -1,16 +1,16 @@
 {
+  "authorizes_collection": false,
   "bow_fallback_episodes": 0,
   "complete_rows": 24,
   "config_sha256": "46dff849dd16eb3b6c0baf169053829bc66203a39866f14a4667e8eaef559e40",
-  "decision": "PACT_PLACE_CORRIDOR_PHASE0_PASS",
-  "expert_screen_sha256": "a48d30335c794f4626c1763241489c2f422f63375d7c06480bd63a253efbdb2a",
+  "diagnostic_clean_successes": 21,
+  "expert_screen_sha256": "9908af871afc08bb34e16920a680c483b866c09fff2c3e483390ad60556435d3",
   "gate": {
     "clean_success_rate": 0.875,
     "clean_successes": 21,
-    "minimum_clean_successes": 20,
-    "passed": true
+    "minimum_clean_successes": 20
   },
-  "gate_frozen_before_execution": true,
+  "gate_frozen_before_execution": false,
   "grasp_phase_success": {
     "count": 21,
     "rate": 0.875
@@ -21,7 +21,7 @@
   },
   "infrastructure_failures": 0,
   "n": 24,
-  "next_action": "proceed_to_collection_design",
+  "next_action": "none_diagnostic_only",
   "other_environment_contact_episodes": 0,
   "place_phase_success": {
     "count": 21,
@@ -33,6 +33,7 @@
     "numerator": 21
   },
   "reconciled": true,
+  "role": "diagnostic_not_a_gate",
   "row_result_paths": [
     "diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds/expert_screen_rows/00_84054858899b293a/result.json",
     "diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds/expert_screen_rows/01_b852218578ffc527/result.json",

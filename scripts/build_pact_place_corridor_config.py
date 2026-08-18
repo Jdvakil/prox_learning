@@ -17,8 +17,14 @@ def main() -> int:
         type=Path,
         default=ROOT / "configs" / "pact_place_corridor_v2.json",
     )
+    parser.add_argument(
+        "--master-seed",
+        type=int,
+        default=None,
+        help="Master seed for a new contract. Defaults to PACT_PLACE_MASTER_SEED or 2026081901.",
+    )
     args = parser.parse_args()
-    document = build_contract()
+    document = build_contract(master_seed=args.master_seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
     print(args.output)

@@ -20,8 +20,8 @@ contract was rebuilt **before** any re-screen episode ran.
 
 | Item | Value |
 |---|---|
-| Release clearance | `PactPlaceCorridorPolicy.RELEASE_CLEARANCE_M = 0.005` (subclass override only) |
-| Bow shrink step | `BOW_SHRINK_STEP_M = 0.02` |
+| Release clearance | `PactPlaceCorridorPolicy.RELEASE_CLEARANCE_M = 0.005` (subclass override only; kept) |
+| Bow shrink step (screen-time only) | `BOW_SHRINK_STEP_M = 0.02` at submodule `2828751ee6`; reverted after the screens as an instance filter |
 | Fresh-seed master seed | `2026081901` |
 | Fresh-seed config SHA-256 | `a0f30725e325a73b5584895a07fa18000fe3645cb63ebd1b4e5a6746bc201c31` |
 | Original-seed config SHA-256 (diagnostic only) | `46dff849dd16eb3b6c0baf169053829bc66203a39866f14a4667e8eaef559e40` |
@@ -62,13 +62,25 @@ The clean count stayed 18/24 because of a **new failure mode**: inbound hazard-b
 two otherwise successful episodes (rows 6 and 12; 82 and 171 inbound hazard frames; 0 outbound).
 The original gate had 0/24 inbound hazard contact, including on its six failures.
 
-The four task failures (rows 3, 4, 11, 17) are retrieval failures, not placement/release failures.
+The four task failures (rows 3, 4, 11, 17) are retrieval failures at the level of
+`grasp_phase_success`, but they are **three mechanisms**, not one:
+
+- **Row 11** — grasp failure at `lift`. Never reached 1 cm (`cup_lifted_one_cm: false`). Cup
+  ended at z 0.753, **below** its 0.794 start (`pickup_final_position_m` z 0.75267 vs
+  `pickup_start_z_m` 0.79375).
+- **Row 3** — cup loss during `outbound_pass`. `gripper_width_min_m = 0`. Cup abandoned at
+  x ≈ 0.67 inside the corridor (`pickup_final_position_m` `[0.673, -0.157, 0.836]`).
+- **Rows 4 and 17** — TCP tracking-error abort while still holding the cup
+  (`gripper_width_min_m` 12.4 mm / 8.4 mm; cup at z ≈ 0.92). Terminal
+  `position_error_m` 0.10177 / 0.10154 against `tcp_pos_err_threshold = 0.1`. Row 4 actual
+  TCP z 0.9806 vs target 0.8921; row 17 actual z 0.992 vs target 0.904.
 
 ### 2. Diagnostic re-run (original seeds; not a gate)
 
-The diagnostic ledger writes `PACT_PLACE_CORRIDOR_PHASE0_PASS` because it happened to reach
-21/24. **Ignore that token.** This screen was not preregistered as a gate; reporting it as a
-pass would be tuning to the screen.
+This run is marked `role: diagnostic_not_a_gate` with `authorizes_collection: false` and
+`next_action: none_diagnostic_only`. It does not emit `PACT_PLACE_CORRIDOR_PHASE0_PASS` or
+`PACT_PLACE_CORRIDOR_PHASE0_FAIL`. Clean count on this diagnostic is 21/24; that number does
+not authorize collection.
 
 | Measure | Original gate | Same-seed diagnostic |
 |---|---:|---:|
@@ -104,23 +116,72 @@ planner, converted all four same-seed placement/release failures. On the fresh g
 grasp is 20/20. The cup is opened above the tray and settles; the scripted `release`/`retreat`
 now run.
 
-**B did not behave as described.** `_bow_segment` now IK-validates `pose_before` and
-`pose_after`, and it will shrink `required_bow` in 2 cm steps down to the minimum that still
-clears `safe_gap`. In this geometry that minimum **is** the planned bow, so the shrink loop
-never has an interior. Fallback was taken **0/24** times on both screens. When the planned bow
-fails `check_feasible_ik` at reset (home qpos), the policy raises, which the screen treats as a
-pre-boundary resample. That is not “bowed less than planned.” It is a different episode.
+**B did not behave as described.** At screen time, `_bow_segment` IK-validated `pose_before`
+and `pose_after`, and it would shrink `required_bow` in 2 cm steps down to the minimum that
+still clears `safe_gap`. In this geometry that minimum **is** the planned bow, so the shrink
+loop never has an interior. Fallback was taken **0/24** times on both screens. When the
+planned bow fails `check_feasible_ik` at reset (home qpos), the policy raises, which the
+screen treats as a pre-boundary resample. That is not “bowed less than planned.” It is a
+different episode.
 
-Worse: some bows that **executed successfully** on the original gate now fail the planning-time
-check (row 1’s original seed is the example). Execution IK is seeded from the lift configuration;
-planning IK is seeded from the reset qpos. The check therefore both fails to repair the original
-row-12 path and rejects previously viable first seeds.
+Worse: some bows that **executed successfully** on the original gate now fail the
+planning-time check (row 1’s original seed is the example). Execution IK is seeded from the
+lift configuration; planning IK is seeded from the reset qpos. The check therefore both
+fails to repair the original row-12 path and rejects previously viable first seeds.
+
+That planning-time IK filter was reverted after the screens. The frozen ledgers still
+describe the code they ran against. Future use of this expert plans the outbound bow
+without rejecting the instance at reset.
 
 ## New failure mode on the gate
 
 Inbound hazard contact on successful pick-and-place episodes (rows 6 and 12 of the fresh seed).
 The original gate, and the same-seed diagnostic, had zero inbound and zero outbound hazard
 contact. The stop rule for a new failure mode is: report it, do not absorb it into a third fix.
+
+Characterize these two rows by what is observable. Hazard contact is first recorded at
+`first_contact_step.hazard_bar == 0` in both, with maximum penetration **5.5 mm and 20.5 mm**.
+All frames fall in the `inbound` bucket. `contact_frame_payload_retained: false`, so the
+per-frame records were discarded and neither the end of the contact nor the participating
+bodies can be recovered. Do not describe these as grazing contacts during the inbound bow —
+that is not established.
+
+`INBOUND_ENVELOPE_HALF_Y` and `INBOUND_SAFE_GAP` are dead constants on
+`PactPlaceCorridorPolicy`. `_bow_segment` has exactly one call site, with `prefix="outbound"`.
+The inbound path is `PactCollisionCorridorPolicy._compute_trajectory()` reused wholesale.
+Neither expert fix can reach the inbound path.
+
+## Do not raise `tcp_pos_err_threshold`
+
+Rows 4 and 17 exceeded the 0.1 m tracking threshold by **1.77 mm and 1.54 mm**. Raising
+`tcp_pos_err_threshold` converts both and would pass the gate at 20/24. It must not be done.
+Their error is **8.8 cm of vertical deviation** — actual z 0.9806 vs target 0.8921 on row 4 —
+not a lateral reach shortfall. The threshold is the detector, not the cause. Loosening it
+would let a badly out-of-plane arm continue through the corridor carrying the cup, which is a
+plausible way to manufacture contact on the endpoint the whole project measures.
+
+No geometric parameter separates these failures. In the fresh gate, planned outbound bow gives
+9/12 clean above 0.20 m and 9/12 clean below. In the original screen the largest lateral
+waypoint reach (row 11, 0.1948) was a success, exceeding both original bow-IK failures. Two
+screens, two searches, no separator found.
+
+## Record cleanup after the screens
+
+The gates are frozen. After they were recorded, three record defects were fixed without
+re-running episodes:
+
+1. The diagnostic summary no longer carries a gate token or a `proceed_*` next action.
+2. Future `episode_id` values include the master seed. Frozen v1/v2 files still collide;
+   join them on `(config_sha256, role_index)`.
+3. Fix 2 (planning-time bow IK / shrink loop) was reverted. It discarded geometry whose
+   outbound bow is IK-infeasible from the reset pose — an instance filter, not a repair —
+   and it made the diagnostic incomparable on 5/24 rows. Telemetry
+   (`planned_bow_m`, `accepted_bow_m`, `bow_fallback_taken`) and Fix 1 (5 mm release
+   clearance) remain. The revert makes a future screen **harder**: a hard instance fails
+   during the rollout instead of being silently replaced.
+
+`cb19130709d6961ac3fcf14ae18ee4d18004ea8a3273f2174d0083f53afdadbb` for `enclosure_reach.py`
+remains reachable at submodule `2828751ee6a1fb5ffcaa30d47fda45859f835510`.
 
 ## Stop condition that fired
 
@@ -163,6 +224,7 @@ Diagnostic (not a gate):
 
 - `configs/pact_place_corridor_v1.json` (original seeds; code is the fixed expert)
 - `diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds/expert_screen.json`
+- `diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds/role.json`
 - `diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds/expert_screen_rows/*/result.json`
 
 Original failed gate (untouched):

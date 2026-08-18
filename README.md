@@ -36,10 +36,12 @@ The preregistered inference-time RGB-blur robustness sweep is reported in
 
 The pick-and-place corridor Phase-0 expert gate is reported in
 [`docs/PACT_PLACE_CORRIDOR_GATE.md`](docs/PACT_PLACE_CORRIDOR_GATE.md).
-The expert-fix re-screen (release clearance + bow IK fallback) is reported in
+The expert-fix re-screen (5 mm release clearance; both gates failed) is reported in
 [`docs/PACT_PLACE_EXPERT_FIX.md`](docs/PACT_PLACE_EXPERT_FIX.md);
 the fresh-seed gate ledger is
 [`docs/PACT_PLACE_CORRIDOR_GATE_V2.md`](docs/PACT_PLACE_CORRIDOR_GATE_V2.md).
+Join v1 and v2 place-corridor rows on `(config_sha256, role_index)`, never on
+`episode_id`. The original-seed re-run is a diagnostic, not a gate.
 
 ---
 

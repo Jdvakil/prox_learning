@@ -170,14 +170,27 @@ def test_place_sampler_and_expert_are_additive_subclasses() -> None:
     assert PactPlaceCorridorPolicy.OUTSIDE_STAGING_X_M < 0.58
     assert PactPlaceCorridorPolicy.GRASP_WORLD_Z_OFFSET_M == pytest.approx(0.0)
     assert PactPlaceCorridorPolicy.RELEASE_CLEARANCE_M == pytest.approx(0.005)
-    assert PactPlaceCorridorPolicy.BOW_SHRINK_STEP_M == pytest.approx(0.02)
     assert "_get_placement_poses" in PactPlaceCorridorPolicy.__dict__
-    assert PactPlaceCorridorPolicy._bow_magnitudes(0.14, 0.14, 0.02) == pytest.approx(
-        [0.14]
+    assert "BOW_SHRINK_STEP_M" not in PactPlaceCorridorPolicy.__dict__
+    assert "_bow_magnitudes" not in PactPlaceCorridorPolicy.__dict__
+    source = (MOLMO / "molmo_spaces/tasks/enclosure_reach.py").read_text()
+    tree = ast.parse(source)
+    policy = next(
+        item
+        for item in tree.body
+        if isinstance(item, ast.ClassDef) and item.name == "PactPlaceCorridorPolicy"
     )
-    assert PactPlaceCorridorPolicy._bow_magnitudes(0.18, 0.14, 0.02) == pytest.approx(
-        [0.18, 0.16, 0.14]
+    bow = next(
+        item
+        for item in policy.body
+        if isinstance(item, ast.FunctionDef) and item.name == "_bow_segment"
     )
+    bow_text = ast.get_source_segment(source, bow)
+    assert bow_text is not None
+    assert "check_feasible_ik" not in bow_text
+    assert "IK failed for required" not in bow_text
+    assert "bow_fallback_taken" in bow_text
+    assert "RELEASE_CLEARANCE_M" in source
 
 
 def test_upstream_shared_planner_files_are_unmodified() -> None:
@@ -201,7 +214,7 @@ def test_phase0_contract_is_balanced_self_hashed_and_stops_on_failure() -> None:
     document = contract.build_contract()
     contract.validate_contract(document)
     rows = document["expert_screen_rows"]
-    assert document["master_seed"] == 2026081901
+    assert document["master_seed"] == contract.DEFAULT_MASTER_SEED
     assert len(rows) == 24
     assert sum(row["intrusion_side"] == "left" for row in rows) == 12
     assert sum(row["intrusion_side"] == "right" for row in rows) == 12
@@ -224,11 +237,64 @@ def test_phase0_contract_is_balanced_self_hashed_and_stops_on_failure() -> None:
 
 
 def test_generated_contract_reproduces_if_present() -> None:
-    path = ROOT / "configs/pact_place_corridor_v2.json"
-    if not path.exists():
-        pytest.skip("place-corridor v2 contract has not been generated")
-    saved = json.loads(path.read_text())
-    assert saved == contract.build_contract()
+    for relative in (
+        "configs/pact_place_corridor_v1.json",
+        "configs/pact_place_corridor_v2.json",
+    ):
+        path = ROOT / relative
+        if not path.exists():
+            pytest.skip(f"{relative} has not been generated")
+        contract.validate_contract(json.loads(path.read_text()))
+
+
+def test_episode_ids_include_master_seed_and_do_not_collide() -> None:
+    first = contract.build_contract(master_seed=2026081801)
+    second = contract.build_contract(master_seed=2026081901)
+    first_ids = {row["episode_id"] for row in first["expert_screen_rows"]}
+    second_ids = {row["episode_id"] for row in second["expert_screen_rows"]}
+    assert first["master_seed"] == 2026081801
+    assert second["master_seed"] == 2026081901
+    assert first_ids.isdisjoint(second_ids)
+    assert len(first_ids) == 24
+    assert len(second_ids) == 24
+
+
+def test_frozen_v1_v2_episode_ids_collide_and_must_not_be_joined() -> None:
+    v1 = json.loads((ROOT / "configs/pact_place_corridor_v1.json").read_text())
+    v2 = json.loads((ROOT / "configs/pact_place_corridor_v2.json").read_text())
+    shared = {
+        row["episode_id"]
+        for row in v1["expert_screen_rows"]
+    } & {row["episode_id"] for row in v2["expert_screen_rows"]}
+    assert len(shared) == 12
+    assert v1["config_sha256"] != v2["config_sha256"]
+
+
+def test_diagnostic_artifacts_contain_no_gate_tokens() -> None:
+    diagnostic = ROOT / "diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds"
+    assert diagnostic.is_dir()
+    forbidden = (
+        "PACT_PLACE_CORRIDOR_PHASE0_PASS",
+        "PACT_PLACE_CORRIDOR_PHASE0_FAIL",
+        "proceed_to_collection",
+        "proceed_",
+    )
+    for path in diagnostic.rglob("*"):
+        if not path.is_file():
+            continue
+        text = path.read_text(errors="replace")
+        for token in forbidden:
+            assert token not in text, f"{token} in {path}"
+    role = json.loads((diagnostic / "role.json").read_text())
+    summary = json.loads((diagnostic / "expert_screen.json").read_text())
+    assert role["role"] == "diagnostic_not_a_gate"
+    assert role["authorizes_collection"] is False
+    assert summary["role"] == "diagnostic_not_a_gate"
+    assert summary["authorizes_collection"] is False
+    assert summary["next_action"] == "none_diagnostic_only"
+    assert summary["gate_frozen_before_execution"] is False
+    assert "decision" not in summary
+    assert summary["diagnostic_clean_successes"] == 21
 
 
 def test_failed_phase0_v1_artifacts_remain() -> None:
@@ -243,6 +309,99 @@ def test_failed_phase0_v1_artifacts_remain() -> None:
     )
     summary = json.loads(summary_path.read_text())
     assert summary["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+    assert summary["expert_screen_sha256"] == (
+        "143ca77a2d1df1a73447078b18100013137a030f18063bcc459bcbee876f325a"
+    )
+    stop = json.loads(
+        (ROOT / "diagnostics_output/pact_place_corridor/stop_record.json").read_text()
+    )
+    assert stop["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+    assert stop["stop_record_sha256"] == (
+        "11d15daef93ef5ad96bb806cf2ef579c75b40787a0745837b394e1dd3bf1426d"
+    )
     assert (ROOT / "docs/PACT_PLACE_CORRIDOR_GATE.md").read_text().endswith(
         "PACT_PLACE_CORRIDOR_PHASE0_FAIL\n"
     )
+
+
+def test_failed_phase0_v2_artifacts_remain() -> None:
+    config_path = ROOT / "configs/pact_place_corridor_v2.json"
+    summary_path = ROOT / "diagnostics_output/pact_place_corridor_v2/expert_screen.json"
+    saved = json.loads(config_path.read_text())
+    assert saved["master_seed"] == 2026081901
+    assert saved["config_sha256"] == (
+        "a0f30725e325a73b5584895a07fa18000fe3645cb63ebd1b4e5a6746bc201c31"
+    )
+    summary = json.loads(summary_path.read_text())
+    assert summary["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+    assert summary["gate"]["clean_successes"] == 18
+    assert summary["expert_screen_sha256"] == (
+        "544d1406a3fc5ae631305864c2037390d33dd5d05e25c399538d5abdffddf1c6"
+    )
+    stop = json.loads(
+        (ROOT / "diagnostics_output/pact_place_corridor_v2/stop_record.json").read_text()
+    )
+    assert stop["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+    assert stop["stop_record_sha256"] == (
+        "4879d7dd59600a979aaf69494521db67124bc942e1cafd22a3d02a05d5bc56df"
+    )
+    assert (ROOT / "docs/PACT_PLACE_CORRIDOR_GATE_V2.md").read_text().endswith(
+        "PACT_PLACE_CORRIDOR_PHASE0_FAIL\n"
+    )
+
+
+def test_v2_screen_enclosure_reach_remains_in_git() -> None:
+    committed = subprocess.run(
+        [
+            "git",
+            "show",
+            "2828751ee6a1fb5ffcaa30d47fda45859f835510:"
+            "molmo_spaces/tasks/enclosure_reach.py",
+        ],
+        cwd=MOLMO,
+        check=True,
+        capture_output=True,
+    ).stdout
+    assert hashlib.sha256(committed).hexdigest() == (
+        "cb19130709d6961ac3fcf14ae18ee4d18004ea8a3273f2174d0083f53afdadbb"
+    )
+
+
+def test_diagnostic_summarize_cannot_emit_gate_tokens() -> None:
+    from run_pact_place_expert_screen import summarize
+
+    contract_doc = json.loads(
+        (ROOT / "configs/pact_place_corridor_v1.json").read_text()
+    )
+    results = []
+    for row in contract_doc["expert_screen_rows"]:
+        results.append(
+            {
+                "status": "complete",
+                "role_index": row["role_index"],
+                "clean_success": True,
+                "task_success": True,
+                "grasp_phase_success": True,
+                "place_phase_success": True,
+                "bow_fallback_taken": False,
+                "contact_audit": {
+                    "inbound_hazard_contact_frames": 0,
+                    "outbound_hazard_contact_frames": 0,
+                    "contact_class_totals": {"other_environment": 0},
+                },
+            }
+        )
+    summary = summarize(
+        contract_doc,
+        results,
+        1,
+        ROOT / "diagnostics_output/pact_place_corridor_v2_diagnostic_original_seeds",
+        role="diagnostic",
+    )
+    dumped = json.dumps(summary)
+    assert "PACT_PLACE_CORRIDOR_PHASE0_PASS" not in dumped
+    assert "PACT_PLACE_CORRIDOR_PHASE0_FAIL" not in dumped
+    assert "proceed_" not in dumped
+    assert summary["authorizes_collection"] is False
+    assert summary["next_action"] == "none_diagnostic_only"
+    assert summary["diagnostic_clean_successes"] == 24

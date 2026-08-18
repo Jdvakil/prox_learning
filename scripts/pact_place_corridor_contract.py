@@ -5,17 +5,27 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MOLMO = ROOT / "submodules" / "molmospaces"
-MASTER_SEED = 2026081901
+DEFAULT_MASTER_SEED = 2026081901
 N_EXPERT_ROWS = 24
 MIN_CLEAN_SUCCESSES = 20
 PASS_TOKEN = "PACT_PLACE_CORRIDOR_PHASE0_PASS"
 FAIL_TOKEN = "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+
+
+def resolve_master_seed(master_seed: int | None = None) -> int:
+    if master_seed is not None:
+        return int(master_seed)
+    env = os.environ.get("PACT_PLACE_MASTER_SEED")
+    if env:
+        return int(env)
+    return DEFAULT_MASTER_SEED
 
 
 def canonical_json(value: Any) -> str:
@@ -34,8 +44,9 @@ def sha256_file(path: Path) -> str:
     return sha256_bytes(path.read_bytes())
 
 
-def row_seed(index: int) -> tuple[int, int]:
-    digest = hashlib.sha256(f"pact-place-v1:{MASTER_SEED}:{index}".encode()).digest()
+def row_seed(index: int, master_seed: int | None = None) -> tuple[int, int]:
+    seed = resolve_master_seed(master_seed)
+    digest = hashlib.sha256(f"pact-place-v1:{seed}:{index}".encode()).digest()
     return int.from_bytes(digest[:4], "big"), int.from_bytes(digest[:8], "big")
 
 
@@ -86,18 +97,27 @@ def _protected_artifact_hashes() -> dict[str, str]:
     }
 
 
-def build_contract() -> dict[str, Any]:
-    rng = random.Random(MASTER_SEED)
+def episode_id_for(index: int, side: str, master_seed: int | None = None) -> str:
+    # Frozen v1/v2 contracts hashed only (index, side) and share 12 IDs across
+    # master seeds. New contracts include master_seed. Do not rewrite those files;
+    # join historical rows on (config_sha256, role_index), never episode_id.
+    seed = resolve_master_seed(master_seed)
+    return hashlib.sha256(
+        f"pact-place-v1:expert:{seed}:{index}:{side}".encode()
+    ).hexdigest()
+
+
+def build_contract(master_seed: int | None = None) -> dict[str, Any]:
+    seed = resolve_master_seed(master_seed)
+    rng = random.Random(seed)
     sides = ["left", "right"] * (N_EXPERT_ROWS // 2)
     rng.shuffle(sides)
     rows = []
     for index, side in enumerate(sides):
-        seed_u32, seed_u64 = row_seed(index)
+        seed_u32, seed_u64 = row_seed(index, seed)
         row = {
             "role_index": index,
-            "episode_id": hashlib.sha256(
-                f"pact-place-v1:expert:{index}:{side}".encode()
-            ).hexdigest(),
+            "episode_id": episode_id_for(index, side, seed),
             "intrusion_side": side,
             "panel_x_jitter_m": round(rng.uniform(-0.015, 0.015), 9),
             "panel_face_jitter_m": round(rng.uniform(-0.005, 0.005), 9),
@@ -113,7 +133,7 @@ def build_contract() -> dict[str, Any]:
         "status": "phase0_preregistered",
         "created_utc": "2026-08-18T00:00:00Z",
         "route": "collision_route_pick_and_place",
-        "master_seed": MASTER_SEED,
+        "master_seed": seed,
         "scene": {
             "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml",
             "base_forward_m": 0.14,

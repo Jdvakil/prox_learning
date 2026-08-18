@@ -336,6 +336,7 @@ def summarize(
     results: list[dict[str, Any]],
     workers: int,
     output_root: Path,
+    role: str = "gate",
 ) -> dict[str, Any]:
     complete = [item for item in results if item["status"] == "complete"]
     clean = sum(item.get("clean_success") is True for item in results)
@@ -371,11 +372,12 @@ def summarize(
         item["status"] != "infrastructure_failure" for item in results
     )
     passed = reconciled and no_infrastructure and clean >= MIN_CLEAN_SUCCESSES
+    is_diagnostic = role == "diagnostic"
     summary: dict[str, Any] = {
         "schema_version": "pact_place_expert_screen_v1",
         "config_sha256": contract["config_sha256"],
         "workers": workers,
-        "gate_frozen_before_execution": True,
+        "gate_frozen_before_execution": False if is_diagnostic else True,
         "reconciled": reconciled,
         "n": len(results),
         "complete_rows": len(complete),
@@ -389,7 +391,7 @@ def summarize(
             "minimum_clean_successes": MIN_CLEAN_SUCCESSES,
             "clean_successes": clean,
             "clean_success_rate": clean / N_EXPERT_ROWS,
-            "passed": passed,
+            **({} if is_diagnostic else {"passed": passed}),
         },
         "task_success": {"count": task, "rate": task / N_EXPERT_ROWS},
         "grasp_phase_success": {"count": grasp, "rate": grasp / N_EXPERT_ROWS},
@@ -409,17 +411,23 @@ def summarize(
         "other_environment_contact_episodes": other_contact,
         "place_receptacle_contact_exempt": True,
         "bow_fallback_episodes": bow_fallback,
-        "decision": PASS_TOKEN if passed else FAIL_TOKEN,
-        "next_action": (
-            "proceed_to_collection_design"
-            if passed
-            else "stop_without_collection_or_training"
-        ),
         "row_result_paths": [
             str(_result_path(row_root, row))
             for row in contract["expert_screen_rows"]
         ],
     }
+    if is_diagnostic:
+        summary["role"] = "diagnostic_not_a_gate"
+        summary["authorizes_collection"] = False
+        summary["diagnostic_clean_successes"] = clean
+        summary["next_action"] = "none_diagnostic_only"
+    else:
+        summary["decision"] = PASS_TOKEN if passed else FAIL_TOKEN
+        summary["next_action"] = (
+            "proceed_to_collection_design"
+            if passed
+            else "stop_without_collection_or_training"
+        )
     summary["expert_screen_sha256"] = sha256_payload(summary)
     return summary
 
@@ -453,6 +461,12 @@ def main() -> int:
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument(
+        "--role",
+        choices=("gate", "diagnostic"),
+        default="gate",
+        help="gate emits pass/fail tokens; diagnostic cannot.",
+    )
     parser.add_argument(
         "--development-row",
         type=int,
@@ -515,10 +529,26 @@ def main() -> int:
                 flush=True,
             )
     results.sort(key=lambda item: item["role_index"])
-    summary = summarize(contract, results, args.workers, args.output_root)
+    summary = summarize(
+        contract, results, args.workers, args.output_root, role=args.role
+    )
+    if args.role == "diagnostic":
+        dumped = json.dumps(summary)
+        if PASS_TOKEN in dumped or FAIL_TOKEN in dumped or "proceed_" in dumped:
+            raise RuntimeError("diagnostic summary emitted a gate token or proceed action")
+        role_record = {
+            "role": "diagnostic_not_a_gate",
+            "authorizes_collection": False,
+            "next_action": "none_diagnostic_only",
+            "gate_frozen_before_execution": False,
+            "diagnostic_clean_successes": summary["diagnostic_clean_successes"],
+            "config_sha256": contract["config_sha256"],
+            "expert_screen_sha256": summary["expert_screen_sha256"],
+        }
+        write_json_atomic(args.output_root / "role.json", role_record)
     verify_protected_artifacts(contract)
     write_json_atomic(args.output_root / "expert_screen.json", summary)
-    if summary["decision"] == FAIL_TOKEN:
+    if args.role == "gate" and summary.get("decision") == FAIL_TOKEN:
         stop = {
             "schema_version": "pact_place_corridor_stop_v1",
             "config_sha256": contract["config_sha256"],
