@@ -15,7 +15,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "configs" / "pact_place_corridor_v1.json",
+        default=ROOT / "configs" / "pact_place_corridor_v2.json",
     )
     args = parser.parse_args()
     document = build_contract()

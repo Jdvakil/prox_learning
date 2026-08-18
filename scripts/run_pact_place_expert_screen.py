@@ -288,6 +288,10 @@ def run_row(
                 "place_phase_success": bool(policy_info["place_phase_success"]),
                 "inbound_deflected": bool(policy_info["inbound_deflected"]),
                 "outbound_deflected": bool(policy_info["outbound_deflected"]),
+                "accepted_bow_m": policy_info.get("accepted_bow_m"),
+                "planned_bow_m": policy_info.get("planned_bow_m"),
+                "bow_fallback_taken": bool(policy_info.get("bow_fallback_taken")),
+                "bow_diagnostics": policy_info.get("bow_diagnostics"),
                 "contact_audit": audit,
                 "place_metrics": policy_info["place_metrics"],
                 "scene_params": _jsonable(getattr(task, "scene_params", {}) or {}),
@@ -331,6 +335,7 @@ def summarize(
     contract: dict[str, Any],
     results: list[dict[str, Any]],
     workers: int,
+    output_root: Path,
 ) -> dict[str, Any]:
     complete = [item for item in results if item["status"] == "complete"]
     clean = sum(item.get("clean_success") is True for item in results)
@@ -354,6 +359,11 @@ def summarize(
         > 0
         for item in complete
     )
+    bow_fallback = sum(item.get("bow_fallback_taken") is True for item in complete)
+    try:
+        row_root = Path(output_root).resolve().relative_to(ROOT)
+    except ValueError:
+        row_root = Path(output_root)
     reconciled = len(results) == N_EXPERT_ROWS and all(
         item["status"] in TERMINAL_STATUSES for item in results
     )
@@ -398,6 +408,7 @@ def summarize(
         },
         "other_environment_contact_episodes": other_contact,
         "place_receptacle_contact_exempt": True,
+        "bow_fallback_episodes": bow_fallback,
         "decision": PASS_TOKEN if passed else FAIL_TOKEN,
         "next_action": (
             "proceed_to_collection_design"
@@ -405,7 +416,7 @@ def summarize(
             else "stop_without_collection_or_training"
         ),
         "row_result_paths": [
-            str(_result_path(Path("diagnostics_output/pact_place_corridor"), row))
+            str(_result_path(row_root, row))
             for row in contract["expert_screen_rows"]
         ],
     }
@@ -504,7 +515,7 @@ def main() -> int:
                 flush=True,
             )
     results.sort(key=lambda item: item["role_index"])
-    summary = summarize(contract, results, args.workers)
+    summary = summarize(contract, results, args.workers, args.output_root)
     verify_protected_artifacts(contract)
     write_json_atomic(args.output_root / "expert_screen.json", summary)
     if summary["decision"] == FAIL_TOKEN:

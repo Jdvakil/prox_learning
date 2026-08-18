@@ -67,6 +67,31 @@ def main() -> int:
         .get("contact_class_totals", {})
         .get("other_environment", 0)
     ]
+    n_failed = len(failed)
+    if n_failed == 0:
+        failure_intro = (
+            "There were no task failures. Grasp retrieval and placement/release both "
+            "completed on every reconciled episode."
+        )
+        contact_note = (
+            "No failed rows. Hazard-bar and other-environment contacts are reported "
+            "in the table above."
+        )
+    else:
+        failure_intro = (
+            f"The {n_failed} task failure"
+            f"{'s' if n_failed != 1 else ''} split into "
+            f"**{len(retrieval_failures)} retrieval failure"
+            f"{'s' if len(retrieval_failures) != 1 else ''}** and "
+            f"**{len(placement_failures)} placement/release failure"
+            f"{'s' if len(placement_failures) != 1 else ''} after "
+            "successful retrieval**."
+        )
+        contact_note = (
+            "Failed rows with hazard or other-environment contact: "
+            f"{len(failed_non_target_contacts)}/{n_failed}."
+        )
+    bow_fallback = summary.get("bow_fallback_episodes")
     disposition = (
         "Phase 0 passed. Full demonstration collection may proceed under a separately "
         "frozen collection contract."
@@ -119,37 +144,29 @@ def main() -> int:
         ),
         f"| Sampling failures | {summary['sampling_failures']} |",
         f"| Infrastructure failures | {summary['infrastructure_failures']} |",
+    ]
+    if bow_fallback is not None:
+        lines.append(f"| Bow-fallback episodes | {bow_fallback}/24 |")
+    lines.extend(
+        [
         "",
         "## Failure localization",
         "",
-        (
-            f"The six task failures split into **{len(retrieval_failures)} retrieval "
-            f"failures** and **{len(placement_failures)} placement/release failures after "
-            "successful retrieval**. The retrieval failures lifted the cup but terminated "
-            "during `outbound_approach` before carrying it outside the aperture. The four "
-            "later failures reached `placement_descent`; the cup was supported by the tray, "
-            "but the robot was still touching it, so the upstream release condition "
-            "correctly remained false."
-        ),
+        failure_intro,
         "",
         "| Failure class | Count | Row indices |",
         "|---|---:|---|",
         (
             f"| Cup not retrieved outside aperture | {len(retrieval_failures)} | "
-            f"{', '.join(str(row['role_index']) for row in retrieval_failures)} |"
+            f"{', '.join(str(row['role_index']) for row in retrieval_failures) or '—'} |"
         ),
         (
             "| Retrieved, but placement/release incomplete | "
             f"{len(placement_failures)} | "
-            f"{', '.join(str(row['role_index']) for row in placement_failures)} |"
+            f"{', '.join(str(row['role_index']) for row in placement_failures) or '—'} |"
         ),
         "",
-        (
-            "All six failed rows also had zero hazard and zero other-environment contacts "
-            f"({len(failed_non_target_contacts)}/6 with either contact class). The limiting "
-            "factor was manipulation reliability—especially the final handoff—not corridor "
-            "collision avoidance."
-        ),
+        contact_note,
         "",
         "## What changed",
         "",
@@ -193,12 +210,14 @@ def main() -> int:
         "",
         "## Artifacts",
         "",
-        "- `configs/pact_place_corridor_v1.json`",
-        "- `diagnostics_output/pact_place_corridor/expert_screen.json`",
-        "- `diagnostics_output/pact_place_corridor/expert_screen_rows/*/result.json`",
-    ]
+        f"- `{args.config.relative_to(ROOT) if args.config.is_absolute() else args.config}`",
+        f"- `{args.summary.relative_to(ROOT) if args.summary.is_absolute() else args.summary}`",
+        f"- `{Path(summary['row_result_paths'][0]).parent.parent.parent / 'expert_screen_rows/*/result.json'}`",
+        ]
+    )
+    stop_path = Path(summary["row_result_paths"][0]).parent.parent.parent / "stop_record.json"
     if decision == FAIL_TOKEN:
-        lines.append("- `diagnostics_output/pact_place_corridor/stop_record.json`")
+        lines.append(f"- `{stop_path}`")
     lines.extend(["", decision, ""])
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("\n".join(lines))

@@ -11,7 +11,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MOLMO = ROOT / "submodules" / "molmospaces"
-MASTER_SEED = 2026081801
+MASTER_SEED = 2026081901
 N_EXPERT_ROWS = 24
 MIN_CLEAN_SUCCESSES = 20
 PASS_TOKEN = "PACT_PLACE_CORRIDOR_PHASE0_PASS"
@@ -55,6 +55,8 @@ def _source_hashes() -> dict[str, str]:
         "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py",
         "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py",
         "submodules/molmospaces/molmo_spaces/tasks/pick_and_place_task.py",
+        "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/pick_and_place_planner_policy.py",
+        "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/base_object_manipulation_planner_policy.py",
         "submodules/molmospaces/molmo_spaces/configs/task_configs.py",
         "scripts/pact_place_corridor_contract.py",
         "scripts/run_pact_place_expert_screen.py",

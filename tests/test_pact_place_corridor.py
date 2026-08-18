@@ -169,12 +169,39 @@ def test_place_sampler_and_expert_are_additive_subclasses() -> None:
     assert PactPlaceCorridorPolicy.OUTBOUND_PASS_SPEED == pytest.approx(0.045)
     assert PactPlaceCorridorPolicy.OUTSIDE_STAGING_X_M < 0.58
     assert PactPlaceCorridorPolicy.GRASP_WORLD_Z_OFFSET_M == pytest.approx(0.0)
+    assert PactPlaceCorridorPolicy.RELEASE_CLEARANCE_M == pytest.approx(0.005)
+    assert PactPlaceCorridorPolicy.BOW_SHRINK_STEP_M == pytest.approx(0.02)
+    assert "_get_placement_poses" in PactPlaceCorridorPolicy.__dict__
+    assert PactPlaceCorridorPolicy._bow_magnitudes(0.14, 0.14, 0.02) == pytest.approx(
+        [0.14]
+    )
+    assert PactPlaceCorridorPolicy._bow_magnitudes(0.18, 0.14, 0.02) == pytest.approx(
+        [0.18, 0.16, 0.14]
+    )
+
+
+def test_upstream_shared_planner_files_are_unmodified() -> None:
+    pick_place = (
+        MOLMO
+        / "molmo_spaces/policy/solvers/object_manipulation/pick_and_place_planner_policy.py"
+    )
+    base = (
+        MOLMO
+        / "molmo_spaces/policy/solvers/object_manipulation/base_object_manipulation_planner_policy.py"
+    )
+    assert hashlib.sha256(pick_place.read_bytes()).hexdigest() == (
+        "9ee369789397add3ae74492e4821993a981940be54cc0579e3d282328a8aa36a"
+    )
+    assert hashlib.sha256(base.read_bytes()).hexdigest() == (
+        "a7ee35704d60b82246fc48db466aaa081a6a83717d983cc062df3988e53893d5"
+    )
 
 
 def test_phase0_contract_is_balanced_self_hashed_and_stops_on_failure() -> None:
     document = contract.build_contract()
     contract.validate_contract(document)
     rows = document["expert_screen_rows"]
+    assert document["master_seed"] == 2026081901
     assert len(rows) == 24
     assert sum(row["intrusion_side"] == "left" for row in rows) == 12
     assert sum(row["intrusion_side"] == "right" for row in rows) == 12
@@ -185,11 +212,37 @@ def test_phase0_contract_is_balanced_self_hashed_and_stops_on_failure() -> None:
     assert document["success_criterion"][
         "lift_one_centimetre_criterion_on_success_path"
     ] is False
+    source = document["source_sha256"]
+    assert source[
+        "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/"
+        "pick_and_place_planner_policy.py"
+    ] == "9ee369789397add3ae74492e4821993a981940be54cc0579e3d282328a8aa36a"
+    assert source[
+        "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/"
+        "base_object_manipulation_planner_policy.py"
+    ] == "a7ee35704d60b82246fc48db466aaa081a6a83717d983cc062df3988e53893d5"
 
 
 def test_generated_contract_reproduces_if_present() -> None:
-    path = ROOT / "configs/pact_place_corridor_v1.json"
+    path = ROOT / "configs/pact_place_corridor_v2.json"
     if not path.exists():
-        pytest.skip("place-corridor contract has not been generated")
+        pytest.skip("place-corridor v2 contract has not been generated")
     saved = json.loads(path.read_text())
     assert saved == contract.build_contract()
+
+
+def test_failed_phase0_v1_artifacts_remain() -> None:
+    config_path = ROOT / "configs/pact_place_corridor_v1.json"
+    summary_path = ROOT / "diagnostics_output/pact_place_corridor/expert_screen.json"
+    assert config_path.is_file()
+    assert summary_path.is_file()
+    saved = json.loads(config_path.read_text())
+    assert saved["master_seed"] == 2026081801
+    assert saved["config_sha256"] == (
+        "46dff849dd16eb3b6c0baf169053829bc66203a39866f14a4667e8eaef559e40"
+    )
+    summary = json.loads(summary_path.read_text())
+    assert summary["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_FAIL"
+    assert (ROOT / "docs/PACT_PLACE_CORRIDOR_GATE.md").read_text().endswith(
+        "PACT_PLACE_CORRIDOR_PHASE0_FAIL\n"
+    )
