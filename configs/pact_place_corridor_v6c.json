@@ -1,0 +1,944 @@
+{
+  "config_sha256": "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e",
+  "created_utc": "2026-08-19T00:00:00Z",
+  "expert": {
+    "action_noise": false,
+    "class": "PactPlaceCorridorPolicy",
+    "empty_gripper_disarmed_on_placement_descent": true,
+    "empty_gripper_persist_steps": 3,
+    "empty_gripper_repair_is_not_a_threshold_change": true,
+    "expert_rollout_sensor_polling": [
+      "qpos",
+      "tcp_pose"
+    ],
+    "grasp_servo_duration_s": 2.0,
+    "gripper_empty_threshold_m": 0.002,
+    "inbound_safe_gap_m": 0.1,
+    "initial_observation_rejects_robot_environment_contact": true,
+    "observation_sensors_rationale": "normal sensor/camera geometry is built during sampling, then the privileged expert's polling suite is reduced to the qpos and tcp_pose sensors required by the upstream planner/config freezer; physics, contacts, robot, scene, and sensor bodies remain unchanged",
+    "outbound_approach_max_step_m": 0.04,
+    "outbound_carried_envelope_half_y_m": 0.15,
+    "outbound_carry_raise_m": 0.0,
+    "outbound_pass_speed_m_s": 0.045,
+    "outbound_safe_gap_m": 0.14,
+    "release_clearance_m": 0.005,
+    "task_horizon": 900
+  },
+  "expert_screen_rows": [
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.006727985,
+        "l1": 0.017744332,
+        "r0": 0.000393225,
+        "r1": -0.007248093
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.002881211,
+        "l1": 0.008189685,
+        "r0": -0.005684267,
+        "r1": -0.001610388
+      },
+      "episode_id": "620de104c09a824e6cf7f8703f9b9fe0fa540ccebfe5df1dc279567ecc991678",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003409911,
+      "panel_x_jitter_m": -0.008179997,
+      "role_index": 0,
+      "row_sha256": "e327faaed706d164f64846fa07f199460d8f4fdc9b0631ab594d07653bc5bd64",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2826594209,
+      "task_seed_u64": 12140129687745543780
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.006854564,
+        "l1": -0.00810114,
+        "r0": 0.019770287,
+        "r1": -0.0032092
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.01318113,
+        "l1": 0.014994883,
+        "r0": 0.000722308,
+        "r1": 0.002911211
+      },
+      "episode_id": "7a4eae7861c7decc82db04e251cbe96c49a27e006bc224838098f42580ea0831",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003955502,
+      "panel_x_jitter_m": -0.001854463,
+      "role_index": 1,
+      "row_sha256": "da6c00f6ed58fa5fb6b3ab159a7a8e33dbc879064fd73522419aa46ffab25cf9",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2654494852,
+      "task_seed_u64": 11400968581033112567
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.012154476,
+        "l1": 0.002983622,
+        "r0": 0.015116754,
+        "r1": -0.006081676
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.014776508,
+        "l1": -0.009449507,
+        "r0": 0.009415317,
+        "r1": -0.010205147
+      },
+      "episode_id": "5f2e54d53159ddf6c6e93d69d1241ad9063702287233b8df5ad1ad311da2c8ae",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004511093,
+      "panel_x_jitter_m": 0.001648159,
+      "role_index": 2,
+      "row_sha256": "16270c4be8ccf1b553b5a349183140891e2bac2914fc8e2d397d49a2e6ee89ec",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 173276610,
+      "task_seed_u64": 744217375320497744
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.000890621,
+        "l1": 0.001264616,
+        "r0": -0.004189446,
+        "r1": 0.007578414
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.019437143,
+        "l1": -0.011775564,
+        "r0": 0.003619091,
+        "r1": -0.006002711
+      },
+      "episode_id": "8f36d4ad3ca70c9f8a136682d4fc94b873b3635f2430ef150770242ec194bc06",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003122988,
+      "panel_x_jitter_m": 0.007339283,
+      "role_index": 3,
+      "row_sha256": "7fa8f2ccd837031a47c470a3dd0052af11c1b215c64d0f05f5ac06d915f33b62",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3496004607,
+      "task_seed_u64": 15015225455990951659
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.009930059,
+        "l1": -0.015618667,
+        "r0": -0.00987217,
+        "r1": 0.014630234
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.002799976,
+        "l1": 0.019788987,
+        "r0": -0.0158506,
+        "r1": 0.019581112
+      },
+      "episode_id": "dc81c0f7ea43fba1f1bf345a6561139abdbb8795bfc8d91b1e0333371ebd96da",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002626654,
+      "panel_x_jitter_m": -0.012817763,
+      "role_index": 4,
+      "row_sha256": "aef7e34ee50bf0714a2bb9c9998c3c5abdf44e5bc5831887ee3ef47df29664d1",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2987117932,
+      "task_seed_u64": 12829573829208500862
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.015441464,
+        "l1": -0.003982465,
+        "r0": -0.008954254,
+        "r1": 0.015220073
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.006963796,
+        "l1": -0.00134933,
+        "r0": 0.013554398,
+        "r1": -0.01470982
+      },
+      "episode_id": "1ef549c00750152c70a7455527b3e339ecc7068fdda08e86211e9035b402cec1",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001115166,
+      "panel_x_jitter_m": -0.007998778,
+      "role_index": 5,
+      "row_sha256": "b57e1069b71d1eab14a3025f7ce2603daec8ae2d08afa5075fd1d14899211877",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1413632100,
+      "task_seed_u64": 6071503638515976357
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.016773999,
+        "l1": 0.003201064,
+        "r0": 0.013001043,
+        "r1": 0.019283883
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.019816447,
+        "l1": 0.017166628,
+        "r0": 0.016010032,
+        "r1": 0.015073397
+      },
+      "episode_id": "bf3852bb339d1936ce5c93fe9af816f499516d6eb43997ddf662f983ffbffeb1",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000567627,
+      "panel_x_jitter_m": -0.005462979,
+      "role_index": 6,
+      "row_sha256": "cebe9f138a66c49cb6fd81dbaaf2d8b302cde586f7eaab3a6ddcf6d9d585fc66",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2255975484,
+      "task_seed_u64": 9689340926923537359
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.016595682,
+        "l1": -0.018596707,
+        "r0": 0.001743509,
+        "r1": -0.017368076
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.006513346,
+        "l1": -0.002079503,
+        "r0": 0.004539771,
+        "r1": -0.006477619
+      },
+      "episode_id": "d68d5836ab007f2de2a0ae593cabae5ac482cb343824c2550388cac0dfdb0d69",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000471413,
+      "panel_x_jitter_m": 0.007690371,
+      "role_index": 7,
+      "row_sha256": "d008de34f919808dad088cca29a9b11e0ac07399365ad886c84c222da1dd4955",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3331803168,
+      "task_seed_u64": 14309985646782099286
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.017863763,
+        "l1": 0.012049668,
+        "r0": 0.017358317,
+        "r1": 0.013775555
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.000515965,
+        "l1": -0.001953822,
+        "r0": 0.016528338,
+        "r1": -0.004395435
+      },
+      "episode_id": "2582f650aa0c00365063c5fd5f1ffb35c37e9230084ec6fac15ba4481468b0c4",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002459443,
+      "panel_x_jitter_m": 0.003825484,
+      "role_index": 8,
+      "row_sha256": "372532db056ea19325472f19beba53af06d6ded13d5ccdb7d557315e6d104937",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 246040182,
+      "task_seed_u64": 1056734536076367649
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.00069387,
+        "l1": -0.013871633,
+        "r0": -0.002191297,
+        "r1": -0.009573527
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.01681074,
+        "l1": -0.011110541,
+        "r0": 0.017826062,
+        "r1": -0.017238813
+      },
+      "episode_id": "5e538a4cb7210a7ad0e0dadd71e6d4c90528d6ecf285563788eac265aa149498",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001401279,
+      "panel_x_jitter_m": -0.005826031,
+      "role_index": 9,
+      "row_sha256": "ad145611091c1ad4676dde04687aee92fe8f597e920b9362c271d09978973614",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3529949050,
+      "task_seed_u64": 15161015729083546056
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.01381724,
+        "l1": -0.008034395,
+        "r0": -0.019740495,
+        "r1": -0.012007697
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.012367843,
+        "l1": -0.005075749,
+        "r0": 0.005070218,
+        "r1": 0.005487442
+      },
+      "episode_id": "8c015592091de16a7f335e7fc35b02975e44e9e3b27d15646611864d289e21fb",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000334822,
+      "panel_x_jitter_m": -0.008038807,
+      "role_index": 10,
+      "row_sha256": "0c8e7c41d05270a1dbb185f77083f45fe5953a378a8c78a60af850d1d150d6ff",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1308291948,
+      "task_seed_u64": 5619071133114322297
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.00627623,
+        "l1": 0.010638046,
+        "r0": 0.015955284,
+        "r1": 0.011379809
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.013792907,
+        "l1": 0.004873415,
+        "r0": 0.018669577,
+        "r1": -0.000141597
+      },
+      "episode_id": "97e88c68ddba60548588f23caf12fc5115a0fcb6e7ce4f1c0a487d968e2a5e13",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004023884,
+      "panel_x_jitter_m": 0.011441106,
+      "role_index": 11,
+      "row_sha256": "552c99793be8ced1d57c6f354f41330669216627a7505a6189775eb6de072693",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2747416931,
+      "task_seed_u64": 11800065869499985641
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.015733224,
+        "l1": 0.007481375,
+        "r0": 0.019110729,
+        "r1": 0.008688419
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.013774397,
+        "l1": -0.009081323,
+        "r0": -0.000498842,
+        "r1": -0.019546086
+      },
+      "episode_id": "a68ff2f4fd3a73dcbab469963e8e80c9cf375d57680828d9916245dfde902727",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003016665,
+      "panel_x_jitter_m": 0.008008337,
+      "role_index": 12,
+      "row_sha256": "20cf64b0544c2774a8028d20d3dd66547e437deb863e6a9c2c2fdbdac537b151",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 479083611,
+      "task_seed_u64": 2057648441856515430
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.004958053,
+        "l1": -0.013946266,
+        "r0": 0.018038337,
+        "r1": 0.016465488
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.004383844,
+        "l1": -0.004842715,
+        "r0": -0.010472338,
+        "r1": -0.009980755
+      },
+      "episode_id": "aa6fef28287c04a987bf4f31dbfebe80325b7f84fef39f918054dc2917ecc8fa",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003282147,
+      "panel_x_jitter_m": -0.001272657,
+      "role_index": 13,
+      "row_sha256": "97de9b582c27ff17d7d3c0be3e92dd8708c5ec9b4003cc77366b42916df5aad7",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1908296640,
+      "task_seed_u64": 8196071660766302647
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.019913656,
+        "l1": 0.012716206,
+        "r0": -0.019496946,
+        "r1": 0.004760771
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.001828752,
+        "l1": 0.009589547,
+        "r0": -0.01015358,
+        "r1": -0.009150003
+      },
+      "episode_id": "f422a26301d215537fc004fc7aafde33ef0f0e8273ea5201cbb7712387ca58c9",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004038265,
+      "panel_x_jitter_m": -0.004353056,
+      "role_index": 14,
+      "row_sha256": "dc0d2cf20973a4300d44c4f8a980bb86eb4a67e0995b666fe3ef393db57b1533",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3617413111,
+      "task_seed_u64": 15536671008752103591
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.019091748,
+        "l1": 0.011501607,
+        "r0": 0.011460864,
+        "r1": 0.010581148
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.012230591,
+        "l1": 0.000409219,
+        "r0": -0.014660806,
+        "r1": -0.013699539
+      },
+      "episode_id": "efaab1d8f9d3a8e3b092493ad89036dcf6e84c07440a8b5b22a0ccb360296ff6",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001584932,
+      "panel_x_jitter_m": -0.002672838,
+      "role_index": 15,
+      "row_sha256": "0d65a6f335ea37c303f9bbda1e12dbe27b5e825b3b53d71e4594db5f145ac1a6",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4253092265,
+      "task_seed_u64": 18266892185138533949
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.002178367,
+        "l1": -0.007118988,
+        "r0": -0.009825694,
+        "r1": -0.005233422
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.009050797,
+        "l1": 0.017820435,
+        "r0": -0.018267075,
+        "r1": -0.001176285
+      },
+      "episode_id": "b4d15b2eb85b74f514703cdfc5f181aff80b548ec73df58853deba055975a598",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002329607,
+      "panel_x_jitter_m": 0.00139267,
+      "role_index": 16,
+      "row_sha256": "81bf8fb1d0c9ae9880494d7948e0797f277496e7a874b51b5a8b66b7ef98399e",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2944805072,
+      "task_seed_u64": 12647841480482023307
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.009637642,
+        "l1": 0.01131684,
+        "r0": 0.014340452,
+        "r1": 0.000319887
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.005143347,
+        "l1": 0.010860643,
+        "r0": 0.015678108,
+        "r1": 0.012046816
+      },
+      "episode_id": "1a04b4d5bc07744247f88e5350f7df916dc23a9a7645b3f554cd4c9db92c0457",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000179633,
+      "panel_x_jitter_m": -0.006729468,
+      "role_index": 17,
+      "row_sha256": "14659b6243d0f729fa597a752f55dda6c729a26da773d50a9b57a7e018550460",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3546830599,
+      "task_seed_u64": 15233521427379196233
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.002644184,
+        "l1": -0.016734703,
+        "r0": -0.008697765,
+        "r1": -0.001932758
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.001411177,
+        "l1": 0.010770888,
+        "r0": -0.012572384,
+        "r1": 0.010672542
+      },
+      "episode_id": "5f5a02f6d48554f1c7539d040d51b321a8c307b650bbb2836e47275ad7f58dba",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003910853,
+      "panel_x_jitter_m": -0.014438013,
+      "role_index": 18,
+      "row_sha256": "1254c7a659217fb8af00926ffc7926f7e83da25d75eedc5da7c985440b1e3c9f",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2908756362,
+      "task_seed_u64": 12493013451060876981
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.013071635,
+        "l1": -0.018798101,
+        "r0": -0.00647728,
+        "r1": 0.012913483
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.019962884,
+        "l1": -0.012966779,
+        "r0": 0.019890862,
+        "r1": 0.014323832
+      },
+      "episode_id": "7681c8cf50d6723160fb953bf6de71c19da63f25a81a832bb297f03a02c09497",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001342003,
+      "panel_x_jitter_m": 0.008613462,
+      "role_index": 19,
+      "row_sha256": "08ae05994754bfbeea798a4f6384d5909d3a96fe00f2530230fa5bd33d1c8daa",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2184833580,
+      "task_seed_u64": 9383788773983223278
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.010344619,
+        "l1": 0.002212,
+        "r0": 0.010147348,
+        "r1": -0.008887907
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.01564398,
+        "l1": 0.016280753,
+        "r0": 0.001147777,
+        "r1": 0.007554355
+      },
+      "episode_id": "560fac456439b79c87e5146a1df1b49b120a8d247069543d81ca72f1b794cd08",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002555797,
+      "panel_x_jitter_m": -0.013889762,
+      "role_index": 20,
+      "row_sha256": "9c05d3974167290a2e71a6c06cbaf4a4b7ec7da1d925412b15c2d969f49c9af6",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3376609175,
+      "task_seed_u64": 14502425982069663366
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.001642645,
+        "l1": 0.003966965,
+        "r0": 0.013563183,
+        "r1": -0.001795481
+      },
+      "clutter_y_jitter_m": {
+        "l0": 9.1987e-05,
+        "l1": 0.014184611,
+        "r0": -0.017665525,
+        "r1": 0.005554894
+      },
+      "episode_id": "cfaf25c7e7f59539dc7bab7ff5133bd53b0e3f08a1c16dade6756e06a6300df1",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004776213,
+      "panel_x_jitter_m": -0.004399299,
+      "role_index": 21,
+      "row_sha256": "1a57e06b5bb841f98d1186ff94f0a1e4f846ef37dba0b873a8ee6d4f64f746df",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 559840664,
+      "task_seed_u64": 2404497343844841540
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.011460817,
+        "l1": 0.010903891,
+        "r0": -0.005755704,
+        "r1": 0.002333054
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.000553274,
+        "l1": 0.005870091,
+        "r0": -0.001699721,
+        "r1": 0.017428883
+      },
+      "episode_id": "c42c686a645d075e80e08e9cbe099486832214281092ff041548ef7233814a4b",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001652482,
+      "panel_x_jitter_m": -0.010910502,
+      "role_index": 22,
+      "row_sha256": "3f7bfdd78eb2e22f6ac3baedc5690c8c13a9ff74aaa829a2f3fedea7d4bd8048",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3856115304,
+      "task_seed_u64": 16561889121890744172
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.014477458,
+        "l1": 0.005119941,
+        "r0": -0.011874584,
+        "r1": 0.017877062
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.01133194,
+        "l1": -0.018720285,
+        "r0": 0.01826053,
+        "r1": 0.016547392
+      },
+      "episode_id": "00bafed0d578ef67dbf92c01bb2bfd062b1f25cf73b9633d0a0116ea40e280cb",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000332233,
+      "panel_x_jitter_m": 0.000667363,
+      "role_index": 23,
+      "row_sha256": "24d981ea9a89b63e45f02db5af30eda62d6351c38c4bcf575401089b6bfcf152",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2935683462,
+      "task_seed_u64": 12608664462564580698
+    }
+  ],
+  "master_seed": 2026082701,
+  "phase0_gate": {
+    "a0_clearance_probe_zero_clutter": true,
+    "attempt6_prediction": {
+      "bar": 20,
+      "note": "Drafted for v6; v6 stopped at A0. v6b uses attempt6b_prediction.",
+      "on_18_or_fewer": "clutter_interferes_with_grasp_resite_via_a0",
+      "on_19": "clutter_costs_about_one_row_gate_marginal",
+      "on_20_or_more": "gate_passes_collect",
+      "predicted_clean_rate": [
+        0.792,
+        0.917
+      ],
+      "predicted_clean_successes": [
+        19,
+        22
+      ],
+      "prior_screens_clean": [
+        18,
+        18,
+        18,
+        15,
+        22
+      ],
+      "recorded_before_first_episode": true,
+      "v5_failures_clutter_does_not_touch": [
+        3,
+        10
+      ]
+    },
+    "attempt6b_prediction": {
+      "bar": 20,
+      "on_18_or_fewer": "clutter_interferes_with_grasp_resite_via_a0",
+      "on_19": "clutter_costs_about_one_row_gate_marginal",
+      "on_20_or_more": "gate_passes_collect",
+      "predicted_clean_rate": [
+        0.792,
+        0.917
+      ],
+      "predicted_clean_successes": [
+        19,
+        22
+      ],
+      "prior_screens_clean": [
+        18,
+        18,
+        18,
+        15,
+        22
+      ],
+      "recorded_before_first_episode": true,
+      "v5_failures_clutter_does_not_touch": [
+        3,
+        10
+      ],
+      "v6_was_a0_stop_not_a_screen": true,
+      "v6b_probe_clean": [
+        7,
+        8
+      ],
+      "v6b_probe_clutter_episodes": 0
+    },
+    "attempt6c_prediction": {
+      "bar": 20,
+      "note": "v6b scored 20/24 with four retrieval failures and zero clutter. Larger boxes at the same 28 mm inner-face margin should not change that.",
+      "on_18_or_fewer": "enlargement_bit_return_to_a0c_not_tuning",
+      "on_19": "honest_and_marginal",
+      "on_20_or_more": "gate_passes_collect",
+      "predicted_clean_rate": [
+        0.792,
+        0.917
+      ],
+      "predicted_clean_successes": [
+        19,
+        22
+      ],
+      "prior_screens_clean": [
+        18,
+        18,
+        18,
+        15,
+        22,
+        20
+      ],
+      "recorded_before_first_episode": true,
+      "v6_was_a0_stop_not_a_screen": true,
+      "v6b_clean": 20,
+      "v6b_clutter_episodes": 0,
+      "v6b_failures_not_clutter": [
+        2,
+        9,
+        14,
+        22
+      ],
+      "v6b_was_phase0_pass": true,
+      "v6c_probe_clean": [
+        6,
+        8
+      ],
+      "v6c_probe_clutter_episodes": 0
+    },
+    "clean_success_definition": "task_success and zero hazard_bar entries and zero other_environment entries and zero clutter entries and zero place_receptacle contact outside placement; preplace is treated as placement",
+    "clearance_probe_v6b": {
+      "clean": 7,
+      "clutter_contact_episodes": 0,
+      "diagnostic_config_sha256": "461a04609fa3fb5d540bb9c274f857226b2afe539cf4379f9667625569a91a48",
+      "n": 8,
+      "path": "diagnostics_output/pact_place_corridor_v6b_clearance_probe",
+      "role": "diagnostic_not_a_gate",
+      "task_success": 7
+    },
+    "clearance_probe_v6c": {
+      "clean": 6,
+      "clutter_contact_episodes": 0,
+      "diagnostic_config_sha256": "1b18c40cf77e7e7bf817519967edb8f384d7361004f0002aa3f41edb67237c4f",
+      "fallback_to_top_080": false,
+      "n": 8,
+      "path": "diagnostics_output/pact_place_corridor_v6c_clearance_probe",
+      "role": "diagnostic_not_a_gate",
+      "task_success": 6,
+      "top_z_m": 0.82
+    },
+    "clutter_sweep": {
+      "chosen_half_xy_m": 0.03,
+      "chosen_height_m": 0.06,
+      "chosen_slots_xy_m": {
+        "l0": [
+          0.72,
+          0.22
+        ],
+        "l1": [
+          0.78,
+          0.22
+        ],
+        "r0": [
+          0.72,
+          -0.22
+        ],
+        "r1": [
+          0.78,
+          -0.22
+        ]
+      },
+      "n_candidate_sets": 30,
+      "n_eligible": 12,
+      "n_footprint_ok": 12,
+      "n_ik_ok": 12,
+      "path": "diagnostics_output/pact_place_clutter_sweep/analysis.json",
+      "sweep_sha256": "e34038b9e4a32e5b84729f62d5dc1a851b40c3ad2aa11b6d79bccc461c3526ae"
+    },
+    "clutter_sweep_v6b": {
+      "chosen_half_xy_m": 0.03,
+      "chosen_height_m": 0.06,
+      "chosen_slots_xy_m": {
+        "l0": [
+          0.72,
+          0.32
+        ],
+        "l1": [
+          0.78,
+          0.32
+        ],
+        "r0": [
+          0.72,
+          -0.32
+        ],
+        "r1": [
+          0.78,
+          -0.32
+        ]
+      },
+      "n_candidate_sets": 30,
+      "n_eligible": 30,
+      "n_footprint_ok": 30,
+      "n_ik_ok": 30,
+      "path": "diagnostics_output/pact_place_clutter_sweep_v6b/analysis.json",
+      "step0_axis": "lateral",
+      "sweep_sha256": "388c23677516a65431b51e28d4a22becaa0b2a491c52f730f37b73e00b8e66f3"
+    },
+    "clutter_sweep_v6c": {
+      "boxes_not_shrunk": true,
+      "chosen_half_x_m": 0.025,
+      "chosen_half_y_m": 0.05,
+      "chosen_height_m": 0.09999999999999998,
+      "chosen_slots_xy_m": {
+        "l0": [
+          0.7,
+          0.34
+        ],
+        "l1": [
+          0.75,
+          0.34
+        ],
+        "r0": [
+          0.7,
+          -0.34
+        ],
+        "r1": [
+          0.75,
+          -0.34
+        ]
+      },
+      "chosen_top_z_m": 0.82,
+      "inner_face_held_at_abs_y_m": 0.29,
+      "max_outer_face_x_m": 0.775,
+      "min_inner_face_abs_y_m": 0.29000000000000004,
+      "n_candidate_sets": 2,
+      "n_eligible": 2,
+      "n_enclosure_ok": 2,
+      "n_footprint_ok": 2,
+      "n_ik_ok": 2,
+      "path": "diagnostics_output/pact_place_clutter_sweep_v6c/analysis.json",
+      "sweep_sha256": "714e0ce8c69b71141207cad5dfe02808a7aa753603a22ec6296ca89bacfd14da"
+    },
+    "do_not_freeze_until_zero_clutter_probe": false,
+    "fail_token": "PACT_PLACE_CORRIDOR_PHASE0_FAIL",
+    "fifth_attempt": "receptacle_relocation_and_phase_aware_exemption",
+    "minimum_clean_successes": 20,
+    "n": 24,
+    "no_fifth_attempt": false,
+    "on_fail": "stop_without_collection_or_training",
+    "pass_token": "PACT_PLACE_CORRIDOR_PHASE0_PASS",
+    "phase0_not_run": false,
+    "prior_screens_not_comparable_on_clean_success": true,
+    "reachability_sweep": {
+      "chosen_center_xy_m": [
+        0.35,
+        0.32
+      ],
+      "clearance_beyond_traversal_y_m": 0.113,
+      "footprint": "shrunk_0.10x0.10",
+      "n_candidates": 26,
+      "n_clears_8cm": 3,
+      "n_eligible": 3,
+      "n_reachable": 26,
+      "path": "diagnostics_output/pact_place_reachability_sweep/analysis.json",
+      "sweep_sha256": "b657da019b8638ba8b94e1bfa64a1d31ddfa7c27d7a7c6f4b6f22824602e211b"
+    },
+    "report_separately": [
+      "grasp_phase_success",
+      "place_phase_success_given_grasp",
+      "inbound_hazard_contact",
+      "outbound_hazard_contact",
+      "place_receptacle_outside_placement",
+      "clutter_contact"
+    ],
+    "sixth_attempt": "fixed_shelf_clutter",
+    "sixth_b_attempt": "resite_clutter_laterally_after_cup_contact",
+    "sixth_c_attempt": "grow_clutter_presence_hold_inner_face",
+    "v5_was_phase0_pass_not_a_failure": true,
+    "v6_clean_success_stricter_than_v5": true
+  },
+  "protected_artifact_sha256_before": {
+    "diagnostics_output/pact_blind_rgb/analysis.json": "ec940960bb93358184a979be2d73a5bf303819a0ab8b09f41c94a7a1d3f1eda7",
+    "diagnostics_output/pact_blind_rgb/final_decision.json": "3defb51f71995c3af3985ef31ebd526edfa4840777fb412ee91d84ad86d26cdb",
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLIND_RGB.md": "29e2f8e44c819fe8040dc8f443bce1ed61fe61822c6ed289a4cb35291285efbb",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION.md": "952cadf34434017d03b73215c3c1e05b6c8ede1a6f205490e5f00b729f5f6daa"
+  },
+  "route": "collision_route_pick_and_place",
+  "scene": {
+    "aperture_plane_x_m": 0.58,
+    "base_forward_m": 0.14,
+    "clutter_body_prefix": "pact_clutter_",
+    "clutter_drawn_from_task_seed_not_intrusion_side": true,
+    "clutter_half_x_m": 0.025,
+    "clutter_half_y_m": 0.05,
+    "clutter_height_m": 0.1,
+    "clutter_immovable_mocap": true,
+    "clutter_inner_face_abs_y_m": 0.29,
+    "clutter_jitter_m": 0.02,
+    "clutter_lateral_margin_at_closest_approach_m": 0.028,
+    "clutter_nominal_rear_outer_x_m": 0.775,
+    "clutter_slot_names": [
+      "l0",
+      "l1",
+      "r0",
+      "r1"
+    ],
+    "clutter_top_z_m": 0.82,
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "place_receptacle_center_xyz_m": [
+      0.35,
+      0.32,
+      0.0
+    ],
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_footprint": "shrunk_0.10x0.10",
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "sampler_class": "PactPlaceCorridorV3Sampler",
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3.xml"
+  },
+  "schema_version": "pact_place_corridor_v6",
+  "source_sha256": {
+    "scripts/pact_place_corridor_contract.py": "1aec8b61bbc1f9a7e47610444007fda6e9f27295675e59ab79d74aea6f567e41",
+    "scripts/run_pact_place_clutter_sweep.py": "06d3037f6dd87efeb83c315576f2c8800c657b80b5b17977c8e4f1e660b70304",
+    "scripts/run_pact_place_clutter_sweep_v6b.py": "aec8f942f50d472d1e899602ffd646e873c3386262b9f3a92d2c76d3756aec3a",
+    "scripts/run_pact_place_clutter_sweep_v6c.py": "5b6c0ed4202fd1fba18ff9098edd19b21a6439f65c9616c5f1c1e3f7c71332c5",
+    "scripts/run_pact_place_expert_screen.py": "dac8cf670262690cf13e5f4d4cc71f82d06ccb455c152b8fc2a0c0f28c7ec558",
+    "scripts/run_pact_place_reachability_sweep.py": "90f51d0d2000ff4d701de65069785bfbfd3a603ecf160e035ecb48a6cc474eff",
+    "submodules/molmospaces/molmo_spaces/configs/task_configs.py": "785d4b5b2a2430fb4fd2273bb59e54b5b13c8f2271255f0829a6ca144a3b257f",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml": "d853e27ca453a246a73a7fa590e3a05f5c93db0893805cd41067e73441aba942",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml": "920860de9426fe15d607a6318fc81fb51012f4b82aa3d0e437a76f648e38be5d",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3.xml": "cf104be203c8e13b3dc02a0561853bfb7c61804f6bf1ec156d86174455b31c6f",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/base_object_manipulation_planner_policy.py": "a7ee35704d60b82246fc48db466aaa081a6a83717d983cc062df3988e53893d5",
+    "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/pick_and_place_planner_policy.py": "9ee369789397add3ae74492e4821993a981940be54cc0579e3d282328a8aa36a",
+    "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py": "340a1e7d0546ed2083c81af94493f148842472e6a6d7fa6cc1f2fe7992ae303f",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py": "9d833bb0b9a3ebea5209687726f4fa7915e143dce780f557aa2ba8d9169e3ffd",
+    "submodules/molmospaces/molmo_spaces/tasks/pick_and_place_task.py": "7d4ad29a589902ed8ddd29c388714efe068d84cd908e825480da4c4435a5cf26"
+  },
+  "status": "phase0_preregistered",
+  "success_criterion": {
+    "implementation": "PickAndPlaceTask.get_info",
+    "lift_one_centimetre_criterion_on_success_path": false,
+    "max_receptacle_position_displacement_m": 0.1,
+    "max_receptacle_tilt_radians": 0.7853981633974483,
+    "robot_no_longer_touching_target": true,
+    "supported_weight_fraction": 0.5
+  }
+}

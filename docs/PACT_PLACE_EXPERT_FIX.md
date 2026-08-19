@@ -1,10 +1,15 @@
 # PACT pick-and-place expert fix: two-screen report
 
+A later named-repair third screen also failed; see
+[`PACT_PLACE_ATTEMPT3.md`](PACT_PLACE_ATTEMPT3.md) and
+[`PACT_PLACE_CORRIDOR_GATE_V3.md`](PACT_PLACE_CORRIDOR_GATE_V3.md). The two FAIL
+records in this document are unchanged.
+
 ## Decision
 
 **Stop.** The fresh-seed gate failed at **18/24 clean successes** against a required 20/24
-(`PACT_PLACE_CORRIDOR_PHASE0_FAIL`). The expert-fix budget is one fix and two screens; there is
-no third iteration. No demonstration collection, encoder work, or training is authorized.
+(`PACT_PLACE_CORRIDOR_PHASE0_FAIL`). The expert-fix budget at the time of this
+document was one fix and two screens. No demonstration collection, encoder work, or training is authorized.
 
 The original failed Phase-0 record is unchanged:
 [`docs/PACT_PLACE_CORRIDOR_GATE.md`](PACT_PLACE_CORRIDOR_GATE.md). The re-screen gate ledger is

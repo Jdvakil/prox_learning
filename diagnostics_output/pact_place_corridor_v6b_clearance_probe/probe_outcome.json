@@ -1,0 +1,30 @@
+{
+  "schema_version": "pact_place_clutter_probe_v1",
+  "role": "diagnostic_not_a_gate",
+  "a0b_set_id": 12,
+  "slots_xy_m": {
+    "l0": [0.72, 0.32],
+    "l1": [0.78, 0.32],
+    "r0": [0.72, -0.32],
+    "r1": [0.78, -0.32]
+  },
+  "height_m": 0.06,
+  "half_xy_m": 0.03,
+  "config_sha256": "461a04609fa3fb5d540bb9c274f857226b2afe539cf4379f9667625569a91a48",
+  "n": 8,
+  "complete_rows": 8,
+  "clean": 7,
+  "task_success": 7,
+  "clutter_contact_episodes": 0,
+  "inbound_clutter_episodes": 0,
+  "placement_clutter_episodes": 0,
+  "hazard_contact_episodes": 0,
+  "other_environment_contact_episodes": 0,
+  "place_receptacle_outside_placement_episodes": 0,
+  "ik_fail_row": 7,
+  "ik_fail_branch": "ik_cascade",
+  "ik_fail_phase": "outbound_approach",
+  "zero_clutter_requirement_met": true,
+  "minimum_clean_6_of_8_met": true,
+  "note": "Chosen A0b set, inner faces at |y|=0.29. Zero pact_clutter contact. The unclean row is the same outbound_approach ik_cascade miss as v5 row 3, not clutter."
+}

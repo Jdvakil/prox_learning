@@ -1,0 +1,584 @@
+{
+  "accepted_bow_m": 0.40166819484682476,
+  "bow_diagnostics": {
+    "inbound": {
+      "accepted_bow_m": 0.0,
+      "bow_fallback_taken": false,
+      "planned_bow_m": 0.0
+    },
+    "outbound": {
+      "accepted_bow_m": 0.40166819484682476,
+      "bow_fallback_taken": false,
+      "planned_bow_m": 0.40166819484682476
+    }
+  },
+  "bow_fallback_taken": false,
+  "clean_success": false,
+  "clutter_x_jitter_m": {
+    "l0": 0.003708267,
+    "l1": 0.012394111,
+    "r0": 0.012023573,
+    "r1": -0.011607517
+  },
+  "clutter_y_jitter_m": {
+    "l0": 0.002060939,
+    "l1": -0.002861037,
+    "r0": 0.003553383,
+    "r1": -0.01624327
+  },
+  "config_sha256": "0f4d80580e1aa2963906378c377e7d61e4bee65afa719e74c7ca9e799b9778d8",
+  "contact_audit": {
+    "added_contact_classes": [
+      "place_receptacle",
+      "clutter"
+    ],
+    "collision_free": false,
+    "contact_class_totals": {
+      "clutter": 2497,
+      "grasp_target": 174678,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0
+    },
+    "contact_frame_payload_retained": false,
+    "contact_frames": [],
+    "contact_taxonomy_version": "pact_place_robot_environment_v2",
+    "first_contact_step": {
+      "clutter": 224,
+      "grasp_target": 145,
+      "hazard_bar": null,
+      "other_environment": null,
+      "place_receptacle": null
+    },
+    "frames_with_contact": {
+      "clutter": 1990,
+      "grasp_target": 13696,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0
+    },
+    "inbound_hazard_contact_frames": 0,
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "maximum_penetration_depth_m": {
+      "clutter": 0.0013153078016046984,
+      "grasp_target": 0.0005805317966373989,
+      "hazard_bar": 0.0,
+      "other_environment": 0.0,
+      "place_receptacle": 0.0
+    },
+    "non_target_contact_entries": 2497,
+    "outbound_hazard_contact_frames": 0,
+    "phase_contact_class_totals": {
+      "inbound": {
+        "clutter": 0,
+        "grasp_target": 1355,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "other": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "outbound": {
+        "clutter": 2497,
+        "grasp_target": 158227,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "placement": {
+        "clutter": 0,
+        "grasp_target": 15096,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      }
+    },
+    "phase_frames_with_contact": {
+      "inbound": {
+        "clutter": 0,
+        "grasp_target": 287,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "other": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "outbound": {
+        "clutter": 1990,
+        "grasp_target": 12045,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "placement": {
+        "clutter": 0,
+        "grasp_target": 1364,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      }
+    },
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_outside_placement_entries": 0,
+    "sample_count": 19966,
+    "sampling_level": "every_2ms_control_physics_step_plus_episode_boundaries"
+  },
+  "cup_lifted_one_cm": true,
+  "endpoint_scalars": {
+    "endpoint_values_emitted_during_compaction": true,
+    "object_end_position_m": [
+      0.3575497255461888,
+      0.3297830894662808,
+      0.793749399517383
+    ],
+    "object_end_quat_xyzw": [
+      -0.5040956864605678,
+      -0.5040966500790734,
+      0.495869466252602,
+      0.49587052615502725
+    ],
+    "object_height_above_start_at_terminal_m": 2.802860783801542e-06,
+    "object_max_z_m": 0.8980689202340951,
+    "object_start_position_m": [
+      0.7686681844660295,
+      0.00043817618993111595,
+      0.7937465966565992
+    ],
+    "object_start_quat_xyzw": [
+      -0.3435874616665084,
+      -0.34358744773054967,
+      0.6180191295311729,
+      0.6180191562412142
+    ],
+    "object_to_receptacle_distance_m": 0.793845587270934,
+    "settle_displacement_m": 0.0,
+    "settle_window_steps": 25
+  },
+  "episode_id": "221c81acd74e0d1a33f0e447fca1148f224587d60b40a15f22dffaa2877d6d94",
+  "episode_steps": 605,
+  "grasp_diagnostics": {
+    "adjusted_grasp_object_local_position_m": [
+      -0.028839111328124944,
+      0.048309326171875,
+      0.0227508544921875
+    ],
+    "adjusted_grasp_world_position_m": [
+      0.7645652037306405,
+      0.036941068878562584,
+      0.8420559238300195
+    ],
+    "bow_diagnostics": {
+      "inbound": {
+        "accepted_bow_m": 0.0,
+        "bow_fallback_taken": false,
+        "planned_bow_m": 0.0
+      },
+      "outbound": {
+        "accepted_bow_m": 0.40166819484682476,
+        "bow_fallback_taken": false,
+        "planned_bow_m": 0.40166819484682476
+      }
+    },
+    "carry_position_m": [
+      0.7645652037306405,
+      0.036941068878562584,
+      0.8920559238300195
+    ],
+    "outbound_waypoint_positions_m": [
+      [
+        0.7609436224422004,
+        -0.0006695442678645164,
+        0.8920559238300195
+      ],
+      [
+        0.7573220411537603,
+        -0.03828015741429162,
+        0.8920559238300195
+      ],
+      [
+        0.7537004598653202,
+        -0.07589077056071872,
+        0.8920559238300195
+      ],
+      [
+        0.7500788785768802,
+        -0.11350138370714583,
+        0.8920559238300195
+      ],
+      [
+        0.74645729728844,
+        -0.1511119968535729,
+        0.8920559238300195
+      ],
+      [
+        0.7428357159999999,
+        -0.18872261,
+        0.8920559238300195
+      ],
+      [
+        0.49138260814922563,
+        -0.18872260999999999,
+        0.8920559238300195
+      ],
+      [
+        0.48,
+        0.35650289268863145,
+        0.8920559238300195
+      ]
+    ],
+    "outside_staging_position_m": [
+      0.48,
+      0.35650289268863145,
+      0.8920559238300195
+    ],
+    "place_position_m": [
+      0.345897019264611,
+      0.35650289268863145,
+      0.847539329711959
+    ],
+    "preplace_position_m": [
+      0.345897019264611,
+      0.35650289268863145,
+      0.9608486568853793
+    ],
+    "release_clearance_m": 0.005,
+    "stock_grasp_object_local_position_m": [
+      -0.028839111328124944,
+      0.048309326171875,
+      0.0227508544921875
+    ],
+    "stock_grasp_world_position_m": [
+      0.7645652037306405,
+      0.036941068878562584,
+      0.8420559238300195
+    ],
+    "world_z_offset_m": 0.0
+  },
+  "grasp_phase_success": true,
+  "gripper_width_max_m": 0.08687751802094994,
+  "gripper_width_min_m": 0.0,
+  "inbound_deflected": true,
+  "intrusion_side": "left",
+  "outbound_deflected": true,
+  "panel_face_jitter_m": 0.00127739,
+  "panel_x_jitter_m": -0.007164284,
+  "pickup_final_position_m": [
+    0.3575497255461888,
+    0.3297830894662808,
+    0.793749399517383
+  ],
+  "pickup_max_z_m": 0.8980689202340951,
+  "pickup_start_z_m": 0.7937465966565992,
+  "place_metrics": {
+    "carry_forward_pos_diff": 0.0,
+    "carry_forward_rot_diff": 0.0,
+    "episode_step": 605,
+    "position_error": 0.01951937074156751,
+    "receptacle_pos_displacement": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "receptacle_rot_displacement": 0.0,
+    "receptacle_tilt_displacement": 0.0,
+    "robot_contact": false,
+    "success": true,
+    "supported_by_carry_forward": false,
+    "supported_by_receptacle": true
+  },
+  "place_phase_success": true,
+  "planned_bow_m": 0.40166819484682476,
+  "result_sha256": "ad3c5aa2a62f771773b9204dceff452186e3b8aecd434e42b1f4d5b7a409f428",
+  "retry_history": [
+    {
+      "reason": "pre_boundary:ValueError:IK failed for pregrasp pose",
+      "retry_index": 0,
+      "seed": {
+        "seed_u32": 2377395763,
+        "seed_u64": 10210837054274195784
+      }
+    }
+  ],
+  "role_index": 0,
+  "row_sha256": "f266202c0669d6db86a5ec3299d9ed79917b5f06125612c6f97c7ce300d2320e",
+  "scene_params": {
+    "ap_h": 0.7,
+    "ap_w": 0.85,
+    "cam_visible": true,
+    "cell": "pact_collision_corridor",
+    "clearance": 0.0990093939605678,
+    "depth": 0.1811433830110342,
+    "grasp_pitch_deg": 50.0,
+    "light_scale": 1.0,
+    "obstacle_aabbs": [
+      [
+        [
+          0.58,
+          0.0,
+          1.4449999999999998
+        ],
+        [
+          0.015,
+          0.44,
+          0.025
+        ]
+      ],
+      [
+        [
+          0.58,
+          0.605,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.58,
+          -0.605,
+          0.9199999999999999
+        ],
+        [
+          0.012,
+          0.18,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.95,
+          0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.95,
+          -0.45,
+          1.12
+        ],
+        [
+          0.4,
+          0.012,
+          0.4
+        ]
+      ],
+      [
+        [
+          1.36,
+          0.0,
+          1.12
+        ],
+        [
+          0.012,
+          0.46,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.607835716,
+          0.34127739,
+          0.89
+        ],
+        [
+          0.055,
+          0.24,
+          0.09
+        ]
+      ]
+    ],
+    "pact_clutter": {
+      "l0": {
+        "body": "pact_clutter_l0",
+        "center_m": [
+          0.723708267,
+          0.222060939,
+          0.75
+        ],
+        "half_m": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "jitter_xy_m": [
+          0.003708267,
+          0.002060939
+        ],
+        "nominal_xy_m": [
+          0.72,
+          0.22
+        ]
+      },
+      "l1": {
+        "body": "pact_clutter_l1",
+        "center_m": [
+          0.792394111,
+          0.217138963,
+          0.75
+        ],
+        "half_m": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "jitter_xy_m": [
+          0.012394111,
+          -0.002861037
+        ],
+        "nominal_xy_m": [
+          0.78,
+          0.22
+        ]
+      },
+      "r0": {
+        "body": "pact_clutter_r0",
+        "center_m": [
+          0.732023573,
+          -0.216446617,
+          0.75
+        ],
+        "half_m": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "jitter_xy_m": [
+          0.012023573,
+          0.003553383
+        ],
+        "nominal_xy_m": [
+          0.72,
+          -0.22
+        ]
+      },
+      "r1": {
+        "body": "pact_clutter_r1",
+        "center_m": [
+          0.7683924830000001,
+          -0.23624327,
+          0.75
+        ],
+        "half_m": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "jitter_xy_m": [
+          -0.011607517,
+          -0.01624327
+        ],
+        "nominal_xy_m": [
+          0.78,
+          -0.22
+        ]
+      }
+    },
+    "pact_clutter_half_xy_m": 0.03,
+    "pact_clutter_height_m": 0.06,
+    "pact_environment_version": "pact_collision_corridor_v1",
+    "pact_intrusion_side": "left",
+    "pact_panel_inner_face_y_m": 0.10127739000000001,
+    "pact_place_environment_version": "pact_place_corridor_v3",
+    "place_receptacle_name": "place_receptacle",
+    "place_receptacle_start_pose": [
+      0.35,
+      0.32,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "protr_center": [
+      0.607835716,
+      0.34127739,
+      0.89
+    ],
+    "protr_half": [
+      0.055,
+      0.24,
+      0.09
+    ],
+    "protr_name": "pact_intrusion_left",
+    "protr_pos_frac": null,
+    "protr_wall": "left",
+    "protrusion_present": true,
+    "residual_margin": null,
+    "target_frac": 0.6300160231995148,
+    "target_uid": "Cup_10",
+    "task_success_criterion": "PickAndPlaceTask.supported_released_receptacle_stable"
+  },
+  "schema_version": "pact_place_expert_screen_row_v1",
+  "selected_seed": {
+    "seed_u32": 2289298640,
+    "seed_u64": 9832462791118616342
+  },
+  "status": "complete",
+  "task_success": true,
+  "terminal_action_index": 8,
+  "terminal_policy_phase": "unknown",
+  "terminal_robot_environment_contacts": [],
+  "terminal_tracking": {
+    "action_index": 8,
+    "check_failure_branch": null,
+    "check_failure_returned": false,
+    "check_pos_err_m": null,
+    "empty_gripper_predicate": false,
+    "empty_gripper_streak": 0,
+    "gripper_empty_threshold_m": null,
+    "gripper_empty_trip_m": null,
+    "gripper_joint_pos_m": [
+      0.0027815065339002448,
+      0.002781506042970834
+    ],
+    "gripper_joint_posadr": [
+      7,
+      10
+    ],
+    "inter_finger_dist_m": 0.08663927536724082,
+    "inter_finger_dist_range0_m": 0.0,
+    "is_holding_object": false,
+    "object_to_tcp_distance_m": 0.1028677412401773,
+    "object_to_tcp_offset_m": [
+      0.00796428478520611,
+      -0.028408666093569568,
+      -0.09854587787675484
+    ],
+    "pos_err_predicate": false,
+    "rot_err_predicate": false,
+    "rotation_error_deg": null,
+    "rotation_error_rad": null,
+    "sequential_ik_failures": 0
+  },
+  "trajectory_n": 606,
+  "trajectory_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_corridor_v6_clearance_probe/expert_screen_rows/00_221c81acd74e0d1a/trajectory.json",
+  "trajectory_sha256": "755b1252708a55652f61ea217df8082405f35a98042b0b7ce75ab78e4ad5d7cb"
+}

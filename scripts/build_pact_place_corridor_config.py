@@ -14,8 +14,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--output",
+        required=True,
         type=Path,
-        default=ROOT / "configs" / "pact_place_corridor_v2.json",
+        help="Destination JSON. Frozen v1/v2/v3/v4/v5/v6 contracts cannot be overwritten once written.",
     )
     parser.add_argument(
         "--master-seed",
@@ -24,6 +25,21 @@ def main() -> int:
         help="Master seed for a new contract. Defaults to PACT_PLACE_MASTER_SEED or 2026081901.",
     )
     args = parser.parse_args()
+    frozen = {
+        (ROOT / "configs" / name).resolve()
+        for name in (
+            "pact_place_corridor_v1.json",
+            "pact_place_corridor_v2.json",
+            "pact_place_corridor_v3.json",
+            "pact_place_corridor_v4.json",
+            "pact_place_corridor_v5.json",
+            "pact_place_corridor_v6.json",
+            "pact_place_corridor_v6b.json",
+            "pact_place_corridor_v6c.json",
+        )
+    }
+    if args.output.resolve() in frozen and args.output.exists():
+        raise SystemExit(f"refusing to overwrite frozen contract {args.output}")
     document = build_contract(master_seed=args.master_seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")

@@ -33,6 +33,50 @@ from pact_place_corridor_contract import (  # noqa: E402
 )
 
 TERMINAL_STATUSES = {"complete", "sampling_failure", "infrastructure_failure"}
+DISALLOWED_INITIAL_CONTACT_CLASSES = frozenset(
+    {"hazard_bar", "other_environment", "clutter"}
+)
+ENDPOINT_SCALAR_KEYS = (
+    "object_start_position_m",
+    "object_start_quat_xyzw",
+    "object_end_position_m",
+    "object_end_quat_xyzw",
+    "object_max_z_m",
+    "object_height_above_start_at_terminal_m",
+    "object_to_receptacle_distance_m",
+    "settle_window_steps",
+    "settle_displacement_m",
+    "endpoint_values_emitted_during_compaction",
+)
+
+
+def initial_robot_environment_contacts(env) -> list[dict[str, Any]]:
+    from molmo_spaces.tasks.pact_place_contact_audit import (
+        place_environment_contact_pairs,
+    )
+
+    return list(place_environment_contact_pairs(env))
+
+
+def disallowed_initial_contacts(pairs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    from molmo_spaces.tasks.pact_place_contact_audit import classify_contact
+
+    return [
+        pair
+        for pair in pairs
+        if classify_contact(pair) in DISALLOWED_INITIAL_CONTACT_CLASSES
+    ]
+
+
+def assert_endpoint_scalars_emitted(payload: dict[str, Any]) -> None:
+    block = payload.get("endpoint_scalars")
+    if not isinstance(block, dict):
+        raise ValueError(
+            "endpoint_scalars missing; refusing terminal write or payload deletion"
+        )
+    missing = [key for key in ENDPOINT_SCALAR_KEYS if key not in block]
+    if missing:
+        raise ValueError(f"endpoint_scalars missing keys: {missing}")
 
 
 def write_json_atomic(path: Path, value: dict[str, Any]) -> None:
@@ -99,7 +143,21 @@ def _validate_existing(
     return result
 
 
-def _make_config(destination: Path):
+def place_receptacle_outside_placement(audit: dict[str, Any]) -> int:
+    from molmo_spaces.tasks.pact_place_contact_audit import (
+        disallowed_place_receptacle_contact_entries,
+    )
+
+    if not audit:
+        return 0
+    if "place_receptacle_outside_placement_entries" in audit:
+        return int(audit["place_receptacle_outside_placement_entries"])
+    if "phase_contact_class_totals" not in audit:
+        return 0
+    return disallowed_place_receptacle_contact_entries(audit)
+
+
+def _make_config(destination: Path, *, scene_xml: Path | None = None):
     from molmo_spaces.configs.task_configs import PickAndPlaceTaskConfig
     from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
         FrankaSkinPACTCollisionCorridorConfig,
@@ -108,6 +166,8 @@ def _make_config(destination: Path):
         PactPlaceCorridorPolicyConfig,
         PactPlaceCorridorSampler,
         PactPlaceCorridorTask,
+        PactPlaceCorridorV2Sampler,
+        PactPlaceCorridorV3Sampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -120,11 +180,17 @@ def _make_config(destination: Path):
     config.task_config = PickAndPlaceTaskConfig(task_cls=PactPlaceCorridorTask)
     config.proximity_sensor_period_ms = 0.0
     config.policy_config = PactPlaceCorridorPolicyConfig()
-    config.task_sampler_config.task_sampler_class = PactPlaceCorridorSampler
-    scene = (
+    scene = Path(scene_xml) if scene_xml is not None else (
         MOLMO
         / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
     )
+    if scene.name == "pact_place_corridor_v3.xml":
+        sampler_cls = PactPlaceCorridorV3Sampler
+    elif scene.name == "pact_place_corridor_v2.xml":
+        sampler_cls = PactPlaceCorridorV2Sampler
+    else:
+        sampler_cls = PactPlaceCorridorSampler
+    config.task_sampler_config.task_sampler_class = sampler_cls
     config.task_sampler_config.scene_xml_paths = [str(scene)] * 2
     if hasattr(config.robot_config, "action_noise_config"):
         config.robot_config.action_noise_config.enabled = False
@@ -136,6 +202,7 @@ def run_row(
     *,
     config_sha256: str,
     output_root: str,
+    scene_xml: str | None = None,
 ) -> dict[str, Any]:
     os.environ.setdefault("MUJOCO_GL", "egl")
     os.environ.setdefault("PYOPENGL_PLATFORM", "egl")
@@ -162,7 +229,10 @@ def run_row(
     boundary_path = destination.parent / "initial_observation_accepted.json"
     task = policy = sampler = None
     try:
-        config = _make_config(destination)
+        config = _make_config(
+            destination,
+            scene_xml=Path(scene_xml) if scene_xml else None,
+        )
         selected_seed: dict[str, int] | None = None
         initial_reset_result = None
         for retry_index in range(int(row["max_sampling_retries"]) + 1):
@@ -195,6 +265,15 @@ def run_row(
                 )
                 policy = setup_policy(config, task, None, None)
                 initial_reset_result = task.reset()
+                initial_pairs = initial_robot_environment_contacts(task.env)
+                rejected = disallowed_initial_contacts(initial_pairs)
+                if rejected:
+                    first = rejected[0]
+                    raise HouseInvalidForTask(
+                        "initial_robot_environment_contact "
+                        f"n={len(rejected)} "
+                        f"{first.get('body1')} vs {first.get('body2')}"
+                    )
             except Exception as error:  # noqa: BLE001 - allowed only before boundary
                 retry_history.append(
                     {
@@ -240,6 +319,10 @@ def run_row(
                     "row_sha256": row["row_sha256"],
                     "config_sha256": config_sha256,
                     "seed": selected_seed,
+                    "initial_robot_environment_contacts": _jsonable(
+                        initial_robot_environment_contacts(task.env)
+                    ),
+                    "initial_disallowed_contacts_rejected": False,
                 },
             )
             task_success = bool(
@@ -258,6 +341,22 @@ def run_row(
                 task_success
                 and int(totals["hazard_bar"]) == 0
                 and int(totals["other_environment"]) == 0
+                and int(totals.get("clutter", 0)) == 0
+                and place_receptacle_outside_placement(audit) == 0
+            )
+            endpoint_scalars = policy_info.get("endpoint_scalars") or {}
+            trajectory = policy_info.pop("trajectory", [])
+            trajectory_path = destination.parent / "trajectory.json"
+            write_json_atomic(
+                trajectory_path,
+                {
+                    "schema_version": "pact_place_expert_trajectory_v1",
+                    "episode_id": row["episode_id"],
+                    "row_sha256": row["row_sha256"],
+                    "config_sha256": config_sha256,
+                    "n": len(trajectory),
+                    "steps": trajectory,
+                },
             )
             result = {
                 "schema_version": "pact_place_expert_screen_row_v1",
@@ -269,6 +368,8 @@ def run_row(
                 "intrusion_side": row["intrusion_side"],
                 "panel_x_jitter_m": row["panel_x_jitter_m"],
                 "panel_face_jitter_m": row["panel_face_jitter_m"],
+                "clutter_x_jitter_m": row.get("clutter_x_jitter_m"),
+                "clutter_y_jitter_m": row.get("clutter_y_jitter_m"),
                 "selected_seed": selected_seed,
                 "retry_history": retry_history,
                 "task_success": task_success,
@@ -298,7 +399,12 @@ def run_row(
                 "episode_steps": int(task.episode_step_count),
                 "terminal_policy_phase": str(policy.get_phase()),
                 "terminal_action_index": int(policy.action_idx),
+                "endpoint_scalars": endpoint_scalars,
+                "trajectory_n": len(trajectory),
+                "trajectory_path": str(trajectory_path),
+                "trajectory_sha256": sha256_file(trajectory_path),
             }
+            assert_endpoint_scalars_emitted(result)
     except Exception as error:  # noqa: BLE001 - terminal Phase-0 ledger
         result = {
             "schema_version": "pact_place_expert_screen_row_v1",
@@ -360,6 +466,15 @@ def summarize(
         > 0
         for item in complete
     )
+    clutter_contact = sum(
+        int(
+            item.get("contact_audit", {})
+            .get("contact_class_totals", {})
+            .get("clutter", 0)
+        )
+        > 0
+        for item in complete
+    )
     bow_fallback = sum(item.get("bow_fallback_taken") is True for item in complete)
     try:
         row_root = Path(output_root).resolve().relative_to(ROOT)
@@ -409,7 +524,14 @@ def summarize(
             "outbound": outbound_hazard,
         },
         "other_environment_contact_episodes": other_contact,
-        "place_receptacle_contact_exempt": True,
+        "clutter_contact_episodes": clutter_contact,
+        "place_receptacle_contact_exempt": False,
+        "place_receptacle_exempt_during_placement_including_preplace": True,
+        "place_receptacle_outside_placement_episodes": sum(
+            place_receptacle_outside_placement(item.get("contact_audit", {})) > 0
+            for item in complete
+            if item.get("contact_audit")
+        ),
         "bow_fallback_episodes": bow_fallback,
         "row_result_paths": [
             str(_result_path(row_root, row))
@@ -472,6 +594,12 @@ def main() -> int:
         type=int,
         help="Run one non-gate diagnostic row under output-root; do not summarize.",
     )
+    parser.add_argument(
+        "--row-limit",
+        type=int,
+        default=None,
+        help="Diagnostic-only: run the first N manifest rows.",
+    )
     args = parser.parse_args()
     if not 1 <= args.workers <= 8:
         raise SystemExit("workers must be in [1, 8]")
@@ -481,6 +609,13 @@ def main() -> int:
     contract = load_contract(args.config)
     verify_protected_artifacts(contract)
     rows = contract["expert_screen_rows"]
+    scene_xml = str(ROOT / contract["scene"]["xml"])
+    if args.row_limit is not None:
+        if args.role != "diagnostic":
+            raise SystemExit("--row-limit is diagnostic-only")
+        if not 1 <= args.row_limit <= len(rows):
+            raise SystemExit("row-limit is outside the manifest")
+        rows = rows[: args.row_limit]
     if args.development_row is not None:
         if not 0 <= args.development_row < len(rows):
             raise SystemExit("development row index is outside the manifest")
@@ -488,6 +623,7 @@ def main() -> int:
             rows[args.development_row],
             config_sha256=contract["config_sha256"],
             output_root=str(args.output_root),
+            scene_xml=scene_xml,
         )
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0 if result["status"] == "complete" else 1
@@ -514,6 +650,7 @@ def main() -> int:
                 row,
                 config_sha256=contract["config_sha256"],
                 output_root=str(args.output_root),
+                scene_xml=scene_xml,
             ): row
             for row in pending
         }

@@ -1,0 +1,37 @@
+{
+  "schema_version": "pact_place_clutter_rollout_probes_v1",
+  "a0_analysis_path": "diagnostics_output/pact_place_clutter_sweep/analysis.json",
+  "a0_sweep_sha256": "e34038b9e4a32e5b84729f62d5dc1a851b40c3ad2aa11b6d79bccc461c3526ae",
+  "a0_chosen_set_id": 13,
+  "a0_chosen_note": "Static sweep tie-break: closest mean XY to target, then shorter height. Not rewritten after the probes.",
+  "zero_clutter_requirement": "every completed probe episode has contact_class_totals.clutter == 0",
+  "met_zero_clutter_requirement": false,
+  "probes": [
+    {
+      "label": "closest_eligible",
+      "a0_set_id": 13,
+      "abs_y_m": 0.22,
+      "height_m": 0.06,
+      "path": "diagnostics_output/pact_place_corridor_v6_clearance_probe",
+      "config_sha256": "0f4d80580e1aa2963906378c377e7d61e4bee65afa719e74c7ca9e799b9778d8",
+      "n": 8,
+      "clutter_contact_episodes": 6,
+      "clean": 1,
+      "task_success": 7
+    },
+    {
+      "label": "farthest_eligible",
+      "a0_set_id": 14,
+      "abs_y_m": 0.28,
+      "height_m": 0.06,
+      "path": "diagnostics_output/pact_place_corridor_v6_clearance_probe_y028",
+      "config_sha256": "eea681436be34f03e3ccffa6db2cbf7a8845ad15492363fa8f8e617f7a8430be",
+      "n": 8,
+      "clutter_contact_episodes": 3,
+      "clean": 4,
+      "task_success": 7
+    }
+  ],
+  "decision": "stop_and_report",
+  "decision_reason": "No declared-grid candidate was both IK-feasible and rollout-clear. Shrinking box size, moving the tray or target, or widening the corridor is forbidden. Phase 0 was not frozen or run."
+}

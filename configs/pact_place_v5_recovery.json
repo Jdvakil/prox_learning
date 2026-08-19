@@ -1,0 +1,4114 @@
+{
+  "config_sha256": "125db9ac9f1eafcbbf9ce5a741d2c684a410d46da662ce55a99de3965bf7b9ac",
+  "created_utc": "2026-08-19T00:00:00Z",
+  "expert": {
+    "action_noise": false,
+    "class": "PactPlaceCorridorPolicy",
+    "empty_gripper_disarmed_on_placement_descent": true,
+    "empty_gripper_persist_steps": 3,
+    "empty_gripper_repair_is_not_a_threshold_change": true,
+    "expert_rollout_sensor_polling": [
+      "qpos",
+      "tcp_pose"
+    ],
+    "grasp_servo_duration_s": 2.0,
+    "gripper_empty_threshold_m": 0.002,
+    "inbound_safe_gap_m": 0.1,
+    "initial_observation_rejects_robot_environment_contact": true,
+    "observation_sensors_rationale": "normal sensor/camera geometry is built during sampling, then the privileged expert's polling suite is reduced to the qpos and tcp_pose sensors required by the upstream planner/config freezer; physics, contacts, robot, scene, and sensor bodies remain unchanged",
+    "outbound_approach_max_step_m": 0.04,
+    "outbound_carried_envelope_half_y_m": 0.15,
+    "outbound_carry_raise_m": 0.0,
+    "outbound_pass_speed_m_s": 0.045,
+    "outbound_safe_gap_m": 0.14,
+    "release_clearance_m": 0.005,
+    "task_horizon": 900
+  },
+  "protected_artifact_sha256_before": {
+    "diagnostics_output/pact_blind_rgb/analysis.json": "ec940960bb93358184a979be2d73a5bf303819a0ab8b09f41c94a7a1d3f1eda7",
+    "diagnostics_output/pact_blind_rgb/final_decision.json": "3defb51f71995c3af3985ef31ebd526edfa4840777fb412ee91d84ad86d26cdb",
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLIND_RGB.md": "29e2f8e44c819fe8040dc8f443bce1ed61fe61822c6ed289a4cb35291285efbb",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION.md": "952cadf34434017d03b73215c3c1e05b6c8ede1a6f205490e5f00b729f5f6daa"
+  },
+  "purpose": "re-record the 152 kept v5 rows through the datagen pipeline with the full sensor suite; this re-records the kept set, it does not re-select it",
+  "recovery": {
+    "conversion_not_authorized_before_key_verification": true,
+    "divergence_is_a_stop_condition": true,
+    "n_proximity_sensors": 40,
+    "n_rows": 152,
+    "output_root": "assets/datagen/pact_place_corridor_v2/recovered_152",
+    "proximity_patch": [
+      8,
+      8
+    ],
+    "proximity_sensor_names": [
+      "link1_sensor_0",
+      "link1_sensor_1",
+      "link1_sensor_2",
+      "link1_sensor_3",
+      "link1_sensor_4",
+      "link1_sensor_5",
+      "link1_sensor_6",
+      "link2_sensor_0",
+      "link2_sensor_1",
+      "link2_sensor_2",
+      "link2_sensor_3",
+      "link2_sensor_4",
+      "link2_sensor_5",
+      "link2_sensor_6",
+      "link3_sensor_0",
+      "link3_sensor_1",
+      "link3_sensor_2",
+      "link3_sensor_3",
+      "link3_sensor_4",
+      "link4_sensor_0",
+      "link4_sensor_1",
+      "link4_sensor_2",
+      "link4_sensor_3",
+      "link4_sensor_4",
+      "link5_front_sensor_0",
+      "link5_front_sensor_1",
+      "link5_front_sensor_2",
+      "link5_front_sensor_3",
+      "link5_back_sensor_0",
+      "link5_back_sensor_1",
+      "link5_back_sensor_2",
+      "link5_back_sensor_3",
+      "link5_back_sensor_4",
+      "link5_back_sensor_5",
+      "link6_sensor_0",
+      "link6_sensor_1",
+      "link6_sensor_2",
+      "link6_sensor_3",
+      "link6_sensor_4",
+      "link6_sensor_5"
+    ],
+    "proximity_substeps": 4,
+    "reproduced_keys": [
+      "task_success",
+      "clean_success",
+      "terminal_policy_phase",
+      "terminal_action_index"
+    ],
+    "required_h5_keys": [
+      "traj_0/actions/joint_pos",
+      "traj_0/actions/commanded_action",
+      "traj_0/obs/agent/qpos",
+      "traj_0/obs/agent/qvel"
+    ],
+    "reuse_of_screen_run_row_forbidden": true,
+    "save_videos_required": true,
+    "selection_unchanged": true,
+    "sensor_suite": "full",
+    "sensor_suite_truncation_forbidden": true,
+    "training_not_authorized": true
+  },
+  "recovery_rows": [
+    {
+      "episode_id": "afbb545d73e5bc9d8fbf2b600ec84d95b34bb11ccdc70a9d780cd346db81b307",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001913067,
+      "panel_x_jitter_m": 0.011026459,
+      "role": "place_corridor_v5_collection",
+      "role_index": 0,
+      "row_sha256": "492bb328ef85be6ec74e4ac836466ac1560edfd0635c06856fdb16834b280389",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 532,
+      "screen_result_sha256": "2f13597405e405df59339b7bf97fbf9e87ffbe5e506e2ac9f383cc1b707fdd43",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3945073463,
+        "seed_u64": 16943961506547021816
+      },
+      "task_seed_u32": 3945073463,
+      "task_seed_u64": 16943961506547021816
+    },
+    {
+      "episode_id": "53a9347a3718cc856b86501255b55b6a5d17e399a0776bb46bf8243aa0bec286",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003010908,
+      "panel_x_jitter_m": -0.002322375,
+      "role": "place_corridor_v5_collection",
+      "role_index": 1,
+      "row_sha256": "3e5d3d65b41e6b371d34a86bc5a3a02fad238adb65acde986b6217a6970e4bec",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 465,
+      "screen_result_sha256": "58f2826f2afc4343a014d9556bcce798752f95d16815a1e8cb41c159cbe018bb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3539050463,
+        "seed_u64": 15200106000486209863
+      },
+      "task_seed_u32": 3539050463,
+      "task_seed_u64": 15200106000486209863
+    },
+    {
+      "episode_id": "0c7e480dc1903abf160f709fb25869e100397bbef6bac409a69fd89c7fa1db95",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002678958,
+      "panel_x_jitter_m": -0.00016133,
+      "role": "place_corridor_v5_collection",
+      "role_index": 2,
+      "row_sha256": "ae81c259f3012bc52a67cfb7c05ea8416e864611873c2be8fdd23af0ea373e72",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 584,
+      "screen_result_sha256": "330493debadd5525954d1295c0966720edc4f643611f7c5a5b832a5c85f64d79",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3679864943,
+        "seed_u64": 15804899584361396056
+      },
+      "task_seed_u32": 3679864943,
+      "task_seed_u64": 15804899584361396056
+    },
+    {
+      "episode_id": "560fc671478c64371d5d01275d07df58a4d9ff80471ce7a8e7a902ff7dbbe31f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004091959,
+      "panel_x_jitter_m": -0.003482036,
+      "role": "place_corridor_v5_collection",
+      "role_index": 3,
+      "row_sha256": "eaf76918dd599efa38bdaf70c4b7121a6c7d5e380131422b80350a7078f45ee7",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 569,
+      "screen_result_sha256": "784ea3210ef8babf8dd10494d05843b4ca4ea811008f79b894e0047fde5089aa",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 46195225,
+        "seed_u64": 198406983285649070
+      },
+      "task_seed_u32": 46195225,
+      "task_seed_u64": 198406983285649070
+    },
+    {
+      "episode_id": "8aa0fef172280abc4372a6054e2239ffe23e925d531a6ede6382807093882815",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003256903,
+      "panel_x_jitter_m": 0.004668332,
+      "role": "place_corridor_v5_collection",
+      "role_index": 4,
+      "row_sha256": "86e6666f50b29cea7a0df379b53dbbd5ea02dd8a4a17a582fdc467349bcd675b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 578,
+      "screen_result_sha256": "b0c1bdf6b3953d54473f22ce2751d4268ad52968b8f7874b102dfc85b06e307c",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 3833149961,
+        "seed_u64": 16463253724062653092
+      },
+      "task_seed_u32": 196531222,
+      "task_seed_u64": 844095171661445491
+    },
+    {
+      "episode_id": "e043e26af36cf9f9d846d332eb41f2f59860c9445ec4e80a8738585e3f861b27",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000245311,
+      "panel_x_jitter_m": 0.000315255,
+      "role": "place_corridor_v5_collection",
+      "role_index": 5,
+      "row_sha256": "6e785132267eb09256e5a413d54eef0fa49cb71f4da5b8cbaa5a8ecb00a4ecc0",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 495,
+      "screen_result_sha256": "3557a109761e11bcfc3544536571c0efa5fe0d75398f97aee8c4d9ba0f2f6680",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3013947363,
+        "seed_u64": 12944805358393201769
+      },
+      "task_seed_u32": 3013947363,
+      "task_seed_u64": 12944805358393201769
+    },
+    {
+      "episode_id": "1fd5740d480d27a2ed8fd0c1dbe6d5dbef9662bd9a7ee49a7be93dfca3884172",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003283136,
+      "panel_x_jitter_m": -0.001016673,
+      "role": "place_corridor_v5_collection",
+      "role_index": 7,
+      "row_sha256": "e7087827f9e552b4132c50d549453be0b37b887d1a8f8016fc1cd8dd610c27f2",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 281,
+      "screen_result_sha256": "3beaacef973bd4139df84f8903d0aaddba7a350e37bb618351fa5c2e2440c3ee",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4051915717,
+        "seed_u64": 17402845492525331446
+      },
+      "task_seed_u32": 4051915717,
+      "task_seed_u64": 17402845492525331446
+    },
+    {
+      "episode_id": "b4d13907a395103ac5ba037b7dbd8408da94ce474d8ab8bacc909c180c500cf5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001622961,
+      "panel_x_jitter_m": -0.008949048,
+      "role": "place_corridor_v5_collection",
+      "role_index": 8,
+      "row_sha256": "5f3731ead81a6eb28370e5edbc2610bb26de6e374abd16eec0d60123736c99c6",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 243,
+      "screen_result_sha256": "c08d3f41d21d0511d01882c71d140f8228e05ef158a539897449d6d0f9cb4a4e",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3533482620,
+        "seed_u64": 15176192295027901519
+      },
+      "task_seed_u32": 3533482620,
+      "task_seed_u64": 15176192295027901519
+    },
+    {
+      "episode_id": "744bdf4443e19e1cd44f85c435426734a90a54d1db18e314c3d4cde3532927a5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00272239,
+      "panel_x_jitter_m": 0.005039067,
+      "role": "place_corridor_v5_collection",
+      "role_index": 9,
+      "row_sha256": "f1c07f6e61c8777bf4640373c83b359b4fcaaa216d41a818a4866b57df06c2f4",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 568,
+      "screen_result_sha256": "60530387403bd6c42941d29727f7ecbd0f193a5048a0425e3cddf893f023eec3",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 247808491,
+        "seed_u64": 1064329365240557988
+      },
+      "task_seed_u32": 247808491,
+      "task_seed_u64": 1064329365240557988
+    },
+    {
+      "episode_id": "50ec2bffd9cd077651548dc63ddaf18d1cdd2e32390c74f62d34a94f2e418883",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003190792,
+      "panel_x_jitter_m": -0.00555187,
+      "role": "place_corridor_v5_collection",
+      "role_index": 10,
+      "row_sha256": "94b0bdfddd7dc3a216d64e4d71cbe7fc0309a48161c300cd64cfc62b42a51ef1",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 287,
+      "screen_result_sha256": "eb51bc3db7d77899cfbe03a141dfa093479da43eb41672f81bcc44a2ef823932",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4139862877,
+        "seed_u64": 17780575668826449432
+      },
+      "task_seed_u32": 4139862877,
+      "task_seed_u64": 17780575668826449432
+    },
+    {
+      "episode_id": "ad52740589d89244d57d3dcf2af9ce79cc33befc04d479c2ca0f355151313213",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00193983,
+      "panel_x_jitter_m": -0.013908498,
+      "role": "place_corridor_v5_collection",
+      "role_index": 11,
+      "row_sha256": "709dcd19d9bd4db4d8de7f35e1371397505145ca0992a0615526c0d0c6a65438",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 293,
+      "screen_result_sha256": "8e40f870082b2f895b500aed9ad7d139fff5e2b85eb0f494af051fec34a019ce",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 481596168,
+        "seed_u64": 2068439792950297924
+      },
+      "task_seed_u32": 2044416371,
+      "task_seed_u64": 8780701453842827277
+    },
+    {
+      "episode_id": "7b667399d6061a9ed2370bc68888e666763aede4e9f46de7cb81a94a235191c7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001083888,
+      "panel_x_jitter_m": -0.001336088,
+      "role": "place_corridor_v5_collection",
+      "role_index": 12,
+      "row_sha256": "cb6abf0c30174f2edf874898f765122d821fa5349edfaa847f31b5ba7f44784b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 602,
+      "screen_result_sha256": "56eeaf034fefdf64e7011a36ab23744f71092e6a059b793dbacf2e8c5de2957b",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1566769622,
+        "seed_u64": 6729224288699661188
+      },
+      "task_seed_u32": 1566769622,
+      "task_seed_u64": 6729224288699661188
+    },
+    {
+      "episode_id": "98d68145adeabfdefba3e01b1bfc16a6d3ae8a4707b34e5272bc1641bd57c2a0",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003412643,
+      "panel_x_jitter_m": 0.006791671,
+      "role": "place_corridor_v5_collection",
+      "role_index": 13,
+      "row_sha256": "3cc46fd4330450394149cbe948382c795747a319729694cbc5ed8a43b9c59f39",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 295,
+      "screen_result_sha256": "8ce5ea359fe0c33dceda4ed8eb5c20fddf1a927b3ac6297fcf95f642f7991654",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1726324726,
+        "seed_u64": 7414508243912779333
+      },
+      "task_seed_u32": 1726324726,
+      "task_seed_u64": 7414508243912779333
+    },
+    {
+      "episode_id": "43c9ee0c311afa4e9fa439978fa9011134564abe33212425c044856194edb784",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000129375,
+      "panel_x_jitter_m": -0.01206532,
+      "role": "place_corridor_v5_collection",
+      "role_index": 14,
+      "row_sha256": "d2a2c36fddd8ae07a8e894ab2153030460142f884e9b261fbc6a686d3968e4d9",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 303,
+      "screen_result_sha256": "8e0dfd583b6b9f6dfddf7d4d00a74d31fddd6896e1bab9a311d7d38553c0c7cb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3458839587,
+        "seed_u64": 14855602911692635848
+      },
+      "task_seed_u32": 3458839587,
+      "task_seed_u64": 14855602911692635848
+    },
+    {
+      "episode_id": "6158d821615f27c869e7baa9e39dfd21fb347bf58635e157064249b920110212",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002821507,
+      "panel_x_jitter_m": -0.014834814,
+      "role": "place_corridor_v5_collection",
+      "role_index": 15,
+      "row_sha256": "16414b8c739a6202ce9ba9cd5a99bd948c49442fc75c2c80be49f6412dd32c75",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 628,
+      "screen_result_sha256": "1361bffdbee10e953417bc4e73fa0f3a086d2bfdcae7f85b91d9e950532859e2",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2300213367,
+        "seed_u64": 9879341189202805814
+      },
+      "task_seed_u32": 2300213367,
+      "task_seed_u64": 9879341189202805814
+    },
+    {
+      "episode_id": "9b3df61f9c539d6e1fd9668e07201f3f4c649c0a9d86494c2657b5a8a1b5bf23",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003857913,
+      "panel_x_jitter_m": 0.011909622,
+      "role": "place_corridor_v5_collection",
+      "role_index": 16,
+      "row_sha256": "02e839681888806f612f7546dd871661c6137aa51a16f27c043006543ddd0ad3",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 608,
+      "screen_result_sha256": "c40c33a239fd4de889fad44605cd72919be65bce5734eeea45aaa2683c0b4bf8",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2637443855,
+        "seed_u64": 11327735102500872669
+      },
+      "task_seed_u32": 2637443855,
+      "task_seed_u64": 11327735102500872669
+    },
+    {
+      "episode_id": "24d33ad0597c7a00966c07d19edc8ddbf120ca0143de546a6dfafe4dcbbfe8f4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004446742,
+      "panel_x_jitter_m": -0.012002882,
+      "role": "place_corridor_v5_collection",
+      "role_index": 17,
+      "row_sha256": "02a9dfbe2100ea5593671402f98ea5037ea10fa6a26592b3a1137c9aba336d56",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 618,
+      "screen_result_sha256": "984d69fa7ea2b2a67c9e0c4393ac37eda4405bfdb4a94610715119316d45d8a6",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1570153884,
+        "seed_u64": 6743759583157367100
+      },
+      "task_seed_u32": 3185885246,
+      "task_seed_u64": 13683272940523885271
+    },
+    {
+      "episode_id": "a2ddcd1a9b49c5ba43fc9713ccd557ce293bd09f616701d21b09f5bbff530faf",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00126329,
+      "panel_x_jitter_m": -0.003785701,
+      "role": "place_corridor_v5_collection",
+      "role_index": 18,
+      "row_sha256": "d3f16cd8a558257ab31c9e94f9b1be6a1d9297f5a54ed7a06b75e059ec570857",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 516,
+      "screen_result_sha256": "38ee15ebe4f302c25a38e12ce13fed269054744abdd6db398d1c42ec15ce7c61",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 249864750,
+        "seed_u64": 1073160933721341517
+      },
+      "task_seed_u32": 249864750,
+      "task_seed_u64": 1073160933721341517
+    },
+    {
+      "episode_id": "3a2e68ad1e4afd19e6ec3d472c132e5fd51b7c55ee5c50577f4b690ad8076ea1",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003386875,
+      "panel_x_jitter_m": -0.014115955,
+      "role": "place_corridor_v5_collection",
+      "role_index": 19,
+      "row_sha256": "090f85c60d0fde320495815a0e87a955842fdb8b7f839ac4b20e54ebdb9bfbb0",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 446,
+      "screen_result_sha256": "a719a42836f401cfa8ea5b5473d2a4653f24d26acfc8860d8aef45c7b0ba0f78",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1033322848,
+        "seed_u64": 4438087840796999316
+      },
+      "task_seed_u32": 1033322848,
+      "task_seed_u64": 4438087840796999316
+    },
+    {
+      "episode_id": "8fce686be94ef6fc259b48fc33d76999354ff419e5c09484743d8695a934ad04",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004903019,
+      "panel_x_jitter_m": -0.011329835,
+      "role": "place_corridor_v5_collection",
+      "role_index": 20,
+      "row_sha256": "39017be3050ab3ed900b37ef2958ad5e1748217df2d24d04c8d585a39690a367",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 284,
+      "screen_result_sha256": "c85e8db52bb5f2acaefefb701b028d6a5e59976524187de84d16a4a19a66e61e",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2437813347,
+        "seed_u64": 10470328601238844957
+      },
+      "task_seed_u32": 2437813347,
+      "task_seed_u64": 10470328601238844957
+    },
+    {
+      "episode_id": "4602af6fb3b35d49c51941496c28c067f552eb3da33ff5591420dbdbc9886dd3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001837413,
+      "panel_x_jitter_m": 0.01320583,
+      "role": "place_corridor_v5_collection",
+      "role_index": 21,
+      "row_sha256": "a1f37a918f893119dc2a46856aea010c920193599067819ea9a2b2016c65c87a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 283,
+      "screen_result_sha256": "5cafde4efd723ef4c9c26d7ea0dbcd2c369a3661398324d4ca5b501dd7c1c9c8",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 3551328618,
+        "seed_u64": 15252840275439703687
+      },
+      "task_seed_u32": 1783994240,
+      "task_seed_u64": 7662196919635896331
+    },
+    {
+      "episode_id": "90cfd2f4d358e0910805bd43ab724e6875498d30327e61bacaf53e6a3009dc71",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000325575,
+      "panel_x_jitter_m": -0.010830546,
+      "role": "place_corridor_v5_collection",
+      "role_index": 22,
+      "row_sha256": "723e30a9b70de24563e2ecb1c5045a6762eb79ed45c41e771e9315236056fe4a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 590,
+      "screen_result_sha256": "96715e7a958b41219546b09e36277003fc1a314cfcfa42e40247653ebeba2814",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2559929627,
+        "seed_u64": 10994814029953509633
+      },
+      "task_seed_u32": 1365671362,
+      "task_seed_u64": 5865513840073006710
+    },
+    {
+      "episode_id": "7a5112dba2e6238dfadba1f302340df51297e90eac18781a014ca6bc6083706e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003532384,
+      "panel_x_jitter_m": 0.004993684,
+      "role": "place_corridor_v5_collection",
+      "role_index": 23,
+      "row_sha256": "01bcaaa8c54c908f307d68187a8f9f24c550e96a982941a3a48e61fcddd19492",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 552,
+      "screen_result_sha256": "d23dcce60c939670c45257c50a4b8b0e111695489c241108130d592ae7f21cf7",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2373509540,
+        "seed_u64": 10194145855246131662
+      },
+      "task_seed_u32": 3008101894,
+      "task_seed_u64": 12919699260764027324
+    },
+    {
+      "episode_id": "0e0b892d1f224f11fff582d347c24019786785680447ce7b1c35e53aa9089149",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004685666,
+      "panel_x_jitter_m": -0.006639696,
+      "role": "place_corridor_v5_collection",
+      "role_index": 24,
+      "row_sha256": "dc9c3fa42a7d7984fb347a8a38d1d527aac0907e3601ce78e15e42370cb8bb67",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 430,
+      "screen_result_sha256": "49e55eddaf01358936b31373437a1ca857f09b537622dd6cf37a4f0551ce16fa",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3085248668,
+        "seed_u64": 13251042132999143847
+      },
+      "task_seed_u32": 3085248668,
+      "task_seed_u64": 13251042132999143847
+    },
+    {
+      "episode_id": "41c0912d59912248d1cb4429159dbd1c0ed035e9753e127f21795adb41f51443",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002993722,
+      "panel_x_jitter_m": 0.005592082,
+      "role": "place_corridor_v5_collection",
+      "role_index": 25,
+      "row_sha256": "89d4c710b7fec93de0ff8668cf1003fee04835195d1d111dd0917c212605f8e9",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 444,
+      "screen_result_sha256": "dee5d92bf9318232c7147140557a7510d48f7bd7dd74afb7e83f4ede6af3a839",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1692809008,
+        "seed_u64": 7270559328261590113
+      },
+      "task_seed_u32": 2312047691,
+      "task_seed_u64": 9930169221528078530
+    },
+    {
+      "episode_id": "898a82333af142b59b7d73d52d24d3403d2a8f1e6ce33b1b019785adbed7dcbe",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003695713,
+      "panel_x_jitter_m": -0.014000725,
+      "role": "place_corridor_v5_collection",
+      "role_index": 26,
+      "row_sha256": "b381eb2fe3b029df8c7c61a51840dcf70fca5e3a49900df91a68a9d0a7878f28",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 287,
+      "screen_result_sha256": "0fa593eccc651a1629d64cb106d9f1473868ebfadd68a0e9fd427af2c0873499",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3027777396,
+        "seed_u64": 13004204895497820061
+      },
+      "task_seed_u32": 3027777396,
+      "task_seed_u64": 13004204895497820061
+    },
+    {
+      "episode_id": "a1eab0d14de03bf97a9601272dd623983e66e167c7a26187eecf991a14b05d3e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000415049,
+      "panel_x_jitter_m": 0.011422844,
+      "role": "place_corridor_v5_collection",
+      "role_index": 27,
+      "row_sha256": "582e0e7909daeb741e3b72e9595915ca53ed4b3781749f656743d2d9436fae9c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 459,
+      "screen_result_sha256": "c61e2f53cce1debeec6e88b448c2b910750739844d7892de602bf14b27389165",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1901159507,
+        "seed_u64": 8165417910467232693
+      },
+      "task_seed_u32": 1901159507,
+      "task_seed_u64": 8165417910467232693
+    },
+    {
+      "episode_id": "1c63dbe5bad3c84c39bf67893bf036dcd9eda6277ea48152dd0d4fb02c93cd88",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004635711,
+      "panel_x_jitter_m": -0.014333278,
+      "role": "place_corridor_v5_collection",
+      "role_index": 28,
+      "row_sha256": "3ff08e25281c492e70cae53e35245b5af5e85e4716e82be97395d858c0cb553f",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 449,
+      "screen_result_sha256": "1555b2b51d2beeb4cd564a16f2e326c0d9d83b5bc50a6d7cde8b85e3ee0c7bdb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2673185577,
+        "seed_u64": 11481244629387743579
+      },
+      "task_seed_u32": 2673185577,
+      "task_seed_u64": 11481244629387743579
+    },
+    {
+      "episode_id": "992ddf8f95d64c82c976552208cd4b2809fbbaf70fc5d1680e60efd1c1df0627",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004442075,
+      "panel_x_jitter_m": 0.005909698,
+      "role": "place_corridor_v5_collection",
+      "role_index": 30,
+      "row_sha256": "27022398f3d8267cca166d03a155a1a07782ddee4b066e3f285fa5a115cb4a8a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 442,
+      "screen_result_sha256": "c3895cb7aa423d60246b183a8fa214103f8621ae56c0a2f0ffe8dbe9cf082c63",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 893759431,
+        "seed_u64": 3838667529670648774
+      },
+      "task_seed_u32": 893759431,
+      "task_seed_u64": 3838667529670648774
+    },
+    {
+      "episode_id": "246c2058ed98d9eaa83f85fb29530f41d95cafe88b56d40936e95a6948400ef0",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002821225,
+      "panel_x_jitter_m": -0.011422296,
+      "role": "place_corridor_v5_collection",
+      "role_index": 31,
+      "row_sha256": "5f1eb5a9488c1c2b76589f72c5af803cc97b5787d1d0b4c81fafff902f07bbc9",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 445,
+      "screen_result_sha256": "96e75fd8b02a6ed004b1aec455d71a0478e459ec581765b5296781f3b48fd50b",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1769570013,
+        "seed_u64": 7600245336884483413
+      },
+      "task_seed_u32": 1769570013,
+      "task_seed_u64": 7600245336884483413
+    },
+    {
+      "episode_id": "84f13f005c482eda3b16151095ff16b5d9ade9e1dfd9bb3e9da99b7a6dc18ed3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001825799,
+      "panel_x_jitter_m": -0.011476794,
+      "role": "place_corridor_v5_collection",
+      "role_index": 32,
+      "row_sha256": "5e31f3248b97946bc1105f4d676d03cfda2bcfa09403c322264ecf37199d0cad",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 470,
+      "screen_result_sha256": "ed0ab852d488e8dc4335fa8378d22b48afa1d6d7815e55492de3ac5bd77a6285",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2144916264,
+        "seed_u64": 9212345208858934042
+      },
+      "task_seed_u32": 874585427,
+      "task_seed_u64": 3756315809269513834
+    },
+    {
+      "episode_id": "7e9b22bd439cf9080607730bee09d98a1bc9f37161dc3971f3aef1f53173972a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 3.9174e-05,
+      "panel_x_jitter_m": 0.000978183,
+      "role": "place_corridor_v5_collection",
+      "role_index": 33,
+      "row_sha256": "130014c004ff57729c768e522f513e77e7391da1eb849a5929c72d1cdcecdaaf",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 478,
+      "screen_result_sha256": "a9e43168c75b02785804db1fee8c072ec58d488e03cbc4442072ccd4440337cb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2959967022,
+        "seed_u64": 12712961556810524245
+      },
+      "task_seed_u32": 2959967022,
+      "task_seed_u64": 12712961556810524245
+    },
+    {
+      "episode_id": "3a9b8776522e8873ec4c756992564fc8bc6896e5ebe50aaf5ec9eb5a472e0b60",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004356212,
+      "panel_x_jitter_m": -0.000506781,
+      "role": "place_corridor_v5_collection",
+      "role_index": 35,
+      "row_sha256": "869dc6891a9962d78b64114cb61522cd557e97f546075cf622a3e5d3ef598463",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 469,
+      "screen_result_sha256": "8b3c428039db398ad962a2c92445517af517e602a54dbd311a3b5168ee753b2f",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1205283436,
+        "seed_u64": 5176652942033481783
+      },
+      "task_seed_u32": 1205283436,
+      "task_seed_u64": 5176652942033481783
+    },
+    {
+      "episode_id": "82ffe4ed668f33008153a92c6015b7aa16f28b1633a6a32b58c59df89bc01b08",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00299831,
+      "panel_x_jitter_m": 0.008417414,
+      "role": "place_corridor_v5_collection",
+      "role_index": 36,
+      "row_sha256": "ffabada3c0a92ed338fc27a24a003b9f33e3281c916d710df4e48db7a36e25a1",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 604,
+      "screen_result_sha256": "7aec41cec0cd189273e8d9e0763d316250a491f315ea347ffac9a2b098762641",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1784844613,
+        "seed_u64": 7665849242617518617
+      },
+      "task_seed_u32": 1784844613,
+      "task_seed_u64": 7665849242617518617
+    },
+    {
+      "episode_id": "731bc69798804a7601a716c465fa2570c6ed0154bae1ce291766ded29c942d31",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003116778,
+      "panel_x_jitter_m": -0.000470607,
+      "role": "place_corridor_v5_collection",
+      "role_index": 37,
+      "row_sha256": "752e6c89b6ecf2daa2ad46c39c21b8f4bc2527e038e2751e7662a602cf4661ba",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 516,
+      "screen_result_sha256": "93aa2ca54debcaa52a68b6c9769f287395580bb54addfd66b97655680e1f3911",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 965131607,
+        "seed_u64": 4145208692354498124
+      },
+      "task_seed_u32": 1712923531,
+      "task_seed_u64": 7356950549688539849
+    },
+    {
+      "episode_id": "7f0e0b82998b3423d8af8ce91823dc8c23b6323ffd10819b02ed4d82a912cf95",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001419362,
+      "panel_x_jitter_m": -0.008949194,
+      "role": "place_corridor_v5_collection",
+      "role_index": 38,
+      "row_sha256": "4fd92da1cd93076f5d107224b70fdd0fe855aa4ce8334530538a77ab61b60095",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 560,
+      "screen_result_sha256": "6e6f02a0cb16eeb6db0bbe59d77b2c03d82b30e1826006140f5537fa01f386e3",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 4078408119,
+        "seed_u64": 17516629491994861780
+      },
+      "task_seed_u32": 3413068203,
+      "task_seed_u64": 14659016310957575452
+    },
+    {
+      "episode_id": "09755da9387e4ca9465f73e53b396d4c424bce44935e6158d9ff574e5aeef5b7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002909401,
+      "panel_x_jitter_m": -0.009349384,
+      "role": "place_corridor_v5_collection",
+      "role_index": 39,
+      "row_sha256": "692e0058fa324909797d8b6266e888253cd0671984db83b71fca3ca6ebc6e599",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 568,
+      "screen_result_sha256": "8535a2a577f020d2dcdd09c6dd231c1b3d92b73eac74bb8ae845fa457d1e4846",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3060575388,
+        "seed_u64": 13145071201057743160
+      },
+      "task_seed_u32": 3060575388,
+      "task_seed_u64": 13145071201057743160
+    },
+    {
+      "episode_id": "3908c559d20127c6c820d7d73c28ef7ffa2d534d39f12846fe10de1e9fca15c9",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003893476,
+      "panel_x_jitter_m": 0.002638037,
+      "role": "place_corridor_v5_collection",
+      "role_index": 40,
+      "row_sha256": "dad3901bc8ccb0de7307472a66a1383e1f87e8ce9c9bd9d104e022c33ae0b95a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 462,
+      "screen_result_sha256": "ac326291da3d603100e50e71e1a139de25f7c9e0f8ec94cfedb2eb2d8dad259c",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 3531602423,
+        "seed_u64": 15168116910316161381
+      },
+      "task_seed_u32": 1402662111,
+      "task_seed_u64": 6024387896978380703
+    },
+    {
+      "episode_id": "def9be29ac2738df1b4875486eb1c89835d792083f96c8ddd3fcd598a1b04ad0",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003236375,
+      "panel_x_jitter_m": 0.003744527,
+      "role": "place_corridor_v5_collection",
+      "role_index": 41,
+      "row_sha256": "bac85542cbad6fd936e93106b7cc52c3d0e52bc9ea54843ed67a324230fd3a37",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 479,
+      "screen_result_sha256": "1c776a93afd3d70ffb20f2e28fcc3c04e45d4e596c6da15387b82d57b4a17a94",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3145985276,
+        "seed_u64": 13511903878209321062
+      },
+      "task_seed_u32": 3145985276,
+      "task_seed_u64": 13511903878209321062
+    },
+    {
+      "episode_id": "b50dcaf1e72f110371b4687a1de638afa95e21f3ef47058aff81086213f49175",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001370207,
+      "panel_x_jitter_m": 0.006664635,
+      "role": "place_corridor_v5_collection",
+      "role_index": 42,
+      "row_sha256": "5fdaefd6080594818a4ccc4f4a1b0e8142d4cbf2c52b64b0ae0a6c06a4196a82",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 513,
+      "screen_result_sha256": "584174a7f9adb86d45ba93442b08d90cb34c82cc4f7239736b7caa86ef6ea68e",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 715842456,
+        "seed_u64": 3074519940030868051
+      },
+      "task_seed_u32": 715842456,
+      "task_seed_u64": 3074519940030868051
+    },
+    {
+      "episode_id": "b2d6ebbfe2708e7485d2a62f155621d6bfc3f77c962738e2802ec18f76a3fe3f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001260364,
+      "panel_x_jitter_m": 0.001217504,
+      "role": "place_corridor_v5_collection",
+      "role_index": 43,
+      "row_sha256": "8562340750561827306e6fd14c2cb9eb52e9d01ba8ce3e4f7e0cebb5ededac61",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 448,
+      "screen_result_sha256": "26c4aba41a14e6b072bd9d5175dca8ab37dde5f83210d392f6422210ebb92560",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 3433637061,
+        "seed_u64": 14747358885770570355
+      },
+      "task_seed_u32": 422038113,
+      "task_seed_u64": 1812639895731291023
+    },
+    {
+      "episode_id": "5ba57c0596946d645f83e19f940e0a176317f7a9076ee65372ef9ec7d970f656",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003784281,
+      "panel_x_jitter_m": 0.005548283,
+      "role": "place_corridor_v5_collection",
+      "role_index": 44,
+      "row_sha256": "0eaa7e0198f19f04da94908954a2cfeba6f6f61dc1c696d1c25578ab2e19eb59",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 460,
+      "screen_result_sha256": "15a179eda04100b127436e9a759396d8d87eb94163b6925e95e500b84c9f1fd0",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2231968534,
+        "seed_u64": 9586231860281987483
+      },
+      "task_seed_u32": 458004707,
+      "task_seed_u64": 1967115240354098272
+    },
+    {
+      "episode_id": "3248b4d10648d11fbe0afbc0dce72a1ab72c67faa5ba9c88dbce919d98533538",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004718853,
+      "panel_x_jitter_m": 0.002347547,
+      "role": "place_corridor_v5_collection",
+      "role_index": 45,
+      "row_sha256": "66c85cb5dafe7a24494477db615f0f156de6e78cbb81c9796058616db31950f5",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 443,
+      "screen_result_sha256": "9d1ee98b2585fe07fe271e006521a8d7d7af3700c1222614b04e4d75b3aa4105",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 499853316,
+        "seed_u64": 2146853647554193859
+      },
+      "task_seed_u32": 499853316,
+      "task_seed_u64": 2146853647554193859
+    },
+    {
+      "episode_id": "5daa225fc37d0dc0e21cfd55540ee19bb16a6431f041332ec245760ebc1a689e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003992344,
+      "panel_x_jitter_m": 0.003541358,
+      "role": "place_corridor_v5_collection",
+      "role_index": 46,
+      "row_sha256": "105210d1e9fbfb0a8271745bd4c014a0bd147dddb3d534a4f8867983e7212e1f",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 445,
+      "screen_result_sha256": "4d98fb8704990750483eaf50618947b2f1da5b63a04935931de55aa1fab92684",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 490739784,
+        "seed_u64": 2107711323683643046
+      },
+      "task_seed_u32": 490739784,
+      "task_seed_u64": 2107711323683643046
+    },
+    {
+      "episode_id": "bd76252bb89123c3024dbd7793c8bfb29d16bc71f931324e496ef7b0dec301e7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004633692,
+      "panel_x_jitter_m": -0.004067689,
+      "role": "place_corridor_v5_collection",
+      "role_index": 47,
+      "row_sha256": "1089150420071b94ee64fe0c8c5a81fec2b0ea50ab2244de632ef6e6029e40b3",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 563,
+      "screen_result_sha256": "e92bf88aa77a0ced0c64495aa763f7c78403d269d1c1bd01670fe1c2f1b32f98",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1396720647,
+        "seed_u64": 5998869503948520386
+      },
+      "task_seed_u32": 1396720647,
+      "task_seed_u64": 5998869503948520386
+    },
+    {
+      "episode_id": "7ff5b956b5a82919e3a88aa7f6342e8f43cf23bcf588ff8e3074230a8547ef9e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001654556,
+      "panel_x_jitter_m": -0.002570823,
+      "role": "place_corridor_v5_collection",
+      "role_index": 48,
+      "row_sha256": "3cacfff7061b87bc3cfeac712bb9720c362d5f90751bde6c6683224931aa124f",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 632,
+      "screen_result_sha256": "dc89db0f171efb365d1392dae75ff7d55824c83baf39252968be41e54c85be7c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 232210280,
+        "seed_u64": 997335560477828222
+      },
+      "task_seed_u32": 232210280,
+      "task_seed_u64": 997335560477828222
+    },
+    {
+      "episode_id": "3130802a247967fec9771dcdaf55001f92f4fbba10c1ad3926d3c033317b2b3c",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00132003,
+      "panel_x_jitter_m": -0.003690207,
+      "role": "place_corridor_v5_collection",
+      "role_index": 49,
+      "row_sha256": "97d4a579ccfb9313f87f316a498b08a858ce6e9fd237c6e91c7cb7b90a53ad1e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 453,
+      "screen_result_sha256": "f0eb64beae56ddf2f2ee84fe75bd70edf8d48a24476b4810baa5a0a72e991565",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 3892341666,
+        "seed_u64": 16717480163099535056
+      },
+      "task_seed_u32": 1566735953,
+      "task_seed_u64": 6729079680272293521
+    },
+    {
+      "episode_id": "92402ca1ce21b0399587a61f963776d6e27e537a664bdd86a3ed0de93f429eae",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000867363,
+      "panel_x_jitter_m": -0.00779842,
+      "role": "place_corridor_v5_collection",
+      "role_index": 50,
+      "row_sha256": "b4bd52946e36319e95ed1e8e47cb70729b947742d6c47279d8c81e157ec36bd7",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 573,
+      "screen_result_sha256": "1afd856455d9b92548a3a7a9857be311214805a682583dbc3e7c75c74815face",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1137498262,
+        "seed_u64": 4885517834982394208
+      },
+      "task_seed_u32": 837718637,
+      "task_seed_u64": 3597974152633560267
+    },
+    {
+      "episode_id": "c6edff9a2e3d884b6b605ac538f3a428b98455e067c11f9de3febfb6e1327920",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002895877,
+      "panel_x_jitter_m": -0.013952096,
+      "role": "place_corridor_v5_collection",
+      "role_index": 51,
+      "row_sha256": "473cff250b2bd43b61d3111b9afaa7a6eb0f005efcb36570cfd56a072093c24e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 614,
+      "screen_result_sha256": "95923a10e60314742da98c2654780f3835206f46396cd1f160fe0039cc18b666",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1575028038,
+        "seed_u64": 6764693917154375237
+      },
+      "task_seed_u32": 3994114038,
+      "task_seed_u64": 17154589172386299170
+    },
+    {
+      "episode_id": "91a5cc7238a5c24ffa1920a6a357820f9c99344b07831c89586bc85dbd6b7003",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004464597,
+      "panel_x_jitter_m": -0.013301284,
+      "role": "place_corridor_v5_collection",
+      "role_index": 52,
+      "row_sha256": "dca87368e6e917af39c2cd4cbe20bbccbe71990bb78d2579c261fac19bf1fe36",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 290,
+      "screen_result_sha256": "536e9b236acb50b0e2f55193e4d6e9086c9cc042ee7489aaacc5c0d5cf353afa",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3229021231,
+        "seed_u64": 13868540585720263325
+      },
+      "task_seed_u32": 3229021231,
+      "task_seed_u64": 13868540585720263325
+    },
+    {
+      "episode_id": "dbb6417e18da7f334e0d7b1ab2ded80d04b5eae6fcfafbfc912a3d43fd96a9ab",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00116684,
+      "panel_x_jitter_m": -0.008803165,
+      "role": "place_corridor_v5_collection",
+      "role_index": 53,
+      "row_sha256": "ee1d6de749da81e5499bc3e445d6a940838d1e7a418793065f9bf10dc07d7c8a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 584,
+      "screen_result_sha256": "893895b6cfe298ff63dc933db203c01c006c54f0450f8e739b82b5604be2cf4b",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1839636403,
+        "seed_u64": 7901178190284261947
+      },
+      "task_seed_u32": 1839636403,
+      "task_seed_u64": 7901178190284261947
+    },
+    {
+      "episode_id": "bbf60fa70efddc104d8d51aea49ee87cca97c45a9fc93b67bee4f6ebbeef0936",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000492056,
+      "panel_x_jitter_m": -0.008593231,
+      "role": "place_corridor_v5_collection",
+      "role_index": 54,
+      "row_sha256": "78b76441cffa9fd32912499a933e38430e0c04ca64963570e655c1d54f40a59d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 479,
+      "screen_result_sha256": "6abe72540b1fe380b7f43b46ba1bf4e6807941a1568d7c24692040c90aa28377",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1820841371,
+        "seed_u64": 7820454143169388567
+      },
+      "task_seed_u32": 1820841371,
+      "task_seed_u64": 7820454143169388567
+    },
+    {
+      "episode_id": "71496badd08f996b2b552095dc59371bac1f1b95ada38aad3f6e35491fc4b654",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002489551,
+      "panel_x_jitter_m": -0.006737394,
+      "role": "place_corridor_v5_collection",
+      "role_index": 55,
+      "row_sha256": "00b103b342cbbeb91bbd72152305bb22f68448caa13a18c4803be4b7130cb15d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 279,
+      "screen_result_sha256": "c594ce7641d5a8538cb390e6412ce4d6bf48200b528bece04c362e3dc851538f",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2719056220,
+        "seed_u64": 11678257541698853569
+      },
+      "task_seed_u32": 2719056220,
+      "task_seed_u64": 11678257541698853569
+    },
+    {
+      "episode_id": "0f3e3f2f45df997f6a12fbaf376b4d28543e9aa049ae56115df2fe9446e37fdd",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001713138,
+      "panel_x_jitter_m": 0.014523779,
+      "role": "place_corridor_v5_collection",
+      "role_index": 56,
+      "row_sha256": "cf1d5f302edffddc214b56bed71e71beaa6680bd8a2dbcc28ae7c278ee788a64",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 273,
+      "screen_result_sha256": "c7a29be7008cbb3f0b7f7e776aeb730b13fa7749768198a294f75ab629f98ea2",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2159516962,
+        "seed_u64": 9275054729386652497
+      },
+      "task_seed_u32": 2159516962,
+      "task_seed_u64": 9275054729386652497
+    },
+    {
+      "episode_id": "f3665f6a5bff63376e1d0934cd4ad4d492099ce89b58f8ce1d6d609b60cf5e6e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002039961,
+      "panel_x_jitter_m": 0.012622658,
+      "role": "place_corridor_v5_collection",
+      "role_index": 57,
+      "row_sha256": "ef7d4773ee4d4e90c223055b5ef4b15838b381ead5979d883196186117c09690",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 458,
+      "screen_result_sha256": "821bda1e9029a1af18aaede6e74079922802513b5a6d8dce26805f3f6769f479",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3182071620,
+        "seed_u64": 13666893542399115095
+      },
+      "task_seed_u32": 3182071620,
+      "task_seed_u64": 13666893542399115095
+    },
+    {
+      "episode_id": "5afb4c4709a7ecaf9cb6838be4ecc011b54f6a777aec2b83e7c00b814e9f3bcb",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00266949,
+      "panel_x_jitter_m": -0.008859564,
+      "role": "place_corridor_v5_collection",
+      "role_index": 58,
+      "row_sha256": "b0bc05e4ad88aea92e250df834745522d2b91eadd3d42f11cc71e0b2052f33d2",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 296,
+      "screen_result_sha256": "64ed922335f3f81d1d82703bf3b396f85672d390d46cd81dce8ba78605a908c8",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2584726659,
+        "seed_u64": 11101316471376133821
+      },
+      "task_seed_u32": 1785906663,
+      "task_seed_u64": 7670410713950660501
+    },
+    {
+      "episode_id": "018264f0d3ffa5b02426b74faecc5c75a9be3d4ce94d4f0d74d991833bdfaec1",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004625324,
+      "panel_x_jitter_m": 0.008332283,
+      "role": "place_corridor_v5_collection",
+      "role_index": 60,
+      "row_sha256": "c6f8b3372a23a2e2e297b1bd1b53115ac9cbd777246016bc76e459856fcfa3b3",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 460,
+      "screen_result_sha256": "7ed5836a5a2d79e601422dc8e2840f117a54864f2b2defdf7556c14f745981bb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2474468817,
+        "seed_u64": 10627762645557794047
+      },
+      "task_seed_u32": 2474468817,
+      "task_seed_u64": 10627762645557794047
+    },
+    {
+      "episode_id": "7757c814af83c9ae1725ed0b11b057f5fd4961d8133d2e10ec9a55f1f8568c32",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000890761,
+      "panel_x_jitter_m": 0.008125986,
+      "role": "place_corridor_v5_collection",
+      "role_index": 61,
+      "row_sha256": "5b39befa95dc38e5c32c8d29e0acdd127fd69fc45c658018e63d391d342f45d4",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 560,
+      "screen_result_sha256": "b749c7126895fa685f9366b2ae1bf50b8c4e4bcaf3926e1d5a672c5048c5b6a4",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4278685900,
+        "seed_u64": 18376816011327759115
+      },
+      "task_seed_u32": 4278685900,
+      "task_seed_u64": 18376816011327759115
+    },
+    {
+      "episode_id": "4777ade1256c0a69e645865b25a7ede65df1eddd49b593e0dd6e454f7fc67147",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002702156,
+      "panel_x_jitter_m": -0.014793997,
+      "role": "place_corridor_v5_collection",
+      "role_index": 62,
+      "row_sha256": "cc0785a9bc759ad40a1881791ab44677e90b0a1f4197e64d525d54a51ee5d073",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 449,
+      "screen_result_sha256": "1242a92f6d6812d5d34e28672e606719ff484edab04e6c2ffc238deabb52b7af",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 1866683135,
+        "seed_u64": 8017343018265361450
+      },
+      "task_seed_u32": 3131857149,
+      "task_seed_u64": 13451224034457350816
+    },
+    {
+      "episode_id": "94daafb48e07a306655f31dc5907b8a1f018c91dd9d07dea2fd59a7b299045a4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001555783,
+      "panel_x_jitter_m": 0.013172515,
+      "role": "place_corridor_v5_collection",
+      "role_index": 64,
+      "row_sha256": "6afa2fc681632971ac3d8b94ce95da2659d038a34d52ba0a8a8196a33342ccad",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 530,
+      "screen_result_sha256": "f28698286ba7da0b54d0d25e62a213c8efe7aa2cacdf78d6afceefbb436415a0",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4070597238,
+        "seed_u64": 17483082013093869906
+      },
+      "task_seed_u32": 4070597238,
+      "task_seed_u64": 17483082013093869906
+    },
+    {
+      "episode_id": "a610e3583159e075b92276faf3f860abd3f1bf78053466ea21e767c714cadf68",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00317656,
+      "panel_x_jitter_m": -0.003210363,
+      "role": "place_corridor_v5_collection",
+      "role_index": 65,
+      "row_sha256": "edd4facc02a8726836c313c880274bd98ddff6528b38a111c2294b40b1807cff",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 469,
+      "screen_result_sha256": "f32142be44452c2b52f4d6ce8be0d001ced0328ee1ba42eabe20ce8c136926e9",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4181509852,
+        "seed_u64": 17959448063413467798
+      },
+      "task_seed_u32": 4181509852,
+      "task_seed_u64": 17959448063413467798
+    },
+    {
+      "episode_id": "7758f87d9254e7d12a6f927bece64c311f12db241d8f7bc38eafd55a3bd0b172",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004315537,
+      "panel_x_jitter_m": 0.010696493,
+      "role": "place_corridor_v5_collection",
+      "role_index": 66,
+      "row_sha256": "db0a0dde1131566230afd8590aec3b04657d72bce084938c69b0a007f518e5db",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 586,
+      "screen_result_sha256": "be2b13e7d9b88eb86cab6c2a28e58b21b173d5c6488d7e6b89b1677a69b18fd1",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1753618758,
+        "seed_u64": 7531735215736279147
+      },
+      "task_seed_u32": 1753618758,
+      "task_seed_u64": 7531735215736279147
+    },
+    {
+      "episode_id": "28aa4a2c37810a299a8e3b81c5f2d0ef36d489ca30d71039903feae61369d794",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002301308,
+      "panel_x_jitter_m": -0.007958915,
+      "role": "place_corridor_v5_collection",
+      "role_index": 67,
+      "row_sha256": "1e987b2000394f65a099e6abeb1d2c7bc4a65686b77039c49cb0ed1dc9762413",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 294,
+      "screen_result_sha256": "091d58dffd6c3331eb5d86f8611093c6daa30f7c9f573478421ccc547f1fe284",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2731521880,
+        "seed_u64": 11731797143257979216
+      },
+      "task_seed_u32": 2495639886,
+      "task_seed_u64": 10718691696823100073
+    },
+    {
+      "episode_id": "1a498e8fcf1c58a520d5f6db450267ac91e61307402ef2ec0f5b4517ce739fbf",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003838257,
+      "panel_x_jitter_m": 0.006615867,
+      "role": "place_corridor_v5_collection",
+      "role_index": 70,
+      "row_sha256": "2f7081c816c2ba589cb8f2eefcbe9bf66b21d2f12bb10eb2df20a8b1c752b02b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 597,
+      "screen_result_sha256": "2056f61d7357d8ec976d8fab758e09e98d027d70368c67fc4c293a48d3da84b6",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2486812315,
+        "seed_u64": 10680777567591099458
+      },
+      "task_seed_u32": 2458489921,
+      "task_seed_u64": 10559133811286248298
+    },
+    {
+      "episode_id": "b6c8f7241e0da28f0d9f8febe0746403b17ced0886c3170f5a78d830f67c040b",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002641627,
+      "panel_x_jitter_m": 0.001735203,
+      "role": "place_corridor_v5_collection",
+      "role_index": 72,
+      "row_sha256": "c737e5c10bab28e5552b50e9a248532c566386a8e42719d7116b7fb327327450",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 575,
+      "screen_result_sha256": "f7ba9aa0293820935aca44867bd640dbde40e1fd7664a8acbff33ec8c41a1936",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2720419984,
+        "seed_u64": 11684114866442089101
+      },
+      "task_seed_u32": 2720419984,
+      "task_seed_u64": 11684114866442089101
+    },
+    {
+      "episode_id": "c9a89397cfac1891a267fe92388366ae91695dd55d73e8d266a57088b6cc3007",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004311478,
+      "panel_x_jitter_m": 0.006459478,
+      "role": "place_corridor_v5_collection",
+      "role_index": 73,
+      "row_sha256": "bad9b271de78a6edc9b03db774c54699588abdd2638349a69e2086ad43c7970e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 532,
+      "screen_result_sha256": "2be7b5fadb939dc321d870132ddb3f08700353680bda9cabd27967945707cd80",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 101449223,
+        "seed_u64": 435721095393100050
+      },
+      "task_seed_u32": 101449223,
+      "task_seed_u64": 435721095393100050
+    },
+    {
+      "episode_id": "fdea5011af2f73f7831c39d8aa82992550886cb739a47f8365730499e787487a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004383647,
+      "panel_x_jitter_m": -0.001622293,
+      "role": "place_corridor_v5_collection",
+      "role_index": 74,
+      "row_sha256": "683969c4c011202772dc45a1020ba6b08fda94e09c114fc97930743eb8694490",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 533,
+      "screen_result_sha256": "82e259f689d5db0296024f8de209af464ac63c93a7a39c2a4ae3ab6a5df340bc",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4173419933,
+        "seed_u64": 17924702125047926169
+      },
+      "task_seed_u32": 4173419933,
+      "task_seed_u64": 17924702125047926169
+    },
+    {
+      "episode_id": "76a01c90e2c8bd8d2b1339846557e3005398db1e525007f54b9f1a9af3d00238",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000193964,
+      "panel_x_jitter_m": -0.005098813,
+      "role": "place_corridor_v5_collection",
+      "role_index": 75,
+      "row_sha256": "b1a22bd9739c9adc6eb00daeda4571a072850dd7089f16e57bbabbd3b0d66922",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 272,
+      "screen_result_sha256": "8616c99379b0cf5237838ba17375a2493244202598ba1462840e171736c05217",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 477654747,
+        "seed_u64": 2051511519828165146
+      },
+      "task_seed_u32": 3544279453,
+      "task_seed_u64": 15222564340471972109
+    },
+    {
+      "episode_id": "99bd73b87a34ba4698546ef7aa801f434a77a1fb858ec80387584cffe1aea653",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004398358,
+      "panel_x_jitter_m": -0.008441697,
+      "role": "place_corridor_v5_collection",
+      "role_index": 76,
+      "row_sha256": "b54df1a99456cc4d08ed04da0600401a596b3bc44f1b30b12452eb15fbd811ac",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 481,
+      "screen_result_sha256": "15f4ea50dffd11464a62cbf36101999924e9ebef4ea9dd8b9d073ff266185849",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2596550392,
+        "seed_u64": 11152099017267592113
+      },
+      "task_seed_u32": 1846131202,
+      "task_seed_u64": 7929073137013964334
+    },
+    {
+      "episode_id": "f42739b2e40b7806819504ebd1ecf339c6624ccc013bd33cbc180ca1e0db77a5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004516192,
+      "panel_x_jitter_m": 0.008684355,
+      "role": "place_corridor_v5_collection",
+      "role_index": 79,
+      "row_sha256": "276047c3f76f63f3125853a499a4323835e8224aa95b424e6d9aee0a361c996c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 532,
+      "screen_result_sha256": "115262d5040526cfd21a341f4397d3315bb5ccddc87844ad54786d5b50b5ca2f",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 3382548416,
+        "seed_u64": 14527934824322159580
+      },
+      "task_seed_u32": 3001293258,
+      "task_seed_u64": 12890456391359265371
+    },
+    {
+      "episode_id": "ab97376a652d17a714d6a61c87865a59db7f26086daedbebc98a284d0c748fb3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004984562,
+      "panel_x_jitter_m": 0.009907355,
+      "role": "place_corridor_v5_collection",
+      "role_index": 80,
+      "row_sha256": "86fe4da09a0cd5ca86794a745ccfc8ac82fcb59f81f33ba0ed0b5803d4d4d511",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 626,
+      "screen_result_sha256": "17f1978c104837b15c84e2c04f4ea99c6f2d7f75494777601fee9d19eaf90e73",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4176018443,
+        "seed_u64": 17935862642176100090
+      },
+      "task_seed_u32": 4176018443,
+      "task_seed_u64": 17935862642176100090
+    },
+    {
+      "episode_id": "4833cdb9f5c211c66f9b7dc3f3926f2ce2b34d0e43df500a881c1319fb92cbc6",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000704595,
+      "panel_x_jitter_m": 0.002875969,
+      "role": "place_corridor_v5_collection",
+      "role_index": 81,
+      "row_sha256": "e51671f448ab5e22f205a9761bd4ae56fa00098c77d9875e050239bf46aee817",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 618,
+      "screen_result_sha256": "59319070f201697a7c4487413dae7b3ba3ccba7c604aa5873b4b0a3906898d15",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3054293874,
+        "seed_u64": 13118092305344957464
+      },
+      "task_seed_u32": 3054293874,
+      "task_seed_u64": 13118092305344957464
+    },
+    {
+      "episode_id": "3679682a0f0a116a76690de36efb5d50fb5e8d97e8fe5473e9a50f4a4d8f59f7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001793193,
+      "panel_x_jitter_m": 0.001719682,
+      "role": "place_corridor_v5_collection",
+      "role_index": 83,
+      "row_sha256": "8b4431c7ddc0382c82a86a23b7cf11b99956335cf4c8fd45c61a2e33c5e69144",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 473,
+      "screen_result_sha256": "81310225f7da27a13e3cea5a3e68d4b3977e7f4a37ac0e18b90ad96aa8dbef1c",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 535953380,
+        "seed_u64": 2301902242429947052
+      },
+      "task_seed_u32": 1456193347,
+      "task_seed_u64": 6254302805542252033
+    },
+    {
+      "episode_id": "b36102d71a9cfbbc62d2a0bae31d368fdc56a78a45a262177a26d21baa06bcd3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000947244,
+      "panel_x_jitter_m": 0.008977101,
+      "role": "place_corridor_v5_collection",
+      "role_index": 84,
+      "row_sha256": "4fa69c659cf9cf2d949b2f236f22f4b99875a92c58368f9928b611b469d17d61",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 436,
+      "screen_result_sha256": "d2fee23ec19dd96e1f27c416e9b41f39e6d712b978b7266c0d850ec711567fab",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3258718736,
+        "seed_u64": 13996090400594450954
+      },
+      "task_seed_u32": 3258718736,
+      "task_seed_u64": 13996090400594450954
+    },
+    {
+      "episode_id": "d9e23616134cb4533cc61eab53d1e8e2f3528f0bbdcc7c539673d1b136c728cc",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001996953,
+      "panel_x_jitter_m": -0.010638798,
+      "role": "place_corridor_v5_collection",
+      "role_index": 85,
+      "row_sha256": "d7fec6de2354b9357e0948cf3a8b4477b11de376abcbcb9dbc39aede6336260d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 279,
+      "screen_result_sha256": "e31daa1efa7b88086fc62465bd3ac36a872f412396b1acb6b331c376c320d8cf",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2078931133,
+        "seed_u64": 8928941227325543093
+      },
+      "task_seed_u32": 2078931133,
+      "task_seed_u64": 8928941227325543093
+    },
+    {
+      "episode_id": "b6cd2a16b0f5fe5ec9aa98c7ab919bc50bf9e1aab259afe272351517a7b35aae",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002199084,
+      "panel_x_jitter_m": -0.00802224,
+      "role": "place_corridor_v5_collection",
+      "role_index": 86,
+      "row_sha256": "32b7938163acf0d609f55d1385b0840ece1029e911e2cd5609b4aed4e59436b6",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 285,
+      "screen_result_sha256": "aa42fe49274a1f30681b8c4000c3b142a4db174e5672e0684f7fdb711af63859",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2945425117,
+        "seed_u64": 12650504551337565522
+      },
+      "task_seed_u32": 2945425117,
+      "task_seed_u64": 12650504551337565522
+    },
+    {
+      "episode_id": "cbcc2ec7ff259706b51d1bef024845e869328b2da202dd9d14ac4873829e0f0a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003622807,
+      "panel_x_jitter_m": 0.010288079,
+      "role": "place_corridor_v5_collection",
+      "role_index": 87,
+      "row_sha256": "1116c12bb4c619f918e173e0c91cb641ac19a12a001c90c9a2bd942379330e61",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 596,
+      "screen_result_sha256": "6712addaccf421e7e555ad31f3e2f771b2950a91f0ba30380cd0055e9727e59a",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1207536351,
+        "seed_u64": 5186329139675538543
+      },
+      "task_seed_u32": 1207536351,
+      "task_seed_u64": 5186329139675538543
+    },
+    {
+      "episode_id": "f772a1c0dcdcd71a057e2e394e28c948c36a3944930081341f864f939917d80f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001676251,
+      "panel_x_jitter_m": -0.001253932,
+      "role": "place_corridor_v5_collection",
+      "role_index": 88,
+      "row_sha256": "b16a5432e55b4620291470cc6247289732f8cf558c269a7e810a139ef02b3f43",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 614,
+      "screen_result_sha256": "569edb76084d7faa169deb688031f99b43e0ad52dfa06fd29b5bfb7062097c4f",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2719806029,
+        "seed_u64": 11681477948756377825
+      },
+      "task_seed_u32": 2719806029,
+      "task_seed_u64": 11681477948756377825
+    },
+    {
+      "episode_id": "66bd44aef3a564e6ea633fd652c0fbe976504d756bc8800535c1dcbdbb5e2804",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003295904,
+      "panel_x_jitter_m": 0.006828306,
+      "role": "place_corridor_v5_collection",
+      "role_index": 89,
+      "row_sha256": "0dedd94257827b26c4ed72fd1ffefe7b64e92ebe814bdbb5870ce6d44b718ce4",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 461,
+      "screen_result_sha256": "23bc47ba5b07adf0edc50f0e3023e242426dba65831b50ca0ee05065eb65e5ab",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 840211881,
+        "seed_u64": 3608682553803089967
+      },
+      "task_seed_u32": 2640042576,
+      "task_seed_u64": 11338896525568103860
+    },
+    {
+      "episode_id": "05b84fa29188ca8f4fcc9f922ebd6cb2f09ee7b67c317d158823dcd81a778427",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002733755,
+      "panel_x_jitter_m": -0.000576905,
+      "role": "place_corridor_v5_collection",
+      "role_index": 90,
+      "row_sha256": "c04aa15e3587ee4cb8e8640f63dc7df74288a882dce644ce2d2afa26a47e5e0d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 281,
+      "screen_result_sha256": "0dc14478589d9b51fcd7be62e3457ea86098f90301576e89b7a64f1dcd0d62eb",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 637592971,
+        "seed_u64": 2738440959062894377
+      },
+      "task_seed_u32": 3107427125,
+      "task_seed_u64": 13346297876917874237
+    },
+    {
+      "episode_id": "c8d451b3d4d4aa5c1a1035793ad62b97cff91f76d50f43e58ae17994b19afeb2",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003861872,
+      "panel_x_jitter_m": -0.000115111,
+      "role": "place_corridor_v5_collection",
+      "role_index": 91,
+      "row_sha256": "1b1bad8741efec1d1fed0e34fa5e0b597942064005c2d4e533d971df201a3b37",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 473,
+      "screen_result_sha256": "a39f00343b985e4c2429138a0e1205c6f10efe0aead1852e888e270f7a38e7d6",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3651887821,
+        "seed_u64": 15684738761232712900
+      },
+      "task_seed_u32": 3651887821,
+      "task_seed_u64": 15684738761232712900
+    },
+    {
+      "episode_id": "8f585e1d7328c53880767effc43c9ec9bc2232e9308c9ebdd4da93e4770c2fab",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002336528,
+      "panel_x_jitter_m": 0.013648775,
+      "role": "place_corridor_v5_collection",
+      "role_index": 92,
+      "row_sha256": "5f08d769cdefcddc2bb2549ce424bd2ca4f12a635dca04f7bd3689284ccb926a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 612,
+      "screen_result_sha256": "297d6caf4bc67de5a7bae8eaae2896de47fdb7b0d85ffda2a341b728cb07010b",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1051771469,
+        "seed_u64": 4517324065530021538
+      },
+      "task_seed_u32": 1051771469,
+      "task_seed_u64": 4517324065530021538
+    },
+    {
+      "episode_id": "e4d0b4ee3788c32c4487f4630c01b170aa9d14cabbdb6edcc058d5b97bf7e10c",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004280203,
+      "panel_x_jitter_m": 0.009754681,
+      "role": "place_corridor_v5_collection",
+      "role_index": 93,
+      "row_sha256": "508fd649f92401ec0d480026cb8f51d473479cbe3a1a89d10b08b8ec5e78e9fd",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 449,
+      "screen_result_sha256": "7b287d1ec6b3fd69d66b164d9fbe2e983d28aa7d19cd6b641e7f0784e9b8e830",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 2834581125,
+        "seed_u64": 12174433230571412725
+      },
+      "task_seed_u32": 3381272164,
+      "task_seed_u64": 14522453364461944610
+    },
+    {
+      "episode_id": "0c41f9c0dafadb395c9f688bc349c0243998d9847d871d9f767ad3bd03f63eaa",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002349719,
+      "panel_x_jitter_m": -0.005818924,
+      "role": "place_corridor_v5_collection",
+      "role_index": 94,
+      "row_sha256": "b77f8811d70e7cb41a3506a1c0dcb74b095e5a4ea20ec47df5ceede0b8208efa",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 573,
+      "screen_result_sha256": "c08384203e276c3a368414c5807af85a1c67521f808d11641d226d01f00e76e4",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2740174368,
+        "seed_u64": 11768959296235517507
+      },
+      "task_seed_u32": 4132058543,
+      "task_seed_u64": 17747056311180131282
+    },
+    {
+      "episode_id": "448a818a243bb5a996a8ff1b92973b0da8800bd61e7e86e5df1d4d4f87eb47e4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000732839,
+      "panel_x_jitter_m": -0.002978111,
+      "role": "place_corridor_v5_collection",
+      "role_index": 97,
+      "row_sha256": "a4a1f9472f1ec3704684d43745058d8ae59ce8a95f62991c3d85c6279bfdf08b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 452,
+      "screen_result_sha256": "25fde1c47004f3fa629bc8c63a3190dc6ac96ab23fb5d31995a99c520c34318c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1211034312,
+        "seed_u64": 5201352765209314400
+      },
+      "task_seed_u32": 1211034312,
+      "task_seed_u64": 5201352765209314400
+    },
+    {
+      "episode_id": "2c46c3b29388bd654f6ced821115f1911230bc8dd1bdb8dbfe5ef1f423a82bb6",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001155274,
+      "panel_x_jitter_m": -0.008279908,
+      "role": "place_corridor_v5_collection",
+      "role_index": 98,
+      "row_sha256": "bfbcd3ca737ddc262db0ced983243479b880829b2aae70c6b6258fecb6239bf3",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 286,
+      "screen_result_sha256": "fefffe9d596613c9da4629f19b2a8c57c9cf1865940a1c96738f51dbf47c744a",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2808574519,
+        "seed_u64": 12062735710880006615
+      },
+      "task_seed_u32": 2808574519,
+      "task_seed_u64": 12062735710880006615
+    },
+    {
+      "episode_id": "6e5dcca153c1c71d431ceea72d0a95bcf2bd5e422313690547a0aceee5fb5b6f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001375307,
+      "panel_x_jitter_m": -0.013168102,
+      "role": "place_corridor_v5_collection",
+      "role_index": 99,
+      "row_sha256": "32ec3ec60f6094d14c1e75cbe64cdea55e7723ec094524435579e152a42de5bb",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 465,
+      "screen_result_sha256": "8bc9e0bcad6d4f450c744c3527eab2f1b4f95bd2e878a6b569a35f63158e3931",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2011525415,
+        "seed_u64": 8639435875691651567
+      },
+      "task_seed_u32": 2011525415,
+      "task_seed_u64": 8639435875691651567
+    },
+    {
+      "episode_id": "51a07bb8c749ff501384de8953512f277d1d27bb6df98c799b5254de5432372f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002015216,
+      "panel_x_jitter_m": 0.002056705,
+      "role": "place_corridor_v5_collection",
+      "role_index": 100,
+      "row_sha256": "70770354a96cc8f3150a851a0930f08368f6a7a574e20c8c1b317514fbe0098e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 560,
+      "screen_result_sha256": "cb5a7869248918ae7393a615a4d1f6643cc657861b19791fdce2fa853dbe4461",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3808184091,
+        "seed_u64": 16356026130764949324
+      },
+      "task_seed_u32": 3808184091,
+      "task_seed_u64": 16356026130764949324
+    },
+    {
+      "episode_id": "f040f75befbb1f86c7b300eb992d4b89fa2354a47f6335fab716cb475f58ef28",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000801632,
+      "panel_x_jitter_m": -0.011788315,
+      "role": "place_corridor_v5_collection",
+      "role_index": 101,
+      "row_sha256": "5370eb8fcc64739e1e751244fe43cafd8e773931ea06e46b68f5bdd8f454eb9d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 542,
+      "screen_result_sha256": "c8463a8f516c6b69e14c5286ab4a6e7b841c14bbddc5947cf5010d20fef934a5",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3306201135,
+        "seed_u64": 14200025750535282679
+      },
+      "task_seed_u32": 3306201135,
+      "task_seed_u64": 14200025750535282679
+    },
+    {
+      "episode_id": "8167f3fa180a7272370d9fa383a05ad167653282737df8cf3aca1f606c5dfd88",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003583393,
+      "panel_x_jitter_m": 0.002255605,
+      "role": "place_corridor_v5_collection",
+      "role_index": 102,
+      "row_sha256": "d4598afe2e53da11d88941374951379b24b76631860006aac6cd50f4760fdba1",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 602,
+      "screen_result_sha256": "8c36d5e9b5fbfc920b37349bd484d46fae6a831ab401269dfd6f33f0e3cda4ee",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3838820930,
+        "seed_u64": 16487610349993052601
+      },
+      "task_seed_u32": 3838820930,
+      "task_seed_u64": 16487610349993052601
+    },
+    {
+      "episode_id": "3cb30c227fee24bc4c94be6734863cc3a21aa5777194f3a0e1d9a149b9eec8a6",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004271579,
+      "panel_x_jitter_m": -0.013327227,
+      "role": "place_corridor_v5_collection",
+      "role_index": 103,
+      "row_sha256": "5e9a8fb413a6a972b6004a0bdef2d565f77fe28da119f2f7e15c2d2532415162",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 606,
+      "screen_result_sha256": "9bcc2490f61ef71a769614aff893809c160684a14b338d091ccf90d90713bcb9",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1441291571,
+        "seed_u64": 6190300162026350549
+      },
+      "task_seed_u32": 1441291571,
+      "task_seed_u64": 6190300162026350549
+    },
+    {
+      "episode_id": "c68af8d9dc4ad4cf955f359d9d9b6ea9cf37a3e47d93316716bb63fe94e5ad68",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003449388,
+      "panel_x_jitter_m": 0.0074695,
+      "role": "place_corridor_v5_collection",
+      "role_index": 104,
+      "row_sha256": "627dd96f9b9f5ad6d7202e98a8f523674405151415deb5078fc3dbc54c768435",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 492,
+      "screen_result_sha256": "68bf070b59dbff9c1309f398aa976606e9bd7f550f2c3a77a1f791088d714048",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4130824159,
+        "seed_u64": 17741754669040001430
+      },
+      "task_seed_u32": 4130824159,
+      "task_seed_u64": 17741754669040001430
+    },
+    {
+      "episode_id": "04987bc86ac9261a3321cbbcfc3061299ec9e5215f5af7b4f248adbe75a05f1c",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004754231,
+      "panel_x_jitter_m": 0.007248411,
+      "role": "place_corridor_v5_collection",
+      "role_index": 105,
+      "row_sha256": "3319bb89611f30bdec6941cc5d135e393e05e319be835652204ecb4596620893",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 443,
+      "screen_result_sha256": "4bedcc484cdffcf9f3104dffa355cefa1d5487abc58efbc162493a3312e1183f",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1451649329,
+        "seed_u64": 6234786393894296643
+      },
+      "task_seed_u32": 448286854,
+      "task_seed_u64": 1925377380339663221
+    },
+    {
+      "episode_id": "9b1aa9ef51713e7c935117ced33f60091f85dd08d77fc83c4c5c387190a74eb8",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004308203,
+      "panel_x_jitter_m": -0.007555991,
+      "role": "place_corridor_v5_collection",
+      "role_index": 106,
+      "row_sha256": "0c9e3b2307ca408bdf7dd1844d002e517641875bc6394b304fa216c99d5b974c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 444,
+      "screen_result_sha256": "140ec0f998af94ab77c35e05b7975f0eebe84c0cc89585bbba0546425f56b589",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1243893004,
+        "seed_u64": 5342479774335170753
+      },
+      "task_seed_u32": 1243893004,
+      "task_seed_u64": 5342479774335170753
+    },
+    {
+      "episode_id": "6c7a72373649dc181731bb153d2bd97eaa2364252e94c5d0bb495bbc7852f00f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002768879,
+      "panel_x_jitter_m": -0.00750863,
+      "role": "place_corridor_v5_collection",
+      "role_index": 107,
+      "row_sha256": "0ffd455cb683b6d5aa7bb80307d5b91848c4867e7637143ee6297c03b532e7a1",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 271,
+      "screen_result_sha256": "922ab627ea23556f1024caf6c4e7f7e366e56b96a3d81ce6fcf0b12664d010ac",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3005469316,
+        "seed_u64": 12908392423275142188
+      },
+      "task_seed_u32": 3005469316,
+      "task_seed_u64": 12908392423275142188
+    },
+    {
+      "episode_id": "88699d1f7233c146dfcb1b12d5d5d8ebdaa6a4dac28e91e3f5c27aadac818368",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002323213,
+      "panel_x_jitter_m": 0.003270817,
+      "role": "place_corridor_v5_collection",
+      "role_index": 108,
+      "row_sha256": "8e56bf685d3d76e0f7ae27ac909d78867b7c29ad9b07bd47d325c1d02810fc75",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 557,
+      "screen_result_sha256": "4fbe01d6d86116619b0054270c68c4219f1187e0df81d2d0fa03e72556ce5e27",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4292999794,
+        "seed_u64": 18438293717656074644
+      },
+      "task_seed_u32": 4292999794,
+      "task_seed_u64": 18438293717656074644
+    },
+    {
+      "episode_id": "46ccc0932d30b8b045afb7da2372d81078c5223ac331af8814e90bec549485ca",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003831778,
+      "panel_x_jitter_m": -0.000403642,
+      "role": "place_corridor_v5_collection",
+      "role_index": 110,
+      "row_sha256": "830841d7e46fd2f57651064967cff23682f28f3472f34ef7bd23863563d13d39",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 580,
+      "screen_result_sha256": "14bbb7de1394b27779061750a3640a7f7b76f88fad22b0727c99163a69598f81",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4284666366,
+        "seed_u64": 18402501918148807821
+      },
+      "task_seed_u32": 4284666366,
+      "task_seed_u64": 18402501918148807821
+    },
+    {
+      "episode_id": "48440cb164252fb99677ab55de468f6768b3f408b45cbff223515cd7b55f0ba4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001161661,
+      "panel_x_jitter_m": 0.006232956,
+      "role": "place_corridor_v5_collection",
+      "role_index": 111,
+      "row_sha256": "19275c5f598cc8a88a2c61000cd1ed0519d69e320ee7d199c321966722a80df1",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 466,
+      "screen_result_sha256": "1dcc7a04e92e8e44434b43cdffe43b175f581f0aef62e85a89c9b262828c42e8",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1292510090,
+        "seed_u64": 5551288568193452325
+      },
+      "task_seed_u32": 1263471359,
+      "task_seed_u64": 5426568166716389865
+    },
+    {
+      "episode_id": "58ecf1774382a8e209581980f64766786326024923869b1ab92f6687ca7879d4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003199139,
+      "panel_x_jitter_m": -0.009826136,
+      "role": "place_corridor_v5_collection",
+      "role_index": 112,
+      "row_sha256": "c8668c4f09af5b12fc965512c533ae1c180a9ae66e9dd2a663d097919f4f3bae",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 599,
+      "screen_result_sha256": "1b5bb5f249f8d3413cbb4fe751e298be9aee29f6cf0e4d14452dba42691795b9",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2585343869,
+        "seed_u64": 11103967367552052018
+      },
+      "task_seed_u32": 2585343869,
+      "task_seed_u64": 11103967367552052018
+    },
+    {
+      "episode_id": "2a95b65ef196756024ea08a93a38a1b6079c763b45b87cfb47e591d0466cf995",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000156095,
+      "panel_x_jitter_m": 0.012105819,
+      "role": "place_corridor_v5_collection",
+      "role_index": 113,
+      "row_sha256": "694bd162e7380a9ae7b94ba51224a3318d28260f93baf9fd79b51a90157edd49",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 634,
+      "screen_result_sha256": "9c5e98c9782acad3d442519faf7003ef6996c56cea2598f8131d4b36fffa49c4",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2700859385,
+        "seed_u64": 11600102732452302994
+      },
+      "task_seed_u32": 2112112437,
+      "task_seed_u64": 9071453845329172127
+    },
+    {
+      "episode_id": "a947b66ccfd691074d4552627e0809097dff83ed17aa2f96b5b193b922e29c5c",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00019293,
+      "panel_x_jitter_m": 0.000751036,
+      "role": "place_corridor_v5_collection",
+      "role_index": 114,
+      "row_sha256": "83d1d46f73a085bcedaf8d3fb33fa819f4f1d6c9fcc26340162a4aaffee3537a",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 538,
+      "screen_result_sha256": "fa60adedeb301120e135b500cf739200f3eba435824564a38fa80b803530306d",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 3251606250,
+        "seed_u64": 13965542506993940791
+      },
+      "task_seed_u32": 980181333,
+      "task_seed_u64": 4209846773578662337
+    },
+    {
+      "episode_id": "39723c241e6301d9d9a8f3d233dbee98b01d7e6adac66f1881b82e63b4b3328f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004068328,
+      "panel_x_jitter_m": 0.002556389,
+      "role": "place_corridor_v5_collection",
+      "role_index": 115,
+      "row_sha256": "c5e68692c8b0c91bbd4dda7b106b56ab945bdf0949e2b38848fce0560e6fe4b0",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 564,
+      "screen_result_sha256": "06876814ec491fc420a26abb3f05a0cfa93024572655d72eeb931f96dbc48763",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 988975328,
+        "seed_u64": 4247616693993283141
+      },
+      "task_seed_u32": 2759219733,
+      "task_seed_u64": 11850758517824730921
+    },
+    {
+      "episode_id": "96fa8ce987559845e6cb301e189e0e15d3cbb7bd6466b22b3c345a1494225bcf",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002199393,
+      "panel_x_jitter_m": -0.009632842,
+      "role": "place_corridor_v5_collection",
+      "role_index": 116,
+      "row_sha256": "41bf4c90baec7a11cf88608324cda521ca0beb48d946f1ea43682ec0870004ea",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 622,
+      "screen_result_sha256": "7f9b29da1a787f5d37ad4d9a13f49ff0aafde1671917b2632fad945c388637d1",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2961995687,
+        "seed_u64": 12721674607194481003
+      },
+      "task_seed_u32": 1886978970,
+      "task_seed_u64": 8104512966154717194
+    },
+    {
+      "episode_id": "be09b8f0d0150f035d93d6acc8957d8d9c1eea36473a802b6e7f7ece310e1c68",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004920679,
+      "panel_x_jitter_m": 0.003102317,
+      "role": "place_corridor_v5_collection",
+      "role_index": 117,
+      "row_sha256": "e0fcc994ed30839417e7bdd7b7aeab752466c7b769a20e93965ddac07e81ed5b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 554,
+      "screen_result_sha256": "770f226ae2b1ede6599fda888df1ac8186b45bfd4f31dd8965c6b8ae23cea087",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1457556681,
+        "seed_u64": 6260158277073108368
+      },
+      "task_seed_u32": 1457556681,
+      "task_seed_u64": 6260158277073108368
+    },
+    {
+      "episode_id": "7df5d202922a13d5213eb2838e3548cd4aa7b873012b7d02de57364e807f73d5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004349248,
+      "panel_x_jitter_m": 0.003104229,
+      "role": "place_corridor_v5_collection",
+      "role_index": 119,
+      "row_sha256": "3610b8f7371576e93fa3a66376f68cd1b42ee7de4c334597582dab1840acb6c5",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 622,
+      "screen_result_sha256": "d150158168b0df4f3d7cf781d11295e28bbb2b6e1e8d5f9b7583afa121d6c629",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3285493673,
+        "seed_u64": 14111087880059127938
+      },
+      "task_seed_u32": 3285493673,
+      "task_seed_u64": 14111087880059127938
+    },
+    {
+      "episode_id": "56a6755cdf36e0fbc25acf0ec8334c49f08b313be1b8cbc13cc313ed73ca404c",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004137775,
+      "panel_x_jitter_m": 0.001534738,
+      "role": "place_corridor_v5_collection",
+      "role_index": 120,
+      "row_sha256": "aea2fdb138ff916181d0fc9e40fc66a821e6c71127faea02772445a4730b194c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 431,
+      "screen_result_sha256": "c869de505e8e2dc0813eb6f4a6fa823dd032d68da29d7808d23293cda41652d3",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3290494949,
+        "seed_u64": 14132568193698601622
+      },
+      "task_seed_u32": 3290494949,
+      "task_seed_u64": 14132568193698601622
+    },
+    {
+      "episode_id": "6403703238834e8e2d66787db3a71f8a7f5d135bbde34c8238e4ea726e811a9d",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000193568,
+      "panel_x_jitter_m": -0.014950014,
+      "role": "place_corridor_v5_collection",
+      "role_index": 121,
+      "row_sha256": "7615d8e076c979c085741ab07cca40400fe54a0dece49d03e7618c0a9bbfcfb5",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 280,
+      "screen_result_sha256": "b1db132d768e47817baccc4e027716eb21e51c6738e63b97ab918a767e962958",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4024102871,
+        "seed_u64": 17283390229575510173
+      },
+      "task_seed_u32": 4024102871,
+      "task_seed_u64": 17283390229575510173
+    },
+    {
+      "episode_id": "768df62d347b6273fcda706664838a382952309ce2dd8a43e92ff0e36d6da7e9",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002524084,
+      "panel_x_jitter_m": -0.007440669,
+      "role": "place_corridor_v5_collection",
+      "role_index": 122,
+      "row_sha256": "db13503c4450ddd08d81918dffa09c58c40b11ff12be4b4f59c98294437cd16e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 291,
+      "screen_result_sha256": "da74250985156b734cd2bbd0d8aa66c269ba41a2f5bdd76d5ffdd6cdbc100ed4",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3872640743,
+        "seed_u64": 16632865344411511880
+      },
+      "task_seed_u32": 3872640743,
+      "task_seed_u64": 16632865344411511880
+    },
+    {
+      "episode_id": "4bfd8c2caf731dd0c7f13dac63c4558fa3e0464d939d6df8a1eff3dc76abfa9f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003861774,
+      "panel_x_jitter_m": 0.005441498,
+      "role": "place_corridor_v5_collection",
+      "role_index": 123,
+      "row_sha256": "7bfc3efd2ba4cd02c46e5a9cb619588ab35470cdc4c2b7249697b992b8020da6",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 614,
+      "screen_result_sha256": "ef70c7a9277f54b5043af063aee1f7ffbcf57feafbd67780cfefee6ba1eb9e8c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1879438084,
+        "seed_u64": 8072125107326216808
+      },
+      "task_seed_u32": 1879438084,
+      "task_seed_u64": 8072125107326216808
+    },
+    {
+      "episode_id": "ed0e113d15db63330834f06b797164a2fd29b64bcf925e8a1cdf2fdae165c2ac",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00094101,
+      "panel_x_jitter_m": -0.003070589,
+      "role": "place_corridor_v5_collection",
+      "role_index": 124,
+      "row_sha256": "b3a86cf8016d9088f8b590ffa9c1412513dc714938678bb56b80f0e3d1542bf5",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 553,
+      "screen_result_sha256": "45896f791d242f79cb3c2ca9bac33f2fde08a404bb96639a5af694fd975a9b3a",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 249131557,
+        "seed_u64": 1070011889729584107
+      },
+      "task_seed_u32": 249131557,
+      "task_seed_u64": 1070011889729584107
+    },
+    {
+      "episode_id": "deedaaceefcbc9c260c017a5da1410b0b5eb487bfac1befa08db0e324b8179e3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004089499,
+      "panel_x_jitter_m": -0.000450733,
+      "role": "place_corridor_v5_collection",
+      "role_index": 125,
+      "row_sha256": "b889e50fcef39381d1a6673db1ad774ff5fdb71e73ed24dff95e8affec1cb7ef",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 293,
+      "screen_result_sha256": "aaf06a21a293f7634546dd823ebac1e4c699fb0714228fc981af89e28f433777",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2179409349,
+        "seed_u64": 9360491882737792478
+      },
+      "task_seed_u32": 2179409349,
+      "task_seed_u64": 9360491882737792478
+    },
+    {
+      "episode_id": "befe775ebd2e68704a085fabc2f8c9daeddfffec54679cc7a6295ebebc489287",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004293996,
+      "panel_x_jitter_m": 0.010446937,
+      "role": "place_corridor_v5_collection",
+      "role_index": 126,
+      "row_sha256": "31066845dd01075dd674b899014fb33962d50d43194831f16f61621ce51e7130",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 465,
+      "screen_result_sha256": "e451d0fd3bfc0af81029d1dce75eefbcef2aefcbcd27d5f38bc276ab1a741f6a",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 781773590,
+        "seed_u64": 3357692003952872670
+      },
+      "task_seed_u32": 2643407251,
+      "task_seed_u64": 11353347696187158297
+    },
+    {
+      "episode_id": "4cae730876ea7c25059ee3977a06bbc546901236b06d40431a0dcf6a55c990ca",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001048476,
+      "panel_x_jitter_m": 0.014069252,
+      "role": "place_corridor_v5_collection",
+      "role_index": 129,
+      "row_sha256": "8cf274c6b3d4b7a7a05fabb14ab0cdaff271327ba28866fce3993976d05cacca",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 444,
+      "screen_result_sha256": "8d0f86a8251a376a31c128eec51ca8e79687e57f83aa78308e5dfffd66a8f70d",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2050198019,
+        "seed_u64": 8805533445019083711
+      },
+      "task_seed_u32": 2050198019,
+      "task_seed_u64": 8805533445019083711
+    },
+    {
+      "episode_id": "bb97849c84295c5df5c739f0b273b2a4e72d550e194788a5a299c34c965a65a4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001752124,
+      "panel_x_jitter_m": -0.000504246,
+      "role": "place_corridor_v5_collection",
+      "role_index": 130,
+      "row_sha256": "529a1781887fb1964980d869b593aeecb5b40a55637d7b3e0d1341fa500bf78c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 448,
+      "screen_result_sha256": "e6b6e78f26e03aa7281256deb5cb79371da50df07164de5070a0181c9e0a7c70",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 4160717249,
+        "seed_u64": 17870144515217577135
+      },
+      "task_seed_u32": 4160717249,
+      "task_seed_u64": 17870144515217577135
+    },
+    {
+      "episode_id": "61d7b40ea224f2a99574c8ae10ea089f521c63edc05f52b2629bd8dd9813c3b4",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001091936,
+      "panel_x_jitter_m": -0.00550854,
+      "role": "place_corridor_v5_collection",
+      "role_index": 131,
+      "row_sha256": "eb2c4833f5b56dd259ef2287b7e5326d65ace80418cf290a1141eaba23cb9d3f",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 471,
+      "screen_result_sha256": "438ec5b844c7155d6a8d969c3b926d64b3a19d3fae786d06d764d9e552dba4eb",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3697286145,
+        "seed_u64": 15879723078204269493
+      },
+      "task_seed_u32": 3697286145,
+      "task_seed_u64": 15879723078204269493
+    },
+    {
+      "episode_id": "54d6beccc40ea25e9cb32a9c4de76ae67f6628bef0484110e9132eb4843fd4a5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004430547,
+      "panel_x_jitter_m": -0.014812129,
+      "role": "place_corridor_v5_collection",
+      "role_index": 132,
+      "row_sha256": "f7a257f92004cae1e0610c788686a36a9a1e16e69e703a534a06792497132ce7",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 586,
+      "screen_result_sha256": "ef00bd00813baebfeb0edaa27a9119d86946b2c9756d9f4733f374947004d7b5",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2773644641,
+        "seed_u64": 11912713024918372244
+      },
+      "task_seed_u32": 2773644641,
+      "task_seed_u64": 11912713024918372244
+    },
+    {
+      "episode_id": "943d9c44603ebd50576fbe198a5365886dd4097b6390fb601146a50d5da6e09e",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00465662,
+      "panel_x_jitter_m": -0.000883745,
+      "role": "place_corridor_v5_collection",
+      "role_index": 133,
+      "row_sha256": "09209fba6401131c783d8f3934f3f8eb9ca8b4557648e8f34212459d31514438",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 626,
+      "screen_result_sha256": "cb0e270ec4610e864365fd920e08d348a26878f8ecf0be86e138082dad98ce9c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1876695877,
+        "seed_u64": 8060347420484782636
+      },
+      "task_seed_u32": 1876695877,
+      "task_seed_u64": 8060347420484782636
+    },
+    {
+      "episode_id": "42809451d20be7fec203020739286d2c8416398fce8a46203d27447c2ec373bf",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003137782,
+      "panel_x_jitter_m": -0.012218382,
+      "role": "place_corridor_v5_collection",
+      "role_index": 134,
+      "row_sha256": "eccdd5b38871ed19d46b6a0a01631a7fcd37873b96186cc7dcae6c19fc70cfe7",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 512,
+      "screen_result_sha256": "c6d1a80c87deb501042327bf0c63c9284f6963363f4e42deb10fb2e8ae7cb490",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 2992257042,
+        "seed_u64": 12851646140722185941
+      },
+      "task_seed_u32": 1084032660,
+      "task_seed_u64": 4655884824299883324
+    },
+    {
+      "episode_id": "a107a9359f81923d967d60e28bb60c65ff54af56bb03559d089f2e2af327f698",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000457452,
+      "panel_x_jitter_m": -0.006270879,
+      "role": "place_corridor_v5_collection",
+      "role_index": 135,
+      "row_sha256": "63a7ab9a6db472db494c2fcacf66fbb00e4df3520cba91362f339e9eac1aa8b4",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 617,
+      "screen_result_sha256": "ba154a3c7de6bae3d11c1e24c8ef3979a8d86100769560ec7650f054948236d8",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2784006593,
+        "seed_u64": 11957217270388119920
+      },
+      "task_seed_u32": 2784006593,
+      "task_seed_u64": 11957217270388119920
+    },
+    {
+      "episode_id": "7b19c1258bd627151348fe550111514b9abef97eceaba57f06792613dc4c0e23",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004584461,
+      "panel_x_jitter_m": -0.01109485,
+      "role": "place_corridor_v5_collection",
+      "role_index": 136,
+      "row_sha256": "3735d48a532886dbf20a2ee201d00621de39504626963d72067a2c22f2621999",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 467,
+      "screen_result_sha256": "f7fc0f497fa91c8a16a0c92ee2e35ff5618bb21e32cf24d5a1700301ef5269f6",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2738575430,
+        "seed_u64": 11762091913504404615
+      },
+      "task_seed_u32": 2712735409,
+      "task_seed_u64": 11651109868423064190
+    },
+    {
+      "episode_id": "dd6318611992e1a9406920a11dd2112aa45c54cf6732c1e9db5e49f86f1e9203",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000827434,
+      "panel_x_jitter_m": -0.010717296,
+      "role": "place_corridor_v5_collection",
+      "role_index": 137,
+      "row_sha256": "3db7fe6adcbc9bfd6df7d905004feda37039674a8abc78e3d96957076635d4bb",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 538,
+      "screen_result_sha256": "0994621273469d13bd4c65f862dee139b5f22310b278edc96d9bb149c3593012",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2349631759,
+        "seed_u64": 10091591564657572483
+      },
+      "task_seed_u32": 2349631759,
+      "task_seed_u64": 10091591564657572483
+    },
+    {
+      "episode_id": "f5e75d1d27b90bd9febbf19cfef16f81f1da0151a4fcd9d200ecc5a2bd960064",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003335517,
+      "panel_x_jitter_m": 0.01355638,
+      "role": "place_corridor_v5_collection",
+      "role_index": 138,
+      "row_sha256": "c548ff0fe80fc61d6ea58cb979f06211568dc154ed2d7282f4a86f5fe94bc7b8",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 436,
+      "screen_result_sha256": "98624d9b4c03e2f3c09b8b3990ce59ba708e7ff0e7d427d4dd97ba0fe6c507f8",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 2765225935,
+        "seed_u64": 11876554957669239235
+      },
+      "task_seed_u32": 4068277303,
+      "task_seed_u64": 17473117968409720049
+    },
+    {
+      "episode_id": "1136bf7a79c71abfa24971c4583dffcbdc622f0f8ae625c6aad3e7cc717b4161",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001148636,
+      "panel_x_jitter_m": 0.0046115,
+      "role": "place_corridor_v5_collection",
+      "role_index": 140,
+      "row_sha256": "dfefc23d67f0aba9400b286f575826c82bf083f5e5023f4229d07d77a5873f06",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 605,
+      "screen_result_sha256": "032c9b3999007893a78464acd9f7504f8cfb8d2213cf3228480d03ffecf7832b",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2166347198,
+        "seed_u64": 9304390367282921815
+      },
+      "task_seed_u32": 2166347198,
+      "task_seed_u64": 9304390367282921815
+    },
+    {
+      "episode_id": "4c71e2e1c27c0fdd41b850bd2182555eeeb468c36ccf548e1e11b70761fdb750",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003556604,
+      "panel_x_jitter_m": -0.01104705,
+      "role": "place_corridor_v5_collection",
+      "role_index": 142,
+      "row_sha256": "ab24d1e33122b1a8e280c6fe59ebd7c64284f38dba87c21ee243935c8c07d385",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 590,
+      "screen_result_sha256": "294dded5618ac3b70ae0b06b7e791d1aad24e1384b697feabdb36d36fe5a09fe",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3385489331,
+        "seed_u64": 14540565959551045644
+      },
+      "task_seed_u32": 3385489331,
+      "task_seed_u64": 14540565959551045644
+    },
+    {
+      "episode_id": "b4360063277b33d39c96f32b5266cdcd755a1a2b2e10a6f3b9e69d3f525a4c9a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002453069,
+      "panel_x_jitter_m": -0.00711241,
+      "role": "place_corridor_v5_collection",
+      "role_index": 143,
+      "row_sha256": "a400fa7d43922a3b779db6e36d1f88e284ba844e86a9e7ba8d7f36c1f0a472d9",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 296,
+      "screen_result_sha256": "8a50939071093bfe6a9d34ffdf20b4c871dd6c40eba48867663638cdc1e33769",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 634302579,
+        "seed_u64": 2724308833081429573
+      },
+      "task_seed_u32": 634302579,
+      "task_seed_u64": 2724308833081429573
+    },
+    {
+      "episode_id": "9767251c9b818fafb7afc29a64507745664def7ed31a351e91b3ad89b62799a3",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001782954,
+      "panel_x_jitter_m": -0.00562551,
+      "role": "place_corridor_v5_collection",
+      "role_index": 144,
+      "row_sha256": "5ceaf65e13144b1693b9ec693756adf3cf27d8820bd9b252e758162b5d7d6926",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 595,
+      "screen_result_sha256": "10f755e22d0fa0b27e0015a71fc72d4dd85998b7b8dcfc25cbc5d986a089714a",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3790160598,
+        "seed_u64": 16278615816964971434
+      },
+      "task_seed_u32": 3790160598,
+      "task_seed_u64": 16278615816964971434
+    },
+    {
+      "episode_id": "0c9d3e3e8030e70408df9da2b32296a6e1e7df41309e6de16438be81a778d4bf",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003411961,
+      "panel_x_jitter_m": -0.01403811,
+      "role": "place_corridor_v5_collection",
+      "role_index": 146,
+      "row_sha256": "aa5a6994df614a0cd6387f7c72f0f1e5fc287660f2378e54ee4d2dc938ef483c",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 545,
+      "screen_result_sha256": "e62bb697964c288a9453d3f541bcb8e1e85e3ec859b7a02bd86a42b190874443",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 335571998,
+        "seed_u64": 1441270759054994227
+      },
+      "task_seed_u32": 796666392,
+      "task_seed_u64": 3421656099736368322
+    },
+    {
+      "episode_id": "d85764991236df375ec3b1832d332e624ce91875622926ba64e24f4cc927b83b",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004000245,
+      "panel_x_jitter_m": 0.007329805,
+      "role": "place_corridor_v5_collection",
+      "role_index": 147,
+      "row_sha256": "3169caf51bcbcb9b5279c50b533f646c232e4aca6ba41fd3dab686775ae0329b",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 625,
+      "screen_result_sha256": "e80ed36e86a0c834dd5c748475a7f9fecd011e8b41017281e63a6aab180e84f3",
+      "screen_retry_index": 2,
+      "screen_selected_seed": {
+        "seed_u32": 1113191672,
+        "seed_u64": 4781121829026393108
+      },
+      "task_seed_u32": 3761663714,
+      "task_seed_u64": 16156222630310925234
+    },
+    {
+      "episode_id": "2eaa3e21175b24be4701e0d919ce49e0622651f8c8045a5994cf0731cc8c9b72",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003701527,
+      "panel_x_jitter_m": -0.011361293,
+      "role": "place_corridor_v5_collection",
+      "role_index": 148,
+      "row_sha256": "05044add32d9054910a7580a3afa8d012b2680fb6eb4d2ea7234c414552963ae",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 434,
+      "screen_result_sha256": "bde3d3b66653863d803d7d9f4ef92eae48610b9da57a13672c76f0143a65e904",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2777293696,
+        "seed_u64": 11928385597574029360
+      },
+      "task_seed_u32": 2777293696,
+      "task_seed_u64": 11928385597574029360
+    },
+    {
+      "episode_id": "3de08bd030675e15ace08cac9c3ed80573db1fb3b09c92067286a59bd9bf7153",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003928738,
+      "panel_x_jitter_m": -0.011035315,
+      "role": "place_corridor_v5_collection",
+      "role_index": 149,
+      "row_sha256": "b219bb31a2c03d6f0f096c1f09ee4b5135dd74b6cb7afc4d1244026af978dbcb",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 558,
+      "screen_result_sha256": "34bcf72b8696c8552bbde37f1754c419f1e032fd51827f16d84fc2b6d443859c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 964862547,
+        "seed_u64": 4144053084520163598
+      },
+      "task_seed_u32": 964862547,
+      "task_seed_u64": 4144053084520163598
+    },
+    {
+      "episode_id": "7ab903295f69bbdfa95469ab0b1da1b11ea3a0047c7ad0e367616c6e777e18eb",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004267674,
+      "panel_x_jitter_m": 0.013628498,
+      "role": "place_corridor_v5_collection",
+      "role_index": 150,
+      "row_sha256": "2b34347f807828d46db569f0ac828f242c79cf9b0498dac29176cfabe196785d",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 267,
+      "screen_result_sha256": "72d4d0480a8deb922d2165ddc4e2d5aadffbf36652ab69051251b8ea6596634d",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2914885823,
+        "seed_u64": 12519339281527050592
+      },
+      "task_seed_u32": 2914885823,
+      "task_seed_u64": 12519339281527050592
+    },
+    {
+      "episode_id": "2f6124177c85a78bcda814efdb7829eb30592fee363a63ad108502af2e6717a7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001068818,
+      "panel_x_jitter_m": 0.000290807,
+      "role": "place_corridor_v5_collection",
+      "role_index": 151,
+      "row_sha256": "386efbd1904941bf39cfd65676ebefb25bdd749359347959c9a26cb86c5e2b8f",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 532,
+      "screen_result_sha256": "2029b38e0b12fb4eef8a22befa0d8a848061a04fab005ee853940b0f4ea77011",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1073602202,
+        "seed_u64": 4611086350718455383
+      },
+      "task_seed_u32": 1073602202,
+      "task_seed_u64": 4611086350718455383
+    },
+    {
+      "episode_id": "a81444efcd7db9020fb399ecf42fce000f9c27a2194cd23538376573d41bd72f",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000647092,
+      "panel_x_jitter_m": 0.0104551,
+      "role": "place_corridor_v5_collection",
+      "role_index": 152,
+      "row_sha256": "ce679875e0fb15337a00b8a1fe4c094629e3c594d058bce3c8929f57804e75c5",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 454,
+      "screen_result_sha256": "08c9c164c9fe2b87e09520ca80a1452a0c4e74096dd81f484ca02e9c8c9fd355",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 671832723,
+        "seed_u64": 2885499576191717188
+      },
+      "task_seed_u32": 671832723,
+      "task_seed_u64": 2885499576191717188
+    },
+    {
+      "episode_id": "8573cf9bd78e05be51e9785d88ea7706f8f28095c374cd6ce9c5cfa964670cda",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000958127,
+      "panel_x_jitter_m": -0.009063369,
+      "role": "place_corridor_v5_collection",
+      "role_index": 153,
+      "row_sha256": "f73fdc7377c5c96ec3bb310d8e10624b3297c6f57add6f5065adb297d224c0ef",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 468,
+      "screen_result_sha256": "c000193d920115a88b8b628e18920f9a94667f31fb177bbfcbff41c0f6948ab2",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3074723743,
+        "seed_u64": 13205837922022936978
+      },
+      "task_seed_u32": 3074723743,
+      "task_seed_u64": 13205837922022936978
+    },
+    {
+      "episode_id": "90282cc952e4ee66e69cb077f20995fcc613bc31ea15e96cc377ccfb589d3ed1",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00415282,
+      "panel_x_jitter_m": 0.005188103,
+      "role": "place_corridor_v5_collection",
+      "role_index": 154,
+      "row_sha256": "054f5551f07ed4f91134ed1681fd7079f5360bbec3accb4e473078577319dd57",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 547,
+      "screen_result_sha256": "d573de378b9d3a8811fd00cdc618c9d9542d1100acfd5a7ea2aa3a437f6dd16f",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3605209774,
+        "seed_u64": 15484258077415590622
+      },
+      "task_seed_u32": 3605209774,
+      "task_seed_u64": 15484258077415590622
+    },
+    {
+      "episode_id": "8cdc52887cafe00164e39fee6bae12d9f666a44c3f266f6a19953667f2777d92",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004612879,
+      "panel_x_jitter_m": 0.004909927,
+      "role": "place_corridor_v5_collection",
+      "role_index": 155,
+      "row_sha256": "133d48b2afdcc7e86dd87e5f937f89582e6e346abe13e1f9113811d990b112d7",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 281,
+      "screen_result_sha256": "2ac65848ed88329557ebd59ff7cecde8fe6700ea5759c6d9e06d2bbff340faac",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 128397179,
+        "seed_u64": 551461686919645799
+      },
+      "task_seed_u32": 128397179,
+      "task_seed_u64": 551461686919645799
+    },
+    {
+      "episode_id": "0a0b5411ce9a480e854401bebc4b0bb79bb4b6f7b9aa21be634c0147062df8a7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003819197,
+      "panel_x_jitter_m": -0.00308475,
+      "role": "place_corridor_v5_collection",
+      "role_index": 156,
+      "row_sha256": "d2102bad2097fa3e0ca65690f9a1edf1ddffd501071904c0f5aaaa7c71e88da8",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 549,
+      "screen_result_sha256": "61b7b60709a97a1fea4f9c0701bf67f5ba1815a031c020ff622e3acf9fa94625",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2907108460,
+        "seed_u64": 12485935765069219458
+      },
+      "task_seed_u32": 2907108460,
+      "task_seed_u64": 12485935765069219458
+    },
+    {
+      "episode_id": "3da34c6346d30e66b67aeccb9859c79717e8148e8ada8c47658d10bffd0ffcd5",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002398349,
+      "panel_x_jitter_m": 0.009788888,
+      "role": "place_corridor_v5_collection",
+      "role_index": 157,
+      "row_sha256": "8b668ce5afd5b170caa6ccdf70e91b6933bc048333e9bf660f9e67e93379f01e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 546,
+      "screen_result_sha256": "4dfd10646121f48e5511dd2fb5e2dac35ac67ff955ef90e7032ac4ffe9773b6c",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2774999147,
+        "seed_u64": 11918530585528306073
+      },
+      "task_seed_u32": 2774999147,
+      "task_seed_u64": 11918530585528306073
+    },
+    {
+      "episode_id": "260816c7f066a21408fc88af7ce9bb3d840be542d13ed44204b958de6b382c07",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001831817,
+      "panel_x_jitter_m": -0.012771114,
+      "role": "place_corridor_v5_collection",
+      "role_index": 158,
+      "row_sha256": "347ce15c3f2e9c29660027d6dcf3148c0b2403b7f4c4a6769cce2500abad45a3",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 600,
+      "screen_result_sha256": "11c3831cd0f0397e127690a86d44f512e4e34df6b7912f7919b4ed4f3ae0e5fe",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1305238947,
+        "seed_u64": 5605958592769665411
+      },
+      "task_seed_u32": 1305238947,
+      "task_seed_u64": 5605958592769665411
+    },
+    {
+      "episode_id": "8d0f450e18b47d0b055fcc76194171cce24fe7ae64ec3b7ba6e165b7691f16ce",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000845912,
+      "panel_x_jitter_m": 0.010278242,
+      "role": "place_corridor_v5_collection",
+      "role_index": 159,
+      "row_sha256": "6076f20aefdb187290c0dcf7865ccd01bde3837473da07358c096969fd9899d8",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 474,
+      "screen_result_sha256": "f6aff6ec8df0dd1d92996fad20d86e2f3efeb3d05fb0d6e0c47a76e39dfd5be0",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 732319214,
+        "seed_u64": 3145287078433288476
+      },
+      "task_seed_u32": 732319214,
+      "task_seed_u64": 3145287078433288476
+    },
+    {
+      "episode_id": "b278498042ae86a75f02e6a644faf4503cac9957ac5c54c4f0be44fa130fc1f9",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001279225,
+      "panel_x_jitter_m": 0.002480366,
+      "role": "place_corridor_v5_collection",
+      "role_index": 160,
+      "row_sha256": "f2a688883c86c12f5b004084bda3d20fc9faf40a9f46fc7f853948cc4d9d628e",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 569,
+      "screen_result_sha256": "9aa61afeeb08b8d93e0f21b8e819643836fe97b062f0c06bcd8a57e74fc2505a",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1492202359,
+        "seed_u64": 6408960331163637104
+      },
+      "task_seed_u32": 2838375856,
+      "task_seed_u64": 12190731477317857434
+    },
+    {
+      "episode_id": "b339fcb4e6a2ad054e3eb369d32091386d3c6f0dcad28f7eef99ee4f2e5b40cb",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004794896,
+      "panel_x_jitter_m": 0.003747499,
+      "role": "place_corridor_v5_collection",
+      "role_index": 161,
+      "row_sha256": "e129b072e01051b291ce348cde5cfb05214c402dbb37294006df23ca4187c6dc",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 488,
+      "screen_result_sha256": "0f371eb5e5ef6665d1c4c5757ea0b2089f616923317081bf6ff5b8396d513c66",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3331687980,
+        "seed_u64": 14309490916031886110
+      },
+      "task_seed_u32": 3331687980,
+      "task_seed_u64": 14309490916031886110
+    },
+    {
+      "episode_id": "b0d096db6d023d7153afb4e0faa7e265f9ad01aafbb2ee7bfa5b17134963d00a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001240529,
+      "panel_x_jitter_m": -0.002972313,
+      "role": "place_corridor_v5_collection",
+      "role_index": 162,
+      "row_sha256": "4415ed93c2d9b9bb4485aab6138111e71f17720ced71e01e9e8e2d774e7ec570",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 598,
+      "screen_result_sha256": "eb18e677d2bf52677e214070c816287d38485e180f117d99a1502605a1a2ee02",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3134110352,
+        "seed_u64": 13460901464311882570
+      },
+      "task_seed_u32": 3134110352,
+      "task_seed_u64": 13460901464311882570
+    },
+    {
+      "episode_id": "7c092aa2d81e15107fa52133a3538e50dc3bfd33e01b31628fb6af42f1fd470a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000573455,
+      "panel_x_jitter_m": -0.01395862,
+      "role": "place_corridor_v5_collection",
+      "role_index": 164,
+      "row_sha256": "a33bc796602890b699f2d8e874560037748a88f62784c36500be0af45d374f00",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 546,
+      "screen_result_sha256": "20033b51ab7b60ad4236c7a1042d07849b8b8710af5dca5baf04c16205d0eff3",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3697641468,
+        "seed_u64": 15881249178838887585
+      },
+      "task_seed_u32": 3697641468,
+      "task_seed_u64": 15881249178838887585
+    },
+    {
+      "episode_id": "b04e101a510131e60bf562a928ca1aa905cc26341d08939995fb0f9127553dff",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004240242,
+      "panel_x_jitter_m": 0.005472493,
+      "role": "place_corridor_v5_collection",
+      "role_index": 165,
+      "row_sha256": "7b1af3ae34c17e22ce2e044bc7d1ec282c8dcffc15cce5b092c16e33cc24b1bf",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 619,
+      "screen_result_sha256": "5ad0e61dff8f2e6dea699eee2a23ac18b46834398f8ac6a7cb6746ac26f76831",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 757731407,
+        "seed_u64": 3254431613260754490
+      },
+      "task_seed_u32": 757731407,
+      "task_seed_u64": 3254431613260754490
+    },
+    {
+      "episode_id": "8d931430d911172bcafd2bf5b8f9a0bd321372eb7d5357b7449826273057bc11",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004484349,
+      "panel_x_jitter_m": 0.007319106,
+      "role": "place_corridor_v5_collection",
+      "role_index": 166,
+      "row_sha256": "67a7356892b32948189caa88e35accaa479519c2188be92c948acedbbffac5ec",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 273,
+      "screen_result_sha256": "d5d79fb2b9f7f2c392112a4ba36397aeac03e5ca13f39cb9b760676ccb933279",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3664211707,
+        "seed_u64": 15737669449874534309
+      },
+      "task_seed_u32": 3664211707,
+      "task_seed_u64": 15737669449874534309
+    },
+    {
+      "episode_id": "26279dcdb7b9caf4885f67045519070d9b3127140f33b33e872698be9d612c75",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004716088,
+      "panel_x_jitter_m": -0.010334754,
+      "role": "place_corridor_v5_collection",
+      "role_index": 167,
+      "row_sha256": "d223ea88cc1afbda95223e4de68b762bd1d613bbc41159f1c040e76b65b15e22",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 314,
+      "screen_result_sha256": "157bcbbe09c64ee976d36259616f407e2f0e3c7101c391d3a5bd826471164429",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 1981936502,
+        "seed_u64": 8512352459130850037
+      },
+      "task_seed_u32": 1981936502,
+      "task_seed_u64": 8512352459130850037
+    },
+    {
+      "episode_id": "453f406972eb6fab45b92e4abe612f49f43d3ff3e2be68bd4a7f48094c76d98a",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00099781,
+      "panel_x_jitter_m": -0.008293163,
+      "role": "place_corridor_v5_collection",
+      "role_index": 169,
+      "row_sha256": "f2363caeba3c9a984491b641a88f441991078807041a08caeef1696922369110",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 288,
+      "screen_result_sha256": "0fd9d2b51579588f6b7e4ab042e064d357c59bc93ccf2c2aaea6974f5db114bc",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2579495489,
+        "seed_u64": 11078848766674884421
+      },
+      "task_seed_u32": 2579495489,
+      "task_seed_u64": 11078848766674884421
+    },
+    {
+      "episode_id": "b91f5f4f1b23519d4e4c773b4ee568d5777240cab2838e799ef7195443fae0d7",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002012741,
+      "panel_x_jitter_m": -0.006160234,
+      "role": "place_corridor_v5_collection",
+      "role_index": 170,
+      "row_sha256": "a8ac62ef1d3557bea5ce2d73b715d7dad7bbcbaa54296cba263b679cd959ebdb",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 437,
+      "screen_result_sha256": "4c3fe6a48d3ce9716480b49f29ed792ceb2c4e515d967619281f2bd48ff5bf34",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 378989458,
+        "seed_u64": 1627747327855788890
+      },
+      "task_seed_u32": 1133174023,
+      "task_seed_u64": 4866945369841262780
+    },
+    {
+      "episode_id": "fb28ffa91289a894fe763840ef967ae20891994ce3d28edf96c8329f4951f71b",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003731636,
+      "panel_x_jitter_m": -0.012668847,
+      "role": "place_corridor_v5_collection",
+      "role_index": 171,
+      "row_sha256": "6045ccefdf734690deb2ccf77893591349156f614cc11f7de70b837efbb479cc",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 273,
+      "screen_result_sha256": "4affc979b1d460e850e641b18cd9b86c449c246ca86166ed86537962b92f7341",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 3692230629,
+        "seed_u64": 15858009803137906927
+      },
+      "task_seed_u32": 3692230629,
+      "task_seed_u64": 15858009803137906927
+    },
+    {
+      "episode_id": "7beddec1127b99e81f159ff10098d8a8fc7cbad5052c6e4007bc6b14aecc2836",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002281777,
+      "panel_x_jitter_m": 0.002511505,
+      "role": "place_corridor_v5_collection",
+      "role_index": 172,
+      "row_sha256": "0457ce264ddf0784db90d7b4c28ed10c5495ed07256984d4b9f5e22f3221c7a0",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 436,
+      "screen_result_sha256": "353c74d598dedd63c7465b01f72e66a39cee87f4a8fccebcc4c429dba99d3b8e",
+      "screen_retry_index": 1,
+      "screen_selected_seed": {
+        "seed_u32": 1611045792,
+        "seed_u64": 6919388990805079594
+      },
+      "task_seed_u32": 3718605280,
+      "task_seed_u64": 15971288067349402350
+    },
+    {
+      "episode_id": "fdfba5785a08a0a12d7cdd427739ae6dbf2bcbcc462538a301012b7206456cd2",
+      "expected": {
+        "clean_success": true,
+        "task_success": true,
+        "terminal_action_index": 8,
+        "terminal_policy_phase": "unknown"
+      },
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002971798,
+      "panel_x_jitter_m": -0.004165696,
+      "role": "place_corridor_v5_collection",
+      "role_index": 173,
+      "row_sha256": "951fc2b9c87786886c4c5c4bb7eaab27e3e59f05f7167f2038214f8070d7a3bb",
+      "scene_template_house_index": 1,
+      "screen_episode_steps": 546,
+      "screen_result_sha256": "3a84cb771338ebe676a27a00d9a532413965195b78867ff5db31378b11c12ed2",
+      "screen_retry_index": 0,
+      "screen_selected_seed": {
+        "seed_u32": 2961789992,
+        "seed_u64": 12720791156566414396
+      },
+      "task_seed_u32": 2961789992,
+      "task_seed_u64": 12720791156566414396
+    }
+  ],
+  "scene": {
+    "aperture_plane_x_m": 0.58,
+    "base_forward_m": 0.14,
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "place_receptacle_center_xyz_m": [
+      0.35,
+      0.32,
+      0.0
+    ],
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_footprint": "shrunk_0.10x0.10",
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "sampler_class": "PactPlaceCorridorV2Sampler",
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml"
+  },
+  "schema_version": "pact_place_v5_recovery_v1",
+  "screen_config_sha256": "bd47f1c97d2815657211085590657f5211ca847b776f6039c9617f990da9c1f1",
+  "source_collection_config_sha256": "ea69183efe388eaeb051a654859d93a6120955a8751294cd34ce06772e469cb3",
+  "source_collection_sha256": "b3c2c138961adfaa3525bed9f04d56aa3b3bccbdb13f6db1ae7c06824b1973b9",
+  "source_sha256": {
+    "scripts/pact_place_recovery_contract.py": "a3f16978b74351b75b1bc0508402089a3f7e894b127c9415cfd67b8b696a9ba6",
+    "scripts/run_pact_place_expert_screen.py": "dac8cf670262690cf13e5f4d4cc71f82d06ccb455c152b8fc2a0c0f28c7ec558",
+    "scripts/run_pact_place_recovery_datagen.py": "77212f28bbc991f5ad19a0c15d25efc038837676b72785b5428568c62a2b849c",
+    "scripts/verify_pact_place_recovery_keys.py": "c1ed815904437efde001fa14e8d8cd51be100a9ee73d7d32de4aff2453e5f5aa",
+    "submodules/molmospaces/molmo_spaces/configs/camera_configs.py": "2602aeb969b94baec42d93c0f526f6d0142ee3424d6ee07428d004890cc5e18e",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml": "920860de9426fe15d607a6318fc81fb51012f4b82aa3d0e437a76f648e38be5d",
+    "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py": "539347de5d22eea35b9a21e7bad521857075f65a76d119bbe658d5f2db2642ef",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py": "9d833bb0b9a3ebea5209687726f4fa7915e143dce780f557aa2ba8d9169e3ffd"
+  },
+  "status": "recovery_preregistered",
+  "success_criterion": {
+    "implementation": "PickAndPlaceTask.get_info",
+    "lift_one_centimetre_criterion_on_success_path": false,
+    "max_receptacle_position_displacement_m": 0.1,
+    "max_receptacle_tilt_radians": 0.7853981633974483,
+    "robot_no_longer_touching_target": true,
+    "supported_weight_fraction": 0.5
+  }
+}

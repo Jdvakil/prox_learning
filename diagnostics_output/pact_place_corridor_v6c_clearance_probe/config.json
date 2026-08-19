@@ -1,0 +1,850 @@
+{
+  "config_sha256": "1b18c40cf77e7e7bf817519967edb8f384d7361004f0002aa3f41edb67237c4f",
+  "created_utc": "2026-08-19T00:00:00Z",
+  "expert": {
+    "action_noise": false,
+    "class": "PactPlaceCorridorPolicy",
+    "empty_gripper_disarmed_on_placement_descent": true,
+    "empty_gripper_persist_steps": 3,
+    "empty_gripper_repair_is_not_a_threshold_change": true,
+    "expert_rollout_sensor_polling": [
+      "qpos",
+      "tcp_pose"
+    ],
+    "grasp_servo_duration_s": 2.0,
+    "gripper_empty_threshold_m": 0.002,
+    "inbound_safe_gap_m": 0.1,
+    "initial_observation_rejects_robot_environment_contact": true,
+    "observation_sensors_rationale": "normal sensor/camera geometry is built during sampling, then the privileged expert's polling suite is reduced to the qpos and tcp_pose sensors required by the upstream planner/config freezer; physics, contacts, robot, scene, and sensor bodies remain unchanged",
+    "outbound_approach_max_step_m": 0.04,
+    "outbound_carried_envelope_half_y_m": 0.15,
+    "outbound_carry_raise_m": 0.0,
+    "outbound_pass_speed_m_s": 0.045,
+    "outbound_safe_gap_m": 0.14,
+    "release_clearance_m": 0.005,
+    "task_horizon": 900
+  },
+  "expert_screen_rows": [
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.008508549,
+        "l1": 0.003119458,
+        "r0": -0.009322327,
+        "r1": -0.007656209
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.006902375,
+        "l1": -0.000711708,
+        "r0": -0.011662928,
+        "r1": -0.005371127
+      },
+      "episode_id": "2f540305ba396197b06cef4a1e17defd27931063c0145711d3e303c39037c527",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002007655,
+      "panel_x_jitter_m": 0.010762329,
+      "role_index": 0,
+      "row_sha256": "ffa198e4d71f3bc7aa96a970aa95a2ec86220fda763d34e405708096e7be1256",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4057917854,
+      "task_seed_u64": 17428624475365745671
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.018212255,
+        "l1": -0.016296704,
+        "r0": -0.002234189,
+        "r1": -0.003610219
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.015774136,
+        "l1": 0.012515602,
+        "r0": -0.004383076,
+        "r1": -0.004324053
+      },
+      "episode_id": "a1ff05ea79967a66fe1b5b367bedfaa5f4c7b55fc33a3b5353f6730155085f5c",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001576578,
+      "panel_x_jitter_m": 0.014210021,
+      "role_index": 1,
+      "row_sha256": "bb664ef355da6e1b55a76ca440d49a774c800cc5a535163d4587c939f01ef20b",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4147775632,
+      "task_seed_u64": 17814560691331055981
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.004029213,
+        "l1": 0.015409968,
+        "r0": 0.017289313,
+        "r1": 0.00131668
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.006268902,
+        "l1": -0.003856171,
+        "r0": 0.012021822,
+        "r1": 0.00082784
+      },
+      "episode_id": "f6d9a12144e9f052fe0220822ab4e164134d4f8f312f423744eeb54acf552c9f",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003047988,
+      "panel_x_jitter_m": 0.010275985,
+      "role_index": 2,
+      "row_sha256": "dd9172db9994110649e7012654f5fb03540cd737ecfc6dac68001ef2fb0ee817",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1706946029,
+      "task_seed_u64": 7331277373110340091
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.010512809,
+        "l1": 0.00463634,
+        "r0": -0.000636779,
+        "r1": -0.006096335
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.015035606,
+        "l1": -0.018929531,
+        "r0": 0.009360052,
+        "r1": 0.012505752
+      },
+      "episode_id": "938ee8dab28169fa6f48cff42c23f2dd67d033b530915f863427e4351bfae989",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002743951,
+      "panel_x_jitter_m": -0.002618013,
+      "role_index": 3,
+      "row_sha256": "f9b202809a2346dc3af1a4ea1481b44f329f8eab7f60cfbf89829e3ad9215d54",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2929887466,
+      "task_seed_u64": 12583770849242367157
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.019324766,
+        "l1": -0.017396045,
+        "r0": 0.00838768,
+        "r1": -0.006597041
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.001066008,
+        "l1": -0.011124678,
+        "r0": -0.015900473,
+        "r1": -0.019317778
+      },
+      "episode_id": "2ad729dd576f710bd870617fa026cdc8e6108f1f770665b0adbf4180ef8d14f6",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002233423,
+      "panel_x_jitter_m": 0.007041288,
+      "role_index": 4,
+      "row_sha256": "c934eda29720d4b12bcc2f694ad2aeb0f50403ec3be616f1c7de39c6f1154ff4",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2949793796,
+      "task_seed_u64": 12669267884367200411
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.016151413,
+        "l1": -0.007550384,
+        "r0": -0.005905618,
+        "r1": 0.004625346
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.00866452,
+        "l1": -0.010948261,
+        "r0": -0.008521908,
+        "r1": -0.019509428
+      },
+      "episode_id": "84953925a39aaebc4c171f14daffde88103bef20c64bb8ad005f7c109330384f",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002347436,
+      "panel_x_jitter_m": -0.010984193,
+      "role_index": 5,
+      "row_sha256": "20b9965f0a2daa5a2a579055b361211f91af9569d8abd1bbc9584f11f1d88735",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1958207914,
+      "task_seed_u64": 8410438952743903405
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.00837795,
+        "l1": -0.010931135,
+        "r0": 0.01534266,
+        "r1": -0.005316463
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.007746886,
+        "l1": 0.01186158,
+        "r0": -0.010405523,
+        "r1": -0.007809024
+      },
+      "episode_id": "d9781da33c1517143c8d4b35e4a47299cae05c4cf4c0e2e81f859d0b649c10e0",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001596792,
+      "panel_x_jitter_m": 0.009720415,
+      "role_index": 6,
+      "row_sha256": "e4ed9c44592f2948b5c80d6373020617f75655d635a6b3814d7a64c5dce5fc3b",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1288009222,
+      "task_seed_u64": 5531957489566597451
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -1.9441e-05,
+        "l1": 0.017981163,
+        "r0": -0.007855578,
+        "r1": 0.003454398
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.018090752,
+        "l1": -0.013807365,
+        "r0": -0.013543569,
+        "r1": -0.016275116
+      },
+      "episode_id": "bdcaf3b85818341916e13a573b7836ed65767350b53fd8c5443c6032f24b86f3",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000599029,
+      "panel_x_jitter_m": -0.013776834,
+      "role_index": 7,
+      "row_sha256": "26b5f6a323fa406609997f5fe2a40e5d53206033c6fb1bc456c28fac73e1e54f",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1117788344,
+      "task_seed_u64": 4800864385009360715
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.014733257,
+        "l1": 0.01127897,
+        "r0": -0.012052012,
+        "r1": 0.00336403
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.01324097,
+        "l1": 0.019146194,
+        "r0": 0.006091445,
+        "r1": 0.00695731
+      },
+      "episode_id": "bcf587de4b0369dd6843ac9c0209f71869e874fe80aa33dee84a16c5ac57c44c",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003935995,
+      "panel_x_jitter_m": 0.006467518,
+      "role_index": 8,
+      "row_sha256": "476851b688ab08d029519f213abb2ffd16712ff69b565f3a5287fc6115155829",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4102684621,
+      "task_seed_u64": 17620896274695625065
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.004257056,
+        "l1": 0.011451001,
+        "r0": -0.004498035,
+        "r1": -0.014662599
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.006130805,
+        "l1": 0.017221766,
+        "r0": 0.014277119,
+        "r1": 0.00815919
+      },
+      "episode_id": "81e0576040b791da1a3dbd33bbb576bee5d0f88e540cd4ca054897e4a7575a15",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004795434,
+      "panel_x_jitter_m": -0.01240296,
+      "role_index": 9,
+      "row_sha256": "14e5fa01692dee62cf05fe02f63f504fee398b2fc14b54d1097fffbf30ca6c6b",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1099693764,
+      "task_seed_u64": 4723148755061991048
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.002639686,
+        "l1": 0.006735412,
+        "r0": 0.00356371,
+        "r1": -0.004982784
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.009395859,
+        "l1": -0.00327802,
+        "r0": -0.000380173,
+        "r1": 0.004267649
+      },
+      "episode_id": "2ba1dfe658b83b685ac375cd928c5e9b0d727fb67a82567f4f779b15bdab50eb",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00251987,
+      "panel_x_jitter_m": -0.0083192,
+      "role_index": 10,
+      "row_sha256": "1de041e5da5bcf75698adb838d161c28ceecc78a6e004a4fe751baf9c615bf97",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3685086834,
+      "task_seed_u64": 15827327435714768205
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.005136481,
+        "l1": -0.008164118,
+        "r0": -0.013829064,
+        "r1": -0.004353534
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.009635131,
+        "l1": -0.010973418,
+        "r0": 0.003995119,
+        "r1": 0.011033497
+      },
+      "episode_id": "05b69b853c0ad9a2e1d91b6084835c9e7575371ff699a8c302a37f1570418b7d",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000746413,
+      "panel_x_jitter_m": 0.007851012,
+      "role_index": 11,
+      "row_sha256": "a20a14a9207c84ec0adb37b6c0623ca9912a578edc2986ccad13292c31f2ea97",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3942482229,
+      "task_seed_u64": 16932832239233665186
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.018438044,
+        "l1": 0.000484924,
+        "r0": 0.002572725,
+        "r1": 0.018945819
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.009273008,
+        "l1": -0.012352561,
+        "r0": -0.007712558,
+        "r1": -0.008857937
+      },
+      "episode_id": "c6d3b5d527c9f1fae4e835517d4c1aefd3dd47b5702fd8589390dba17b036b23",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001978587,
+      "panel_x_jitter_m": 0.007378006,
+      "role_index": 12,
+      "row_sha256": "ffbd581dff2acaac9101e2140e25fa46b6eb6c70590b0ef7b2d562cba374d2f3",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3033861590,
+      "task_seed_u64": 13030336313450097348
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.008071071,
+        "l1": 0.00060977,
+        "r0": -0.010795181,
+        "r1": -0.002035559
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.007657272,
+        "l1": -0.001451139,
+        "r0": -0.012713749,
+        "r1": 0.002042065
+      },
+      "episode_id": "e9814ca54b2c10f48d62bec43b523c5fc68bffa298c3efa48d0d0c2f3470feda",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.00071043,
+      "panel_x_jitter_m": -0.010451218,
+      "role_index": 13,
+      "row_sha256": "0fcf556563f4d5cc03a7a12a0ea40844fdfc7a39d6ef426bd50b12c04c7127d8",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3060621898,
+      "task_seed_u64": 13145270960636695869
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.019849674,
+        "l1": 0.008644128,
+        "r0": 0.0189828,
+        "r1": 0.005709838
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.009166254,
+        "l1": -0.001983528,
+        "r0": -0.018241078,
+        "r1": -0.012830556
+      },
+      "episode_id": "3415d3bfcd39268cc6c0e0867499b20f1b1e1541eca2aa75753b5dc508798be1",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004220426,
+      "panel_x_jitter_m": -0.008309916,
+      "role_index": 14,
+      "row_sha256": "80592cabd6dd48ff22f9fa7a3ce09ec582b64fa7e5b92b367b31370902f5c50e",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1290118153,
+      "task_seed_u64": 5541015278466252338
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.004796834,
+        "l1": -0.00229734,
+        "r0": -0.018480003,
+        "r1": 0.012018674
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.017376144,
+        "l1": -0.004322259,
+        "r0": 0.019016496,
+        "r1": -0.017889581
+      },
+      "episode_id": "948451bd1afe34b47f93a9b78fe0f0f3d348fb852ff46b62facc1af1515c0b91",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001945143,
+      "panel_x_jitter_m": -0.003814258,
+      "role_index": 15,
+      "row_sha256": "8022ad9a16434f59775e8494840cac16e86d82a1b8185e851a215288a2b9e62d",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 4063389432,
+      "task_seed_u64": 17452124725356410850
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.018337627,
+        "l1": 0.007128423,
+        "r0": -0.018008206,
+        "r1": -0.010964009
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.015749092,
+        "l1": -0.019343589,
+        "r0": -0.00206243,
+        "r1": -0.00960281
+      },
+      "episode_id": "0bb99af5b0c3d929580f44e3bdd0a194266f45d043ab3d850fd71ffeb11cadff",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.002380927,
+      "panel_x_jitter_m": -0.004574513,
+      "role_index": 16,
+      "row_sha256": "5aa494510eb84b4b3446a4f7e4514d77be2600b250f0360e7ff8d2f4a0566405",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2101575985,
+      "task_seed_u64": 9026200127659005862
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.008686115,
+        "l1": 0.006328569,
+        "r0": 0.011565865,
+        "r1": -0.003639199
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.011101268,
+        "l1": 0.001385141,
+        "r0": -0.010021485,
+        "r1": -0.016111373
+      },
+      "episode_id": "2e8f8d8c334329b573d02399e6c69c0d4f5cfaec51d702979a282d55e925e6f0",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003376444,
+      "panel_x_jitter_m": 0.01480139,
+      "role_index": 17,
+      "row_sha256": "6e92a1a978a886dee5151e0d002919c700dc614c4d99ad4262efde2f75355e3e",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2318201950,
+      "task_seed_u64": 9956601561680648792
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": 0.000530314,
+        "l1": -0.018411173,
+        "r0": 0.019677347,
+        "r1": -0.006932322
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.005479632,
+        "l1": -0.012783515,
+        "r0": 0.012365943,
+        "r1": -0.013670785
+      },
+      "episode_id": "b546497c7ae2b48cc1ee4d6e4d78cfe2816641ac5a3df24376e8b6ddffae6cd9",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003761639,
+      "panel_x_jitter_m": -0.012376702,
+      "role_index": 18,
+      "row_sha256": "4cc99686d3ebb2b11b256a1a7df88871886677e1ea7ff6872b8415a19e546190",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 384005805,
+      "task_seed_u64": 1649292374061622976
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.017214004,
+        "l1": 0.010025824,
+        "r0": -0.013859849,
+        "r1": 0.003931449
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.007497913,
+        "l1": 0.004473335,
+        "r0": -0.010428383,
+        "r1": -0.008958854
+      },
+      "episode_id": "af1096c30b1df81ed7776f22dac92c703dcbd1bbce4a36c16eb558d0b1f4c21a",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001813265,
+      "panel_x_jitter_m": 0.010087211,
+      "role_index": 19,
+      "row_sha256": "d8acb00abd4e37ff71b2b6799a76a1c3816fb084aa36b542d1cc9d33b0bf24d2",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1111391448,
+      "task_seed_u64": 4773389924033152115
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.010510508,
+        "l1": -0.007163229,
+        "r0": 0.002792518,
+        "r1": 0.008433161
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.00158001,
+        "l1": -0.00098501,
+        "r0": -0.000893275,
+        "r1": -0.006055413
+      },
+      "episode_id": "3254cd3b9070c2abb609833c93f4ef3ef0d003c3df0c963629650b2b829b326e",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.000549268,
+      "panel_x_jitter_m": 0.006087034,
+      "role_index": 20,
+      "row_sha256": "e8036710ca9b7ab667299623cc3173b9a8c6b8c4e0270872718bc18118b6092c",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1181808745,
+      "task_seed_u64": 5075829911448283421
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.005786688,
+        "l1": 0.019763224,
+        "r0": 0.011204208,
+        "r1": 0.007307605
+      },
+      "clutter_y_jitter_m": {
+        "l0": 0.017111391,
+        "l1": 0.014925939,
+        "r0": 0.014707522,
+        "r1": 0.001667994
+      },
+      "episode_id": "6a6665643819eb8ddb84c650dcf114582a068837e61d0782c882d0c759733bdb",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002355882,
+      "panel_x_jitter_m": 0.005278591,
+      "role_index": 21,
+      "row_sha256": "b5faf066b91e02a26a8a49e9446f63f4e5eb285aa8821e99352f3df6bb57e941",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3194078463,
+      "task_seed_u64": 13718462543061166607
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.007812785,
+        "l1": -0.012701923,
+        "r0": 0.001761545,
+        "r1": -0.002425491
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.004955141,
+        "l1": -0.018174526,
+        "r0": 0.011053084,
+        "r1": -0.019697708
+      },
+      "episode_id": "c73bcc2a6d7331f0e70ae077cdb03c9de75cbaeb75151123aff3b74b7fd71ca9",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000335087,
+      "panel_x_jitter_m": -0.001695903,
+      "role_index": 22,
+      "row_sha256": "5731a553f9d501f60d5e0174144f5ab81c74a5ba5aa9e043d3a23e094ecfe056",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3384768444,
+      "task_seed_u64": 14537469771666669251
+    },
+    {
+      "clutter_x_jitter_m": {
+        "l0": -0.008250693,
+        "l1": 0.006165557,
+        "r0": -0.002488397,
+        "r1": 0.0092505
+      },
+      "clutter_y_jitter_m": {
+        "l0": -0.006308862,
+        "l1": 0.011709705,
+        "r0": 0.011930702,
+        "r1": -0.001840612
+      },
+      "episode_id": "3cd825df80487ba5745cf11def1b1681cebeeb8088deb88fcd27829bd2c86330",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004896762,
+      "panel_x_jitter_m": 0.007606928,
+      "role_index": 23,
+      "row_sha256": "992433382781e76c6d3d1b482adf1a6d4a378c2bde9acc78c92a67c94b81dbbc",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3058639291,
+      "task_seed_u64": 13136755728665954031
+    }
+  ],
+  "master_seed": 2026082601,
+  "phase0_gate": {
+    "a0_clearance_probe_zero_clutter": true,
+    "attempt6_prediction": {
+      "bar": 20,
+      "note": "Drafted for v6; v6 stopped at A0. v6b uses attempt6b_prediction.",
+      "on_18_or_fewer": "clutter_interferes_with_grasp_resite_via_a0",
+      "on_19": "clutter_costs_about_one_row_gate_marginal",
+      "on_20_or_more": "gate_passes_collect",
+      "predicted_clean_rate": [
+        0.792,
+        0.917
+      ],
+      "predicted_clean_successes": [
+        19,
+        22
+      ],
+      "prior_screens_clean": [
+        18,
+        18,
+        18,
+        15,
+        22
+      ],
+      "recorded_before_first_episode": true,
+      "v5_failures_clutter_does_not_touch": [
+        3,
+        10
+      ]
+    },
+    "attempt6b_prediction": {
+      "bar": 20,
+      "on_18_or_fewer": "clutter_interferes_with_grasp_resite_via_a0",
+      "on_19": "clutter_costs_about_one_row_gate_marginal",
+      "on_20_or_more": "gate_passes_collect",
+      "predicted_clean_rate": [
+        0.792,
+        0.917
+      ],
+      "predicted_clean_successes": [
+        19,
+        22
+      ],
+      "prior_screens_clean": [
+        18,
+        18,
+        18,
+        15,
+        22
+      ],
+      "recorded_before_first_episode": true,
+      "v5_failures_clutter_does_not_touch": [
+        3,
+        10
+      ],
+      "v6_was_a0_stop_not_a_screen": true,
+      "v6b_probe_clean": [
+        7,
+        8
+      ],
+      "v6b_probe_clutter_episodes": 0
+    },
+    "clean_success_definition": "task_success and zero hazard_bar entries and zero other_environment entries and zero clutter entries and zero place_receptacle contact outside placement; preplace is treated as placement",
+    "clearance_probe_v6b": {
+      "clean": 7,
+      "clutter_contact_episodes": 0,
+      "diagnostic_config_sha256": "461a04609fa3fb5d540bb9c274f857226b2afe539cf4379f9667625569a91a48",
+      "n": 8,
+      "path": "diagnostics_output/pact_place_corridor_v6b_clearance_probe",
+      "role": "diagnostic_not_a_gate",
+      "task_success": 7
+    },
+    "clutter_sweep": {
+      "chosen_half_xy_m": 0.03,
+      "chosen_height_m": 0.06,
+      "chosen_slots_xy_m": {
+        "l0": [
+          0.72,
+          0.22
+        ],
+        "l1": [
+          0.78,
+          0.22
+        ],
+        "r0": [
+          0.72,
+          -0.22
+        ],
+        "r1": [
+          0.78,
+          -0.22
+        ]
+      },
+      "n_candidate_sets": 30,
+      "n_eligible": 12,
+      "n_footprint_ok": 12,
+      "n_ik_ok": 12,
+      "path": "diagnostics_output/pact_place_clutter_sweep/analysis.json",
+      "sweep_sha256": "e34038b9e4a32e5b84729f62d5dc1a851b40c3ad2aa11b6d79bccc461c3526ae"
+    },
+    "clutter_sweep_v6b": {
+      "chosen_half_xy_m": 0.03,
+      "chosen_height_m": 0.06,
+      "chosen_slots_xy_m": {
+        "l0": [
+          0.72,
+          0.32
+        ],
+        "l1": [
+          0.78,
+          0.32
+        ],
+        "r0": [
+          0.72,
+          -0.32
+        ],
+        "r1": [
+          0.78,
+          -0.32
+        ]
+      },
+      "n_candidate_sets": 30,
+      "n_eligible": 30,
+      "n_footprint_ok": 30,
+      "n_ik_ok": 30,
+      "path": "diagnostics_output/pact_place_clutter_sweep_v6b/analysis.json",
+      "step0_axis": "lateral",
+      "sweep_sha256": "388c23677516a65431b51e28d4a22becaa0b2a491c52f730f37b73e00b8e66f3"
+    },
+    "do_not_freeze_until_zero_clutter_probe": false,
+    "fail_token": "PACT_PLACE_CORRIDOR_PHASE0_FAIL",
+    "fifth_attempt": "receptacle_relocation_and_phase_aware_exemption",
+    "minimum_clean_successes": 20,
+    "n": 24,
+    "no_fifth_attempt": false,
+    "on_fail": "stop_without_collection_or_training",
+    "pass_token": "PACT_PLACE_CORRIDOR_PHASE0_PASS",
+    "phase0_not_run": false,
+    "prior_screens_not_comparable_on_clean_success": true,
+    "reachability_sweep": {
+      "chosen_center_xy_m": [
+        0.35,
+        0.32
+      ],
+      "clearance_beyond_traversal_y_m": 0.113,
+      "footprint": "shrunk_0.10x0.10",
+      "n_candidates": 26,
+      "n_clears_8cm": 3,
+      "n_eligible": 3,
+      "n_reachable": 26,
+      "path": "diagnostics_output/pact_place_reachability_sweep/analysis.json",
+      "sweep_sha256": "b657da019b8638ba8b94e1bfa64a1d31ddfa7c27d7a7c6f4b6f22824602e211b"
+    },
+    "report_separately": [
+      "grasp_phase_success",
+      "place_phase_success_given_grasp",
+      "inbound_hazard_contact",
+      "outbound_hazard_contact",
+      "place_receptacle_outside_placement",
+      "clutter_contact"
+    ],
+    "sixth_attempt": "fixed_shelf_clutter",
+    "sixth_b_attempt": "resite_clutter_laterally_after_cup_contact",
+    "v5_was_phase0_pass_not_a_failure": true,
+    "v6_clean_success_stricter_than_v5": true
+  },
+  "protected_artifact_sha256_before": {
+    "diagnostics_output/pact_blind_rgb/analysis.json": "ec940960bb93358184a979be2d73a5bf303819a0ab8b09f41c94a7a1d3f1eda7",
+    "diagnostics_output/pact_blind_rgb/final_decision.json": "3defb51f71995c3af3985ef31ebd526edfa4840777fb412ee91d84ad86d26cdb",
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLIND_RGB.md": "29e2f8e44c819fe8040dc8f443bce1ed61fe61822c6ed289a4cb35291285efbb",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION.md": "952cadf34434017d03b73215c3c1e05b6c8ede1a6f205490e5f00b729f5f6daa"
+  },
+  "route": "collision_route_pick_and_place",
+  "scene": {
+    "aperture_plane_x_m": 0.58,
+    "base_forward_m": 0.14,
+    "clutter_body_prefix": "pact_clutter_",
+    "clutter_drawn_from_task_seed_not_intrusion_side": true,
+    "clutter_immovable_mocap": true,
+    "clutter_jitter_m": 0.02,
+    "clutter_slot_names": [
+      "l0",
+      "l1",
+      "r0",
+      "r1"
+    ],
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "place_receptacle_center_xyz_m": [
+      0.35,
+      0.32,
+      0.0
+    ],
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_footprint": "shrunk_0.10x0.10",
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "sampler_class": "PactPlaceCorridorV3Sampler",
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3.xml"
+  },
+  "schema_version": "pact_place_corridor_v6",
+  "source_sha256": {
+    "scripts/pact_place_corridor_contract.py": "a3fc8f2b2dadece0e56de6c6805b24274a126a56258d49a09136b7afd76835b7",
+    "scripts/run_pact_place_clutter_sweep.py": "06d3037f6dd87efeb83c315576f2c8800c657b80b5b17977c8e4f1e660b70304",
+    "scripts/run_pact_place_clutter_sweep_v6b.py": "aec8f942f50d472d1e899602ffd646e873c3386262b9f3a92d2c76d3756aec3a",
+    "scripts/run_pact_place_expert_screen.py": "dac8cf670262690cf13e5f4d4cc71f82d06ccb455c152b8fc2a0c0f28c7ec558",
+    "scripts/run_pact_place_reachability_sweep.py": "90f51d0d2000ff4d701de65069785bfbfd3a603ecf160e035ecb48a6cc474eff",
+    "submodules/molmospaces/molmo_spaces/configs/task_configs.py": "785d4b5b2a2430fb4fd2273bb59e54b5b13c8f2271255f0829a6ca144a3b257f",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_collision_corridor.xml": "f8c04b07b9416593eb60ad4797ccbae91f7d3524effd30438ef552e5a2d75540",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml": "d853e27ca453a246a73a7fa590e3a05f5c93db0893805cd41067e73441aba942",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml": "920860de9426fe15d607a6318fc81fb51012f4b82aa3d0e437a76f648e38be5d",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3.xml": "cf104be203c8e13b3dc02a0561853bfb7c61804f6bf1ec156d86174455b31c6f",
+    "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3_metadata.json": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/base_object_manipulation_planner_policy.py": "a7ee35704d60b82246fc48db466aaa081a6a83717d983cc062df3988e53893d5",
+    "submodules/molmospaces/molmo_spaces/policy/solvers/object_manipulation/pick_and_place_planner_policy.py": "9ee369789397add3ae74492e4821993a981940be54cc0579e3d282328a8aa36a",
+    "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py": "340a1e7d0546ed2083c81af94493f148842472e6a6d7fa6cc1f2fe7992ae303f",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_contact_audit.py": "f07aace35d856b4e7415e37b04cc6c512cdc117da1fc00648b0fa61aa01d7abd",
+    "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py": "9d833bb0b9a3ebea5209687726f4fa7915e143dce780f557aa2ba8d9169e3ffd",
+    "submodules/molmospaces/molmo_spaces/tasks/pick_and_place_task.py": "7d4ad29a589902ed8ddd29c388714efe068d84cd908e825480da4c4435a5cf26"
+  },
+  "status": "phase0_preregistered",
+  "success_criterion": {
+    "implementation": "PickAndPlaceTask.get_info",
+    "lift_one_centimetre_criterion_on_success_path": false,
+    "max_receptacle_position_displacement_m": 0.1,
+    "max_receptacle_tilt_radians": 0.7853981633974483,
+    "robot_no_longer_touching_target": true,
+    "supported_weight_fraction": 0.5
+  }
+}

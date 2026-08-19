@@ -1,0 +1,52 @@
+{
+  "schema_version": "pact_place_v6b_contact_bodies_v1",
+  "role": "diagnostic_not_a_gate",
+  "authorizes_collection": false,
+  "a0_set_id": 13,
+  "abs_y_m": 0.22,
+  "height_m": 0.06,
+  "config": "diagnostics_output/pact_place_corridor_v6_clearance_probe/contract.json",
+  "config_sha256": "0f4d80580e1aa2963906378c377e7d61e4bee65afa719e74c7ca9e799b9778d8",
+  "contact_frame_payload_retained": true,
+  "axis": "lateral",
+  "axis_reason": "100% of clutter pairs are carried-cup vs opposite-side inner box. No robot link appears. Inner face at 0.19 overlaps the measured outbound TCP |y| of 0.194. Box tops at 0.78 sit under the hanging cup, not under a dipping forearm.",
+  "next_grid_abs_y_m": [0.32, 0.36, 0.40],
+  "rows": [
+    {
+      "role_index": 0,
+      "intrusion_side": "left",
+      "task_success": true,
+      "clean_success": false,
+      "clutter_pairs": 2497,
+      "clutter_frames": 1990,
+      "first_step": 224,
+      "last_step": 290,
+      "first_policy_phase": "outbound_approach",
+      "policy_phases": {"outbound_approach": 757, "outbound_pass": 1233},
+      "traversal_phase": "outbound",
+      "other_body": "cavity_obj_0/Cup_10_cup_10",
+      "clutter_geom": "pact_clutter_r0_g",
+      "max_penetration_m": 0.0013153078016046984,
+      "max_penetration_step": 271,
+      "robot_link_pairs": 0
+    },
+    {
+      "role_index": 4,
+      "intrusion_side": "right",
+      "task_success": true,
+      "clean_success": false,
+      "clutter_pairs": 2486,
+      "clutter_frames": 2406,
+      "first_step": 239,
+      "last_step": 315,
+      "first_policy_phase": "outbound_approach",
+      "policy_phases": {"outbound_approach": 764, "outbound_pass": 1642},
+      "traversal_phase": "outbound",
+      "other_body": "cavity_obj_0/Cup_10_cup_10",
+      "clutter_geom": "pact_clutter_l0_g",
+      "max_penetration_m": 0.0005477124124089638,
+      "max_penetration_step": 265,
+      "robot_link_pairs": 0
+    }
+  ]
+}

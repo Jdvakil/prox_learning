@@ -1,0 +1,596 @@
+{
+  "a0c_set_id": 1,
+  "all_rear_outer_faces_inside_episode_back_wall": false,
+  "authorizes_collection": false,
+  "clean": 6,
+  "clutter_contact_episodes": 0,
+  "clutter_layout_independent_of_intrusion_side": true,
+  "complete_rows": 8,
+  "config_sha256": "1b18c40cf77e7e7bf817519967edb8f384d7361004f0002aa3f41edb67237c4f",
+  "fallback_to_top_080": false,
+  "half_x_m": 0.025,
+  "half_y_m": 0.05,
+  "hazard_contact_episodes": {
+    "inbound": 0,
+    "outbound": 0
+  },
+  "height_m": 0.1,
+  "inbound_clutter_episodes": 0,
+  "inner_face_abs_y_m": 0.29,
+  "min_episode_back_wall_margin_m": -0.004669827624240508,
+  "minimum_clean_6_of_8_met": true,
+  "n": 8,
+  "note": "Chosen A0c set, inner faces at |y|=0.29, boxes 5x10x10 cm, top 0.82. Zero pact_clutter contact. Unclean rows 1 and 6 are outbound_approach ik_cascade, not clutter. Nominal rear outer face is 0.775, inside the shallowest wall at 0.78. With unchanged +/-20 mm jitter, one of eight probe episodes had a rear outer face 4.7 mm past that episode's back wall; the inner-face jitter floor is 0.27, the same as v6b.",
+  "other_environment_contact_episodes": 0,
+  "outbound_clutter_episodes": 0,
+  "place_receptacle_outside_placement_episodes": 0,
+  "placement_clutter_episodes": 0,
+  "role": "diagnostic_not_a_gate",
+  "rows": [
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8189737873196224,
+      "episode_depth_m": 0.21897378731962247,
+      "intrusion_side": "right",
+      "max_outer_face_x_m": 0.778119458,
+      "min_inner_face_abs_y_m": 0.28928829200000006,
+      "rear_outer_face_x_m": 0.778119458,
+      "role_index": 0,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.0854652383196225,
+          "center_xy_m": [
+            0.7085085489999999,
+            0.34690237500000004
+          ],
+          "inner_face_abs_y_m": 0.29690237500000005,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.39690237500000003,
+          "outer_face_x_m": 0.733508549
+        },
+        "l1": {
+          "back_wall_margin_m": 0.04085432931962241,
+          "center_xy_m": [
+            0.753119458,
+            0.33928829200000005
+          ],
+          "inner_face_abs_y_m": 0.28928829200000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.38928829200000004,
+          "outer_face_x_m": 0.778119458
+        },
+        "r0": {
+          "back_wall_margin_m": 0.10329611431962249,
+          "center_xy_m": [
+            0.6906776729999999,
+            -0.35166292800000004
+          ],
+          "inner_face_abs_y_m": 0.30166292800000005,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.40166292800000003,
+          "outer_face_x_m": 0.715677673
+        },
+        "r1": {
+          "back_wall_margin_m": 0.051629996319622395,
+          "center_xy_m": [
+            0.742343791,
+            -0.345371127
+          ],
+          "inner_face_abs_y_m": 0.295371127,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.395371127,
+          "outer_face_x_m": 0.767343791
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    },
+    {
+      "check_failure_branch": "ik_cascade",
+      "clean_success": false,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.7813900210937808,
+      "episode_depth_m": 0.1813900210937808,
+      "intrusion_side": "right",
+      "max_outer_face_x_m": 0.771389781,
+      "min_inner_face_abs_y_m": 0.29432405300000003,
+      "rear_outer_face_x_m": 0.771389781,
+      "role_index": 1,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.07460227609378078,
+          "center_xy_m": [
+            0.681787745,
+            0.355774136
+          ],
+          "inner_face_abs_y_m": 0.30577413600000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.405774136,
+          "outer_face_x_m": 0.706787745
+        },
+        "l1": {
+          "back_wall_margin_m": 0.02268672509378078,
+          "center_xy_m": [
+            0.733703296,
+            0.35251560200000004
+          ],
+          "inner_face_abs_y_m": 0.30251560200000005,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.40251560200000003,
+          "outer_face_x_m": 0.758703296
+        },
+        "r0": {
+          "back_wall_margin_m": 0.058624210093780826,
+          "center_xy_m": [
+            0.6977658109999999,
+            -0.344383076
+          ],
+          "inner_face_abs_y_m": 0.294383076,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.394383076,
+          "outer_face_x_m": 0.7227658109999999
+        },
+        "r1": {
+          "back_wall_margin_m": 0.010000240093780755,
+          "center_xy_m": [
+            0.746389781,
+            -0.344324053
+          ],
+          "inner_face_abs_y_m": 0.29432405300000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.394324053,
+          "outer_face_x_m": 0.771389781
+        }
+      },
+      "task_success": false,
+      "terminal_policy_phase": "outbound_approach"
+    },
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.7857401403757596,
+      "episode_depth_m": 0.18574014037575953,
+      "intrusion_side": "left",
+      "max_outer_face_x_m": 0.7904099680000001,
+      "min_inner_face_abs_y_m": 0.277978178,
+      "rear_outer_face_x_m": 0.7904099680000001,
+      "role_index": 2,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.06476935337575962,
+          "center_xy_m": [
+            0.6959707869999999,
+            0.34626890200000005
+          ],
+          "inner_face_abs_y_m": 0.29626890200000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.39626890200000003,
+          "outer_face_x_m": 0.720970787
+        },
+        "l1": {
+          "back_wall_margin_m": -0.004669827624240508,
+          "center_xy_m": [
+            0.765409968,
+            0.336143829
+          ],
+          "inner_face_abs_y_m": 0.286143829,
+          "inside_episode_back_wall": false,
+          "outer_face_abs_y_m": 0.386143829,
+          "outer_face_x_m": 0.7904099680000001
+        },
+        "r0": {
+          "back_wall_margin_m": 0.04345082737575956,
+          "center_xy_m": [
+            0.717289313,
+            -0.327978178
+          ],
+          "inner_face_abs_y_m": 0.277978178,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.377978178,
+          "outer_face_x_m": 0.742289313
+        },
+        "r1": {
+          "back_wall_margin_m": 0.009423460375759585,
+          "center_xy_m": [
+            0.75131668,
+            -0.33917216
+          ],
+          "inner_face_abs_y_m": 0.28917216,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.38917216,
+          "outer_face_x_m": 0.77631668
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    },
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8259369424422265,
+      "episode_depth_m": 0.2259369424422265,
+      "intrusion_side": "right",
+      "max_outer_face_x_m": 0.77963634,
+      "min_inner_face_abs_y_m": 0.27107046900000004,
+      "rear_outer_face_x_m": 0.77963634,
+      "role_index": 3,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.09042413344222655,
+          "center_xy_m": [
+            0.7105128089999999,
+            0.32496439400000005
+          ],
+          "inner_face_abs_y_m": 0.27496439400000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.37496439400000003,
+          "outer_face_x_m": 0.7355128089999999
+        },
+        "l1": {
+          "back_wall_margin_m": 0.046300602442226446,
+          "center_xy_m": [
+            0.75463634,
+            0.321070469
+          ],
+          "inner_face_abs_y_m": 0.27107046900000004,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.371070469,
+          "outer_face_x_m": 0.77963634
+        },
+        "r0": {
+          "back_wall_margin_m": 0.10157372144222654,
+          "center_xy_m": [
+            0.6993632209999999,
+            -0.330639948
+          ],
+          "inner_face_abs_y_m": 0.28063994800000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.380639948,
+          "outer_face_x_m": 0.724363221
+        },
+        "r1": {
+          "back_wall_margin_m": 0.057033277442226415,
+          "center_xy_m": [
+            0.743903665,
+            -0.32749424800000004
+          ],
+          "inner_face_abs_y_m": 0.27749424800000005,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.37749424800000003,
+          "outer_face_x_m": 0.7689036650000001
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    },
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8535711721993143,
+      "episode_depth_m": 0.25357117219931435,
+      "intrusion_side": "left",
+      "max_outer_face_x_m": 0.768402959,
+      "min_inner_face_abs_y_m": 0.27887532200000004,
+      "rear_outer_face_x_m": 0.768402959,
+      "role_index": 4,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.14789593819931435,
+          "center_xy_m": [
+            0.680675234,
+            0.338933992
+          ],
+          "inner_face_abs_y_m": 0.28893399200000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.388933992,
+          "outer_face_x_m": 0.705675234
+        },
+        "l1": {
+          "back_wall_margin_m": 0.09596721719931434,
+          "center_xy_m": [
+            0.732603955,
+            0.328875322
+          ],
+          "inner_face_abs_y_m": 0.27887532200000004,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.378875322,
+          "outer_face_x_m": 0.757603955
+        },
+        "r0": {
+          "back_wall_margin_m": 0.12018349219931435,
+          "center_xy_m": [
+            0.70838768,
+            -0.35590047300000005
+          ],
+          "inner_face_abs_y_m": 0.30590047300000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.40590047300000004,
+          "outer_face_x_m": 0.73338768
+        },
+        "r1": {
+          "back_wall_margin_m": 0.08516821319931434,
+          "center_xy_m": [
+            0.743402959,
+            -0.35931777800000003
+          ],
+          "inner_face_abs_y_m": 0.30931777800000004,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.409317778,
+          "outer_face_x_m": 0.768402959
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    },
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8167120982663113,
+      "episode_depth_m": 0.2167120982663113,
+      "intrusion_side": "right",
+      "max_outer_face_x_m": 0.779625346,
+      "min_inner_face_abs_y_m": 0.279051739,
+      "rear_outer_face_x_m": 0.779625346,
+      "role_index": 5,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.10786351126631133,
+          "center_xy_m": [
+            0.683848587,
+            0.34866452000000003
+          ],
+          "inner_face_abs_y_m": 0.29866452000000004,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.39866452,
+          "outer_face_x_m": 0.708848587
+        },
+        "l1": {
+          "back_wall_margin_m": 0.04926248226631125,
+          "center_xy_m": [
+            0.742449616,
+            0.329051739
+          ],
+          "inner_face_abs_y_m": 0.279051739,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.379051739,
+          "outer_face_x_m": 0.7674496160000001
+        },
+        "r0": {
+          "back_wall_margin_m": 0.09761771626631133,
+          "center_xy_m": [
+            0.694094382,
+            -0.34852190800000005
+          ],
+          "inner_face_abs_y_m": 0.29852190800000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.39852190800000004,
+          "outer_face_x_m": 0.719094382
+        },
+        "r1": {
+          "back_wall_margin_m": 0.03708675226631131,
+          "center_xy_m": [
+            0.754625346,
+            -0.359509428
+          ],
+          "inner_face_abs_y_m": 0.30950942800000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.409509428,
+          "outer_face_x_m": 0.779625346
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    },
+    {
+      "check_failure_branch": "ik_cascade",
+      "clean_success": false,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8451875004472779,
+      "episode_depth_m": 0.24518750044727788,
+      "intrusion_side": "left",
+      "max_outer_face_x_m": 0.769683537,
+      "min_inner_face_abs_y_m": 0.29774688600000004,
+      "rear_outer_face_x_m": 0.769683537,
+      "role_index": 6,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.12856545044727785,
+          "center_xy_m": [
+            0.69162205,
+            0.34774688600000003
+          ],
+          "inner_face_abs_y_m": 0.29774688600000004,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.397746886,
+          "outer_face_x_m": 0.71662205
+        },
+        "l1": {
+          "back_wall_margin_m": 0.08111863544727782,
+          "center_xy_m": [
+            0.739068865,
+            0.35186158
+          ],
+          "inner_face_abs_y_m": 0.30186158,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.40186158,
+          "outer_face_x_m": 0.764068865
+        },
+        "r0": {
+          "back_wall_margin_m": 0.10484484044727793,
+          "center_xy_m": [
+            0.7153426599999999,
+            -0.35040552300000005
+          ],
+          "inner_face_abs_y_m": 0.30040552300000006,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.40040552300000004,
+          "outer_face_x_m": 0.7403426599999999
+        },
+        "r1": {
+          "back_wall_margin_m": 0.07550396344727783,
+          "center_xy_m": [
+            0.744683537,
+            -0.347809024
+          ],
+          "inner_face_abs_y_m": 0.29780902400000003,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.397809024,
+          "outer_face_x_m": 0.769683537
+        }
+      },
+      "task_success": false,
+      "terminal_policy_phase": "outbound_approach"
+    },
+    {
+      "check_failure_branch": null,
+      "clean_success": true,
+      "clutter_by_phase": {
+        "inbound": 0,
+        "other": 0,
+        "outbound": 0,
+        "placement": 0
+      },
+      "clutter_frames": 0,
+      "episode_back_wall_x_m": 0.8441329708103954,
+      "episode_depth_m": 0.2441329708103954,
+      "intrusion_side": "left",
+      "max_outer_face_x_m": 0.792981163,
+      "min_inner_face_abs_y_m": 0.276192635,
+      "rear_outer_face_x_m": 0.792981163,
+      "role_index": 7,
+      "slots": {
+        "l0": {
+          "back_wall_margin_m": 0.11915241181039538,
+          "center_xy_m": [
+            0.699980559,
+            0.358090752
+          ],
+          "inner_face_abs_y_m": 0.308090752,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.408090752,
+          "outer_face_x_m": 0.724980559
+        },
+        "l1": {
+          "back_wall_margin_m": 0.05115180781039541,
+          "center_xy_m": [
+            0.767981163,
+            0.326192635
+          ],
+          "inner_face_abs_y_m": 0.276192635,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.376192635,
+          "outer_face_x_m": 0.792981163
+        },
+        "r0": {
+          "back_wall_margin_m": 0.12698854881039545,
+          "center_xy_m": [
+            0.6921444219999999,
+            -0.353543569
+          ],
+          "inner_face_abs_y_m": 0.303543569,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.403543569,
+          "outer_face_x_m": 0.717144422
+        },
+        "r1": {
+          "back_wall_margin_m": 0.06567857281039535,
+          "center_xy_m": [
+            0.753454398,
+            -0.356275116
+          ],
+          "inner_face_abs_y_m": 0.306275116,
+          "inside_episode_back_wall": true,
+          "outer_face_abs_y_m": 0.406275116,
+          "outer_face_x_m": 0.778454398
+        }
+      },
+      "task_success": true,
+      "terminal_policy_phase": "unknown"
+    }
+  ],
+  "schema_version": "pact_place_clutter_probe_v1",
+  "slots_xy_m": {
+    "l0": [
+      0.7,
+      0.34
+    ],
+    "l1": [
+      0.75,
+      0.34
+    ],
+    "r0": [
+      0.7,
+      -0.34
+    ],
+    "r1": [
+      0.75,
+      -0.34
+    ]
+  },
+  "taller_variant_contacted": false,
+  "task_success": 6,
+  "top_z_m": 0.82,
+  "unclean_rows": [
+    {
+      "branch": "ik_cascade",
+      "clutter_frames": 0,
+      "phase": "outbound_approach",
+      "role_index": 1
+    },
+    {
+      "branch": "ik_cascade",
+      "clutter_frames": 0,
+      "phase": "outbound_approach",
+      "role_index": 6
+    }
+  ],
+  "zero_clutter_requirement_met": true
+}

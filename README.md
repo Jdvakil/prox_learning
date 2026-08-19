@@ -44,16 +44,51 @@ The attempt-3 screen (named repairs; still 18/24 clean) is reported in
 [`docs/PACT_PLACE_ATTEMPT3.md`](docs/PACT_PLACE_ATTEMPT3.md);
 the v3 gate ledger is
 [`docs/PACT_PLACE_CORRIDOR_GATE_V3.md`](docs/PACT_PLACE_CORRIDOR_GATE_V3.md).
-All three decisions are `PACT_PLACE_CORRIDOR_PHASE0_FAIL`. Join place-corridor
-rows on `(config_sha256, role_index)`, never on `episode_id`. The original-seed
-re-run is a diagnostic, not a gate.
+The attempt-4 screen (empty-gripper disarm + persist-3; 15/24 clean) is reported in
+[`docs/PACT_PLACE_ATTEMPT4.md`](docs/PACT_PLACE_ATTEMPT4.md);
+the v4 gate ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V4.md`](docs/PACT_PLACE_CORRIDOR_GATE_V4.md).
+The attempt-5 screen (relocated tray; phase-aware receptacle exemption; 22/24
+clean) is reported in
+[`docs/PACT_PLACE_ATTEMPT5.md`](docs/PACT_PLACE_ATTEMPT5.md);
+the v5 gate ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V5.md`](docs/PACT_PLACE_CORRIDOR_GATE_V5.md).
+The attempt-6 clutter arm (fixed shelf boxes beside the cup) stopped at A0:
+no declared-grid set had zero expert `pact_clutter` contact, so Phase 0 was
+not frozen or run. That record is
+[`docs/PACT_PLACE_ATTEMPT6.md`](docs/PACT_PLACE_ATTEMPT6.md);
+the ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V6.md`](docs/PACT_PLACE_CORRIDOR_GATE_V6.md).
+The attempt-6b resite (`|y| = 0.32` after naming the contacting body as the
+carried cup) passed Phase 0 at **20/24** with zero `pact_clutter` contact.
+That record is
+[`docs/PACT_PLACE_ATTEMPT6B.md`](docs/PACT_PLACE_ATTEMPT6B.md);
+the ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V6B.md`](docs/PACT_PLACE_CORRIDOR_GATE_V6B.md).
+The 24 qpos-replay clips are produced by
+`scripts/run_pact_place_v6b_replay_videos.py` into
+[`diagnostics_output/pact_place_corridor_v6b_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v6b_videos/CRIB.md);
+the MP4s are local and are not committed.
+v1–v4 are `PACT_PLACE_CORRIDOR_PHASE0_FAIL`. v5 is
+`PACT_PLACE_CORRIDOR_PHASE0_PASS`. v6 is
+`PACT_PLACE_CORRIDOR_PHASE0_NOT_RUN`. v6b is
+`PACT_PLACE_CORRIDOR_PHASE0_PASS`. v5 clean-success is not comparable to
+v1–v4, and is not comparable to the stricter cluttered v6b count. Join place-corridor rows on `(config_sha256, role_index)`, never on
+`episode_id`. The original-seed re-run is a diagnostic, not a gate.
 Rows 6 and 12 of the v2 gate are an initial-state panel overlap, not inbound
 scraping; see [`docs/PACT_PLACE_HAZARD_ROWS_6_12.md`](docs/PACT_PLACE_HAZARD_ROWS_6_12.md).
+The eight tracking-clean, zero-IK, `gripper_width_min_m = 0` failures across
+v1/v2/v3 abort on the empty-gripper branch while the pads are still on the
+cup; see [`docs/PACT_PLACE_ABORT_BRANCH.md`](docs/PACT_PLACE_ABORT_BRANCH.md).
 The 24 attempt-3 episodes can be watched as qpos-replay clips (no physics
 step, no expert re-run) from
 [`diagnostics_output/pact_place_corridor_v3_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v3_videos/CRIB.md);
 the renderer is `scripts/run_pact_place_v3_replay_videos.py`. The MP4s are
 generated locally and are not committed.
+Collection was stopped at **152** kept of 174 attempted (target 255). Those
+kept JSON episodes are at
+[huggingface.co/datasets/Lundii/pact_place_corridor_v5](https://huggingface.co/datasets/Lundii/pact_place_corridor_v5).
+They are expert `qpos` trajectories, not ACT HDF5 (no wrist RGB / proximity).
 
 ---
 
@@ -1209,3 +1244,66 @@ Three things temper the pass:
 Contact classes resolve at episode granularity only; per-frame contact classes are not in
 the rollout schema, so a contact cannot be timestamped to a burst frame. Immaterial at one
 FP frame and zero hazard contacts; it would matter at a real burst rate.
+
+## Pick-and-place corridor v5: re-recording the kept rows as demonstrations (executed)
+
+The v5 "collection" ran the feasibility-screen harness, not the datagen pipeline.
+`scripts/run_pact_place_collection.py:33` imports `run_row` from `run_pact_place_expert_screen`,
+which truncates the sampled sensor suite to `qpos`/`tcp_pose` before the rollout. The 152 kept
+episodes are a valid **screen record** with no proximity, no RGB and no action arrays: the whole
+tree holds 0 non-JSON files. Nothing downstream could run off them.
+
+The kept set was already decided, so this re-records it rather than re-selecting it. Seeds, expert,
+scene, success criterion and clean-success filter are unchanged; only the observation suite differs.
+
+Contract `configs/pact_place_v5_recovery.json`
+(`config_sha256 125db9ac9f1eafcbbf9ce5a741d2c684a410d46da662ce55a99de3965bf7b9ac`) freezes the 152
+kept rows, each carrying the outcome its screen row recorded, so the re-run can be checked row by
+row instead of trusted.
+
+```
+export MUJOCO_GL=egl PYTHONUNBUFFERED=1
+export MLSPACES_ASSETS_DIR=/root/prox_learning_pact_remediation/assets
+PY=/root/act_retrain_venv/bin/python
+
+$PY scripts/pact_place_recovery_contract.py
+$PY scripts/run_pact_place_recovery_datagen.py --config configs/pact_place_v5_recovery.json --workers 12
+$PY scripts/verify_pact_place_recovery_keys.py --config configs/pact_place_v5_recovery.json
+```
+
+Results, 2026-08-19, 12 workers, 2h26m, 5.6 GB at ~37 MB per episode:
+
+| Measure | Result |
+|---|---|
+| Rows complete / `clean_success` | 152 / 152 |
+| Outcome, seed and step count reproduced | 152 / 152, zero divergences |
+| Step-3 file gate | 152 / 152 pass all 14 checks |
+| Total timesteps | 72,955 (T: min 243, median 480, max 634) |
+| `recovery_sha256` | `a704bccf9bec8ae6d0ac377e64bd22e3e0688e7d4eaaea91e7ee19553651c2e8` |
+| `keys_verified_sha256` | `b06ff8fcb3751a0eefc6adbafc569922df69f9d2c1d38d1036ff4e1dc59ea639` |
+
+Output `assets/datagen/pact_place_corridor_v2/recovered_152/` now holds 152 `trajectory.h5` and 152
+wrist MP4s. Exact reproduction across all 152 means the full sensor suite is physics-neutral here,
+which was the open stop-condition.
+
+Three things worth carrying forward, all in `docs/PACT_PLACE_V5_DEMO_RECOVERY.md`:
+
+1. The screen's `_make_config` carries a **second** observation reduction beyond the sensor-suite
+   truncation: `proximity_sensor_period_ms = 0.0`, which writes proximity as `(T, 1, 8, 8)`. The
+   trainable schema needs `(T, 4, 8, 8)` and the converter rejects anything else. Copying that
+   function would have wasted the whole run.
+2. `save_utils.py:374` calls a bare `json.dumps` on `obs_scene`; the place sampler's
+   `scene_params["cam_visible"]` is a `numpy.bool_`, which NumPy 2 names `bool` and json refuses.
+   Coerced in the recovery publisher so the reference collection's producer stays untouched.
+3. This container's `/sys/fs/cgroup/pids.max` is 3840 and each datagen worker otherwise costs ~319
+   tasks, so 12 workers die at import with only `libgomp: Thread creation failed`. The runner now
+   pins the thread-pool env vars (319 tasks -> 3, no throughput cost) and preflights cgroup headroom.
+
+Authorized next step is the ACT conversion only. Training remains unauthorized: both the runner and
+the verifier hard-code `training_authorized: false`.
+
+**For whoever writes the v6 collection:** the v6 plan says "collect ~255 clean under v6" with no
+mention of the sensor suite, and as written reproduces this failure exactly. Its collection step
+must require the datagen pipeline with cameras and proximity enabled, plus a file-level key
+verification, before any training is authorized. Config-level review is what failed here -- the v5
+collection config was internally consistent, self-hashed, and wrong.
