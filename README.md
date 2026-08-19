@@ -85,10 +85,25 @@ step, no expert re-run) from
 [`diagnostics_output/pact_place_corridor_v3_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v3_videos/CRIB.md);
 the renderer is `scripts/run_pact_place_v3_replay_videos.py`. The MP4s are
 generated locally and are not committed.
-Collection was stopped at **152** kept of 174 attempted (target 255). Those
-kept JSON episodes are at
-[huggingface.co/datasets/Lundii/pact_place_corridor_v5](https://huggingface.co/datasets/Lundii/pact_place_corridor_v5).
-They are expert `qpos` trajectories, not ACT HDF5 (no wrist RGB / proximity).
+Collection was stopped at **152** kept of 174 attempted (target 255).
+
+That first collection ran the Phase-0 *screen* harness rather than the datagen
+pipeline, so it inherited two observation reductions: the polling suite is
+truncated to `["qpos", "tcp_pose"]`, and `proximity_sensor_period_ms` is set to
+`0.0`, which collapses the skin buffer to a single sub-step. The result was 152
+valid screen records carrying no actions, no wrist RGB and no proximity — enough
+to audit the expert, not enough to train anything. All 152 were re-recorded
+through the datagen pipeline and reproduced their frozen outcome exactly,
+**152/152 with zero divergence**, which also measures the full sensor suite as
+physics-neutral for this task. The recovery is reported in
+[`docs/PACT_PLACE_V5_DEMO_RECOVERY.md`](docs/PACT_PLACE_V5_DEMO_RECOVERY.md).
+
+The published set is the recovered datagen, at
+[huggingface.co/datasets/Lundii/pact_place_corridor_v5](https://huggingface.co/datasets/Lundii/pact_place_corridor_v5):
+152 `trajectory.h5` with `traj_0/actions/*`, `obs/agent/{qpos,qvel}` and 40
+proximity sensors at `(T, 4, 8, 8)`, plus per-episode wrist MP4s. It is raw
+datagen, not ACT HDF5 — convert before training. Note the corridor has a wrist
+camera only; there is no exo camera.
 
 ---
 
