@@ -272,7 +272,10 @@ def main() -> int:
         "policy_feature_dim": SURFACE_EMBEDDING_DIM,
         "report_path": str(args.report_out),
     }
-    updated["proximity_contract"]["embedding_tokens_present"] = True
+    updated.setdefault(
+        "proximity_contract",
+        {"raw_channel_present": True, "shape": [40, 4, 8, 8]},
+    )["embedding_tokens_present"] = True
     args.updated_conversion_manifest_out.parent.mkdir(
         parents=True, exist_ok=True
     )

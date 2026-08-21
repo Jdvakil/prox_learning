@@ -44,6 +44,10 @@ from scripts.convert_obstacle_to_act import (
 )
 
 DEFAULT_MANIFEST = ROOT / "configs" / "pact_collision_candidate_manifest_v2.json"
+DEFAULT_RECOVERY_CONFIG = ROOT / "configs" / "pact_place_v5_recovery.json"
+DEFAULT_KEYS_VERIFIED = (
+    ROOT / "diagnostics_output" / "pact_place_v5_recovery" / "keys_verified.json"
+)
 PILOT_USABLE_DEMO_FLOOR = 48
 FULL_USABLE_DEMO_FLOORS = {
     "full_train": 180,
@@ -134,6 +138,22 @@ def _find_wrist_video(row_dir: Path) -> Path:
     if len(videos) != 1:
         raise RuntimeError(f"{row_dir}: expected one wrist RGB MP4, found {len(videos)}")
     return videos[0]
+
+
+def _row_directory(collection: Path, row: dict[str, Any]) -> Path:
+    direct = collection / "rows" / row["episode_id"]
+    if direct.is_dir():
+        return direct
+    matches = list(
+        (collection / "rows").glob(
+            f"{int(row['role_index']):03d}_{row['episode_id'][:16]}"
+        )
+    )
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"could not resolve one row directory for {row['episode_id']}: {matches}"
+        )
+    return matches[0]
 
 
 def _is_usable_clean_demo(result: dict[str, Any]) -> bool:
@@ -279,14 +299,16 @@ def main() -> int:
     parser.add_argument("--collection", required=True, type=Path)
     parser.add_argument(
         "--role",
-        required=True,
+        required=False,
         action="append",
-        choices=("pilot_train", "full_train", "full_validation"),
+        choices=("pilot_train", "full_train", "full_validation", "recovered_152"),
         help="repeat for a combined full_train + full_validation dataset",
     )
     parser.add_argument("--dst", required=True, type=Path)
     parser.add_argument("--manifest-out", required=True, type=Path)
     parser.add_argument("--manifest", default=DEFAULT_MANIFEST, type=Path)
+    parser.add_argument("--recovery-config", default=DEFAULT_RECOVERY_CONFIG, type=Path)
+    parser.add_argument("--keys-verified", default=DEFAULT_KEYS_VERIFIED, type=Path)
     parser.add_argument("--image-h", default=240, type=int)
     parser.add_argument("--image-w", default=320, type=int)
     args = parser.parse_args()
@@ -294,17 +316,40 @@ def main() -> int:
     if args.dst.exists() and any(args.dst.iterdir()):
         raise SystemExit(f"refusing non-empty destination {args.dst}")
     args.dst.mkdir(parents=True, exist_ok=True)
-    manifest = load_manifest(args.manifest)
-    roles = list(dict.fromkeys(args.role))
-    requested = [
-        row
-        for role in roles
-        for row in rows_for_role(manifest, role)
-    ]
+    roles = list(dict.fromkeys(args.role or []))
+    if roles == ["recovered_152"]:
+        recovery = json.loads(args.recovery_config.read_text())
+        requested = sorted(
+            recovery["recovery_rows"], key=lambda row: int(row["role_index"])
+        )
+        sensor_names = list(recovery["recovery"]["proximity_sensor_names"])
+        sensor_order_sha256 = hashlib.sha256(
+            json.dumps(sensor_names, separators=(",", ":")).encode()
+        ).hexdigest()
+        manifest_sha256 = recovery["config_sha256"]
+        keys_verified = json.loads(args.keys_verified.read_text())
+        if not (
+            keys_verified.get("all_passed") is True
+            and keys_verified.get("conversion_authorized") is True
+            and int(keys_verified.get("n_passed", -1)) == len(requested) == 152
+        ):
+            raise SystemExit("recovered_152 key-verification gate is not satisfied")
+    else:
+        if not roles:
+            raise SystemExit("at least one --role is required")
+        manifest = load_manifest(args.manifest)
+        requested = [
+            row
+            for role in roles
+            for row in rows_for_role(manifest, role)
+        ]
+        sensor_names = manifest["sensor_names"]
+        sensor_order_sha256 = manifest["sensor_order_sha256"]
+        manifest_sha256 = manifest["manifest_sha256"]
     included: list[tuple[dict[str, Any], dict[str, Any]]] = []
     excluded: list[dict[str, Any]] = []
     for row in requested:
-        result_path = args.collection / "rows" / row["episode_id"] / "result.json"
+        result_path = _row_directory(args.collection, row) / "result.json"
         if not result_path.exists():
             raise SystemExit(f"unreconciled row: missing {result_path}")
         result = json.loads(result_path.read_text())
@@ -332,7 +377,7 @@ def main() -> int:
             "rows are not replaced or rerun"
         )
     included_by_role = {
-        role: sum(row["role"] == role for row, _result in included)
+        role: sum(row.get("role", "recovered_152") == role for row, _result in included)
         for role in roles
     }
     for role, floor in FULL_USABLE_DEMO_FLOORS.items():
@@ -345,15 +390,15 @@ def main() -> int:
 
     episodes = []
     for act_index, (row, result) in enumerate(included):
-        source_h5 = args.collection / "rows" / row["episode_id"] / "trajectory.h5"
+        source_h5 = _row_directory(args.collection, row) / "trajectory.h5"
         destination = args.dst / f"episode_{act_index}.hdf5"
         details = _write_episode(
             destination=destination,
             row=row,
             result=result,
             source_h5=source_h5,
-            sensor_names=manifest["sensor_names"],
-            sensor_order_sha256=manifest["sensor_order_sha256"],
+            sensor_names=sensor_names,
+            sensor_order_sha256=sensor_order_sha256,
             image_h=args.image_h,
             image_w=args.image_w,
         )
@@ -362,8 +407,12 @@ def main() -> int:
                 "act_episode_index": act_index,
                 "act_file": destination.name,
                 "episode_id": row["episode_id"],
-                "candidate_index": row["candidate_index"],
-                "role": row["role"],
+                "candidate_index": row.get("candidate_index", row["role_index"]),
+                "role": (
+                    "recovered_152"
+                    if roles == ["recovered_152"]
+                    else row["role"]
+                ),
                 "role_index": row["role_index"],
                 "intrusion_side": row["intrusion_side"],
                 "row_sha256": row["row_sha256"],
@@ -388,9 +437,14 @@ def main() -> int:
         )
     conversion = {
         "schema_version": "pact_collision_act_conversion_v2",
-        "source_manifest_sha256": manifest["manifest_sha256"],
-        "sensor_order_sha256": manifest["sensor_order_sha256"],
-        "sensor_names": manifest["sensor_names"],
+        "source_manifest_sha256": manifest_sha256,
+        "sensor_order_sha256": sensor_order_sha256,
+        "sensor_names": sensor_names,
+        "proximity_contract": {
+            "raw_channel_present": True,
+            "embedding_tokens_present": False,
+            "shape": [40, 4, 8, 8],
+        },
         "roles": roles,
         "requested_count": len(requested),
         "included_count": len(episodes),

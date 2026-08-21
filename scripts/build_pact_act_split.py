@@ -21,7 +21,21 @@ def build(conversion: dict, mode: str) -> dict:
     episodes = sorted(
         conversion["episodes"], key=lambda episode: int(episode["act_episode_index"])
     )
-    if mode == "pilot":
+    if mode == "recovered":
+        if conversion.get("roles") != ["recovered_152"]:
+            raise ValueError("recovered mode requires exactly the recovered_152 conversion")
+        episodes = sorted(episodes, key=lambda episode: int(episode["role_index"]))
+        train_count = round(len(episodes) * 0.8)
+        if train_count < 1 or train_count == len(episodes):
+            raise ValueError("recovered conversion is too small for a nonempty fixed split")
+        labels = ["train"] * train_count + ["validation"] * (
+            len(episodes) - train_count
+        )
+        split_rule = (
+            "verified recovered_152 rows in frozen role_index order; "
+            "first round(0.8*N) train, remainder validation"
+        )
+    elif mode == "pilot":
         if conversion.get("roles") != ["pilot_train"]:
             raise ValueError("pilot mode requires exactly the pilot_train conversion")
         train_count = int(len(episodes) * 0.8)
@@ -95,7 +109,7 @@ def build(conversion: dict, mode: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--conversion-manifest", required=True, type=Path)
-    parser.add_argument("--mode", choices=("pilot", "full"), required=True)
+    parser.add_argument("--mode", choices=("pilot", "full", "recovered"), required=True)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
