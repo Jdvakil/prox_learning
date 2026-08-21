@@ -58,3 +58,19 @@ assets/reference_data/
 
 # Attempt-3 place-corridor replay MP4s are generated locally and not source.
 diagnostics_output/pact_place_corridor_v3_videos/*.mp4
+diagnostics_output/pact_place_corridor_v5_videos/*.mp4
+diagnostics_output/pact_place_corridor_v6b_videos/*.mp4
+diagnostics_output/pact_place_corridor_v6c_videos/*.mp4
+diagnostics_output/pact_place_corridor_v7_design_review/**/*.mp4
+diagnostics_output/pact_place_corridor_v7_videos/*.mp4
+
+# Replay payloads: full 916-dim model qpos per step, regenerable from the
+# frozen seeds. The result.json reports beside them are committed.
+diagnostics_output/**/expert_screen_rows/**/trajectory.json
+
+# Per-row result.json are bulk payloads, not reports: runs predating
+# PACT_CONTACT_AUDIT_SUMMARY_ONLY retain every contact frame and reach 43-71 MB
+# each. The screen summaries beside them (expert_screen.json, analysis.json,
+# design_review.json, probe_outcome.json) carry the per-episode findings and
+# are committed.
+diagnostics_output/**/expert_screen_rows/**/result.json
