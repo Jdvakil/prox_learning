@@ -1,0 +1,889 @@
+{
+  "authorizes_collection": false,
+  "authorizes_gate": false,
+  "authorizes_probe": false,
+  "config_sha256": "4c6df1a2ee75288f64094717d76309d74f02a5095bf2ef0af590912092c2288e",
+  "created_utc": "2026-08-20T00:00:00Z",
+  "design_review_seeds": {
+    "do_not_reuse_for_probe_or_gate": true,
+    "hard_cap_episodes": 12,
+    "master_seed": 2026082801,
+    "n_pregenerated": 12,
+    "stop_at_clean_successes": 3,
+    "stream": "pact-place-v7-review"
+  },
+  "expert": {
+    "action_noise": false,
+    "class": "PactPlaceCorridorPolicy",
+    "empty_gripper_disarmed_on_placement_descent": true,
+    "empty_gripper_persist_steps": 3,
+    "empty_gripper_repair_is_not_a_threshold_change": true,
+    "grasp_servo_duration_s": 2.0,
+    "gripper_empty_threshold_m": 0.002,
+    "inbound_safe_gap_m": 0.1,
+    "initial_observation_rejects_robot_environment_contact": true,
+    "outbound_approach_max_step_m": 0.04,
+    "outbound_carried_envelope_half_y_m": 0.15,
+    "outbound_carry_raise_m": 0.0,
+    "outbound_pass_speed_m_s": 0.045,
+    "outbound_safe_gap_m": 0.14,
+    "release_clearance_m": 0.005,
+    "task_horizon": 900
+  },
+  "expert_screen_rows": [
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.010810023,
+        "01": -0.011511903,
+        "02": -0.003088131,
+        "03": 0.017592272,
+        "04": 0.004223174,
+        "05": -0.003756116,
+        "06": -0.009257435,
+        "07": -0.004110499,
+        "08": 0.019365599,
+        "09": -0.017907591,
+        "10": -0.002849075,
+        "11": -0.016431538,
+        "12": -0.01768779,
+        "13": -0.018828271,
+        "14": -0.005019048,
+        "15": -0.014204727
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.007857339,
+        "01": 0.002783769,
+        "02": -0.005134053,
+        "03": 2.4237e-05,
+        "04": 0.00919697,
+        "05": 0.002277604,
+        "06": 0.00022659,
+        "07": -0.003544699,
+        "08": -0.005036863,
+        "09": 0.012556966,
+        "10": 0.017877037,
+        "11": -0.002904741,
+        "12": 0.003882995,
+        "13": 0.005734023,
+        "14": 0.017279785,
+        "15": -0.019907569
+      },
+      "episode_id": "42496e1505375a5aeca0519ade5f2a2c3a26db1630f3150a8a60cb65e1c20fd9",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004028889,
+      "panel_x_jitter_m": 0.004138004,
+      "role_index": 0,
+      "row_sha256": "34e007a0a7154760b2cc55dd5d80d661f1fa0b1b28f17e1eadbe6ee0e8757641",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2718318106,
+      "task_seed_u64": 11675087366142808620
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.007071126,
+        "01": -0.009334766,
+        "02": 0.009907631,
+        "03": 0.00303389,
+        "04": -0.001390851,
+        "05": 0.010180494,
+        "06": -0.001158443,
+        "07": 0.014901499,
+        "08": 0.017061499,
+        "09": -0.008327706,
+        "10": -0.007631321,
+        "11": 0.016677632,
+        "12": -0.012077926,
+        "13": 0.013689671,
+        "14": 0.019800958,
+        "15": 0.002736816
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.018646403,
+        "01": 0.014275124,
+        "02": 0.003219389,
+        "03": -0.007051244,
+        "04": -0.01432753,
+        "05": -0.010756483,
+        "06": 0.018279103,
+        "07": -0.003663497,
+        "08": -0.011810235,
+        "09": -0.019118702,
+        "10": -0.001062377,
+        "11": 0.017827388,
+        "12": -0.004506698,
+        "13": 0.007623445,
+        "14": -0.016020126,
+        "15": 0.014257482
+      },
+      "episode_id": "d22bc342e005e1676dedd10fb283ecae374502b8dd0f270cb88b3e9ed5c0ebce",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004132964,
+      "panel_x_jitter_m": 0.004222643,
+      "role_index": 1,
+      "row_sha256": "6e45c497c640be37230923eb0da249b3e3fa36dbe08a1a592ebf71d709ce2e34",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2161208455,
+      "task_seed_u64": 9282319636628695542
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.017200592,
+        "01": -0.012855082,
+        "02": 0.000217984,
+        "03": -0.013218435,
+        "04": -0.007250652,
+        "05": 0.008969055,
+        "06": -0.014579091,
+        "07": 0.014076493,
+        "08": 0.000710416,
+        "09": -0.016526513,
+        "10": 0.014023696,
+        "11": 0.018298552,
+        "12": -0.000640433,
+        "13": -0.018228298,
+        "14": -0.003385036,
+        "15": 0.000125348
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.005807543,
+        "01": -0.009128432,
+        "02": -0.00581306,
+        "03": -0.005066105,
+        "04": 0.007415401,
+        "05": 0.018873166,
+        "06": 0.004462521,
+        "07": -0.011969575,
+        "08": -0.00411631,
+        "09": -0.010336667,
+        "10": -0.007004939,
+        "11": -0.008884851,
+        "12": 0.015557924,
+        "13": 0.010102619,
+        "14": 0.019085592,
+        "15": -0.001303506
+      },
+      "episode_id": "55f1e1ea50711a43ea478f9749ced77c4c756cec3b48a719852b2bc78b08a1d6",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.003196538,
+      "panel_x_jitter_m": -0.004964295,
+      "role_index": 2,
+      "row_sha256": "9933bebd9e3731b41c10965fcda072b33a844473b157131891111b85b671cdc5",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 653846160,
+      "task_seed_u64": 2808247874599311461
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": -0.010575468,
+        "01": -0.00111592,
+        "02": -0.012511639,
+        "03": 0.012976104,
+        "04": 0.011802183,
+        "05": 0.019609621,
+        "06": -0.012701003,
+        "07": 0.014901416,
+        "08": -0.000720199,
+        "09": 0.003200194,
+        "10": -0.009759745,
+        "11": -0.005383697,
+        "12": 0.016907438,
+        "13": -0.010951408,
+        "14": 0.017607931,
+        "15": -0.005439147
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.012089484,
+        "01": -0.006848024,
+        "02": -0.017812826,
+        "03": -0.011665509,
+        "04": 0.005987419,
+        "05": 0.007895091,
+        "06": -0.002115742,
+        "07": -0.014283959,
+        "08": -0.016021471,
+        "09": -0.016082845,
+        "10": -0.010417243,
+        "11": -0.007703871,
+        "12": 0.006811518,
+        "13": 0.000540375,
+        "14": 0.007773813,
+        "15": 0.014568927
+      },
+      "episode_id": "51ee0dc792e6a3cac6f6c2a99b006d6ea46c120170c34f32175353fb4f1cd86a",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.00359263,
+      "panel_x_jitter_m": 0.011891123,
+      "role_index": 3,
+      "row_sha256": "bb7efde14fcfd7513c7a1b828a76418cb473f3c11a04b52230b052a727443011",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2557137086,
+      "task_seed_u64": 10982820157477249109
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": -0.012246198,
+        "01": 0.00112192,
+        "02": -0.016644887,
+        "03": -0.017679869,
+        "04": 0.008169561,
+        "05": -0.012198707,
+        "06": 0.019097536,
+        "07": 0.005902122,
+        "08": -0.001666221,
+        "09": 0.003261721,
+        "10": 0.001346432,
+        "11": -0.01835084,
+        "12": 0.01237926,
+        "13": 0.003260282,
+        "14": -0.011384799,
+        "15": -0.00242772
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.00710681,
+        "01": -0.013839022,
+        "02": 0.004689275,
+        "03": 0.005540758,
+        "04": 0.016286608,
+        "05": -0.002694257,
+        "06": -0.011246126,
+        "07": 0.001303392,
+        "08": 0.000169162,
+        "09": -0.010071946,
+        "10": -0.011649843,
+        "11": 0.018310117,
+        "12": 0.002971035,
+        "13": -0.015773154,
+        "14": 0.011688069,
+        "15": -0.005861607
+      },
+      "episode_id": "dd715a57b60295189da9b78ccabdd3603ad5355c99b4aad08a91fb853b80b741",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.001411432,
+      "panel_x_jitter_m": 0.014011846,
+      "role_index": 4,
+      "row_sha256": "9733a39da6135cca6da01079637ecc6d6438f983fbb3898a5f8512c0045c0e63",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 85122833,
+      "task_seed_u64": 365599786452988692
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": -0.010810015,
+        "01": 0.019007363,
+        "02": 0.007380642,
+        "03": -0.005769284,
+        "04": -0.007522511,
+        "05": 0.014137173,
+        "06": 0.008188642,
+        "07": -0.012044933,
+        "08": 0.007350383,
+        "09": 0.002041791,
+        "10": 0.004223118,
+        "11": 0.002096322,
+        "12": -0.002070103,
+        "13": -0.006455388,
+        "14": 0.004618533,
+        "15": 0.016383792
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.005048298,
+        "01": 0.013067747,
+        "02": 0.000734867,
+        "03": 0.001108186,
+        "04": 0.014674745,
+        "05": -0.002631448,
+        "06": 0.005127787,
+        "07": 0.002643054,
+        "08": -0.015564606,
+        "09": 0.014043638,
+        "10": 0.013791391,
+        "11": -0.002792741,
+        "12": 0.005256062,
+        "13": -0.00327339,
+        "14": -0.008746672,
+        "15": -5.1855e-05
+      },
+      "episode_id": "57e7aeed177261b378dd5d602b95e8c45aff334e8f08e927111fd3356d702d32",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004827792,
+      "panel_x_jitter_m": -0.001351514,
+      "role_index": 5,
+      "row_sha256": "1bb7727dac1edd9c23dfc193e707895c002d192be896e7ca8523d4c56ab61469",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1449530896,
+      "task_seed_u64": 6225687796711017187
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.008946328,
+        "01": 0.013532773,
+        "02": 0.008718476,
+        "03": 0.01739651,
+        "04": 0.000969024,
+        "05": 0.007380254,
+        "06": -0.017459824,
+        "07": -0.014079661,
+        "08": -0.005679354,
+        "09": -0.012086965,
+        "10": 0.018500532,
+        "11": 0.019499053,
+        "12": 0.009377698,
+        "13": 0.005442913,
+        "14": -0.014831699,
+        "15": 0.00960662
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.015895199,
+        "01": -0.018164843,
+        "02": 0.00069109,
+        "03": 0.019455974,
+        "04": 0.006230091,
+        "05": 0.013785026,
+        "06": -0.016682002,
+        "07": 0.006998186,
+        "08": -0.006614944,
+        "09": -0.017208898,
+        "10": 0.016936234,
+        "11": 0.019146647,
+        "12": 0.011052909,
+        "13": -0.013099788,
+        "14": -0.010001535,
+        "15": -0.011892991
+      },
+      "episode_id": "a4f9281a9766c6f1221293d1845eaf683751ef2658d9c22ba03ff669cb1357db",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.004368791,
+      "panel_x_jitter_m": 0.001920108,
+      "role_index": 6,
+      "row_sha256": "ecd6d9fb1a895ca8eba0e47793a0489182abf33d26779afe7d7c6ab9eec578d7",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 3238058340,
+      "task_seed_u64": 13907354673025842329
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.011276749,
+        "01": 0.01055958,
+        "02": 0.016921659,
+        "03": -0.009139848,
+        "04": -0.013062191,
+        "05": 0.008853399,
+        "06": 0.010868168,
+        "07": -0.013874777,
+        "08": -0.01361315,
+        "09": -0.013871012,
+        "10": -0.018048998,
+        "11": -0.00435338,
+        "12": 0.000318218,
+        "13": -0.011733224,
+        "14": 0.015099792,
+        "15": -0.006057091
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.002445295,
+        "01": 0.016598107,
+        "02": -0.004411773,
+        "03": 0.010973391,
+        "04": 0.001962166,
+        "05": 0.00893397,
+        "06": 0.000947031,
+        "07": 0.017597008,
+        "08": -0.010526208,
+        "09": 0.002501535,
+        "10": 0.01919637,
+        "11": -0.013896221,
+        "12": 0.008150078,
+        "13": 0.015107228,
+        "14": -0.010956327,
+        "15": -0.009946968
+      },
+      "episode_id": "6548f744e9e73a8f58ed40d0fca4d4ed46b8156b0a8af5bf40a328a5ae7d6ceb",
+      "intrusion_side": "right",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.001630378,
+      "panel_x_jitter_m": -0.005015009,
+      "role_index": 7,
+      "row_sha256": "3f0400e7cc55d7702f0e16d2f00664f31fddd17556fb2ad41995eff4caf2173a",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1391490404,
+      "task_seed_u64": 5976405780557671381
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.018557787,
+        "01": 0.005210819,
+        "02": -0.017050237,
+        "03": -0.018452966,
+        "04": -0.01148553,
+        "05": 0.018197816,
+        "06": -0.014099091,
+        "07": -0.013895215,
+        "08": -0.011985866,
+        "09": -0.009318355,
+        "10": -0.003255415,
+        "11": 0.01290348,
+        "12": -6.1554e-05,
+        "13": 0.009611383,
+        "14": 0.002128362,
+        "15": 0.008880883
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.013903193,
+        "01": 0.019132152,
+        "02": -0.000670987,
+        "03": -0.010809974,
+        "04": -0.018269968,
+        "05": 0.018008529,
+        "06": 0.013450109,
+        "07": -0.0113149,
+        "08": 0.001519879,
+        "09": 0.007232596,
+        "10": 0.018842216,
+        "11": 0.016636877,
+        "12": -0.0089767,
+        "13": 0.008515339,
+        "14": -0.007366501,
+        "15": 0.005801935
+      },
+      "episode_id": "79af2dc4210dbc8cce96af6c2cdd208f555f7cf17fae40d147c2ba9e99c55d29",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.003024978,
+      "panel_x_jitter_m": 0.011871307,
+      "role_index": 8,
+      "row_sha256": "ef995f2578566400166ac32a65a9052144aaba326e89d976f199289993fabfd5",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1181420758,
+      "task_seed_u64": 5074163519003553294
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": -0.012452582,
+        "01": -0.011994442,
+        "02": 0.018847036,
+        "03": 0.006550319,
+        "04": -0.008705993,
+        "05": 0.013138982,
+        "06": 0.004280184,
+        "07": 0.016426528,
+        "08": 0.015714518,
+        "09": 0.017340299,
+        "10": -0.006549893,
+        "11": -0.017865287,
+        "12": 0.003745099,
+        "13": -0.003958467,
+        "14": 0.000132565,
+        "15": -0.017112833
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.005547657,
+        "01": -0.011674391,
+        "02": 0.00937074,
+        "03": -0.005265646,
+        "04": 0.006191423,
+        "05": -0.012528689,
+        "06": -0.011438559,
+        "07": -0.010313727,
+        "08": -0.007871663,
+        "09": 0.008886354,
+        "10": -0.017648552,
+        "11": -0.004067879,
+        "12": 0.009820729,
+        "13": -0.005140061,
+        "14": -0.005139616,
+        "15": 0.002176384
+      },
+      "episode_id": "a62646e45575cd1c468b05633c22289e8ee98daa95b4230fe009930834372011",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.002247934,
+      "panel_x_jitter_m": 0.011930821,
+      "role_index": 9,
+      "row_sha256": "4b87a449d6becfe37f1912715794dc0e455b83406d59ad9f4effc89d5543f52b",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1997819723,
+      "task_seed_u64": 8580570376785556618
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.006657726,
+        "01": 0.001608214,
+        "02": -0.001810204,
+        "03": 0.017173891,
+        "04": -0.001171064,
+        "05": -0.000337869,
+        "06": -2.15e-06,
+        "07": -0.015519484,
+        "08": 0.016092547,
+        "09": -0.005166008,
+        "10": 0.015267084,
+        "11": -0.015695057,
+        "12": -0.014954463,
+        "13": 0.011008442,
+        "14": 0.013907974,
+        "15": -0.007309316
+      },
+      "clutter_y_jitter_m": {
+        "00": -0.008994685,
+        "01": 0.001885586,
+        "02": -0.012296928,
+        "03": -0.011540668,
+        "04": 0.001846269,
+        "05": -0.006391986,
+        "06": 0.017385988,
+        "07": -0.014853752,
+        "08": 0.005471434,
+        "09": 0.007626863,
+        "10": -0.004379287,
+        "11": 0.006412633,
+        "12": -0.019772377,
+        "13": -0.002094035,
+        "14": 0.013658173,
+        "15": 0.010676517
+      },
+      "episode_id": "0a32a1545dcf60758b0a35bee0265b0630dde12d32325cfc7ae79033ba710b31",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": -0.004993072,
+      "panel_x_jitter_m": 0.010347773,
+      "role_index": 10,
+      "row_sha256": "dfed0eeefd78abb7cf69c05062dba5d9420a9663a931de33ebf0edd6d23b9faa",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 1399549176,
+      "task_seed_u64": 6011017942669549881
+    },
+    {
+      "clutter_x_jitter_m": {
+        "00": 0.012347476,
+        "01": -0.007381125,
+        "02": 0.004912001,
+        "03": -0.005559975,
+        "04": 0.007906522,
+        "05": -0.017769285,
+        "06": 0.010911135,
+        "07": -0.00493739,
+        "08": -0.017111099,
+        "09": -0.008249519,
+        "10": -0.011848342,
+        "11": -0.011610334,
+        "12": 0.01387394,
+        "13": 0.012662401,
+        "14": 0.00064869,
+        "15": 0.004762525
+      },
+      "clutter_y_jitter_m": {
+        "00": 0.004638476,
+        "01": 0.000792386,
+        "02": -0.004712878,
+        "03": 0.006622112,
+        "04": 0.009479365,
+        "05": 0.007246596,
+        "06": 0.006527649,
+        "07": 0.004952996,
+        "08": -0.016403499,
+        "09": 0.016239065,
+        "10": -0.007091056,
+        "11": -0.005231334,
+        "12": -0.011208761,
+        "13": -0.014850437,
+        "14": -0.007263628,
+        "15": -0.007799171
+      },
+      "episode_id": "8e84dab9eddd08c47ccfe3deb4646fd0163c43768fcc2c2c6bea2a6c04b8f1ad",
+      "intrusion_side": "left",
+      "max_sampling_retries": 4,
+      "panel_face_jitter_m": 0.000853593,
+      "panel_x_jitter_m": -0.010496261,
+      "role_index": 11,
+      "row_sha256": "e3b93722ff89f07b3cc97abc8499198d524fe639ae7478c4fbfe50335610ba5d",
+      "scene_template_house_index": 1,
+      "task_seed_u32": 2892101061,
+      "task_seed_u64": 12421479476772886341
+    }
+  ],
+  "master_seed": 2026082801,
+  "not_a_clean_rate_estimate": true,
+  "protected_artifact_sha256_before": {
+    "diagnostics_output/pact_blind_rgb/analysis.json": "ec940960bb93358184a979be2d73a5bf303819a0ab8b09f41c94a7a1d3f1eda7",
+    "diagnostics_output/pact_blind_rgb/final_decision.json": "3defb51f71995c3af3985ef31ebd526edfa4840777fb412ee91d84ad86d26cdb",
+    "diagnostics_output/pact_blur_sweep/analysis.json": "12d47f635d82c55ad0a59418a973f4701a72d2cfd760610bf37ad4cdecdedd3e",
+    "diagnostics_output/pact_blur_sweep/final_decision.json": "9901aa7ba804c2f5207d887f4dee49954c94f89884895a90e05d42a0396949c5",
+    "diagnostics_output/pact_contact_endpoint/analysis.json": "4bbf25c97472bbfd8f13c3352b6b1c8afae9284cd00351e0502149362ccde1f7",
+    "diagnostics_output/pact_contact_endpoint/final_decision.json": "52ce515bc09771d9ecdc8a39e31111f66e7e632f5949e82ed2497908ac2458bf",
+    "diagnostics_output/pact_geometry_generalization_v3/analysis.json": "29957d18f55139e7dc993358e4d77b39202e535a868e6adf96483f3d8bb4eaa1",
+    "diagnostics_output/pact_geometry_generalization_v3/final_decision.json": "ce8bb6106c47e08947670d6958e6df02876e6c417b1c754450695aa840c7670c",
+    "docs/PACT_BLIND_RGB.md": "29e2f8e44c819fe8040dc8f443bce1ed61fe61822c6ed289a4cb35291285efbb",
+    "docs/PACT_BLUR_SWEEP.md": "a215db8269aada479385c72b343ea78c032d35e1ae9162d837812304aeb224bf",
+    "docs/PACT_CONTACT_ENDPOINT_DECISION.md": "6ea97ea789e1c5d57572c7e231b30c867881f0e21b81ad11f950cef9bf860f1b",
+    "docs/PACT_GEOMETRY_GENERALIZATION.md": "952cadf34434017d03b73215c3c1e05b6c8ede1a6f205490e5f00b729f5f6daa"
+  },
+  "role": "human_design_review_not_a_gate",
+  "route": "collision_route_pick_and_place",
+  "scene": {
+    "aperture_plane_x_m": 0.58,
+    "base_forward_m": 0.14,
+    "clutter_active_slot_names": [
+      "00",
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ],
+    "clutter_body_prefix": "pact_clutter_",
+    "clutter_drawn_from_task_seed_not_intrusion_side": true,
+    "clutter_immovable_mocap": true,
+    "clutter_jitter_m": 0.02,
+    "clutter_nominal": {
+      "00": {
+        "center_m": [
+          0.62,
+          -0.385,
+          1.12
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "01": {
+        "center_m": [
+          0.62,
+          -0.375,
+          1.385
+        ],
+        "half_m": [
+          0.04,
+          0.03,
+          0.015
+        ],
+        "size_name": "overhead_thin",
+        "support": "ceiling"
+      },
+      "02": {
+        "center_m": [
+          0.72,
+          -0.385,
+          1.12
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "03": {
+        "center_m": [
+          0.72,
+          -0.385,
+          1.24
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "04": {
+        "center_m": [
+          0.65,
+          -0.385,
+          1.24
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "05": {
+        "center_m": [
+          0.72,
+          0.385,
+          1.12
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "06": {
+        "center_m": [
+          0.7,
+          0.385,
+          1.24
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "07": {
+        "center_m": [
+          0.72,
+          -0.375,
+          1.385
+        ],
+        "half_m": [
+          0.04,
+          0.03,
+          0.015
+        ],
+        "size_name": "overhead_thin",
+        "support": "ceiling"
+      },
+      "08": {
+        "center_m": [
+          0.72,
+          0.385,
+          1.0
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "09": {
+        "center_m": [
+          0.7,
+          -0.385,
+          1.0
+        ],
+        "half_m": [
+          0.025,
+          0.02,
+          0.04
+        ],
+        "size_name": "wall_block",
+        "support": "wall"
+      },
+      "10": {
+        "center_m": [
+          0.72,
+          0.375,
+          1.385
+        ],
+        "half_m": [
+          0.04,
+          0.03,
+          0.015
+        ],
+        "size_name": "overhead_thin",
+        "support": "ceiling"
+      },
+      "11": {
+        "center_m": [
+          0.62,
+          0.375,
+          1.385
+        ],
+        "half_m": [
+          0.04,
+          0.03,
+          0.015
+        ],
+        "size_name": "overhead_thin",
+        "support": "ceiling"
+      },
+      "12": {
+        "center_m": [
+          0.7,
+          -0.38,
+          0.77
+        ],
+        "half_m": [
+          0.025,
+          0.025,
+          0.05
+        ],
+        "size_name": "floor_narrow",
+        "support": "floor"
+      }
+    },
+    "clutter_pool_park_xyz_m": [
+      0.0,
+      0.0,
+      -2.0
+    ],
+    "clutter_slot_names": [
+      "00",
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "place_receptacle_center_xyz_m": [
+      0.35,
+      0.32,
+      0.0
+    ],
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_footprint": "shrunk_0.10x0.10",
+    "place_tray_x_bounds_m": [
+      0.25,
+      0.45
+    ],
+    "sampler_class": "PactPlaceCorridorV4Sampler",
+    "xml": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v4.xml",
+    "xml_sha256": "f9eef910c28d113ca48dcc8045207463da08e6517f3fdfe3141c7ebbdbfb281b"
+  },
+  "schema_version": "pact_place_corridor_v7_design_review",
+  "status": "human_design_review_not_a_gate",
+  "success_criterion": {
+    "implementation": "PickAndPlaceTask.get_info",
+    "lift_one_centimetre_criterion_on_success_path": false,
+    "max_receptacle_position_displacement_m": 0.1,
+    "max_receptacle_tilt_radians": 0.7853981633974483,
+    "robot_no_longer_touching_target": true,
+    "supported_weight_fraction": 0.5
+  }
+}

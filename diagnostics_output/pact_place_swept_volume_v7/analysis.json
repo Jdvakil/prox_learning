@@ -1,0 +1,7311 @@
+{
+  "aabb_union_note": "swept_aabb_union spans the robot base through the enclosure; its volume exceeds the enclosure so it is not a keep-out shape. A0e uses occupancy voxels plus per-link AABBs of links that enter the enclosure (link5/6/7, hand, fingers, cup).",
+  "analysis_sha256": "19189b0cb74aa4932c6530bb2ec0ba2b88ca3988144e4bf051f70addc46bd38d",
+  "authorizes_collection": false,
+  "config_sha256": "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e",
+  "enclosure_interior_m": {
+    "volume_m3": 0.17444,
+    "x_m": [
+      0.58,
+      0.86
+    ],
+    "y_m": [
+      -0.445,
+      0.445
+    ],
+    "z_m": [
+      0.72,
+      1.42
+    ]
+  },
+  "episode_back_wall_x_m": [
+    0.8419759966676406,
+    0.8309189525181438,
+    0.8098495897458422,
+    0.8208526302215,
+    0.8174805028303246,
+    0.80242706878649,
+    0.8414253484573985,
+    0.7870319774559603,
+    0.8344984690352789,
+    0.8598487774569992,
+    0.8149725411609544,
+    0.8206910240164021,
+    0.8444128741054577,
+    0.797103534071458,
+    0.7886791856000637,
+    0.8347845370622473,
+    0.7802336048549172,
+    0.824512205944337,
+    0.8240063407730521,
+    0.7819782426795374,
+    0.7890722010723151,
+    0.8104430961280369,
+    0.7909734766882688,
+    0.858821263379258
+  ],
+  "free_enclosure_fraction_outside_occupancy": 0.18206833295115787,
+  "free_enclosure_fraction_outside_per_geom_occupancy": 0.5744554001375831,
+  "link_occupancy_by_zone": {
+    "cup": {
+      "fraction_of_enclosure_interior": 0.2532446686539785,
+      "n_voxels": 5522,
+      "volume_m3": 0.04417600000000001
+    },
+    "hand": {
+      "fraction_of_enclosure_interior": 0.24719101123595508,
+      "n_voxels": 5390,
+      "volume_m3": 0.043120000000000006
+    },
+    "left_finger": {
+      "fraction_of_enclosure_interior": 0.1455170832377895,
+      "n_voxels": 3173,
+      "volume_m3": 0.025384000000000004
+    },
+    "link1": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link2": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link3": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link4": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link5": {
+      "fraction_of_enclosure_interior": 0.6283421233662005,
+      "n_voxels": 13701,
+      "volume_m3": 0.10960800000000002
+    },
+    "link6": {
+      "fraction_of_enclosure_interior": 0.49163036000917226,
+      "n_voxels": 10720,
+      "volume_m3": 0.08576000000000002
+    },
+    "link7": {
+      "fraction_of_enclosure_interior": 0.29236413666590233,
+      "n_voxels": 6375,
+      "volume_m3": 0.05100000000000001
+    },
+    "right_finger": {
+      "fraction_of_enclosure_interior": 0.1406099518459069,
+      "n_voxels": 3066,
+      "volume_m3": 0.024528000000000005
+    }
+  },
+  "link_occupancy_by_zone_per_geom": {
+    "cup": {
+      "fraction_of_enclosure_interior": 0.12735611098371935,
+      "n_voxels": 2777,
+      "volume_m3": 0.022216000000000003
+    },
+    "hand": {
+      "fraction_of_enclosure_interior": 0.15450584728273334,
+      "n_voxels": 3369,
+      "volume_m3": 0.026952000000000004
+    },
+    "left_finger": {
+      "fraction_of_enclosure_interior": 0.12914469158449898,
+      "n_voxels": 2816,
+      "volume_m3": 0.022528000000000003
+    },
+    "link1": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link2": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link3": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link4": {
+      "fraction_of_enclosure_interior": 0.0,
+      "n_voxels": 0,
+      "volume_m3": 0.0
+    },
+    "link5": {
+      "fraction_of_enclosure_interior": 0.01866544370557212,
+      "n_voxels": 407,
+      "volume_m3": 0.0032560000000000006
+    },
+    "link6": {
+      "fraction_of_enclosure_interior": 0.10882825040128413,
+      "n_voxels": 2373,
+      "volume_m3": 0.018984000000000004
+    },
+    "link7": {
+      "fraction_of_enclosure_interior": 0.14019720247649625,
+      "n_voxels": 3057,
+      "volume_m3": 0.024456000000000006
+    },
+    "right_finger": {
+      "fraction_of_enclosure_interior": 0.12547580830084845,
+      "n_voxels": 2736,
+      "volume_m3": 0.021888000000000005
+    }
+  },
+  "link_occupancy_per_geom_union": {
+    "fraction_of_enclosure_interior": 0.4255445998624169,
+    "n_voxels": 9279,
+    "note": "Keep-out for A0e: voxels overlapping any per-geom AABB, not the per-link hull.",
+    "volume_m3": 0.074232
+  },
+  "link_occupancy_union": {
+    "fraction_of_enclosure_interior": 0.8179316670488421,
+    "n_voxels": 17835,
+    "note": "AABB union is a hull of the whole motion including the base; occupancy voxels inside the enclosure are the keep-out for A0e",
+    "volume_m3": 0.14268000000000003
+  },
+  "min_clearance_by_link_m": {
+    "cup": 0.0,
+    "hand": 0.08149510062545895,
+    "left_finger": 0.04506947433788346,
+    "link1": 0.27165919022237006,
+    "link2": 0.26817173300962305,
+    "link3": 0.16143183021730165,
+    "link4": 0.10435013938227027,
+    "link5": 0.05681711666498512,
+    "link6": 0.08843616478916053,
+    "link7": 0.09867444414145723,
+    "right_finger": 0.04496911511634841
+  },
+  "n_episodes": 24,
+  "occupancy_voxels_path": "diagnostics_output/pact_place_swept_volume_v7/occupancy_voxels.json",
+  "occupancy_voxels_per_geom_path": "diagnostics_output/pact_place_swept_volume_v7/occupancy_voxels_per_geom.json",
+  "physics_stepped": false,
+  "replay_only": true,
+  "required_scene_xml": "pact_place_corridor_v3.xml",
+  "role": "a0d_measurement_not_a_gate",
+  "rows": [
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.731727985,
+            0.392881211,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.681727985,
+            0.29288121100000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.792744332,
+            0.398189685,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.742744332,
+            0.29818968500000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.725393225,
+            -0.29568426700000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.675393225,
+            -0.39568426700000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.7677519070000001,
+            -0.29161038800000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.717751907,
+            -0.39161038800000003,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8419759966676406,
+      "episode_depth_m": 0.24197599666764055,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.03364529220564583,
+        "hand": 0.10269606524508915,
+        "left_finger": 0.08547693542452922,
+        "link1": 0.31412683079682346,
+        "link2": 0.3236611976536982,
+        "link3": 0.28158499178216395,
+        "link4": 0.20935265163774647,
+        "link5": 0.06847024128278138,
+        "link6": 0.14424907059264322,
+        "link7": 0.13992946733140585,
+        "right_finger": 0.04801182663289301
+      },
+      "n_steps": 561,
+      "occupancy_voxel_counts": {
+        "cup": 3157,
+        "hand": 2411,
+        "left_finger": 1303,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8115,
+        "link6": 5652,
+        "link7": 2918,
+        "right_finger": 1185
+      },
+      "role_index": 0,
+      "skin_engaged": 316,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 198,
+      "skin_pairs": 22440,
+      "skin_pairs_passage": 11781,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.851501454331873,
+            0.41613012495520374,
+            0.9990847407537352
+          ],
+          "min_m": [
+            0.2508798540130184,
+            -0.2579650957943542,
+            0.6918020073816751
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8201438207833017,
+            0.3623131523214581,
+            1.162880844014478
+          ],
+          "min_m": [
+            0.24899193184638196,
+            -0.2791828522591126,
+            0.8561076754435154
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7857979257561163,
+            0.38500342805679766,
+            1.069322583035568
+          ],
+          "min_m": [
+            0.29904801131084124,
+            -0.2210717305593627,
+            0.8207152862142215
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3612663942031765,
+            0.10846728858470964,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.04063715946509927,
+            -0.30319166419240545,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3635377843547227,
+            0.23608263507789706,
+            0.9266945175594633
+          ],
+          "min_m": [
+            -0.06716381303619763,
+            -0.18169456183504423,
+            0.5116556779323496
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4131555017667914,
+            0.19265553028455623,
+            1.1381928179485672
+          ],
+          "min_m": [
+            -0.21798794458127982,
+            -0.1931973353318724,
+            0.7097239701396529
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.47019517038801406,
+            0.19427070721680376,
+            1.2316961749739521
+          ],
+          "min_m": [
+            -0.18041149263135883,
+            -0.2892249958029287,
+            0.8324852328530019
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8098519952259734,
+            0.48073891122486223,
+            1.3764386640996058
+          ],
+          "min_m": [
+            -0.08037349788813783,
+            -0.3078773126188376,
+            0.863568683578408
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8395058666230645,
+            0.4032835764267443,
+            1.3638085725163984
+          ],
+          "min_m": [
+            0.15164237738587186,
+            -0.3482128982018293,
+            0.9418506008397866
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8310358692909156,
+            0.3587902051156433,
+            1.231549324994181
+          ],
+          "min_m": [
+            0.24242678226730424,
+            -0.3013488315146883,
+            0.9158219608528861
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7855160061216971,
+            0.3099204374325208,
+            1.0665797958634669
+          ],
+          "min_m": [
+            0.2978997719569746,
+            -0.2823322495055224,
+            0.8107548901250359
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row00.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 251328,
+      "wrist_visible_samples": 139029
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.718145436,
+            0.37681887000000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.668145436,
+            0.27681887000000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.7668988600000001,
+            0.404994883,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.71689886,
+            0.30499488300000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.744770287,
+            -0.28927769200000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.694770287,
+            -0.389277692,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.7717908,
+            -0.287088789,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7217908,
+            -0.387088789,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8309189525181438,
+      "episode_depth_m": 0.23091895251814387,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.1017052098583475,
+        "left_finger": 0.04666181879196657,
+        "link1": 0.3181823651552347,
+        "link2": 0.29275504336479147,
+        "link3": 0.2226581280958391,
+        "link4": 0.1494355439367575,
+        "link5": 0.07741943287701947,
+        "link6": 0.13447006862571065,
+        "link7": 0.13892190107428265,
+        "right_finger": 0.07823473234117118
+      },
+      "n_steps": 455,
+      "occupancy_voxel_counts": {
+        "cup": 3146,
+        "hand": 2829,
+        "left_finger": 1397,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9539,
+        "link6": 7078,
+        "link7": 3730,
+        "right_finger": 1454
+      },
+      "role_index": 1,
+      "skin_engaged": 305,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 229,
+      "skin_pairs": 18200,
+      "skin_pairs_passage": 9555,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8740542243795049,
+            0.4138304086807991,
+            0.9953859747594015
+          ],
+          "min_m": [
+            0.2557122912903902,
+            -0.11204078758020067,
+            0.6917857435684946
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.848777304311605,
+            0.36824277538595535,
+            1.1615419844136496
+          ],
+          "min_m": [
+            0.2578384934657614,
+            -0.18448598619926443,
+            0.8496463715545033
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8118288285478542,
+            0.3902724648716433,
+            1.0659691833775222
+          ],
+          "min_m": [
+            0.3036433893325549,
+            -0.10850319391383043,
+            0.8133104238034315
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3765879218447653,
+            0.09523338528359748,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.04036440981831338,
+            -0.316960685203457,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3814565903600909,
+            0.22213368689454702,
+            0.9266945122659791
+          ],
+          "min_m": [
+            -0.05904147194880366,
+            -0.20171803367855856,
+            0.5133840169205772
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4646108202403963,
+            0.1865398458873437,
+            1.1356803331743157
+          ],
+          "min_m": [
+            -0.1825771910573562,
+            -0.21384539141675277,
+            0.7397956901249079
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5698690002032251,
+            0.1664984937037614,
+            1.2379581133296502
+          ],
+          "min_m": [
+            -0.14381397478262536,
+            -0.2823471237841836,
+            0.8123988880966226
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8264627637784215,
+            0.47035469339567354,
+            1.3899078967811969
+          ],
+          "min_m": [
+            -0.04921151768322632,
+            -0.2504174109729737,
+            0.8592388649458176
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8837232614428896,
+            0.4100098205294159,
+            1.3657425503668807
+          ],
+          "min_m": [
+            0.1775087785279261,
+            -0.2620628208474013,
+            0.9350669612343797
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.865629179364667,
+            0.36533459433550597,
+            1.229805509453838
+          ],
+          "min_m": [
+            0.25659728015389494,
+            -0.20850460130996915,
+            0.9103813330801307
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8072872638149363,
+            0.3151734740905262,
+            1.0649217740021713
+          ],
+          "min_m": [
+            0.29637891519226384,
+            -0.20404610895722913,
+            0.807335674716566
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row01.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 203840,
+      "wrist_visible_samples": 82834
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.712845524,
+            0.40477650800000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.662845524,
+            0.30477650800000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.777983622,
+            0.380550493,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.727983622,
+            0.280550493,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.740116754,
+            -0.28058468300000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6901167539999999,
+            -0.38058468300000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.768918324,
+            -0.30020514700000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.718918324,
+            -0.40020514700000004,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8098495897458422,
+      "episode_depth_m": 0.20984958974584222,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.015996643832456636,
+        "hand": 0.10240245004425468,
+        "left_finger": 0.07365506609786955,
+        "link1": 0.3570895142736441,
+        "link2": 0.30020972450778105,
+        "link3": 0.20709541399775158,
+        "link4": 0.159050420505986,
+        "link5": 0.05681711666498512,
+        "link6": 0.14721227624404915,
+        "link7": 0.13529702683486922,
+        "right_finger": 0.04758517946466112
+      },
+      "n_steps": 579,
+      "occupancy_voxel_counts": {
+        "cup": 3124,
+        "hand": 2477,
+        "left_finger": 1467,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9269,
+        "link6": 6132,
+        "link7": 2950,
+        "right_finger": 1198
+      },
+      "role_index": 2,
+      "skin_engaged": 618,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 149,
+      "skin_pairs": 23160,
+      "skin_pairs_passage": 12159,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8705476381222585,
+            0.4118314451303925,
+            0.9849272405316548
+          ],
+          "min_m": [
+            0.26661615453517173,
+            -0.2645880391675434,
+            0.691788368769603
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8459993222415485,
+            0.36241188447262535,
+            1.1640052860081234
+          ],
+          "min_m": [
+            0.25279645742119256,
+            -0.28118924377417165,
+            0.8530649716185873
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8109332866650054,
+            0.38521454670249716,
+            1.0696673552614966
+          ],
+          "min_m": [
+            0.3014863250345878,
+            -0.22502676015195244,
+            0.8146961940761851
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3258633691730135,
+            0.19126984291749746,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.105743979096146,
+            -0.224892009635872,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.36267661132231455,
+            0.3162844123599968,
+            0.926694345048962
+          ],
+          "min_m": [
+            -0.09769789302939279,
+            -0.11653549254946172,
+            0.5077466459408047
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.48761277455549457,
+            0.32494760858251565,
+            1.1385780353261392
+          ],
+          "min_m": [
+            -0.2589775023173281,
+            -0.17131191976683086,
+            0.6742607985574909
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5313855848226359,
+            0.3127511340060408,
+            1.2344049424595724
+          ],
+          "min_m": [
+            -0.2490060566763889,
+            -0.27204590102782317,
+            0.7703182506371158
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8385165459775532,
+            0.5287325609868081,
+            1.379871871002639
+          ],
+          "min_m": [
+            -0.09431709290838383,
+            -0.2990003246111669,
+            0.8561305372882242
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.865980003421448,
+            0.40944663311702456,
+            1.364748911968429
+          ],
+          "min_m": [
+            0.15001939310740764,
+            -0.3486435956697753,
+            0.9407927648295275
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8582993590200733,
+            0.3587761061472028,
+            1.2326241981801476
+          ],
+          "min_m": [
+            0.2469215740886498,
+            -0.30275695076299186,
+            0.9141468108068405
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8112260753360876,
+            0.31074889562350994,
+            1.0667645001708879
+          ],
+          "min_m": [
+            0.30234280807166786,
+            -0.2810609758941339,
+            0.8112918900731634
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row02.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 259392,
+      "wrist_visible_samples": 133429
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.725890621,
+            0.409437143,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.675890621,
+            0.309437143,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.7762646160000001,
+            0.378224436,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.726264616,
+            0.278224436,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.7208105539999999,
+            -0.286380909,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6708105539999999,
+            -0.386380909,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.782578414,
+            -0.29600271100000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.732578414,
+            -0.396002711,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8208526302215,
+      "episode_depth_m": 0.22085263022150003,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.10326907700952112,
+        "left_finger": 0.08521470811753314,
+        "link1": 0.3341001350785195,
+        "link2": 0.32837222757908774,
+        "link3": 0.21731346628262202,
+        "link4": 0.14531301038342184,
+        "link5": 0.06119210697919786,
+        "link6": 0.13465908291821704,
+        "link7": 0.13244943798191475,
+        "right_finger": 0.04931549217966927
+      },
+      "n_steps": 631,
+      "occupancy_voxel_counts": {
+        "cup": 3542,
+        "hand": 2836,
+        "left_finger": 1505,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 10049,
+        "link6": 6892,
+        "link7": 3820,
+        "right_finger": 1474
+      },
+      "role_index": 3,
+      "skin_engaged": 639,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 327,
+      "skin_pairs": 25240,
+      "skin_pairs_passage": 13251,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8501929083802348,
+            0.4299877472329523,
+            0.9937102383850689
+          ],
+          "min_m": [
+            0.259112052840633,
+            -0.313956794603829,
+            0.6918297873416108
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8265389966240209,
+            0.43698675194278297,
+            1.1626487673367882
+          ],
+          "min_m": [
+            0.25734354436689194,
+            -0.2681036629970702,
+            0.8334429253693525
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7851777498882111,
+            0.4575497872927555,
+            1.0659066750782737
+          ],
+          "min_m": [
+            0.2910862401539679,
+            -0.21486399875788376,
+            0.7939767264934304
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.34151011336486636,
+            0.17924973573394534,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.07758694488243663,
+            -0.23360013844262723,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.34765944662074033,
+            0.30454505199524795,
+            0.9266943077876738
+          ],
+          "min_m": [
+            -0.10157302356767922,
+            -0.11968337639075996,
+            0.5128561904807687
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.49275051581360974,
+            0.26730358328960496,
+            1.1390242115059546
+          ],
+          "min_m": [
+            -0.22129489970665728,
+            -0.1583323758457144,
+            0.7214293078646961
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5311017429204862,
+            0.2435908132594185,
+            1.2392521438309514
+          ],
+          "min_m": [
+            -0.17754504013321887,
+            -0.2464144343813749,
+            0.7900657506754789
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8435024950582641,
+            0.5440913815395718,
+            1.3886720338981546
+          ],
+          "min_m": [
+            -0.056458045536530804,
+            -0.27404305220398995,
+            0.8522532481205991
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8580098773917053,
+            0.4810697381627427,
+            1.3667266129577635
+          ],
+          "min_m": [
+            0.1720933810043855,
+            -0.328829407475499,
+            0.9233639418798872
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8502806467734464,
+            0.43756434923992144,
+            1.2313615043414379
+          ],
+          "min_m": [
+            0.25748222902323203,
+            -0.28522597928195714,
+            0.8944617025492553
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7962296208745484,
+            0.38391345379934794,
+            1.0672606336480588
+          ],
+          "min_m": [
+            0.3068363404929123,
+            -0.2700881724772479,
+            0.7917529723232539
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row03.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 282688,
+      "wrist_visible_samples": 154425
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.715069941,
+            0.38720002400000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6650699409999999,
+            0.28720002400000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.759381333,
+            0.409788987,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.709381333,
+            0.309788987,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.71512783,
+            -0.30585060000000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.66512783,
+            -0.4058506,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.789630234,
+            -0.270418888,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7396302339999999,
+            -0.370418888,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8174805028303246,
+      "episode_depth_m": 0.21748050283032463,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.10063872432697088,
+        "left_finger": 0.0460299679033794,
+        "link1": 0.2961544696303003,
+        "link2": 0.30880351071433404,
+        "link3": 0.22761501218126787,
+        "link4": 0.1528295906274516,
+        "link5": 0.0663782358069332,
+        "link6": 0.13913129025814538,
+        "link7": 0.14777509106138928,
+        "right_finger": 0.08661872665689864
+      },
+      "n_steps": 418,
+      "occupancy_voxel_counts": {
+        "cup": 2827,
+        "hand": 2450,
+        "left_finger": 1223,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8974,
+        "link6": 6484,
+        "link7": 3282,
+        "right_finger": 1280
+      },
+      "role_index": 4,
+      "skin_engaged": 319,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 154,
+      "skin_pairs": 16720,
+      "skin_pairs_passage": 8778,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8538092716700494,
+            0.41487549262406187,
+            0.9957570869110147
+          ],
+          "min_m": [
+            0.24969491790467138,
+            -0.060453021635890426,
+            0.6918189334141738
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8337319055939943,
+            0.36260648960258607,
+            1.156862942804587
+          ],
+          "min_m": [
+            0.2639794930527479,
+            -0.07956488414007555,
+            0.8498027208585517
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8022793992106668,
+            0.38374847053850364,
+            1.0626645390593863
+          ],
+          "min_m": [
+            0.30806388315273225,
+            -0.02236069633853787,
+            0.806282351865014
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.37306419544137015,
+            0.15178200398918884,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.037959279000927604,
+            -0.26151824382387306,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3564799921577305,
+            0.276406336500029,
+            0.9266944333154027
+          ],
+          "min_m": [
+            -0.0805634982383648,
+            -0.15317044688609902,
+            0.513334939972274
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.44195888368505337,
+            0.24214394922549998,
+            1.1366639949162372
+          ],
+          "min_m": [
+            -0.19685382018109163,
+            -0.18364964272852244,
+            0.738001588093245
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5370458604999113,
+            0.20451071738064222,
+            1.236652988468648
+          ],
+          "min_m": [
+            -0.14432784384628344,
+            -0.22701147678669326,
+            0.8285650450106813
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8213985458419336,
+            0.4774790214481811,
+            1.3902093407569587
+          ],
+          "min_m": [
+            -0.04684806417943824,
+            -0.17050906765704266,
+            0.8557890005797733
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.873801490864334,
+            0.4047239132881645,
+            1.3614751387146675
+          ],
+          "min_m": [
+            0.18671085732270318,
+            -0.15605166402194054,
+            0.9370601361051992
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8517566448922382,
+            0.3582911922063564,
+            1.2247262043561893
+          ],
+          "min_m": [
+            0.26339558140775726,
+            -0.10772395412244856,
+            0.9119122815541378
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7884501739922081,
+            0.3076773286357719,
+            1.061382910514985
+          ],
+          "min_m": [
+            0.2943807727468627,
+            -0.09973385080191122,
+            0.8120036982599944
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row04.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 187264,
+      "wrist_visible_samples": 73037
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.740441464,
+            0.39696379600000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.690441464,
+            0.29696379600000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.771017535,
+            0.38865067000000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.721017535,
+            0.28865067000000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.7160457459999999,
+            -0.276445602,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6660457459999999,
+            -0.376445602,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.7902200730000001,
+            -0.30470982,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.740220073,
+            -0.40470982,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.80242706878649,
+      "episode_depth_m": 0.20242706878649,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.017777855658718034,
+        "hand": 0.097145216190283,
+        "left_finger": 0.07790400088115922,
+        "link1": 0.27976354680870785,
+        "link2": 0.3158692037194667,
+        "link3": 0.28413876412462025,
+        "link4": 0.2207379460043253,
+        "link5": 0.06917110428572454,
+        "link6": 0.13174682370291987,
+        "link7": 0.12507984414628492,
+        "right_finger": 0.05172949034175956
+      },
+      "n_steps": 536,
+      "occupancy_voxel_counts": {
+        "cup": 2992,
+        "hand": 2202,
+        "left_finger": 1231,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7299,
+        "link6": 5186,
+        "link7": 2738,
+        "right_finger": 1164
+      },
+      "role_index": 5,
+      "skin_engaged": 248,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 223,
+      "skin_pairs": 21440,
+      "skin_pairs_passage": 11256,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8671215298888192,
+            0.41169067066242904,
+            0.9974617985984464
+          ],
+          "min_m": [
+            0.23861962344012702,
+            -0.258667746341282,
+            0.6917896876332039
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.817692771026419,
+            0.36252261432354355,
+            1.1713230393012533
+          ],
+          "min_m": [
+            0.22920610092178995,
+            -0.27508671036418414,
+            0.846261287941566
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7867409331544943,
+            0.3853207245761308,
+            1.0774641029624663
+          ],
+          "min_m": [
+            0.2814700386765428,
+            -0.21900162722409156,
+            0.8018534461658017
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.38628219919129203,
+            0.11252437975379385,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.012935851255030023,
+            -0.2993912842037799,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.36752665311697563,
+            0.2387829489503157,
+            0.9266945908159872
+          ],
+          "min_m": [
+            -0.053897367495077425,
+            -0.18309994047543038,
+            0.5097491271138419
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.3968299156512152,
+            0.1851599470717855,
+            1.138767126760337
+          ],
+          "min_m": [
+            -0.2157926644742084,
+            -0.19471543420370174,
+            0.6923426678639975
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.45162764503779784,
+            0.18752835295712098,
+            1.2297702441926883
+          ],
+          "min_m": [
+            -0.1859945036664358,
+            -0.29055941541077623,
+            0.8176317008943393
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.7944774994149878,
+            0.4775412904201864,
+            1.3737942011957727
+          ],
+          "min_m": [
+            -0.10084271836053797,
+            -0.3096391897327623,
+            0.8501826622117039
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8271900229457566,
+            0.40248487739565986,
+            1.36972436218611
+          ],
+          "min_m": [
+            0.12371280579504215,
+            -0.345514496488189,
+            0.9330074380829273
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8249540172465556,
+            0.3589101670114078,
+            1.2400366351868974
+          ],
+          "min_m": [
+            0.21896742104604883,
+            -0.29667796483436865,
+            0.9081888577437168
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7870712840220722,
+            0.31079692156734096,
+            1.074673228110803
+          ],
+          "min_m": [
+            0.28273954924701444,
+            -0.2750416922395168,
+            0.8079595025326763
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row05.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 240128,
+      "wrist_visible_samples": 130920
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.708226001,
+            0.40981644700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.658226001,
+            0.30981644700000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.778201064,
+            0.40716662800000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.728201064,
+            0.30716662800000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.738001043,
+            -0.27398996800000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.688001043,
+            -0.373989968,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.794283883,
+            -0.27492660300000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7442838829999999,
+            -0.374926603,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8414253484573985,
+      "episode_depth_m": 0.24142534845739852,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.10815090961755401,
+        "left_finger": 0.05743120390595244,
+        "link1": 0.334956553268147,
+        "link2": 0.29256416379926975,
+        "link3": 0.2551599419825709,
+        "link4": 0.19940614300662385,
+        "link5": 0.06312327078982993,
+        "link6": 0.1314567728788736,
+        "link7": 0.1453940128209096,
+        "right_finger": 0.09333589890319528
+      },
+      "n_steps": 486,
+      "occupancy_voxel_counts": {
+        "cup": 3421,
+        "hand": 2903,
+        "left_finger": 1411,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8830,
+        "link6": 6857,
+        "link7": 3573,
+        "right_finger": 1525
+      },
+      "role_index": 6,
+      "skin_engaged": 115,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 23,
+      "skin_pairs": 19440,
+      "skin_pairs_passage": 10206,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8707851680021343,
+            0.4128727923585399,
+            0.9911061404252876
+          ],
+          "min_m": [
+            0.24666548278430891,
+            -0.13793639119345089,
+            0.6917807370715082
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8317259320793908,
+            0.36028344523018474,
+            1.158691295223444
+          ],
+          "min_m": [
+            0.24846567250291546,
+            -0.1623387165926753,
+            0.8005114047211053
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7952585194579358,
+            0.3832623643968626,
+            1.0645192168407949
+          ],
+          "min_m": [
+            0.28953558703786697,
+            -0.10306612639832524,
+            0.7631645017615848
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.35214878836641694,
+            0.17450239108927387,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.06445346794373857,
+            -0.2380583196759167,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3660483043465238,
+            0.30129156140235935,
+            0.9266946217392762
+          ],
+          "min_m": [
+            -0.08615715956542322,
+            -0.12182367492426098,
+            0.5101011586158823
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.42136425659851273,
+            0.26074542051679617,
+            1.1361581319917171
+          ],
+          "min_m": [
+            -0.24100882244112154,
+            -0.13632214747339816,
+            0.7018452103318749
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.4908260330958556,
+            0.22604808651088398,
+            1.236617786528669
+          ],
+          "min_m": [
+            -0.20500973038312822,
+            -0.22914633104330862,
+            0.8196481152183827
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8176649103586521,
+            0.49036026475042477,
+            1.3742270260007596
+          ],
+          "min_m": [
+            -0.08889279381234712,
+            -0.22042318393656057,
+            0.8240632467919917
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8509089515145869,
+            0.39972058578964176,
+            1.359103324168296
+          ],
+          "min_m": [
+            0.15005076880328125,
+            -0.23868948577294588,
+            0.8929796418833577
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8483168127258797,
+            0.3567649113684415,
+            1.2273231352653011
+          ],
+          "min_m": [
+            0.24341234716463905,
+            -0.18348365412974887,
+            0.859859520713293
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8018491590906217,
+            0.30963102615333044,
+            1.0614821966304882
+          ],
+          "min_m": [
+            0.30204666150020865,
+            -0.18127475610284685,
+            0.7568956750872802
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row06.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 217728,
+      "wrist_visible_samples": 79778
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.708404318,
+            0.396513346,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.658404318,
+            0.296513346,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.756403293,
+            0.38792049700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7064032929999999,
+            0.28792049700000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.726743509,
+            -0.285460229,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6767435089999999,
+            -0.385460229,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.757631924,
+            -0.296477619,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.707631924,
+            -0.396477619,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7870319774559603,
+      "episode_depth_m": 0.18703197745596034,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.11002399154238404,
+        "hand": 0.11111471941382817,
+        "left_finger": 0.07817187663597222,
+        "link1": 0.3360102385887755,
+        "link2": 0.31705897134242256,
+        "link3": 0.18968035705208475,
+        "link4": 0.14461370703913207,
+        "link5": 0.06428218638570593,
+        "link6": 0.1390741926659168,
+        "link7": 0.14362900716104635,
+        "right_finger": 0.1557900756539085
+      },
+      "n_steps": 186,
+      "occupancy_voxel_counts": {
+        "cup": 1815,
+        "hand": 1858,
+        "left_finger": 903,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7716,
+        "link6": 5454,
+        "link7": 2290,
+        "right_finger": 944
+      },
+      "role_index": 7,
+      "skin_engaged": 144,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 80,
+      "skin_pairs": 7440,
+      "skin_pairs_passage": 3906,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8470341936712715,
+            0.177896505457616,
+            0.9340660187317467
+          ],
+          "min_m": [
+            0.6436392613860696,
+            -0.09461227477384299,
+            0.6919052381429694
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8267374563074803,
+            0.19748425382427703,
+            1.096285585941871
+          ],
+          "min_m": [
+            0.351798136647873,
+            -0.04043450172676843,
+            0.8461038530381179
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7790940848385388,
+            0.21775355708152047,
+            1.0029902053537776
+          ],
+          "min_m": [
+            0.3952492492189715,
+            0.01050004229731439,
+            0.804929450943657
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.340854121456106,
+            0.13422775640940776,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.05140517473327469,
+            -0.2775199992733321,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3432836542632686,
+            0.26150822359145826,
+            0.9266943240119718
+          ],
+          "min_m": [
+            -0.09235241781061804,
+            -0.15889595007730378,
+            0.5120934364301604
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.47982067111218807,
+            0.23258745988447044,
+            1.1365460033648864
+          ],
+          "min_m": [
+            -0.22133296720783505,
+            -0.176685175430719,
+            0.7291395303639638
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5658800715186374,
+            0.18537204820005537,
+            1.2337406951729764
+          ],
+          "min_m": [
+            -0.17823849159696192,
+            -0.24512836636760021,
+            0.7795281900574779
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8156175798059156,
+            0.3774696425160924,
+            1.330393620875284
+          ],
+          "min_m": [
+            -0.002739296622707582,
+            -0.15607902631658943,
+            0.8549547964980875
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8762991211863405,
+            0.25653878210679015,
+            1.3025689698382206
+          ],
+          "min_m": [
+            0.2517406738738939,
+            -0.11018828185555733,
+            0.9351898104801196
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8536382538820318,
+            0.19961512277236598,
+            1.1637896729782888
+          ],
+          "min_m": [
+            0.3481314563030899,
+            -0.056151573224156134,
+            0.9076769793177317
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7838685226135705,
+            0.139210023351752,
+            1.006576296572216
+          ],
+          "min_m": [
+            0.4015077172841553,
+            -0.06347369207415536,
+            0.8065572676460357
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row07.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 83328,
+      "wrist_visible_samples": 39169
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.742863763,
+            0.389484035,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.692863763,
+            0.28948403500000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.787049668,
+            0.388046178,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7370496679999999,
+            0.28804617800000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.742358317,
+            -0.27347166200000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.692358317,
+            -0.37347166200000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.7887755550000001,
+            -0.29439543500000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.738775555,
+            -0.394395435,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8344984690352789,
+      "episode_depth_m": 0.23449846903527893,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.11616604021274848,
+        "left_finger": 0.06226766483397097,
+        "link1": 0.34113043965170564,
+        "link2": 0.3239951720397739,
+        "link3": 0.269524595226178,
+        "link4": 0.15404531486067763,
+        "link5": 0.08149005863588646,
+        "link6": 0.1370913603635816,
+        "link7": 0.15089852977634677,
+        "right_finger": 0.09575118176343735
+      },
+      "n_steps": 483,
+      "occupancy_voxel_counts": {
+        "cup": 3267,
+        "hand": 2808,
+        "left_finger": 1344,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8669,
+        "link6": 7089,
+        "link7": 3416,
+        "right_finger": 1442
+      },
+      "role_index": 8,
+      "skin_engaged": 294,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 152,
+      "skin_pairs": 19320,
+      "skin_pairs_passage": 10143,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8473153373953657,
+            0.41656579323055687,
+            1.0114741856483134
+          ],
+          "min_m": [
+            0.25226388200039196,
+            -0.14179329556337988,
+            0.6917644796714347
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8142852462402671,
+            0.363872748319536,
+            1.1868628640674563
+          ],
+          "min_m": [
+            0.24766377926712585,
+            -0.20171696625910357,
+            0.820182168026403
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.786059027387366,
+            0.38503584081657954,
+            1.0934084220031475
+          ],
+          "min_m": [
+            0.29867638951078296,
+            -0.12915898543472398,
+            0.7801878264975638
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3512278773482943,
+            0.09708044289495352,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.06833164080116018,
+            -0.3168264286396981,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.37738204859415936,
+            0.2233121264006429,
+            0.9266946017250762
+          ],
+          "min_m": [
+            -0.07096738125498862,
+            -0.19755840988803647,
+            0.5122444298385174
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.44258348024073624,
+            0.194867462633356,
+            1.1353439411712871
+          ],
+          "min_m": [
+            -0.20646032406923895,
+            -0.21014550259203202,
+            0.7295842903657799
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5496259380604078,
+            0.17816327310039412,
+            1.238743855491178
+          ],
+          "min_m": [
+            -0.1677897607353908,
+            -0.29412077236233614,
+            0.8173756040557838
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.7939226724540824,
+            0.4729767030589614,
+            1.4090051534560843
+          ],
+          "min_m": [
+            -0.06903868909086605,
+            -0.2507955994786384,
+            0.8413069402988862
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8446046222824596,
+            0.404951379165129,
+            1.3902293655810063
+          ],
+          "min_m": [
+            0.16185421302206457,
+            -0.26935083451694486,
+            0.9095530384309699
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8277559099571844,
+            0.35919582268879396,
+            1.2551106472427145
+          ],
+          "min_m": [
+            0.24336934706233165,
+            -0.22549367841017107,
+            0.8814397392351209
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7725510868595052,
+            0.3093875924661462,
+            1.0906151574188383
+          ],
+          "min_m": [
+            0.2800986428278323,
+            -0.2238035206046152,
+            0.7792292798261897
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row08.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 216384,
+      "wrist_visible_samples": 68128
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.72430613,
+            0.40681074,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.67430613,
+            0.30681074,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.761128367,
+            0.37888945900000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7111283669999999,
+            0.27888945900000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.722808703,
+            -0.27217393800000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.672808703,
+            -0.37217393800000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.765426473,
+            -0.30723881300000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.715426473,
+            -0.40723881300000003,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8598487774569992,
+      "episode_depth_m": 0.2598487774569992,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.09882687859056832,
+        "left_finger": 0.050860649812343985,
+        "link1": 0.31166872246234645,
+        "link2": 0.3152357772118544,
+        "link3": 0.20909532223318908,
+        "link4": 0.12929141908368122,
+        "link5": 0.06258327980951228,
+        "link6": 0.13434771216079175,
+        "link7": 0.13391066202442822,
+        "right_finger": 0.07367528850218052
+      },
+      "n_steps": 286,
+      "occupancy_voxel_counts": {
+        "cup": 2827,
+        "hand": 2574,
+        "left_finger": 1173,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8600,
+        "link6": 6590,
+        "link7": 3193,
+        "right_finger": 1388
+      },
+      "role_index": 9,
+      "skin_engaged": 280,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 251,
+      "skin_pairs": 11440,
+      "skin_pairs_passage": 6006,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8579968420346756,
+            0.42814091845331037,
+            0.9876940186650776
+          ],
+          "min_m": [
+            0.23977510875313737,
+            -0.08377568396930433,
+            0.6917396405156754
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8449934342200799,
+            0.44453289347200836,
+            1.158814644519234
+          ],
+          "min_m": [
+            0.2665416744238525,
+            -0.07713516668552199,
+            0.8340364123450628
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7971825841872707,
+            0.4650447126927132,
+            1.0613316450048311
+          ],
+          "min_m": [
+            0.3024405818767497,
+            -0.010365692410078661,
+            0.7884418261312542
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.36188167553208733,
+            0.15907209873657668,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.04838082696364612,
+            -0.25337694766706575,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3599308262817059,
+            0.28568935578248,
+            0.9266940986972426
+          ],
+          "min_m": [
+            -0.07476386927744018,
+            -0.13739492115717947,
+            0.5127037052072165
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4821681641953646,
+            0.2418398923701396,
+            1.1360017333872114
+          ],
+          "min_m": [
+            -0.19312421405970331,
+            -0.14574548032802373,
+            0.7375291119719882
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5657410136105269,
+            0.23453485548330782,
+            1.2411973941010392
+          ],
+          "min_m": [
+            -0.16471269138052294,
+            -0.20552828422390013,
+            0.7946620675370661
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8334565530385109,
+            0.5424823999159409,
+            1.4000374497201755
+          ],
+          "min_m": [
+            -0.023026976030781132,
+            -0.14236073088181123,
+            0.8513960246213663
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.894718468938406,
+            0.4923687371744837,
+            1.364825008695872
+          ],
+          "min_m": [
+            0.199593962116464,
+            -0.1328874181170486,
+            0.9254509762391584
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8718629919583387,
+            0.4463876976809064,
+            1.2263306359186206
+          ],
+          "min_m": [
+            0.27261634161529896,
+            -0.08879452064982932,
+            0.8953781316341701
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8018409174335682,
+            0.38900257899311935,
+            1.0643533098496685
+          ],
+          "min_m": [
+            0.3056400301665464,
+            -0.10358505780163227,
+            0.797849198903534
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row09.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 128128,
+      "wrist_visible_samples": 36151
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.71118276,
+            0.402367843,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.66118276,
+            0.302367843,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.766965605,
+            0.384924251,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.716965605,
+            0.284924251,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.705259505,
+            -0.284929782,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.655259505,
+            -0.384929782,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.762992303,
+            -0.284512558,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7129923029999999,
+            -0.384512558,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8149725411609544,
+      "episode_depth_m": 0.21497254116095443,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.028847126133373313,
+        "hand": 0.09389132258456921,
+        "left_finger": 0.08121532434019645,
+        "link1": 0.2904012955807782,
+        "link2": 0.2858384178755584,
+        "link3": 0.21621571693218555,
+        "link4": 0.13694518555146726,
+        "link5": 0.06514696245993969,
+        "link6": 0.10235566599433685,
+        "link7": 0.10347523228691811,
+        "right_finger": 0.045586595556515876
+      },
+      "n_steps": 550,
+      "occupancy_voxel_counts": {
+        "cup": 2728,
+        "hand": 2554,
+        "left_finger": 1447,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9308,
+        "link6": 6881,
+        "link7": 3345,
+        "right_finger": 1281
+      },
+      "role_index": 10,
+      "skin_engaged": 408,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 201,
+      "skin_pairs": 22000,
+      "skin_pairs_passage": 11550,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8556499547624618,
+            0.41328194801148976,
+            0.9934017723153167
+          ],
+          "min_m": [
+            0.24831597219439713,
+            -0.2556654318666267,
+            0.6918154882287348
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.846094733670337,
+            0.36282129041984057,
+            1.1598803061530207
+          ],
+          "min_m": [
+            0.2764721416119421,
+            -0.27500738835892846,
+            0.8141891957194893
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8027445804778841,
+            0.385116193751187,
+            1.0646600086868894
+          ],
+          "min_m": [
+            0.3150601037120246,
+            -0.2176339927979067,
+            0.7777519944440237
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.36485820941922176,
+            0.11103047807038174,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.036491857056199645,
+            -0.3010739339344117,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.38367976618438493,
+            0.23830451527223892,
+            0.9266945155555787
+          ],
+          "min_m": [
+            -0.052466194789452164,
+            -0.17862541159155015,
+            0.5130157471255565
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.45654527044730325,
+            0.20185894048736305,
+            1.1377771401669603
+          ],
+          "min_m": [
+            -0.1927158122049488,
+            -0.19971306277991488,
+            0.7228961545169151
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5242504350274997,
+            0.1979153015366249,
+            1.2349424885883211
+          ],
+          "min_m": [
+            -0.15009939210376114,
+            -0.29480136491377923,
+            0.8359599900026825
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8450781008900635,
+            0.4816663344690458,
+            1.391858729479738
+          ],
+          "min_m": [
+            -0.04277232675112844,
+            -0.3065103247682578,
+            0.8469023282087169
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.886028922146809,
+            0.405262642589335,
+            1.364442175070011
+          ],
+          "min_m": [
+            0.19783997286631175,
+            -0.34312735776717107,
+            0.9057298720323784
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8692887658200961,
+            0.36083574442978383,
+            1.2277450297301276
+          ],
+          "min_m": [
+            0.27895715135220245,
+            -0.29497550933767547,
+            0.8735436319578673
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8061768180353676,
+            0.3102882954020289,
+            1.0628970790014511
+          ],
+          "min_m": [
+            0.3182820304873626,
+            -0.2785951596224125,
+            0.7694709737466677
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row10.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 246400,
+      "wrist_visible_samples": 131217
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.73127623,
+            0.40379290700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6812762299999999,
+            0.30379290700000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.785638046,
+            0.394873415,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7356380459999999,
+            0.294873415,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.740955284,
+            -0.27133042300000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.690955284,
+            -0.371330423,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.786379809,
+            -0.29014159700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.736379809,
+            -0.390141597,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8206910240164021,
+      "episode_depth_m": 0.2206910240164022,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.035901790348324136,
+        "hand": 0.10013185411337525,
+        "left_finger": 0.04506947433788346,
+        "link1": 0.3084040294973552,
+        "link2": 0.32778450465127246,
+        "link3": 0.24906829594243834,
+        "link4": 0.15685902287500447,
+        "link5": 0.06612749504531812,
+        "link6": 0.13483211370031445,
+        "link7": 0.14677835293097213,
+        "right_finger": 0.08608471515640162
+      },
+      "n_steps": 435,
+      "occupancy_voxel_counts": {
+        "cup": 2607,
+        "hand": 2390,
+        "left_finger": 1159,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7526,
+        "link6": 5921,
+        "link7": 3060,
+        "right_finger": 1264
+      },
+      "role_index": 11,
+      "skin_engaged": 445,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 445,
+      "skin_pairs": 17400,
+      "skin_pairs_passage": 9135,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8441807472441385,
+            0.4304646519611014,
+            0.9879367813023403
+          ],
+          "min_m": [
+            0.2548060468236336,
+            -0.08017646540156032,
+            0.6918251350188928
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.826793366798571,
+            0.4434196665778897,
+            1.155354548920489
+          ],
+          "min_m": [
+            0.26322667647998577,
+            -0.15105266773270382,
+            0.8303241637596801
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7880159308671403,
+            0.46447554493632676,
+            1.058429772122155
+          ],
+          "min_m": [
+            0.30705417053409284,
+            -0.08122051756949139,
+            0.7871479686130172
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.38255125450264477,
+            0.1082120479687361,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.028149316028855398,
+            -0.3052088544309514,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3613818990168974,
+            0.23283696662569064,
+            0.9266941067311301
+          ],
+          "min_m": [
+            -0.06593309841872196,
+            -0.19152121800765823,
+            0.5132822451507884
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4532362606369623,
+            0.203629099082295,
+            1.136042228847873
+          ],
+          "min_m": [
+            -0.17803494694288902,
+            -0.20130424084703344,
+            0.7439289642547116
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5565853499442216,
+            0.19418879861390367,
+            1.2408958391490792
+          ],
+          "min_m": [
+            -0.142095152403661,
+            -0.2713751282799546,
+            0.8197960699441363
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.7951726716511388,
+            0.5201566271098808,
+            1.387785655584747
+          ],
+          "min_m": [
+            -0.01680019803219776,
+            -0.2282988031025879,
+            0.8542714036131618
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8651916976790145,
+            0.4859128333357515,
+            1.360433111555327
+          ],
+          "min_m": [
+            0.18744379433717842,
+            -0.21638262446331324,
+            0.922763726392786
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8450008851784775,
+            0.4419671366374225,
+            1.223791857220293
+          ],
+          "min_m": [
+            0.262668210212911,
+            -0.1683157599164884,
+            0.8912266226020606
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7844012274851969,
+            0.38932315136181694,
+            1.0600666480119652
+          ],
+          "min_m": [
+            0.3047349056041797,
+            -0.1755764755750278,
+            0.7921426083992771
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row11.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 194880,
+      "wrist_visible_samples": 55680
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.709266776,
+            0.376225603,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6592667759999999,
+            0.27622560300000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.782481375,
+            0.38091867700000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.732481375,
+            0.28091867700000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.744110729,
+            -0.29049884200000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6941107289999999,
+            -0.390498842,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.783688419,
+            -0.30954608600000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7336884189999999,
+            -0.40954608600000003,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8444128741054577,
+      "episode_depth_m": 0.2444128741054577,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.08823083375849199,
+        "left_finger": 0.05422904292217434,
+        "link1": 0.34874350969574824,
+        "link2": 0.29455490136371054,
+        "link3": 0.2083319958725901,
+        "link4": 0.13837178210452658,
+        "link5": 0.05889894856163269,
+        "link6": 0.1274923594699129,
+        "link7": 0.12829490866074303,
+        "right_finger": 0.0641355296161333
+      },
+      "n_steps": 304,
+      "occupancy_voxel_counts": {
+        "cup": 3014,
+        "hand": 2738,
+        "left_finger": 1453,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9102,
+        "link6": 6488,
+        "link7": 3166,
+        "right_finger": 1319
+      },
+      "role_index": 12,
+      "skin_engaged": 260,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 260,
+      "skin_pairs": 12160,
+      "skin_pairs_passage": 6384,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8743739932813199,
+            0.42188489960457964,
+            0.9964304400034195
+          ],
+          "min_m": [
+            0.25944952543435074,
+            -0.10170290350183646,
+            0.6917891628093812
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8597788824662812,
+            0.44324332148683127,
+            1.1757342536760822
+          ],
+          "min_m": [
+            0.2670372786665164,
+            -0.1769046925869482,
+            0.8320333924468377
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8391534389338168,
+            0.45947220673487166,
+            1.07824036569344
+          ],
+          "min_m": [
+            0.3198762187406678,
+            -0.10341065801707747,
+            0.7937869048366659
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3451275405246027,
+            0.1256947662797239,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.06416263558772761,
+            -0.2867017017916937,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3662790170155998,
+            0.2534937936897482,
+            0.9266943981890327
+          ],
+          "min_m": [
+            -0.07267607805073575,
+            -0.16714715732104354,
+            0.5120769086681027
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.47384929449778396,
+            0.22530593255893747,
+            1.1353270488892615
+          ],
+          "min_m": [
+            -0.2009345339391334,
+            -0.1764690358297706,
+            0.7297528669731972
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5662131721677712,
+            0.21760978393022867,
+            1.2403720009033519
+          ],
+          "min_m": [
+            -0.17990647924295064,
+            -0.24762818689739544,
+            0.7913893134071454
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8246304052404805,
+            0.5380638392921002,
+            1.398376865787235
+          ],
+          "min_m": [
+            -0.03800230211319386,
+            -0.22134314314622544,
+            0.85240938043743
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8899065237810522,
+            0.49336194720015525,
+            1.380412487119265
+          ],
+          "min_m": [
+            0.18261897313183825,
+            -0.24929479654109443,
+            0.9227987817065616
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8711362789948564,
+            0.44251038767619555,
+            1.244827810019266
+          ],
+          "min_m": [
+            0.2607334608767817,
+            -0.209321282580307,
+            0.8924474625249401
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8175801856500874,
+            0.38574064155814675,
+            1.081229190547969
+          ],
+          "min_m": [
+            0.2919944009161582,
+            -0.19440781478711777,
+            0.788974470972867
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row12.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 136192,
+      "wrist_visible_samples": 48024
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.7299580529999999,
+            0.385616156,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6799580529999999,
+            0.285616156,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.761053734,
+            0.385157285,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7110537339999999,
+            0.28515728500000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.743038337,
+            -0.30047233800000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.693038337,
+            -0.40047233800000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.791465488,
+            -0.29998075500000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.741465488,
+            -0.399980755,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.797103534071458,
+      "episode_depth_m": 0.19710353407145798,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.11122064469706971,
+        "left_finger": 0.09380860468666836,
+        "link1": 0.32120876193043696,
+        "link2": 0.30830710375575787,
+        "link3": 0.21580229616187377,
+        "link4": 0.19378935344613438,
+        "link5": 0.07155122045095363,
+        "link6": 0.1439672892139149,
+        "link7": 0.14374993638600395,
+        "right_finger": 0.060247019736267574
+      },
+      "n_steps": 601,
+      "occupancy_voxel_counts": {
+        "cup": 3344,
+        "hand": 2614,
+        "left_finger": 1395,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9382,
+        "link6": 6515,
+        "link7": 3471,
+        "right_finger": 1443
+      },
+      "role_index": 13,
+      "skin_engaged": 430,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 237,
+      "skin_pairs": 24040,
+      "skin_pairs_passage": 12621,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8667454225159672,
+            0.4264768786986579,
+            0.9976268317319851
+          ],
+          "min_m": [
+            0.2502241236764763,
+            -0.3167619091456189,
+            0.6918203341985648
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8256828098403411,
+            0.43214790126465963,
+            1.1768447592918727
+          ],
+          "min_m": [
+            0.23814449187941128,
+            -0.27585643466363835,
+            0.8424934546541187
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7832830043912032,
+            0.44710358800904143,
+            1.0794269877614562
+          ],
+          "min_m": [
+            0.2568690223402121,
+            -0.22292928200660267,
+            0.7997594232047378
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.37400149075434247,
+            0.18781201109957518,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.033146661617175194,
+            -0.22446373542119508,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.371650949244242,
+            0.31375271987962833,
+            0.9266941188726165
+          ],
+          "min_m": [
+            -0.0658355649148978,
+            -0.10889172625698665,
+            0.5122570652328253
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4740113230241846,
+            0.2584752293325614,
+            1.1391505345379689
+          ],
+          "min_m": [
+            -0.2102102082032166,
+            -0.1302204376164724,
+            0.717575858781159
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5161619080403463,
+            0.2552032834035434,
+            1.2351900858784846
+          ],
+          "min_m": [
+            -0.16782183166966258,
+            -0.22424942308729612,
+            0.831806472812258
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8456717752098021,
+            0.5469731138052182,
+            1.3954019306238998
+          ],
+          "min_m": [
+            -0.08194952713646153,
+            -0.2760410325952657,
+            0.8595095400723733
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8516871713244558,
+            0.4754204541768261,
+            1.3798273941807533
+          ],
+          "min_m": [
+            0.14842678024618036,
+            -0.3368780991843277,
+            0.9339435891307536
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8542616450648508,
+            0.43536211893085086,
+            1.2459161951665678
+          ],
+          "min_m": [
+            0.23796061158312126,
+            -0.29007219815201135,
+            0.9037402652233788
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8136710289853951,
+            0.3806886771476569,
+            1.0822604731210994
+          ],
+          "min_m": [
+            0.29409797557427453,
+            -0.27319490447413575,
+            0.8038241834615631
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row13.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 269248,
+      "wrist_visible_samples": 150166
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.7449136559999999,
+            0.391828752,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6949136559999999,
+            0.291828752,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.787716206,
+            0.399589547,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.737716206,
+            0.299589547,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.705503054,
+            -0.30015358000000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.655503054,
+            -0.40015358,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.7797607710000001,
+            -0.29915000300000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.729760771,
+            -0.39915000300000003,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7886791856000637,
+      "episode_depth_m": 0.18867918560006372,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0037632497872194803,
+        "hand": 0.10151232847435687,
+        "left_finger": 0.048686527981255466,
+        "link1": 0.27165919022237006,
+        "link2": 0.30055577164058944,
+        "link3": 0.2299193755042685,
+        "link4": 0.11719271466763098,
+        "link5": 0.06678942013351746,
+        "link6": 0.10174673918889807,
+        "link7": 0.1276733983574269,
+        "right_finger": 0.080084010607031
+      },
+      "n_steps": 277,
+      "occupancy_voxel_counts": {
+        "cup": 2750,
+        "hand": 2549,
+        "left_finger": 1301,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9053,
+        "link6": 7042,
+        "link7": 3481,
+        "right_finger": 1288
+      },
+      "role_index": 14,
+      "skin_engaged": 358,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 358,
+      "skin_pairs": 11080,
+      "skin_pairs_passage": 5817,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8464243533606154,
+            0.4298664545853216,
+            0.9914650656891649
+          ],
+          "min_m": [
+            0.24527891430769835,
+            -0.07476375120563497,
+            0.6918151779166616
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8461908529284851,
+            0.44085438746350614,
+            1.1598289476782284
+          ],
+          "min_m": [
+            0.2811908605773496,
+            -0.11588648375438138,
+            0.7965306010056482
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8156981381333986,
+            0.45988108420291063,
+            1.0623063449421817
+          ],
+          "min_m": [
+            0.3217167937640487,
+            -0.04364988991050445,
+            0.7557804617647239
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.38421243893096935,
+            0.12442126036070227,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.025365241850352716,
+            -0.28754048588592485,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3874546329150097,
+            0.2519767083403746,
+            0.9266943854109808
+          ],
+          "min_m": [
+            -0.04227688249578057,
+            -0.16863240478888145,
+            0.5128141817184488
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4699652753957674,
+            0.2135172538764716,
+            1.1356243361950304
+          ],
+          "min_m": [
+            -0.16198591777931115,
+            -0.16953851731353953,
+            0.7389669576974426
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5601762693525638,
+            0.20953224176205576,
+            1.240916695820591
+          ],
+          "min_m": [
+            -0.13315756705307613,
+            -0.23355317289500077,
+            0.8257539124758878
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8276958583687603,
+            0.5254013786902966,
+            1.4021918874505706
+          ],
+          "min_m": [
+            -0.0018095686538060762,
+            -0.1863885104495294,
+            0.831588562824074
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8978145882029618,
+            0.48376299536692613,
+            1.36532528379819
+          ],
+          "min_m": [
+            0.21681118371750804,
+            -0.18758430716209362,
+            0.8886512511158745
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8675690899722011,
+            0.43735663979648187,
+            1.2273583608152039
+          ],
+          "min_m": [
+            0.28418823800829907,
+            -0.14280653070381166,
+            0.8571622967164648
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7951652745942002,
+            0.3874156100431377,
+            1.0654087647276804
+          ],
+          "min_m": [
+            0.30584226677786924,
+            -0.13711546854132725,
+            0.7557130721130452
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row14.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 124096,
+      "wrist_visible_samples": 41921
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.705908252,
+            0.377769409,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6559082519999999,
+            0.277769409,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.786501607,
+            0.39040921900000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.736501607,
+            0.29040921900000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.736460864,
+            -0.30466080600000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.686460864,
+            -0.40466080600000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.785581148,
+            -0.303699539,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.735581148,
+            -0.403699539,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8347845370622473,
+      "episode_depth_m": 0.23478453706224728,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.08346473355541915,
+        "left_finger": 0.04710769319723196,
+        "link1": 0.3055742379122135,
+        "link2": 0.3171038203787273,
+        "link3": 0.20608354339911458,
+        "link4": 0.15121734525487263,
+        "link5": 0.06169845131394339,
+        "link6": 0.08843616478916053,
+        "link7": 0.09867444414145723,
+        "right_finger": 0.05369525499089852
+      },
+      "n_steps": 280,
+      "occupancy_voxel_counts": {
+        "cup": 2860,
+        "hand": 2402,
+        "left_finger": 1096,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7796,
+        "link6": 6744,
+        "link7": 3199,
+        "right_finger": 1317
+      },
+      "role_index": 15,
+      "skin_engaged": 344,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 229,
+      "skin_pairs": 11200,
+      "skin_pairs_passage": 5880,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8515114627667993,
+            0.42339561376192936,
+            0.9942864608913264
+          ],
+          "min_m": [
+            0.23608671360258934,
+            -0.07311924918582884,
+            0.6917575942431731
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8253243176331166,
+            0.4418240099449584,
+            1.16176654062706
+          ],
+          "min_m": [
+            0.2538754105704496,
+            -0.019845105185249318,
+            0.7723446461538802
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7762721693431114,
+            0.4599107350358629,
+            1.064118308849663
+          ],
+          "min_m": [
+            0.28192935778622136,
+            0.030171129292806582,
+            0.7301736992468354
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3631440694489968,
+            0.19022086080602368,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.0486344494189172,
+            -0.2242264891383814,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3388044316212726,
+            0.3137167342998497,
+            0.9266943886104224
+          ],
+          "min_m": [
+            -0.09990170071624702,
+            -0.11707611454000413,
+            0.5125299164391881
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.45062842365000644,
+            0.26608708830934413,
+            1.1369461733930386
+          ],
+          "min_m": [
+            -0.21484500124526473,
+            -0.1439783660444518,
+            0.7369658626104677
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5269691657926256,
+            0.2470639079283873,
+            1.2406598918325185
+          ],
+          "min_m": [
+            -0.16413292016819783,
+            -0.19156046818796008,
+            0.8195757716336575
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8187396184409981,
+            0.5481161244582844,
+            1.4015858844086222
+          ],
+          "min_m": [
+            -0.03466434877342031,
+            -0.11027796959878133,
+            0.8190217454443018
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8734129021464222,
+            0.4917247612411597,
+            1.3679632563061412
+          ],
+          "min_m": [
+            0.18598868045686426,
+            -0.08624405362678383,
+            0.8659650297509013
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8573854041399638,
+            0.44651044467264944,
+            1.2293167803317162
+          ],
+          "min_m": [
+            0.2607973501535368,
+            -0.03293122462191146,
+            0.8313586615545153
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7934572862042856,
+            0.38430102799249966,
+            1.067486094411772
+          ],
+          "min_m": [
+            0.29539107018063615,
+            -0.04196969889726685,
+            0.7351329983920374
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row15.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 125440,
+      "wrist_visible_samples": 32522
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.722821633,
+            0.380949203,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.672821633,
+            0.28094920300000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.767881012,
+            0.40782043500000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.717881012,
+            0.30782043500000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.715174306,
+            -0.30826707500000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6651743059999999,
+            -0.40826707500000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.769766578,
+            -0.29117628500000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.719766578,
+            -0.391176285,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7802336048549172,
+      "episode_depth_m": 0.18023360485491718,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.10033273010826395,
+        "left_finger": 0.04665218753153694,
+        "link1": 0.3202458186006237,
+        "link2": 0.30830173349768397,
+        "link3": 0.28729158201138766,
+        "link4": 0.2049528669873284,
+        "link5": 0.06665317974418804,
+        "link6": 0.1320073880183212,
+        "link7": 0.14171654060553895,
+        "right_finger": 0.08035440184908585
+      },
+      "n_steps": 448,
+      "occupancy_voxel_counts": {
+        "cup": 3109,
+        "hand": 2532,
+        "left_finger": 1345,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7204,
+        "link6": 5881,
+        "link7": 2923,
+        "right_finger": 1343
+      },
+      "role_index": 16,
+      "skin_engaged": 142,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 110,
+      "skin_pairs": 17920,
+      "skin_pairs_passage": 9408,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8613950671273662,
+            0.4076221207769938,
+            0.9943697785444625
+          ],
+          "min_m": [
+            0.26097423291621813,
+            -0.09867598047474382,
+            0.6918091133661861
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8086467665324678,
+            0.3684171742993673,
+            1.1589687597161062
+          ],
+          "min_m": [
+            0.23215644293868748,
+            -0.13215915772441517,
+            0.8314426967778346
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7881533321633796,
+            0.38802294899662465,
+            1.0647510377421192
+          ],
+          "min_m": [
+            0.2907827209992373,
+            -0.06560723737345481,
+            0.7889244015950769
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.34635290284928144,
+            0.13465435646206,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.06967534525719984,
+            -0.2785335240397773,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.36570144088400136,
+            0.2616392155528129,
+            0.9266945894958498
+          ],
+          "min_m": [
+            -0.08337688994815255,
+            -0.15816358313311518,
+            0.5109635999539912
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.3957291386624422,
+            0.23583046734940022,
+            1.1354888615160184
+          ],
+          "min_m": [
+            -0.2377732655996051,
+            -0.161601956880178,
+            0.704346484707918
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.4978208410499819,
+            0.21399989684609277,
+            1.237344019809636
+          ],
+          "min_m": [
+            -0.20257624747017872,
+            -0.24294441340618145,
+            0.8277083498884609
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.7759863604813119,
+            0.49579096082590707,
+            1.370717069296592
+          ],
+          "min_m": [
+            -0.09951905088410073,
+            -0.19716964195339046,
+            0.8401354590776604
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8265211799479008,
+            0.41501769731155536,
+            1.3601757762959668
+          ],
+          "min_m": [
+            0.13331607870040116,
+            -0.18616613534802548,
+            0.9182342521468801
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.815431955449314,
+            0.3649338787486364,
+            1.227615947064498
+          ],
+          "min_m": [
+            0.22203387217690823,
+            -0.15246153989627662,
+            0.8933116789066293
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7707747472227444,
+            0.31498377192998783,
+            1.0618121261608275
+          ],
+          "min_m": [
+            0.26435484850752006,
+            -0.15721470440766636,
+            0.7929150882604439
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row16.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 200704,
+      "wrist_visible_samples": 64106
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.715362358,
+            0.384856653,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.665362358,
+            0.284856653,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.78631684,
+            0.400860643,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.73631684,
+            0.30086064300000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.739340452,
+            -0.274321892,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6893404519999999,
+            -0.374321892,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.775319887,
+            -0.277953184,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7253198869999999,
+            -0.377953184,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.824512205944337,
+      "episode_depth_m": 0.22451220594433713,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.0964261356762526,
+        "left_finger": 0.08011195069202853,
+        "link1": 0.2950102420073528,
+        "link2": 0.2848969172276364,
+        "link3": 0.24953549152300702,
+        "link4": 0.1816948970713404,
+        "link5": 0.07134063842573544,
+        "link6": 0.11133369456171774,
+        "link7": 0.11223465887266959,
+        "right_finger": 0.05567593552829376
+      },
+      "n_steps": 624,
+      "occupancy_voxel_counts": {
+        "cup": 3597,
+        "hand": 3038,
+        "left_finger": 1461,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9772,
+        "link6": 8148,
+        "link7": 3772,
+        "right_finger": 1437
+      },
+      "role_index": 17,
+      "skin_engaged": 564,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 445,
+      "skin_pairs": 24960,
+      "skin_pairs_passage": 13104,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8501000798169089,
+            0.4249268801435756,
+            1.0045145708969843
+          ],
+          "min_m": [
+            0.2442367948343304,
+            -0.3152906923526049,
+            0.6917428216125479
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8213053816899141,
+            0.4409180476910892,
+            1.1798455589371388
+          ],
+          "min_m": [
+            0.25297990313747054,
+            -0.2674149372663781,
+            0.7996739483693422
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7753843384511911,
+            0.4609824289633954,
+            1.0821770694917086
+          ],
+          "min_m": [
+            0.2882106651235817,
+            -0.21626423579140136,
+            0.7615727012997183
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3943302099926471,
+            0.1092502762573476,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.010175677590054416,
+            -0.3028918929477866,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.384978434920622,
+            0.2355653261503367,
+            0.9266943451034892
+          ],
+          "min_m": [
+            -0.04117102416558349,
+            -0.18439208650617872,
+            0.5116493406494536
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4442293666155874,
+            0.19013147420410262,
+            1.138249405823259
+          ],
+          "min_m": [
+            -0.16992939438991667,
+            -0.19151959765800988,
+            0.7315833601175026
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5181979415147678,
+            0.20045117144702215,
+            1.2408706486241463
+          ],
+          "min_m": [
+            -0.143840292353628,
+            -0.28327599729294184,
+            0.8194920468047461
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.83467247891179,
+            0.5223884822915692,
+            1.4154072797632762
+          ],
+          "min_m": [
+            -0.02665874546672617,
+            -0.2935778245726556,
+            0.8338669186075087
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8664369593766738,
+            0.4875749082127333,
+            1.3856594089562706
+          ],
+          "min_m": [
+            0.1830785237138238,
+            -0.3267875692059338,
+            0.8923493032237232
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.848409630209209,
+            0.443492892413843,
+            1.2478354610222193
+          ],
+          "min_m": [
+            0.257344244981719,
+            -0.2828785365172317,
+            0.8576919947358906
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.784148947963848,
+            0.3852697460979776,
+            1.0853641634431506
+          ],
+          "min_m": [
+            0.2946107475623361,
+            -0.2718558692273474,
+            0.7559171181349207
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row17.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 279552,
+      "wrist_visible_samples": 153530
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.722355816,
+            0.388588823,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6723558159999999,
+            0.28858882300000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.758265297,
+            0.400770888,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.708265297,
+            0.300770888,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.716302235,
+            -0.302572384,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.666302235,
+            -0.402572384,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.773067242,
+            -0.27932745800000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7230672419999999,
+            -0.379327458,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8240063407730521,
+      "episode_depth_m": 0.22400634077305212,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.017972798580978833,
+        "hand": 0.10033272054619083,
+        "left_finger": 0.07400879678204592,
+        "link1": 0.3171490034140336,
+        "link2": 0.2986655219515914,
+        "link3": 0.270567679567742,
+        "link4": 0.18847201880754683,
+        "link5": 0.08427745157889358,
+        "link6": 0.12522688920137004,
+        "link7": 0.12130201221173247,
+        "right_finger": 0.04496911511634841
+      },
+      "n_steps": 535,
+      "occupancy_voxel_counts": {
+        "cup": 2838,
+        "hand": 2199,
+        "left_finger": 1382,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7534,
+        "link6": 5529,
+        "link7": 2788,
+        "right_finger": 1129
+      },
+      "role_index": 18,
+      "skin_engaged": 436,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 241,
+      "skin_pairs": 21400,
+      "skin_pairs_passage": 11235,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8684520725165521,
+            0.414991193250542,
+            0.9954709539190336
+          ],
+          "min_m": [
+            0.24323240677520283,
+            -0.2613546594190212,
+            0.6918383215027535
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8304558185501772,
+            0.3678475446112532,
+            1.159687031083302
+          ],
+          "min_m": [
+            0.24187062441852447,
+            -0.27576436573136465,
+            0.8184305908136618
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8175303819352522,
+            0.3838480564629854,
+            1.0653199429695666
+          ],
+          "min_m": [
+            0.2980943614656443,
+            -0.22130936798273382,
+            0.7715689351977275
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.34930191097278096,
+            0.12002603396223799,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.05321725861230944,
+            -0.29286234109829945,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3775406958267414,
+            0.24732509831560745,
+            0.9266946116757628
+          ],
+          "min_m": [
+            -0.06538044892192985,
+            -0.17069023046561824,
+            0.5099805350854225
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4202831143116119,
+            0.2291939158745906,
+            1.1374044301006128
+          ],
+          "min_m": [
+            -0.22577943153012148,
+            -0.18996038871359777,
+            0.6919130305258815
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.4870325971511724,
+            0.22847703058055385,
+            1.233854484882095
+          ],
+          "min_m": [
+            -0.20110820249554426,
+            -0.2869386556220269,
+            0.8182029199330193
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8161225113789304,
+            0.5020896902022465,
+            1.3780935650334745
+          ],
+          "min_m": [
+            -0.08814157903954897,
+            -0.30230971155886843,
+            0.842918073185366
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8567857381173543,
+            0.4151891328657765,
+            1.3626510774991962
+          ],
+          "min_m": [
+            0.15014329153551717,
+            -0.3403840159506566,
+            0.9107370955750981
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8391079024038044,
+            0.3633391908695019,
+            1.2281085172701327
+          ],
+          "min_m": [
+            0.23302482629854293,
+            -0.3093104549592677,
+            0.8793613576741512
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7871235910513421,
+            0.3150365542099295,
+            1.0625524188531446
+          ],
+          "min_m": [
+            0.26130181550542275,
+            -0.27638665713207283,
+            0.7811668319485028
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row18.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 239680,
+      "wrist_visible_samples": 98696
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.711928365,
+            0.370037116,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.661928365,
+            0.270037116,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.756201899,
+            0.37703322100000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.706201899,
+            0.27703322100000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.71852272,
+            -0.270109138,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6685227199999999,
+            -0.370109138,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.787913483,
+            -0.27567616800000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7379134829999999,
+            -0.37567616800000003,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7819782426795374,
+      "episode_depth_m": 0.18197824267953747,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.010749630059831206,
+        "hand": 0.08149510062545895,
+        "left_finger": 0.045197264724534336,
+        "link1": 0.2882442986448368,
+        "link2": 0.26817173300962305,
+        "link3": 0.24523781400837016,
+        "link4": 0.16539725284216442,
+        "link5": 0.06062747064992022,
+        "link6": 0.09868840290781936,
+        "link7": 0.10646248245794916,
+        "right_finger": 0.06943888164091176
+      },
+      "n_steps": 456,
+      "occupancy_voxel_counts": {
+        "cup": 2970,
+        "hand": 2415,
+        "left_finger": 1211,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 8443,
+        "link6": 6624,
+        "link7": 3230,
+        "right_finger": 1484
+      },
+      "role_index": 19,
+      "skin_engaged": 140,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 140,
+      "skin_pairs": 18240,
+      "skin_pairs_passage": 9576,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8446408218473563,
+            0.42965212702456934,
+            0.989613843959
+          ],
+          "min_m": [
+            0.24871450253200703,
+            -0.13831085756095662,
+            0.6918168829630715
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8200327846823702,
+            0.4431248072439565,
+            1.1587645276432001
+          ],
+          "min_m": [
+            0.25626597644259125,
+            -0.08364250674381908,
+            0.8029984301788393
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7773554481427316,
+            0.4638653503043731,
+            1.061671706251091
+          ],
+          "min_m": [
+            0.29698533245594405,
+            -0.029139288569781666,
+            0.7664986838405876
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.38457329266241025,
+            0.19088584365105848,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.02726795994906475,
+            -0.2213781925081703,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3937566319903769,
+            0.3185236887031183,
+            0.9266942740954409
+          ],
+          "min_m": [
+            -0.045676378719618216,
+            -0.10277592118669374,
+            0.5118648717866372
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4177256711105705,
+            0.28323448570046494,
+            1.1360075131290261
+          ],
+          "min_m": [
+            -0.18841303674776638,
+            -0.1078287301770601,
+            0.7205857409028428
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5086591712054129,
+            0.2667274012318769,
+            1.2377562775485638
+          ],
+          "min_m": [
+            -0.14542821883892262,
+            -0.1887406731678024,
+            0.8262323140279336
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8119518509962753,
+            0.5598739247311262,
+            1.388023026130504
+          ],
+          "min_m": [
+            -0.05717924679715422,
+            -0.15401832523693681,
+            0.8351979754082355
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.857569671303929,
+            0.4897229115073697,
+            1.3638109535088887
+          ],
+          "min_m": [
+            0.17531535371776938,
+            -0.1556786580817224,
+            0.8945922566004233
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8427276247381116,
+            0.4433937987616073,
+            1.2271799830098766
+          ],
+          "min_m": [
+            0.25727923367606376,
+            -0.10072953266471091,
+            0.8624000992244403
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.7815033457498296,
+            0.38878260401476294,
+            1.0636431981974044
+          ],
+          "min_m": [
+            0.30030398606925457,
+            -0.1052937369867592,
+            0.758190438231377
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row19.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 204288,
+      "wrist_visible_samples": 57807
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.7146553809999999,
+            0.40564398,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6646553809999999,
+            0.30564398000000004,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.777212,
+            0.406280753,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.727212,
+            0.306280753,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.735147348,
+            -0.288852223,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.685147348,
+            -0.388852223,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.766112093,
+            -0.282445645,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.716112093,
+            -0.382445645,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7890722010723151,
+      "episode_depth_m": 0.18907220107231515,
+      "episode_median_engaged_sensors": 0.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.024541901742460404,
+        "hand": 0.10023471676787986,
+        "left_finger": 0.08117673882311292,
+        "link1": 0.3069369860371303,
+        "link2": 0.30229718924331106,
+        "link3": 0.2838610999594,
+        "link4": 0.2259536293413777,
+        "link5": 0.07750640983555063,
+        "link6": 0.15148675773636683,
+        "link7": 0.14531103275984927,
+        "right_finger": 0.04544801067821994
+      },
+      "n_steps": 542,
+      "occupancy_voxel_counts": {
+        "cup": 3178,
+        "hand": 2258,
+        "left_finger": 1209,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 7801,
+        "link6": 5418,
+        "link7": 2806,
+        "right_finger": 1084
+      },
+      "role_index": 20,
+      "skin_engaged": 240,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 194,
+      "skin_pairs": 21680,
+      "skin_pairs_passage": 11382,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8586114946548968,
+            0.41110641618689314,
+            0.9922499849847738
+          ],
+          "min_m": [
+            0.25403011618371274,
+            -0.2579037432575396,
+            0.6917869911089157
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8136844294578224,
+            0.3627316157807728,
+            1.1601529336275622
+          ],
+          "min_m": [
+            0.24157354777704854,
+            -0.27325887385755926,
+            0.8657440118161164
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7798049237444459,
+            0.3853548782444399,
+            1.0659537345930818
+          ],
+          "min_m": [
+            0.29239415717661416,
+            -0.2173576481285532,
+            0.8193121897665026
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3782684719740408,
+            0.127734098961505,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.022265729470471007,
+            -0.284092907230606,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3669024273956481,
+            0.2544662679374702,
+            0.9266946154739938
+          ],
+          "min_m": [
+            -0.05964375188627501,
+            -0.1670662916329091,
+            0.5102632579840589
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.41048915470519776,
+            0.2003834732274254,
+            1.1386948988396492
+          ],
+          "min_m": [
+            -0.2174915565730635,
+            -0.17732007458952168,
+            0.6986413687096837
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.4650027642439071,
+            0.1989791819094998,
+            1.2300558390469987
+          ],
+          "min_m": [
+            -0.18398662563988014,
+            -0.27263682029724656,
+            0.8225906086339888
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8071748726612638,
+            0.4827719492068433,
+            1.3728937531309775
+          ],
+          "min_m": [
+            -0.08725033138921973,
+            -0.2996425480653349,
+            0.860358907579341
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8321704010465488,
+            0.4037216160529259,
+            1.3609218053995673
+          ],
+          "min_m": [
+            0.14377436458304224,
+            -0.34201296753868454,
+            0.9514911941574554
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8236673620778815,
+            0.35898136265981734,
+            1.2287921977759226
+          ],
+          "min_m": [
+            0.2345816716644593,
+            -0.29614247508182084,
+            0.927842326339587
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.779081261769998,
+            0.31079520271270655,
+            1.0629658050096742
+          ],
+          "min_m": [
+            0.28962998322939604,
+            -0.27585251787895204,
+            0.8179508978435873
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row20.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 242816,
+      "wrist_visible_samples": 130569
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.726642645,
+            0.39009198700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6766426449999999,
+            0.29009198700000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.7789669650000001,
+            0.404184611,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.728966965,
+            0.30418461100000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.738563183,
+            -0.30766552500000005,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.688563183,
+            -0.40766552500000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.773204519,
+            -0.28444510600000006,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7232045189999999,
+            -0.38444510600000004,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.8104430961280369,
+      "episode_depth_m": 0.21044309612803697,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.02112200910727996,
+        "hand": 0.10100353731094565,
+        "left_finger": 0.07709563890035548,
+        "link1": 0.30540804917342235,
+        "link2": 0.30499589930237225,
+        "link3": 0.23022406404014809,
+        "link4": 0.1661491646422726,
+        "link5": 0.07257723287380044,
+        "link6": 0.12767154475341883,
+        "link7": 0.12468012936323075,
+        "right_finger": 0.0456024631219273
+      },
+      "n_steps": 552,
+      "occupancy_voxel_counts": {
+        "cup": 2629,
+        "hand": 2593,
+        "left_finger": 1479,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9538,
+        "link6": 7043,
+        "link7": 3662,
+        "right_finger": 1393
+      },
+      "role_index": 21,
+      "skin_engaged": 399,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 197,
+      "skin_pairs": 22080,
+      "skin_pairs_passage": 11592,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8555679323815019,
+            0.4140746719323394,
+            0.9912436323682029
+          ],
+          "min_m": [
+            0.2556152476297917,
+            -0.2633230968927201,
+            0.6918573052561471
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8564585422506533,
+            0.3672196292802824,
+            1.1591233018833493
+          ],
+          "min_m": [
+            0.28816608363405394,
+            -0.27894517920019346,
+            0.8352781310632389
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.8084300427548703,
+            0.3849804640810306,
+            1.063932316375965
+          ],
+          "min_m": [
+            0.3069061244839522,
+            -0.22278431821729353,
+            0.7897615933125797
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3835613596956398,
+            0.11806593173653275,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.01855525034359179,
+            -0.29421834487253107,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3752890334046524,
+            0.24370247669456896,
+            0.9266946231214416
+          ],
+          "min_m": [
+            -0.053415367307152545,
+            -0.1793395076732265,
+            0.5133059317912185
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.47377964191643795,
+            0.1965710521688962,
+            1.1387963243328327
+          ],
+          "min_m": [
+            -0.17044218287427682,
+            -0.19311927883675942,
+            0.7436679965427954
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5376823779329521,
+            0.178708647041514,
+            1.2373790228979904
+          ],
+          "min_m": [
+            -0.12478994202063834,
+            -0.2907792428324907,
+            0.8386410505781733
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8580887168101474,
+            0.4744698008655549,
+            1.3930068994892166
+          ],
+          "min_m": [
+            -0.02100438811012878,
+            -0.3077871817303671,
+            0.8515241715469237
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.897063825797081,
+            0.40850931900985044,
+            1.3637894454057962
+          ],
+          "min_m": [
+            0.21190034484545014,
+            -0.34630791219395735,
+            0.9255796119994292
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8895964448844358,
+            0.36923231458785266,
+            1.2269757686271219
+          ],
+          "min_m": [
+            0.29333784513262257,
+            -0.2948960519329743,
+            0.8970313371146159
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8358637577524867,
+            0.3152931774650352,
+            1.062107798690767
+          ],
+          "min_m": [
+            0.3331911529226519,
+            -0.27943864016627873,
+            0.797849652736643
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row21.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 247296,
+      "wrist_visible_samples": 138845
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.736460817,
+            0.390553274,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.686460817,
+            0.29055327400000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.785903891,
+            0.39587009100000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.735903891,
+            0.29587009100000006,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.719244296,
+            -0.291699721,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6692442959999999,
+            -0.391699721,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.777333054,
+            -0.27257111700000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7273330539999999,
+            -0.372571117,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.7909734766882688,
+      "episode_depth_m": 0.19097347668826883,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.01791619192923144,
+        "hand": 0.09104693965268877,
+        "left_finger": 0.07951954586953011,
+        "link1": 0.2999549235345546,
+        "link2": 0.30628462729497696,
+        "link3": 0.21318295651685895,
+        "link4": 0.1435254341280695,
+        "link5": 0.07288062688038156,
+        "link6": 0.10468569949123901,
+        "link7": 0.10773151111676589,
+        "right_finger": 0.05765641074118788
+      },
+      "n_steps": 538,
+      "occupancy_voxel_counts": {
+        "cup": 2728,
+        "hand": 2485,
+        "left_finger": 1317,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 9187,
+        "link6": 6325,
+        "link7": 3065,
+        "right_finger": 1243
+      },
+      "role_index": 22,
+      "skin_engaged": 356,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 164,
+      "skin_pairs": 21520,
+      "skin_pairs_passage": 11298,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8711522055460967,
+            0.4170577926461351,
+            1.0102752482255637
+          ],
+          "min_m": [
+            0.25115568094987384,
+            -0.2546760940859512,
+            0.6918078402818764
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8534198301065714,
+            0.3608965868484793,
+            1.1833781242494867
+          ],
+          "min_m": [
+            0.2651019168045924,
+            -0.27801096713587986,
+            0.8113642806979114
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.812015563381318,
+            0.38382330048514834,
+            1.0900429521203123
+          ],
+          "min_m": [
+            0.3062472741463497,
+            -0.2193869630339804,
+            0.7671595794069389
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.37288133043888627,
+            0.16523064117179137,
+            0.8444730076527585
+          ],
+          "min_m": [
+            -0.031676703772883646,
+            -0.24657070417142932,
+            0.4403053643689342
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.38018015489679624,
+            0.2916605109240652,
+            0.9266945942871025
+          ],
+          "min_m": [
+            -0.0623267122759375,
+            -0.12973017718775662,
+            0.5116171390603632
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.4917743311285816,
+            0.23101631938754758,
+            1.138968900793821
+          ],
+          "min_m": [
+            -0.20768479296132067,
+            -0.15639853228951314,
+            0.7155265279796251
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5429243731661795,
+            0.21812964212136232,
+            1.233189182613624
+          ],
+          "min_m": [
+            -0.16734376962034458,
+            -0.2479892441616719,
+            0.8288623720249445
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8593306643696956,
+            0.48724143365049566,
+            1.4102034805654111
+          ],
+          "min_m": [
+            -0.058103151683718546,
+            -0.2868145776244284,
+            0.8407234817155436
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8885923127397461,
+            0.4019980066474046,
+            1.3871422691263562
+          ],
+          "min_m": [
+            0.18222582728751954,
+            -0.34406824920786444,
+            0.9032805751682397
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8739714451603738,
+            0.3576803895944872,
+            1.2513855545377874
+          ],
+          "min_m": [
+            0.26561754955025363,
+            -0.2990278344030791,
+            0.8726416043965638
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8135209991778937,
+            0.3067208462390962,
+            1.0870831769272993
+          ],
+          "min_m": [
+            0.309641827747447,
+            -0.281004197511166,
+            0.7736969203826233
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row22.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 241024,
+      "wrist_visible_samples": 129767
+    },
+    {
+      "camera_names": [
+        "robot_0/link1_sensor_0",
+        "robot_0/link1_sensor_1",
+        "robot_0/link1_sensor_2",
+        "robot_0/link1_sensor_3",
+        "robot_0/link1_sensor_4",
+        "robot_0/link1_sensor_5",
+        "robot_0/link1_sensor_6",
+        "robot_0/link2_sensor_0",
+        "robot_0/link2_sensor_1",
+        "robot_0/link2_sensor_2",
+        "robot_0/link2_sensor_3",
+        "robot_0/link2_sensor_4",
+        "robot_0/link2_sensor_5",
+        "robot_0/link2_sensor_6",
+        "robot_0/link3_sensor_0",
+        "robot_0/link3_sensor_1",
+        "robot_0/link3_sensor_2",
+        "robot_0/link3_sensor_3",
+        "robot_0/link3_sensor_4",
+        "robot_0/link4_sensor_0",
+        "robot_0/link4_sensor_1",
+        "robot_0/link4_sensor_2",
+        "robot_0/link4_sensor_3",
+        "robot_0/link4_sensor_4",
+        "robot_0/link5_front_sensor_0",
+        "robot_0/link5_front_sensor_1",
+        "robot_0/link5_front_sensor_2",
+        "robot_0/link5_front_sensor_3",
+        "robot_0/link5_back_sensor_0",
+        "robot_0/link5_back_sensor_1",
+        "robot_0/link5_back_sensor_2",
+        "robot_0/link5_back_sensor_3",
+        "robot_0/link5_back_sensor_4",
+        "robot_0/link5_back_sensor_5",
+        "robot_0/link6_sensor_0",
+        "robot_0/link6_sensor_1",
+        "robot_0/link6_sensor_2",
+        "robot_0/link6_sensor_3",
+        "robot_0/link6_sensor_4",
+        "robot_0/link6_sensor_5"
+      ],
+      "clutter_aabbs": [
+        {
+          "body": "pact_clutter_l0",
+          "max_m": [
+            0.710522542,
+            0.37866806000000003,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.6605225419999999,
+            0.27866806000000005,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_l1",
+          "max_m": [
+            0.780119941,
+            0.371279715,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.730119941,
+            0.27127971500000003,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r0",
+          "max_m": [
+            0.713125416,
+            -0.27173947000000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.663125416,
+            -0.37173947,
+            0.72
+          ]
+        },
+        {
+          "body": "pact_clutter_r1",
+          "max_m": [
+            0.792877062,
+            -0.27345260800000004,
+            0.8200000000000001
+          ],
+          "min_m": [
+            0.7428770619999999,
+            -0.373452608,
+            0.72
+          ]
+        }
+      ],
+      "clutter_n_geoms": 4,
+      "episode_back_wall_x_m": 0.858821263379258,
+      "episode_depth_m": 0.258821263379258,
+      "episode_median_engaged_sensors": 1.0,
+      "groups_n_geoms": {
+        "cup": 7,
+        "hand": 4,
+        "left_finger": 12,
+        "link1": 3,
+        "link2": 3,
+        "link3": 4,
+        "link4": 4,
+        "link5": 6,
+        "link6": 10,
+        "link7": 5,
+        "right_finger": 12
+      },
+      "min_clearance_by_link_m": {
+        "cup": 0.0,
+        "hand": 0.10054657331451283,
+        "left_finger": 0.07195109165921426,
+        "link1": 0.2856093446939007,
+        "link2": 0.27385019324255655,
+        "link3": 0.16143183021730165,
+        "link4": 0.10435013938227027,
+        "link5": 0.06600496949224444,
+        "link6": 0.16029402245637475,
+        "link7": 0.14644738597511903,
+        "right_finger": 0.04580006538972255
+      },
+      "n_steps": 589,
+      "occupancy_voxel_counts": {
+        "cup": 3432,
+        "hand": 2699,
+        "left_finger": 1386,
+        "link1": 0,
+        "link2": 0,
+        "link3": 0,
+        "link4": 0,
+        "link5": 10600,
+        "link6": 7250,
+        "link7": 3668,
+        "right_finger": 1396
+      },
+      "role_index": 23,
+      "skin_engaged": 583,
+      "skin_engaged_encoder_range": 0,
+      "skin_engaged_passage": 343,
+      "skin_pairs": 23560,
+      "skin_pairs_passage": 12369,
+      "swept_aabb_by_link": {
+        "cup": {
+          "max_m": [
+            0.8695412517426448,
+            0.42830557217012233,
+            0.98594065129574
+          ],
+          "min_m": [
+            0.23721118800053806,
+            -0.3151830465199137,
+            0.6917790428982618
+          ]
+        },
+        "hand": {
+          "max_m": [
+            0.8468721046606208,
+            0.44478213007548945,
+            1.1596390476758842
+          ],
+          "min_m": [
+            0.2577190899622993,
+            -0.2660190061604923,
+            0.8729795883439597
+          ]
+        },
+        "left_finger": {
+          "max_m": [
+            0.7966488793995344,
+            0.4618188113919824,
+            1.062158738725516
+          ],
+          "min_m": [
+            0.2820114016233286,
+            -0.21606311542155987,
+            0.8178658353504434
+          ]
+        },
+        "link1": {
+          "max_m": [
+            0.3799214567342617,
+            0.17516293983453307,
+            0.8444730076527587
+          ],
+          "min_m": [
+            -0.03278571218052817,
+            -0.2371731761148715,
+            0.4403053643689344
+          ]
+        },
+        "link2": {
+          "max_m": [
+            0.3866723487574434,
+            0.3009081166782739,
+            0.9266945484346844
+          ],
+          "min_m": [
+            -0.05835632587666821,
+            -0.1221627957557396,
+            0.5118771046151327
+          ]
+        },
+        "link3": {
+          "max_m": [
+            0.521006010913786,
+            0.25446322911270636,
+            1.1388459297685247
+          ],
+          "min_m": [
+            -0.1871358428926981,
+            -0.15348088396995455,
+            0.732636684531836
+          ]
+        },
+        "link4": {
+          "max_m": [
+            0.5628197822961206,
+            0.24627726645066306,
+            1.239604034272974
+          ],
+          "min_m": [
+            -0.15569204183938948,
+            -0.2429691478543859,
+            0.803895969551923
+          ]
+        },
+        "link5": {
+          "max_m": [
+            0.8825220046602583,
+            0.5510587404673593,
+            1.3985443270432745
+          ],
+          "min_m": [
+            -0.03595200717404909,
+            -0.2678545223364507,
+            0.8674633530743847
+          ]
+        },
+        "link6": {
+          "max_m": [
+            0.8943904376208193,
+            0.4951762842726666,
+            1.3658400637089423
+          ],
+          "min_m": [
+            0.18878219269451876,
+            -0.3194663310006041,
+            0.963756966388659
+          ]
+        },
+        "link7": {
+          "max_m": [
+            0.8805955867898911,
+            0.4502495415635401,
+            1.2271457337247187
+          ],
+          "min_m": [
+            0.26497972466910114,
+            -0.27850462855722624,
+            0.9330868811271027
+          ]
+        },
+        "right_finger": {
+          "max_m": [
+            0.8191438500895224,
+            0.3876039265842609,
+            1.0651498536111497
+          ],
+          "min_m": [
+            0.3000573125214439,
+            -0.2696415805698252,
+            0.8191202910887864
+          ]
+        }
+      },
+      "track_path": "diagnostics_output/pact_place_swept_volume_v7/tracks/row23.npz",
+      "track_stride": 5,
+      "wrist_total_samples": 263872,
+      "wrist_visible_samples": 137642
+    }
+  ],
+  "schema_version": "pact_place_swept_volume_v7",
+  "sensor_config": {
+    "clip_far_m": 4.0,
+    "clip_near_m": 0.05,
+    "clip_range_source": "MlSpacesExpConfig.viz_depth_range",
+    "encoder_max_range_m": 0.2,
+    "encoder_max_range_source": "act.surface_proximity_encoder.MAX_SURFACE_RANGE_M",
+    "engagement_model": "nearest clutter AABB point in the sensor frustum (half-angle = fov/2) and Euclidean distance <= clip_far_m",
+    "fov_deg": 45.0,
+    "n_sensors": 40,
+    "sensor_names": [
+      "link1_sensor_0",
+      "link1_sensor_1",
+      "link1_sensor_2",
+      "link1_sensor_3",
+      "link1_sensor_4",
+      "link1_sensor_5",
+      "link1_sensor_6",
+      "link2_sensor_0",
+      "link2_sensor_1",
+      "link2_sensor_2",
+      "link2_sensor_3",
+      "link2_sensor_4",
+      "link2_sensor_5",
+      "link2_sensor_6",
+      "link3_sensor_0",
+      "link3_sensor_1",
+      "link3_sensor_2",
+      "link3_sensor_3",
+      "link3_sensor_4",
+      "link4_sensor_0",
+      "link4_sensor_1",
+      "link4_sensor_2",
+      "link4_sensor_3",
+      "link4_sensor_4",
+      "link5_front_sensor_0",
+      "link5_front_sensor_1",
+      "link5_front_sensor_2",
+      "link5_front_sensor_3",
+      "link5_back_sensor_0",
+      "link5_back_sensor_1",
+      "link5_back_sensor_2",
+      "link5_back_sensor_3",
+      "link5_back_sensor_4",
+      "link5_back_sensor_5",
+      "link6_sensor_0",
+      "link6_sensor_1",
+      "link6_sensor_2",
+      "link6_sensor_3",
+      "link6_sensor_4",
+      "link6_sensor_5"
+    ]
+  },
+  "shallowest_episode_back_wall_x_m": 0.7802336048549172,
+  "source_screen": "diagnostics_output/pact_place_corridor_v6c",
+  "swept_aabb_by_link": {
+    "cup": {
+      "max_m": [
+        0.8743739932813199,
+        0.4304646519611014,
+        1.0114741856483134
+      ],
+      "min_m": [
+        0.23608671360258934,
+        -0.3167619091456189,
+        0.6917396405156754
+      ]
+    },
+    "hand": {
+      "max_m": [
+        0.8597788824662812,
+        0.44478213007548945,
+        1.1868628640674563
+      ],
+      "min_m": [
+        0.22920610092178995,
+        -0.28118924377417165,
+        0.7723446461538802
+      ]
+    },
+    "left_finger": {
+      "max_m": [
+        0.8391534389338168,
+        0.4650447126927132,
+        1.0934084220031475
+      ],
+      "min_m": [
+        0.2568690223402121,
+        -0.22502676015195244,
+        0.7301736992468354
+      ]
+    },
+    "link1": {
+      "max_m": [
+        0.3943302099926471,
+        0.19126984291749746,
+        0.8444730076527587
+      ],
+      "min_m": [
+        -0.105743979096146,
+        -0.316960685203457,
+        0.4403053643689342
+      ]
+    },
+    "link2": {
+      "max_m": [
+        0.3937566319903769,
+        0.3185236887031183,
+        0.9266946231214416
+      ],
+      "min_m": [
+        -0.10157302356767922,
+        -0.20171803367855856,
+        0.5077466459408047
+      ]
+    },
+    "link3": {
+      "max_m": [
+        0.521006010913786,
+        0.32494760858251565,
+        1.1391505345379689
+      ],
+      "min_m": [
+        -0.2589775023173281,
+        -0.21384539141675277,
+        0.6742607985574909
+      ]
+    },
+    "link4": {
+      "max_m": [
+        0.5698690002032251,
+        0.3127511340060408,
+        1.2411973941010392
+      ],
+      "min_m": [
+        -0.2490060566763889,
+        -0.29480136491377923,
+        0.7703182506371158
+      ]
+    },
+    "link5": {
+      "max_m": [
+        0.8825220046602583,
+        0.5598739247311262,
+        1.4154072797632762
+      ],
+      "min_m": [
+        -0.10084271836053797,
+        -0.3096391897327623,
+        0.8190217454443018
+      ]
+    },
+    "link6": {
+      "max_m": [
+        0.8978145882029618,
+        0.4951762842726666,
+        1.3902293655810063
+      ],
+      "min_m": [
+        0.12371280579504215,
+        -0.3486435956697753,
+        0.8659650297509013
+      ]
+    },
+    "link7": {
+      "max_m": [
+        0.8895964448844358,
+        0.4502495415635401,
+        1.2551106472427145
+      ],
+      "min_m": [
+        0.21896742104604883,
+        -0.3093104549592677,
+        0.8313586615545153
+      ]
+    },
+    "right_finger": {
+      "max_m": [
+        0.8358637577524867,
+        0.38932315136181694,
+        1.0906151574188383
+      ],
+      "min_m": [
+        0.26130181550542275,
+        -0.2823322495055224,
+        0.7351329983920374
+      ]
+    }
+  },
+  "swept_aabb_union": {
+    "max_m": [
+      0.8978145882029618,
+      0.5598739247311262,
+      1.4154072797632762
+    ],
+    "min_m": [
+      -0.2589775023173281,
+      -0.3486435956697753,
+      0.4403053643689342
+    ]
+  },
+  "swept_aabb_union_clipped_extent": {
+    "volume_m3": 0.15453354951055392,
+    "x_m": 0.28,
+    "y_m": 0.7936435956697754,
+    "z_m": 0.6954072797632762
+  },
+  "swept_aabb_union_clipped_to_enclosure": {
+    "max_m": [
+      0.86,
+      0.445,
+      1.4154072797632762
+    ],
+    "min_m": [
+      0.58,
+      -0.3486435956697753,
+      0.72
+    ]
+  },
+  "swept_aabb_union_extent": {
+    "volume_m3": 1.0247988442586704,
+    "x_m": 1.1567920905202898,
+    "y_m": 0.9085175204009015,
+    "z_m": 0.975101915394342
+  },
+  "v6c_baseline": {
+    "mean_engaged_sensors_per_step": 0.7384601832276251,
+    "min_clearance_by_link_m": {
+      "cup": 0.0,
+      "hand": 0.08149510062545895,
+      "left_finger": 0.04506947433788346,
+      "link1": 0.27165919022237006,
+      "link2": 0.26817173300962305,
+      "link3": 0.16143183021730165,
+      "link4": 0.10435013938227027,
+      "link5": 0.05681711666498512,
+      "link6": 0.08843616478916053,
+      "link7": 0.09867444414145723,
+      "right_finger": 0.04496911511634841
+    },
+    "n_engaged_pairs": 8383,
+    "n_step_sensor_pairs": 454080,
+    "per_episode_mean_engaged_sensors": 0.7083333333333334,
+    "per_episode_median_engaged_sensors": 1.0,
+    "skin_engagement": 0.018461504580690628,
+    "skin_engagement_encoder_range": 0.0,
+    "skin_engagement_passage_link4_6": 0.022442028255981745,
+    "wrist_visibility": 0.4537023054464915
+  },
+  "voxel_m": 0.02
+}

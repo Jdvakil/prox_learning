@@ -1,0 +1,205 @@
+{
+  "authorizes_gate": false,
+  "body": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+  "body_joint_address": -1,
+  "body_mocap_id": 13,
+  "clean_success": false,
+  "construction": "jointless_mocap_mount_centered_on_link6_after_accepted_reset",
+  "contact_audit": {
+    "added_contact_classes": [
+      "place_receptacle",
+      "clutter"
+    ],
+    "collision_free": false,
+    "contact_class_totals": {
+      "clutter": 3,
+      "grasp_target": 0,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0
+    },
+    "contact_frame_payload_retained": true,
+    "contact_frames": [
+      {
+        "contact_classes": {
+          "clutter": 3,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "pairs": [
+          {
+            "body1": "robot_0/fr3_link5",
+            "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+            "distance_m": -0.022344056441152456,
+            "geom1": "robot_0/fr3_link5_collision",
+            "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+            "root1": "robot_0/base",
+            "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+          },
+          {
+            "body1": "robot_0/fr3_link6",
+            "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+            "distance_m": -0.05389820946179403,
+            "geom1": "robot_0/fr3_link6_collision",
+            "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+            "root1": "robot_0/base",
+            "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+          },
+          {
+            "body1": "robot_0/fr3_link7",
+            "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+            "distance_m": -0.0030341781131031117,
+            "geom1": "robot_0/fr3_link7_collision",
+            "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+            "root1": "robot_0/base",
+            "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+          }
+        ],
+        "policy_phase": "b4b_deliberate_mount_contact",
+        "sim_time_s": 0.6,
+        "step": 0,
+        "traversal_phase": "inbound"
+      }
+    ],
+    "contact_taxonomy_version": "pact_place_robot_environment_v2",
+    "first_contact_step": {
+      "clutter": 0,
+      "grasp_target": null,
+      "hazard_bar": null,
+      "other_environment": null,
+      "place_receptacle": null
+    },
+    "frames_with_contact": {
+      "clutter": 1,
+      "grasp_target": 0,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0
+    },
+    "inbound_hazard_contact_frames": 0,
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "maximum_penetration_depth_m": {
+      "clutter": 0.05389820946179403,
+      "grasp_target": 0.0,
+      "hazard_bar": 0.0,
+      "other_environment": 0.0,
+      "place_receptacle": 0.0
+    },
+    "non_target_contact_entries": 3,
+    "outbound_hazard_contact_frames": 0,
+    "phase_contact_class_totals": {
+      "inbound": {
+        "clutter": 3,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "other": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "outbound": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "placement": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      }
+    },
+    "phase_frames_with_contact": {
+      "inbound": {
+        "clutter": 1,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "other": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "outbound": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "placement": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      }
+    },
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_outside_placement_entries": 0,
+    "sample_count": 1,
+    "sampling_level": "every_2ms_control_physics_step_plus_episode_boundaries"
+  },
+  "desired_collision_center_m": [
+    0.40704342344129735,
+    0.02450222550907453,
+    1.0259110694354838
+  ],
+  "immediate_clutter_pairs": [
+    {
+      "body1": "robot_0/fr3_link5",
+      "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+      "distance_m": -0.022344056441152456,
+      "geom1": "robot_0/fr3_link5_collision",
+      "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+      "root1": "robot_0/base",
+      "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+    },
+    {
+      "body1": "robot_0/fr3_link6",
+      "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+      "distance_m": -0.05389820946179403,
+      "geom1": "robot_0/fr3_link6_collision",
+      "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+      "root1": "robot_0/base",
+      "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+    },
+    {
+      "body1": "robot_0/fr3_link7",
+      "body2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2",
+      "distance_m": -0.0030341781131031117,
+      "geom1": "robot_0/fr3_link7_collision",
+      "geom2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2_collider0",
+      "root1": "robot_0/base",
+      "root2": "pact_clutter_00/8f601aff31c8480db54a5fe7c85b34c2"
+    }
+  ],
+  "passed": true,
+  "role": "mount_scoring_check_not_a_gate",
+  "root_position_m": [
+    0.406950423441841,
+    0.025019725528515155,
+    1.0259110694354836
+  ],
+  "schema_version": "pact_place_v8b_mount_scoring_check_v1",
+  "scoring_check_sha256": "d25820441cef147d7e1bebec2af4f97c2948b9cea22f30bf2bb5b57eb2d78fd5"
+}

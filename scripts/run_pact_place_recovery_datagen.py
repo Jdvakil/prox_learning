@@ -177,6 +177,8 @@ def make_recovery_config(output_dir: Path, *, scene_xml: Path):
         PactPlaceCorridorTask,
         PactPlaceCorridorV2Sampler,
         PactPlaceCorridorV3Sampler,
+        PactPlaceCorridorV4Sampler,
+        PactPlaceCorridorV5Sampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -189,7 +191,11 @@ def make_recovery_config(output_dir: Path, *, scene_xml: Path):
     config.task_config = PickAndPlaceTaskConfig(task_cls=PactPlaceCorridorTask)
     config.policy_config = PactPlaceCorridorPolicyConfig()
     scene = Path(scene_xml)
-    if scene.name == "pact_place_corridor_v3.xml":
+    if scene.name == "pact_place_corridor_v5.xml":
+        sampler_cls = PactPlaceCorridorV5Sampler
+    elif scene.name == "pact_place_corridor_v4.xml":
+        sampler_cls = PactPlaceCorridorV4Sampler
+    elif scene.name == "pact_place_corridor_v3.xml":
         sampler_cls = PactPlaceCorridorV3Sampler
     elif scene.name == "pact_place_corridor_v2.xml":
         sampler_cls = PactPlaceCorridorV2Sampler

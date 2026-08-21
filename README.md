@@ -69,11 +69,21 @@ The 24 qpos-replay clips are produced by
 `scripts/run_pact_place_v6b_replay_videos.py` into
 [`diagnostics_output/pact_place_corridor_v6b_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v6b_videos/CRIB.md);
 the MP4s are local and are not committed.
+The attempt-6c presence pass (5×10×10 cm boxes, inner face held at `|y| = 0.29`,
+28 mm closest-approach margin) passed Phase 0 at **23/24** with zero
+`pact_clutter` contact. That record is
+[`docs/PACT_PLACE_ATTEMPT6C.md`](docs/PACT_PLACE_ATTEMPT6C.md);
+the ledger is
+[`docs/PACT_PLACE_CORRIDOR_GATE_V6C.md`](docs/PACT_PLACE_CORRIDOR_GATE_V6C.md).
+The 24 qpos-replay clips are produced by
+`scripts/run_pact_place_v6c_replay_videos.py` into
+[`diagnostics_output/pact_place_corridor_v6c_videos/CRIB.md`](diagnostics_output/pact_place_corridor_v6c_videos/CRIB.md);
+the MP4s are local and are not committed. Do not edit the v5 or v6b renderers.
 v1–v4 are `PACT_PLACE_CORRIDOR_PHASE0_FAIL`. v5 is
 `PACT_PLACE_CORRIDOR_PHASE0_PASS`. v6 is
-`PACT_PLACE_CORRIDOR_PHASE0_NOT_RUN`. v6b is
+`PACT_PLACE_CORRIDOR_PHASE0_NOT_RUN`. v6b and v6c are
 `PACT_PLACE_CORRIDOR_PHASE0_PASS`. v5 clean-success is not comparable to
-v1–v4, and is not comparable to the stricter cluttered v6b count. Join place-corridor rows on `(config_sha256, role_index)`, never on
+v1–v4, and is not comparable to the stricter cluttered v6b/v6c counts. Join place-corridor rows on `(config_sha256, role_index)`, never on
 `episode_id`. The original-seed re-run is a diagnostic, not a gate.
 Rows 6 and 12 of the v2 gate are an initial-state panel overlap, not inbound
 scraping; see [`docs/PACT_PLACE_HAZARD_ROWS_6_12.md`](docs/PACT_PLACE_HAZARD_ROWS_6_12.md).

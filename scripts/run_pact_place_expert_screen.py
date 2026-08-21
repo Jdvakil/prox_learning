@@ -168,6 +168,8 @@ def _make_config(destination: Path, *, scene_xml: Path | None = None):
         PactPlaceCorridorTask,
         PactPlaceCorridorV2Sampler,
         PactPlaceCorridorV3Sampler,
+        PactPlaceCorridorV4Sampler,
+        PactPlaceCorridorV5Sampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -184,7 +186,11 @@ def _make_config(destination: Path, *, scene_xml: Path | None = None):
         MOLMO
         / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
     )
-    if scene.name == "pact_place_corridor_v3.xml":
+    if scene.name == "pact_place_corridor_v5.xml":
+        sampler_cls = PactPlaceCorridorV5Sampler
+    elif scene.name == "pact_place_corridor_v4.xml":
+        sampler_cls = PactPlaceCorridorV4Sampler
+    elif scene.name == "pact_place_corridor_v3.xml":
         sampler_cls = PactPlaceCorridorV3Sampler
     elif scene.name == "pact_place_corridor_v2.xml":
         sampler_cls = PactPlaceCorridorV2Sampler
@@ -337,11 +343,15 @@ def run_row(
             policy_info = _jsonable(policy.get_info())
             audit = policy_info["pact_contact_audit"]
             totals = audit["contact_class_totals"]
+            clutter_stability_events = list(
+                policy_info.get("clutter_stability_events") or []
+            )
             clean_success = bool(
                 task_success
                 and int(totals["hazard_bar"]) == 0
                 and int(totals["other_environment"]) == 0
                 and int(totals.get("clutter", 0)) == 0
+                and not clutter_stability_events
                 and place_receptacle_outside_placement(audit) == 0
             )
             endpoint_scalars = policy_info.get("endpoint_scalars") or {}
@@ -394,6 +404,8 @@ def run_row(
                 "bow_fallback_taken": bool(policy_info.get("bow_fallback_taken")),
                 "bow_diagnostics": policy_info.get("bow_diagnostics"),
                 "contact_audit": audit,
+                "clutter_stability_events": clutter_stability_events,
+                "clutter_stability_ok": not bool(clutter_stability_events),
                 "place_metrics": policy_info["place_metrics"],
                 "scene_params": _jsonable(getattr(task, "scene_params", {}) or {}),
                 "episode_steps": int(task.episode_step_count),

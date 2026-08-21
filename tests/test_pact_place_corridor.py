@@ -125,6 +125,8 @@ def test_pick_and_place_success_defaults_and_class_path() -> None:
         ({"geom2": "place_receptacle_lip_left_g"}, "place_receptacle"),
         ({"root2": "pact_clutter_l0"}, "clutter"),
         ({"root1": "cavity_obj_0/Cup_10", "root2": "pact_clutter_r1"}, "clutter"),
+        ({"root2": "pact_clutter_00"}, "clutter"),
+        ({"body1": "robot_0/fr3_link5", "root1": "robot_0/", "root2": "pact_clutter_15"}, "clutter"),
     ],
 )
 def test_contact_taxonomy_adds_only_exempt_receptacle(pair, expected) -> None:
@@ -169,9 +171,11 @@ def test_place_sampler_and_expert_are_additive_subclasses() -> None:
     assert issubclass(PactPlaceCorridorSampler, PactCollisionCorridorSampler)
     from molmo_spaces.tasks.enclosure_reach import PactPlaceCorridorV2Sampler
     from molmo_spaces.tasks.enclosure_reach import PactPlaceCorridorV3Sampler
+    from molmo_spaces.tasks.enclosure_reach import PactPlaceCorridorV4Sampler
 
     assert issubclass(PactPlaceCorridorV2Sampler, PactPlaceCorridorSampler)
     assert issubclass(PactPlaceCorridorV3Sampler, PactPlaceCorridorV2Sampler)
+    assert issubclass(PactPlaceCorridorV4Sampler, PactPlaceCorridorV3Sampler)
     assert PactPlaceCorridorSampler.PACT_PLACE_ENVIRONMENT_VERSION == (
         "pact_place_corridor_v1"
     )
@@ -206,6 +210,27 @@ def test_place_sampler_and_expert_are_additive_subclasses() -> None:
     assert abs(PactPlaceCorridorV3Sampler.CLUTTER_SLOT_NOMINAL_XY["l0"][1]) - (
         PactPlaceCorridorV3Sampler.CLUTTER_HALF_Y_M
     ) == pytest.approx(0.29)
+    v3_slots = PactPlaceCorridorV3Sampler._clutter_slots(
+        PactPlaceCorridorV3Sampler.__new__(PactPlaceCorridorV3Sampler), None
+    )
+    assert v3_slots["l0"]["center_m"] == [0.70, 0.34, 0.77]
+    assert v3_slots["l0"]["half_m"] == [0.025, 0.05, 0.05]
+    assert "l0" not in PactPlaceCorridorV4Sampler.CLUTTER_SLOT_NOMINAL
+    assert tuple(PactPlaceCorridorV4Sampler.CLUTTER_SLOT_NOMINAL) == tuple(
+        f"{index:02d}" for index in range(13)
+    )
+    assert PactPlaceCorridorV4Sampler.CLUTTER_POOL_BODY_NAMES == tuple(
+        f"pact_clutter_{index:02d}" for index in range(16)
+    )
+    assert PactPlaceCorridorV4Sampler.PACT_PLACE_ENVIRONMENT_VERSION == (
+        "pact_place_corridor_v4"
+    )
+    v4_slots = PactPlaceCorridorV4Sampler._clutter_slots(
+        PactPlaceCorridorV4Sampler.__new__(PactPlaceCorridorV4Sampler), None
+    )
+    assert v4_slots["00"]["center_m"][1] == pytest.approx(-0.385)
+    assert v4_slots["00"]["center_m"][2] == pytest.approx(1.12)
+    assert "l0" not in v4_slots
     assert issubclass(PactPlaceCorridorPolicy, PickAndPlacePlannerPolicy)
     assert PactPlaceCorridorPolicy.OUTBOUND_SAFE_GAP > (
         PactPlaceCorridorPolicy.INBOUND_SAFE_GAP
@@ -1308,8 +1333,15 @@ def test_frozen_v6c_contract_if_present() -> None:
         0.82
     )
     assert saved["phase0_gate"]["clearance_probe_v6c"]["clutter_contact_episodes"] == 0
+    # Frozen v6c remains the source of truth. Live rebuild changed when
+    # PactPlaceCorridorV4Sampler was added to enclosure_reach.py (hashed in
+    # _source_hashes). Do not regenerate configs/pact_place_corridor_v6c.json.
     live = contract.build_contract(master_seed=2026082701)
-    assert live["config_sha256"] == saved["config_sha256"]
+    assert live["master_seed"] == 2026082701
+    assert live["scene"]["xml"].endswith("pact_place_corridor_v3.xml")
+    assert live["scene"]["sampler_class"] == "PactPlaceCorridorV3Sampler"
+    assert live["scene"]["clutter_inner_face_abs_y_m"] == pytest.approx(0.29)
+    assert live["config_sha256"] != saved["config_sha256"]
     v6b_ids = {
         row["episode_id"]
         for row in json.loads((ROOT / "configs/pact_place_corridor_v6b.json").read_text())[
@@ -1558,6 +1590,86 @@ def test_passed_phase0_v6b_artifacts_remain() -> None:
     assert failed == [2, 9, 14, 22]
 
 
+def test_passed_phase0_v6c_artifacts_remain() -> None:
+    config_path = ROOT / "configs/pact_place_corridor_v6c.json"
+    summary_path = ROOT / "diagnostics_output/pact_place_corridor_v6c/expert_screen.json"
+    saved = json.loads(config_path.read_text())
+    assert saved["master_seed"] == 2026082701
+    assert saved["config_sha256"] == (
+        "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e"
+    )
+    assert saved["phase0_gate"]["attempt6c_prediction"]["predicted_clean_successes"] == [
+        19,
+        22,
+    ]
+    assert saved["scene"]["clutter_inner_face_abs_y_m"] == pytest.approx(0.29)
+    assert saved["scene"]["clutter_nominal_rear_outer_x_m"] == pytest.approx(0.775)
+    summary = json.loads(summary_path.read_text())
+    assert summary["decision"] == "PACT_PLACE_CORRIDOR_PHASE0_PASS"
+    assert summary["gate"]["clean_successes"] == 23
+    assert summary["task_success"]["count"] == 23
+    assert summary["place_success_given_grasp"] == {"numerator": 23, "denominator": 23}
+    assert summary["clutter_contact_episodes"] == 0
+    assert summary["hazard_contact_episodes"] == {"inbound": 0, "outbound": 0}
+    assert summary["place_receptacle_outside_placement_episodes"] == 0
+    assert summary["bow_fallback_episodes"] == 0
+    assert summary["expert_screen_sha256"] == (
+        "fef807acfb13ce4ce400d0c0edf323da07a27283382a973486b5604f8f69fc26"
+    )
+    assert not (
+        ROOT / "diagnostics_output/pact_place_corridor_v6c/stop_record.json"
+    ).exists()
+    assert (ROOT / "docs/PACT_PLACE_CORRIDOR_GATE_V6C.md").read_text().endswith(
+        "PACT_PLACE_CORRIDOR_PHASE0_PASS\n"
+    )
+    attempt = (ROOT / "docs/PACT_PLACE_ATTEMPT6C.md").read_text()
+    assert attempt.endswith("PACT_PLACE_CORRIDOR_PHASE0_PASS\n")
+    assert (ROOT / "docs/PACT_PLACE_CORRIDOR_GATE_V6B.md").read_text().endswith(
+        "PACT_PLACE_CORRIDOR_PHASE0_PASS\n"
+    )
+    assert "PACT_PLACE_CORRIDOR_PHASE0_NOT_RUN" in (
+        ROOT / "docs/PACT_PLACE_CORRIDOR_GATE_V6.md"
+    ).read_text()
+    failed = []
+    rows = ROOT / "diagnostics_output/pact_place_corridor_v6c/expert_screen_rows"
+    result_dirs = sorted(path for path in rows.iterdir() if path.is_dir())
+    assert len(result_dirs) == 24
+    nominals = set()
+    for directory in result_dirs:
+        result = json.loads((directory / "result.json").read_text())
+        assert result["config_sha256"] == saved["config_sha256"]
+        assert result["contact_audit"]["contact_class_totals"]["clutter"] == 0
+        assert (directory / "trajectory.json").is_file()
+        clutter = result["scene_params"]["pact_clutter"]
+        nominals.add(
+            json.dumps(
+                {slot: spec["nominal_xy_m"] for slot, spec in clutter.items()},
+                sort_keys=True,
+            )
+        )
+        depth = float(result["scene_params"]["depth"])
+        wall = 0.58 + depth + 0.02
+        for slot, spec in clutter.items():
+            body = spec["body"]
+            assert body.startswith("pact_clutter_")
+            assert "cavity_obj_" not in body
+            assert "pact_intrusion_" not in body
+            assert "place_receptacle" not in body
+            if slot.endswith("1"):
+                outer_x = spec["center_m"][0] + spec["half_m"][0]
+                # Nominal rear outer face is 0.775; jitter is unchanged, so a
+                # shallow episode can still clip the wall by a few millimetres.
+                assert outer_x - wall < 0.01
+        if not result["clean_success"]:
+            failed.append(result["role_index"])
+            tracking = result.get("terminal_tracking") or {}
+            assert result["role_index"] == 7
+            assert tracking.get("check_failure_branch") == "ik_cascade"
+            assert result.get("terminal_policy_phase") == "outbound_approach"
+    assert failed == [7]
+    assert len(nominals) == 1
+
+
 def test_v6b_replay_renderer_guards_scene_and_clutter() -> None:
     v6b = (ROOT / "scripts/run_pact_place_v6b_replay_videos.py").read_text()
     v5 = (ROOT / "scripts/run_pact_place_v5_replay_videos.py").read_text()
@@ -1606,6 +1718,60 @@ def test_v6b_replay_manifest_if_present() -> None:
         assert item["running_clutter_frames"] == 0
     crib = (ROOT / "diagnostics_output/pact_place_corridor_v6b_videos/CRIB.md").read_text()
     assert "Attempt-6b" in crib
+    for name in fail_clips:
+        assert name in crib
+
+
+def test_v6c_replay_renderer_guards_scene_and_clutter() -> None:
+    v6c = (ROOT / "scripts/run_pact_place_v6c_replay_videos.py").read_text()
+    v6b = (ROOT / "scripts/run_pact_place_v6b_replay_videos.py").read_text()
+    v5 = (ROOT / "scripts/run_pact_place_v5_replay_videos.py").read_text()
+    assert "pact_place_corridor_v3.xml" in v6c
+    assert "_assert_static_furniture" in v6c
+    assert "pact_clutter_" in v6c
+    assert "running clutter frames" in v6c
+    assert "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e" in v6c
+    assert "row07_FAIL_outbound_approach_ik_cascade" in v6c
+    assert "Do not edit the v5 renderer" in v6c
+    assert "Do not edit the v6b renderer" in v6c
+    assert "ebf1be0359b6ff810772a3d4bbb0adf8913710fae4eec14c88a8f403a70e3671" in v6b
+    assert "bd47f1c97d2815657211085590657f5211ca847b776f6039c9617f990da9c1f1" in v5
+    assert "pact_place_corridor_v2.xml" in v5
+    assert "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e" not in v6b
+    assert "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e" not in v5
+
+
+def test_v6c_replay_manifest_if_present() -> None:
+    path = ROOT / "diagnostics_output/pact_place_corridor_v6c_videos/manifest.json"
+    if not path.exists():
+        pytest.skip("v6c replay clips have not been rendered")
+    manifest = json.loads(path.read_text())
+    payload = dict(manifest)
+    digest = payload.pop("manifest_sha256")
+    assert digest == contract.sha256_payload(payload)
+    assert digest == (
+        "9675a05171d31fc7ab74f791827315e9eee9a703b51a9b61a062ab598c74a8ef"
+    )
+    assert manifest["n"] == 24
+    assert manifest["config_sha256"] == (
+        "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e"
+    )
+    assert manifest["required_scene_xml"] == "pact_place_corridor_v3.xml"
+    assert manifest["clutter_bodies_asserted_against_config"] is True
+    assert manifest["replay_only"] is True
+    assert manifest["physics_stepped"] is False
+    assert manifest["expert_rerun"] is False
+    fail_clips = [item["clip"] for item in manifest["clips"] if not item["clean_success"]]
+    assert fail_clips == ["row07_FAIL_outbound_approach_ik_cascade.mp4"]
+    for item in manifest["clips"]:
+        assert item["faithfulness"]["max_object_residual_m"] < 1e-3
+        assert item["faithfulness"]["max_tcp_residual_m"] < 1e-3
+        assert item["running_clutter_frames"] == 0
+        clip_path = path.parent / item["clip"]
+        assert clip_path.is_file()
+    crib = (ROOT / "diagnostics_output/pact_place_corridor_v6c_videos/CRIB.md").read_text()
+    assert "Attempt-6c" in crib
+    assert "28 mm" in crib
     for name in fail_clips:
         assert name in crib
 
@@ -1724,3 +1890,309 @@ def test_shared_contact_audit_does_not_know_clutter() -> None:
     assert "CLUTTER_BODY_PREFIX" not in source
 
 
+def test_v3_xml_hash_is_unchanged_and_v4_pool_is_sixteen_bodies() -> None:
+    v3 = (
+        MOLMO
+        / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v3.xml"
+    )
+    v4 = (
+        MOLMO
+        / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v4.xml"
+    )
+    assert contract.sha256_file(v3) == contract.PLACE_V3_SCENE_SHA256
+    assert contract.sha256_file(v4) == contract.PLACE_V4_SCENE_SHA256
+    v3_names = {
+        element.attrib["name"]
+        for element in ET.parse(v3).getroot().iter()
+        if "name" in element.attrib
+    }
+    v4_names = {
+        element.attrib["name"]
+        for element in ET.parse(v4).getroot().iter()
+        if "name" in element.attrib
+    }
+    v3_clutter = sorted(name for name in v3_names if name.startswith("pact_clutter_"))
+    v4_clutter = sorted(name for name in v4_names if name.startswith("pact_clutter_"))
+    assert v3_clutter == [
+        "pact_clutter_l0",
+        "pact_clutter_l0_g",
+        "pact_clutter_l1",
+        "pact_clutter_l1_g",
+        "pact_clutter_r0",
+        "pact_clutter_r0_g",
+        "pact_clutter_r1",
+        "pact_clutter_r1_g",
+    ]
+    expected_v4 = []
+    for index in range(16):
+        expected_v4.append(f"pact_clutter_{index:02d}")
+        expected_v4.append(f"pact_clutter_{index:02d}_g")
+    assert v4_clutter == expected_v4
+    assert 'model="pact_place_corridor_v4"' in v4.read_text()
+    assert "pact_clutter_l0" not in v4.read_text()
+    v4_meta = json.loads(
+        (
+            MOLMO
+            / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v4_metadata.json"
+        ).read_text()
+    )
+    assert v4_meta == {"objects": {}}
+
+
+def test_v7_clutter_jitter_default_stream_stays_v6c_slots() -> None:
+    seed = 123456789
+    default_x, default_y = contract.clutter_jitters_for_seed(seed)
+    named_x, named_y = contract.clutter_jitters_for_seed(
+        seed, slot_names=contract.CLUTTER_SLOT_NAMES
+    )
+    assert default_x == named_x == {
+        slot: default_x[slot] for slot in ("l0", "l1", "r0", "r1")
+    }
+    assert default_y == named_y
+    pool_x, pool_y = contract.clutter_jitters_for_seed(
+        seed, slot_names=contract.V7_CLUTTER_POOL_SLOT_NAMES
+    )
+    assert tuple(pool_x) == contract.V7_CLUTTER_POOL_SLOT_NAMES
+    assert len(pool_x) == 16
+    assert pool_x != default_x
+
+
+def test_v7_design_review_contract_is_not_a_gate() -> None:
+    document = contract.build_design_review_contract()
+    contract.validate_design_review_contract(document)
+    assert document["role"] == "human_design_review_not_a_gate"
+    assert document["authorizes_collection"] is False
+    assert document["authorizes_probe"] is False
+    assert document["authorizes_gate"] is False
+    assert document["not_a_clean_rate_estimate"] is True
+    assert document["master_seed"] == 2026082801
+    assert len(document["expert_screen_rows"]) == 12
+    assert document["scene"]["xml"].endswith("pact_place_corridor_v4.xml")
+    assert document["scene"]["sampler_class"] == "PactPlaceCorridorV4Sampler"
+    v6c_ids = {
+        row["episode_id"]
+        for row in json.loads((ROOT / "configs/pact_place_corridor_v6c.json").read_text())[
+            "expert_screen_rows"
+        ]
+    }
+    review_ids = {row["episode_id"] for row in document["expert_screen_rows"]}
+    assert review_ids.isdisjoint(v6c_ids)
+    screen = (ROOT / "scripts/run_pact_place_expert_screen.py").read_text()
+    assert "pact_place_corridor_v4.xml" in screen
+    assert "PactPlaceCorridorV4Sampler" in screen
+    v7 = (ROOT / "scripts/run_pact_place_v7_replay_videos.py").read_text()
+    assert "pact_place_corridor_v4.xml" in v7
+    assert "pact_clutter_15" in v7
+    assert "Do not edit the v6c renderer" in v7
+    assert "review00_clean_success" in v7
+
+
+def test_v7_replay_renderer_guards_scene_and_does_not_edit_frozen_renderers() -> None:
+    v7 = (ROOT / "scripts/run_pact_place_v7_replay_videos.py").read_text()
+    v6c = (ROOT / "scripts/run_pact_place_v6c_replay_videos.py").read_text()
+    v6b = (ROOT / "scripts/run_pact_place_v6b_replay_videos.py").read_text()
+    v5 = (ROOT / "scripts/run_pact_place_v5_replay_videos.py").read_text()
+    assert "pact_place_corridor_v4.xml" in v7
+    assert 'REQUIRED_SCENE_XML = "pact_place_corridor_v4.xml"' in v7
+    assert "Do not edit the v5 renderer" in v7
+    assert "Do not edit the v6b renderer" in v7
+    assert "Do not edit the v6c renderer" in v7
+    assert "1dbef6cdd38c6c273d389cbe75717229f78a416831964f9907b00ce4ec58f04e" in v6c
+    assert "ebf1be0359b6ff810772a3d4bbb0adf8913710fae4eec14c88a8f403a70e3671" in v6b
+    assert "bd47f1c97d2815657211085590657f5211ca847b776f6039c9617f990da9c1f1" in v5
+    assert "pact_place_corridor_v2.xml" in v5
+    assert "pact_clutter_00" in v7
+    assert "min_clearance" in v7
+
+
+def test_v8_contract_freezes_real_movable_clutter_without_authorizing_gate() -> None:
+    path = ROOT / "configs/pact_place_corridor_v8.json"
+    document = contract.load_v8_contract(path)
+    assert document["role"] == "human_design_review_not_a_gate"
+    assert document["authorizes_gate"] is False
+    assert document["authorizes_collection"] is False
+    assert document["scene"]["sampler_class"] == "PactPlaceCorridorV5Sampler"
+    assert document["scene"]["clutter_movable_free_bodies"] is True
+    assert document["scene"]["clutter_added_to_obstacle_aabbs"] is False
+    assert contract.sha256_file(ROOT / document["scene"]["xml"]) == (
+        contract.PLACE_V5_SCENE_SHA256
+    )
+    assert 12 <= len(document["palette"]) <= 20
+    assert len(document["selected_layouts"]) == 24
+    assert {item["size_class"] for item in document["palette"]} == {
+        "small",
+        "medium",
+        "large",
+    }
+    assert not any(
+        token in item["uid"].lower()
+        for item in document["palette"]
+        for token in ("cup", "mug", "egg")
+    )
+    review_ids = {row["episode_id"] for row in document["family_review_rows"]}
+    gate_ids = {row["episode_id"] for row in document["expert_screen_rows"]}
+    assert review_ids.isdisjoint(gate_ids)
+    for family in contract.V8_FAMILIES:
+        layouts = [
+            item for item in document["selected_layouts"] if item["family"] == family
+        ]
+        assert len(layouts) == 4
+        assert sum(item["intrusion_side"] == "left" for item in layouts) == 2
+    for relative, digest in document["source_sha256"].items():
+        observed = contract.sha256_file(ROOT / relative)
+        if relative.endswith("molmo_spaces/tasks/enclosure_reach.py"):
+            # V8B explicitly authorized the minimal mount/prop branch after V8
+            # was frozen; the historical V8 digest remains untouched.
+            assert observed != digest
+        else:
+            assert observed == digest
+
+
+def test_v8_sweep_meets_candidate_quota_and_visibility_preregistration() -> None:
+    analysis = json.loads(
+        (
+            ROOT / "diagnostics_output/pact_place_clutter_sweep_v8/analysis.json"
+        ).read_text()
+    )
+    assert analysis["role"] == "b1_b2_replay_sweep_not_a_gate"
+    assert analysis["authorizes_gate"] is False
+    assert analysis["n_candidates"] >= 400
+    assert analysis["n_admitted"] > 0
+    assert analysis["chosen_n"] == 24
+    assert analysis["cup_is_closest_body_count"] <= 6
+    assert analysis["visibility_spans_range"] is True
+    assert analysis["min_pairwise_selected_layout_distance"] > 0.1
+    assert len(analysis["family_side_quotas"]) == 12
+    assert set(analysis["family_side_quotas"].values()) == {2}
+    for layout in analysis["selected_layouts"]:
+        assert len(layout["objects"]) >= 2
+        for item in layout["objects"]:
+            assert item["quat_wxyz"] == pytest.approx(
+                [2**-0.5, 2**-0.5, 0.0, 0.0]
+            )
+
+
+def test_v8_scoring_check_and_family_review_stop_before_gate() -> None:
+    scoring = json.loads(
+        (
+            ROOT
+            / "diagnostics_output/pact_place_corridor_v8_scoring_check/scoring_check.json"
+        ).read_text()
+    )
+    assert scoring["role"] == "scoring_check_not_a_gate"
+    assert scoring["passed"] is True
+    assert scoring["link_contact"]["passed"] is True
+    assert scoring["link_contact"]["clean_success"] is False
+    assert scoring["link_contact"]["n_link_clutter_contacts"] > 0
+    assert scoring["topple"]["passed"] is True
+    assert scoring["topple"]["events"][0]["classification"] == "other_environment"
+
+    report_path = (
+        ROOT / "diagnostics_output/pact_place_corridor_v8_family_review/family_review.json"
+    )
+    report = json.loads(report_path.read_text())
+    payload = dict(report)
+    observed = payload.pop("family_review_sha256")
+    assert observed == contract.sha256_payload(payload)
+    assert report["role"] == "human_design_review_not_a_gate"
+    assert report["authorizes_gate"] is False
+    assert report["authorizes_collection"] is False
+    assert report["mandatory_stop_after_this_report"] is True
+    assert report["gate_executed"] is False
+    assert report["n_attempts"] == report["n_clips"] == 9
+    assert report["rendered_every_attempt"] is True
+    assert report["review_gate_episode_overlap"] == []
+    assert report["families_without_clean_success_after_four"] == []
+    assert report["attempts_needed_per_family"]["F3_front_stagger"] == 4
+    realized = report["metric_table_vs_v6c"]["v8_realized_family_review"]
+    assert realized["n_completed_rendered_episodes"] == 6
+    assert realized["n_episodes_cup_is_closest_body"] == 5
+    assert any(
+        item["severity"] == "blocks_unattended_B6"
+        for item in report["human_review_findings"]
+    )
+
+    video_root = report_path.parent / "videos"
+    manifest = json.loads((video_root / "manifest.json").read_text())
+    assert manifest["physics_stepped"] is False
+    assert manifest["expert_rerun_during_render"] is False
+    assert manifest["rendered_every_attempt"] is True
+    assert len(manifest["clips"]) == 9
+    for item in manifest["clips"]:
+        clip = video_root / item["clip"]
+        assert clip.is_file() and clip.stat().st_size > 0
+        assert contract.sha256_file(clip) == item["video_sha256"]
+
+
+def test_v8_v5_sampler_partitions_free_props_and_mocap_mounts() -> None:
+    source = (MOLMO / "molmo_spaces/tasks/enclosure_reach.py").read_text()
+    v5 = _class_source(source, "PactPlaceCorridorV5Sampler")
+    assert "mjtJoint.mjJNT_FREE" in v5
+    assert 'slot_class == "mount"' in v5
+    assert "body.mocap = True" in v5
+    assert "_set_mocap_pose" in v5
+    assert "kinematic_mocap_overhead_fixture" in v5
+    assert "active_props" in v5
+    assert "active_mounts" in v5
+    assert "CLUTTER_SETTLE_STEPS" in v5
+    assert "CLUTTER_MAX_SETTLED_XY_DRIFT_M" in v5
+    assert "_body_collision_aabb" in v5
+    assert '"pact_clutter_added_to_obstacle_aabbs": False' in v5
+    assert "obstacle_aabbs.append" not in v5
+    scene = (
+        MOLMO
+        / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v5.xml"
+    )
+    root = ET.parse(scene).getroot()
+    assert root.attrib["model"] == "pact_place_corridor_v5"
+    include = root.find("include")
+    assert include is not None
+    assert include.attrib["file"] == "pact_place_corridor_v3.xml"
+
+
+def test_v8b_palette_stability_is_partitioned_and_thresholded() -> None:
+    path = (
+        ROOT
+        / "diagnostics_output/pact_place_clutter_sweep_v8b/palette_stability.json"
+    )
+    document = json.loads(path.read_text())
+    assert document["palette_size"] == 18
+    assert document["slot_class_counts"] == {"mount": 5, "prop": 13}
+    assert max(document["palette_category_counts"].values()) <= 3
+    for record in document["records"]:
+        if record["slot_class"] == "mount":
+            assert record["settling_skipped"] is True
+            continue
+        if record["accepted"]:
+            assert record["center_drift_m"] <= 0.005
+            assert record["orientation_change_deg"] <= 5.0
+
+
+def test_v8b_failed_admission_stops_before_family_review() -> None:
+    report = json.loads(
+        (
+            ROOT / "diagnostics_output/pact_place_clutter_sweep_v8b/analysis.json"
+        ).read_text()
+    )
+    payload = dict(report)
+    observed = payload.pop("analysis_sha256")
+    assert observed == contract.sha256_payload(payload)
+    assert report["authorizes_gate"] is False
+    assert report["mandatory_stop_before_B5b"] is True
+    assert report["pass2"]["all_admission_gates_pass"] is False
+    assert report["pass3"]["n_rescored"] >= 400
+    assert report["pass3"]["selection_possible"] is False
+    assert report["pass3"]["missing_quota_cell_count"] == 11
+    assert report["b5b"]["executed"] is False
+
+    scoring = json.loads(
+        (
+            ROOT
+            / "diagnostics_output/pact_place_corridor_v8b_mount_scoring_check/scoring_check.json"
+        ).read_text()
+    )
+    assert scoring["passed"] is True
+    assert scoring["body_joint_address"] == -1
+    assert scoring["body_mocap_id"] >= 0
+    assert scoring["contact_audit"]["contact_class_totals"]["clutter"] > 0
+    assert scoring["clean_success"] is False

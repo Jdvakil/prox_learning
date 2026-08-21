@@ -1,0 +1,61 @@
+{
+  "clean_success": false,
+  "clutter_pairs_at_t0_after_inject": 0,
+  "contact_class_totals": {
+    "clutter": 369,
+    "grasp_target": 0,
+    "hazard_bar": 0,
+    "other_environment": 0,
+    "place_receptacle": 0
+  },
+  "deleted_after_process_exit": true,
+  "first_link_clutter_pair": {
+    "link": "link5",
+    "pair": {
+      "body1": "pact_clutter_15",
+      "body2": "robot_0/fr3_link5",
+      "distance_m": -0.013650434464987371,
+      "geom1": "pact_clutter_15_g",
+      "geom2": "robot_0/fr3_link5_collision",
+      "root1": "pact_clutter_15",
+      "root2": "robot_0/base"
+    },
+    "policy_phase": "pregrasp",
+    "step": 87
+  },
+  "injected_body": "pact_clutter_15",
+  "injected_center_m": [
+    0.68,
+    0.0,
+    1.15
+  ],
+  "injected_half_m": [
+    0.04,
+    0.04,
+    0.12
+  ],
+  "n_cup_clutter_pairs": 0,
+  "n_link_clutter_pairs": 369,
+  "not_part_of_lattice": true,
+  "parked_before_inject_m": [
+    0.0,
+    0.0,
+    -2.0
+  ],
+  "passed": true,
+  "posed_after_inject_m": [
+    0.68,
+    0.0,
+    1.15
+  ],
+  "requirement": "unclean episode with classify_contact == clutter for a robot_0/fr3_link* pair, not only cavity_obj_ vs clutter",
+  "retry_history": [],
+  "role": "scoring_check_not_a_gate",
+  "schema_version": "pact_place_v7_scoring_check_v1",
+  "scoring_check_sha256": "96594066710cecc0dd3a110867660eb43725a4fd3db827c84ecc29f0f7d8f59c",
+  "selected_seed": {
+    "seed_u32": 3003287484,
+    "seed_u64": 12899021525001526948
+  },
+  "task_success": false
+}
