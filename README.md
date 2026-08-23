@@ -64,6 +64,7 @@ what to run, and what will bite you.
 | test a policy | `submodules/act/eval_act_obstacle.py` | [13](#13-recipe-c--act-and-pact) |
 | compare two result folders | `scripts/compare_pact.py` | [13](#13-recipe-c--act-and-pact) |
 | train the reflex net | `scripts/safety_sweep.py` → `scripts/train_safety_cvae.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
+| understand the CVAE (what it encodes, why, every tensor shape) | read [§10](#10-method--math--the-safety-cvae) | [10](#10-method--math--the-safety-cvae) |
 | make a demo video | `scripts/safety_*_demo.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
 | make paper figures | `scripts/figures.py --list` | [5](#5-file-by-file-scripts) |
 | rebuild the 40-sensor arm | `scripts/build_hybrid_on_franka_skin.py` | [8](#8-file-by-file-models-and-assets) |
@@ -365,6 +366,9 @@ dataset paths are now derived from the file's own location instead of a hardcode
 `/home/jaydv/code/prox_learning`.
 
 ### How proximity actually enters the network
+
+The CVAE is **not** a skin autoencoder. Full story, every tensor, and *why* the skin is
+encoded at all: [§10](#10-method--math--the-safety-cvae). Short version used by PACT:
 
 1. `(B, 40, 8, 8)` raw depths **in metres** come out of the dataloader.
 2. `ProxCVAEEncoder` featurises to closeness `c = clip(1 − d/0.5, 0, 1)`, with `c[d < 0.005] = 0`.
@@ -750,14 +754,127 @@ sample, not the whole episode.
 
 ## 10. Method & math — the Safety-CVAE
 
-A conditional VAE mapping the **40×8×8 skin depth image → a 7-DoF joint retreat `dq`**. It is
-trained by distillation from an analytic potential-field teacher, so it outputs the *avoidance
-motion directly* — it is not a collision classifier. At inference `z = 0`, giving a deterministic
-retreat. `SafetyHead.load()` in `scripts/train_safety_cvae.py` is the wrapper every demo imports.
+This is the section that answers: *the proximity sensors are encoded — but encoded into what,
+why, and with which shapes?*
 
-Constants used throughout: $D_{\max}=0.5\,\text{m}$ (input normalization),
-$D_{\text{act}}=0.18\,\text{m}$ (teacher activation range), close $<0.12\,\text{m}$,
-far $>0.25\,\text{m}$.
+### Read this first — two jobs, one set of weights
+
+The Safety-CVAE is **not** an autoencoder of the skin. A vanilla VAE would compress the 2560
+depth pixels into a latent `z` and then try to reconstruct those 2560 pixels. This network never
+reconstructs the skin.
+
+What it reconstructs is a **7-DoF joint-space retreat** `dq`. The skin is the *condition* (the
+thing the decoder is allowed to look at). The latent `z` is a small extra knob for "which way to
+dodge" during training. At runtime `z` is pinned to `0` and the encoder is not even run.
+
+The same frozen weights then do a second job for **PACT**: we tap a hidden layer of that
+already-trained decoder and stuff it into ACT as extra transformer tokens. *That* is the only
+sense in which "the sensors are encoded" for the policy.
+
+| job | who uses it | input | output | encoder run? |
+|---|---|---|---|---|
+| **A. Reflex head** | `scripts/safety_*_demo.py` via `SafetyHead` | raw skin `(40, 8, 8)` metres | joint retreat `(7,)` rad | **no** (`z = 0`) |
+| **B. Frozen PACT encoder** | `submodules/act/prox_cvae.py` `ProxCVAEEncoder` | raw skin `(B, 40, 8, 8)` metres | 1 feature vector, then K ACT tokens | **no** (decoder trunk / delta / raw) |
+
+Code: `scripts/train_safety_cvae.py` (`SafetyCVAE`, `SafetyHead.load`). Canonical weights:
+`assets/safety/cvae_v3/` (`meta.json`: `n_in=2560`, `n_out=7`, `z_dim=8`,
+`label_scale≈11.359`). PACT bridge: `submodules/act/prox_cvae.py`.
+
+The word *encoder* is doing two different things in this repo and that is why it feels
+confusing:
+
+- **CVAE encoder** (`SafetyCVAE.enc`) — train-only. Compresses `(skin, retreat)` into an 8-d
+  Gaussian `z`. It is **not** a skin compressor. It never runs in the demos or in PACT.
+- **PACT "encoder"** (`ProxCVAEEncoder`) — a frozen wrapper around the **decoder**. It turns
+  live skin into a 256-d (or 7-d, or 40-d) vector that ACT attends to. No `z` sampling.
+
+```mermaid
+flowchart LR
+  subgraph train ["Train (only time the CVAE encoder runs)"]
+    X["x closeness 2560"]
+    Y["dq̃ retreat 7"]
+    Enc["enc q(z | x, dq̃)"]
+    Z["z 8"]
+    Dec["dec p(dq̃ | x, z)"]
+    Yh["dq̂̃ 7"]
+    X --> Enc
+    Y --> Enc
+    Enc --> Z
+    X --> Dec
+    Z --> Dec
+    Dec --> Yh
+  end
+```
+
+```mermaid
+flowchart LR
+  subgraph infer ["Runtime: encoder is dead, z = 0"]
+    X2["x closeness 2560"]
+    Z0["z = 0"]
+    Dec2["decoder MLP"]
+    T["trunk 256  → PACT tokens"]
+    D["dq 7 rad  → reflex / delta tap"]
+    X2 --> Dec2
+    Z0 --> Dec2
+    Dec2 --> T
+    Dec2 --> D
+  end
+```
+
+```
+Job A — reflex (demos)
+  (40,8,8) m  →  closeness (2560,)  →  Dec([x, z=0])  →  (7,) scaled  × σ  →  dq (7,) rad
+
+Job B — PACT (default --prox_feature trunk)
+  (B,40,8,8) m → closeness (B,2560) → Dec trunk at z=0 → (B,256)
+               → Linear(256 → K·256) → K tokens in ACT encoder memory
+```
+
+Why not just concatenate the 2560 closeness numbers into ACT? Three reasons:
+
+1. **2560 is a lot of mostly-empty pixels.** Most sensors see infinity / self-hits / floor. ACT
+   would have to re-learn "this blob means dodge *this* joint" from 100 demos. The CVAE already
+   spent 13.5k labelled near-contacts learning that map.
+2. **The CVAE encoder cannot run at policy time.** Its encoder is `q(z | skin, dq)` — it needs
+   the *target retreat* as input. That target is exactly what you do not have while acting. The
+   only skin-only path is the **decoder** at the prior mean `z = 0`.
+3. **The trunk is a safety-shaped embedding.** Training forced the 256-d hidden state to be
+   useful for predicting a potential-field retreat. That is a better inductive bias for "don't
+   hit the hidden bar" than a generic CNN on the depth tiles.
+
+`--prox_feature raw` skips the CVAE entirely (40 peak-closeness scalars). `--prox_feature delta`
+uses the literal 7-DoF retreat. `--prox_feature trunk` (default) uses the 256-d hidden state —
+the richest skin-only representation the CVAE learned.
+
+### Tensor dictionary (every shape)
+
+| name | shape | units / range | where |
+|---|---|---|---|
+| raw SPAD depths | `(40, 8, 8)` or `(B, 40, 8, 8)` | metres, planar-z | env / h5 `/observations/proximity` |
+| closeness `x` | `(2560,)` or `(B, 2560)` | `[0, 1]`, dead pixels `0` | `featurize` |
+| teacher label `dq` | `(N, 7)` | rad, unscaled | `sweep.h5["label_dq"]` |
+| scaled label `dq̃` | `(N, 7)` | `dq / σ`, `σ ≈ 11.359` | train target |
+| encoder input (train only) | `(B, 2567)` | `concat(x, dq̃)` | `2560 + 7` |
+| `μ`, `log σ²` | each `(B, 8)` | latent posterior | encoder last layer |
+| sampled `z` | `(B, 8)` | `μ + ε ⊙ exp(½ log σ²)` | train |
+| `z` at inference | `(B, 8)` **zeros** | prior mean | demos + PACT |
+| decoder input | `(B, 2568)` | `concat(x, z)` | `2560 + 8` |
+| decoder h1 | `(B, 512)` | SiLU | `dec[0]` → `dec[1]` |
+| decoder **trunk** | `(B, 256)` | SiLU | `dec[2]` → `dec[3]` — PACT default |
+| decoder out `dq̂̃` | `(B, 7)` | scaled label space | `dec[4]` |
+| real retreat `dq` | `(B, 7)` | rad, `σ · dq̂̃` | `SafetyHead`, `--prox_feature delta` |
+| PACT tap `raw` | `(B, 1, 40)` | peak closeness per sensor | **bypasses CVAE** |
+| PACT tap `trunk` | `(B, 1, 256)` | decoder trunk | default |
+| PACT tap `delta` | `(B, 1, 7)` | real `dq` | literal steering |
+| ACT prox tokens | `(K, B, 256)` | `K=8` default, `hidden_dim=256` | `input_proj_proximity` |
+| ACT encoder memory | 170 tokens | 1 latent + 1 proprio + 8 prox + 160 image | two 240×320 cams |
+
+`cvae_v3` ended with **`active_latent_dims=1`**: seven of eight latent axes collapsed to the
+prior. The retreat direction is almost fully determined by the skin, so the "C" in CVAE is
+mostly a training regulariser, not a sampling mechanism you use at test time.
+
+Constants: $D_{\max}=0.5\,\text{m}$ (closeness), $D_{\text{act}}=0.18\,\text{m}$ (teacher range),
+close $<0.12\,\text{m}$, far $>0.25\,\text{m}$. Dead pixel $d<5\,\text{mm} \to c=0$.
 
 ### 1. Skin sensor → network input
 
