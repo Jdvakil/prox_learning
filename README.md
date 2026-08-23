@@ -4,6 +4,17 @@ A Franka FR3 wearing **40 proximity sensors** in MuJoCo, plus the policies and a
 answer one question: *does a proximity skin make a robot arm safer when the cameras cannot see
 the obstacle?*
 
+<p align="center">
+  <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png">
+    <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png"
+         alt="Franka FR3 with full-body proximity skin reaching into a cabinet cavity"
+         width="100%">
+  </a>
+</p>
+<p align="center">
+  <sub>Canonical 40-sensor hybrid skin in a cabinet-cavity task — three automatically selected, text-free views.</sub>
+</p>
+
 **Current answer (2026-07-05, 50 rollouts per cell):** yes, on the safety axis. A vision-only ACT
 policy collides in **66%** of episodes when a hazard bar is hidden from the cameras. The same
 policy with a raw-skin token collides in **40%** (Fisher p = .016). Success rate is unchanged.
@@ -46,7 +57,7 @@ what to run, and what will bite you.
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
 | collect new demonstrations | `python -m molmo_spaces.data_generation.main <Config>` | [12](#12-recipe-b--datagen) |
 | inspect datagen environments before collecting | `python scripts/datagen/visualize_environment.py --list` | [12](#inspect-environments-before-collection) |
-| render every unique datagen environment (hybrid skin + 3 panels) | `python scripts/datagen/visualize_environment.py --all --show-hidden` | [12](#inspect-environments-before-collection) |
+| render every unique datagen environment (hybrid skin + 4 text-free products) | `python scripts/datagen/visualize_environment.py --all --show-hidden` | [12](#inspect-environments-before-collection) |
 | collect cluttered pick-and-place | `… main FrankaSkinHybridClutterPnPConfig` | [12.1](#121-cluttered-bay-pick-and-place) |
 | convert demos into training files | `python -m scripts.convert_obstacle_to_act` | [13](#13-recipe-c--act-and-pact) |
 | train a policy | `submodules/act/imitate_episodes.py` | [13](#13-recipe-c--act-and-pact) |
@@ -915,14 +926,61 @@ canonical 40-sensor hybrid full-body skin** (`model_hybrid.xml` + `FrankaSkinHyb
 onto every FrankaSkin config — including older 29-sensor smoke configs — so every panel shows the
 live robot. Pass `--keep-config-robot` to keep a config's own robot/camera stack.
 
-It stops before policy execution. Each sample writes presentation-ready, **text-free** 16:9
-visual plates (plus optional clean turntable MP4s with `--format both`). Numeric context stays in
-`metadata.json` and captions stay in `gallery.html`, never burned into image pixels:
+It stops before policy execution. Each sample writes four presentation-ready, **text-free**
+products. Raster plates are fixed at 1920×1080; optional turntable MP4s are also text-free.
+Numeric context stays in `metadata.json`, and names stay in `gallery.html` captions rather than
+being burned into image pixels.
+
+#### Output preview
+
+<p align="center">
+  <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/02_sensor_cones.png">
+    <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/02_sensor_cones.png"
+         alt="Colour-coded proximity-sensor fields of view around the Franka arm"
+         width="49%">
+  </a>
+  <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/03_cameras_and_sensors.png">
+    <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/03_cameras_and_sensors.png"
+         alt="Exocentric and wrist cameras with paired proximity-depth and RGB atlases"
+         width="49%">
+  </a>
+</p>
+<p align="center">
+  <sub><strong>Left:</strong> link-coloured SPAD fields of view. <strong>Right:</strong> exocentric/wrist RGB plus all 40 depth and RGB tiles.</sub>
+</p>
+
+<p align="center">
+  <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/04_sensor_pointcloud.png">
+    <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/04_sensor_pointcloud.png"
+         alt="Three-view world-frame point cloud reconstructed from the proximity skin"
+         width="49%">
+  </a>
+  <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/04_sensor_pointcloud_in_scene.png">
+    <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/04_sensor_pointcloud_in_scene.png"
+         alt="Proximity point cloud and sensor origins overlaid on the cabinet scene"
+         width="49%">
+  </a>
+</p>
+<p align="center">
+  <sub><strong>Left:</strong> skin-only world-frame reconstruction. <strong>Right:</strong> reconstructed points and sensor origins placed back in the scene. Click any image for full resolution.</sub>
+</p>
+
+The presentation pass does the following:
+
+- Computes a scene-aware look-at point and framing distance.
+- Probes a full 360° orbit every 15° with MuJoCo segmentation, scores robot visibility,
+  centering, size, and edge clipping, then keeps three clear and distinct views.
+- Builds an asymmetric hero triptych with rounded panels instead of a labelled montage.
+- Applies a restrained gamma, contrast, colour, and sharpness grade to external scene views and
+  turntables.
+- Encodes sensor anatomy visually: each robot link has one border/cone colour, and currently
+  active depth tiles receive a stronger border. No legend or sensor name appears inside an image.
 
 For readability, the visualizer floors MuJoCo's camera headlight at ambient `0.45`, diffuse
 `0.75`, and specular `0.18` **after** the task sampler applies per-episode lighting
 randomization. This changes presentation pixels only; scene geometry, camera poses, and proximity
-depth stay unchanged. Pass `--keep-scene-lighting` to show the exact sampled darkness.
+depth stay unchanged. Pass `--keep-scene-lighting` to disable this headlight floor for an already
+bright or washed-out scene. External scene views still receive the standard presentation grade.
 
 | file | content |
 |---|---|
@@ -932,9 +990,14 @@ depth stay unchanged. Pass `--keep-scene-lighting` to show the exact sampled dar
 | `04_sensor_pointcloud.ply` / `.npz` | **skin-only** world-frame point cloud (8×8 back-projection per SPAD; cosmetic skin hidden) |
 | `04_sensor_pointcloud.png` | text-free three-angle 3D reconstruction plate (sensor origins in warm white) |
 | `04_sensor_pointcloud_in_scene.png` | scored hero triptych with reconstructed points overlaid in the scene |
+| `01_robot_scene_turntable.mp4` / `02_sensor_cones_turntable.mp4` | optional clean 360° orbits produced by `--format mp4` or `--format both` |
 
-Also `metadata.json`, and after `--all`: `gallery.html` + `index.json`. An `environment.png`
-alias of panel 01 is kept for older paths.
+Each sample also gets `metadata.json`, including config/scene/house identity, robot and sensor
+details, camera look-at/distance, selected presentation azimuths, headlight settings, output
+paths, and `image_text_overlays: false`. Every render run writes root `index.json` with successful
+renders and failures. If at least one PNG exists it also writes a responsive dark
+`gallery.html`, using panel 01 as each tile. An `environment.png` alias of panel 01 is kept for
+older paths.
 
 The live hybrid family uses two static scene files: `fumehood.xml` for the
 reach/obstacle/invisible-obstacle line, and `fumehood_clutter.xml` for cluttered pick-and-place.
@@ -960,14 +1023,27 @@ OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
 # Every unique project environment.
 OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
     python scripts/datagen/visualize_environment.py --all \
-    --format both --show-hidden
+    --format both --show-hidden --attempts 10
 ```
 
 Outputs default to `experiments_output/default/environment_viz/<Config>/<scene>_house_<id>/sample_00/`
 (under the prox_learning repo, because `MLSPACES_ASSETS_DIR` points at this repo's `assets/`).
 Open `gallery.html` after `--all` (tiles panel 01). Without `--show-hidden`, external views match
 policy-visible geometry; proximity tiles always see group 4 (same as datagen skin renders).
-`--all` already dedupes and refuses `--house` / `--all-houses`.
+`--all` already dedupes and refuses `--house` / `--all-houses`. It keeps successful renders when
+one sampled house fails, records the error in `index.json`, finishes the gallery, and exits with
+status 1 so automation still notices the incomplete inventory. Raise `--attempts` for transient
+`HouseInvalidForTask` sampling failures.
+
+Useful switches:
+
+- `--format png|mp4|both`: still plates, turntables, or both.
+- `--keep-scene-lighting`: remove the presentation headlight floor.
+- `--no-randomization`: disable generic texture, lighting, robot-texture, and dynamics randomizers.
+- `--keep-config-robot`: use the config's original robot/camera stack instead of forced hybrid skin.
+- `--show-hidden`: reveal sensor-only geom group 4 in external views.
+- `--show-sensors`: draw MuJoCo camera markers for wrist and skin sensors.
+- `--dry-run --all`: print the deduplicated render plan without sampling or writing images.
 
 ### 12.1 Cluttered-bay pick-and-place
 
