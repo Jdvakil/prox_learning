@@ -45,6 +45,8 @@ what to run, and what will bite you.
 | understand the result in plain English | read `STATUS.md` | — |
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
 | collect new demonstrations | `python -m molmo_spaces.data_generation.main <Config>` | [12](#12-recipe-b--datagen) |
+| inspect datagen environments before collecting | `python scripts/datagen/visualize_environment.py --list` | [12](#inspect-environments-before-collection) |
+| render every unique datagen environment (hybrid skin + 3 panels) | `python scripts/datagen/visualize_environment.py --all --show-hidden` | [12](#inspect-environments-before-collection) |
 | collect cluttered pick-and-place | `… main FrankaSkinHybridClutterPnPConfig` | [12.1](#121-cluttered-bay-pick-and-place) |
 | convert demos into training files | `python -m scripts.convert_obstacle_to_act` | [13](#13-recipe-c--act-and-pact) |
 | train a policy | `submodules/act/imitate_episodes.py` | [13](#13-recipe-c--act-and-pact) |
@@ -162,6 +164,9 @@ eval_blur_baseline.sh    the 9-condition blur test + summary table
 All 28 files parse and every sibling import resolves (re-checked 2026-08-16, after the cleanup).
 Status is one of **ACTIVE** (part of a current recipe) or **ARCHIVE** (worked, but its era is
 over). Nothing dead is left in this directory.
+
+The datagen environment visualizer is **not** here. It lives at
+`submodules/molmospaces/scripts/datagen/visualize_environment.py` — see [§12](#inspect-environments-before-collection).
 
 ### Core pipeline
 
@@ -448,7 +453,7 @@ A large library. You need about four of its sixteen packages.
 
 | package | what you need from it |
 |---|---|
-| **`data_generation/`** | `main.py` (entry), `pipeline.py` (workers, rollout loop, saving), `config_registry.py`, **`config/object_manipulation_datagen_configs.py` — every config in this project**, `custom_scenes/` (the MJCF scenes: `fumehood.xml`, `enclosure_param.xml`, `panel_slalom.xml`, `cubby_overreach.xml`) |
+| **`data_generation/`** | `main.py` (entry), `pipeline.py` (workers, rollout loop, saving), `config_registry.py`, **`config/object_manipulation_datagen_configs.py` — every config in this project**, `custom_scenes/` (the MJCF scenes: `fumehood.xml`, `fumehood_clutter.xml`, `enclosure_param.xml`, `panel_slalom.xml`, `cubby_overreach.xml`) |
 | **`tasks/`** | `enclosure_reach.py` (samplers + experts + the obstacle policy), `house_embed.py`, `cavity_pick_task_sampler.py`, `pick_task.py`, `task.py` (step loop / sub-step recorder). The other ~27 files are unrelated tasks. |
 | **`env/`** | `env.py` (`CPUMujocoEnv`, owns the proximity renderers), `sensors_cameras.py`, `sensors.py` |
 | **`configs/`** | `abstract_exp_config.py` (global flags incl. `viz_sensor_rgb`), `camera_configs.py` (skin layouts), `robot_configs.py`, `task_sampler_configs.py`, `base_pick_config.py`, `policy_configs.py` |
@@ -561,6 +566,10 @@ really a single task: it is the only way to use more than one worker.
 
 `setup_house_dirs` **skips a house whose h5 already exists** — that is the resume mechanism, and
 also why re-running into an existing timestamped dir silently does nothing.
+
+**Inspect the scene before collecting.** The script lives in the submodule, not under this
+repo's `scripts/`: `submodules/molmospaces/scripts/datagen/visualize_environment.py`. It samples
+the same config and task sampler as datagen, then renders. Full recipe in [§12](#inspect-environments-before-collection).
 
 ---
 
@@ -896,6 +905,69 @@ Keep `num_workers <= 2` or workers get OOM-killed (15–29 GB RSS each on a 62 G
 To backfill houses that a crashed run missed, re-run the config with `num_workers` lowered —
 `setup_house_dirs` skips houses that already have an h5, so it resumes rather than restarting.
 The corollary: re-running into a directory that is already complete does nothing at all.
+
+### Inspect environments before collection
+
+The visualizer is **`submodules/molmospaces/scripts/datagen/visualize_environment.py`**. It is a
+datagen tool, so it lives next to the other MolmoSpaces scripts, not under this repo's `scripts/`.
+It samples the same config and task sampler as collection, then (by default) **forces the
+canonical 40-sensor hybrid full-body skin** (`model_hybrid.xml` + `FrankaSkinHybridCameraSystem`)
+onto every FrankaSkin config — including older 29-sensor smoke configs — so every panel shows the
+live robot. Pass `--keep-config-robot` to keep a config's own robot/camera stack.
+
+It stops before policy execution. Each sample writes presentation-ready, **text-free** 16:9
+visual plates (plus optional clean turntable MP4s with `--format both`). Numeric context stays in
+`metadata.json` and captions stay in `gallery.html`, never burned into image pixels:
+
+For readability, the visualizer floors MuJoCo's camera headlight at ambient `0.45`, diffuse
+`0.75`, and specular `0.18` **after** the task sampler applies per-episode lighting
+randomization. This changes presentation pixels only; scene geometry, camera poses, and proximity
+depth stay unchanged. Pass `--keep-scene-lighting` to show the exact sampled darkness.
+
+| file | content |
+|---|---|
+| `01_robot_scene.png` | asymmetric hero triptych; a segmentation sweep scores the full orbit and rejects wall-occluded views |
+| `02_sensor_cones.png` | same scored views with short, link-coloured SPAD 45° FOV frusta |
+| `03_cameras_and_sensors.png` | exo+wrist RGB above compact paired 40-sensor depth/RGB atlases; link identity is encoded by border colour |
+| `04_sensor_pointcloud.ply` / `.npz` | **skin-only** world-frame point cloud (8×8 back-projection per SPAD; cosmetic skin hidden) |
+| `04_sensor_pointcloud.png` | text-free three-angle 3D reconstruction plate (sensor origins in warm white) |
+| `04_sensor_pointcloud_in_scene.png` | scored hero triptych with reconstructed points overlaid in the scene |
+
+Also `metadata.json`, and after `--all`: `gallery.html` + `index.json`. An `environment.png`
+alias of panel 01 is kept for older paths.
+
+The live hybrid family uses two static scene files: `fumehood.xml` for the
+reach/obstacle/invisible-obstacle line, and `fumehood_clutter.xml` for cluttered pick-and-place.
+The registry also contains older enclosure / cavity / shelf / panel / cubby / pillar /
+realistic-table / ProcTHOR-house environments. `--list` prints the config-to-scene map;
+`--all` renders one sample per unique `(scene, robot)` pair (with hybrid force, 29- vs 40-sensor
+duplicates of the same XML collapse to one job).
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+
+# Inventory (hybrid robot label by default).
+python scripts/datagen/visualize_environment.py --list --scope project
+
+# One cluttered-bay sample: robot / cones / cameras+sensors.
+# --show-hidden reveals geom group 4 (invisible hazard bars).
+OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+    python scripts/datagen/visualize_environment.py \
+    FrankaSkinHybridClutterPnPCheckConfig \
+    --format both --show-hidden
+
+# Every unique project environment.
+OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+    python scripts/datagen/visualize_environment.py --all \
+    --format both --show-hidden
+```
+
+Outputs default to `experiments_output/default/environment_viz/<Config>/<scene>_house_<id>/sample_00/`
+(under the prox_learning repo, because `MLSPACES_ASSETS_DIR` points at this repo's `assets/`).
+Open `gallery.html` after `--all` (tiles panel 01). Without `--show-hidden`, external views match
+policy-visible geometry; proximity tiles always see group 4 (same as datagen skin renders).
+`--all` already dedupes and refuses `--house` / `--all-houses`.
 
 ### 12.1 Cluttered-bay pick-and-place
 
