@@ -1398,6 +1398,51 @@ numbers. `--end_on_collision` additionally makes any contact an immediate failur
 Budget: rollouts are ~3.5 min each, dominated by the sub-stepped 8×8 render over 40 sensors.
 Memory is ~8 GB base + 0.5 GB per episode (41 GB RSS for a 50-rollout run), so run cells serially.
 
+### Why PACT success does not move (audit 2026-08-23)
+
+The train/eval tensor path is **not** the reason. Metres stay metres until `ProxCVAEEncoder`,
+sensor order is `cvae_v3/meta.json` on convert *and* live eval, `dataset_stats` never z-score the
+skin, and the CVAE state_dict loads. If success is flat, it is because the *method* fights the
+*data*, not because a shape is wrong.
+
+What is actually wired:
+
+```
+h5 /observations/proximity  (T, 40, 8, 8) metres
+        │  one random frame per ACT sample
+        ▼
+ProxCVAEEncoder.featurize   (B, 2560) closeness, once
+        │  default tap = trunk  → (B, 1, 256)
+        │  useful tap    = raw   → (B, 1, 40)
+        ▼
+n_proximity_sensors = 1     Linear(feat → K·hidden) → K tokens, K=8
+        ▼
+encoder memory              [z, qpos, 8 prox, ~160 image]
+```
+
+| finding | why it kills a success-rate paper |
+|---|---|
+| **Wrong metric.** Demos complete the pick with the bar present. BC copies that. Skin cannot raise success unless the expert actually *went around* the bar. The honest PACT number is **invisible-cell collision**, not lift-success. | Headline success is designed to be flat. |
+| **Default tap is the worst tap.** `--prox_feature trunk` (CLI default) is a frozen *retreat* embedding. On v2, trunk *raised* invisible collisions 66%→72%. `raw` is the only arm that moved the needle (66%→40%, Fisher p=.016). | Training PACT with the default flag is a negative control. |
+| **CVAE objective ⊥ BC objective.** Sweep labels say "joint-retreat when close." Expert actions say "keep going into the cavity." `‖delta‖` anti-correlates with min depth (~−0.7) on *successful* demos (trap 4). BC learns to ignore the token. | Frozen Safety-CVAE as a PACT feature is the wrong prior. |
+| **40 sensors → 1 vector.** `n_proximity_sensors=1`. Which link is hot is mashed into 256 (or 40) numbers, then a Linear fans it into 8 anonymous tokens. No per-sensor identity in the transformer. | Spatial skin is thrown away before attention. |
+| **One skin frame, 100-step action.** Uniform L1 over the chunk. Late actions barely depend on t=0 closeness, so the token looks like noise to the loss. | Signal-to-horizon mismatch (decision log, PACT v1). |
+| **Vision is never forced off.** `--image_dropout_p` default 0. ~160 image tokens vs 8 prox. Attention can ignore skin and still fit demos. | Blanking skin moved the chunk by ~0.005 in v1. |
+| **Eval protocol.** `imitate_episodes.py --eval` calls `policy(qpos, image)` — **no** `proximity_positions`. A PACT ckpt either crashes or is not what you think. `eval_act_obstacle.py` with `--temp_agg_off` is the only valid path; temp-agg-on gives the current skin ~1.6% of the executed action. | Easy to "evaluate PACT" without PACT. |
+| **Mean-pool of 4 substeps.** Convert and live eval both `mean` the `(4,8,8)` buffer. A 1-substep graze is diluted 4×. Min-pool would match a safety sensor. | Transient contacts get washed out. |
+
+None of those are silent shape bugs. They are why a correctly-wired PACT still looks like ACT on **success**.
+
+High-leverage next experiments (do these, not another trunk run):
+
+1. **Always train `--prox_feature raw`.** Treat trunk/delta as negative controls. Already shown.
+2. **`--image_dropout_p 0.3` (or a skin-only aux head).** Force the transformer to use the 8 tokens.
+3. **Per-sensor tokens** (`n_proximity_sensors=40`, feat = peak closeness or 8×8 pooled, K=1) so attention can sit on the hot link.
+4. **Shorter chunks or re-query every step for the skin** (keep action chunk; refresh prox tokens). Fixes horizon mismatch without throwing away ACT.
+5. **Do not freeze the Safety-CVAE as the policy encoder.** Either (a) residual `SafetyHead` *at inference* on top of ACT, which is a different method and actually uses the CVAE for its trained job, or (b) a tiny learned skin MLP trained with BC + image dropout.
+6. **Collect / upsample deflect+abort demos** if the paper claim is success-under-occlusion. Imitating "go in anyway" cannot yield go-around.
+7. **Eval only** `eval_act_obstacle.py --temp_agg_off --eval_cell invisible`, n=50, report collisions *and* strict success. Never `imitate_episodes.py --eval`.
+
 ---
 
 ## 14. Every number in one place
@@ -1509,6 +1554,11 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
   normalized units; val loss identical across all three arms), ambient saturation with no baseline
   subtraction, temporal-aggregation washout at eval, and a signal-to-horizon mismatch (one skin
   snapshot conditions a 100-step chunk under uniform L1).
+- **PACT wiring re-audit (2026-08-23).** Confirmed again: no double-featurize, no stats-scaling
+  of depths, convert/eval share meta sensor order, CVAE `enc.{0,2,4}`/`dec.{0,2,4}` loads.
+  Success staying flat is expected (demos do not go around the bar). The only published PACT
+  win is `raw` × invisible-cell collisions. Default `--prox_feature trunk` is a *negative*
+  control. Full table and next experiments: [§13](#why-pact-success-does-not-move-audit-2026-08-23).
 - **Probe gate on v1: FAIL (2026-07-03).** Deflect-vs-free is at chance from the trunk (ep-AUC
   0.526), from raw skin (0.500), and — crucially — from qpos alone (0.34–0.56). Four rescue probes
   (ambient residual, bar-station window, qpos-incremental, full 2560-d) all failed. The planner
