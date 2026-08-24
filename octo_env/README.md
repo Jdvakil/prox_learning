@@ -79,6 +79,10 @@ Known first-run risks, in order of likelihood:
 2. JAX/CUDA wheel mismatch on the GPU machine — use the `jax[cuda12]` line in
    `setup_octo.sh`, or match the machine's CUDA.
 3. `make_single_dataset` kwargs drift if octo is not at the pinned commit.
+   (The dependency pins in `setup_octo.sh` were validated on a real GPU
+   machine on 2026-08-24 — jax 0.4.20+cuda, cuDNN 8.9, scipy 1.11.4,
+   numpy 1.26.4, transformers 4.38.2; GPU visible, octo-small loads.
+   Source `~/octo/octo_env.sh` before any GPU run.)
 4. Gripper: the L1 head regresses the raw 0/255 command; the client snaps at
    127.5. If gripper behavior is poor, binarize the action's last dim in the
    builder instead.
