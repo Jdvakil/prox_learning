@@ -23,6 +23,39 @@ Newest session at the top.
 
 ---
 
+## 2026-08-23 — user started avoid-v1 ACT + PACT train in tmux
+
+- **When:** 2026-08-23 ~18:26 America/Denver.
+- **Why:** Headline comparison on collision-aware set (`obstacle_pact_avoid_v1`, 151 eps).
+- **What (user, not agent):** two `imitate_episodes.py` jobs in tmux under `submodules/act`:
+  1. vanilla ACT — `--wandb_run_name act_avoid_s0` (no proximity)
+  2. PACT — `--use_proximity --prox_feature raw --prox_layout per_sensor --image_dropout_p 0.3 --prox_dropout_p 0.1 --wandb_run_name pact_raw_persensor_idrop03_s0`
+- **How:** ckpts land in `submodules/act/ckpts/obstacle_pact_avoid_v1/<YYYYMMDD_HHMMSS>_<runname>/`. If both `python` lines run in **one** pane, PACT waits until ACT finishes (~2000 epochs). Two tmux windows = both GPUs/jobs in parallel (only if VRAM allows; otherwise keep serial).
+- **Not done:** eval. After `policy_best.ckpt` exists: `eval_act_obstacle.py --temp_agg_off --eval_cell invisible`, n=50, report collisions.
+
+---
+
+## 2026-08-23 — convert avoid-v1 counts pasted into constants
+
+- **When:** 2026-08-23 ~18:23 America/Denver. User ran convert; agent pasted printed counts.
+- **Why:** `imitate_episodes.py` reads `TASK_CONFIGS['obstacle_pact_avoid_v1']['num_episodes']`. Left at 0, train would see an empty set.
+- **What:** `submodules/act/constants.py` → `num_episodes=151`, `episode_len=140`.
+- **How / result:** User command (visible-bar `hybrid_obstacle_v1` `20260612_183855`, not the invis run):
+
+```
+python -m scripts.convert_obstacle_to_act \
+    --src assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855 \
+    --dst act_style_data/obstacle_prox_avoid_v1 \
+    --with_proximity --prox_pool min \
+    --skip_approach_collision --keep_deflect_collisions --upsample_deflect 3 \
+    --image_h 240 --image_w 320
+```
+
+`convert_meta.json`: fail skip 25, collision skip 13 (non-deflect scrapes), not_deflect 0. Written **deflect=96** (32 unique × 3) + **free=55** = **151**. max T=138 → episode_len=140. `prox_pool=min`.
+- **Not done:** train vanilla ACT + PACT-raw-per_sensor; eval invisible cell n=50. Optional later: same convert on `hybrid_invis_obstacle_v1` if the camera-blind cell should be *in training* too.
+
+---
+
 ## 2026-08-23 — PACT audit dump, collision-aware convert, encoder layout
 
 - **When:** 2026-08-23 afternoon–evening (America/Denver). Follow-on to the

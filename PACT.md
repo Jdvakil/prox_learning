@@ -170,14 +170,14 @@ python scripts/analyze_obstacle_dataset.py \
 
 # 1. Convert: successes only, drop non-deflect inbound scrapes, 3× the deflect bows,
 #    min-pool the 4 skin substeps, keep proximity.
+# DONE 2026-08-23: 151 eps (96 deflect = 32×3, 55 free), episode_len=140, prox_pool=min.
+# Skipped fail=25 collision=13. Counts already in TASK_CONFIGS['obstacle_pact_avoid_v1'].
 python -m scripts.convert_obstacle_to_act \
     --src assets/datagen/hybrid_obstacle_v1/FrankaSkinHybridObstacleConfig/20260612_183855 \
     --dst act_style_data/obstacle_prox_avoid_v1 \
     --with_proximity --prox_pool min \
     --skip_approach_collision --keep_deflect_collisions --upsample_deflect 3 \
     --image_h 240 --image_w 320
-# paste printed num_episodes / episode_len into
-# submodules/act/constants.py  TASK_CONFIGS['obstacle_pact_avoid_v1']
 ```
 
 Invisible-bar v2 source, if you want the camera-blind cell in the *training*
