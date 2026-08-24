@@ -22,8 +22,9 @@ Everything else in this repo is either the machinery that produced that number, 
 that did not work.
 
 For the plain-language version of the science, read **`STATUS.md`**. For the latest written
-report, read **`reports/2026-08-14/report.md`**. This file is the manual: what every file is,
-what to run, and what will bite you.
+report, read **`reports/2026-08-14/report.md`**. For why PACT success is flat and how to
+beat ACT on **collision avoidance**, read **`PACT.md`**. This file is the manual: what
+every file is, what to run, and what will bite you.
 
 ---
 
@@ -54,6 +55,7 @@ what to run, and what will bite you.
 | I want to… | run | section |
 |---|---|---|
 | understand the result in plain English | read `STATUS.md` | — |
+| why PACT success is flat / beat ACT on collisions | read `PACT.md` | [13](#13-recipe-c--act-and-pact) |
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
 | collect new demonstrations | `python -m molmo_spaces.data_generation.main <Config>` | [12](#12-recipe-b--datagen) |
 | inspect datagen environments before collecting | `python scripts/datagen/visualize_environment.py --list` | [12](#inspect-environments-before-collection) |
@@ -416,13 +418,14 @@ deleted `act_style_data/` directories and were removed on 2026-08-16. Paths are 
 | flag | default | what it does |
 |---|---|---|
 | `--use_proximity` | off | turns on the PACT path |
-| `--prox_feature` | `trunk` | `raw` / `trunk` / `delta` (see above) |
+| `--prox_feature` | `raw` | `raw` / `trunk` / `delta` (see above). **Train `raw`.** `trunk` is a negative control. |
+| `--prox_layout` | `per_sensor` | `per_sensor` = 40 named tokens; `global` = one mashed vector (old published run) |
 | `--prox_encoder_ckpt` | `assets/safety/cvae_v3` | which frozen CVAE |
-| `--prox_tokens_per_sensor` | 8 | K |
+| `--prox_tokens_per_sensor` | 8 | K. `per_sensor` clamps 8 → 1 unless you pass another K |
 | `--blur_sigma0` | 0 | Gaussian blur strength on camera frames at training time |
 | `--blur_mode` | `curriculum` | `curriculum` anneals `σ·(1 − n/N)`; `constant` holds σ all run |
 | `--blur_curriculum_steps` | half of total | N |
-| `--image_dropout_p` | 0 | per-sample hard vision dropout |
+| `--image_dropout_p` | 0 | per-sample hard vision dropout. Headline PACT run: **0.3** |
 | `--prox_dropout_p` | 0 | per-sample skin dropout, sampled disjointly from vision |
 | `--image_dropout_mode` | `all` | `all` cameras or a `single` random one |
 | `--no_zero_latent_on_drop` | off | ablation: keep the CVAE style latent on dropped samples |
@@ -1327,6 +1330,8 @@ setting that OOM-killed 3 of 8 houses on the v2 run (§7, §15).
 
 ## 13. Recipe C — ACT and PACT
 
+Working note (canvases, audit, dataset numbers, collision-aware next runs): **`PACT.md`**.
+
 The control policy is upstream ACT trained on the one-env obstacle pick — red cup in the
 fumehood, hazard bar present ~75% of episodes — using only the exo + wrist RGB cameras and joint
 qpos. PACT adds the proximity token. Both are **evaluated in the exact datagen environment**, so
@@ -1433,15 +1438,11 @@ encoder memory              [z, qpos, 8 prox, ~160 image]
 
 None of those are silent shape bugs. They are why a correctly-wired PACT still looks like ACT on **success**.
 
-High-leverage next experiments (do these, not another trunk run):
+High-leverage next experiments live in **`PACT.md`** (do these, not another trunk run). Short list:
 
-1. **Always train `--prox_feature raw`.** Treat trunk/delta as negative controls. Already shown.
-2. **`--image_dropout_p 0.3` (or a skin-only aux head).** Force the transformer to use the 8 tokens.
-3. **Per-sensor tokens** (`n_proximity_sensors=40`, feat = peak closeness or 8×8 pooled, K=1) so attention can sit on the hot link.
-4. **Shorter chunks or re-query every step for the skin** (keep action chunk; refresh prox tokens). Fixes horizon mismatch without throwing away ACT.
-5. **Do not freeze the Safety-CVAE as the policy encoder.** Either (a) residual `SafetyHead` *at inference* on top of ACT, which is a different method and actually uses the CVAE for its trained job, or (b) a tiny learned skin MLP trained with BC + image dropout.
-6. **Collect / upsample deflect+abort demos** if the paper claim is success-under-occlusion. Imitating "go in anyway" cannot yield go-around.
-7. **Eval only** `eval_act_obstacle.py --temp_agg_off --eval_cell invisible`, n=50, report collisions *and* strict success. Never `imitate_episodes.py --eval`.
+1. **Always train `--prox_feature raw --prox_layout per_sensor --image_dropout_p 0.3`.** Treat trunk/delta as negative controls.
+2. **Reconvert with `--skip_approach_collision --keep_deflect_collisions --upsample_deflect 3 --prox_pool min`.** Stop teaching scrapes; overweight real bows.
+3. **Eval only** `eval_act_obstacle.py --temp_agg_off --eval_cell invisible`, n=50, report **collisions** and strict success. Never `imitate_episodes.py --eval`.
 
 ---
 
@@ -1554,11 +1555,7 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
   normalized units; val loss identical across all three arms), ambient saturation with no baseline
   subtraction, temporal-aggregation washout at eval, and a signal-to-horizon mismatch (one skin
   snapshot conditions a 100-step chunk under uniform L1).
-- **PACT wiring re-audit (2026-08-23).** Confirmed again: no double-featurize, no stats-scaling
-  of depths, convert/eval share meta sensor order, CVAE `enc.{0,2,4}`/`dec.{0,2,4}` loads.
-  Success staying flat is expected (demos do not go around the bar). The only published PACT
-  win is `raw` × invisible-cell collisions. Default `--prox_feature trunk` is a *negative*
-  control. Full table and next experiments: [§13](#why-pact-success-does-not-move-audit-2026-08-23).
+- **PACT working note + collision-aware convert (2026-08-23).** Canvases and the wiring audit dumped to `PACT.md`. Code now defaults `--prox_feature raw --prox_layout per_sensor`, hard-stops `imitate_episodes.py --eval` when proximity is on, and convert can drop inbound scrapes / upsample deflect / min-pool skin. Paper number stays invisible-cell **collisions**, not lift-success.
 - **Probe gate on v1: FAIL (2026-07-03).** Deflect-vs-free is at chance from the trunk (ep-AUC
   0.526), from raw skin (0.500), and — crucially — from qpos alone (0.34–0.56). Four rescue probes
   (ambient residual, bar-station window, qpos-incremental, full 2560-d) all failed. The planner
