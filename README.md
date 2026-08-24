@@ -23,7 +23,8 @@ that did not work.
 
 For the plain-language version of the science, read **`STATUS.md`**. For the latest written
 report, read **`reports/2026-08-14/report.md`**. For why PACT success is flat and how to
-beat ACT on **collision avoidance**, read **`PACT.md`**. This file is the manual: what
+beat ACT on **collision avoidance**, read **`PACT.md`**. For a copy-paste brief for a
+paper-writing agent (claim fence), read **`paper.md`**. This file is the manual: what
 every file is, what to run, and what will bite you.
 
 ---
@@ -56,6 +57,7 @@ every file is, what to run, and what will bite you.
 |---|---|---|
 | understand the result in plain English | read `STATUS.md` | — |
 | why PACT success is flat / beat ACT on collisions | read `PACT.md` | [13](#13-recipe-c--act-and-pact) |
+| feed a paper-writing agent (claim fence) | read `paper.md` | — |
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
 | collect new demonstrations | `python -m molmo_spaces.data_generation.main <Config>` | [12](#12-recipe-b--datagen) |
 | inspect datagen environments before collecting | `python scripts/datagen/visualize_environment.py --list` | [12](#inspect-environments-before-collection) |

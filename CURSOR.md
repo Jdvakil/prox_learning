@@ -4,9 +4,9 @@ Living log of agent edits in this checkout. Read this before new work. Append
 a dated block after every non-trivial change. Do not replace history; add
 below.
 
-**Science / method notes** live in [`PACT.md`](PACT.md). **How to run the
-repo** lives in [`README.md`](README.md). This file is only *what the agent
-changed, why, how, when*.
+**Science / method notes** live in [`PACT.md`](PACT.md). **Paper-agent brief**
+lives in [`paper.md`](paper.md). **How to run the repo** lives in
+[`README.md`](README.md). This file is only *what the agent changed, why, how, when*.
 
 How to append:
 
@@ -20,6 +20,19 @@ How to append:
 ```
 
 Newest session at the top.
+
+---
+
+## 2026-08-23 — paper.md (paper-agent claim fence)
+
+- **When:** 2026-08-23 ~18:36 America/Denver.
+- **Why:** User asked for the paper-writing brief as a file, easier to copy-paste.
+- **What:** new `paper.md` (allowed claims, do-not-claim list, method, dataset, traps,
+  2026-07-05 tables, in-flight avoid-v1 flagged as unmeasured). README routing row +
+  intro pointer. This log header now cites `paper.md`.
+- **How:** dump of the chat brief; numbers from `STATUS.md` / `PACT.md` / README §14.
+  Not a paper draft.
+- **Not done:** actual paper text. Avoid-v1 eval still pending.
 
 ---
 
