@@ -23,6 +23,22 @@ Newest session at the top.
 
 ---
 
+## 2026-08-23 — avoid-v1 train finished; eval is next
+
+- **When:** 2026-08-23 ~20:49 America/Denver. Both 2000-epoch jobs done (serial in tmux).
+- **Why:** User asked what is next after logs looked done.
+- **What (verified on disk, not a result yet):**
+  - vanilla: `ckpts/obstacle_pact_avoid_v1/20260823_183123_act_avoid_s0/`
+    `policy_best.ckpt` = epoch **1914**, min val **0.0402**. ~59 min train.
+  - PACT: `ckpts/obstacle_pact_avoid_v1/20260823_193046_pact_raw_persensor_idrop03_s0/`
+    `policy_best.ckpt` = epoch **1850**, min val **0.0438**. ~64 min train.
+    `prox_config.json`: `raw` / `per_sensor` / `min` / `n_sensors=40` / K=1.
+    Last-epoch `l1_img_dropped` 0.069 vs `l1_clean` 0.039 → image dropout actually hurt the dropped samples (good).
+- **How / next:** eval both ckpts, three cells, n=50, `--temp_agg_off --eval_cell`. Auto-detect PACT from `prox_config.json`. Never `imitate_episodes.py --eval`. ~3.5 min × 50 × 6 ≈ 18 h serial (~41 GB RSS). Paper cell first (`invisible`). Then `scripts/compare_pact.py`.
+- **Not done:** any rollout numbers. Do not update `paper.md` tables until `eval_summary.json` exists.
+
+---
+
 ## 2026-08-23 — paper.md (paper-agent claim fence)
 
 - **When:** 2026-08-23 ~18:36 America/Denver.
