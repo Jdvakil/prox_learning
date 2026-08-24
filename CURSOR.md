@@ -23,6 +23,33 @@ Newest session at the top.
 
 ---
 
+## 2026-08-23 — user away ~10–12 h; n=50 grid in tmux; paper from July-5 numbers
+
+- **When:** 2026-08-23 ~21:13 America/Denver.
+- **Why:** User leaving overnight to write the paper. Eval loop started ~21:10.
+- **What:** six jobs serial: ACT/PACT × invisible/free/visible. First job live:
+  vanilla `act_avoid_s0_invisible`. Full grid ~18 h → at +12 h expect some
+  `eval_summary.json` files, maybe not all six.
+- **How / when back:** glob `eval_output/{act_avoid_s0,pact_raw_persensor_idrop03_s0}_{invisible,free,visible}/eval_summary.json`. Paper cell = both **invisible** n=50. Do not paste avoid-v1 rates into `paper.md` until those exist. Paper text tonight = 2026-07-05 66%→40% grid only.
+- **Not done:** any n=50 avoid-v1 number.
+
+---
+
+## 2026-08-23 — smoke eval OK (n=2, not a result)
+
+- **When:** 2026-08-23 20:57–21:04 America/Denver.
+- **Why:** User ran 2-rollout PACT invisible smoke; asked to watch for completion/issues.
+- **What:** `eval_output/smoke_pact_invisible/eval_summary.json`. Wiring good:
+  `eval_cell=invisible`, sampler `InvisibleObstacleFumehoodPickCheckSampler`,
+  `OBSTACLE_P=1 INVIS_P=1`, `[InvisBar] geom group 4`, PACT `raw` / `per_sensor` /
+  40 sensors / K=1, `proximity ON (40,8,8)`, `--temp_agg_off`, full 201-step chunks
+  (not frozen). 0/2 lift, collisions 1/2. n=2 = noise.
+- **How:** Harmless log noise: `cam_visible=True` is a physics raycast not RGB;
+  wrist reset mismatch; D405 depth-range on RGB-D mp4s; ffmpeg 470→480 pad.
+- **Not done:** n=50 grid, both arms, three cells.
+
+---
+
 ## 2026-08-23 — avoid-v1 train finished; eval is next
 
 - **When:** 2026-08-23 ~20:49 America/Denver. Both 2000-epoch jobs done (serial in tmux).
