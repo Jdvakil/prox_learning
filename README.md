@@ -64,8 +64,9 @@ every file is, what to run, and what will bite you.
 | render every unique datagen environment (hybrid skin + 4 text-free products) | `python scripts/datagen/visualize_environment.py --all --show-hidden` | [12](#inspect-environments-before-collection) |
 | collect cluttered pick-and-place | `… main FrankaSkinHybridClutterPnPConfig` | [12.1](#121-cluttered-bay-pick-and-place) |
 | convert demos into training files | `python -m scripts.convert_obstacle_to_act` | [13](#13-recipe-c--act-and-pact) |
+| convert coauthor place-corridor rows | `python -m scripts.convert_pact_place_to_act` | [13.1](#131-coauthor-place-corridor-pact_place_corridor_v5) |
 | train a policy | `submodules/act/imitate_episodes.py` | [13](#13-recipe-c--act-and-pact) |
-| test a policy | `submodules/act/eval_act_obstacle.py` | [13](#13-recipe-c--act-and-pact) |
+| test a policy | `eval_act_obstacle.py` / `eval_act_place_corridor.py` | [13](#13-recipe-c--act-and-pact) / [13.1](#131-coauthor-place-corridor-pact_place_corridor_v5) |
 | compare two result folders | `scripts/compare_pact.py` | [13](#13-recipe-c--act-and-pact) |
 | train the reflex net | `scripts/safety_sweep.py` → `scripts/train_safety_cvae.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
 | encode live skin (peak closeness or surface geometry) | `from encoders import load_encoder` | [4](#4-repo-map) |
@@ -227,6 +228,21 @@ python -m encoders.encode_tokens \
     --kind embedding
 ```
 
+Probe the coauthor corridor rows **before convert**. Native skin is `(T, 40, 4, 8, 8)` metres — real 60 Hz subframes, so the geometry net's 32-frame causal window is honest. No frozen `pact_surface_*_v1.pt` on this disk: the command scores the analytic 20 cm nearest-surface *target* vs PACT-raw 50 cm peak closeness, and optionally runs an untrained net as a wiring check.
+
+```bash
+python -m encoders.probe \
+    --src data/pact_place_corridor_v5 \
+    --out experiments_output/default/surface_encoder_probe/pact_place_corridor_v5
+# trained net, once you have the file:
+python -m encoders.probe \
+    --src data/pact_place_corridor_v5 \
+    --checkpoint path/to/pact_surface_embedding_encoder_v1.pt \
+    --kind embedding --device cuda
+```
+
+`--untrained-episodes 0` skips the random net. Convert (wrist-only, min-pool) is still `python -m scripts.convert_pact_place_to_act` if you want ACT hdf5 after the probe.
+
 Train with the geometry net (live causal windows from raw `/observations/proximity`, or the
 precomputed groups if present):
 
@@ -282,6 +298,7 @@ Flinch is the base library (posture pick, aperture, render, mosaic, HUD). Keep t
 | file | what it does | entry | status |
 |---|---|---|---|
 | `convert_obstacle_to_act.py` | Datagen run → ACT per-episode HDF5. `--with_proximity` adds the 40-sensor group. Prints the `num_episodes`/`episode_len` you paste into `constants.py`. | `--src <run_dir> --dst <out> [--with_proximity] [--image_h 240] [--image_w 320]` | ACTIVE |
+| `convert_pact_place_to_act.py` | Coauthor HF `pact_place_corridor_v5` rows → ACT HDF5. Wrist RGB only + 40-sensor skin. Prints `num_episodes`/`episode_len`. | `--src data/pact_place_corridor_v5 --dst act_style_data/pact_place_corridor_v5 --with_proximity --prox_pool min` | ACTIVE |
 | `probe_prox_decodability.py` | Go/no-go gate: is the planner's deflection linearly decodable from the frozen trunk feature? Prints AUC + PASS/FAIL. | `[--act-dir …] [--gate-label deflect\|bar] [--auc-gate 0.8]` | ACTIVE |
 | `compare_pact.py` | Small-N statistics: Wilson CI, rate difference, Fisher exact. Reads no files — you type the counts. | `vanilla=11/50,30/50 pact_raw=9/50,20/50` | ACTIVE |
 | `train_blur_baseline.sh` | One vanilla arm per constant blur sigma on `obstacle_prox_v2`. | `./train_blur_baseline.sh [2 4 8]` | ACTIVE |
@@ -398,7 +415,8 @@ modality-dropout curricula.
 | file | what it is | status |
 |---|---|---|
 | `imitate_episodes.py` | **Training entry point.** All ACT + PACT training. | modified (+360) |
-| `eval_act_obstacle.py` | **Canonical in-env evaluator.** | fork-new |
+| `eval_act_obstacle.py` | **Canonical in-env evaluator** for the fumehood obstacle pick. | fork-new |
+| `eval_act_place_corridor.py` | In-env evaluator for `pact_place_corridor_v5`. Wrist-only. Needs molmospaces worktree at 1cbb180. | fork-new |
 | `prox_cvae.py` | Shim → `encoders/peak_closeness.py`. PACT still imports this name. | fork-new |
 | `constants.py` | `TASK_CONFIGS` lookup table. | modified (+102) |
 | `utils.py` | `EpisodicDataset`, `get_norm_stats`, `load_data`. Pads to `num_queries`, not `episode_len`, so variable-length episodes work. | modified |
@@ -474,6 +492,7 @@ train/eval parity needs no flags.
 | `obstacle_baseline` | `act_style_data/obstacle_v1` | 100 | 169 | **yes** |
 | `obstacle_pact` | `act_style_data/obstacle_prox_v1` | 100 | 168 | **yes** |
 | `obstacle_pact_v2` | `act_style_data/obstacle_prox_v2` | 105 | 185 | **yes** |
+| `pact_place_corridor_v5` | `act_style_data/pact_place_corridor_v5` | paste from convert | paste from convert | after convert |
 | `SIM_TASK_CONFIGS` (4 ALOHA tasks) | `DATA_DIR` | — | — | **no — dead, kept only because three upstream files import the name** |
 
 Seven further entries (`test`, `proximity_learning`, `pla_house1_mug`, `pla_smoke`,
@@ -527,7 +546,9 @@ Items 1–3 were fixed on 2026-08-16 (dead evaluators deleted, `TASK_CONFIGS` pr
 tasks that resolve, the `build_combined_h1_h3.py` citation removed with its entry). What remains:
 
 4. `imitate_episodes.py --eval` is dead for every fork task: it takes the real-robot branch and
-   ImportErrors, and it never passes `proximity_positions`. **Always use `eval_act_obstacle.py`.**
+   ImportErrors, and it never passes `proximity_positions`. **Always use
+   `eval_act_obstacle.py` (obstacle pick) or `eval_act_place_corridor.py`
+   (place-corridor).**
 5. `detr/main.py` comments reference a `pact.act_prox` package that does not exist;
    `--prox_mapping_json` is a pure no-op consumed by nobody.
 6. `prox_cvae.py`'s docstring says "two feature taps" — there are three; `raw` was added later.
@@ -1547,6 +1568,71 @@ done
 cd /home/jaydv/code/prox_learning
 python scripts/compare_pact.py vanilla=<S>/50,<C>/50 pact_raw=<S>/50,<C>/50
 ```
+
+### 13.1 Coauthor place-corridor (`pact_place_corridor_v5`)
+
+Source: HuggingFace `Lundii/pact_place_corridor_v5`, cloned to
+`data/pact_place_corridor_v5`. 152 recovered pick-and-place demos (all
+`clean_success`). Wrist RGB only (no exo). 40-sensor hybrid skin. Scene XML in
+`result.json` is **`pact_place_corridor_v2`**; the HF name `v5` is the recovery
+schema, not the MJCF version. Panel from left or right at the fumehood mouth.
+`recovery.json` still says `conversion_authorized: false` — that is the
+coauthor freeze gate (`next_action: run_verify_pact_place_recovery_keys`);
+this checkout converts anyway so we can train. Do **not** paste coauthor
+"PACT beats ACT" numbers into `paper.md` until a local `eval_summary.json`
+exists.
+
+Eval env is **not** on molmospaces `main`. Pin a worktree of collect commit
+`1cbb1800db66c871f41f2afc3a360affd1b40f1d` (branch
+`experiment/pact-vs-act-remediation-v2`). Do not checkout that branch onto
+dirty `main`.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+
+# 0. Eval env (once). Leaves submodules/molmospaces on main.
+git -C submodules/molmospaces worktree add \
+    /home/jaydv/code/molmospaces-pact-place \
+    1cbb1800db66c871f41f2afc3a360affd1b40f1d
+
+# 1. Convert. One dataset serves vanilla + PACT.
+python -m scripts.convert_pact_place_to_act \
+    --src data/pact_place_corridor_v5 \
+    --dst act_style_data/pact_place_corridor_v5 \
+    --with_proximity --prox_pool min --image_h 240 --image_w 320
+# paste printed num_episodes / episode_len into
+# TASK_CONFIGS['pact_place_corridor_v5'] in submodules/act/constants.py
+
+# 2. Train. Wrist-only, chunk 50, NO image dropout.
+cd submodules/act
+export PYTHONPATH="$PWD:$PYTHONPATH"
+export MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+
+python imitate_episodes.py \
+    --task_name pact_place_corridor_v5 --policy_class ACT --ckpt_dir ckpts \
+    --kl_weight 10 --chunk_size 50 --hidden_dim 512 --dim_feedforward 3200 \
+    --batch_size 8 --lr 1e-5 --seed 0 --num_epochs 2000 \
+    --wandb_run_name act_place_corridor_s0
+
+python imitate_episodes.py \
+    --task_name pact_place_corridor_v5 --policy_class ACT --ckpt_dir ckpts \
+    --kl_weight 10 --chunk_size 50 --hidden_dim 512 --dim_feedforward 3200 \
+    --batch_size 8 --lr 1e-5 --seed 0 --num_epochs 2000 \
+    --use_proximity --prox_feature raw --prox_layout per_sensor \
+    --wandb_run_name pact_place_corridor_raw_s0
+
+# 3. Eval. PYTHONPATH must put the worktree FIRST. Horizon 800 (demos are 244–635).
+#    Never imitate_episodes.py --eval on the PACT ckpt.
+PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
+MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
+    --ckpt_dir ckpts/pact_place_corridor_v5/<dated>_<run> \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/<run> \
+    --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
+```
+
+Headline numbers: place-success and `bar_hit_rate` (arm vs `pact_intrusion_*`)
+in `eval_summary.json`. `--temp_agg_off` is required.
 
 ### The three eval cells
 

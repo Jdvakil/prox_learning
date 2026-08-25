@@ -164,6 +164,7 @@ _SURFACE_EXPORTS = {
     "load_frozen_surface_embedding_encoder",
     "load_frozen_surface_encoder",
     "nearest_surface_target",
+    "nearest_surface_target_batch",
     "parameter_count",
     "to_causal_closeness",
 }
@@ -222,6 +223,7 @@ __all__ = [
     "load_frozen_surface_embedding_encoder",
     "load_frozen_surface_encoder",
     "nearest_surface_target",
+    "nearest_surface_target_batch",
     "parameter_count",
     "resolve_encoder_name",
     "resolve_prox_layout",

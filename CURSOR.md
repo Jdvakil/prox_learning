@@ -23,6 +23,138 @@ Newest session at the top.
 
 ---
 
+## 2026-08-25 — start coauthor place-corridor convert / train / eval glue
+
+- **When:** 2026-08-25, after the surface-encoder probe writeup. User asked to
+  start tests on `data/pact_place_corridor_v5`.
+- **Why:** Coauthor reports PACT beating ACT here. Reproduce locally. Probe
+  already showed the skin is not empty; convert was still unrun.
+- **What:**
+  - `scripts/convert_pact_place_to_act.py`
+  - `TASK_CONFIGS['pact_place_corridor_v5']` + 9/8 dims in `imitate_episodes.py`
+  - `submodules/act/eval_act_place_corridor.py` (needs molmospaces worktree
+    `1cbb180`, scene XML `pact_place_corridor_v2`)
+  - README §13.1, PACT.md §8
+  - Gate-bar 200-ep collect still parked
+- **How:** `--with_proximity --prox_pool min`, wrist 240×320, chunk 50, no
+  image dropout. Never `imitate_episodes.py --eval` on PACT.
+- **Not done at write time:** convert of 152, paste of `num_episodes` /
+  `episode_len`, the two train jobs, eval.
+
+---
+
+## 2026-08-25 00:07 MDT — what the corridor probe actually found (plain language)
+
+- **When:** 2026-08-25 00:07 America/Denver. Probe itself finished ~00:02 MDT
+  (`experiments_output/default/surface_encoder_probe/pact_place_corridor_v5/`).
+- **Why:** User asked for the findings in simple language, and a full log of this
+  encoder session so later chats can pick it up without re-deriving.
+- **What the probe is:** it does **not** grade a trained neural net (no
+  `pact_surface_*_v1.pt` on this machine). It reads the 152 corridor episodes'
+  raw skin depths and asks two questions the net would be trained on:
+  1. How often is something within **20 cm** of a sensor? (geometry encoder
+     target — nearest pixel XYZ, farther tiles are *invalid*, not a number.)
+  2. How often is something within **50 cm**? (PACT-raw peak closeness.)
+- **Headline numbers (152 eps, every 4th control step, last of 4 native subframes):**
+  - **11.4%** of (timestep × sensor) tiles have a 20 cm hit. **83,608** such
+    points. Typical nearest-surface distance: **9 cm / 16 cm / 19 cm**
+    (10th / 50th / 90th percentile). So when the 20 cm encoder *does* fire, it
+    is seeing mid-range skin, not a graze.
+  - **40.3%** of tiles fire under the 50 cm PACT-raw cap. The extra ~29 points
+    of percent are "I see something 20–50 cm away" — the geometry encoder
+    **throws those away**.
+  - Split: 72 left-intrusion / 80 right. Using one number per episode (max peak
+    closeness, or 20 cm hit rate) to guess left vs right is **weak** (AUC 0.66
+    and 0.61). Skin max closeness is not a side label.
+- **The important catch — a lot of 20 cm signal is the robot seeing itself:**
+  - `link1_sensor_5`: **100%** of probed steps have a 20 cm hit. Always on.
+  - `link2_sensor_3`: **96%**. Almost always on.
+  - Then a taper: `link2_sensor_0` 58%, `_6` 41%, `_4` 34%, `link5_back_sensor_4`
+    30%, a few link6 sensors 12–16%. Many sensors are **zero** at 20 cm.
+  - `link1_sensor_3` and `link1_sensor_4`: **74%** fire at 50 cm, **0%** at 20 cm.
+    PACT-raw would keep those; the geometry encoder would output invalid/zeros.
+    That is trap 16 on this dataset, not a hypothetical.
+- **Untrained net (2 episodes, random weights, CUDA):** XYZ error **151 mm**,
+  validity accuracy **12%** (random net mostly says "valid"; true rate is 11%).
+  Reconstruction MSE 0.25. This only proves the forward pass runs on real
+  `(T, 40, 4, 8, 8)` rows. **It is not evidence the encoder is good or bad.**
+- **Simple verdict:** corridor skin is **not empty** inside 20 cm, so a trained
+  geometry encoder would have something to chew. But a big chunk of that 20 cm
+  signal is **always-on self geometry** on a couple of proximal sensors, and
+  PACT-raw's 50 cm map lights up a lot of tiles the 20 cm encoder will ignore.
+  Cannot say if the coauthor net is accurate until someone drops
+  `pact_surface_embedding_encoder_v1.pt` (or the XYZ v1 file) and re-runs
+  `python -m encoders.probe --checkpoint ...`.
+- **Artifacts:**
+  - `experiments_output/default/surface_encoder_probe/pact_place_corridor_v5/probe.json`
+  - `sensor_hit_rates.png`, `valid_z_hist.png`, `episode_20_vs_50.png`
+- **Not done:** trained XYZ MAE / validity / recon. Convert to ACT hdf5 not run
+  (`act_style_data/` still empty for this task). `constants.py` still has
+  `num_episodes=0` placeholders for `pact_place_corridor_v5`.
+
+---
+
+## 2026-08-24 ~23:55–00:02 MDT — encoder package, ACT wire-up, corridor probe tool
+
+- **When:** 2026-08-24 evening through 2026-08-25 00:02 America/Denver (same
+  chat as the probe). Earlier in the chat: compare coauthor vs PACT-raw,
+  fold `amine/` into `encoders/`, delete `amine/`, then probe the HF corridor
+  dump. This block is the code trail; the 00:07 block above is the science.
+- **Why:** User wanted both encoders in one function-named folder, then the
+  coauthor ACT drop files merged, then `data/pact_place_corridor_v5` run
+  through the new encoder.
+- **What (package):** `encoders/`
+  - `peak_closeness.py` — PACT-raw. All 40 sensors, one snapshot `(B,40,8,8)` m.
+    Cap **0.5 m**. Dead pixel `<5 mm → 0`. Headline: per-sensor peak closeness
+    `(B,40,1)`. Alias `ProxCVAEEncoder`.
+  - `surface_geometry.py` — coauthor conv+transformer (~0.82M), weight-shared
+    across sensors. Wants **32 causal 8×8 frames** (8 control steps × 4 native
+    60 Hz subframes). Cap **0.20 m**. v1 XYZ / v2 32-d embedding. Wrapper
+    `SurfaceGeometryEncoder(kind='xyz'|'embedding')`. Inner weights always
+    `requires_grad=False`. Transformer `enable_nested_tensor=False`.
+    Helpers: `nearest_surface_target`, `nearest_surface_target_batch`,
+    `causal_sensor_window`, `to_causal_closeness`, `as_subframe_episode`
+    (repeats pooled `(T,S,8,8)` into fake `(T,S,4,8,8)`), `encode_episode` /
+    `encode_episode_full` / `encode_episode_at_times`.
+  - `__init__.py` — `load_encoder(name, checkpoint=..., device=...)`. Aliases
+    `raw`/`xyz`/`embedding`. Geometry kwargs `layout`/`tokens_per_sensor` ignored.
+  - `pact.py` — ACT glue: `build_pact_encoder`, `hdf5_proximity_layout`,
+    `encode_for_act`, `is_geometry_feature`, `causal_pooled_window`.
+  - `encode_tokens.py` — bake frozen tokens into ACT hdf5.
+  - `probe.py` — `python -m encoders.probe --src data/pact_place_corridor_v5`.
+  - `__main__.py` — `python -m encoders` dummy shapes.
+- **What (ACT, from deleted `amine/`):**
+  - `submodules/act/utils.py` `proximity_layout`: `raw` | `raw_causal`
+    (last 8 pooled steps) | `embeddings` `(40,32)` | `positions` `(40,3)`.
+  - `detr/models/detr_vae.py`: `prox_feat_dim` and alias `proximity_feature_dim`;
+    kept this repo's `image_dropped` path.
+  - `imitate_episodes.py`, `eval_act_obstacle.py` (8-step live history),
+    `detr/main.py`, `attn_heatmap.py`. Geometry default **K=1** if argparse
+    default was 8. Without `--prox_encoder_ckpt`, geometry net is frozen-random.
+  - `submodules/act/prox_cvae.py` is a shim to `encoders.peak_closeness`.
+- **What (probe run, 2026-08-25 ~00:02 MDT):**
+  ```
+  conda activate mlspaces
+  cd /home/jaydv/code/prox_learning
+  python -m encoders.probe \
+      --src data/pact_place_corridor_v5 \
+      --out experiments_output/default/surface_encoder_probe/pact_place_corridor_v5 \
+      --device cuda
+  ```
+  Source rows already have native `(T, 4, 8, 8)` per sensor — no convert.
+  Tests: `pytest tests/test_encoders.py tests/test_prox_raw.py` → 29 passed.
+- **How (do not mix closeness maps):** peak closeness `D_MAX=0.5 m`; surface
+  geometry `MAX_SURFACE_RANGE_M=0.20 m`. README trap 16. Dataset
+  `Lundii/pact_place_corridor_v5` cloned at `data/pact_place_corridor_v5`
+  (152 `rows/*/trajectory.h5`, wrist-only, scene XML name
+  `pact_place_corridor_v2`). `recovery.json` has `training_authorized: false`
+  / `conversion_authorized: false` — recovery metadata, not a code lock.
+- **Not done:** frozen coauthor checkpoint still missing (searched disk, none).
+  Hunt for `pact_surface_encoder_v1.pt` or `pact_surface_embedding_encoder_v1.pt`.
+  Do not treat untrained XYZ/embeddings as a quality verdict.
+
+---
+
 ## 2026-08-24 — gate-bar v3.0 too easy; v3.1 snaps a tall pole onto the TCP line
 
 - **When:** 2026-08-24 ~23:30 America/Denver, after user watched

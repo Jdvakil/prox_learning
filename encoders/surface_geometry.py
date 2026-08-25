@@ -76,6 +76,44 @@ def nearest_surface_target(
     return np.asarray([x, y, z], dtype=np.float32), True
 
 
+def nearest_surface_target_batch(
+    depth: np.ndarray,
+    *,
+    max_range_m: float = MAX_SURFACE_RANGE_M,
+    fovy_deg: float = SENSOR_FOVY_DEG,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Vectorized ``nearest_surface_target``. ``depth`` is ``(..., H, W)`` metres.
+
+    Returns XYZ ``(..., 3)`` and a boolean valid mask ``(...)``.
+    """
+    values = np.asarray(depth, dtype=np.float32)
+    if values.ndim < 2:
+        raise ValueError(f"depth must be at least 2-D, got {values.shape}")
+    height, width = values.shape[-2:]
+    valid_pixel = np.isfinite(values) & (values > 0.0) & (values <= max_range_m)
+    valid = valid_pixel.any(axis=(-2, -1))
+    masked = np.where(valid_pixel, values, np.inf)
+    flat = masked.reshape(*values.shape[:-2], height * width)
+    flat_index = np.argmin(flat, axis=-1)
+    row = flat_index // width
+    col = flat_index % width
+    z = np.take_along_axis(
+        values.reshape(*values.shape[:-2], height * width),
+        flat_index[..., None],
+        axis=-1,
+    )[..., 0]
+    intrinsic = native_camera_intrinsic(height, width, fovy_deg)
+    x = (col.astype(np.float32) + 0.5 - float(intrinsic[0, 2])) * z / float(
+        intrinsic[0, 0]
+    )
+    y = (row.astype(np.float32) + 0.5 - float(intrinsic[1, 2])) * z / float(
+        intrinsic[1, 1]
+    )
+    xyz = np.stack([x, y, z], axis=-1).astype(np.float32)
+    xyz = np.where(valid[..., None], xyz, np.zeros_like(xyz))
+    return xyz, valid
+
+
 def depth_to_closeness(
     depth: np.ndarray,
     *,
@@ -697,14 +735,35 @@ class SurfaceGeometryEncoder(nn.Module):
     ) -> dict[str, torch.Tensor]:
         """Same as ``encode_episode`` plus XYZ / validity for the token writer."""
         values = as_subframe_episode(episode_proximity)
-        n_steps, n_sensors = values.shape[:2]
+        times = np.arange(values.shape[0], dtype=np.int64)
+        return self.encode_episode_at_times(
+            values,
+            times,
+            batch_size=batch_size,
+            validity_threshold=validity_threshold,
+        )
+
+    @torch.no_grad()
+    def encode_episode_at_times(
+        self,
+        episode_proximity: np.ndarray,
+        times: np.ndarray,
+        *,
+        batch_size: int = 512,
+        validity_threshold: float = 0.5,
+    ) -> dict[str, torch.Tensor]:
+        """Encode selected control steps. Causal windows still use the full episode."""
+        values = as_subframe_episode(episode_proximity)
+        times = np.asarray(times, dtype=np.int64).reshape(-1)
+        n_steps = int(times.shape[0])
+        n_sensors = int(values.shape[1])
         windows = np.empty(
             (n_steps, n_sensors, CAUSAL_FRAMES, 8, 8), dtype=np.float32
         )
-        for timestep in range(n_steps):
+        for step_index, timestep in enumerate(times):
             for sensor_index in range(n_sensors):
-                windows[timestep, sensor_index] = causal_sensor_window(
-                    values, timestep, sensor_index
+                windows[step_index, sensor_index] = causal_sensor_window(
+                    values, int(timestep), sensor_index
                 )
         device = next(self.parameters()).device
         flat = torch.from_numpy(windows).reshape(

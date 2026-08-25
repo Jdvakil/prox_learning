@@ -33,12 +33,26 @@ from tqdm import tqdm
 from scripts.convert_obstacle_to_act import (
     _decode_action,
     _decode_qpos_qvel,
+    _episode_failed,
     _episode_proximity,
     _load_sensor_order,
     _video_frames,
 )
 
 CAM = "wrist_camera"
+
+
+def _decode_obs_scene(grp) -> dict:
+    if "obs_scene" not in grp:
+        return {}
+    raw = np.asarray(grp["obs_scene"]).item()
+    if isinstance(raw, (bytes, bytearray)):
+        raw = bytes(raw).decode("utf-8")
+    if isinstance(raw, str):
+        return json.loads(raw)
+    if isinstance(raw, dict):
+        return raw
+    return {}
 
 
 def _row_dirs(src: Path) -> list[Path]:
@@ -96,6 +110,9 @@ def convert(
                 n_skip_action += 1
                 continue
             grp = handle["traj_0"]
+            if require_clean and _episode_failed(grp):
+                n_skip_dirty += 1
+                continue
             T_full = int(grp["actions/joint_pos"].shape[0])
             actions = np.zeros((T_full, 8), dtype=np.float32)
             valid = np.zeros(T_full, dtype=bool)
@@ -121,10 +138,7 @@ def convert(
             if with_proximity:
                 proximity = _episode_proximity(grp, T, sensor_order, pool=prox_pool)
 
-            scene = {}
-            if "obs_scene" in grp:
-                raw = np.asarray(grp["obs_scene"]).item()
-                scene = json.loads(raw) if isinstance(raw, (str, bytes)) else json.loads(str(raw))
+            scene = _decode_obs_scene(grp)
             sp = res.get("scene_params") or scene.get("scene_params") or {}
             side = str(sp.get("pact_intrusion_side") or "unknown")
             sides[side] = sides.get(side, 0) + 1

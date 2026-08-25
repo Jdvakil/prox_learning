@@ -10,12 +10,14 @@ to change* companion.
 fights the data. The paper number is **invisible-cell bar-hit**, not
 lift-success.
 
-**Now (2026-08-24):** do not collect gate-bar v3.0. Preflight bows were 1–7 cm
-around a short peg; videos looked like a normal pick. v3.1 puts a 44 cm pole
-on the live TCP line (~18 cm bow). Run the **visible** check first
-(`FrankaSkinHybridGateBarVisibleCheckConfig`) — README §12.2. The July 66%→40%
-grid is a published number on deleted data; avoid-v1 failed. The next honest
-test is gate-bar v3.1.
+**Now (2026-08-24 late):** gate-bar paused. Reproduce coauthor
+`data/pact_place_corridor_v5` (152 recovered pick-and-place rows). Convert +
+train vanilla vs PACT-raw per-sensor, chunk 50, no image dropout. Eval needs
+molmospaces worktree at collect commit `1cbb180`. Do not write coauthor win
+numbers into `paper.md` until local `eval_summary.json` exists.
+
+The July 66%→40% grid is a published number on deleted data; avoid-v1 failed.
+Gate-bar v3.1 (visible check first) stays parked.
 
 The CLI default `--prox_feature trunk` is a **negative control**.
 
@@ -286,3 +288,15 @@ A result worth writing:
 
 Success rate matching vanilla is OK. The claim is **safer when cameras cannot
 see the bar**, not "better picker".
+
+---
+
+## 8. Coauthor place-corridor (reproduce, do not cite yet)
+
+HF `Lundii/pact_place_corridor_v5` → `data/pact_place_corridor_v5`. 152 clean
+pick-and-place rows. Wrist RGB only. Scene XML `pact_place_corridor_v2`.
+Commands: README §13.1. Train vanilla vs `--use_proximity --prox_feature raw
+--prox_layout per_sensor`, chunk 50, no image dropout. Eval
+`eval_act_place_corridor.py --temp_agg_off`. Metric: place-success +
+`bar_hit_rate`. Local `eval_summary.json` only — coauthor win is not a paper
+number until we rerun it.

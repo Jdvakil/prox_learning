@@ -26,6 +26,7 @@ from encoders import (  # noqa: E402
     list_encoders,
     load_encoder,
     nearest_surface_target,
+    nearest_surface_target_batch,
     to_causal_closeness,
 )
 from hybrid_skin_sensors import DEAD_PIXEL_M, HYBRID_SKIN_SENSOR_ORDER  # noqa: E402
@@ -118,6 +119,18 @@ def test_nearest_surface_target_rejects_beyond_20cm():
     assert np.array_equal(xyz, np.zeros(3, dtype=np.float32))
 
 
+def test_nearest_surface_target_batch_matches_scalar():
+    rng = np.random.default_rng(0)
+    depth = rng.uniform(0.05, 0.40, size=(3, 5, 8, 8)).astype(np.float32)
+    depth[0, 0] = 10.0
+    xyz, valid = nearest_surface_target_batch(depth)
+    for i in range(3):
+        for j in range(5):
+            xyz_i, valid_i = nearest_surface_target(depth[i, j])
+            assert bool(valid[i, j]) is valid_i
+            np.testing.assert_allclose(xyz[i, j], xyz_i, atol=1e-6)
+
+
 def test_causal_sensor_window_left_pads():
     episode = np.zeros((3, 2, 4, 8, 8), dtype=np.float32)
     episode[0, 1] = 0.10
@@ -164,6 +177,20 @@ def test_encode_episode_uses_causal_history_shape():
     pooled = np.full((2, 3, 8, 8), 0.12, dtype=np.float32)
     out_pooled = enc.encode_episode(pooled)
     assert out_pooled.shape == (2, 3, 3)
+
+
+def test_encode_episode_at_times_matches_full():
+    enc = SurfaceGeometryEncoder(kind="xyz", device="cpu")
+    episode = np.full((4, 2, 4, 8, 8), 0.12, dtype=np.float32)
+    episode[2, 1, -1, 3, 3] = 0.04
+    full = enc.encode_episode_full(episode, batch_size=8)
+    subset = enc.encode_episode_at_times(episode, np.array([1, 3]), batch_size=8)
+    np.testing.assert_allclose(
+        subset["xyz_m"].numpy(), full["xyz_m"].numpy()[[1, 3]], atol=1e-5
+    )
+    np.testing.assert_array_equal(
+        subset["valid"].numpy(), full["valid"].numpy()[[1, 3]]
+    )
 
 
 def test_as_subframe_repeats_pooled_act_tiles():
