@@ -38,7 +38,11 @@ from molmo_spaces.utils.grasp_sample import compute_grasp_pose
 
 from fumehood_env.cluttered_fumehood import ClutteredFumehoodPickSampler
 
-log = logging.getLogger(__name__)
+# Worker processes only attach handlers to the "molmo_spaces" logger tree
+# (utils/mp_logging.py:375-378), so a logger named after this package is
+# silently dropped in datagen - which is why none of the planner diagnostics
+# reached the preflight logs. Live under that tree instead.
+log = logging.getLogger(f"molmo_spaces.{__name__}")
 
 
 # --------------------------------------------------------------------------- #
@@ -70,7 +74,18 @@ class PushFumehoodTask(PickTask):
         return progress, dz
 
     def judge_success(self) -> bool:
-        return self.get_info()[0]["success"]
+        info = self.get_info()[0]
+        tc = self.config.task_config
+        commanded = float(np.linalg.norm(
+            np.asarray(tc.pickup_obj_goal_pose[:2], dtype=float)
+            - np.asarray(tc.pickup_obj_start_pose[:2], dtype=float)))
+        # One line per episode saying exactly how far short it fell, so a run
+        # that plans and executes but never scores can be diagnosed from the log.
+        log.info(f"[Push] judged success={info['success']} "
+                 f"progress={info['progress']:.3f} commanded={commanded:.3f} "
+                 f"threshold={max(self.MIN_PROGRESS, self.SUCC_FRACTION * commanded):.3f} "
+                 f"steps={info['episode_step']}")
+        return info["success"]
 
     def get_info(self):
         metrics = []

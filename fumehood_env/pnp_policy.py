@@ -24,7 +24,11 @@ from molmo_spaces.policy.solvers.object_manipulation.pick_and_place_planner_poli
 )
 from molmo_spaces.utils.mj_model_and_data_utils import body_aabb
 
-log = logging.getLogger(__name__)
+# Worker processes only attach handlers to the "molmo_spaces" logger tree
+# (utils/mp_logging.py:375-378), so a logger named after this package is
+# silently dropped in datagen - which is why none of the planner diagnostics
+# reached the preflight logs. Live under that tree instead.
+log = logging.getLogger(f"molmo_spaces.{__name__}")
 
 
 class FumehoodPickAndPlacePlannerPolicy(PickAndPlacePlannerPolicy):
