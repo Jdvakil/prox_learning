@@ -1332,3 +1332,237 @@ mention of the sensor suite, and as written reproduces this failure exactly. Its
 must require the datagen pipeline with cameras and proximity enabled, plus a file-level key
 verification, before any training is authorized. Config-level review is what failed here -- the v5
 collection config was internally consistent, self-hashed, and wrong.
+
+## Place corridor v8c: the overhead bar cannot be sited (stopped at C0)
+
+Full report: `docs/PACT_PLACE_V8C_C0_SITING.md`.
+
+v8b failed admission because the carried cup was closer to the clutter than any arm link in 5 of 6
+episodes. v8c's answer was to exploit the band `z in [1.05, 1.40]`, which the v7 swept volume shows
+is traversed by link5 and link6 but never by the cup, and hang a hazard bar there — link-primary by
+construction. C0 was to site that bar by measurement over the 24 frozen v6c trajectories before
+anything was built.
+
+```
+export MUJOCO_GL=egl PYTHONUNBUFFERED=1 OPENBLAS_NUM_THREADS=1
+export MLSPACES_ASSETS_DIR=/root/prox_learning/assets
+PY=/root/act_retrain_venv/bin/python3
+
+$PY scripts/run_pact_place_v8c_c0_siting.py --workers 8
+$PY scripts/run_pact_place_v8c_c0_visibility_ceiling.py --workers 8
+$PY scripts/run_pact_place_v8c_c0_duck_feasibility.py --workers 8
+```
+
+667 candidate bars, 24 episodes, 11,352 control steps, replay-only, exact `mj_geomDistance`.
+Artifacts in `diagnostics_output/pact_place_corridor_v8c_c0/`, all `authorizes_gate: false`.
+
+**The premise held.** `cup_is_closest_body` is **0 of 24 in all 567** hazard-class candidates, with
+a minimum cup clearance of 0.134 m. The wall that stopped v6c, v7 and v8b is genuinely cleared.
+
+**Three walls behind it, all measured, none tunable.**
+
+| | measured |
+|---|---|
+| Wrist visibility of any bar in the band | **0 of 24, all 667 candidates**; the bar's centre never enters the FOV cone |
+| Wrist visibility ceiling inside the enclosure | **z = 1.030 m**, against a cup swept ceiling of 1.011 m and a band bottom of 1.050 m |
+| link5/link6 height above the TCP in the corridor | median **0.426 m** |
+| TCP drop needed to duck a bar at z = 1.05 | median **0.277 m**; puts the TCP below the shelf top in **24 of 24** episodes |
+| Admissible candidates that merely graze the arm | **0 of 392** — penetration is 26 mm at best, 99 mm median |
+
+The first two rows are the same fact twice: the cup and the wrist camera ride the same rigid body, so
+the band that is cup-free is camera-blind, to within 19 mm. `cup_is_closest_body <= 0.25` and
+`non-zero visibility_at_min >= 1/3` are mutually exclusive in this corridor, and the v8c plan
+retained both. The third and fourth rows close the expert: both obstacle maneuvers act on the TCP,
+and the colliding body is 43 cm above it, so clearing the bar means a nullspace elbow re-pose — a
+general planner, which the plan forbids.
+
+Three clips with the chosen bar composited into the replay are in
+`diagnostics_output/pact_place_corridor_v8c_c0_review/` (`run_pact_place_v8c_c0_review_videos.py`,
+rows 0/4/17, both panel sides): wrist, third-person, and a corridor view with the bar tinted.
+Across 1,603 frames the bar is in the wrist FOV **0** times and inside link5/link6 **763** times.
+MuJoCo's contact detection flags the bar in exactly the frames `mj_geomDistance` calls negative.
+
+Broken down by phase, both legs are obstructed — and `grasp`, `gripper-close` and `lift` are struck
+in **100%** of their frames (45/45, 27/27, 57/57), as is `outbound_approach` (217/217). Those grasp
+phases are not traversal segments: the TCP is pinned to the cup on the shelf, so there is no
+waypoint to bow and no `z_travel` to shift. The duck does not merely overshoot the shelf there; it
+has no free parameter to act on.
+
+Two things to carry forward regardless of what happens to v8c:
+
+1. **Only `pact_intrusion_*` scores as `hazard_bar`.** `pact_contact_audit.py:16` sets
+   `HAZARD_BODY_PREFIX = "pact_intrusion_"`; the legacy `protr_s/m/l` bars fall through to
+   `other_environment`. Both break `clean_success`, but the attribution differs, and the v8c plan
+   assumed either would do. 100 of the 667 candidates were rejected on this alone.
+2. **`mj_geomDistance` has a second false-zero mode that v8b's fallback does not cover** — scalar
+   0.0 with `fromto` left untouched, at every `distmax`, for geoms 25 cm apart. It fabricates
+   contacts. The C0 instrument clears the buffer per call and uses an AABB gap only to *disprove*
+   such a zero, never as a clearance; 52 were rejected in this sweep.
+   `scripts/measure_pact_place_v8b_realized.py:41` still carries the unhardened version.
+
+## Place corridor v9: clutter the skin can resolve (blocked at raw admission)
+
+Three plan documents, in execution order:
+
+| Document | Scope |
+|---|---|
+| [`docs/PACT_PLACE_V9_ENVIRONMENT_PLAN.md`](docs/PACT_PLACE_V9_ENVIRONMENT_PLAN.md) | V0-V2: instrument, palette, siting, expert wiring, human review, Phase-0 gate |
+| [`docs/PACT_PLACE_V9_RAW_ADMISSION_FIX_PLAN.md`](docs/PACT_PLACE_V9_RAW_ADMISSION_FIX_PLAN.md) | **Current work.** Replaces V0c siting after the raw admission failure |
+| [`docs/PACT_PLACE_V9_TRAIN_EVAL_PLAN.md`](docs/PACT_PLACE_V9_TRAIN_EVAL_PLAN.md) | V3-V7: collection, conversion, training, 600-rollout evaluation, analysis |
+
+Status: [`docs/PACT_PLACE_V96_CLUSTER_SITING_STATUS.md`](docs/PACT_PLACE_V96_CLUSTER_SITING_STATUS.md)
+(current), after [`docs/PACT_PLACE_V95_LOW_WALL_STATUS.md`](docs/PACT_PLACE_V95_LOW_WALL_STATUS.md).
+V9.5 stopped at its raw-first gate with **0 of 6 physics-clean variants passing**; the one variant
+originally counted as a pass is the one whose source episode is not collision-free
+(`diagnostics_output/pact_place_v95_v0c5_raw_prerequisite/admission_correction.json`). The clustered-hazard remedy was then measured and **does not fit the
+corridor** — see below. Nothing in v9 authorizes a gate or a collection.
+
+### Why: the skin cannot resolve household objects
+
+Each skin sensor is 8x8 depth over a 45 deg cone (`camera_configs.py:428-435`), so the pixel pitch
+at range R is `2*tan(22.5deg)/8 * R = 0.1036*R`. An object registers only when its width across the
+view axis exceeds that pitch:
+
+| object | width | 1 px at | 2 px at | 4 px at |
+|---|---:|---:|---:|---:|
+| intrusion panel | 0.480 | 4.64 m | 2.32 m | 1.16 m |
+| soapbottle | 0.089 | 0.86 m | 0.43 m | 0.22 m |
+| candle | 0.016 | 0.15 m | 0.08 m | 0.04 m |
+
+The measured present-versus-parked causal effects on the real `[474, 40, 4, 8, 8]` tensor match that
+model (`diagnostics_output/pact_place_v95_v0c5_raw_prerequisite/validation.json`, variant 6 —
+**the dirty-source episode**, see the correction below):
+
+| hazard | sensors changed | changed values | max delta |
+|---|---:|---:|---:|
+| intrusion panel | 11 | up to 23,004 | 2.00 m |
+| outbound bottle | 2 | 448 + 60 | 0.77 m |
+| inbound bottle | 1 | 40 | 0.26 m |
+
+**Correction (E0).** Joining those variants to the smoke summary's `clean_success` shows that the
+single "pass" is the one variant whose source episode is not collision-free (F3 left, 351 clutter
+contacts; its right pair, 2,315). Every physics-clean variant failed, so the V9.5 headline is
+**0 of 6**, not 1 of 8, and the inbound vessel's only nonzero reading in all of V9.5 comes from that
+dirty episode at R = 0.11 m — a sensor nearly touching an object, not a detection at range. The
+validator now fails admission on a dirty source; no V9.5 artifact was edited.
+
+The tensor holds 4.85M values, so the inbound vessel changes **8 parts per million**. That is below
+the sensor's resolving power, not a weak signal awaiting tuning, and it is why V9.4's lower fixtures
+and V9.5's wider vessel could not fix it.
+
+### Three findings worth carrying forward
+
+1. **Sensing happens at range, from links that never enter the enclosure.** The sensors that see the
+   panel are `link2_sensor_3/4/5`, `link3_sensor_1/2/4`, `link5_back_sensor_0-4`. The v7 swept-volume
+   fact that links 1-4 have zero voxels inside the enclosure bounds **collision**, not sensing. Every
+   siting sweep so far scored TCP or collision clearance; none scored angular subtense at the sensors.
+
+2. **The admission bar was "any nonzero pixel."**
+   `scripts/run_pact_place_v9_v0c3_causal_proximity.py:414-417` sets
+   `passed = panel.changed_values > 0 and inbound.changed_values > 0 and outbound.changed_values > 0`.
+   The per-value threshold is noise-floor derived and sound; the aggregate rule is not, which is how
+   a 40-value single-sensor signal counted as a pass.
+
+3. **The frozen encoder is per-sensor and shared.** `SurfaceEmbeddingEncoder.forward` takes
+   `(B, CAUSAL_FRAMES, 8, 8)` with sensors carried in the batch dimension, so it has no knowledge of
+   how many sensors exist. Adding skin coverage would not invalidate encoder
+   `6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206`; it would change
+   `n_proximity_sensors` in the policy, which is retrained regardless. v9 keeps the suite frozen at
+   40 for comparability, so the hazard adapts to the sensor rather than the reverse.
+
+### W1: the resolving-power instrument retrodicts the measurement to r = 0.99997
+
+[`scripts/pact_skin_resolvability.py`](scripts/pact_skin_resolvability.py) scores, per frame and per
+sensor, the range, the hazard extent across the view axis, `subtense_px = W_perp / (0.1036 * R)`, and
+an occlusion-aware `mj_ray` pixel count under the proximity renderer's own geom-group filter.
+[`scripts/run_pact_place_v9_w1_resolvability.py`](scripts/run_pact_place_v9_w1_resolvability.py)
+replays the eight frozen V9.5 trajectories with `mj_forward` only and compares it to the measured raw
+counterfactual. Artifact: `diagnostics_output/pact_place_v9_w1_resolvability/resolvability.json`.
+
+Over 24 role measurements: ordering reproduced in 8 of 8 variants, Pearson r on `changed_values`
+0.99997, predicted/measured ratio 0.994-1.042, zero measured-nonzero-predicted-zero, and 1.00 recall
+of the measured responding sensors. Both vessels are predicted value for value (40, 448, 60). The
+prefilter's **occlusion-free** variant over-states a compact hazard by 31.8x (inbound vessel), 6.2x
+(outbound) and 1.33x (panel) — so geometry-only siting scores are upper bounds, never admission.
+
+### W2: making the hazard large works; there is nowhere to put it
+
+[`scripts/run_pact_place_v9_w2_cluster_siting.py`](scripts/run_pact_place_v9_w2_cluster_siting.py)
+scored 14,280 cluster placements — three tall vessels shoulder to shoulder, spanning 0.29-0.39 m —
+against all eight frozen trajectories, recording every candidate with its reason. The best outbound
+cluster (`x = 0.740`, `y = -0.280`, 90 deg, span 0.296 m) clears 2 px on 4 sensors in the worst
+variant with a 2.6x side imbalance, against V9.5's single bottle at 1 sensor. The inbound leg admits
+nothing, and no inbound/outbound pair is jointly feasible at all:
+
+| | |
+|---|---:|
+| Usable aperture width | 0.810 m |
+| Free band left by the active panel (inner face at y = 0.095) | 0.460 m |
+| Loaded transport envelope + clearance | 0.340 m |
+| **Max hazard width still leaving a lane, at the panel's depth** | **0.120 m** |
+| **Contiguous silhouette the skin needs** | **0.250 m** |
+| Inbound x outbound pairs examined / jointly feasible | 18,393 / **0** |
+
+The reason is structural, not a siting failure. The paired-side design requires identical clutter
+under both panel sides; the panel forces the arm's lane to a side that flips between the two rows of
+a pair; a hazard must be lateral (`|y| >= 0.10`) to be sensed at all, because the gripper, hand and
+link7 carry no sensors; and a lateral hazard does not flip, so it stands in the lane in exactly half
+the rows. A hazard centred on `y = 0` flips with nothing, but the same lane test admits it at 0.12 m of
+width and closes at 0.15 m — the same 0.12 m budget from the other direction.
+
+Two measured ceilings bound the escape routes. Deeper than the panel, an inbound hazard needs to be
+**0.60 m** wide before three sensors clear 2 px with a balanced response — wider than the intrusion
+panel itself (0.480 m) and wider than the 0.460 m band it would have to fit inside. Under the panel,
+an object clearing its `z = 0.80` underside on both sides can be at most **0.070 m** tall, which the
+arm crosses at `z >= 0.788`. The status doc lists the five choices this leaves.
+
+### W3, run once as a pipeline validation, not as an admission
+
+[`scripts/run_pact_place_v96_cluster_causal_proximity.py`](scripts/run_pact_place_v96_cluster_causal_proximity.py)
+imports the V9.5 validator's rendering path unchanged and replaces only the aggregate pass rule, with
+the floor written to `config.json` before any render. Because W2 admitted nothing, it was run once on
+one family purely to exercise the path and calibrate the prefilter
+(`diagnostics_output/pact_place_v96_w3_pipeline_validation/`, `passed: false`).
+
+The panel's causal effect on the twelve-slot V9.6 scene is **58,416** left and **23,508** right —
+identical value for value to the V9.5 measurement of the same panel on the same frozen trajectories,
+which validates the replay across a change in `nq`. Clustering then does what W1 predicted, on the
+side the geometry allows:
+
+Both sides of this comparison are F3, whose source physics is dirty, so it must not be quoted as a
+clean-source result; E1b re-runs it on F0/F1/F2.
+
+| hazard, F3 left, V9.5 decision window | V9.5 single vessel | V9.6 cluster |
+|---|---|---|
+| inbound | 40 changed values, 1 sensor | **2,604 changed values, 3 sensors** |
+| outbound | 508 changed values, 2 sensors | **644 changed values, 3 sensors** |
+
+On the right the inbound cluster changes 16 values on one sensor — a 162.8x imbalance against the 4x
+limit — so the paired-side asymmetry that stopped V9.5 survives at cluster scale. The occlusion-free
+prefilter over-predicted the measured cluster response by 2.6x (left) and 19.8x (right), in line with
+W1's calibration: **no geometry-only score is ever an admission.**
+
+### What this narrows the claim to
+
+Because the skin needs a contiguous silhouette of roughly 0.25 m, the clustered hazards v9 builds are
+sensed as a slab while reading as household clutter to the wrist camera. The supportable claim is
+**"PACT avoids large obstacles the camera cannot see, some of which are built from household items"**,
+not "PACT avoids clutter". Mugs and apples at 0.075-0.09 m stay RGB-only decor by physics. The v9
+reports must state the resolving-power floor wherever they describe the hazards.
+
+### V9.8 ceiling pendant gate — stopped at expert feasibility
+
+The V9.8 pendant implementation is pre-registered in
+[`docs/PACT_PLACE_V98_PENDANT_PLAN.md`](docs/PACT_PLACE_V98_PENDANT_PLAN.md). The
+S1 siting sweep selected a symmetric ceiling fixture at `x=0.72`, `y=0.0`,
+bottom `z=1.10`, and half-width `y=0.18`: 14 worst-case sensors at 2 px and
+181 route-intrusion frames across the six physics-clean F0/F1/F2 variants.
+
+The causal frozen-qpos smoke preserved the 40-sensor `[40,4,8,8]` renderer and
+had a zero repeat baseline, but it is not admission. The actual 24-row expert
+screen stopped the experiment at **0/24 clean successes** because every row
+had clutter contact, below the unchanged 20/24 threshold. Collection and
+training are not authorized. This does not establish that the skin can resolve
+ground clutter: ground clutter remains RGB-only decor that counts as failure on
+contact. The skin's roughly 0.25 m contiguous-silhouette resolving floor is why
+the pendant is 0.30 m wide.

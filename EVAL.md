@@ -1,249 +1,281 @@
-# EVAL — Deep two-level fridge pick-and-place (proximity-skin)
+# Chunk-25 place rollout evaluation
 
-Audit of the **FridgeTwoLevelPnPV2** dataset: how much the 40-sensor proximity skin is
-exercised, and how much that information is redundant with the cameras. Goal: a task where
-proximity is *necessary* (vision insufficient), so PACT can beat vision-only ACT.
+## Decision
 
-## Dataset
+**CHUNK25_PARTIAL.** The gripper closed in some but not most episodes: the copy-the-state shortcut is weakened but not cleanly broken at chunk 25. This is the informative middle point the plan predeclared, not a failure.
 
-| | |
-|---|---|
-| Config | `FridgeTwoLevelPnPV2Config` (40-sensor hybrid skin, physical open-top fridge) |
-| Valid demos | 74 (filter_for_successful_trajectories=True) |
-| Mean episode length | 282 frames |
-| Proximity stream | `obs/proximity/<sensor>` (T, 4 substeps, 8×8 depth), 40 sensors; non-zero (no zero-bug) |
+| Arm | N | Task success | Collision-free task success | Gripper close commanded |
+|---|---:|---:|---:|---:|
+| ACT | 40 | 8/40 | 6/40 | 9/40 |
+| PACT | 40 | 11/40 | 10/40 | 20/40 |
 
-## 1. Proximity activation (sensor sees a return < 0.5 m)
+| Arm | Hazard-bar contact | Other-environment contact | Clutter contact | Place-receptacle contact | 900 control steps | Wall-clock seconds min / median / mean / max |
+|---|---:|---:|---:|---:|---:|---:|
+| ACT | 13 | 0 | 0 | 0 | 40/40 | 930.8 / 1010.3 / 1037.6 / 1271.4 |
+| PACT | 6 | 0 | 0 | 0 | 40/40 | 929.8 / 1025.3 / 1053.2 / 1275.5 |
 
-| Metric | Value |
-|---|---|
-| Activation rate (<0.5 m) | **29.7%** of all sensor-frames |
-| Close rate (<0.2 m) | 13.8% |
-| Mean sensors active / frame | **11.9 / 40** |
-| Median depth of active sensors | 21.1 cm |
-| Frames with ≥8 / ≥16 / ≥24 / ≥32 active | 98.4% / 12.3% / 0% / 0% |
-| Sensors active >50% of the time | 10 / 40 (wrist-dominated: link6 cluster, link5_back, link3, link1_sensor_5) |
-| Sensors essentially dark | 16 / 40 (forearm/base: link1_0/1/2/6, link2_1/2, link4_4, link5_front) |
+## The three-point chunk table — the durable output of this run
 
-Phase-resolved (mean #sensors active / 40, with median active-depth) — proximity is
-**temporally concentrated in the grasp window**, matching the paper's thesis:
+The 20 shared physical instances, evaluated at all three chunk sizes with the same seed-3101
+checkpoints of each arm:
 
-| Phase | mean #active/40 | median depth |
-|---|---|---|
-| gripper-close | **17.0** | 18.6 cm |
-| grasp | 16.5 | 18.6 cm |
-| lift | 15.6 | 18.6 cm |
-| retreat | 13.8 | 23.1 cm |
-| preplace / place | 11.6 / 11.1 | 20–24 cm |
-| pregrasp | 11.1 | 21.2 cm |
-| idle/approach | 8.9 | 28.2 cm |
+| Arm | Chunk | Gripper close commanded | Task success | Collision-free task success |
+|---|---:|---:|---:|---:|
+| ACT | 1 | 0/20 | 0/20 | 0/20 |
+| ACT | 25 | 6/20 | 6/20 | 5/20 |
+| ACT | 100 | 20/20 | 7/20 | 7/20 |
+| PACT | 1 | 0/20 | 0/20 | 0/20 |
+| PACT | 25 | 9/20 | 4/20 | 4/20 |
+| PACT | 100 | 20/20 | 10/20 | 9/20 |
 
-**Read:** the fridge genuinely exercises proximity and concentrates it at grasp/close/lift,
-but only the **wrist** is buried (peak ~17/40, never ≥24/40). Gate-A target (≥32/40) not met.
+Rows 0–19 of the chunk-25/chunk-100 manifest are the same physical episodes as chunk 1, matched on
+`task_seed_u64`, both panel jitters, and `intrusion_side`. Their `episode_id` and `row_sha256`
+intentionally differ because schema version and role participate in those hashes; hash equality was
+not asserted.
 
-## 2. Vision redundancy (target-object visibility, occlusion-aware segmentation mask)
+## Modality contrast — directional only, no interaction claim
 
-Fraction of frames the **target object** projects into each camera (`object_image_points`,
-which uses a rendered segmentation mask, so walls hide pixels):
+`PACT − ACT` collision-free task success was **+10.0 pp** at chunk 25
+(paired approximate 95% interval -3.7 to
++23.7 pp), beside **+7.5 pp** at chunk 100
+(+7.5 pp recomputed here on the same instances, interval
+-10.2 to +25.2 pp).
 
-| Window | exo_camera_1 | wrist_camera | either | **neither (vision-blind)** |
-|---|---|---|---|---|
-| all frames | **100%** | 94% | 100% | **0%** |
-| grasp window (pregrasp→lift) | **100%** | 78% | 100% | **0%** |
-| pregrasp only | 100% | 48% | 100% | 0% |
+The reactivity hypothesis is an interaction — does `(PACT − ACT)@25` exceed `(PACT − ACT)@100`? The
+instance-paired difference-in-differences is +2.5 pp
+(-19.1 to +24.1 pp). **This run cannot
+confirm or refute the reactivity hypothesis.** It was predeclared as unresolvable at N = 40: the
+plan's independent-sample estimate gave a ±30 pp interval against a chunk-100 gap of only +7.5 pp,
+and detecting a 10 pp change would need roughly 714 instances per cell. The directional number above
+is reported as a directional number and nothing more.
 
-**Read:** the exocentric camera (mounted high/behind at world (-1.03,-0.58,1.65)) sees the
-target **100% of the time, every phase** — zero vision-blind frames in 20,838 frames. The
-wrist cam self-occludes at pregrasp (48%) but the exo always covers it.
+## The arms did not break the shortcut equally — read the contrast above in this light
 
-## Verdict
+ACT commanded the gripper closed in 9/40 episodes, PACT in
+20/40. **No episode in either arm succeeded without a
+commanded close** (asserted, not assumed). So the two arms are not merely better and worse at the
+same task — they attempt the grasp at very different rates, and the unconditional rates above mix
+"attempts the grasp at all" with "does the task well once it attempts".
 
-Proximity is **phase-structured and wrist-concentrated**, but **vision is fully sufficient**
-for target localization (0 blind frames; exo at 100%). So on this scene proximity is
-*redundant* for localizing the target; its only non-redundant role is near-contact wall
-geometry (collision awareness), which affects a few failure cases, not the success rate.
+Restricted to the episodes where each arm actually closed the gripper:
 
-**Predicted eval (no eval run yet): PACT ≈ ACT on success, and PACT-zeroed ≈ PACT** (the
-policy can always fall back on the exo view) — the paper's "aggregate tie" pattern, by
-construction.
-
-**Lever:** the exo's continuous sightline is the entire redundancy. To make proximity
-necessary, **blind the exo** during approach→grasp (see §3, in progress).
-
-## 3. Blinded-exo prototype (front visor) — confirms the lever, but occluding ≠ free
-
-Variant `fridge_two_level_v2_blind.xml`: v2 + a front **visor** (x=0.46, z 0.84–1.05) placed to
-intercept the measured exo→target ray (crosses that plane at z≈0.87). Smoke:
-`FridgeTwoLevelPnPV2BlindSmokeConfig` (filter off, 3 episodes).
-
-| | exo | wrist | NEITHER (blind) | mean #active (grasp win) | success |
-|---|---|---|---|---|---|
-| baseline v2 (open-top) | 100% | 78% | **0%** | 14.2 / 40 | (74 valid demos) |
-| blind (front visor) | **0%** | 0% | **100%** | 10.1 / 40 | **0 / 2** |
-
-**Finding:** the exo is occludable — visibility went 100%→0%, confirming the redundancy lever
-points the right way. **But the visor also blocks the arm**: both rollouts died at *pregrasp*
-(length ~33, never reached the grasp phase), so the task is 0% and the 0%/100% numbers are
-pre-grasp poses only, not a clean grasp-window measure. The exo's sightline into the
-compartment overlaps the corridor the forearm sweeps to reach the target, so a *scene* occluder
-that blinds the exo also blinds the robot.
-
-**Conclusion / next step:** blind the exo via the **camera config** (remove or reposition
-`exo_camera_1` in `FrankaSkinHybridCameraSystem`), not a scene wall — that removes the
-redundancy with zero impact on the arm. The wrist already self-occludes at pregrasp (48%), so
-dropping the exo should yield genuine vision-blind frames while the task stays physically
-valid. Re-run this audit on an exo-dropped smoke to confirm blind-frame fraction ↑ AND
-success preserved before collecting.
-
-## 4. Exo reposition (low/side) — the fix that works
-
-`FrankaSkinHybridCameraSystemExoBlind`: same physical v2 scene, but the exo is moved low + to
-the side (`camera_offset=[-0.10,-0.95,0.20]`, `lookat=[0.47,0.05,0.10]`) so its line to the
-deep target crosses the y=−0.29 side wall during grasp, while its line to the lifted object /
-front pad stays clear. Smoke `FridgeTwoLevelPnPV2ExoBlindSmokeConfig` (filter off, n=3).
-
-Per-phase **target** visibility (exo) and vision-blind fraction (neither camera):
-
-| phase group | exo: v2 → blind | NEITHER(blind): v2 → blind | wrist (blind) | mean #active |
-|---|---|---|---|---|
-| grasp (2–4) | 100% → **21.6%** | 0% → **22.0%** | 77.6% | 14.6 |
-| transit (5–6) | 100% → 23.9% | 0% → 0% | 100% | 14.9 |
-| **place (7)** | 100% → **100%** | 0% → 0% | 100% | 12.2 |
-
-**Result:** repositioning the exo blinds it during grasp (100%→21.6%, and 22% of grasp frames
-are now fully vision-blind) **while keeping it at place (100%)** — exactly the goal. Critically,
-the camera move doesn't touch the arm, so the **task is preserved: 3/3 reached place, episodes
-succeed**, and proximity activation is unchanged (14.6 vs 13.9 at grasp). This is the opposite
-of the visor (§3), which blinded the exo but broke the task.
-
-**Per-phase refinement (the decisive result).** The grasp-window *aggregate* hides what
-matters. Broken out (exo-blind run, n=4):
-
-| phase | exo (blind) | wrist | NEITHER (vision-blind) |
-|---|---|---|---|
-| approach (0) | 100% | 100% | 0% |
-| **pregrasp (2)** | **18%** | 49% | **50%** |
-| grasp (3) | 17% | 100% | 0% |
-| close (4) | 17% | 100% | 0% |
-| place (7) | 100% | 100% | 0% |
-
-At **pregrasp — the decision-critical alignment moment *before* contact — 50% of frames are now
-fully vision-blind** (exo occluded by the side wall AND the wrist self-occluded). That is exactly
-the proximity-necessity regime, and it emerged from the exo reposition alone. The wrist's 100%
-at grasp/close is *post-decision* (the object is already in the gripper) and realistic, so it
-does not undermine proximity's role. Pushing the exo to 0% would barely move the pregrasp-blind
-fraction — it is capped near the wrist's ~49% pregrasp self-occlusion (NEITHER ≤ 1 − wrist).
-
-**Conclusion:** the exo reposition alone is sufficient; attacking the wrist further has poor ROI
-and risks physical realism. This physically valid, exo-reduced scene is **ready to scale** for
-the PACT vs ACT collection. (n=4 here — confirm the ~50% pregrasp-blind holds at scale.)
-
-## 5. Final collection (n=196) — structure holds at scale
-
-`FridgeTwoLevelPnPV2ExoBlindConfig`, 200 houses, 12 workers → **196 valid demos, 92.0% success
-rate** (196/213 attempts, 0 skipped), 195/196 are complete pick-place trajectories. Per-phase
-target visibility + proximity activation over all 196 demos:
-
-| phase | exo | wrist | NEITHER (vision-blind) | mean #active |
-|---|---|---|---|---|
-| approach (0) | 100% | 100% | 0% | 9.0 |
-| **pregrasp (2)** | 14% | 47% | **53.1%** | 11.3 |
-| grasp (3) | 20% | 100% | 0% | 16.7 |
-| close (4) | 19% | 100% | 0% | 17.1 |
-| transit (5–6) | 29% | 100% | 0% | 13.4 |
-| place (7) | 100% | 100% | 0% | 11.1 |
-
-The n=4 prototype held: **pregrasp is 53% fully vision-blind** at scale, the exo is preserved at
-place (100%), and proximity is strongly active through the grasp window (~17/40). Dataset at
-`assets/datagen/fridge_two_level_v2_exoblind/` is ready for the PACT vs vision-only ACT study.
-
-## 6. ACT / PACT training + interim eval (PRELIMINARY — both ~0%)
-
-Converted 196 demos → `act_style_data/fridge_exoblind_v1` (RGB exo+wrist + `proximity_positions
-(T,40,3)`). Trained vanilla **ACT** and **PACT** (`--use_proximity --n_proximity_sensors 40`),
-same recipe (2000 epochs, chunk 100, hidden 512). Best val loss: ACT 0.078, PACT 0.072 — both fit.
-
-**Interim eval (n=6 each, exo-blind env): ACT 0/6, PACT 0/6.** Failure mode (from the saved
-rollouts) is *not* a reach failure: the TCP reaches the object (**min ~7 cm**), but the gripper
-**closes ~step 27 (too early, on air) and stays closed** — both policies, identically. With the
-exo blinded at pregrasp, the policy times the grasp off proprioception, which mis-fires under
-object-pose variation; proximity did not rescue it.
-
-**Key caveat — this is NOT the paper's PACT.** The proximity feature here is a hand-crafted
-3-D token per sensor (nearest-pixel x/y + normalized depth). The paper's PACT uses a *learned,
-frozen proximity encoder* (~0.82 M-param transformer) that regresses the object's 3-D position
-from the 8×8 depth — a far stronger signal for grasp localization/timing. So the current result
-tests a weakened proximity path, not PACT proper.
-
-**Decision:** the full n=50×3 eval was NOT run — at 0/6 vs 0/6 it would only confirm a null at
-~4.5 h cost. Checkpoints: `submodules/act/ckpts/fridge_{act,pact}/…`.
-
-## 7. Why proximity can't rescue this task — it senses walls, not the object
-
-Attempted the paper's PACT front-end (a learned encoder regressing object 3-D position from each
-8×8 depth patch; label = `extrinsic_cv @ obj_world`). Building the training set exposed the root
-problem:
-
-- Across **196 eps × 40 sensors × ~280 steps**, the pickup object is visible to *any* proximity
-  sensor in only **99 sensor-frames**, by **3 sensors** (link1_sensor_4, link6_sensor_4/3).
-- **Closest object sighting = 33.8 cm; 0 frames inside 20 cm; 0 inside grasp range.**
-
-So the deep-fridge encapsulation we maximized is the sensors seeing **walls**, not the small
-target. At grasp the object sits between the fingers, outside every sensor's FOV. Consequences:
-the object-position encoder is **untrainable** here (99 far samples) and would be **useless** for
-grasp timing anyway. At grasp the object is invisible to the exo (blinded by design) AND to
-proximity (walls); only the wrist camera sees it, which BC from 196 demos can't exploit to time
-the grasp — hence ACT 0 / PACT 0.
-
-**Conclusion:** "maximize proximity activation" maximized *wall*-sensing (collision/encapsulation
-context), which is a different quantity from *object* localization. For a PACT>ACT *success*
-result, proximity must sense the **object** (e.g., fingertip/palm sensors at the grasp point, a
-larger target, or object against a sensed surface) — or proximity's value should be measured as
-**collision/safety**, not pick success. The exo-blind fridge as built does not give proximity an
-object signal to win on.
-
-## 8. Collision/safety reframe — also negative for current PACT
-
-After the object-sensing result above, I reframed the evaluation around wall-contact safety. I
-added contact-category logging to `obs_scene["collision_metrics"]` so rollouts now split robot
-contacts into:
-
-- `static_environment`: fridge / wall / scene contacts
-- `pickup_object`: contacts with the manipulated object
-- `place_receptacle`: contacts with the pad
-
-This matters because the old scalar contact count mixed harmless or task-relevant object contact
-with wall scraping. A smoke rollout confirmed the ambiguity: 26/26 old-style contacts were with
-the pickup object and **0** were static-environment contacts.
-
-Matched full-horizon safety eval on houses 0-5, exo-blind env, same checkpoints:
-
-| Policy | Success | Static fridge contacts | Static contact steps | Pickup contacts | Total contacts |
-|---|---:|---:|---:|---:|---:|
-| ACT | 0/6 | **0** | **0** | 126 | 126 |
-| PACT | 0/6 | **835** | **417** | 853 | 1688 |
-| PACT-zero | 0/6 | **955** | **500** | 2149 | 3104 |
-
-Per-house static contacts:
-
-| house | ACT | PACT | PACT-zero |
+| Arm | Episodes closing | Task success given close | Collision-free success given close |
 |---|---:|---:|---:|
-| house_0 | 0 | 139 | 457 |
-| house_1 | 0 | 135 | 61 |
-| house_2 | 0 | 188 | 202 |
-| house_3 | 0 | 183 | 192 |
-| house_4 | 0 | 190 | 43 |
-| house_5 | 0 | 0 | 0 |
+| ACT | 9 | 8/9 (89%) | 6/9 (67%) |
+| PACT | 20 | 11/20 (55%) | 10/20 (50%) |
 
-The proximity-clearance proxy agreed directionally: PACT and PACT-zero spend more frames below
-5 cm and 10 cm nearest sensed depth than ACT.
+Conditional on attempting, ACT is the *higher*-scoring arm on both endpoints; PACT's larger
+unconditional total comes from attempting more than twice as often. These conditional cells are
+small (9 and 20
+episodes) and the conditioning variable is itself an outcome, so this is not evidence that ACT is
+better either — it is evidence that **the unconditional `PACT − ACT` gap cannot be read as a
+proximity effect at chunk 25.** The dominant difference between these two arms is how often each
+one escaped the copy-the-state shortcut, which is a training-dynamics difference, not a
+sensing-modality one.
 
-**Conclusion:** the safety reframe does **not** rescue the current learned PACT policy. ACT fails
-to grasp but does not scrape the static fridge in this matched n=6 eval. PACT fails to grasp and
-scrapes the fridge heavily. Zeroing proximity does not fix it, so the unsafe behavior is not an
-immediate "proximity helps avoid walls" effect; it is likely an off-distribution learned policy
-behavior from this weakened proximity-token setup.
+## Runtime and scope
 
-I also briefly launched a full n=50 ACT success eval, but stopped it before any H5s were saved
-once the task/sensor mismatch and 0% short-run behavior were confirmed.
+Smoke ran 4/4 rollouts and commanded the gripper
+closed in 1/4. Mean smoke time was
+15.94 minutes per rollout; the re-derived full-eval
+projection was 2.12 hours. Runtime decision: `RUN_FULL`.
+Full dispatch completed 80/80 jobs with
+10 workers and zero errors.
 
+## Verification and limits
+
+- Every result used `num_queries=25`; both checkpoints loaded with `strict=True` in the
+  evaluator, and PACT recorded feature width 32 with projection `(512, 32)` and
+  `proximity_consumed_for_action: true`.
+- The instance manifest is the chunk-100 file reused **byte-identical**
+  (`515bb60d00613aa4990f7a824e5aadcff9bcb56361f6b64aaab8fa8510981018`), not regenerated. Its `schema_version` and `role` still say `chunk100`;
+  those fields are cosmetic and its rows encode chunk-agnostic instances, which is exactly what
+  makes chunks 1, 25 and 100 paired on identical episodes.
+- No new evaluator, contract or manifest was written. `eval_pact_place_chunk100_row.py` was invoked
+  unchanged with `--num-queries 25`; only a dispatch launcher and this finaliser are new.
+- Training commands differ from the chunk-100 pair **only** by `--chunk_size` and `--ckpt_dir`, and
+  PACT differs from ACT by exactly the five proximity flags — both asserted flag-by-flag over
+  sorted `(flag, value)` pairs, which is order-independent but still catches a dropped or repeated
+  flag. The argv *token order* does differ from the chunk-100 pair: the chunk-25 run was relaunched
+  by a script that groups the shared flags and places `--ckpt_dir` last. The parsed flag set and
+  every value are identical apart from the two intended ones.
+- **ACT@25 was trained twice.** The first attempt died at epoch 1800/2000 when the filesystem
+  filled while writing a checkpoint. That partial run was deleted rather than resumed from its
+  epoch-1600 bundle, so both chunk-25 arms have identical single-shot provenance. Disk space was
+  reclaimed by deleting rollout trajectories and videos from an unrelated July 2026 run; no
+  artifact this evaluation depends on was touched, as the hash checks above confirm.
+- All 152 converted dataset files were re-hashed; the protected tree
+  remains `b16a5a0bd221d786f54fd9f28e00d493d01316ed47d9e909c1a915d37b13e6f1`. The chunk-1 and chunk-100 checkpoints, the frozen
+  encoder, and every published evaluator retained their recorded SHA-256 values.
+- **Single seed 3101, N = 40 per arm.** Rate-difference precision is limited.
+- **No within-model ablation this run.** `PACT_PERMUTED` was skipped because at chunk 100 it scored
+  6/40 against ACT's 13/40 — below the no-proximity baseline, so it behaved as an active distractor
+  rather than a clean control, and it inflated the chunk-100 headline (of the reported +25.0 pp for
+  PACT − PACT_PERMUTED, only +7.5 pp is PACT − ACT). That leaves the chunk-100 anomaly undiagnosed
+  and leaves this run with only the cross-model contrast, which has flipped sign between seeds in
+  this project before.
+- The proximity encoder is the frozen **corridor** encoder used unchanged on the place task —
+  cross-task transfer.
+- `place_receptacle` contacts are over-counted because a learned policy exposes no expert phase, so
+  the audit phase remains `other`.
+
+The exact chunk-100 → chunk-25 training-command diff for each arm was:
+
+```diff
+# ACT
+--- --ckpt_dir /root/pact_place_152_pact_vs_act_chunk100_seed3101/act_seed3101
++++ --ckpt_dir /root/pact_place_152_pact_vs_act_chunk25_seed3101/act_seed3101
+--- --chunk_size 100
++++ --chunk_size 25
+
+# PACT
+--- --ckpt_dir /root/pact_place_152_pact_vs_act_chunk100_seed3101/pact_seed3101
++++ --ckpt_dir /root/pact_place_152_pact_vs_act_chunk25_seed3101/pact_seed3101
+--- --chunk_size 100
++++ --chunk_size 25
+```
+
+The exact ACT → PACT command-only differences at chunk 25 were:
+
+```diff
+--- --ckpt_dir /root/pact_place_152_pact_vs_act_chunk25_seed3101/act_seed3101
++++ --ckpt_dir /root/pact_place_152_pact_vs_act_chunk25_seed3101/pact_seed3101
++++ --use_proximity --n_proximity_sensors 40 --prox_tokens_per_sensor 1 --proximity_feature_dim 32 --proximity_encoder_sha256 6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206
+```
+
+Machine-readable details are in `analysis.json`.
+
+---
+
+# V9.6 clustered-hazard siting (this run) — measurement only, nothing authorized
+
+Separate work from the chunk-25 rollout evaluation above: no policy was trained or rolled out. This
+run executed W1-W3 of
+[`docs/PACT_PLACE_V9_RAW_ADMISSION_FIX_PLAN.md`](docs/PACT_PLACE_V9_RAW_ADMISSION_FIX_PLAN.md).
+Full write-up: [`docs/PACT_PLACE_V96_CLUSTER_SITING_STATUS.md`](docs/PACT_PLACE_V96_CLUSTER_SITING_STATUS.md).
+
+**Decision: STOP for review.** `authorizes_gate: false`, `authorizes_collection: false`,
+`authorizes_v1b: false`.
+
+## W1 — resolving-power instrument, retrodiction against the measured raw counterfactual
+
+`scripts/pact_skin_resolvability.py`, driven by `scripts/run_pact_place_v9_w1_resolvability.py`.
+Artifact: `diagnostics_output/pact_place_v9_w1_resolvability/resolvability.json`.
+
+| metric | value |
+|---|---:|
+| Variants replayed | 8 of 8 |
+| Role measurements compared | 24 |
+| Ordering `panel >> outbound > inbound` reproduced | 8 / 8 |
+| Pearson r on `changed_values` | 0.99997 |
+| Spearman r on `changed_values` | 1.000 |
+| Predicted / measured ratio (min, median, max) | 0.994, 1.006, 1.042 |
+| Measured-nonzero predicted-zero | 0 |
+| Recall of measured responding sensors | 1.00 |
+| `retrodiction_passed` | **true** |
+
+Occlusion-free prefilter over-prediction, for calibration: 31.8x (inbound vessel), 6.2x (outbound
+vessel), 1.33x (panel).
+
+## W2 — siting by angular subtense
+
+`scripts/run_pact_place_v9_w2_cluster_siting.py`. Artifact:
+`diagnostics_output/pact_place_v9_w2_cluster_siting/siting.json`.
+
+| | inbound cluster | outbound cluster |
+|---|---:|---:|
+| Placements scored | 7,140 | 7,140 |
+| Geometry-feasible | 341 | 108 |
+| Sensing-admitted (>= 3 sensors at 2 px in every variant, link5/link6 responder, <= 4x imbalance) | **0** | 54 |
+| Best admitted: worst-case sensors / sensor-frames / imbalance | — | 4 / 290 / 2.6x |
+
+763 inbound placements clear the sensing floor (up to 6 sensors, 333 sensor-frames); none is
+geometry-feasible.
+
+## W2b — the corridor budget
+
+`scripts/run_pact_place_v9_w2b_inbound_diagnostic.py`.
+
+| quantity | value |
+|---|---:|
+| Usable aperture width | 0.810 m |
+| Free band left by the active panel | 0.460 m |
+| Loaded transport envelope + clearance | 0.340 m |
+| **Max hazard width still leaving a lane** | **0.120 m** |
+| **Contiguous silhouette the skin resolves at working range** | **0.250 m** |
+| Shortfall | 0.130 m |
+| Max bench-standing height clearing the panel's underside | 0.070 m |
+| Width needed for a balanced 3-sensor inbound response deeper than the panel | 0.600 m |
+| Inbound x outbound cluster pairs examined / jointly feasible | 18,393 / **0** |
+
+## E0 — V9.5 record correction
+
+`diagnostics_output/pact_place_v95_v0c5_raw_prerequisite/admission_correction.json`. No V9.5 artifact
+was edited; all 34 are byte-identical and the correction is a new record.
+
+| # | family | side | raw_passed | source_physics_clean |
+|---|---|---|---|---|
+| 0-5 | F0 / F1 / F2 | both | False | True |
+| 6 | F3_aperture_side_stagger | left | True | **False** (351 clutter contacts) |
+| 7 | F3_aperture_side_stagger | right | False | **False** (2,315 clutter contacts) |
+
+**V9.5 headline corrected: 0 of 6 physics-clean variants passed**, not 1 of 8. The single recorded
+pass is the dirty-source episode, and the inbound vessel's only nonzero reading in all of V9.5 (40
+values, max 3.1 px at R = 0.11 m) comes from it. `run_pact_place_v9_v0c3_causal_proximity.py` now
+fails admission on a dirty source. W1's retrodiction and W2's structural finding are unaffected; the
+W3 comparison below used F3 as both baseline and test and is flagged accordingly.
+
+## W3 — pipeline validation only, on a configuration W2 rejected
+
+`scripts/run_pact_place_v96_cluster_causal_proximity.py`, floor pre-registered in `config.json`.
+Artifact: `diagnostics_output/pact_place_v96_w3_pipeline_validation/validation.json` (`passed: false`).
+
+Panel causal effect on the V9.6 twelve-slot scene: 58,416 left and 23,508 right — identical value
+for value to the V9.5 measurement across a change in `nq`.
+
+Both sides of this comparison are F3, whose source physics is dirty (see E0):
+
+| F3 left, V9.5 decision window | V9.5 single vessel | V9.6 cluster |
+|---|---|---|
+| inbound | 40 changed values, 1 sensor | 2,604 changed values, 3 sensors |
+| outbound | 508 changed values, 2 sensors | 644 changed values, 3 sensors |
+
+Right side, inbound cluster: 16 changed values on 1 sensor, 162.8x left/right imbalance. Posed span
+and gap, measured from renderable meshes: 0.299 m / 0.021 m and 0.296 m / 0.000 m, both inside the
+0.25 m / 0.04 m contract.
+
+---
+
+# V9.8 ceiling pendant environment gate
+
+The implementation and pre-registered bounds are in
+[`docs/PACT_PLACE_V98_PENDANT_PLAN.md`](docs/PACT_PLACE_V98_PENDANT_PLAN.md).
+This gate ended before collection or training.
+
+| stage | result |
+|---|---|
+| S1 siting | 77 candidates; selected bottom 1.10 m / half-width 0.18 m |
+| S1 worst-case sensing | 14 sensors at 2 px; 181 route-intrusion frames |
+| S2a causal smoke | six clean variants; repeat baseline 0.0; smoke only |
+| S3 expert screen | **0/24 clean**, 24/24 with clutter contact |
+| frozen bar | 20/24 clean successes |
+| verdict | `authorizes_gate: false`; `authorizes_collection: false` |
+
+Artifacts: `diagnostics_output/pact_place_v98_pendant_siting/siting.json`,
+`diagnostics_output/pact_place_v98_pendant_causal_smoke3/validation.json`,
+`diagnostics_output/pact_place_v98_expert_gate/expert_screen.json`, and
+`diagnostics_output/pact_place_v98_pendant_review/review.json`.
+
+S2b raw admission was not run after the S3 stop. The mandatory review wrapper
+records that three clean successes were unavailable. The resolving-power caveat
+is unchanged: the skin resolves a contiguous silhouette of roughly 0.25 m and
+nothing smaller; the pendant is 0.30 m wide because of that floor. Ground
+clutter remains RGB-only decor that counts as failure on contact, with no claim
+that the skin sees it.
+
+## Why it stops
+
+The paired-side design requires identical clutter under both panel sides; the panel forces the arm's
+lane to a side that flips between the two rows of a pair; a hazard must be lateral to be sensed at
+all, because the gripper, hand and link7 carry no sensors; and a lateral hazard does not flip. The
+status doc lists the five choices this leaves, all of which change something the plan froze.

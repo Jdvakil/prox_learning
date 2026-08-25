@@ -1,0 +1,44 @@
+{
+  "authorizes_collection": false,
+  "authorizes_gate": false,
+  "authorizes_v1b": false,
+  "configuration_sha256": "02200ce38be5983ba51dd0b6eeddd8efa6ae7f8a34f9791934d5b681df5e08c8",
+  "feasible_configuration_found": false,
+  "inbound_candidate_id": "C3_wide:inbound_cluster:x0.740:y+0.280:t090",
+  "inbound_cluster": {
+    "center_xy_m": [
+      0.74,
+      0.28
+    ],
+    "gap_m": 0.025,
+    "theta_deg": 90.0
+  },
+  "inbound_enters_below_the_floor": true,
+  "outbound_candidate_id": "C3_wide:outbound_cluster:x0.740:y-0.280:t090",
+  "outbound_cluster": {
+    "center_xy_m": [
+      0.74,
+      -0.28
+    ],
+    "gap_m": 0.025,
+    "theta_deg": 90.0
+  },
+  "outbound_enters_above_the_floor": true,
+  "recipe": {
+    "inbound_cluster": [
+      "Soap_Bottle_11",
+      "857d3f1a93b54b25bcc14aab9203346e",
+      "e3227ecd37d44cd6be1331941d9cfa2f"
+    ],
+    "outbound_cluster": [
+      "Soap_Bottle_30",
+      "Soap_Bottle_3",
+      "5d13903e21044558bfb2bb7b72e76b4d"
+    ]
+  },
+  "recipe_id": "C3_wide",
+  "role": "pipeline_validation_only_not_admission",
+  "schema_version": "pact_place_v9_6_w3_configuration_v1",
+  "siting_document_sha256": "9397858dbe7bc248f1cc5b1b3f31e176ad338741c3f0b3f6cc1c6d42b480b536",
+  "why_this_exists": "W2 admitted no configuration, so nothing can be confirmed. This pair -- the best admitted outbound cluster and the best geometry-feasible inbound cluster -- is rendered only to exercise the V9.6 raw path end to end and to calibrate the occlusion-free prefilter against the real tensor for a clustered hazard. It closes the corridor lane under one panel side and must never be used as an admission."
+}

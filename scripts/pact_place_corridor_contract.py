@@ -462,6 +462,9 @@ def build_contract(master_seed: int | None = None) -> dict[str, Any]:
 
 
 def validate_contract(document: dict[str, Any]) -> None:
+    if str(document.get("schema_version", "")).startswith("pact_place_corridor_v9_8"):
+        _validate_v98_contract(document)
+        return
     payload = dict(document)
     observed = payload.pop("config_sha256")
     if observed != sha256_payload(payload):
@@ -518,6 +521,50 @@ def validate_contract(document: dict[str, Any]) -> None:
             for forbidden in ("cavity_obj_", "pact_intrusion_", "place_receptacle"):
                 if forbidden in body:
                     raise ValueError(f"illegal clutter body name {body!r}")
+
+
+def _validate_v98_contract(document: dict[str, Any]) -> None:
+    """Validate the V9.8 manifest without loosening the existing V9 contract."""
+    from pact_place_v98_pendant_contract import (
+        MIN_CLEAN_SUCCESSES,
+        N_EXPERT_ROWS,
+        SAMPLER_CLASS,
+        validate_pendant_geometry,
+    )
+
+    payload = dict(document)
+    observed = payload.pop("config_sha256")
+    if observed != sha256_payload(payload):
+        raise ValueError("V9.8 config self-hash mismatch")
+    rows = document.get("expert_screen_rows") or []
+    if len(rows) != N_EXPERT_ROWS:
+        raise ValueError(f"expected {N_EXPERT_ROWS} V9.8 expert rows")
+    if sum(row.get("intrusion_side") == "left" for row in rows) != N_EXPERT_ROWS // 2:
+        raise ValueError("V9.8 expert screen is not side-balanced")
+    if len({row.get("episode_id") for row in rows}) != N_EXPERT_ROWS:
+        raise ValueError("V9.8 episode IDs are not unique")
+    if document.get("authorizes_gate") is not False or document.get("authorizes_collection") is not False:
+        raise ValueError("V9.8 config must not authorize a gate or collection")
+    scene = document.get("scene") or {}
+    if not scene.get("place_tray_x_bounds_m", [0.0, 0.0])[1] < float(scene.get("aperture_plane_x_m", 0.0)):
+        raise ValueError("V9.8 place tray is not wholly outside the aperture")
+    for row in rows:
+        row_payload = dict(row)
+        row_hash = row_payload.pop("row_sha256", None)
+        if row_hash != sha256_payload(row_payload):
+            raise ValueError(f"V9.8 row self-hash mismatch at {row.get('role_index')}")
+        if row.get("sampler_class") != SAMPLER_CLASS:
+            raise ValueError("V9.8 row has the wrong sampler class")
+        if not -0.015 <= float(row.get("panel_x_jitter_m", 0.0)) <= 0.015:
+            raise ValueError("V9.8 panel x jitter outside frozen support")
+        if not -0.005 <= float(row.get("panel_face_jitter_m", 0.0)) <= 0.005:
+            raise ValueError("V9.8 panel face jitter outside frozen support")
+        validate_pendant_geometry(
+            row["pact_mounted_ceiling_fixture"]["center_m"],
+            row["pact_mounted_ceiling_fixture"]["half_m"],
+        )
+    if int(document.get("min_clean_successes", MIN_CLEAN_SUCCESSES)) != MIN_CLEAN_SUCCESSES:
+        raise ValueError("V9.8 clean-success gate was changed")
 
 
 def review_row_seed(index: int, master_seed: int) -> tuple[int, int]:

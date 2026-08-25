@@ -157,7 +157,58 @@ def place_receptacle_outside_placement(audit: dict[str, Any]) -> int:
     return disallowed_place_receptacle_contact_entries(audit)
 
 
-def _make_config(destination: Path, *, scene_xml: Path | None = None):
+def derive_failure_cause(
+    *,
+    task_success: bool,
+    contact_audit: dict[str, Any],
+    clutter_stability_events: list[dict[str, Any]],
+    terminal_tracking: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Report the earliest material cause before a terminal failure symptom."""
+    if task_success and not clutter_stability_events:
+        return None
+    if clutter_stability_events:
+        first = min(
+            clutter_stability_events,
+            key=lambda event: int(event.get("step", 2**31 - 1)),
+        )
+        return {
+            "code": "clutter_collision_stability_event",
+            "causal_priority": "upstream_environment_interaction",
+            "step": int(first.get("step", -1)),
+            "policy_phase": str(first.get("policy_phase") or "unknown"),
+            "body": first.get("body"),
+            "displacement_m": first.get("displacement_m"),
+            "rotation_angle_rad": first.get("rotation_angle_rad"),
+            "terminal_symptom": terminal_tracking.get("check_failure_branch"),
+        }
+    totals = (contact_audit or {}).get("contact_class_totals") or {}
+    clutter_contacts = int(totals.get("clutter", 0))
+    if clutter_contacts:
+        return {
+            "code": "clutter_collision_contact",
+            "causal_priority": "upstream_environment_interaction",
+            "clutter_contact_entries": clutter_contacts,
+            "terminal_symptom": terminal_tracking.get("check_failure_branch"),
+        }
+    branch = str(
+        terminal_tracking.get("check_failure_branch")
+        or terminal_tracking.get("branch")
+        or "unknown"
+    )
+    return {
+        "code": f"terminal_{branch}",
+        "causal_priority": "terminal_predicate",
+        "terminal_symptom": branch,
+    }
+
+
+def _make_config(
+    destination: Path,
+    *,
+    scene_xml: Path | None = None,
+    sampler_class: str | None = None,
+):
     from molmo_spaces.configs.task_configs import PickAndPlaceTaskConfig
     from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
         FrankaSkinPACTCollisionCorridorConfig,
@@ -170,6 +221,13 @@ def _make_config(destination: Path, *, scene_xml: Path | None = None):
         PactPlaceCorridorV3Sampler,
         PactPlaceCorridorV4Sampler,
         PactPlaceCorridorV5Sampler,
+        PactPlaceCorridorV9Sampler,
+        PactPlaceCorridorV93Sampler,
+        PactPlaceCorridorV94MountedPreviewSampler,
+        PactPlaceCorridorV95LowWallSampler,
+        PactPlaceCorridorV96ClusterSampler,
+        PactPlaceCorridorV97HazardSampler,
+        PactPlaceCorridorV98PendantSampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -186,7 +244,23 @@ def _make_config(destination: Path, *, scene_xml: Path | None = None):
         MOLMO
         / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
     )
-    if scene.name == "pact_place_corridor_v5.xml":
+    if sampler_class == "PactPlaceCorridorV97HazardSampler":
+        sampler_cls = PactPlaceCorridorV97HazardSampler
+    elif sampler_class == "PactPlaceCorridorV98PendantSampler":
+        sampler_cls = PactPlaceCorridorV98PendantSampler
+    elif sampler_class == "PactPlaceCorridorV96ClusterSampler":
+        sampler_cls = PactPlaceCorridorV96ClusterSampler
+    elif sampler_class == "PactPlaceCorridorV95LowWallSampler":
+        sampler_cls = PactPlaceCorridorV95LowWallSampler
+    elif sampler_class == "PactPlaceCorridorV94MountedPreviewSampler":
+        sampler_cls = PactPlaceCorridorV94MountedPreviewSampler
+    elif sampler_class == "PactPlaceCorridorV93Sampler":
+        sampler_cls = PactPlaceCorridorV93Sampler
+    elif sampler_class == "PactPlaceCorridorV9Sampler":
+        sampler_cls = PactPlaceCorridorV9Sampler
+    elif sampler_class == "PactPlaceCorridorV5Sampler":
+        sampler_cls = PactPlaceCorridorV5Sampler
+    elif scene.name == "pact_place_corridor_v5.xml":
         sampler_cls = PactPlaceCorridorV5Sampler
     elif scene.name == "pact_place_corridor_v4.xml":
         sampler_cls = PactPlaceCorridorV4Sampler
@@ -238,6 +312,7 @@ def run_row(
         config = _make_config(
             destination,
             scene_xml=Path(scene_xml) if scene_xml else None,
+            sampler_class=row.get("sampler_class"),
         )
         selected_seed: dict[str, int] | None = None
         initial_reset_result = None
@@ -393,12 +468,21 @@ def run_row(
                 "gripper_width_max_m": policy_info["gripper_width_max_m"],
                 "grasp_diagnostics": policy_info["grasp_diagnostics"],
                 "terminal_tracking": policy_info["terminal_tracking"],
+                "failure_cause": derive_failure_cause(
+                    task_success=task_success,
+                    contact_audit=audit,
+                    clutter_stability_events=clutter_stability_events,
+                    terminal_tracking=policy_info["terminal_tracking"],
+                ),
                 "terminal_robot_environment_contacts": policy_info[
                     "terminal_robot_environment_contacts"
                 ],
                 "place_phase_success": bool(policy_info["place_phase_success"]),
                 "inbound_deflected": bool(policy_info["inbound_deflected"]),
                 "outbound_deflected": bool(policy_info["outbound_deflected"]),
+                "detected_hazards": policy_info.get("detected_hazards", []),
+                "maneuver_interactions": policy_info.get("maneuver_interactions", []),
+                "active_maneuver": policy_info.get("active_maneuver"),
                 "accepted_bow_m": policy_info.get("accepted_bow_m"),
                 "planned_bow_m": policy_info.get("planned_bow_m"),
                 "bow_fallback_taken": bool(policy_info.get("bow_fallback_taken")),
@@ -602,6 +686,11 @@ def main() -> int:
         help="gate emits pass/fail tokens; diagnostic cannot.",
     )
     parser.add_argument(
+        "--mode",
+        choices=("gate", "diagnostic"),
+        help="Compatibility alias for --role used by the V9.8 gate plan.",
+    )
+    parser.add_argument(
         "--development-row",
         type=int,
         help="Run one non-gate diagnostic row under output-root; do not summarize.",
@@ -613,6 +702,8 @@ def main() -> int:
         help="Diagnostic-only: run the first N manifest rows.",
     )
     args = parser.parse_args()
+    if args.mode is not None:
+        args.role = args.mode
     if not 1 <= args.workers <= 8:
         raise SystemExit("workers must be in [1, 8]")
     protected = _protected_eval_processes()
