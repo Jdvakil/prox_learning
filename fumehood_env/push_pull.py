@@ -373,14 +373,6 @@ class ClutteredFumehoodPushSampler(ClutteredFumehoodPickSampler):
     """Push the object deeper into the hood or laterally along the bench."""
 
     TASK_CLS = PushFumehoodTask
-    # The pick sampler's REACH_SPAN reaches 0.34m past the mouth, which puts the
-    # object at the very edge of the arm's envelope. A pick only needs the object
-    # itself plus a vertical offset; a push additionally needs a standoff BEHIND
-    # it and an end pose BEYOND it, and one of those two always lies further from
-    # the base. Preflight at 0.34m depth had zero reachable waypoints out of 48
-    # candidates, so push episodes keep the object within the shallower band
-    # where both sides still solve. The arm is still inside the hood throughout.
-    REACH_SPAN = (0.02, 0.12)
     PUSH_SPAN = (0.06, 0.12)
     MARGIN = 0.10   # keep the goal this far off the hood walls
 

@@ -175,11 +175,6 @@ class ClutteredFumehoodPickAndPlaceSampler(
     place them, while this scene already carries a `place_tray` body.
     """
 
-    # Pick-and-place has to reach the object AND carry it to the tray, so the
-    # inherited deep band leaves nothing for the second half of the motion:
-    # preflight failed on pregrasp (22x) and lift (4x), both envelope limits.
-    REACH_SPAN = (0.04, 0.18)
-
     def __init__(self, config) -> None:
         super().__init__(config)
         self.place_receptacle_name = self.PLACE_PAD_NAME
