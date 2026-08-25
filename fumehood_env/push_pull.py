@@ -135,7 +135,8 @@ def _grasp_anchor(policy) -> np.ndarray:
     robot_view = policy.task.env.current_robot.robot_view
     om = policy.task.env.object_managers[policy.task.env.current_batch_index]
     pickup_obj = om.get_object_by_name(task_config.pickup_obj_name)
-    return compute_grasp_pose(
+    try:
+        return _compute_grasp_pose_checked(
         policy,
         pickup_obj,
         robot_view,
@@ -148,8 +149,20 @@ def _grasp_anchor(policy) -> np.ndarray:
         pos_cost_weight=policy.policy_config.grasp_pos_cost_weight,
         rot_cost_weight=policy.policy_config.grasp_rot_cost_weight,
         vertical_cost_weight=policy.policy_config.grasp_vertical_cost_weight,
-        com_dist_cost_weight=policy.policy_config.grasp_com_dist_cost_weight,
-    )
+            com_dist_cost_weight=policy.policy_config.grasp_com_dist_cost_weight,
+        )
+    except TypeError as e:
+        # grasp_sample.py accepts a grasp on the permissive batched solver, then
+        # can leave grasp_pose_world as None and dies formatting its log line.
+        # Surface it as the planning failure it is, so the episode resamples.
+        raise ValueError(f"grasp selection returned no usable pose: {e}") from e
+
+
+def _compute_grasp_pose_checked(*args, **kwargs):
+    pose = compute_grasp_pose(*args, **kwargs)
+    if pose is None:
+        raise ValueError("grasp selection returned None")
+    return pose
 
 
 def _translated(pose: np.ndarray, dxyz) -> np.ndarray:
@@ -182,15 +195,31 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     # Searched in order; the first fully feasible combination wins, so the
     # leading entries are the ones that make the nicest demonstration.
     MIN_PUSH = 0.05                      # never command a shorter push than this
-    MAX_PATH_CHECKS = 24                 # path-check budget per episode
+    MAX_PATH_CHECKS = 24                 # chain-check budget, per direction pass
     _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
     _LIFTS = (0.030, 0.0)                # approach height above contact
     _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
     _YAWS = tuple(np.radians(a) for a in (0.0, 15.0, -15.0, 30.0, -30.0, 50.0, -50.0))
     _CONTACT_DZ = (0.0, -0.025, 0.025)   # push lower or higher on the object
 
+    def reset(self, reset_retries: bool = True):
+        """Snapshot the sampler's goal. _compute_target_poses rewrites
+        pickup_obj_goal_pose, and _handle_failure re-plans through reset(), so
+        without this each retry would read back the previous retry's shortened
+        goal and shrink it again."""
+        tc = self.config.task_config
+        if reset_retries or getattr(self, "_goal_snapshot", None) is None:
+            self._goal_snapshot = list(tc.pickup_obj_goal_pose)
+        else:
+            tc.pickup_obj_goal_pose = list(self._goal_snapshot)
+        super().reset(reset_retries)
+
     def _direction_candidates(self, u0: np.ndarray) -> list[np.ndarray]:
-        return [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])]
+        out = [np.asarray(u0, dtype=float)]
+        for u in (np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])):
+            if not any(np.allclose(u, v, atol=1e-9) for v in out):
+                out.append(u)
+        return out
 
     PATH_SAMPLES = 6   # interpolation points checked between consecutive waypoints
 
@@ -257,7 +286,9 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         goal = np.asarray(tc.pickup_obj_goal_pose[:3], dtype=float)
         d = goal[:2] - start[:2]
         drawn = float(np.linalg.norm(d))
-        u0 = d / max(drawn, 1e-6)
+        if drawn < 1e-3:
+            raise ValueError("push goal coincides with the object start pose")
+        u0 = d / drawn
 
         # A fixed standoff does not survive here. check_feasible_ik is pure
         # reachability seeded at the current arm configuration, and the pick
@@ -304,26 +335,43 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         base_xy = self.task.env.current_robot.robot_view.base.pose[:2, 3]
         reach = np.array([max(float(np.linalg.norm(p[:2, 3] - base_xy)) for p in c[4:])
                           for c in combos])
-        yaw_mag = np.array([abs(float(c[3])) for c in combos])
-        order = np.lexsort((reach, np.round(yaw_mag, 3)))
-        survivors = [int(i) for i in order if ends_ok[i]]
+        # Ranking on reach alone silently discards the direction the sampler
+        # drew. Yaw, lift and contact height never move a waypoint in XY, so
+        # dozens of combos share one reach value and the whole path-check budget
+        # lands inside a single tie block - and since pushing deeper always
+        # stretches the arm further than pushing sideways, that block is never
+        # the deeper one. Left alone this produces an all-lateral dataset
+        # labelled as a mix, with each episode scored against the direction it
+        # substituted. So the drawn direction is ranked first and gets its own
+        # budget, and any substitution is recorded rather than papered over.
+        yaw_mag = np.round(np.array([abs(float(c[3])) for c in combos]), 3)
+        is_drawn = np.array([bool(np.allclose(c[0], u0, atol=1e-9)) for c in combos])
+        order = np.lexsort((np.arange(len(combos)), reach, yaw_mag, ~is_drawn))
+        drawn_ids = [int(i) for i in order if ends_ok[i] and is_drawn[i]]
+        other_ids = [int(i) for i in order if ends_ok[i] and not is_drawn[i]]
 
         # Stage 2: reachable endpoints are not sufficient. TCPMoveSequence
         # re-solves IK against an interpolated target every step and aborts the
         # segment once tracking error passes tcp_pos_err_threshold, so the whole
         # swept path has to solve. Checked in reach order, first winner taken.
-        chosen = None
-        for idx in survivors[:self.MAX_PATH_CHECKS]:
-            c = combos[idx]
-            if self._trackable([start_ee, c[4], c[5], c[6], c[7]]):
-                chosen = c
-                break
+        def _first_trackable(ids):
+            for idx in ids[:self.MAX_PATH_CHECKS]:
+                c = combos[idx]
+                if self._trackable([start_ee, c[4], c[5], c[6], c[7]]):
+                    return c
+            return None
+
+        chosen = _first_trackable(drawn_ids)
+        substituted = chosen is None
+        if substituted:
+            chosen = _first_trackable(other_ids)
 
         if chosen is None:
             raise ValueError(
                 f"no trackable push path: {len(combos)} candidates, "
                 f"{int(ends_ok.sum())} with reachable waypoints, "
-                f"{min(len(survivors), self.MAX_PATH_CHECKS)} chain-checked "
+                f"{min(len(drawn_ids), self.MAX_PATH_CHECKS)}+"
+                f"{min(len(other_ids), self.MAX_PATH_CHECKS)} chain-checked "
                 f"(object at {np.round(start, 3)}, base at {np.round(base_xy, 3)}, "
                 f"nearest candidate reach {reach.min():.3f}m)"
             )
@@ -335,7 +383,20 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         new_goal[1] = float(start[1] + u[1] * dist)
         tc.pickup_obj_goal_pose = new_goal
         log.info(f"[Push] dir={np.round(u, 2)} dist={dist:.3f} standoff={standoff:.3f} "
-                 f"yaw={np.degrees(yaw):.0f}deg ends-ok={int(ends_ok.sum())}/{len(combos)}")
+                 f"yaw={np.degrees(yaw):.0f}deg ends-ok={int(ends_ok.sum())}/{len(combos)}"
+                 f"{' SUBSTITUTED' if substituted else ''}")
+        if substituted:
+            log.warning(f"[Push] drawn direction {np.round(u0, 2)} had no trackable path; "
+                        f"executed {np.round(u, 2)} instead - this episode is NOT the "
+                        f"mode the sampler drew")
+        # Record both so the dataset can be filtered on what actually happened.
+        sp = getattr(self.task, "scene_params", None)
+        if not isinstance(sp, dict):
+            sp = {}
+            self.task.scene_params = sp
+        sp["push_dir_drawn"] = [float(u0[0]), float(u0[1])]
+        sp["push_dir_executed"] = [float(u[0]), float(u[1])]
+        sp["push_dir_substituted"] = bool(substituted)
 
         # The segment that meets the object is named "grasp": GraspPoseSensor
         # reads target_poses["grasp"] unguarded, and target_poses is keyed by
@@ -392,6 +453,15 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
 class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     """Grasp, drag along the bench toward the mouth (small lift to break
     friction, no transport height), release, retreat."""
+
+    def get_all_phases(self):
+        """Without this the drag segment - the only one that distinguishes a
+        pull from a pick - records phase -1 in the observation stream."""
+        phases = super().get_all_phases()
+        for name in ("drag", "drag_end", "approach"):
+            if name not in phases:
+                phases[name] = max(phases.values()) + 1
+        return phases
 
     def _compute_target_poses(self) -> dict[str, np.ndarray]:
         pc = self.policy_config
@@ -514,7 +584,13 @@ class ClutteredFumehoodPushSampler(ClutteredFumehoodPickSampler):
         return goal
 
     def _sample_task(self, env):
-        super()._sample_task(env)   # runs placement, robot, referral machinery
+        # Upstream's enclosure sampler attaches scene_params (the hood variant,
+        # clutter count, visibility cell) and enclosure_info to the task it
+        # returns; building a fresh task instead threw all of that away, and
+        # those fields are exactly what the study stratifies on. Re-class the
+        # task the way enclosure_reach.py:313 does - these subclasses add no
+        # constructor state.
+        task = super()._sample_task(env)   # placement, robot, referral machinery
         tc = self.config.task_config
         start = np.asarray(tc.pickup_obj_start_pose, dtype=float)
         goal = start.copy()
@@ -523,7 +599,10 @@ class ClutteredFumehoodPushSampler(ClutteredFumehoodPickSampler):
         th = getattr(self, "_theta", None)
         if isinstance(th, dict):
             th["displacement_goal"] = [float(v) for v in goal[:3]]
-        return self.TASK_CLS(env, self.config)
+            if getattr(task, "scene_params", None) is not None:
+                task.scene_params = dict(th)
+        task.__class__ = self.TASK_CLS
+        return task
 
 
 class ClutteredFumehoodPullSampler(ClutteredFumehoodPushSampler):
@@ -539,7 +618,20 @@ class ClutteredFumehoodPullSampler(ClutteredFumehoodPushSampler):
         return th
 
     def _displacement_goal(self, start):
-        goal = super()._displacement_goal(start)
-        # never pull past the mouth lip
-        goal[0] = float(max(goal[0], TUBE_X0 + 0.04))
+        """Clamp the pull DISTANCE to the room actually available toward the
+        mouth. Clipping the goal instead (what inheriting the push version did)
+        leaves the commanded displacement far below the success threshold
+        whenever the object starts shallow, so those episodes cannot be won."""
+        th = getattr(self, "_theta", None) or {}
+        u = np.asarray(th.get("push_dir", [-1.0, 0.0]), dtype=float)
+        u = u / max(float(np.linalg.norm(u)), 1e-6)
+        dist = float(th.get("push_dist", 0.12))
+        half_w, _, _ = th.get("hood_dims", (0.30, 0.60, 0.60))
+        if u[0] < -1e-6:
+            room = max(float(start[0]) - (TUBE_X0 + 0.04), 0.0)
+            dist = min(dist, room / abs(u[0]))
+        goal = np.asarray(start, dtype=float).copy()
+        goal[0] = float(start[0] + u[0] * dist)
+        goal[1] = float(np.clip(start[1] + u[1] * dist,
+                                -(half_w - self.MARGIN), half_w - self.MARGIN))
         return goal

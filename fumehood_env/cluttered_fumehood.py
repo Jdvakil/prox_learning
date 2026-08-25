@@ -18,6 +18,7 @@ from __future__ import annotations
 import mujoco
 import numpy as np
 
+from molmo_spaces.tasks.pick_and_place_task import PickAndPlaceTask
 from molmo_spaces.tasks.pick_and_place_task_sampler import PickAndPlaceTaskSampler
 from molmo_spaces.tasks.enclosure_reach import (
     SHELF_TOP_Z,
@@ -107,7 +108,14 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
         th["hood_dims"] = [float(half_w), float(depth), float(height)]
         z0 = SHELF_TOP_Z
 
-        obj = th.get("obj_rest") or [TUBE_X0 + 0.20, 0.0, z0]
+        # _obj_rest has not run yet on the first pass, so th["obj_rest"] is
+        # usually absent and the keep-outs used to fall back to a fixed 0.20m
+        # placeholder - meaning the approach corridor was cleared at the wrong
+        # depth on essentially every episode. reach_frac is drawn in
+        # _draw_theta, so the depth is known here even when the pose is not.
+        lo, hi = self.REACH_SPAN
+        obj = th.get("obj_rest") or [
+            TUBE_X0 + lo + float(th.get("reach_frac", 0.4)) * (hi - lo), 0.0, z0]
         ox, oy = float(obj[0]), float(obj[1])
 
         placed, clutter = 0, []
@@ -218,7 +226,15 @@ class ClutteredFumehoodPickAndPlaceSampler(
     def _sample_task(self, env):
         self.place_receptacle_name = self.PLACE_PAD_NAME
         self._seed_referral_expressions()
-        return super()._sample_task(env)
+        task = super()._sample_task(env)
+        # The enclosure sampler re-classes the task to EnclosureReachTask, whose
+        # judge_success scores reaching, not placing - so every pick-and-place
+        # episode was being recorded as a failure and the place criterion was
+        # never evaluated at all. Re-class again, restoring the one attribute
+        # PickAndPlaceTask sets in its constructor.
+        task.__class__ = PickAndPlaceTask
+        task._supported_rel_poses = {}
+        return task
 
     def _sample_and_place_robot(self, env) -> None:
         self._seed_referral_expressions()
