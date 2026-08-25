@@ -186,13 +186,13 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
     _LIFTS = (0.030, 0.0)                # approach height above contact
     _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
-    _YAWS = tuple(np.radians(a) for a in (0.0, 20.0, -20.0, 40.0, -40.0, 70.0, -70.0))
+    _YAWS = tuple(np.radians(a) for a in (0.0, 15.0, -15.0, 30.0, -30.0, 50.0, -50.0))
     _CONTACT_DZ = (0.0, -0.025, 0.025)   # push lower or higher on the object
 
     def _direction_candidates(self, u0: np.ndarray) -> list[np.ndarray]:
         return [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])]
 
-    PATH_SAMPLES = 4   # interpolation points checked between consecutive waypoints
+    PATH_SAMPLES = 6   # interpolation points checked between consecutive waypoints
 
     @staticmethod
     def _interpolate(start: np.ndarray, end: np.ndarray, n: int) -> list[np.ndarray]:
@@ -201,6 +201,44 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         lin_vel, ang_vel = transform_to_twist(np.linalg.inv(start) @ end)
         return [start @ twist_to_transform(lin_vel * t, ang_vel * t)
                 for t in np.linspace(0.0, 1.0, n + 2)[1:-1]]
+
+    MAX_JOINT_STEP = 0.8   # rad; a larger jump between samples is a branch flip
+
+    def _trackable(self, chain: list[np.ndarray]) -> bool:
+        """Can the arm actually follow this chain, not merely reach its poses?
+
+        Reachability is checked per pose from the arm's *current* configuration,
+        which says nothing about continuity: two neighbouring poses can each be
+        solvable while their solutions sit in different IK branches, and the
+        controller cannot cross between them. TCPMoveSequence re-solves IK every
+        step from wherever the arm actually is and aborts once tracking error
+        exceeds tcp_pos_err_threshold - which is exactly what the preflight hit,
+        31 approach segments started and none finished. So walk the path the way
+        the runtime does: seed each solve with the previous solution and reject
+        the candidate if a solve fails or the joints jump.
+        """
+        robot = self.task.env.current_robot
+        rv = robot.robot_view
+        mg_id = rv.get_gripper_movegroup_ids()[0]
+        base_pose = rv.base.pose
+        q = rv.get_qpos_dict()
+
+        samples = []
+        for a, b in zip(chain[:-1], chain[1:]):
+            samples += self._interpolate(a, b, self.PATH_SAMPLES) + [b]
+
+        for pose in samples:
+            jp = robot.kinematics.ik(mg_id, pose, rv.move_group_ids(), q,
+                                     base_pose=base_pose)
+            if jp is None:
+                return False
+            jump = max((float(np.max(np.abs(np.asarray(v) - np.asarray(q[k]))))
+                        for k, v in jp.items() if k in q and np.size(q[k])),
+                       default=0.0)
+            if jump > self.MAX_JOINT_STEP:
+                return False
+            q = {**q, **jp}
+        return True
 
     def _feasible_mask(self, poses: np.ndarray) -> np.ndarray:
         """Batched reachability over a stack of (4,4) poses, chunked to the
@@ -266,7 +304,9 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         base_xy = self.task.env.current_robot.robot_view.base.pose[:2, 3]
         reach = np.array([max(float(np.linalg.norm(p[:2, 3] - base_xy)) for p in c[4:])
                           for c in combos])
-        survivors = [i for i in np.argsort(reach) if ends_ok[i]]
+        yaw_mag = np.array([abs(float(c[3])) for c in combos])
+        order = np.lexsort((reach, np.round(yaw_mag, 3)))
+        survivors = [int(i) for i in order if ends_ok[i]]
 
         # Stage 2: reachable endpoints are not sufficient. TCPMoveSequence
         # re-solves IK against an interpolated target every step and aborts the
@@ -275,19 +315,15 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         chosen = None
         for idx in survivors[:self.MAX_PATH_CHECKS]:
             c = combos[idx]
-            chain = [start_ee, c[4], c[5], c[6], c[7]]
-            path = []
-            for a, b in zip(chain[:-1], chain[1:]):
-                path += self._interpolate(a, b, self.PATH_SAMPLES)
-            if self._feasible_mask(np.stack(path)).all():
+            if self._trackable([start_ee, c[4], c[5], c[6], c[7]]):
                 chosen = c
                 break
 
         if chosen is None:
             raise ValueError(
-                f"no reachable push path: {len(combos)} candidates, "
+                f"no trackable push path: {len(combos)} candidates, "
                 f"{int(ends_ok.sum())} with reachable waypoints, "
-                f"{min(len(survivors), self.MAX_PATH_CHECKS)} path-checked "
+                f"{min(len(survivors), self.MAX_PATH_CHECKS)} chain-checked "
                 f"(object at {np.round(start, 3)}, base at {np.round(base_xy, 3)}, "
                 f"nearest candidate reach {reach.min():.3f}m)"
             )
