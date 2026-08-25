@@ -2,11 +2,10 @@
 
 Default mode is the *vanilla ACT baseline*: RGB (exo + wrist) + proprioception (qpos)
 only. Pass --with_proximity to ALSO export the 40-sensor skin depths as
-/observations/proximity (T, 40, 8, 8) in meters, stacked in the Safety-CVAE's
-meta.json sensor order (the single source of truth — note link5_back precedes
-link5_front there). The proximity group is what P+ACT (PACT) feeds to the frozen
-Safety-CVAE feature extractor; vanilla ACT simply ignores it, so ONE --with_proximity
-dataset serves both arms of the comparison with byte-identical RGB/qpos/action.
+/observations/proximity (T, 40, 8, 8) in meters, stacked in
+hybrid_skin_sensors.HYBRID_SKIN_SENSOR_ORDER (link5_back before link5_front).
+Vanilla ACT ignores the group, so ONE --with_proximity dataset serves both
+arms with byte-identical RGB/qpos/action.
 
 Source layout (one datagen run dir):
   <run>/house_<k>/trajectories_batch_1_of_1.h5     groups traj_0, traj_1, ...
@@ -56,22 +55,33 @@ import h5py
 import numpy as np
 from tqdm import tqdm
 
+# Sensor order lives in the ACT submodule (no CVAE checkpoint required).
+import sys as _sys
+
+_ACT_DIR = Path(__file__).resolve().parents[1] / "submodules" / "act"
+if str(_ACT_DIR) not in _sys.path:
+    _sys.path.insert(0, str(_ACT_DIR))
+from hybrid_skin_sensors import HYBRID_SKIN_SENSOR_ORDER  # noqa: E402
+
 CAM_NAMES = ("exo_camera_1", "wrist_camera")
 ARM_DIM = 7
 GRIP_DIM_OBS = 2  # qpos/qvel: two finger joints
 GRIP_DIM_ACT = 1  # joint_pos action: one gripper command
 QPOS_DIM = ARM_DIM + GRIP_DIM_OBS  # 9
 ACTION_DIM = ARM_DIM + GRIP_DIM_ACT  # 8
-DEFAULT_PROX_META = "assets/safety/cvae_v3/meta.json"
 APPROACH_PHASES = {2, 3}  # pregrasp, grasp — same as analyze_obstacle_dataset.py
 GRIP_CLOSE = 4
 
 
-def _load_sensor_order(meta_path: Path) -> list[str]:
-    """The authoritative 40-sensor stacking order = cvae_v3 meta.json['sensors']."""
-    meta = json.loads(Path(meta_path).read_text())
-    order = list(meta["sensors"])
-    print(f"[convert] proximity sensor order from {meta_path}: {len(order)} sensors")
+def _load_sensor_order(meta_path: Path | None) -> list[str]:
+    """40-sensor stacking order. Optional legacy meta.json override; default = code list."""
+    if meta_path is not None and Path(meta_path).is_file():
+        meta = json.loads(Path(meta_path).read_text())
+        order = list(meta["sensors"])
+        print(f"[convert] proximity sensor order from {meta_path}: {len(order)} sensors")
+        return order
+    order = list(HYBRID_SKIN_SENSOR_ORDER)
+    print(f"[convert] proximity sensor order from hybrid_skin_sensors.py: {len(order)} sensors")
     return order
 
 
@@ -253,7 +263,7 @@ def convert(
     h5_files = _find_h5_files(src)
     print(f"[convert] {len(h5_files)} h5 file(s) under {src}")
 
-    sensor_order = _load_sensor_order(prox_meta or DEFAULT_PROX_META) if with_proximity else None
+    sensor_order = _load_sensor_order(prox_meta) if with_proximity else None
 
     global_idx = 0
     n_skipped_fail = 0
@@ -425,8 +435,8 @@ def main() -> None:
     p.add_argument(
         "--prox_meta",
         type=Path,
-        default=Path(DEFAULT_PROX_META),
-        help="Safety-CVAE meta.json giving the authoritative 40-sensor stacking order",
+        default=None,
+        help="optional legacy meta.json sensor list; default is hybrid_skin_sensors.py",
     )
     p.add_argument(
         "--prox_pool",

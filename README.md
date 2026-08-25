@@ -157,7 +157,7 @@ submodules/MolmoBot/ unused; nothing in this project imports it
 
 assets/              MolmoSpaces asset root AND this project's artifacts         §8
   robots/franka_skin/model_hybrid.xml    the 40-sensor arm — the canonical model
-  safety/cvae_v3/                        the reflex net weights + sensor order
+  safety/                            leftover CVAE sweeps + old reflex demos (weights deleted)
   datagen/                               collected demonstration datasets
 franka_assets/       mesh store; reached only through symlinks — DO NOT DELETE   §8
 act_style_data/      converted ACT training sets (obstacle_prox_v2 only; see §17)
@@ -422,7 +422,7 @@ deleted `act_style_data/` directories and were removed on 2026-08-16. Paths are 
 | `--use_proximity` | off | turns on the PACT path |
 | `--prox_feature` | `raw` | `raw` / `trunk` / `delta` (see above). **Train `raw`.** `trunk` is a negative control. |
 | `--prox_layout` | `per_sensor` | `per_sensor` = 40 named tokens; `global` = one mashed vector (old published run) |
-| `--prox_encoder_ckpt` | `assets/safety/cvae_v3` | which frozen CVAE |
+| `--prox_encoder_ckpt` | empty | only for trunk/delta; raw needs none |
 | `--prox_tokens_per_sensor` | 8 | K. `per_sensor` clamps 8 → 1 unless you pass another K |
 | `--blur_sigma0` | 0 | Gaussian blur strength on camera frames at training time |
 | `--blur_mode` | `curriculum` | `curriculum` anneals `σ·(1 − n/N)`; `constant` holds σ all run |
@@ -627,7 +627,7 @@ the same config and task sampler as datagen, then renders. Full recipe in [§12]
 `model_photoshoot.xml` has exactly 40 and is smaller than `model_hybrid.xml`. Either the file
 predates the dense version or the sampler silently fell back. Needs a re-run to settle.
 
-### The Safety-CVAE weights
+### The Safety-CVAE weights (historical — checkpoints deleted 2026-08-24)
 
 All three `model.pt` are 11,598,939 bytes with distinct md5s — same architecture
 (`n_in=2560`, `n_out=7`, `z_dim=8`, `d_max_input=0.5`), different training runs.
@@ -641,15 +641,16 @@ All three `model.pt` are 11,598,939 bytes with distinct md5s — same architectu
 `cvae_v3/config.json`: `epochs=60, bs=512, lr=1e-3, beta=0.01, z_dim=8, d_max=0.5, seed=0,
 n_train=13500, n_val=1500, active_latent_dims=1`.
 
-**`cvae_v3` is the universal default — zero code paths default to v1 or v2** (they appear only in
-stale docstring examples). It is the default in `prox_cvae.py:45`,
-`convert_obstacle_to_act.py:64`, `probe_prox_decodability.py:100`, all five demos,
-`imitate_episodes.py:708`, and `eval_act_obstacle.py:592`.
+**Sensor order** lives in `submodules/act/hybrid_skin_sensors.py`
+(`HYBRID_SKIN_SENSOR_ORDER`). `link5_back` precedes `link5_front` — opposite the
+env's `_HYBRID_SKIN_SENSOR_NAMES` tuple. Convert, train, and eval all use that
+list. Never hand-roll it.
 
-> **`assets/safety/cvae_v3/meta.json["sensors"]` is the authoritative 40-sensor stacking order for
-> the entire ACT/PACT pipeline.** It is NOT the env's `_HYBRID_SKIN_SENSOR_NAMES` order —
-> `link5_back` precedes `link5_front`. Both `stack_obs_proximity()` and
-> `convert_obstacle_to_act.py` read meta.json. Never hand-roll the order.
+Safety-CVAE **weights were dropped 2026-08-24**. PACT-raw never ran them (peak
+closeness). `trunk`/`delta` lost as policy features. Demos under
+`scripts/safety_*_demo.py` need a retrain if anyone wants the reflex job back.
+Sweep hdf5s in `assets/safety/sweep_v*.h5` are leftover training data for that
+abandoned head.
 
 Sweep provenance, read from the h5 attrs (all 15,000 samples, `d_act=0.18`, `mount_z=0.35`):
 
@@ -753,7 +754,7 @@ Three things that will bite you:
 | `/observations/images/wrist_camera` | `(T, 240, 320, 3)` uint8 | |
 | `/observations/proximity` | `(T, 40, 8, 8)` float32 | only with `--with_proximity`; **raw metres**, un-normalised |
 
-Sensors are stacked in `cvae_v3/meta.json` order. The dataloader reads a single random frame per
+Sensors are stacked in `HYBRID_SKIN_SENSOR_ORDER` (`hybrid_skin_sensors.py`). The dataloader reads a single random frame per
 sample, not the whole episode.
 
 ---
@@ -956,8 +957,9 @@ $$dq = \sigma \cdot \mathrm{Dec}\big([\,x,\; \mathbf{0}\,]\big)$$
 ## 11. Recipe A — Safety-CVAE and the demos
 
 Run outputs go to `experiments_output/<run>/`, one consolidated folder per run. With no
-`--out`/`--outdir` everything defaults to `experiments_output/default/`. The committed canonical
-weights stay at `assets/safety/cvae_v3`.
+`--out`/`--outdir` everything defaults to `experiments_output/default/`. Canonical
+CVAE weights were **deleted 2026-08-24**; this recipe is the reflex-head retrain path
+only, not the PACT default.
 
 ```bash
 export EGL="OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl"
@@ -1491,7 +1493,7 @@ Memory is ~8 GB base + 0.5 GB per episode (41 GB RSS for a 50-rollout run), so r
 ### Why PACT success does not move (audit 2026-08-23)
 
 The train/eval tensor path is **not** the reason. Metres stay metres until `ProxCVAEEncoder`,
-sensor order is `cvae_v3/meta.json` on convert *and* live eval, `dataset_stats` never z-score the
+sensor order is `HYBRID_SKIN_SENSOR_ORDER` on convert *and* live eval, `dataset_stats` never z-score the
 skin, and the CVAE state_dict loads. If success is flat, it is because the *method* fights the
 *data*, not because a shape is wrong.
 
@@ -1583,8 +1585,7 @@ Every one of these has already cost real time.
 2. **`viz_sensor_rgb` OOM.** Inherited `True` from the datagen chain; renders 40 × 256×256 RGB per
    policy step for cosmetic videos the policy never reads, at ~3 GB/episode. `eval_act_obstacle.py`
    forces it off. Datagen does not — keep `num_workers <= 2`.
-3. **Sensor order.** `cvae_v3/meta.json["sensors"]` is authoritative, and `link5_back` precedes
-   `link5_front`, opposite the env's tuple. Never hand-roll it.
+3. **Sensor order.** `hybrid_skin_sensors.HYBRID_SKIN_SENSOR_ORDER` is authoritative, and `link5_back` precedes `link5_front`, opposite the env's tuple. Never hand-roll it.
 4. **Baseline subtraction is a sim-only privilege.** The demos work because they subtract a
    per-frame obstacle-parked baseline. PACT cannot do that. In 100% of demo frames some fixture is
    within `D_MAX = 0.5 m`, and 40–60% of timesteps sit inside the `D_ACT = 0.18 m` repulsion zone

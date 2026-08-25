@@ -23,6 +23,21 @@ Newest session at the top.
 
 ---
 
+## 2026-08-24 — dropped Safety-CVAE weights; PACT-raw does not need them
+
+- **When:** 2026-08-24 ~22:20 America/Denver.
+- **Why:** User: keep cvae_v3 only if tests prove it worth it, else delete and use
+  new data. Honest call: **not worth it for PACT.** Raw never ran `model.pt`.
+  Trunk/delta already lost. Reflex is a different method.
+- **What:** `hybrid_skin_sensors.py` holds the 40-name order. `ProxCVAEEncoder`
+  `feature=raw` loads no weights. Convert default no longer reads meta.json.
+  Deleted `assets/safety/cvae_v{1,2,3}/`. Tests: `tests/test_prox_raw.py`.
+- **How:** leftover `sweep_v*.h5` + reflex demo mp4/mcap still in `assets/safety/`.
+  `scripts/safety_*_demo.py` will 404 until someone retrains a head.
+- **Not done:** gate-bar collect.
+
+---
+
 ## 2026-08-24 — user wiped datagen / ckpts / eval; leftover converted hdf5
 
 - **When:** 2026-08-24 ~22:11 America/Denver.

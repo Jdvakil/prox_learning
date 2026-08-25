@@ -73,7 +73,7 @@ encoder memory                 [z, qpos, 8 prox, ~160 image]
 ```
 
 Checked clean: metres stay metres; featurize once; `dataset_stats` never
-z-scores skin; convert and live eval both stack by `cvae_v3/meta.json`
+z-scores skin; convert and live eval both stack by `HYBRID_SKIN_SENSOR_ORDER`
 (`link5_back` before `link5_front`).
 
 ### Findings, highest leverage first

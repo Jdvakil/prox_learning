@@ -176,11 +176,12 @@ Closeness: `clip(1 − d / 0.5)`; dead range `< 5 mm → 0`. Decoder taps: `trun
 (old CLI default, **negative control**), `delta` 7, `raw` 40 (skips CVAE). `cvae_v3`
 ended with ~1 of 8 latent dims alive. The “C” is mostly a train regulariser.
 
-Sensor order is `assets/safety/cvae_v3/meta.json`. `link5_back` precedes `link5_front`.
+Sensor order is `hybrid_skin_sensors.HYBRID_SKIN_SENSOR_ORDER`. `link5_back` precedes `link5_front`.
 Never use the env’s `_HYBRID_SKIN_SENSOR_NAMES` tuple.
 
 Wiring that was audited clean: metres stay metres; featurize once; `dataset_stats` never
-z-scores skin; convert and live eval both stack in `cvae_v3` order.
+z-scores skin; convert and live eval both stack in that code list. Safety-CVAE **weights
+were dropped**; PACT-raw never needed them.
 
 ### Why success stays flat (method vs data, not a shape bug)
 
@@ -393,7 +394,7 @@ Optional later third method, **not PACT**: residual `SafetyHead` on vanilla ACT 
 | `scripts/convert_obstacle_to_act.py` | datagen → ACT hdf5 |
 | `scripts/analyze_obstacle_dataset.py` | source-set stats |
 | `scripts/compare_pact.py` | Fisher / Wilson |
-| `scripts/train_safety_cvae.py` | reflex CVAE |
-| `assets/safety/cvae_v3/` | frozen CVAE weights + `meta.json` |
+| `submodules/act/hybrid_skin_sensors.py` | 40-name stacking order |
+| `scripts/train_safety_cvae.py` | reflex CVAE (weights not in tree) |
 | `reports/2026-08-14/` | figures already made |
 | `scripts/figures.py --list` | more paper figures |
