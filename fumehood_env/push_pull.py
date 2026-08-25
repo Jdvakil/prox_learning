@@ -31,6 +31,7 @@ from molmo_spaces.policy.solvers.object_manipulation.base_object_manipulation_pl
     TCPMoveSequence,
 )
 from molmo_spaces.tasks.enclosure_reach import TUBE_X0
+from molmo_spaces.utils.linalg_utils import transform_to_twist, twist_to_transform
 from molmo_spaces.tasks.pick_task import PickTask
 from molmo_spaces.utils.grasp_sample import compute_grasp_pose
 
@@ -161,6 +162,16 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     def _direction_candidates(self, u0: np.ndarray) -> list[np.ndarray]:
         return [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])]
 
+    PATH_SAMPLES = 4   # interpolation points checked between consecutive waypoints
+
+    @staticmethod
+    def _interpolate(start: np.ndarray, end: np.ndarray, n: int) -> list[np.ndarray]:
+        """The same twist interpolation TCPMoveSequence tracks at runtime
+        (get_current_target_pose): start @ twist(lin*t, ang*t)."""
+        lin_vel, ang_vel = transform_to_twist(np.linalg.inv(start) @ end)
+        return [start @ twist_to_transform(lin_vel * t, ang_vel * t)
+                for t in np.linspace(0.0, 1.0, n + 2)[1:-1]]
+
     def _feasible_mask(self, poses: np.ndarray) -> np.ndarray:
         """Batched reachability over a stack of (4,4) poses, chunked to the
         solver's batch size (check_feasible_ik asserts on anything larger)."""
@@ -187,7 +198,11 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         # horizontally, deep inside a hood, leaves the reachable set almost
         # every time — so search direction x standoff x lift x distance and
         # take the first combination whose whole waypoint set is reachable.
-        combos, stacked = [], []
+        gripper_mg_id = self.task.env.current_robot.robot_view.get_gripper_movegroup_ids()[0]
+        start_ee = self.task.env.current_robot.robot_view.get_move_group(
+            gripper_mg_id).leaf_frame_to_world
+
+        combos, stacked, per_combo = [], [], 0
         for u in self._direction_candidates(u0):
             for standoff in self._STANDOFFS:
                 for lift in self._LIFTS:
@@ -204,9 +219,21 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
                         retreat = _translated(push_end, [-u[0] * 0.05, -u[1] * 0.05,
                                                          pc.retreat_z])
                         combos.append((u, dist, approach, contact, push_end, retreat))
-                        stacked += [approach, contact, push_end, retreat]
+                        # Endpoint reachability is not enough: TCPMoveSequence
+                        # re-solves IK against an interpolated target every step
+                        # and aborts the segment once the tracking error passes
+                        # tcp_pos_err_threshold. Preflight showed exactly that -
+                        # 27 approaches started, 13 reached grasp, 3 reached the
+                        # push - so the whole path each segment sweeps has to be
+                        # reachable, not just the poses at its ends.
+                        waypoints = [start_ee, approach, contact, push_end, retreat]
+                        path = [approach, contact, push_end, retreat]
+                        for a, b in zip(waypoints[:-1], waypoints[1:]):
+                            path += self._interpolate(a, b, self.PATH_SAMPLES)
+                        per_combo = len(path)
+                        stacked += path
 
-        ok = self._feasible_mask(np.stack(stacked)).reshape(len(combos), 4).all(axis=1)
+        ok = self._feasible_mask(np.stack(stacked)).reshape(len(combos), per_combo).all(axis=1)
         # Among feasible combinations, take the one whose furthest waypoint sits
         # closest to the robot base: the arm is near its envelope in here, and
         # the least-stretched option is the one most likely to track cleanly.
@@ -226,7 +253,7 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         new_goal[0] = float(start[0] + u[0] * dist)
         new_goal[1] = float(start[1] + u[1] * dist)
         tc.pickup_obj_goal_pose = new_goal
-        log.info("[Push] dir=%s dist=%.3f standoff=%.3f feasible=%d/%d",
+        log.info("[Push] dir=%s dist=%.3f standoff=%.3f path-feasible=%d/%d",
                  np.round(u, 2), dist,
                  float(np.linalg.norm(contact[:3, 3] - anchor[:3, 3])),
                  int(ok.sum()), len(combos))
@@ -294,6 +321,9 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         start = np.asarray(tc.pickup_obj_start_pose[:3], dtype=float)
         goal = np.asarray(tc.pickup_obj_goal_pose[:3], dtype=float)
         d = goal[:2] - start[:2]
+        gripper_mg_id = self.task.env.current_robot.robot_view.get_gripper_movegroup_ids()[0]
+        start_ee = self.task.env.current_robot.robot_view.get_move_group(
+            gripper_mg_id).leaf_frame_to_world
 
         for scale in (1.0, 0.75, 0.5):
             poses = {
@@ -302,7 +332,12 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
                 "drag_end": _translated(anchor, [d[0] * scale, d[1] * scale, pc.drag_lift]),
             }
             poses["retreat"] = _translated(poses["drag_end"], [0.0, 0.0, pc.retreat_z])
-            if all(self.check_feasible_ik(p) for p in poses.values()):
+            chain = [start_ee, poses["pregrasp"], poses["grasp"],
+                     poses["drag_end"], poses["retreat"]]
+            path = list(chain[1:])
+            for a, b in zip(chain[:-1], chain[1:]):
+                path += PushPlannerPolicy._interpolate(a, b, 4)
+            if PushPlannerPolicy._feasible_mask(self, np.stack(path)).all():
                 new_goal = list(tc.pickup_obj_goal_pose)
                 new_goal[0] = float(start[0] + d[0] * scale)
                 new_goal[1] = float(start[1] + d[1] * scale)
