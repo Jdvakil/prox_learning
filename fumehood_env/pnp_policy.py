@@ -30,16 +30,63 @@ log = logging.getLogger(__name__)
 class FumehoodPickAndPlacePlannerPolicy(PickAndPlacePlannerPolicy):
     """Same placement semantics as upstream, but searched instead of asserted."""
 
+    PREGRASP_BACKOFFS = (0.04, 0.03, 0.02, 0.055)  # along the gripper approach axis
+    LIFT_HEIGHTS = (0.07, 0.05, 0.035, 0.02)       # above the tray surface
     HOVER_HEIGHTS = (0.07, 0.05, 0.035, 0.02)      # above the tray surface
     TRAY_OFFSETS = (0.0, -0.04, 0.04)              # along x, mouth-ward first
     TRAY_HALF_Z = 0.008                            # from the scene generator
 
+    def _tray_top_z(self, place_receptacle) -> float:
+        """body_aabb keeps only non-colliding geoms, and the tray inherits the
+        hood's contype/conaffinity, so it reports an empty box at the body
+        origin. The tray is a mocap body of known thickness; use that."""
+        return float(place_receptacle.position[2]) + self.TRAY_HALF_Z
+
+    def _get_grasp_poses(self, grasp_pose_world, pickup_obj, place_receptacle,
+                         robot_view, task_config):
+        """Upstream fixes one pregrasp back-off and one lift height and raises if
+        either misses. Deep in a hood both miss routinely (preflight: 22 pregrasp
+        failures, 4 lift), so each is searched over a few magnitudes instead."""
+        if not self.check_feasible_ik(grasp_pose_world):
+            raise ValueError("IK failed for grasp pose")
+
+        pregrasp = None
+        for backoff in self.PREGRASP_BACKOFFS:
+            cand = grasp_pose_world.copy()
+            cand[:3, 3] -= backoff * cand[:3, 2]
+            if self.check_feasible_ik(cand):
+                pregrasp = cand
+                break
+        if pregrasp is None:
+            raise ValueError(
+                f"IK failed for every pregrasp back-off {self.PREGRASP_BACKOFFS} "
+                f"(grasp at {np.round(grasp_pose_world[:3, 3], 3)})")
+
+        data = self.task.env.current_data
+        obj_center, obj_size = body_aabb(data.model, data, pickup_obj.object_id)
+        clearance = max(grasp_pose_world[2, 3] - (obj_center[2] - obj_size[2] / 2), 0.0)
+        tray_top = self._tray_top_z(place_receptacle)
+
+        lift = None
+        for height in self.LIFT_HEIGHTS:
+            cand = grasp_pose_world.copy()
+            cand[2, 3] = tray_top + clearance + height
+            if self.check_feasible_ik(cand):
+                lift = cand
+                break
+        if lift is None:
+            raise ValueError(
+                f"IK failed for every lift height {self.LIFT_HEIGHTS} "
+                f"(tray top {tray_top:.3f}, clearance {clearance:.3f})")
+
+        log.info(f"[FumehoodPnP] grasp chain: backoff="
+                 f"{float(np.linalg.norm(grasp_pose_world[:3, 3] - pregrasp[:3, 3])):.3f} "
+                 f"lift_z={lift[2, 3]:.3f}")
+        return pregrasp, grasp_pose_world, lift
+
     def _get_placement_poses(self, grasp_pose_world, pickup_obj, place_receptacle):
         data = self.task.env.current_data
-        # body_aabb keeps only non-colliding geoms, and the tray inherits the
-        # hood's contype/conaffinity - so it reports an empty box at the body
-        # origin. The tray is a mocap body of known thickness; use that.
-        receptacle_top_z = float(place_receptacle.position[2]) + self.TRAY_HALF_Z
+        receptacle_top_z = self._tray_top_z(place_receptacle)
 
         obj_center, obj_size = body_aabb(data.model, data, pickup_obj.object_id)
         obj_bottom_z = obj_center[2] - obj_size[2] / 2
@@ -75,8 +122,8 @@ class FumehoodPickAndPlacePlannerPolicy(PickAndPlacePlannerPolicy):
             )
 
         dx, hover, preplace, place = candidates[int(np.argmax(mask))]
-        log.info("[FumehoodPnP] placement dx=%.3f hover=%.3f feasible=%d/%d",
-                 dx, hover, int(mask.sum()), len(candidates))
+        log.info(f"[FumehoodPnP] placement dx={dx:.3f} hover={hover:.3f} "
+                 f"feasible={int(mask.sum())}/{len(candidates)}")
 
         postplace = place.copy()
         postplace[:3, 3] -= self.policy_config.end_z_offset * postplace[:3, 2]

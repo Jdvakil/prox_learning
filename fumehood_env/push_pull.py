@@ -17,6 +17,7 @@ Design choices that keep this on well-trodden upstream paths:
 """
 from __future__ import annotations
 
+import itertools
 import logging
 
 import numpy as np
@@ -142,6 +143,17 @@ def _translated(pose: np.ndarray, dxyz) -> np.ndarray:
     return out
 
 
+def _yawed(pose: np.ndarray, angle: float) -> np.ndarray:
+    """Rotate the wrist about the world vertical, position unchanged. Yaw keeps
+    the gripper's approach direction pointing the same way relative to the
+    bench while giving the arm a different elbow solution to find."""
+    c, s = float(np.cos(angle)), float(np.sin(angle))
+    rz = np.array([[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]])
+    out = pose.copy()
+    out[:3, :3] = rz @ pose[:3, :3]
+    return out
+
+
 def _require_ik(policy, name: str, pose: np.ndarray) -> np.ndarray:
     if not policy.check_feasible_ik(pose):
         raise ValueError(f"IK failed for {name} pose")
@@ -155,9 +167,12 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     # Searched in order; the first fully feasible combination wins, so the
     # leading entries are the ones that make the nicest demonstration.
     MIN_PUSH = 0.05                      # never command a shorter push than this
+    MAX_PATH_CHECKS = 24                 # path-check budget per episode
     _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
     _LIFTS = (0.030, 0.0)                # approach height above contact
     _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
+    _YAWS = tuple(np.radians(a) for a in (0.0, 20.0, -20.0, 40.0, -40.0, 70.0, -70.0))
+    _CONTACT_DZ = (0.0, -0.025, 0.025)   # push lower or higher on the object
 
     def _direction_candidates(self, u0: np.ndarray) -> list[np.ndarray]:
         return [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])]
@@ -202,61 +217,74 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         start_ee = self.task.env.current_robot.robot_view.get_move_group(
             gripper_mg_id).leaf_frame_to_world
 
-        combos, stacked, per_combo = [], [], 0
-        for u in self._direction_candidates(u0):
-            for standoff in self._STANDOFFS:
-                for lift in self._LIFTS:
-                    for scale in self._DIST_SCALES:
-                        dist = max(drawn * scale, self.MIN_PUSH)
-                        back = -u * standoff
-                        fwd = u * (dist + pc.push_overshoot)
-                        approach = _translated(anchor, [back[0], back[1], lift])
-                        contact = _translated(anchor, [back[0], back[1], 0.0])
-                        push_end = _translated(anchor, [fwd[0], fwd[1], 0.0])
-                        # Back off the way we came rather than straight up: a
-                        # vertical retreat keeps the wrist at full radius, and
-                        # the arm is already near its envelope at this depth.
-                        retreat = _translated(push_end, [-u[0] * 0.05, -u[1] * 0.05,
-                                                         pc.retreat_z])
-                        combos.append((u, dist, approach, contact, push_end, retreat))
-                        # Endpoint reachability is not enough: TCPMoveSequence
-                        # re-solves IK against an interpolated target every step
-                        # and aborts the segment once the tracking error passes
-                        # tcp_pos_err_threshold. Preflight showed exactly that -
-                        # 27 approaches started, 13 reached grasp, 3 reached the
-                        # push - so the whole path each segment sweeps has to be
-                        # reachable, not just the poses at its ends.
-                        waypoints = [start_ee, approach, contact, push_end, retreat]
-                        path = [approach, contact, push_end, retreat]
-                        for a, b in zip(waypoints[:-1], waypoints[1:]):
-                            path += self._interpolate(a, b, self.PATH_SAMPLES)
-                        per_combo = len(path)
-                        stacked += path
+        # Orientation is the strongest lever and the one previously left fixed.
+        # Every waypoint used to be a pure translation of the grasp anchor, so
+        # all candidates shared one wrist orientation: if that orientation had
+        # no solution at the pushed position, the whole search failed. Deep in
+        # the hood the arm is near its envelope, where a few degrees of yaw
+        # decides whether an IK solution exists at all, so yaw is searched too.
+        combos = []
+        grid = itertools.product(self._direction_candidates(u0), self._YAWS,
+                                 self._STANDOFFS, self._LIFTS,
+                                 self._CONTACT_DZ, self._DIST_SCALES)
+        for u, yaw, standoff, lift, cdz, scale in grid:
+            base = _yawed(anchor, yaw)
+            dist = max(drawn * scale, self.MIN_PUSH)
+            back = -u * standoff
+            fwd = u * (dist + pc.push_overshoot)
+            approach = _translated(base, [back[0], back[1], cdz + lift])
+            contact = _translated(base, [back[0], back[1], cdz])
+            push_end = _translated(base, [fwd[0], fwd[1], cdz])
+            # Back off the way we came rather than straight up: a vertical
+            # retreat holds the wrist at full radius, and the arm is already
+            # near its envelope at this depth.
+            retreat = _translated(push_end, [-u[0] * 0.05, -u[1] * 0.05, pc.retreat_z])
+            combos.append((u, dist, standoff, yaw, approach, contact, push_end, retreat))
 
-        ok = self._feasible_mask(np.stack(stacked)).reshape(len(combos), per_combo).all(axis=1)
-        # Among feasible combinations, take the one whose furthest waypoint sits
-        # closest to the robot base: the arm is near its envelope in here, and
-        # the least-stretched option is the one most likely to track cleanly.
+        # Stage 1: the four waypoints only. Cheap enough to run over the whole
+        # grid, and it discards the great majority before the path check.
+        ends = np.stack([p for c in combos for p in c[4:]])
+        ends_ok = self._feasible_mask(ends).reshape(len(combos), 4).all(axis=1)
+
+        # Order survivors by how far the arm has to stretch, least first: the
+        # least-extended option is the one most likely to track cleanly.
         base_xy = self.task.env.current_robot.robot_view.base.pose[:2, 3]
-        reach = np.array([max(float(np.linalg.norm(p[:2, 3] - base_xy)) for p in c[2:])
+        reach = np.array([max(float(np.linalg.norm(p[:2, 3] - base_xy)) for p in c[4:])
                           for c in combos])
-        order = np.lexsort((reach, ~ok))
-        if not ok.any():
+        survivors = [i for i in np.argsort(reach) if ends_ok[i]]
+
+        # Stage 2: reachable endpoints are not sufficient. TCPMoveSequence
+        # re-solves IK against an interpolated target every step and aborts the
+        # segment once tracking error passes tcp_pos_err_threshold, so the whole
+        # swept path has to solve. Checked in reach order, first winner taken.
+        chosen = None
+        for idx in survivors[:self.MAX_PATH_CHECKS]:
+            c = combos[idx]
+            chain = [start_ee, c[4], c[5], c[6], c[7]]
+            path = []
+            for a, b in zip(chain[:-1], chain[1:]):
+                path += self._interpolate(a, b, self.PATH_SAMPLES)
+            if self._feasible_mask(np.stack(path)).all():
+                chosen = c
+                break
+
+        if chosen is None:
             raise ValueError(
-                f"no reachable push waypoints among {len(combos)} candidates "
-                f"(object at {np.round(start, 3)})"
+                f"no reachable push path: {len(combos)} candidates, "
+                f"{int(ends_ok.sum())} with reachable waypoints, "
+                f"{min(len(survivors), self.MAX_PATH_CHECKS)} path-checked "
+                f"(object at {np.round(start, 3)}, base at {np.round(base_xy, 3)}, "
+                f"nearest candidate reach {reach.min():.3f}m)"
             )
 
-        u, dist, approach, contact, push_end, retreat = combos[int(order[0])]
+        u, dist, standoff, yaw, approach, contact, push_end, retreat = chosen
         # Judge success on the direction and distance actually commanded.
         new_goal = list(tc.pickup_obj_goal_pose)
         new_goal[0] = float(start[0] + u[0] * dist)
         new_goal[1] = float(start[1] + u[1] * dist)
         tc.pickup_obj_goal_pose = new_goal
-        log.info("[Push] dir=%s dist=%.3f standoff=%.3f path-feasible=%d/%d",
-                 np.round(u, 2), dist,
-                 float(np.linalg.norm(contact[:3, 3] - anchor[:3, 3])),
-                 int(ok.sum()), len(combos))
+        log.info(f"[Push] dir={np.round(u, 2)} dist={dist:.3f} standoff={standoff:.3f} "
+                 f"yaw={np.degrees(yaw):.0f}deg ends-ok={int(ends_ok.sum())}/{len(combos)}")
 
         # The segment that meets the object is named "grasp": GraspPoseSensor
         # reads target_poses["grasp"] unguarded, and target_poses is keyed by
