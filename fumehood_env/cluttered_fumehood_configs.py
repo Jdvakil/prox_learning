@@ -19,6 +19,7 @@ import numpy as np
 
 from molmo_spaces.configs import BasePolicyConfig
 from molmo_spaces.configs.task_configs import PickAndPlaceTaskConfig
+from molmo_spaces.tasks.pick_and_place_task import PickAndPlaceTask
 from molmo_spaces.configs.task_sampler_configs import PickTaskSamplerConfig
 from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
     FrankaSkinHybridInvisObstacleConfig,
@@ -100,8 +101,13 @@ class FrankaSkinClutteredFumehoodPnPConfig(FrankaSkinClutteredFumehoodConfig):
     config, the planner that knows how to place, and the sampler that returns a
     PickAndPlaceTask."""
 
+    # task_cls is normally back-filled when the task module is imported, but
+    # this config instance is built at class-definition time and keeps whatever
+    # the field defaulted to. Leaving it None makes every episode die in
+    # abstract_exp_config.py:230, which reads task_cls.__module__ while saving
+    # the scene - 17 of 20 pick-and-place episodes were lost to exactly that.
     task_config: PickAndPlaceTaskConfig = PickAndPlaceTaskConfig(
-        place_receptacle_name="place_tray")
+        place_receptacle_name="place_tray", task_cls=PickAndPlaceTask)
     policy_config: BasePolicyConfig = FumehoodPickAndPlacePlannerPolicyConfig()
     task_sampler_config: PickTaskSamplerConfig = (
         FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(

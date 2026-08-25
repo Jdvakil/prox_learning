@@ -46,6 +46,16 @@ class FumehoodPickAndPlacePlannerPolicy(PickAndPlacePlannerPolicy):
         origin. The tray is a mocap body of known thickness; use that."""
         return float(place_receptacle.position[2]) + self.TRAY_HALF_Z
 
+    def _compute_target_poses(self):
+        """grasp_sample can accept a grasp on the permissive batched solver and
+        still leave grasp_pose_world as None, then die formatting its log line
+        (`None % int`). Surface that as the planning failure it is so the
+        episode resamples instead of reporting an opaque TypeError."""
+        try:
+            return super()._compute_target_poses()
+        except TypeError as e:
+            raise ValueError(f"grasp selection returned no usable pose: {e}") from e
+
     def _get_grasp_poses(self, grasp_pose_world, pickup_obj, place_receptacle,
                          robot_view, task_config):
         """Upstream fixes one pregrasp back-off and one lift height and raises if
