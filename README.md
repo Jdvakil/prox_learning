@@ -68,6 +68,7 @@ every file is, what to run, and what will bite you.
 | test a policy | `submodules/act/eval_act_obstacle.py` | [13](#13-recipe-c--act-and-pact) |
 | compare two result folders | `scripts/compare_pact.py` | [13](#13-recipe-c--act-and-pact) |
 | train the reflex net | `scripts/safety_sweep.py` → `scripts/train_safety_cvae.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
+| encode live skin (peak closeness or surface geometry) | `from encoders import load_encoder` | [4](#4-repo-map) |
 | understand the CVAE (what it encodes, why, every tensor shape) | read [§10](#10-method--math--the-safety-cvae) | [10](#10-method--math--the-safety-cvae) |
 | make a demo video | `scripts/safety_*_demo.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
 | make paper figures | `scripts/figures.py --list` | [5](#5-file-by-file-scripts) |
@@ -151,6 +152,8 @@ CLAUDE.md            agent working agreement
 pyproject.toml       dependency declaration (NOT installed; see §3)
 
 scripts/             28 analysis / training / figure scripts + housekeeping.sh   §5
+encoders/            skin front-ends: peak closeness + surface geometry          §4
+tests/               unit tests for the skin encoders and PACT-raw math
 submodules/act/      ACT fork — trains and evaluates the policies                §6
 submodules/molmospaces/  the simulator + demonstration collection                §7
 submodules/MolmoBot/ unused; nothing in this project imports it
@@ -172,6 +175,48 @@ reports/eval_summaries/  all 24 eval_summary.json, archived out of eval_output/
 train_blur_baseline.sh   trains one vanilla arm per constant blur sigma
 eval_blur_baseline.sh    the 9-condition blur test + summary table
 ```
+
+### Skin encoders (`encoders/`)
+
+Two front-ends, named by **job**. Same live tensor `(B, 40, 8, 8)` metres. Run from the repo root
+so `encoders` imports (this repo is not an installed package — §3).
+
+| name | file | job | out | weights |
+|---|---|---|---|---|
+| `peak_closeness` | `encoders/peak_closeness.py` | per-sensor peak closeness, 50 cm cap | `(B, 40, 1)` in `[0, 1]` | none (headline PACT-raw) |
+| `cvae_trunk` / `cvae_delta` | same file | frozen Safety-CVAE retreat taps | `(B, 1, 256)` / `(B, 1, 7)` | `model.pt` dir (deleted; negative controls) |
+| `nearest_surface` | `encoders/surface_geometry.py` | nearest in-range XYZ, 20 cm cap | `(B, 40, 3)` metres | frozen `pact_surface_encoder_v1` |
+| `surface_embedding` | same file | 32-d geometry embedding | `(B, 40, 32)` | frozen `pact_surface_embedding_encoder_v1` |
+
+```python
+from encoders import load_encoder, list_encoders
+
+prox = ...  # (B, 40, 8, 8) metres — same array PACT trains on
+
+raw = load_encoder("peak_closeness")                 # no checkpoint
+feat = raw.policy_features(prox)                     # (B, 40, 1)
+
+geom = load_encoder("nearest_surface", checkpoint="surface_v1.pt")
+xyz = geom.policy_features(prox)                     # (B, 40, 3)
+
+# datagen episodes keep 4 subframes: (T, 40, 4, 8, 8) metres
+xyz_ep = geom.encode_episode(episode)                # (T, 40, 3), real causal windows
+```
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+python -m encoders          # prints names + dummy-tensor shapes
+python -m pytest tests/test_encoders.py tests/test_prox_raw.py
+```
+
+Aliases: `raw` → `peak_closeness`, `xyz` → `nearest_surface`, `embedding` → `surface_embedding`.
+Without a geometry checkpoint the conv-transformer is random (shapes still work). Peak-closeness
+never needs weights. **Do not mix the closeness maps:** peak-closeness uses `D_MAX = 0.5 m`;
+surface geometry uses `MAX_SURFACE_RANGE_M = 0.20 m` (trap 16).
+
+PACT train/eval still `import prox_cvae`. `submodules/act/prox_cvae.py` is a shim to
+`encoders/peak_closeness.py`. Geometry is not wired into ACT yet — `load_encoder` is the hook.
 
 ---
 
@@ -330,7 +375,7 @@ modality-dropout curricula.
 |---|---|---|
 | `imitate_episodes.py` | **Training entry point.** All ACT + PACT training. | modified (+360) |
 | `eval_act_obstacle.py` | **Canonical in-env evaluator.** | fork-new |
-| `prox_cvae.py` | Frozen Safety-CVAE → skin feature extractor. | fork-new |
+| `prox_cvae.py` | Shim → `encoders/peak_closeness.py`. PACT still imports this name. | fork-new |
 | `constants.py` | `TASK_CONFIGS` lookup table. | modified (+102) |
 | `utils.py` | `EpisodicDataset`, `get_norm_stats`, `load_data`. Pads to `num_queries`, not `episode_len`, so variable-length episodes work. | modified |
 | `policy.py` | `ACTPolicy` wrapper; gains `proximity_positions=` and `image_dropped=`. | modified (+31) |
@@ -375,7 +420,7 @@ The CVAE is **not** a skin autoencoder. Full story, every tensor, and *why* the 
 encoded at all: [§10](#10-method--math--the-safety-cvae). Short version used by PACT:
 
 1. `(B, 40, 8, 8)` raw depths **in metres** come out of the dataloader.
-2. `ProxCVAEEncoder` featurises to closeness `c = clip(1 − d/0.5, 0, 1)`, with `c[d < 0.005] = 0`.
+2. `PeakClosenessEncoder` (`ProxCVAEEncoder` alias in `encoders/peak_closeness.py`) featurises to closeness `c = clip(1 − d/0.5, 0, 1)`, with `c[d < 0.005] = 0`.
 3. One of three taps:
 
 | `--prox_feature` | computation | shape | dim |
@@ -781,11 +826,13 @@ sense in which "the sensors are encoded" for the policy.
 | job | who uses it | input | output | encoder run? |
 |---|---|---|---|---|
 | **A. Reflex head** | `scripts/safety_*_demo.py` via `SafetyHead` | raw skin `(40, 8, 8)` metres | joint retreat `(7,)` rad | **no** (`z = 0`) |
-| **B. Frozen PACT encoder** | `submodules/act/prox_cvae.py` `ProxCVAEEncoder` | raw skin `(B, 40, 8, 8)` metres | 1 feature vector, then K ACT tokens | **no** (decoder trunk / delta / raw) |
+| **B. Frozen PACT encoder** | `encoders/peak_closeness.py` `PeakClosenessEncoder` (ACT still imports `prox_cvae.ProxCVAEEncoder`) | raw skin `(B, 40, 8, 8)` metres | 1 feature vector, then K ACT tokens | **no** (decoder trunk / delta / raw) |
 
 Code: `scripts/train_safety_cvae.py` (`SafetyCVAE`, `SafetyHead.load`). Canonical weights:
 `assets/safety/cvae_v3/` (`meta.json`: `n_in=2560`, `n_out=7`, `z_dim=8`,
-`label_scale≈11.359`). PACT bridge: `submodules/act/prox_cvae.py`.
+`label_scale≈11.359`). PACT bridge: `encoders/peak_closeness.py` (ACT import path
+`submodules/act/prox_cvae.py` is a shim). Surface-geometry front-end:
+`encoders/surface_geometry.py` — see [§4](#4-repo-map).
 
 The word *encoder* is doing two different things in this repo and that is why it feels
 confusing:
@@ -1620,6 +1667,10 @@ Every one of these has already cost real time.
 15. **Killing a datagen run can leave the MuJoCo worker alive, holding 10–12 GB.** Nothing logs an
     error; the next run just gets slower and slower as memory runs out, and can exit 0 having
     written no `.h5`. `pkill -9 -f data_generation.main` between runs (§12.1).
+16. **Two closeness maps.** Peak-closeness / PACT-raw uses `D_MAX = 0.5 m` and dead pixels
+    `< 5 mm`. Surface geometry uses `MAX_SURFACE_RANGE_M = 0.20 m` and treats farther pixels as
+    **invalid**, not as regression targets. Never run `featurize_*` and `depth_to_closeness` on
+    the same tensor and expect comparable numbers. `load_encoder` picks the right map per name.
 
 ---
 
