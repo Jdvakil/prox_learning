@@ -166,6 +166,22 @@ class ClutteredFumehoodPickAndPlaceSampler(
         self.place_receptacle_name = self.PLACE_PAD_NAME
         self._receptacle_names = [self.PLACE_PAD_NAME]
 
+    def _seed_referral_expressions(self) -> None:
+        """This MRO bypasses PickTaskSampler._sample_task, which is where the
+        pick chain normally fills referral_expressions — downstream task
+        descriptions then KeyError on 'pickup_obj_name'. Seed the keys with the
+        enclosure task's fixed object (the red cup) before any task exists."""
+        tc = self.config.task_config
+        if tc.referral_expressions is None:
+            tc.referral_expressions = {}
+        tc.referral_expressions.setdefault("pickup_obj_name", "red cup")
+        tc.referral_expressions.setdefault("pickup_name", "red cup")
+        tc.referral_expressions.setdefault("place_name", "tray")
+
+    def _settle_injected_object(self, env) -> None:
+        self._seed_referral_expressions()
+        super()._settle_injected_object(env)
+
     def _add_receptacles_to_scene(self, spec) -> None:
         return None   # the tray is part of the scene XML
 
@@ -187,9 +203,11 @@ class ClutteredFumehoodPickAndPlaceSampler(
 
     def _sample_task(self, env):
         self.place_receptacle_name = self.PLACE_PAD_NAME
+        self._seed_referral_expressions()
         return super()._sample_task(env)
 
     def _sample_and_place_robot(self, env) -> None:
+        self._seed_referral_expressions()
         super()._sample_and_place_robot(env)
         tc = self.config.task_config
         tc.place_receptacle_name = self.PLACE_PAD_NAME
