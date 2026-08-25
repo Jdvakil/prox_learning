@@ -23,6 +23,60 @@ Newest session at the top.
 
 ---
 
+## 2026-08-25 13:56 MDT — surface encoder 20-epoch run finished
+
+- **When:** 2026-08-25 12:45–12:57 America/Denver. User job in tmux `0`.
+  Agent checked after "it is training." GPU idle. Shell back at prompt.
+- **Why:** Judge the 152-episode embedding train, not the smoke ckpt.
+- **What:** `python -m encoders.train` on `data/pact_place_corridor_v5`
+  finished 20/20. Split 122/15/15 episodes (`split_sha256`
+  `a360742269244884845da6ec720002871e48cbbc924c30f813fcdbf602fe718a`).
+  Best epoch 20. Files:
+  `experiments_output/default/surface_encoder_train/pact_place_corridor_v5/`
+  (`pact_surface_embedding_encoder_v1.pt`, `last.pt`, `history.json`,
+  `test_metrics.json`, `curves.png`, `split_manifest.json`, `config.json`).
+- **Held-out TEST (trainer, pooled val/test):** balanced validity 100%,
+  P/R 100/100%, XYZ MAE **20.6 mm**, recon pixel P/R **87.4 / 95.3%**,
+  foreground MAE 0.058. Val XYZ 19.7 mm. Empty-base still ~88%.
+- **Gate (README §4):** validity ≥95% and recall ≥90% **pass**. XYZ
+  preferably <20 mm: val pass, test **0.6 mm over**. Recon pixel P and R
+  both ≥80% **pass**. Validity 100% is cheap: latest 8×8 still sits in the
+  32-frame window, so occupancy is almost a copy. XYZ is the real score.
+  Do **not** bake ACT tokens until `encoders.probe --split test` agrees.
+- **Not done:** independent probe on test rows. `encode_tokens` still
+  blocked. ACT must reuse this `split_manifest.json`. Headline PACT arm
+  remains raw peak closeness (`PACT.md` §8) until policy ablations.
+
+---
+
+## 2026-08-25 13:06 MDT — place-corridor convert done; train is next
+
+- **When:** 2026-08-25 ~13:06 America/Denver. User: update `CURSOR.md` and
+  say what to run next.
+- **Why:** Coauthor `data/pact_place_corridor_v5` is the current test, not
+  gate-bar. Convert finished in an earlier turn; training never started.
+  `constants.py` still had `num_episodes=0` so `imitate_episodes.py` would
+  see an empty set.
+- **Done (do not rerun convert / worktree):**
+  - `scripts/convert_pact_place_to_act.py` wrote 152 ACT HDF5s to
+    `act_style_data/pact_place_corridor_v5` (wrist 240×320, proximity
+    min-pool, 0 skips). Meta: `num_episodes=152`, `episode_len=636`,
+    max T=634, left=72 / right=80.
+  - `TASK_CONFIGS['pact_place_corridor_v5']` now has those counts.
+  - Molmospaces worktree already at `/home/jaydv/code/molmospaces-pact-place`
+    (`977acd6`, `pact_place_corridor_v2.xml`). Submodule `main` untouched.
+  - Eval entry: `submodules/act/eval_act_place_corridor.py`. Recipe:
+    README §13.1.
+- **Not done:** vanilla ACT train, PACT-raw train, eval. No local
+  `eval_summary.json` yet — do not put coauthor "PACT beats ACT" in
+  `paper.md`.
+- **User next:** one GPU; run vanilla first, then PACT. Commands in the
+  chat reply and README §13.1. `--chunk_size 50`, no `--image_dropout_p`.
+  Never `imitate_episodes.py --eval` on the PACT ckpt.
+- **Still parked:** gate-bar 200-ep collect.
+
+---
+
 ## 2026-08-25 00:31 MDT — self-train surface embedding encoder from corridor rows
 
 - **When:** 2026-08-25 00:17–00:31 America/Denver.
