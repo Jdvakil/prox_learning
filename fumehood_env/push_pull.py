@@ -153,20 +153,39 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         start = np.asarray(tc.pickup_obj_start_pose[:3], dtype=float)
         goal = np.asarray(tc.pickup_obj_goal_pose[:3], dtype=float)
         d = goal[:2] - start[:2]
-        dist = float(np.linalg.norm(d))
-        u = d / max(dist, 1e-6)
-        back = -u * pc.push_standoff
-        fwd = u * (dist + pc.push_overshoot)
+        dist = float(np.clip(np.linalg.norm(d), 0.06, 0.12))
+        u0 = d / max(float(np.linalg.norm(d)), 1e-6)
 
-        poses = {
-            "approach": _translated(anchor, [back[0], back[1], pc.approach_z]),
-            "contact": _translated(anchor, [back[0], back[1], 0.0]),
-            "push_end": _translated(anchor, [fwd[0], fwd[1], 0.0]),
-        }
-        poses["retreat"] = _translated(poses["push_end"], [0.0, 0.0, pc.retreat_z])
-        for name, pose in poses.items():
-            _require_ik(self, name, pose)
-        return poses
+        # The drawn direction often fails IK (pushing deeper into a small hood
+        # runs out of reach), so fall back through easier directions: lateral,
+        # then outward toward the mouth. Whichever passes rewrites the task
+        # goal so success is judged on the direction actually executed.
+        candidates = [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]),
+                      np.array([-1.0, 0.0])]
+        last_err = None
+        for u in candidates:
+            back = -u * pc.push_standoff
+            fwd = u * (dist + pc.push_overshoot)
+            poses = {
+                "approach": _translated(anchor, [back[0], back[1], pc.approach_z]),
+                "contact": _translated(anchor, [back[0], back[1], 0.0]),
+                "push_end": _translated(anchor, [fwd[0], fwd[1], 0.0]),
+            }
+            poses["retreat"] = _translated(poses["push_end"], [0.0, 0.0, pc.retreat_z])
+            try:
+                for name, pose in poses.items():
+                    _require_ik(self, name, pose)
+            except ValueError as e:
+                last_err = e
+                continue
+            new_goal = list(tc.pickup_obj_goal_pose)
+            new_goal[0] = float(start[0] + u[0] * dist)
+            new_goal[1] = float(start[1] + u[1] * dist)
+            tc.pickup_obj_goal_pose = new_goal
+            # some base-policy paths peek at poses["grasp"]; alias the contact
+            poses["grasp"] = poses["contact"]
+            return poses
+        raise last_err
 
     def _compute_trajectory(self) -> list[ActionPrimitive]:
         pc = self.policy_config
@@ -273,10 +292,10 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
 
 class PushPlannerPolicyConfig(ObjectManipulationPlannerPolicyConfig):
     policy_cls: type = PushPlannerPolicy
-    push_standoff: float = 0.10    # EE starts this far behind the object
-    push_overshoot: float = 0.02   # EE ends this far past the goal
-    approach_z: float = 0.06       # come in above contact height, drop to it
-    retreat_z: float = 0.15
+    push_standoff: float = 0.08    # EE starts this far behind the object
+    push_overshoot: float = 0.01   # EE ends this far past the goal
+    approach_z: float = 0.04       # come in above contact height, drop to it
+    retreat_z: float = 0.10        # small hoods leave little headroom
 
 
 class PullPlannerPolicyConfig(ObjectManipulationPlannerPolicyConfig):
@@ -292,7 +311,7 @@ class ClutteredFumehoodPushSampler(ClutteredFumehoodPickSampler):
     """Push the object deeper into the hood or laterally along the bench."""
 
     TASK_CLS = PushFumehoodTask
-    PUSH_SPAN = (0.08, 0.16)
+    PUSH_SPAN = (0.06, 0.12)
     MARGIN = 0.10   # keep the goal this far off the hood walls
 
     def _draw_theta(self):
