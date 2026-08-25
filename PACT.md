@@ -13,7 +13,7 @@ lift-success.
 **Now (2026-08-24 late):** gate-bar paused. Reproduce coauthor
 `data/pact_place_corridor_v5` (152 recovered pick-and-place rows). Convert +
 train vanilla vs PACT-raw per-sensor, chunk 50, no image dropout. Eval needs
-molmospaces worktree at collect commit `1cbb180`. Do not write coauthor win
+molmospaces worktree at `977acd6` (`pact_place_corridor_v2.xml`). Do not write coauthor win
 numbers into `paper.md` until local `eval_summary.json` exists.
 
 The July 66%→40% grid is a published number on deleted data; avoid-v1 failed.

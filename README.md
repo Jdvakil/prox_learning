@@ -68,6 +68,7 @@ every file is, what to run, and what will bite you.
 | train a policy | `submodules/act/imitate_episodes.py` | [13](#13-recipe-c--act-and-pact) |
 | test a policy | `eval_act_obstacle.py` / `eval_act_place_corridor.py` | [13](#13-recipe-c--act-and-pact) / [13.1](#131-coauthor-place-corridor-pact_place_corridor_v5) |
 | compare two result folders | `scripts/compare_pact.py` | [13](#13-recipe-c--act-and-pact) |
+| train a surface encoder from native skin rows | `python -m encoders.train` | [4](#4-repo-map) |
 | train the reflex net | `scripts/safety_sweep.py` → `scripts/train_safety_cvae.py` | [11](#11-recipe-a--safety-cvae-and-the-demos) |
 | encode live skin (peak closeness or surface geometry) | `from encoders import load_encoder` | [4](#4-repo-map) |
 | understand the CVAE (what it encodes, why, every tensor shape) | read [§10](#10-method--math--the-safety-cvae) | [10](#10-method--math--the-safety-cvae) |
@@ -228,7 +229,45 @@ python -m encoders.encode_tokens \
     --kind embedding
 ```
 
-Probe the coauthor corridor rows **before convert**. Native skin is `(T, 40, 4, 8, 8)` metres — real 60 Hz subframes, so the geometry net's 32-frame causal window is honest. No frozen `pact_surface_*_v1.pt` on this disk: the command scores the analytic 20 cm nearest-surface *target* vs PACT-raw 50 cm peak closeness, and optionally runs an untrained net as a wiring check.
+Train your own 32-d surface encoder directly from native corridor rows (no ACT
+convert). Labels come from each sensor's latest 8×8 depth tile: nearest XYZ
+inside 20 cm, valid/empty, and latest closeness-map reconstruction. Split is
+80/10/10 train/validation/test **by episode**, not by frame. Default sampler
+gives valid and empty tiles equal training mass; validation uses the natural
+~11% valid rate and calibrates the validity threshold. Test remains untouched
+until the best checkpoint is selected.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+python -m encoders.train \
+    --src data/pact_place_corridor_v5 \
+    --out experiments_output/default/surface_encoder_train/pact_place_corridor_v5 \
+    --kind embedding --device cuda \
+    --epochs 20 --batch-size 512 --stride 4 --num-workers 8
+```
+
+This uses about 3–4 GB host RAM. Outputs: best loadable
+`pact_surface_embedding_encoder_v1.pt`, `last.pt`, held-out split/config,
+`history.json`, `test_metrics.json`, and `curves.png`. The checkpoint stores its
+calibrated validity threshold. Do not judge it by raw accuracy alone:
+always-invalid already gets about 89%. Read test balanced accuracy,
+precision/recall, and XYZ MAE.
+
+```bash
+CKPT=experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt
+python -m encoders.probe \
+    --src data/pact_place_corridor_v5 \
+    --checkpoint "$CKPT" --split test \
+    --kind embedding --device cuda --untrained-episodes 0
+```
+
+First gate before baking ACT tokens: held-out balanced validity accuracy at
+least 95%, recall at least 90%, and XYZ MAE preferably below 20 mm. If the gate
+fails, do not call the embedding useful. `--sensor-balance` is an ablation for
+rare valid sensors; `--no-balance-valid` trains on the natural class mix.
+
+Probe the coauthor corridor rows **before convert**. Native skin is `(T, 40, 4, 8, 8)` metres — real 60 Hz subframes, so the geometry net's 32-frame causal window is honest. Without `--checkpoint`, the command scores the analytic 20 cm nearest-surface *target* vs PACT-raw 50 cm peak closeness, and optionally runs an untrained net as a wiring check.
 
 ```bash
 python -m encoders.probe \
@@ -416,7 +455,7 @@ modality-dropout curricula.
 |---|---|---|
 | `imitate_episodes.py` | **Training entry point.** All ACT + PACT training. | modified (+360) |
 | `eval_act_obstacle.py` | **Canonical in-env evaluator** for the fumehood obstacle pick. | fork-new |
-| `eval_act_place_corridor.py` | In-env evaluator for `pact_place_corridor_v5`. Wrist-only. Needs molmospaces worktree at 1cbb180. | fork-new |
+| `eval_act_place_corridor.py` | In-env evaluator for `pact_place_corridor_v5`. Wrist-only. Needs molmospaces worktree at 977acd6. | fork-new |
 | `prox_cvae.py` | Shim → `encoders/peak_closeness.py`. PACT still imports this name. | fork-new |
 | `constants.py` | `TASK_CONFIGS` lookup table. | modified (+102) |
 | `utils.py` | `EpisodicDataset`, `get_norm_stats`, `load_data`. Pads to `num_queries`, not `episode_len`, so variable-length episodes work. | modified |
@@ -1582,10 +1621,11 @@ this checkout converts anyway so we can train. Do **not** paste coauthor
 "PACT beats ACT" numbers into `paper.md` until a local `eval_summary.json`
 exists.
 
-Eval env is **not** on molmospaces `main`. Pin a worktree of collect commit
-`1cbb1800db66c871f41f2afc3a360affd1b40f1d` (branch
-`experiment/pact-vs-act-remediation-v2`). Do not checkout that branch onto
-dirty `main`.
+Eval env is **not** on molmospaces `main`. Pin a worktree of
+`977acd6719a8c05b688d3e70da356d61dd32d259` (first commit with
+`pact_place_corridor_v2.xml`; branch `experiment/pact-vs-act-remediation-v2`).
+Row JSON records molmospaces `1cbb180` (parent of v2 XML). Do not checkout
+that branch onto dirty `main`.
 
 ```bash
 conda activate mlspaces
@@ -1594,7 +1634,7 @@ cd /home/jaydv/code/prox_learning
 # 0. Eval env (once). Leaves submodules/molmospaces on main.
 git -C submodules/molmospaces worktree add \
     /home/jaydv/code/molmospaces-pact-place \
-    1cbb1800db66c871f41f2afc3a360affd1b40f1d
+    977acd6719a8c05b688d3e70da356d61dd32d259
 
 # 1. Convert. One dataset serves vanilla + PACT.
 python -m scripts.convert_pact_place_to_act \

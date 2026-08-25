@@ -302,3 +302,76 @@ def test_both_encoders_eat_the_same_pact_tensor():
     raw = load_encoder("peak_closeness", device="cpu").policy_features(prox)
     xyz = load_encoder("nearest_surface", device="cpu").policy_features(prox)
     assert raw.shape[:2] == xyz.shape[:2] == (1, 40)
+
+
+def test_trained_checkpoint_keeps_calibrated_validity_threshold(tmp_path):
+    from encoders.surface_geometry import (
+        SurfaceEmbeddingEncoder,
+        save_frozen_checkpoint,
+    )
+
+    path = tmp_path / "pact_surface_embedding_encoder_v1.pt"
+    save_frozen_checkpoint(
+        path,
+        SurfaceEmbeddingEncoder(),
+        "embedding",
+        {"validity_threshold": 0.37},
+    )
+    enc = SurfaceGeometryEncoder(
+        kind="embedding", checkpoint=path, device="cpu"
+    )
+    assert enc.validity_threshold == pytest.approx(0.37)
+    assert enc.payload["frozen"] is True
+    assert enc.payload["policy_feature_dim"] == 32
+    assert enc.payload["min_surface_range_m"] == pytest.approx(0.005)
+    assert enc.payload["max_surface_range_m"] == pytest.approx(0.20)
+    assert len(enc.payload["sensor_order"]) == 40
+
+
+def test_training_sampler_balances_classes_and_softens_sensor_imbalance():
+    from encoders.train import _sample_weights
+
+    valid = np.array([True, True, True, False, False, False, False])
+    sensors = np.array([0, 0, 1, 0, 0, 1, 1])
+    weights = _sample_weights(
+        valid,
+        sensors,
+        n_sensors=2,
+        balance_valid=True,
+        sensor_balance=True,
+    )
+    probabilities = weights / weights.sum()
+    assert probabilities[valid].sum() == pytest.approx(0.5)
+    rare_sensor_mass = probabilities[valid & (sensors == 1)].sum()
+    assert 1.0 / 6.0 < rare_sensor_mass < 0.25
+
+
+def test_surface_target_rejects_sub_5mm_dead_pixel():
+    depth = np.full((8, 8), 0.15, dtype=np.float32)
+    depth[0, 0] = 0.001
+    xyz, valid = nearest_surface_target(depth)
+    assert valid is True
+    assert xyz[2] == pytest.approx(0.15)
+
+
+def test_training_threshold_uses_balanced_accuracy():
+    from encoders.train import _best_validity_threshold
+
+    labels = np.array([False, False, False, True, True])
+    probabilities = np.array([0.05, 0.10, 0.20, 0.40, 0.80])
+    threshold, metrics = _best_validity_threshold(labels, probabilities)
+    assert 0.20 < threshold <= 0.40
+    assert metrics["balanced_acc"] == pytest.approx(1.0)
+
+
+def test_training_pooled_window_matches_act_adapter():
+    from encoders.surface_geometry import as_subframe_episode
+    from encoders.train import _pooled_causal_window
+
+    rng = np.random.default_rng(4)
+    episode = rng.uniform(0.01, 0.50, size=(10, 2, 4, 8, 8)).astype(np.float32)
+    pooled = episode.min(axis=2)
+    repeated = as_subframe_episode(pooled)
+    expected = causal_sensor_window(repeated, timestep=9, sensor_index=1)
+    actual = _pooled_causal_window(episode, timestep=9, sensor_index=1)
+    np.testing.assert_allclose(actual, expected)

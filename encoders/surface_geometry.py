@@ -9,8 +9,9 @@ take ``(B, 32, 8, 8)`` closeness. ``SurfaceGeometryEncoder`` is the easy wrapper
 throw a full-skin metres tensor at it (same layout as PACT-raw) and get
 ``(B, 40, 3)`` or ``(B, 40, 32)``.
 
-Distances beyond 20 cm are invalid, not regression targets. That cap is **not**
-the 50 cm closeness used by peak-closeness / PACT-raw (README §10).
+Distances below 5 mm (dead pixels) or beyond 20 cm are invalid, not regression
+targets. That cap is **not** the 50 cm closeness used by peak-closeness /
+PACT-raw (README §10).
 """
 from __future__ import annotations
 
@@ -28,11 +29,14 @@ ensure_act_on_path()
 from hybrid_skin_sensors import HYBRID_SKIN_SENSOR_ORDER  # noqa: E402
 
 MAX_SURFACE_RANGE_M = 0.20
+MIN_SURFACE_RANGE_M = 0.005
 SENSOR_FOVY_DEG = 45.0
 CAUSAL_CONTROL_STEPS = 8
 SUBFRAMES_PER_CONTROL_STEP = 4
 CAUSAL_FRAMES = CAUSAL_CONTROL_STEPS * SUBFRAMES_PER_CONTROL_STEP
 SURFACE_EMBEDDING_DIM = 32
+SCHEMA_SURFACE_XYZ = "pact_surface_encoder_v1"
+SCHEMA_SURFACE_EMBEDDING = "pact_surface_embedding_encoder_v1"
 
 
 def native_camera_intrinsic(
@@ -55,7 +59,7 @@ def nearest_surface_target(
     max_range_m: float = MAX_SURFACE_RANGE_M,
     fovy_deg: float = SENSOR_FOVY_DEG,
 ) -> tuple[np.ndarray, bool]:
-    """Nearest valid depth pixel as sensor-local XYZ.
+    """Minimum valid axial-depth pixel as sensor-local XYZ.
 
     ``depth`` is the most recent native 8x8 frame. Pixel centers use
     ``(u + 0.5, v + 0.5)`` and OpenCV axes (+x right, +y down, +z forward).
@@ -63,7 +67,11 @@ def nearest_surface_target(
     values = np.asarray(depth, dtype=np.float32)
     if values.ndim != 2:
         raise ValueError(f"depth must be 2-D, got {values.shape}")
-    valid = np.isfinite(values) & (values > 0.0) & (values <= max_range_m)
+    valid = (
+        np.isfinite(values)
+        & (values >= MIN_SURFACE_RANGE_M)
+        & (values <= max_range_m)
+    )
     if not np.any(valid):
         return np.zeros(3, dtype=np.float32), False
     masked = np.where(valid, values, np.inf)
@@ -90,7 +98,11 @@ def nearest_surface_target_batch(
     if values.ndim < 2:
         raise ValueError(f"depth must be at least 2-D, got {values.shape}")
     height, width = values.shape[-2:]
-    valid_pixel = np.isfinite(values) & (values > 0.0) & (values <= max_range_m)
+    valid_pixel = (
+        np.isfinite(values)
+        & (values >= MIN_SURFACE_RANGE_M)
+        & (values <= max_range_m)
+    )
     valid = valid_pixel.any(axis=(-2, -1))
     masked = np.where(valid_pixel, values, np.inf)
     flat = masked.reshape(*values.shape[:-2], height * width)
@@ -121,7 +133,11 @@ def depth_to_closeness(
 ) -> np.ndarray:
     """Map valid in-range depth to [0,1] closeness; all other pixels to zero."""
     values = np.asarray(depth, dtype=np.float32)
-    valid = np.isfinite(values) & (values > 0.0) & (values <= max_range_m)
+    valid = (
+        np.isfinite(values)
+        & (values >= MIN_SURFACE_RANGE_M)
+        & (values <= max_range_m)
+    )
     output = np.zeros_like(values, dtype=np.float32)
     output[valid] = 1.0 - values[valid] / float(max_range_m)
     return output
@@ -134,7 +150,11 @@ def depth_to_closeness_torch(
 ) -> torch.Tensor:
     """Torch cousin of ``depth_to_closeness``; any leading shape is fine."""
     values = depth.float()
-    valid = torch.isfinite(values) & (values > 0.0) & (values <= max_range_m)
+    valid = (
+        torch.isfinite(values)
+        & (values >= MIN_SURFACE_RANGE_M)
+        & (values <= max_range_m)
+    )
     return torch.where(
         valid,
         1.0 - values / float(max_range_m),
@@ -472,16 +492,37 @@ def parameter_count(model: nn.Module) -> int:
     return sum(parameter.numel() for parameter in model.parameters())
 
 
+def _validate_checkpoint_semantics(payload: dict[str, Any]) -> None:
+    """Reject new checkpoints whose depth geometry differs from this runtime."""
+    expected = {
+        "max_surface_range_m": MAX_SURFACE_RANGE_M,
+        "min_surface_range_m": MIN_SURFACE_RANGE_M,
+        "sensor_fovy_deg": SENSOR_FOVY_DEG,
+        "causal_frames": CAUSAL_FRAMES,
+    }
+    for key, value in expected.items():
+        if key in payload and payload[key] != value:
+            raise ValueError(
+                f"surface encoder {key}={payload[key]!r}, runtime expects {value!r}"
+            )
+    if "sensor_order" in payload and list(payload["sensor_order"]) != list(
+        HYBRID_SKIN_SENSOR_ORDER
+    ):
+        raise ValueError("surface encoder sensor_order differs from runtime")
+
+
 def load_frozen_surface_encoder(
     checkpoint_path: str | Path,
     *,
     map_location: str | torch.device = "cpu",
 ) -> tuple[SurfaceProximityEncoder, dict[str, Any]]:
     payload = torch.load(checkpoint_path, map_location=map_location)
-    if payload.get("schema_version") != "pact_surface_encoder_v1":
+    if payload.get("schema_version") != SCHEMA_SURFACE_XYZ:
+        raise ValueError("not a pact_surface_encoder_v1 checkpoint")
         raise ValueError("not a pact_surface_encoder_v1 checkpoint")
     if payload.get("frozen") is not True:
         raise ValueError("front-end checkpoint is not marked frozen")
+    _validate_checkpoint_semantics(payload)
     model = SurfaceProximityEncoder()
     model.load_state_dict(payload["model_state_dict"])
     model.eval()
@@ -496,12 +537,14 @@ def load_frozen_surface_embedding_encoder(
     map_location: str | torch.device = "cpu",
 ) -> tuple[SurfaceEmbeddingEncoder, dict[str, Any]]:
     payload = torch.load(checkpoint_path, map_location=map_location)
-    if payload.get("schema_version") != "pact_surface_embedding_encoder_v1":
+    if payload.get("schema_version") != SCHEMA_SURFACE_EMBEDDING:
+        raise ValueError("not a pact_surface_embedding_encoder_v1 checkpoint")
         raise ValueError("not a pact_surface_embedding_encoder_v1 checkpoint")
     if payload.get("frozen") is not True:
         raise ValueError("front-end checkpoint is not marked frozen")
     if payload.get("policy_feature_dim") != SURFACE_EMBEDDING_DIM:
         raise ValueError("front-end policy feature dimension changed")
+    _validate_checkpoint_semantics(payload)
     model = SurfaceEmbeddingEncoder()
     model.load_state_dict(payload["model_state_dict"])
     model.eval()
@@ -518,15 +561,66 @@ def load_frozen_proximity_encoder(
     """Load either frozen front-end without changing the legacy v1 loader."""
     payload = torch.load(checkpoint_path, map_location="cpu")
     schema = payload.get("schema_version")
-    if schema == "pact_surface_encoder_v1":
+    if schema == SCHEMA_SURFACE_XYZ:
         return load_frozen_surface_encoder(
             checkpoint_path, map_location=map_location
         )
-    if schema == "pact_surface_embedding_encoder_v1":
+    if schema == SCHEMA_SURFACE_EMBEDDING:
         return load_frozen_surface_embedding_encoder(
             checkpoint_path, map_location=map_location
         )
     raise ValueError(f"unsupported frozen proximity encoder schema: {schema}")
+
+
+def pack_frozen_payload(
+    model: nn.Module,
+    kind: str,
+    extra: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the dict ``load_frozen_*`` expects. Marks the net frozen for ACT."""
+    if kind == "xyz":
+        payload: dict[str, Any] = {
+            "schema_version": SCHEMA_SURFACE_XYZ,
+            "frozen": True,
+            "model_state_dict": model.state_dict(),
+            "max_surface_range_m": MAX_SURFACE_RANGE_M,
+            "min_surface_range_m": MIN_SURFACE_RANGE_M,
+            "sensor_fovy_deg": SENSOR_FOVY_DEG,
+            "sensor_order": list(HYBRID_SKIN_SENSOR_ORDER),
+            "causal_frames": CAUSAL_FRAMES,
+            "preprocessing_schema": "pact_surface_closeness_v1",
+        }
+    elif kind == "embedding":
+        payload = {
+            "schema_version": SCHEMA_SURFACE_EMBEDDING,
+            "frozen": True,
+            "policy_feature_dim": SURFACE_EMBEDDING_DIM,
+            "model_state_dict": model.state_dict(),
+            "max_surface_range_m": MAX_SURFACE_RANGE_M,
+            "min_surface_range_m": MIN_SURFACE_RANGE_M,
+            "sensor_fovy_deg": SENSOR_FOVY_DEG,
+            "sensor_order": list(HYBRID_SKIN_SENSOR_ORDER),
+            "causal_frames": CAUSAL_FRAMES,
+            "preprocessing_schema": "pact_surface_closeness_v1",
+        }
+    else:
+        raise ValueError(f"kind must be 'xyz' or 'embedding', got {kind!r}")
+    if extra:
+        payload.update(extra)
+    return payload
+
+
+def save_frozen_checkpoint(
+    path: str | Path,
+    model: nn.Module,
+    kind: str,
+    extra: dict[str, Any] | None = None,
+) -> Path:
+    """Write a frozen front-end ``.pt`` that ``load_encoder`` / probe can load."""
+    dest = Path(path)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(pack_frozen_payload(model, kind, extra), dest)
+    return dest
 
 
 class SurfaceGeometryEncoder(nn.Module):
@@ -579,6 +673,9 @@ class SurfaceGeometryEncoder(nn.Module):
 
         self.act_feat_dim = 3 if kind == "xyz" else SURFACE_EMBEDDING_DIM
         self.feat_dim = self.act_feat_dim
+        self.validity_threshold = float(
+            self.payload.get("validity_threshold", 0.5) if self.payload else 0.5
+        )
         self.inner.eval()
         for parameter in self.inner.parameters():
             parameter.requires_grad_(False)
@@ -620,7 +717,12 @@ class SurfaceGeometryEncoder(nn.Module):
         windows, squeeze_batch, squeeze_sensor = self._windows_on_device(skin, unit)
         batch, n_sensors = windows.shape[:2]
         flat = windows.reshape(batch * n_sensors, CAUSAL_FRAMES, 8, 8)
-        feat = self.inner.policy_features(flat)
+        if self.kind == "xyz":
+            feat, _valid, _probabilities = self.inner.predict(
+                flat, validity_threshold=self.validity_threshold
+            )
+        else:
+            feat = self.inner.policy_features(flat)
         return self._reshape_out(feat, batch, n_sensors, squeeze_batch, squeeze_sensor)
 
     @torch.no_grad()
@@ -638,9 +740,11 @@ class SurfaceGeometryEncoder(nn.Module):
         skin: torch.Tensor | np.ndarray,
         *,
         unit: str = "metres",
-        validity_threshold: float = 0.5,
+        validity_threshold: float | None = None,
     ) -> dict[str, torch.Tensor]:
         """Inner ``predict`` over a full skin; keys depend on ``kind``."""
+        if validity_threshold is None:
+            validity_threshold = self.validity_threshold
         windows, squeeze_batch, squeeze_sensor = self._windows_on_device(skin, unit)
         batch, n_sensors = windows.shape[:2]
         flat = windows.reshape(batch * n_sensors, CAUSAL_FRAMES, 8, 8)
@@ -731,7 +835,7 @@ class SurfaceGeometryEncoder(nn.Module):
         episode_proximity: np.ndarray,
         *,
         batch_size: int = 512,
-        validity_threshold: float = 0.5,
+        validity_threshold: float | None = None,
     ) -> dict[str, torch.Tensor]:
         """Same as ``encode_episode`` plus XYZ / validity for the token writer."""
         values = as_subframe_episode(episode_proximity)
@@ -750,10 +854,12 @@ class SurfaceGeometryEncoder(nn.Module):
         times: np.ndarray,
         *,
         batch_size: int = 512,
-        validity_threshold: float = 0.5,
+        validity_threshold: float | None = None,
     ) -> dict[str, torch.Tensor]:
         """Encode selected control steps. Causal windows still use the full episode."""
         values = as_subframe_episode(episode_proximity)
+        if validity_threshold is None:
+            validity_threshold = self.validity_threshold
         times = np.asarray(times, dtype=np.int64).reshape(-1)
         n_steps = int(times.shape[0])
         n_sensors = int(values.shape[1])

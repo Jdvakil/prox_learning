@@ -24,29 +24,12 @@ from pathlib import Path
 import numpy as np
 
 from encoders.peak_closeness import D_MAX, DEAD_PIXEL_M, HYBRID_SKIN_SENSOR_ORDER
+from encoders.rows import load_episode_proximity, row_dirs
 from encoders.surface_geometry import (
     MAX_SURFACE_RANGE_M,
+    as_subframe_episode,
     nearest_surface_target_batch,
 )
-
-
-def _row_dirs(src: Path) -> list[Path]:
-    rows = src / "rows" if (src / "rows").is_dir() else src
-    dirs = [p for p in rows.iterdir() if p.is_dir() and (p / "trajectory.h5").is_file()]
-    dirs.sort(key=lambda p: p.name)
-    if not dirs:
-        raise SystemExit(f"no rows/*/trajectory.h5 under {src}")
-    return dirs
-
-
-def _stack_native(grp, sensor_order: list[str]) -> np.ndarray:
-    prox = grp["obs/proximity"]
-    chans = []
-    for name in sensor_order:
-        if name not in prox:
-            raise SystemExit(f"missing sensor {name!r} in {list(prox.keys())[:8]}")
-        chans.append(np.asarray(prox[name], dtype=np.float32))
-    return np.stack(chans, axis=1)
 
 
 def _auc(y: np.ndarray, scores: np.ndarray) -> float | None:
@@ -81,14 +64,17 @@ def probe(
     device: str,
     batch_size: int,
     untrained_episodes: int,
+    split: str,
+    representation: str,
 ) -> dict:
-    import h5py
-
     from encoders.surface_geometry import SurfaceGeometryEncoder
 
     sensor_order = list(HYBRID_SKIN_SENSOR_ORDER)
     n_sensors = len(sensor_order)
-    rows = _row_dirs(src)
+    try:
+        rows = row_dirs(src)
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
     if max_episodes is not None:
         rows = rows[: int(max_episodes)]
 
@@ -100,11 +86,28 @@ def probe(
             kind=kind, checkpoint=checkpoint, device=device
         )
         net_mode = "checkpoint"
+        if split != "all":
+            config = (model.payload or {}).get("config", {})
+            selected_names = set(config.get(f"{split}_rows", []))
+            if not selected_names:
+                raise SystemExit(
+                    f"checkpoint has no config.{split}_rows; use --split all"
+                )
+            rows = [row for row in rows if row.name in selected_names]
+            if not rows:
+                raise SystemExit(f"no source rows match checkpoint {split} split")
         net_budget = len(rows)
     elif untrained_episodes > 0:
         model = SurfaceGeometryEncoder(kind=kind, device=device)
         net_mode = "untrained"
         net_budget = min(int(untrained_episodes), len(rows))
+    if representation == "auto":
+        config = (model.payload or {}).get("config", {}) if model else {}
+        representation = (
+            "pooled"
+            if str(config.get("validation_input_mode", "")).startswith("pooled")
+            else "native"
+        )
 
     hits_20 = np.zeros(n_sensors, dtype=np.int64)
     hits_50 = np.zeros(n_sensors, dtype=np.int64)
@@ -112,8 +115,12 @@ def probe(
     z_valid: list[float] = []
     per_ep = []
     xyz_err = []
-    valid_match = []
+    xyz_err_all_gt_valid = []
+    net_tp = net_tn = net_fp = net_fn = 0
     recon_mse = []
+    recon_foreground_abs = 0.0
+    recon_foreground_n = 0
+    recon_pixel_tp = recon_pixel_fp = recon_pixel_fn = 0
 
     for ep_index, row in enumerate(rows):
         res = {}
@@ -129,13 +136,19 @@ def probe(
             or 0.0
         )
 
-        with h5py.File(row / "trajectory.h5", "r") as handle:
-            grp = handle["traj_0"]
-            prox = _stack_native(grp, sensor_order)
+        try:
+            prox = load_episode_proximity(row, sensor_order)
+        except KeyError as exc:
+            raise SystemExit(str(exc)) from exc
+        model_prox = (
+            as_subframe_episode(prox.min(axis=2))
+            if representation == "pooled"
+            else prox
+        )
 
-        n_steps = prox.shape[0]
+        n_steps = model_prox.shape[0]
         times = np.arange(0, n_steps, max(1, stride), dtype=np.int64)
-        last = prox[times, :, -1]
+        last = model_prox[times, :, -1]
         gt_xyz, gt_valid = nearest_surface_target_batch(last)
         peak = _peak_closeness(last)
         n_pairs = int(last.shape[0] * n_sensors)
@@ -149,9 +162,10 @@ def probe(
         net_valid_frac = None
         net_xyz_mae_mm = None
         net_valid_acc = None
+        net_valid_balanced_acc = None
         if model is not None and ep_index < net_budget:
             packed = model.encode_episode_at_times(
-                prox, times, batch_size=batch_size
+                model_prox, times, batch_size=batch_size
             )
             pred_xyz = packed["xyz_m"].numpy()
             pred_valid = packed["valid"].numpy().astype(bool)
@@ -160,9 +174,24 @@ def probe(
                 err = np.linalg.norm(pred_xyz[both] - gt_xyz[both], axis=-1)
                 xyz_err.extend(err.tolist())
                 net_xyz_mae_mm = float(np.mean(err) * 1000.0)
+            if np.any(gt_valid):
+                all_valid_err = np.linalg.norm(
+                    pred_xyz[gt_valid] - gt_xyz[gt_valid], axis=-1
+                )
+                xyz_err_all_gt_valid.extend(all_valid_err.tolist())
+            tp = int((pred_valid & gt_valid).sum())
+            tn = int((~pred_valid & ~gt_valid).sum())
+            fp = int((pred_valid & ~gt_valid).sum())
+            fn = int((~pred_valid & gt_valid).sum())
+            net_tp += tp
+            net_tn += tn
+            net_fp += fp
+            net_fn += fn
             acc = float((pred_valid == gt_valid).mean())
-            valid_match.append(acc)
             net_valid_acc = acc
+            recall = tp / max(tp + fn, 1)
+            specificity = tn / max(tn + fp, 1)
+            net_valid_balanced_acc = 0.5 * (recall + specificity)
             net_valid_frac = float(pred_valid.mean())
             if "reconstruction" in packed:
                 from encoders.surface_geometry import depth_to_closeness
@@ -170,6 +199,15 @@ def probe(
                 gt_close = depth_to_closeness(last)
                 recon = packed["reconstruction"].numpy()
                 recon_mse.append(float(np.mean((recon - gt_close) ** 2)))
+                foreground = gt_close > 0
+                recon_foreground_abs += float(
+                    np.abs(recon - gt_close)[foreground].sum()
+                )
+                recon_foreground_n += int(foreground.sum())
+                predicted_foreground = recon >= 0.10
+                recon_pixel_tp += int((predicted_foreground & foreground).sum())
+                recon_pixel_fp += int((predicted_foreground & ~foreground).sum())
+                recon_pixel_fn += int((~predicted_foreground & foreground).sum())
 
         per_ep.append(
             {
@@ -184,6 +222,7 @@ def probe(
                 "net_valid_frac": net_valid_frac,
                 "net_xyz_mae_mm": net_xyz_mae_mm,
                 "net_valid_accuracy": net_valid_acc,
+                "net_valid_balanced_accuracy": net_valid_balanced_acc,
             }
         )
         extra = ""
@@ -213,6 +252,10 @@ def probe(
             np.array([ep["valid_20cm_frac"] for ep in per_ep])[known],
         )
 
+    net_total = net_tp + net_tn + net_fp + net_fn
+    net_precision = net_tp / max(net_tp + net_fp, 1)
+    net_recall = net_tp / max(net_tp + net_fn, 1)
+    net_specificity = net_tn / max(net_tn + net_fp, 1)
     summary = {
         "src": str(src.resolve()),
         "n_episodes": len(per_ep),
@@ -221,6 +264,8 @@ def probe(
         "geometry_range_m": MAX_SURFACE_RANGE_M,
         "peak_closeness_range_m": D_MAX,
         "checkpoint": str(checkpoint) if checkpoint else None,
+        "split": split,
+        "representation": representation,
         "net_mode": net_mode,
         "n_net_episodes": int(net_budget if model is not None else 0),
         "valid_20cm_frac_overall": float(hits_20.sum() / max(int(seen.sum()), 1)),
@@ -242,8 +287,36 @@ def probe(
         "auc_intrusion_side_from_peak_closeness": auc_side_peak,
         "auc_intrusion_side_from_valid20": auc_side_valid,
         "net_xyz_mae_mm": float(np.mean(xyz_err) * 1000) if xyz_err else None,
-        "net_valid_accuracy": float(np.mean(valid_match)) if valid_match else None,
+        "net_xyz_mae_all_gt_valid_mm": (
+            float(np.mean(xyz_err_all_gt_valid) * 1000)
+            if xyz_err_all_gt_valid
+            else None
+        ),
+        "net_valid_accuracy": (
+            float((net_tp + net_tn) / net_total) if net_total else None
+        ),
+        "net_valid_balanced_accuracy": (
+            float(0.5 * (net_recall + net_specificity)) if net_total else None
+        ),
+        "net_valid_precision": float(net_precision) if net_total else None,
+        "net_valid_recall": float(net_recall) if net_total else None,
+        "net_valid_specificity": float(net_specificity) if net_total else None,
         "net_recon_mse": float(np.mean(recon_mse)) if recon_mse else None,
+        "net_recon_foreground_mae": (
+            recon_foreground_abs / recon_foreground_n
+            if recon_foreground_n
+            else None
+        ),
+        "net_recon_pixel_precision": (
+            recon_pixel_tp / max(recon_pixel_tp + recon_pixel_fp, 1)
+            if recon_mse
+            else None
+        ),
+        "net_recon_pixel_recall": (
+            recon_pixel_tp / max(recon_pixel_tp + recon_pixel_fn, 1)
+            if recon_mse
+            else None
+        ),
         "episodes": per_ep,
     }
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -282,15 +355,37 @@ def _print_gate(summary: dict, out_dir: Path) -> None:
         )
     if summary["net_mode"] == "checkpoint":
         print(f"net XYZ MAE (valid both): {summary['net_xyz_mae_mm']}")
-        print(f"net validity accuracy: {summary['net_valid_accuracy']}")
+        print(
+            "net XYZ MAE (all GT-valid; false negatives are zero): "
+            f"{summary['net_xyz_mae_all_gt_valid_mm']}"
+        )
+        print(
+            f"net validity acc/balanced: {100 * summary['net_valid_accuracy']:.2f}% / "
+            f"{100 * summary['net_valid_balanced_accuracy']:.2f}%"
+        )
+        print(
+            f"net validity precision/recall: "
+            f"{100 * summary['net_valid_precision']:.2f}% / "
+            f"{100 * summary['net_valid_recall']:.2f}%"
+        )
         if summary["net_recon_mse"] is not None:
             print(f"net recon MSE (latest 8x8 closeness): {summary['net_recon_mse']:.6f}")
+            print(
+                "net recon foreground MAE / pixel P/R: "
+                f"{summary['net_recon_foreground_mae']:.4f} / "
+                f"{100 * summary['net_recon_pixel_precision']:.1f}% / "
+                f"{100 * summary['net_recon_pixel_recall']:.1f}%"
+            )
     elif summary["net_mode"] == "untrained":
         print(
             f"UNTRAINED net on {summary['n_net_episodes']} eps — wiring only, not quality."
         )
         print(f"untrained XYZ MAE (valid both): {summary['net_xyz_mae_mm']}")
-        print(f"untrained validity accuracy: {summary['net_valid_accuracy']}")
+        print(
+            f"untrained validity acc/balanced: "
+            f"{100 * summary['net_valid_accuracy']:.2f}% / "
+            f"{100 * summary['net_valid_balanced_accuracy']:.2f}%"
+        )
     else:
         print("NO checkpoint — net not scored. Analytic target only.")
         print("Pass --checkpoint path/to/pact_surface_*_v1.pt to test the trained net.")
@@ -349,6 +444,18 @@ def main() -> int:
     parser.add_argument("--max-episodes", type=int, default=None)
     parser.add_argument("--checkpoint", type=Path, default=None)
     parser.add_argument("--kind", choices=("xyz", "embedding"), default="embedding")
+    parser.add_argument(
+        "--split",
+        choices=("all", "train", "val", "test"),
+        default="all",
+        help="For self-trained checkpoints, probe all rows or saved episode split.",
+    )
+    parser.add_argument(
+        "--representation",
+        choices=("auto", "native", "pooled"),
+        default="auto",
+        help="Auto uses checkpoint deployment mode; pooled matches ACT min-pool/repeat.",
+    )
     parser.add_argument("--device", type=str, default=None)
     parser.add_argument("--batch-size", type=int, default=512)
     parser.add_argument(
@@ -375,6 +482,8 @@ def main() -> int:
         device=args.device,
         batch_size=args.batch_size,
         untrained_episodes=args.untrained_episodes,
+        split=args.split,
+        representation=args.representation,
     )
     return 0
 

@@ -153,6 +153,9 @@ def load_encoder(
 _SURFACE_EXPORTS = {
     "CAUSAL_FRAMES",
     "MAX_SURFACE_RANGE_M",
+    "MIN_SURFACE_RANGE_M",
+    "SCHEMA_SURFACE_EMBEDDING",
+    "SCHEMA_SURFACE_XYZ",
     "SURFACE_EMBEDDING_DIM",
     "SurfaceEmbeddingEncoder",
     "SurfaceGeometryEncoder",
@@ -165,7 +168,9 @@ _SURFACE_EXPORTS = {
     "load_frozen_surface_encoder",
     "nearest_surface_target",
     "nearest_surface_target_batch",
+    "pack_frozen_payload",
     "parameter_count",
+    "save_frozen_checkpoint",
     "to_causal_closeness",
 }
 
@@ -200,6 +205,7 @@ __all__ = [
     "DEAD_PIXEL_M",
     "HYBRID_SKIN_SENSOR_ORDER",
     "MAX_SURFACE_RANGE_M",
+    "MIN_SURFACE_RANGE_M",
     "PeakClosenessEncoder",
     "ProxCVAEEncoder",
     "SURFACE_EMBEDDING_DIM",
@@ -224,9 +230,13 @@ __all__ = [
     "load_frozen_surface_encoder",
     "nearest_surface_target",
     "nearest_surface_target_batch",
+    "pack_frozen_payload",
     "parameter_count",
     "resolve_encoder_name",
     "resolve_prox_layout",
+    "save_frozen_checkpoint",
+    "SCHEMA_SURFACE_EMBEDDING",
+    "SCHEMA_SURFACE_XYZ",
     "stack_obs_proximity",
     "to_causal_closeness",
 ]

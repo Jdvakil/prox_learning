@@ -23,6 +23,76 @@ Newest session at the top.
 
 ---
 
+## 2026-08-25 00:31 MDT — self-train surface embedding encoder from corridor rows
+
+- **When:** 2026-08-25 00:17–00:31 America/Denver.
+- **Why:** No coauthor `pact_surface_*_v1.pt` exists on this machine. User:
+  "I need to train my own encoder from the data."
+- **What:** Added a complete native-row trainer:
+  - `python -m encoders.train`
+  - Source: `data/pact_place_corridor_v5/rows/*/trajectory.h5`, native
+    `(T, 40, 4, 8, 8)` metres. No ACT convert needed.
+  - Default model: `SurfaceEmbeddingEncoder`, 837,700 parameters, shared across
+    all 40 sensors. Input is 32 causal frames (8 control steps × 4 subframes).
+  - Targets are generated from the latest native tile: nearest XYZ inside
+    20 cm, valid/empty, and 8×8 20 cm closeness reconstruction. XYZ is
+    normalized by 0.20 m for loss.
+  - Episode-level 80/10/10 train/validation/test split. No frame leakage.
+    Validation selects the validity threshold and best checkpoint. Test is
+    touched once after selection.
+  - Default sampler gives valid and empty samples 50/50 training mass because
+    natural valid rate is only ~11%. Validation/test retain natural prior.
+    `--no-balance-valid` and optional `--sensor-balance` are ablations.
+  - Metrics: raw and balanced validity accuracy, precision, recall, F1,
+    specificity, XYZ MAE on all GT-valid tiles, reconstruction MSE, and
+    always-invalid baseline. Never accept raw accuracy alone (~89% for
+    always-invalid).
+  - Best checkpoint selection: highest validation balanced accuracy; validation
+    loss breaks ties. Calibrated threshold stored in checkpoint and honored by
+    `SurfaceGeometryEncoder` / token writer / probe.
+  - Output checkpoint schema is exactly loadable by existing ACT glue:
+    `pact_surface_embedding_encoder_v1`, `frozen=True`,
+    `policy_feature_dim=32`. Also writes `last.pt`, `config.json`,
+    `history.json`, `test_metrics.json`, and `curves.png`.
+- **Files:**
+  - Added `encoders/train.py` and `encoders/rows.py`.
+  - Updated `encoders/surface_geometry.py`: schema constants, frozen payload
+    writer, calibrated threshold loading/use, selected-timestep encoding.
+  - Updated `encoders/probe.py`: shared row loader, `--split
+    all|train|val|test`, precision/recall/balanced accuracy, true-positive XYZ
+    MAE plus end-to-end GT-valid XYZ MAE (false negatives are zero).
+  - Updated `encoders/__init__.py`, `tests/test_encoders.py`, README §4 and
+    routing table.
+- **Verification:**
+  - `pytest tests/test_encoders.py tests/test_prox_raw.py` → **32 passed**.
+  - Final smoke: 4 episodes, stride 16, 3 epochs, CUDA. Held-out test:
+    95.6% raw validity accuracy, 84.2% balanced accuracy, 88.4% precision,
+    69.5% recall, raw-head XYZ MAE 63.2 mm, recon MSE 0.186. This only proves
+    train/val/test/checkpoint/probe wiring; it is deliberately undertrained.
+  - Probe of saved smoke test row used checkpoint threshold and matched:
+    95.61% / 84.19% raw/balanced validity, 88.37% / 69.51% precision/recall,
+    57.8 mm XYZ MAE on true positives, 102.9 mm end-to-end GT-valid error.
+  - Smoke checkpoint:
+    `experiments_output/default/surface_encoder_train/smoke_final/`
+- **Full user run (not launched by agent):**
+  ```
+  conda activate mlspaces
+  cd /home/jaydv/code/prox_learning
+  python -m encoders.train \
+      --src data/pact_place_corridor_v5 \
+      --out experiments_output/default/surface_encoder_train/pact_place_corridor_v5 \
+      --kind embedding --device cuda \
+      --epochs 20 --batch-size 512 --stride 4 --num-workers 8
+  ```
+  Then probe honest test rows with the produced checkpoint and `--split test`.
+  Initial gate: test balanced accuracy ≥95%, recall ≥90%, XYZ MAE preferably
+  <20 mm. Fail means do not bake/use tokens yet.
+- **Not done:** Full 152-episode training. User runs command above. Do not treat
+  smoke checkpoint as trained encoder. ACT token baking and ACT policy training
+  remain after the quality gate.
+
+---
+
 ## 2026-08-25 — start coauthor place-corridor convert / train / eval glue
 
 - **When:** 2026-08-25, after the surface-encoder probe writeup. User asked to
@@ -33,7 +103,7 @@ Newest session at the top.
   - `scripts/convert_pact_place_to_act.py`
   - `TASK_CONFIGS['pact_place_corridor_v5']` + 9/8 dims in `imitate_episodes.py`
   - `submodules/act/eval_act_place_corridor.py` (needs molmospaces worktree
-    `1cbb180`, scene XML `pact_place_corridor_v2`)
+    `977acd6`, scene XML `pact_place_corridor_v2`)
   - README §13.1, PACT.md §8
   - Gate-bar 200-ep collect still parked
 - **How:** `--with_proximity --prox_pool min`, wrist 240×320, chunk 50, no

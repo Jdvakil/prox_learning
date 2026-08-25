@@ -187,6 +187,13 @@ def main() -> int:
         "checkpoint_sha256": checkpoint_sha256,
         "encoder_best_epoch": payload.get("best_epoch"),
         "encoder_heldout_metrics": payload.get("heldout_metrics"),
+        "encoder_test_metrics": payload.get("test_metrics"),
+        "encoder_split_sha256": payload.get("split_sha256"),
+        "encoder_training_input_mode": payload.get("training_input_mode"),
+        "encoder_deployment_input_mode": payload.get("deployment_input_mode"),
+        "validity_score_calibrated": payload.get(
+            "validity_score_calibrated", False
+        ),
         "policy_feature_dim": int(model.act_feat_dim),
         "dataset_dir": str(args.dataset_dir),
         "episode_count": len(episodes),
