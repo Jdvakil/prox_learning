@@ -18,7 +18,6 @@ from pathlib import Path
 import numpy as np
 
 from molmo_spaces.configs import BasePolicyConfig
-from molmo_spaces.configs.policy_configs import PickAndPlacePlannerPolicyConfig
 from molmo_spaces.configs.task_configs import PickAndPlaceTaskConfig
 from molmo_spaces.configs.task_sampler_configs import PickTaskSamplerConfig
 from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
@@ -27,6 +26,7 @@ from molmo_spaces.data_generation.config.object_manipulation_datagen_configs imp
 from molmo_spaces.data_generation.config_registry import register_config
 from molmo_spaces.molmo_spaces_constants import ASSETS_DIR
 
+from fumehood_env.pnp_policy import FumehoodPickAndPlacePlannerPolicyConfig
 from fumehood_env.cluttered_fumehood import (
     ClutteredFumehoodPickAndPlaceSampler,
     ClutteredFumehoodPickSampler,
@@ -102,7 +102,7 @@ class FrankaSkinClutteredFumehoodPnPConfig(FrankaSkinClutteredFumehoodConfig):
 
     task_config: PickAndPlaceTaskConfig = PickAndPlaceTaskConfig(
         place_receptacle_name="place_tray")
-    policy_config: BasePolicyConfig = PickAndPlacePlannerPolicyConfig()
+    policy_config: BasePolicyConfig = FumehoodPickAndPlacePlannerPolicyConfig()
     task_sampler_config: PickTaskSamplerConfig = (
         FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(
             update={"task_sampler_class": ClutteredFumehoodPickAndPlaceSampler}))

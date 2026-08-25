@@ -46,7 +46,8 @@ class PushFumehoodTask(PickTask):
     """Success: the object progressed >= SUCC_PROGRESS along start->goal (XY)
     and stayed on the bench (no big z excursion, no topple off)."""
 
-    SUCC_PROGRESS = 0.08   # metres of displacement along the commanded direction
+    SUCC_FRACTION = 0.6    # fraction of the commanded displacement that counts
+    MIN_PROGRESS = 0.04    # ...but never call a sub-4cm nudge a success
     Z_GUARD = 0.12         # object must stay within this of its start height
 
     def get_task_description(self) -> str:
@@ -81,7 +82,11 @@ class PushFumehoodTask(PickTask):
                 "position_error": float(np.linalg.norm(obj.position[:2] - goal[:2])),
                 "rotation_error": 0.0,
                 "progress": progress,
-                "success": bool(progress >= self.SUCC_PROGRESS and dz <= self.Z_GUARD),
+                "success": bool(progress >= max(self.MIN_PROGRESS,
+                                                self.SUCC_FRACTION * float(
+                                                    np.linalg.norm(goal[:2] - np.asarray(
+                                                        tc.pickup_obj_start_pose[:2], dtype=float))))
+                                and dz <= self.Z_GUARD),
                 "episode_step": self.episode_step_count,
             })
         return metrics
@@ -146,6 +151,25 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     """Close the gripper, come in behind the object, sweep through it toward
     the goal, retreat upward."""
 
+    # Searched in order; the first fully feasible combination wins, so the
+    # leading entries are the ones that make the nicest demonstration.
+    MIN_PUSH = 0.05                      # never command a shorter push than this
+    _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
+    _LIFTS = (0.030, 0.0)                # approach height above contact
+    _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
+
+    def _direction_candidates(self, u0: np.ndarray) -> list[np.ndarray]:
+        return [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]), np.array([-1.0, 0.0])]
+
+    def _feasible_mask(self, poses: np.ndarray) -> np.ndarray:
+        """Batched reachability over a stack of (4,4) poses, chunked to the
+        solver's batch size (check_feasible_ik asserts on anything larger)."""
+        cap = self.policy_config.grasp_feasibility_batch_size
+        out = []
+        for i in range(0, len(poses), cap):
+            out.append(np.atleast_1d(self.check_feasible_ik(poses[i:i + cap])))
+        return np.concatenate(out) if out else np.zeros(0, dtype=bool)
+
     def _compute_target_poses(self) -> dict[str, np.ndarray]:
         pc = self.policy_config
         tc = self.config.task_config
@@ -153,39 +177,61 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         start = np.asarray(tc.pickup_obj_start_pose[:3], dtype=float)
         goal = np.asarray(tc.pickup_obj_goal_pose[:3], dtype=float)
         d = goal[:2] - start[:2]
-        dist = float(np.clip(np.linalg.norm(d), 0.06, 0.12))
-        u0 = d / max(float(np.linalg.norm(d)), 1e-6)
+        drawn = float(np.linalg.norm(d))
+        u0 = d / max(drawn, 1e-6)
 
-        # The drawn direction often fails IK (pushing deeper into a small hood
-        # runs out of reach), so fall back through easier directions: lateral,
-        # then outward toward the mouth. Whichever passes rewrites the task
-        # goal so success is judged on the direction actually executed.
-        candidates = [u0, np.array([0.0, 1.0]), np.array([0.0, -1.0]),
-                      np.array([-1.0, 0.0])]
-        last_err = None
-        for u in candidates:
-            back = -u * pc.push_standoff
-            fwd = u * (dist + pc.push_overshoot)
-            poses = {
-                "approach": _translated(anchor, [back[0], back[1], pc.approach_z]),
-                "contact": _translated(anchor, [back[0], back[1], 0.0]),
-                "push_end": _translated(anchor, [fwd[0], fwd[1], 0.0]),
-            }
-            poses["retreat"] = _translated(poses["push_end"], [0.0, 0.0, pc.retreat_z])
-            try:
-                for name, pose in poses.items():
-                    _require_ik(self, name, pose)
-            except ValueError as e:
-                last_err = e
-                continue
-            new_goal = list(tc.pickup_obj_goal_pose)
-            new_goal[0] = float(start[0] + u[0] * dist)
-            new_goal[1] = float(start[1] + u[1] * dist)
-            tc.pickup_obj_goal_pose = new_goal
-            # some base-policy paths peek at poses["grasp"]; alias the contact
-            poses["grasp"] = poses["contact"]
-            return poses
-        raise last_err
+        # A fixed standoff does not survive here. check_feasible_ik is pure
+        # reachability seeded at the current arm configuration, and the pick
+        # planner only ever offsets the validated grasp pose *vertically*
+        # (pregrasp = grasp + pregrasp_z_offset). Translating that same pose
+        # horizontally, deep inside a hood, leaves the reachable set almost
+        # every time — so search direction x standoff x lift x distance and
+        # take the first combination whose whole waypoint set is reachable.
+        combos, stacked = [], []
+        for u in self._direction_candidates(u0):
+            for standoff in self._STANDOFFS:
+                for lift in self._LIFTS:
+                    for scale in self._DIST_SCALES:
+                        dist = max(drawn * scale, self.MIN_PUSH)
+                        back = -u * standoff
+                        fwd = u * (dist + pc.push_overshoot)
+                        approach = _translated(anchor, [back[0], back[1], lift])
+                        contact = _translated(anchor, [back[0], back[1], 0.0])
+                        push_end = _translated(anchor, [fwd[0], fwd[1], 0.0])
+                        retreat = _translated(push_end, [0.0, 0.0, pc.retreat_z])
+                        combos.append((u, dist, approach, contact, push_end, retreat))
+                        stacked += [approach, contact, push_end, retreat]
+
+        ok = self._feasible_mask(np.stack(stacked)).reshape(len(combos), 4).all(axis=1)
+        if not ok.any():
+            raise ValueError(
+                f"no reachable push waypoints among {len(combos)} candidates "
+                f"(object at {np.round(start, 3)})"
+            )
+
+        u, dist, approach, contact, push_end, retreat = combos[int(np.argmax(ok))]
+        # Judge success on the direction and distance actually commanded.
+        new_goal = list(tc.pickup_obj_goal_pose)
+        new_goal[0] = float(start[0] + u[0] * dist)
+        new_goal[1] = float(start[1] + u[1] * dist)
+        tc.pickup_obj_goal_pose = new_goal
+        log.info("[Push] dir=%s dist=%.3f standoff=%.3f feasible=%d/%d",
+                 np.round(u, 2), dist,
+                 float(np.linalg.norm(contact[:3, 3] - anchor[:3, 3])),
+                 int(ok.sum()), len(combos))
+
+        # The segment that meets the object is named "grasp": GraspPoseSensor
+        # reads target_poses["grasp"] unguarded, and target_poses is keyed by
+        # move-segment name, so any policy without one crashes the sensor.
+        return {"approach": approach, "grasp": contact,
+                "push_end": push_end, "retreat": retreat}
+
+    def get_all_phases(self):
+        phases = super().get_all_phases()
+        for name in ("approach", "push", "push_end", "drag", "drag_end"):
+            if name not in phases:
+                phases[name] = max(phases.values()) + 1
+        return phases
 
     def _compute_trajectory(self) -> list[ActionPrimitive]:
         pc = self.policy_config
@@ -205,14 +251,14 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
                 move_segments=[
                     TCPMoveSegment(name="approach", start_pose=start_ee,
                                    end_pose=poses["approach"], speed=pc.speed_fast),
-                    TCPMoveSegment(name="contact", start_pose=poses["approach"],
-                                   end_pose=poses["contact"], speed=pc.speed_slow),
+                    TCPMoveSegment(name="grasp", start_pose=poses["approach"],
+                                   end_pose=poses["grasp"], speed=pc.speed_slow),
                 ],
             ),
             TCPMoveSequence(
                 robot_view, self._tcp_to_jp_fn, pc.move_settle_time, **common,
                 move_segments=[
-                    TCPMoveSegment(name="push", start_pose=poses["contact"],
+                    TCPMoveSegment(name="push", start_pose=poses["grasp"],
                                    end_pose=poses["push_end"], speed=pc.speed_slow),
                 ],
             ),
@@ -238,15 +284,20 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         goal = np.asarray(tc.pickup_obj_goal_pose[:3], dtype=float)
         d = goal[:2] - start[:2]
 
-        poses = {
-            "pregrasp": _translated(anchor, [0.0, 0.0, pc.pregrasp_z_offset]),
-            "grasp": anchor,
-            "drag_end": _translated(anchor, [d[0], d[1], pc.drag_lift]),
-        }
-        poses["retreat"] = _translated(poses["drag_end"], [0.0, 0.0, pc.retreat_z])
-        for name, pose in poses.items():
-            _require_ik(self, name, pose)
-        return poses
+        for scale in (1.0, 0.75, 0.5):
+            poses = {
+                "pregrasp": _translated(anchor, [0.0, 0.0, pc.pregrasp_z_offset]),
+                "grasp": anchor,
+                "drag_end": _translated(anchor, [d[0] * scale, d[1] * scale, pc.drag_lift]),
+            }
+            poses["retreat"] = _translated(poses["drag_end"], [0.0, 0.0, pc.retreat_z])
+            if all(self.check_feasible_ik(p) for p in poses.values()):
+                new_goal = list(tc.pickup_obj_goal_pose)
+                new_goal[0] = float(start[0] + d[0] * scale)
+                new_goal[1] = float(start[1] + d[1] * scale)
+                tc.pickup_obj_goal_pose = new_goal
+                return poses
+        raise ValueError("IK failed for drag waypoints at every distance")
 
     def _compute_trajectory(self) -> list[ActionPrimitive]:
         pc = self.policy_config

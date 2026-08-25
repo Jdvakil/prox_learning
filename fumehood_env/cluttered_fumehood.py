@@ -44,6 +44,14 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
     CORRIDOR_R = 0.14            # keep-out half-width around the approach line
     OBJ_KEEPOUT = 0.12           # keep-out radius around the object itself
     REACH_SPAN = (0.06, 0.34)    # object depth past the mouth, metres
+    # The tray is a mocap body, so it is posed per episode rather than left at
+    # whatever the scene XML baked in. Upstream's placement pose is the grasp
+    # orientation translated to the tray centre, which only solves if the tray
+    # sits well inside the arm's workspace: keep it shallow (near the mouth) and
+    # clear of the approach corridor.
+    PLACE_PAD_NAME = "place_tray"
+    TRAY_DEPTH = 0.10            # metres past the aperture plane
+    TRAY_HALF_Z = 0.008          # tray geom half-height, from the scene generator
 
     # Half-extents the base sampler hardcodes for the default hood shell. They
     # are wrong for every size variant, so they are dropped and rebuilt from
@@ -89,6 +97,9 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
     def _park(self, env, i):
         self._mocap_set(env, f"cl_{i}", [PARK[0] - 0.2 * i, PARK[1], PARK[2]])
 
+    def _tray_xy(self, half_w):
+        return TUBE_X0 + self.TRAY_DEPTH, -max(min(half_w - 0.11, 0.16), 0.10)
+
     def _apply_theta(self, env, th):
         super()._apply_theta(env, th)
         m, d = env.current_model, env.current_data
@@ -120,8 +131,8 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
                 near_bar = float(np.hypot(x - pc[0], y - pc[1])) < 0.08
             # keep the place tray clear too (front-right corner in every scene),
             # otherwise pick-and-place episodes can start with clutter on the pad
-            near_tray = float(np.hypot(x - (TUBE_X0 + 0.14),
-                                       y - (-(half_w - 0.12)))) < 0.16
+            tray_x, tray_y = self._tray_xy(half_w)
+            near_tray = float(np.hypot(x - tray_x, y - tray_y)) < 0.16
             if in_corridor or near_obj or near_bar or near_tray:
                 self._park(env, i)
                 continue
@@ -129,6 +140,11 @@ class ClutteredFumehoodPickSampler(InvisibleObstacleFumehoodPickSampler):
             self._mocap_set(env, f"cl_{i}", pos)
             clutter.append([pos, [hx, hy, hz]])
             placed += 1
+
+        tray_x, tray_y = self._tray_xy(half_w)
+        self._mocap_set(env, self.PLACE_PAD_NAME,
+                        [tray_x, tray_y, z0 + self.TRAY_HALF_Z])
+        th["tray_xy"] = [float(tray_x), float(tray_y)]
 
         th["n_clutter_placed"] = placed
         th["clutter_aabbs"] = clutter
@@ -158,8 +174,6 @@ class ClutteredFumehoodPickAndPlaceSampler(
     spawns receptacles from the object database and needs annotated surfaces to
     place them, while this scene already carries a `place_tray` body.
     """
-
-    PLACE_PAD_NAME = "place_tray"
 
     def __init__(self, config) -> None:
         super().__init__(config)
