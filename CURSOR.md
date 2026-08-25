@@ -23,6 +23,113 @@ Newest session at the top.
 
 ---
 
+## 2026-08-24 — user wiped datagen / ckpts / eval; leftover converted hdf5
+
+- **When:** 2026-08-24 ~22:11 America/Denver.
+- **Why:** User deleted data, ckpts, eval for a clean slate.
+- **What is gone:** `assets/datagen/` (all source collections, including
+  hybrid_obstacle_v1 and hybrid_invis_obstacle_v1), `submodules/act/ckpts/`,
+  `eval_output/`. July and avoid-v1 **cannot** be reproduced from this disk.
+- **What is still here (do not mix into the next run):**
+  `act_style_data/obstacle_prox_v2` (918M) and `obstacle_prox_avoid_v1` (1.5G).
+  `assets/safety/cvae_v3` — keep; PACT frozen encoder.
+- **How / next:** gate-bar from zero (README §12.2). Do not reconvert avoid-v1.
+  `obstacle_gate_v1` counts still 0 until convert. Wipe leftover hdf5 if they
+  want the disk to match the story.
+- **Not done:** preflight / collect / convert / train / eval.
+
+---
+
+## 2026-08-24 — avoid-v1 n=50 grid **complete** (visible PACT finished)
+
+- **When:** `pact_raw_persensor_idrop03_s0_visible/eval_summary.json` 2026-08-24 15:22 MDT.
+  Eval process gone; tmux idle at prompt.
+- **Why:** User asked updates.
+- **What:** last cell filled. Full n=50, `--temp_agg_off`, prox on/off checked:
+
+| cell | vanilla succ / coll / strict | PACT succ / coll / strict | Fisher coll / succ |
+|---|---|---|---|
+| invisible | 21/50 42% / 20/50 **40%** / 14/50 | 12/50 24% / 15/50 **30%** / 7/50 | p=0.40 / 0.088 |
+| free | 21/50 42% / 24/50 48% / 12/50 | 15/50 30% / 22/50 44% / 8/50 | p=0.84 / 0.30 |
+| visible | 20/50 40% / 34/50 68% / 5/50 | 14/50 28% / 28/50 **56%** / 6/50 | p=0.30 / 0.29 |
+
+Collision Δ all favor PACT (−10 / −4 / −12 pts). None significant. Success worse every cell. Verdict unchanged: **failed**.
+- **Not done:** none on this grid.
+
+---
+
+## 2026-08-24 — avoid-v1 declared FAILED; gate-bar (v3) data design + per-body collision metric prepared
+
+- **When:** 2026-08-24 afternoon (America/Denver), after the n=50 avoid-v1 grid missed
+  the ≥15 pt / p<0.05 bar (40%→30%, p≈0.40) and lost success (42%→24%).
+- **Why:** User: collect new data that makes PACT win honestly; set up data, model
+  config, and every experiment; MVP results needed by tomorrow. Root cause of both
+  failed rounds, verified in sampler code: (1) avoid-v1 trained on *visible* bars;
+  (2) `_obj_rest` coupled the cup to the bar's side, so cameras could read the bar off
+  the cup even in the invis set; (3) bar face 0.14–0.24 m off-center meant one
+  "always bow" path cleared every bar — the 3× upsample taught it to vanilla.
+- **What (parent repo):**
+  - `README.md` — §12.2 gate-bar recipe (design, Monte-Carlo numbers, preflight
+    criteria, convert/train/eval deltas), §12 config-table row, §6 `--eval_sampler`
+    flag row, §16 decision-log entries (avoid-v1 FAILED + gate design).
+  - `paper.md` — avoid-v1 numbers moved into do-not-claim + failed-experiments with
+    the honest wording. 2026-07-05 grid stays the headline.
+  - `CURSOR.md` — this entry.
+- **What (`submodules/molmospaces`, dirty):**
+  - `tasks/enclosure_reach.py` — `GateObstacleFumehoodPickSampler` (+`Check`):
+    OBSTACLE_P=0.75, INVIS_P=1.0, signed BAR_FACE_Y=(-0.06,0.22), GATE_X_WORLD=
+    (0.47,0.58), AP_W_RANGE=(0.66,0.85), `_obj_rest` fully decoupled (cup y=±U(0.08,
+    0.14)). Expert unchanged (strict superset; bows fit with 0% waypoint clipping in a
+    20k-draw sim; blind-policy best case still hits 36% of poles, mean path 57%).
+  - `tasks/pick_task.py` — `_accumulate_obstacle_diag` now records contact BODY NAMES
+    per step (`_obstacle_diag_bodies`; world-rooted geoms named by geom), episode log
+    line gains `bodies=...`. Additive; datagen/eval behavior otherwise unchanged.
+  - `data_generation/config/object_manipulation_datagen_configs.py` —
+    `FrankaSkinHybridGateBarCheckConfig` (4 eps, viz on) +
+    `FrankaSkinHybridGateBarConfig` (8×25=200 eps, 4 workers, `viz_sensor_rgb=False`
+    so no v2-style OOM) → `assets/datagen/hybrid_gate_bar_v1`.
+- **What (`submodules/act`, dirty):**
+  - `eval_act_obstacle.py` — `--eval_sampler {invis,gate}` picks which check sampler
+    provides `--eval_cell`; per-episode records gain `hit_bar` / `bar_contact_steps` /
+    `contact_bodies`; summary gains `bar_hit_rate` / `nonbar_collision_rate` /
+    `mean_bar_contact_steps`; eval_summary.json records `eval_sampler`; wandb table
+    extended. Old ckpts/records stay compatible (missing keys default).
+  - `constants.py` — `obstacle_gate_v1` task (counts = 0 placeholders until convert
+    prints them); avoid-v1 entry annotated with its failed result.
+  - `imitate_episodes.py` — `obstacle_gate_v1` added to the state_dim=9/action_dim=8
+    task tuple (else it falls to the 14-dim default and crashes).
+- **How verified:** all files py_compile; samplers+configs import in `mlspaces`
+  (sampler class, INVIS_P, viz flag, output dir checked); `_apply_eval_cell` swaps to
+  `GateObstacleFumehoodPickCheckSampler` and pins per-cell probs; summary math checked
+  on synthetic records; 20k-draw Monte-Carlo of the gate geometry (deflect 80% of bar
+  eps, need p90 26 cm, corr(cup y, pole y)=+0.02).
+- **Not done (user runs, workflow constraint):** gate-bar preflight + 200-ep collection,
+  convert (+ paste counts into `constants.py`), train vanilla + PACT at chunk 50 (NO
+  image dropout on the headline arm), eval n=50 invisible+free with
+  `--eval_sampler gate`, `compare_pact.py` on collisions AND bar-hits. PACT-visible
+  avoid-v1 eval may still be running in tmux — let it finish or kill it; its result
+  cannot change the avoid-v1 verdict.
+
+---
+
+## 2026-08-24 — n=50 avoid-v1 eval: 5/6 cells done; last job PACT-visible
+
+- **When:** 2026-08-24 ~13:13 America/Denver. Grid started 2026-08-23 21:10.
+- **Why:** User asked for updates.
+- **What (from `eval_summary.json`, n=50, `--temp_agg_off`):**
+
+| cell | vanilla succ / coll / strict | PACT-raw per-sensor succ / coll / strict |
+|---|---|---|
+| **invisible** (paper) | 21/50 (42%) / **20/50 (40%)** / 14/50 | 12/50 (24%) / **15/50 (30%)** / 7/50 |
+| free | 21/50 (42%) / 24/50 (48%) / 12/50 | 15/50 (30%) / 22/50 (44%) / 8/50 |
+| visible | 20/50 (40%) / 34/50 (68%) / 5/50 | **still running** (~17/50 at 13:14) |
+
+Invisible collisions 40%→30% is **10 pts**, Fisher p≈0.40. Does **not** meet ≥15 pts / p<0.05. Success 42%→24% (p≈0.088). Free collisions similar (48% vs 44%) so not a statue on the crash axis; lift still worse. Old 66%→40% grid stays the published headline until they decide otherwise.
+- **How:** PACT jobs `use_proximity=true`, `raw`/`per_sensor` live. Vanilla `prox=False`. Invisible `INVIS_P=1`.
+- **Not done:** `pact_raw_persensor_idrop03_s0_visible` (~2 h left). Do not write visible-cell PACT numbers yet.
+
+---
+
 ## 2026-08-23 — user away ~10–12 h; n=50 grid in tmux; paper from July-5 numbers
 
 - **When:** 2026-08-23 ~21:13 America/Denver.

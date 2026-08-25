@@ -447,6 +447,7 @@ clean sharp frames.
 | `--temp_agg_m` | 0.01 | temporal-aggregation weight when it is on |
 | `--eval_blur_sigma` | 0 | blurs cameras at **inference**; skin and qpos untouched |
 | `--end_on_collision` | off | strict safety: any contact is a failure and ends the episode |
+| `--eval_sampler` | `invis` | which check sampler provides `--eval_cell`: `invis` (shallow side bars — v2/avoid ckpts) or `gate` (corridor pole — `obstacle_gate_v1` ckpts). Match the ckpt's training data. |
 | `--live` | off | opens a MuJoCo viewer (desktop only, forces single-process) |
 | `--house_ind` | 1 | ProcTHOR house; 1 (≡ 1 mod 24) is the red cup the data used |
 | `--task_horizon` | 200 | max policy steps |
@@ -1031,6 +1032,7 @@ Keep `num_workers <= 2` or workers get OOM-killed (15–29 GB RSS each on a 62 G
 |---|---|
 | `FrankaSkinHybridObstacleConfig` | The main obstacle dataset (v1) |
 | `FrankaSkinHybridInvisObstacleConfig` | The invisible-bar dataset (v2) |
+| **`FrankaSkinHybridGateBarConfig`** | **The gate-bar dataset (v3 — see §12.2). The current headline collection.** |
 | **`FrankaSkinHybridClutterPnPConfig`** | **Cluttered-bay pick-and-place (see §12.1)** |
 | `FrankaSkinHybridFumehoodSmokeConfig` | Fumehood whole-arm-clearance reach, 40-sensor skin |
 | `FrankaSkinEnclosureGenConfig`, `FrankaSkinEnclosureSmokeConfig` | General enclosure reach (full / smoke) |
@@ -1328,6 +1330,87 @@ setting that OOM-killed 3 of 8 houses on the v2 run (§7, §15).
 > run then exited 0 having written no `.h5`. If datagen is inexplicably slow, check
 > `ps aux | grep data_generation.main` first, and `pkill -9 -f data_generation.main` between runs.
 
+### 12.2 Gate-bar collection (v3 data design, 2026-08-24)
+
+**Why this exists.** Both earlier obstacle datasets let a camera-only policy match PACT, and the
+2026-08-24 avoid-v1 grid proved it (invisible-cell collisions 40% vanilla vs 30% PACT, Fisher
+p ≈ 0.40 — a failed experiment). Two leaks were responsible, both verified in the sampler code:
+
+1. **The cup revealed the bar.** `ObstacleFumehoodPickSampler._obj_rest` placed the object on the
+   bar's side of the corridor, so the cameras could read the bar's side off the cup's position
+   even when the bar itself was hidden.
+2. **One path cleared every bar.** The bar face stayed 0.14–0.24 m off-center, so "always bow the
+   same way" avoided every bar at zero cost — and after the avoid-v1 convert upsampled the bows
+   3×, vanilla ACT learned exactly that. The skin had nothing left to explain.
+
+**The fix** (`GateObstacleFumehoodPickSampler`, `molmo_spaces/tasks/enclosure_reach.py`): make the
+avoidance depend on obstacle state that vision cannot observe.
+
+- The hazard pole stands **in** the approach corridor: station drawn in world x ∈ (0.47, 0.58)
+  (the open run in front of the aperture plane at `TUBE_X0 = 0.58`), lateral face drawn **signed**
+  in (−0.06, 0.22) with a left/right coin flip, sweeping the pole center across the whole ±0.26 m
+  corridor band.
+- **`INVIS_P = 1.0`** — no training episode ever renders the pole. Free and bar episodes are
+  pixel-identical in distribution.
+- **Full decoupling** — `_obj_rest` draws cup y = ±U(0.08, 0.14) independently of every bar
+  variable (measured corr(cup y, pole y) ≈ +0.02 over 20k draws).
+- Wide jambs (`ap_w` ∈ 0.66–0.85) so the expert's bow (`|y_wp|` up to 0.215) never trades the
+  pole for a jamb strike.
+
+Monte-Carlo of the geometry (20k draws, `OBSTACLE_P = 0.75`): the expert deflects on **80%** of
+bar episodes (20% naturally clear — both modes stay in the data); required bow mean 13.5 cm,
+p90 26 cm, waypoint clipping 0%. A **blind** policy has no good answer: the straight-to-cup path
+intersects 57% of poles, the mode-averaged half-bow 58%, and the best fixed lane (±0.17 m) still
+36%. A policy that reads the skin can dodge nearly all of them. That gap is the experiment.
+
+**Collect:**
+
+```bash
+conda activate mlspaces
+cd submodules/molmospaces
+# preflight — 4 episodes, pole forced present+invisible
+OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+    python -m molmo_spaces.data_generation.main FrankaSkinHybridGateBarCheckConfig
+# full run — 8 houses x 25 = 200 episodes, 4 workers (viz_sensor_rgb forced OFF, so no OOM)
+OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+    python -m molmo_spaces.data_generation.main FrankaSkinHybridGateBarConfig
+```
+
+**Preflight pass criteria** (check before launching the full run):
+
+- no pole in any exo/wrist MP4; `[InvisBar] ... geom group 4` in the log on every episode;
+- `[ObstaclePick] DEFLECT` lines with bow magnitudes ~10–25 cm and **both signs** across episodes;
+- `[ObstacleDiag] ... bodies=` shows `protr_*` only on episodes that actually grazed;
+- grasp still succeeds on most episodes.
+
+**Convert** (no deflect-graze exception and no upsampling — the design produces ~45% deflect
+episodes on its own, and clean ones):
+
+```bash
+cd /home/jaydv/code/prox_learning
+python -m scripts.convert_obstacle_to_act \
+    --src assets/datagen/hybrid_gate_bar_v1/FrankaSkinHybridGateBarConfig/<timestamp> \
+    --dst act_style_data/obstacle_gate_v1 \
+    --with_proximity --prox_pool min --skip_approach_collision \
+    --image_h 240 --image_w 320
+# paste the printed num_episodes / episode_len into TASK_CONFIGS['obstacle_gate_v1']
+```
+
+**Train / eval** use Recipe C (§13) with three deltas: `--task_name obstacle_gate_v1`,
+**`--chunk_size 50`** on both arms and at eval (queries land at steps 0/50/100/150, so the policy
+re-reads the skin mid-approach with the pole in range; chunk 100 gives it only ~2 blind looks —
+and the June sweep already showed chunk 50 halves collisions), and **`--eval_sampler gate`** so
+the eval cells come from `GateObstacleFumehoodPickCheckSampler`. The headline PACT arm is
+`--use_proximity --prox_feature raw --prox_layout per_sensor` with **no image dropout** — with
+this data design the skin is required by construction, and the avoid-v1 grid showed the dropout
+taxed the pick.
+
+**The metric** is the new per-body split: `eval_summary.json` now carries `bar_hit_rate` (episodes
+that struck `protr_*`) next to the blunt any-contact `collision_rate`, per episode and aggregated
+(`pick_task.py` records contact body names — the fix STATUS §7 item 1 asked for). The claim to
+test: PACT bar-hit ≪ vanilla bar-hit in the invisible cell, free-cell rates similar, strict
+success not worse. Pre-registered bar: ≥15 points on invisible-cell bar-hit, n=50, Fisher p<0.05.
+
 ---
 
 ## 13. Recipe C — ACT and PACT
@@ -1583,6 +1666,20 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
   225 test runs, 13.4 hours. Training error formed a clean ladder; behaviour did not. The run
   established the ±40-point noise band at n = 25 and the "low collisions can mean broken" lesson,
   and that is what it is worth.
+- **avoid-v1 grid FAILED (2026-08-24).** The filtered/3×-upsampled convert of the *visible*-bar
+  v1 source, trained as vanilla vs PACT-raw-per-sensor + image dropout 0.3: invisible-cell
+  collisions 40% vs 30% (Fisher p ≈ 0.40 — noise), lift 42% vs 24%, strict 28% vs 14%. The
+  upsampled bows were fully predictable from vision (bar visible in training, cup coupled to bar
+  side, near-constant bar pose), so vanilla learned "always bow" and the dropout taxed PACT's
+  pick. Verdict: no significant safety win, real success loss. The 2026-07-05 66→40 grid stays
+  the published number.
+- **Gate-bar data design (2026-08-24).** Diagnosis: every dataset so far let vision explain the
+  bows. Fix in `GateObstacleFumehoodPickSampler` (§12.2): always-invisible pole swept across the
+  whole corridor band, cup decoupled from every bar variable, wide jambs. Blind-policy best case
+  hits ≥36% of poles (Monte-Carlo); a skin-reading policy can dodge nearly all. New per-body
+  collision attribution (`bar_hit_rate`) separates pole strikes from the fixture-brush floor —
+  the STATUS §7 item 1 fix. Headline arms train at chunk 50 with no image dropout; eval adds
+  `--eval_sampler gate`.
 
 ### Unresolved
 

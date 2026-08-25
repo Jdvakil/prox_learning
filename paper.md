@@ -107,7 +107,15 @@ You type counts; it reads no files. Example:
 
 ## 5. Do **not** claim (until a new `eval_summary.json` says otherwise)
 
-- Avoid-v1 / per-sensor / image-dropout training (tmux, 2026-08-23) **has no numbers yet**.
+- Avoid-v1 / per-sensor / image-dropout training: **measured 2026-08-24 and FAILED.**
+  Invisible cell n=50: collisions 40% (vanilla) vs 30% (PACT), Fisher p ≈ 0.40 — noise;
+  lift 42% vs 24%; strict 28% vs 14%. Do NOT write "PACT cut collisions 40→30". Honest
+  line: no significant collision drop, success down. The 2026-07-05 66→40 grid stays the
+  headline. Cause (verified in sampler code): the bar was visible in the avoid-v1
+  training source, the cup was placed on the bar's side, and the bar pose barely varied —
+  so the 3×-upsampled bows were learnable from vision alone and vanilla learned them.
+  The gate-bar collection (`obstacle_gate_v1`, README §12.2) is the redesign; its
+  numbers may replace the headline only once its own `eval_summary.json` files exist.
 - Multi-seed. Published grid = **one seed, one dataset**.
 - Real robot / hardware skin. Sim only.
 - PACT uses a trained CVAE **encoder** at runtime. Runtime latent `z = 0`. The CVAE
@@ -278,6 +286,14 @@ Behaviour: no ladder. σ=2 ≈ statue (0% hidden success). σ=4 recovered succes
 *raised* collisions. σ=8 free-cell collisions 28% vs 68% with a bar — same policy, so
 that 40-point swing is **noise at n=25**. Two of nine tests crossed p=0.05 in opposite
 directions. Keep the lessons; drop the blur-as-camera-failure claim.
+
+**Avoid-v1 grid (2026-08-24).** Filter-scrapes + 3×-bow-upsample convert of the
+visible-bar v1 source; vanilla vs PACT-raw-per-sensor + image dropout 0.3; n=50 per
+cell. Invisible collisions 40% vs 30% (p ≈ 0.40), lift 42% vs 24%, strict 28% vs 14%,
+free collisions 48% vs 44%. No significant safety win; a real task-success loss. Useful
+as the negative result that pinned the data-design flaw: when demonstrations are
+predictable from vision, upweighting them teaches the *baseline* to avoid, and forcing
+skin reliance through dropout only taxes the task. Motivated the gate-bar redesign.
 
 ---
 

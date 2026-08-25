@@ -395,7 +395,7 @@ def convert(
         f"not_deflect={n_skipped_not_deflect}\n"
         f"[convert] written deflect={n_deflect_written} free={n_free_written} "
         f"prox_pool={prox_pool}\n"
-        f"[convert] >>> set submodules/act/constants.py obstacle_pact_avoid_v1: "
+        f"[convert] >>> set submodules/act/constants.py entry for '{dst_dir.name}': "
         f"num_episodes={global_idx}, episode_len={max_T + 2}  (max T = {max_T})"
     )
 
