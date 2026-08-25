@@ -267,6 +267,23 @@ least 95%, recall at least 90%, and XYZ MAE preferably below 20 mm. If the gate
 fails, do not call the embedding useful. `--sensor-balance` is an ablation for
 rare valid sensors; `--no-balance-valid` trains on the natural class mix.
 
+**152-episode run (2026-08-25).** Ckpt
+`experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt`.
+`encoders.probe --split test` matches the trainer: 100% balanced validity and
+recall, recon pixel P/R 87.4/95.3%, XYZ MAE **20.6 mm** (0.6 mm over the 20 mm
+preference). Hard gate pass; bake is allowed as an **ablation** only. This does
+not beat PACT-raw on policy. ACT `load_data` still shuffles 80/20 by episode
+index — reuse `split_manifest.json` before any `--prox_feature surface_embedding`
+train, or encoder-fit leaks into policy val. Converted hdf5 is already at
+`act_style_data/pact_place_corridor_v5`. Bake after that split wire:
+
+```bash
+python -m encoders.encode_tokens \
+    --dataset-dir act_style_data/pact_place_corridor_v5 \
+    --checkpoint experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt \
+    --kind embedding
+```
+
 Probe the coauthor corridor rows **before convert**. Native skin is `(T, 40, 4, 8, 8)` metres — real 60 Hz subframes, so the geometry net's 32-frame causal window is honest. Without `--checkpoint`, the command scores the analytic 20 cm nearest-surface *target* vs PACT-raw 50 cm peak closeness, and optionally runs an untrained net as a wiring check.
 
 ```bash

@@ -300,3 +300,9 @@ Commands: README §13.1. Train vanilla vs `--use_proximity --prox_feature raw
 `eval_act_place_corridor.py --temp_agg_off`. Metric: place-success +
 `bar_hit_rate`. Local `eval_summary.json` only — coauthor win is not a paper
 number until we rerun it.
+
+Local 32-d surface embedding (2026-08-25): compressor gate passed on 15 test
+rows (100% validity, 20.6 mm XYZ, recon pixel 87/95%). That is a reconstruction
+score, not a policy score. Geometry sees 11.8% of tiles inside 20 cm; PACT-raw
+fires 41% inside 50 cm. Headline arm stays **raw peak closeness**. Embedding
+tokens are an ablation after ACT reuses the encoder `split_manifest.json`.

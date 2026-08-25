@@ -23,6 +23,30 @@ Newest session at the top.
 
 ---
 
+## 2026-08-25 15:37 MDT — test probe agrees with trainer
+
+- **When:** 2026-08-25 ~15:37 America/Denver. User ran `encoders.probe
+  --split test` and pasted the log.
+- **Why:** Independent check before calling the 20-epoch ckpt useful.
+- **What:** Probe on the 15 held-out rows matches `test_metrics.json`
+  exactly. Representation `pooled`. 8109 GT-valid tiles (11.786%).
+  - validity acc / balanced / P / R: **100%**
+  - XYZ MAE both-valid **and** all-GT-valid: **20.621 mm** (zero FNs)
+  - recon MSE 0.000367; foreground MAE 0.058; pixel P/R **87.4 / 95.3%**
+  - per-episode XYZ MAE 17.5–24.0 mm
+  - 50 cm peak-closeness hit 41.2% vs 20 cm geometry 11.8%
+  - side AUC: peak closeness 0.64, 20 cm valid-frac **0.48** (chance)
+  - self-view still owns 20 cm: `link1_sensor_5` 100%, `link2_sensor_3` 97%
+- **Gate:** hard validity/recall **pass**. Recon pixel P and R **pass**.
+  XYZ preferably <20 mm: **0.6 mm over**. Call the compressor **bake-allowed
+  as an ablation**, not a policy win. Do not train
+  `--prox_feature surface_embedding` until ACT `load_data` reuses
+  `split_manifest.json` (still 80/20 shuffle). Headline corridor arm remains
+  vanilla vs PACT-raw (README §13.1, `PACT.md` §8).
+- **Wrote:** README §4 bake/split note; `PACT.md` §8 encoder fence.
+
+---
+
 ## 2026-08-25 13:56 MDT — surface encoder 20-epoch run finished
 
 - **When:** 2026-08-25 12:45–12:57 America/Denver. User job in tmux `0`.
