@@ -198,18 +198,29 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
                         approach = _translated(anchor, [back[0], back[1], lift])
                         contact = _translated(anchor, [back[0], back[1], 0.0])
                         push_end = _translated(anchor, [fwd[0], fwd[1], 0.0])
-                        retreat = _translated(push_end, [0.0, 0.0, pc.retreat_z])
+                        # Back off the way we came rather than straight up: a
+                        # vertical retreat keeps the wrist at full radius, and
+                        # the arm is already near its envelope at this depth.
+                        retreat = _translated(push_end, [-u[0] * 0.05, -u[1] * 0.05,
+                                                         pc.retreat_z])
                         combos.append((u, dist, approach, contact, push_end, retreat))
                         stacked += [approach, contact, push_end, retreat]
 
         ok = self._feasible_mask(np.stack(stacked)).reshape(len(combos), 4).all(axis=1)
+        # Among feasible combinations, take the one whose furthest waypoint sits
+        # closest to the robot base: the arm is near its envelope in here, and
+        # the least-stretched option is the one most likely to track cleanly.
+        base_xy = self.task.env.current_robot.robot_view.base.pose[:2, 3]
+        reach = np.array([max(float(np.linalg.norm(p[:2, 3] - base_xy)) for p in c[2:])
+                          for c in combos])
+        order = np.lexsort((reach, ~ok))
         if not ok.any():
             raise ValueError(
                 f"no reachable push waypoints among {len(combos)} candidates "
                 f"(object at {np.round(start, 3)})"
             )
 
-        u, dist, approach, contact, push_end, retreat = combos[int(np.argmax(ok))]
+        u, dist, approach, contact, push_end, retreat = combos[int(order[0])]
         # Judge success on the direction and distance actually commanded.
         new_goal = list(tc.pickup_obj_goal_pose)
         new_goal[0] = float(start[0] + u[0] * dist)
@@ -346,7 +357,7 @@ class PushPlannerPolicyConfig(ObjectManipulationPlannerPolicyConfig):
     push_standoff: float = 0.08    # EE starts this far behind the object
     push_overshoot: float = 0.01   # EE ends this far past the goal
     approach_z: float = 0.04       # come in above contact height, drop to it
-    retreat_z: float = 0.10        # small hoods leave little headroom
+    retreat_z: float = 0.04        # small hoods leave little headroom
 
 
 class PullPlannerPolicyConfig(ObjectManipulationPlannerPolicyConfig):
@@ -362,6 +373,14 @@ class ClutteredFumehoodPushSampler(ClutteredFumehoodPickSampler):
     """Push the object deeper into the hood or laterally along the bench."""
 
     TASK_CLS = PushFumehoodTask
+    # The pick sampler's REACH_SPAN reaches 0.34m past the mouth, which puts the
+    # object at the very edge of the arm's envelope. A pick only needs the object
+    # itself plus a vertical offset; a push additionally needs a standoff BEHIND
+    # it and an end pose BEYOND it, and one of those two always lies further from
+    # the base. Preflight at 0.34m depth had zero reachable waypoints out of 48
+    # candidates, so push episodes keep the object within the shallower band
+    # where both sides still solve. The arm is still inside the hood throughout.
+    REACH_SPAN = (0.02, 0.12)
     PUSH_SPAN = (0.06, 0.12)
     MARGIN = 0.10   # keep the goal this far off the hood walls
 

@@ -145,6 +145,7 @@ class FrankaSkinClutteredFumehoodPushConfig(FrankaSkinClutteredFumehoodConfig):
     a closed gripper; success is >=8cm displacement along the commanded
     direction. Same clutter / hood sizes / deep placement as the pick config."""
 
+    task_type: str = "push"
     policy_config: BasePolicyConfig = PushPlannerPolicyConfig()
     task_sampler_config: PickTaskSamplerConfig = (
         FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(
@@ -176,6 +177,7 @@ class FrankaSkinClutteredFumehoodPullConfig(FrankaSkinClutteredFumehoodConfig):
     """Grasp and drag the object toward the mouth without lifting; success is
     >=8cm displacement toward the front."""
 
+    task_type: str = "pull"
     policy_config: BasePolicyConfig = PullPlannerPolicyConfig()
     task_sampler_config: PickTaskSamplerConfig = (
         FrankaSkinClutteredFumehoodConfig.model_fields["task_sampler_config"].default.model_copy(

@@ -31,12 +31,15 @@ class FumehoodPickAndPlacePlannerPolicy(PickAndPlacePlannerPolicy):
     """Same placement semantics as upstream, but searched instead of asserted."""
 
     HOVER_HEIGHTS = (0.07, 0.05, 0.035, 0.02)      # above the tray surface
-    TRAY_OFFSETS = (0.0, 0.04, -0.04)              # along x (mouth-ward is -x)
+    TRAY_OFFSETS = (0.0, -0.04, 0.04)              # along x, mouth-ward first
+    TRAY_HALF_Z = 0.008                            # from the scene generator
 
     def _get_placement_poses(self, grasp_pose_world, pickup_obj, place_receptacle):
         data = self.task.env.current_data
-        rec_center, rec_size = body_aabb(data.model, data, place_receptacle.object_id)
-        receptacle_top_z = rec_center[2] + rec_size[2] / 2
+        # body_aabb keeps only non-colliding geoms, and the tray inherits the
+        # hood's contype/conaffinity - so it reports an empty box at the body
+        # origin. The tray is a mocap body of known thickness; use that.
+        receptacle_top_z = float(place_receptacle.position[2]) + self.TRAY_HALF_Z
 
         obj_center, obj_size = body_aabb(data.model, data, pickup_obj.object_id)
         obj_bottom_z = obj_center[2] - obj_size[2] / 2
