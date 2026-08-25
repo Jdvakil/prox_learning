@@ -16,6 +16,14 @@ twice:
     python octo_env/finetune_proximity.py ... --dataset_name fumehood_proximity/vision_only \
         --save_dir ~/octo_runs/v_octo
 """
+import os
+
+# jax 0.4.20 on this stack rebuilds the CUDA graph for jit_train_step and can
+# hit CUDA_ERROR_GRAPH_EXEC_UPDATE_FAILURE mid-run, which takes the process down
+# with a segfault. Command buffers buy little here and cost the whole run, so
+# they are off unless the caller overrides XLA_FLAGS.
+os.environ.setdefault("XLA_FLAGS", "--xla_gpu_enable_command_buffer=")
+
 from absl import app, flags, logging
 import flax
 import jax
