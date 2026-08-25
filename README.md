@@ -215,8 +215,32 @@ Without a geometry checkpoint the conv-transformer is random (shapes still work)
 never needs weights. **Do not mix the closeness maps:** peak-closeness uses `D_MAX = 0.5 m`;
 surface geometry uses `MAX_SURFACE_RANGE_M = 0.20 m` (trap 16).
 
-PACT train/eval still `import prox_cvae`. `submodules/act/prox_cvae.py` is a shim to
-`encoders/peak_closeness.py`. Geometry is not wired into ACT yet — `load_encoder` is the hook.
+PACT train/eval still `import prox_cvae` for the raw path. `submodules/act/prox_cvae.py` is a
+shim to `encoders/peak_closeness.py`. Geometry is wired through `encoders.pact.build_pact_encoder`.
+
+Precompute frozen 32-d tokens into an already-converted ACT dataset:
+
+```bash
+python -m encoders.encode_tokens \
+    --dataset-dir act_style_data/obstacle_prox_v2 \
+    --checkpoint path/to/pact_surface_embedding_encoder_v1.pt \
+    --kind embedding
+```
+
+Train with the geometry net (live causal windows from raw `/observations/proximity`, or the
+precomputed groups if present):
+
+```bash
+cd submodules/act
+PYTHONPATH="$PWD:$PYTHONPATH" python imitate_episodes.py \
+    --task_name obstacle_pact_v2 --policy_class ACT --use_proximity \
+    --prox_feature surface_embedding \
+    --prox_encoder_ckpt path/to/pact_surface_embedding_encoder_v1.pt \
+    ...
+```
+
+`--prox_feature nearest_surface` is the 3-d XYZ front-end. Without `--prox_encoder_ckpt` the
+conv-transformer is frozen-random (shapes work, features are noise).
 
 ---
 
@@ -544,6 +568,9 @@ concrete and runnable** — the "base" ones are simply configs that others also 
 | **`FrankaSkinHybridObstacleConfig`** | 2222 | ↑ | **the main ACT dataset.** 8 house indices × 25 | `datagen/hybrid_obstacle_v1` |
 | `FrankaSkinHybridInvisObstacleCheckConfig` | 2262 | `HybridObstacleCheck` | preflight, bar present and invisible | `datagen/hybrid_invis_obstacle_check` |
 | **`FrankaSkinHybridInvisObstacleConfig`** | 2293 | ↑ | **the v2 invisible-bar dataset** | `datagen/hybrid_invis_obstacle_v1` |
+| `FrankaSkinHybridGateBarVisibleCheckConfig` | — | `InvisObstacleCheck` | **geometry debug.** Pole on and **rendered**. Run this before collect. | `datagen/hybrid_gate_bar_visible_check` |
+| `FrankaSkinHybridGateBarCheckConfig` | — | ↑ | invisible preflight, same geometry | `datagen/hybrid_gate_bar_check` |
+| **`FrankaSkinHybridGateBarConfig`** | — | ↑ | **v3.1 headline collect.** 8×25, INVIS_P=1, tall pole snapped onto the TCP line (§12.2) | `datagen/hybrid_gate_bar_v1` |
 | `FrankaSkinHybridClutterPnPCheckConfig` | 2349 | `HybridObstacleCheck` | preflight, max clutter, bar on and invisible | `datagen/hybrid_clutter_pnp_check` |
 | **`FrankaSkinHybridClutterPnPConfig`** | 2390 | ↑ | **cluttered-bay pick-and-place** (§12.1). Different scene: `fumehood_clutter.xml` | `datagen/hybrid_clutter_pnp_v1` |
 
@@ -577,11 +604,15 @@ still work there unchanged.
 | **`ObstacleFumehoodPickSampler`** | 1109 | **`OBSTACLE_P=0.75`**, `BAR_FACE_Y=(0.14,0.24)`, `BAR_X_FRAC=(0.20,0.55)`, `OBJ_GAP=(0.12,0.20)` |
 | `ObstacleFumehoodPickCheckSampler` | 1169 | `OBSTACLE_P=1.0` |
 | **`InvisibleObstacleFumehoodPickSampler`** | 1175 | **`INVIS_P=0.5`** (inherits `OBSTACLE_P=0.75`); hides bars by moving the geom to **group 4**; decouples object placement from bar presence (the v1 leak fix) |
-| `InvisibleObstacleFumehoodPickCheckSampler` | 1237 | `OBSTACLE_P=1.0`, `INVIS_P=1.0` — this is what `--eval_cell` drives |
+| `InvisibleObstacleFumehoodPickCheckSampler` | 1237 | `OBSTACLE_P=1.0`, `INVIS_P=1.0` — this is what `--eval_cell` drives without `--eval_sampler gate` |
+| **`GateObstacleFumehoodPickSampler`** | 1244 | **v3.1 headline.** `OBSTACLE_P=0.75`, `INVIS_P=1.0`, `GATE_HALF_Z=0.22`, `gate_block` snaps the pole onto the TCP line. Cup y decoupled; bow **sign** = wall coin-flip. |
+| `GateObstacleFumehoodPickCheckSampler` | — | `OBSTACLE_P=1.0`, `INVIS_P=1.0` — `--eval_sampler gate` |
+| `GateObstacleFumehoodPickVisibleCheckSampler` | — | `OBSTACLE_P=1.0`, `INVIS_P=0.0` — geometry-debug preflight only |
 
-The matching expert is `ObstacleAwarePickPlannerPolicy` (`enclosure_reach.py:1249`):
-`GRIP_HALF=0.10`, `SAFE_GAP=0.08`, `PASS_SPEED=0.05`. It reads `scene_params["protr_center"]` and
-`["protr_half"]` — **never pixels** — bows the approach with two bracketing waypoints, and stamps
+The matching expert is `ObstacleAwarePickPlannerPolicy` (`enclosure_reach.py`):
+`GRIP_HALF=0.10`, `SAFE_GAP=0.08`, `PASS_SPEED=0.05`. On gate-bar episodes it first
+snaps the pole onto the TCP line (`GATE SNAP` in the log), then bows. It reads
+`scene_params["protr_center"]` and `["protr_half"]` — **never pixels** — and stamps
 `behavior_class = "deflect"`; otherwise `"free"`.
 
 ### The sensor pipeline
@@ -1081,7 +1112,7 @@ Keep `num_workers <= 2` or workers get OOM-killed (15–29 GB RSS each on a 62 G
 |---|---|
 | `FrankaSkinHybridObstacleConfig` | The main obstacle dataset (v1) |
 | `FrankaSkinHybridInvisObstacleConfig` | The invisible-bar dataset (v2) |
-| **`FrankaSkinHybridGateBarConfig`** | **The gate-bar dataset (v3 — see §12.2). The current headline collection.** |
+| **`FrankaSkinHybridGateBarConfig`** | **The gate-bar dataset (v3.1 — see §12.2). The current headline collection. Do not launch until the Visible check shows a pole in the doorway.** |
 | **`FrankaSkinHybridClutterPnPConfig`** | **Cluttered-bay pick-and-place (see §12.1)** |
 | `FrankaSkinHybridFumehoodSmokeConfig` | Fumehood whole-arm-clearance reach, 40-sensor skin |
 | `FrankaSkinEnclosureGenConfig`, `FrankaSkinEnclosureSmokeConfig` | General enclosure reach (full / smoke) |
@@ -1379,7 +1410,7 @@ setting that OOM-killed 3 of 8 houses on the v2 run (§7, §15).
 > run then exited 0 having written no `.h5`. If datagen is inexplicably slow, check
 > `ps aux | grep data_generation.main` first, and `pkill -9 -f data_generation.main` between runs.
 
-### 12.2 Gate-bar collection (v3 data design, 2026-08-24)
+### 12.2 Gate-bar collection (v3.1 data design, 2026-08-24)
 
 **Why this exists.** Both earlier obstacle datasets let a camera-only policy match PACT, and the
 2026-08-24 avoid-v1 grid proved it (invisible-cell collisions 40% vanilla vs 30% PACT, Fisher
@@ -1392,48 +1423,57 @@ p ≈ 0.40 — a failed experiment). Two leaks were responsible, both verified i
    same way" avoided every bar at zero cost — and after the avoid-v1 convert upsampled the bows
    3×, vanilla ACT learned exactly that. The skin had nothing left to explain.
 
-**The fix** (`GateObstacleFumehoodPickSampler`, `molmo_spaces/tasks/enclosure_reach.py`): make the
-avoidance depend on obstacle state that vision cannot observe.
+**v3.0 preflight failed (2026-08-24 night).** The signed `BAR_FACE_Y=(-0.06,0.22)` sweep still
+used the XML pegs (20–24 cm tall, 3.5 cm thick). The expert only added `SAFE_GAP − already-clear`
+(1.6–7.2 cm). The exo videos looked like a normal pick: no pole (correct — `INVIS_P=1`) and no
+visible veer (wrong — the task was too easy). A straight gripper often missed the peg, so vanilla
+would not even hit it. Do not collect 200 episodes of that.
 
-- The hazard pole stands **in** the approach corridor: station drawn in world x ∈ (0.47, 0.58)
-  (the open run in front of the aperture plane at `TUBE_X0 = 0.58`), lateral face drawn **signed**
-  in (−0.06, 0.22) with a left/right coin flip, sweeping the pole center across the whole ±0.26 m
-  corridor band.
-- **`INVIS_P = 1.0`** — no training episode ever renders the pole. Free and bar episodes are
-  pixel-identical in distribution.
-- **Full decoupling** — `_obj_rest` draws cup y = ±U(0.08, 0.14) independently of every bar
-  variable (measured corr(cup y, pole y) ≈ +0.02 over 20k draws).
-- Wide jambs (`ap_w` ∈ 0.66–0.85) so the expert's bow (`|y_wp|` up to 0.215) never trades the
-  pole for a jamb strike.
+**The v3.1 fix** (`GateObstacleFumehoodPickSampler`, `molmo_spaces/tasks/enclosure_reach.py`):
 
-Monte-Carlo of the geometry (20k draws, `OBSTACLE_P = 0.75`): the expert deflects on **80%** of
-bar episodes (20% naturally clear — both modes stay in the data); required bow mean 13.5 cm,
-p90 26 cm, waypoint clipping 0%. A **blind** policy has no good answer: the straight-to-cup path
-intersects 57% of poles, the mode-averaged half-bow 58%, and the best fixed lane (±0.17 m) still
-36%. A policy that reads the skin can dodge nearly all of them. That gap is the experiment.
+- **Tall pole on the live TCP line.** `GATE_HALF_Z=0.22` (44 cm, top at 1.16 m) so the arm cannot
+  fly over. At plan time `gate_block` snaps the pole's inner face onto the home→pregrasp TCP at
+  fraction `GATE_APPROACH_T=0.40`. Every bar episode, the straight gripper envelope intersects
+  the geom. Expert bow is then `GRIP_HALF+SAFE_GAP` ≈ **18 cm**.
+- **Bow *sign* is a wall coin-flip.** Cameras see the cup, so they know *where* the line is, but
+  not *which way* is open. Mixed left/right demos average to "go straight" unless the policy
+  reads the skin. Cup y is still drawn independently of every bar field (`±U(0.08,0.14)`).
+- **`INVIS_P = 1.0` on collect.** Free and bar RGB streams stay distributionally identical.
+- Wide jambs (`ap_w` ∈ 0.66–0.85) so an 18 cm bow does not trade the pole for a jamb strike.
 
-**Collect:**
+By construction, **100% of bar episodes deflect**. A blind straight policy hits the pole. A
+fixed-side bow hits the other half. That gap is the experiment.
+
+**Collect** — visible check first, then invisible check, then 200. Do not skip the visible check.
 
 ```bash
 conda activate mlspaces
 cd submodules/molmospaces
-# preflight — 4 episodes, pole forced present+invisible
+# 1. geometry debug — pole RENDERED. You must SEE it in the doorway and a ~18 cm veer.
+OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
+    python -m molmo_spaces.data_generation.main FrankaSkinHybridGateBarVisibleCheckConfig
+# 2. invisible preflight — same geometry, pole hidden. Videos have no pole; log still DEFLECTs.
 OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
     python -m molmo_spaces.data_generation.main FrankaSkinHybridGateBarCheckConfig
-# full run — 8 houses x 25 = 200 episodes, 4 workers (viz_sensor_rgb forced OFF, so no OOM)
+# 3. full run — ONLY after both checks pass. 8 houses x 25 = 200. viz_sensor_rgb OFF (no OOM).
 OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
     python -m molmo_spaces.data_generation.main FrankaSkinHybridGateBarConfig
 ```
 
-**Preflight pass criteria** (check before launching the full run):
+**Visible-check pass criteria** (this is the one that answers "is the task too simple?"):
 
-- no pole in any exo/wrist MP4; `[InvisBar] ... geom group 4` in the log on every episode;
-- `[ObstaclePick] DEFLECT` lines with bow magnitudes ~10–25 cm and **both signs** across episodes;
-- `[ObstacleDiag] ... bodies=` shows `protr_*` only on episodes that actually grazed;
+- orange pole visible in every exo MP4, standing in the doorway, not a stub on the bench;
+- `[ObstaclePick] GATE SNAP` then `DEFLECT` with bow **~18 cm** and **both signs** across 4 eps;
+- arm veer is obvious in the video (not a 3 cm nudge);
 - grasp still succeeds on most episodes.
 
-**Convert** (no deflect-graze exception and no upsampling — the design produces ~45% deflect
-episodes on its own, and clean ones):
+**Invisible-check pass criteria** (same motion, no pixels):
+
+- no pole in any exo/wrist MP4; `[InvisBar] ... geom group 4` on every episode;
+- same `GATE SNAP` / `DEFLECT ~18 cm` / both signs as the visible check;
+- `[ObstacleDiag] ... bodies=` shows `protr_*` only on episodes that actually grazed.
+
+**Convert** (no deflect-graze exception and no upsampling — every bar episode bows ~18 cm):
 
 ```bash
 cd /home/jaydv/code/prox_learning
@@ -1726,12 +1766,12 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
   pick. Verdict: no significant safety win, real success loss. The 2026-07-05 66→40 grid stays
   the published number.
 - **Gate-bar data design (2026-08-24).** Diagnosis: every dataset so far let vision explain the
-  bows. Fix in `GateObstacleFumehoodPickSampler` (§12.2): always-invisible pole swept across the
-  whole corridor band, cup decoupled from every bar variable, wide jambs. Blind-policy best case
-  hits ≥36% of poles (Monte-Carlo); a skin-reading policy can dodge nearly all. New per-body
-  collision attribution (`bar_hit_rate`) separates pole strikes from the fixture-brush floor —
-  the STATUS §7 item 1 fix. Headline arms train at chunk 50 with no image dropout; eval adds
-  `--eval_sampler gate`.
+  bows. v3.0 (signed face sweep of XML-height pegs) failed preflight: 1–7 cm nudges, task too
+  easy. v3.1 (§12.2): 44 cm pole snapped onto the live TCP line, ~18 cm bow, sign = wall
+  coin-flip, collect still `INVIS_P=1`. Visible check first
+  (`FrankaSkinHybridGateBarVisibleCheckConfig`). Blind straight hits the pole; fixed-side bow
+  hits the other half. `bar_hit_rate` is the metric. Headline arms train at chunk 50 with no
+  image dropout; eval adds `--eval_sampler gate`.
 
 ### Unresolved
 

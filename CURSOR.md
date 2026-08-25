@@ -23,6 +23,26 @@ Newest session at the top.
 
 ---
 
+## 2026-08-24 — gate-bar v3.0 too easy; v3.1 snaps a tall pole onto the TCP line
+
+- **When:** 2026-08-24 ~23:30 America/Denver, after user watched
+  `hybrid_gate_bar_check/.../20260824_231030` exo videos.
+- **Why:** User: no pole in videos (correct — INVIS_P=1) but the pick is too simple
+  to collect. Log bows were 1.6–7.2 cm around XML pegs (20–24 cm tall, 3.5 cm
+  thick) that often missed the gripper line. Straight vanilla would not hit.
+- **What:** Do **not** launch `FrankaSkinHybridGateBarConfig` on v3.0.
+  v3.1: `GATE_HALF_Z=0.22` (44 cm), `gate_block` snaps inner face onto the live
+  TCP at t=0.40, bow sign = `protr_wall` coin-flip, `geom_rbound` updated so the
+  taller box actually collides. New
+  `FrankaSkinHybridGateBarVisibleCheckConfig` (INVIS_P=0) so a human can see
+  the pole in the doorway. README §12.2 rewritten.
+- **How:** `enclosure_reach.py` Gate sampler + `ObstacleAwarePickPlannerPolicy._repose_gate_pole`.
+  Visible check first, then invisible check, then 200.
+- **Not done:** user runs visible check. Do not collect 200 until that passes
+  (pole in doorway, DEFLECT ~18 cm, both signs, grasp still works).
+
+---
+
 ## 2026-08-24 — dropped Safety-CVAE weights; PACT-raw does not need them
 
 - **When:** 2026-08-24 ~22:20 America/Denver.

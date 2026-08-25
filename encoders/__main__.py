@@ -19,15 +19,13 @@ def main() -> None:
     raw_feat = raw.policy_features(prox)
     print(f"peak_closeness    {tuple(raw_feat.shape)}  sensor5={float(raw_feat[0, 5, 0]):.3f}")
 
-    # Geometry smoke uses 2 sensors so `python -m encoders` stays fast.
-    # Full-skin (B, 40, 8, 8) is the same call; tests cover that layout.
     geom = load_encoder("nearest_surface", device="cpu")
-    xyz = geom.policy_features(prox[:, :2])
-    print(f"nearest_surface   {tuple(xyz.shape)}  (untrained weights, 2 sensors)")
+    xyz = geom.policy_features(prox)
+    print(f"nearest_surface   {tuple(xyz.shape)}  (untrained weights)")
 
     emb = load_encoder("surface_embedding", device="cpu")
-    z = emb.policy_features(prox[:, :2])
-    print(f"surface_embedding {tuple(z.shape)}  (untrained weights, 2 sensors)")
+    z = emb.policy_features(prox)
+    print(f"surface_embedding {tuple(z.shape)}  (untrained weights)")
 
 
 if __name__ == "__main__":

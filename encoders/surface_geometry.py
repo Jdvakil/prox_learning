@@ -128,6 +128,20 @@ def causal_sensor_window(
     return depth_to_closeness(flattened)
 
 
+def as_subframe_episode(proximity: np.ndarray) -> np.ndarray:
+    """ACT-pooled ``(T, S, 8, 8)`` or native ``(T, S, 4, 8, 8)`` -> ``(T, S, 4, 8, 8)``.
+
+    Convert writes pooled 8x8 tiles. The geometry net wants 4 native subframes
+    per control step. Repeating the pooled frame four times is the adapter.
+    """
+    values = np.asarray(proximity, dtype=np.float32)
+    if values.ndim == 5 and values.shape[2:] == (4, 8, 8):
+        return values
+    if values.ndim == 4 and values.shape[-2:] == (8, 8):
+        return np.repeat(values[:, :, None], SUBFRAMES_PER_CONTROL_STEP, axis=2)
+    raise ValueError(f"expected (T,S,8,8) or (T,S,4,8,8), got {values.shape}")
+
+
 def to_causal_closeness(
     skin: torch.Tensor | np.ndarray,
     *,
@@ -223,6 +237,16 @@ class SinusoidalSequenceEncoding(nn.Module):
         return sequence + self.encoding[:, : sequence.shape[1]]
 
 
+def _transformer_encoder(layer: nn.Module, num_layers: int) -> nn.TransformerEncoder:
+    """norm_first blocks nested-tensor fast path; disable it to skip the torch warning."""
+    try:
+        return nn.TransformerEncoder(
+            layer, num_layers=num_layers, enable_nested_tensor=False
+        )
+    except TypeError:
+        return nn.TransformerEncoder(layer, num_layers=num_layers)
+
+
 class SurfaceProximityEncoder(nn.Module):
     """~0.82M-parameter conv-stem transformer shared by all 40 sensors."""
 
@@ -246,7 +270,7 @@ class SurfaceProximityEncoder(nn.Module):
             batch_first=True,
             norm_first=True,
         )
-        self.transformer = nn.TransformerEncoder(layer, num_layers=4)
+        self.transformer = _transformer_encoder(layer, num_layers=4)
         self.head = nn.Sequential(
             nn.LayerNorm(128),
             nn.Linear(128, 128),
@@ -326,7 +350,7 @@ class SurfaceEmbeddingEncoder(nn.Module):
             batch_first=True,
             norm_first=True,
         )
-        self.transformer = nn.TransformerEncoder(layer, num_layers=4)
+        self.transformer = _transformer_encoder(layer, num_layers=4)
         self.embedding_head = nn.Sequential(
             nn.LayerNorm(128),
             nn.Linear(128, 128),
@@ -517,6 +541,9 @@ class SurfaceGeometryEncoder(nn.Module):
 
         self.act_feat_dim = 3 if kind == "xyz" else SURFACE_EMBEDDING_DIM
         self.feat_dim = self.act_feat_dim
+        self.inner.eval()
+        for parameter in self.inner.parameters():
+            parameter.requires_grad_(False)
         self.to(device)
         self.eval()
 
@@ -606,11 +633,70 @@ class SurfaceGeometryEncoder(nn.Module):
         }
 
     @torch.no_grad()
-    def encode_episode(self, episode_proximity: np.ndarray) -> torch.Tensor:
-        """``(T, S, 4, 8, 8)`` metres -> ``(T, S, feat_dim)`` with real causal windows."""
-        values = np.asarray(episode_proximity, dtype=np.float32)
-        if values.ndim != 5 or values.shape[2:] != (4, 8, 8):
-            raise ValueError(f"expected (T,S,4,8,8), got {values.shape}")
+    def encode_pooled_history(
+        self,
+        history: torch.Tensor | np.ndarray,
+        *,
+        unit: str = "metres",
+    ) -> torch.Tensor:
+        """Encode last ``H<=8`` pooled control steps.
+
+        ``history`` is ``(B, H, S, 8, 8)`` or ``(H, S, 8, 8)`` metres (ACT convert
+        layout). Left-pads to 8 steps, repeats each step into 4 fake subframes,
+        then runs the shared transformer. Returns ``(B, S, feat)`` / ``(S, feat)``.
+        """
+        x = torch.as_tensor(history, dtype=torch.float32)
+        squeeze_batch = False
+        if x.ndim == 3 and x.shape[-2:] == (8, 8):
+            x = x.unsqueeze(0).unsqueeze(0)
+            squeeze_batch = True
+        elif x.ndim == 4 and x.shape[-2:] == (8, 8):
+            x = x.unsqueeze(0)
+            squeeze_batch = True
+        elif x.ndim != 5 or x.shape[-2:] != (8, 8):
+            raise ValueError(
+                f"encode_pooled_history expected (B,H,S,8,8) or (H,S,8,8), got {tuple(x.shape)}"
+            )
+        batch, n_hist, n_sensors, height, width = x.shape
+        if n_hist < CAUSAL_CONTROL_STEPS:
+            pad = x[:, :1].expand(batch, CAUSAL_CONTROL_STEPS - n_hist, n_sensors, height, width)
+            x = torch.cat((pad, x), dim=1)
+        elif n_hist > CAUSAL_CONTROL_STEPS:
+            x = x[:, -CAUSAL_CONTROL_STEPS:]
+        # (B, 8, S, 8, 8) -> (B, S, 32, 8, 8)
+        x = x.permute(0, 2, 1, 3, 4)
+        x = (
+            x.unsqueeze(3)
+            .expand(-1, -1, -1, SUBFRAMES_PER_CONTROL_STEP, -1, -1)
+            .reshape(batch, n_sensors, CAUSAL_FRAMES, height, width)
+        )
+        feat = self.policy_features(x, unit=unit)
+        if squeeze_batch:
+            return feat[0]
+        return feat
+
+    @torch.no_grad()
+    def encode_episode(
+        self,
+        episode_proximity: np.ndarray,
+        *,
+        batch_size: int = 512,
+    ) -> torch.Tensor:
+        """``(T, S, 8, 8)`` or ``(T, S, 4, 8, 8)`` metres -> ``(T, S, feat_dim)``."""
+        packed = self.encode_episode_full(episode_proximity, batch_size=batch_size)
+        key = "embedding" if self.kind == "embedding" else "xyz_m"
+        return packed[key]
+
+    @torch.no_grad()
+    def encode_episode_full(
+        self,
+        episode_proximity: np.ndarray,
+        *,
+        batch_size: int = 512,
+        validity_threshold: float = 0.5,
+    ) -> dict[str, torch.Tensor]:
+        """Same as ``encode_episode`` plus XYZ / validity for the token writer."""
+        values = as_subframe_episode(episode_proximity)
         n_steps, n_sensors = values.shape[:2]
         windows = np.empty(
             (n_steps, n_sensors, CAUSAL_FRAMES, 8, 8), dtype=np.float32
@@ -620,4 +706,37 @@ class SurfaceGeometryEncoder(nn.Module):
                 windows[timestep, sensor_index] = causal_sensor_window(
                     values, timestep, sensor_index
                 )
-        return self.policy_features(windows, unit="closeness")
+        device = next(self.parameters()).device
+        flat = torch.from_numpy(windows).reshape(
+            n_steps * n_sensors, CAUSAL_FRAMES, 8, 8
+        )
+        chunks: list[dict[str, torch.Tensor]] = []
+        for start in range(0, flat.shape[0], int(batch_size)):
+            piece = flat[start : start + batch_size].to(device)
+            raw = self.inner.predict(piece, validity_threshold=validity_threshold)
+            if self.kind == "xyz":
+                xyz_m, valid, probabilities = raw
+                chunks.append(
+                    {
+                        "xyz_m": xyz_m.cpu(),
+                        "valid": valid.cpu(),
+                        "probabilities": probabilities.cpu(),
+                    }
+                )
+            else:
+                embedding, xyz_m, valid, probabilities, reconstruction = raw
+                chunks.append(
+                    {
+                        "embedding": embedding.cpu(),
+                        "xyz_m": xyz_m.cpu(),
+                        "valid": valid.cpu(),
+                        "probabilities": probabilities.cpu(),
+                        "reconstruction": reconstruction.cpu(),
+                    }
+                )
+
+        def _cat(name: str) -> torch.Tensor:
+            tensor = torch.cat([chunk[name] for chunk in chunks], dim=0)
+            return tensor.reshape(n_steps, n_sensors, *tensor.shape[1:])
+
+        return {name: _cat(name) for name in chunks[0]}

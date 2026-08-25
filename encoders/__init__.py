@@ -140,6 +140,8 @@ def load_encoder(
             layout=layout,
             tokens_per_sensor=tokens_per_sensor,
         )
+    kwargs.pop("layout", None)
+    kwargs.pop("tokens_per_sensor", None)
     if kwargs:
         raise TypeError(f"unexpected kwargs for {key}: {sorted(kwargs)}")
     from .surface_geometry import SurfaceGeometryEncoder as _SurfaceGeometryEncoder
@@ -155,6 +157,7 @@ _SURFACE_EXPORTS = {
     "SurfaceEmbeddingEncoder",
     "SurfaceGeometryEncoder",
     "SurfaceProximityEncoder",
+    "as_subframe_episode",
     "causal_sensor_window",
     "depth_to_closeness",
     "load_frozen_proximity_encoder",
@@ -165,12 +168,23 @@ _SURFACE_EXPORTS = {
     "to_causal_closeness",
 }
 
+_PACT_EXPORTS = {
+    "build_pact_encoder",
+    "encode_for_act",
+    "hdf5_proximity_layout",
+    "is_geometry_feature",
+}
+
 
 def __getattr__(name: str):
     if name in _SURFACE_EXPORTS:
         from . import surface_geometry as _sg
 
         return getattr(_sg, name)
+    if name in _PACT_EXPORTS:
+        from . import pact as _pact
+
+        return getattr(_pact, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
@@ -192,6 +206,8 @@ __all__ = [
     "SurfaceEmbeddingEncoder",
     "SurfaceGeometryEncoder",
     "SurfaceProximityEncoder",
+    "as_subframe_episode",
+    "build_pact_encoder",
     "causal_sensor_window",
     "depth_to_closeness",
     "feat_dim_for",
@@ -199,6 +215,9 @@ __all__ = [
     "featurize_torch",
     "list_encoders",
     "load_encoder",
+    "encode_for_act",
+    "hdf5_proximity_layout",
+    "is_geometry_feature",
     "load_frozen_proximity_encoder",
     "load_frozen_surface_embedding_encoder",
     "load_frozen_surface_encoder",

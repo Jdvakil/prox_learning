@@ -114,8 +114,10 @@ You type counts; it reads no files. Example:
   headline. Cause (verified in sampler code): the bar was visible in the avoid-v1
   training source, the cup was placed on the bar's side, and the bar pose barely varied —
   so the 3×-upsampled bows were learnable from vision alone and vanilla learned them.
-  The gate-bar collection (`obstacle_gate_v1`, README §12.2) is the redesign; its
-  numbers may replace the headline only once its own `eval_summary.json` files exist.
+  The gate-bar collection (`obstacle_gate_v1`, README §12.2) is the redesign
+  (v3.1: tall pole snapped onto the TCP line). Its numbers may replace the
+  headline only once its own `eval_summary.json` files exist. Do not collect
+  until the Visible check shows a pole in the doorway and an ~18 cm veer.
 - Multi-seed. Published grid = **one seed, one dataset**.
 - Real robot / hardware skin. Sim only.
 - PACT uses a trained CVAE **encoder** at runtime. Runtime latent `z = 0`. The CVAE

@@ -161,6 +161,113 @@ def test_encode_episode_uses_causal_history_shape():
     episode = np.full((2, 3, 4, 8, 8), 0.12, dtype=np.float32)
     out = enc.encode_episode(episode)
     assert out.shape == (2, 3, 3)
+    pooled = np.full((2, 3, 8, 8), 0.12, dtype=np.float32)
+    out_pooled = enc.encode_episode(pooled)
+    assert out_pooled.shape == (2, 3, 3)
+
+
+def test_as_subframe_repeats_pooled_act_tiles():
+    from encoders.surface_geometry import as_subframe_episode
+
+    pooled = np.ones((5, 40, 8, 8), dtype=np.float32)
+    sf = as_subframe_episode(pooled)
+    assert sf.shape == (5, 40, 4, 8, 8)
+    assert np.allclose(sf[:, :, 0], sf[:, :, 3])
+
+
+def test_encode_pooled_history_shape():
+    enc = load_encoder("surface_embedding", device="cpu")
+    hist = torch.full((8, 2, 8, 8), 0.10)
+    z = enc.encode_pooled_history(hist)
+    assert z.shape == (2, 32)
+    batched = torch.full((3, 4, 2, 8, 8), 0.10)
+    z_b = enc.encode_pooled_history(batched)
+    assert z_b.shape == (3, 2, 32)
+    assert not any(p.requires_grad for p in enc.parameters())
+
+
+def test_encode_for_act_passthrough_and_history():
+    from encoders.pact import encode_for_act
+
+    tokens = torch.randn(2, 40, 32)
+    assert encode_for_act(None, tokens).shape == (2, 40, 32)
+    enc = load_encoder("nearest_surface", device="cpu")
+    hist = torch.full((1, 8, 2, 8, 8), 0.11)
+    xyz = encode_for_act(enc, hist)
+    assert xyz.shape == (1, 2, 3)
+
+
+def test_encode_tokens_writes_hdf5_groups(tmp_path):
+    import h5py
+    from encoders.encode_tokens import encode_episode_file
+    from encoders.surface_geometry import SurfaceGeometryEncoder
+
+    path = tmp_path / "episode_0.hdf5"
+    with h5py.File(path, "w") as handle:
+        handle.attrs["sim"] = True
+        handle.create_dataset("action", data=np.zeros((2, 8), dtype=np.float32))
+        obs = handle.create_group("observations")
+        obs.create_dataset("qpos", data=np.zeros((2, 9), dtype=np.float32))
+        obs.create_dataset(
+            "proximity",
+            data=np.full((2, 2, 8, 8), 0.08, dtype=np.float32),
+        )
+    enc = SurfaceGeometryEncoder(kind="embedding", device="cpu")
+    result = encode_episode_file(
+        path, model=enc, batch_size=8, checkpoint_sha256="deadbeef", overwrite=False
+    )
+    assert result["feature_dim"] == 32
+    with h5py.File(path, "r") as handle:
+        assert handle["observations/proximity_embeddings"].shape == (2, 2, 32)
+        assert handle["observations/proximity_positions"].shape == (2, 2, 3)
+        assert handle.attrs["pact_frontend_schema"] == "pact_surface_embedding_encoder_v1"
+
+
+def test_dataset_reads_precomputed_embeddings(tmp_path):
+    import h5py
+
+    sys.path.insert(0, str(_REPO / "submodules" / "act"))
+    from utils import EpisodicDataset  # noqa: E402
+
+    path = tmp_path / "episode_0.hdf5"
+    with h5py.File(path, "w") as handle:
+        handle.attrs["sim"] = True
+        handle.attrs["pact_surface_encoder_sha256"] = "abc"
+        handle.create_dataset("action", data=np.zeros((4, 8), dtype=np.float32))
+        obs = handle.create_group("observations")
+        obs.create_dataset("qpos", data=np.zeros((4, 9), dtype=np.float32))
+        obs.create_dataset("qvel", data=np.zeros((4, 9), dtype=np.float32))
+        obs.create_dataset(
+            "proximity_embeddings",
+            data=np.ones((4, 40, 32), dtype=np.float32),
+        )
+        imgs = obs.create_group("images")
+        imgs.create_dataset(
+            "exo_camera_1", data=np.zeros((4, 8, 8, 3), dtype=np.uint8)
+        )
+        imgs.create_dataset(
+            "wrist_camera", data=np.zeros((4, 8, 8, 3), dtype=np.uint8)
+        )
+    stats = {
+        "action_mean": np.zeros(8, dtype=np.float32),
+        "action_std": np.ones(8, dtype=np.float32),
+        "qpos_mean": np.zeros(9, dtype=np.float32),
+        "qpos_std": np.ones(9, dtype=np.float32),
+    }
+    ds = EpisodicDataset(
+        [0],
+        str(tmp_path),
+        ["exo_camera_1", "wrist_camera"],
+        stats,
+        num_queries=2,
+        load_proximity=True,
+        proximity_layout="embeddings",
+        n_proximity_sensors=40,
+        proximity_feature_dim=32,
+        expected_proximity_encoder_sha256="abc",
+    )
+    *_, prox = ds[0]
+    assert prox.shape == (40, 32)
 
 
 def test_both_encoders_eat_the_same_pact_tensor():

@@ -7,10 +7,17 @@ Recipe C still lives in README §13; this file is the *why it stalled* and *what
 to change* companion.
 
 **Punchline.** The tensor path is fine. Success stays flat because the method
-fights the data. The paper number is **invisible-cell collision rate**, not
-lift-success. The only published win is `--prox_feature raw` (66% → 40%
-collisions, Fisher p = 0.016). The CLI default `--prox_feature trunk` is a
-**negative control** (66% → 72%).
+fights the data. The paper number is **invisible-cell bar-hit**, not
+lift-success.
+
+**Now (2026-08-24):** do not collect gate-bar v3.0. Preflight bows were 1–7 cm
+around a short peg; videos looked like a normal pick. v3.1 puts a 44 cm pole
+on the live TCP line (~18 cm bow). Run the **visible** check first
+(`FrankaSkinHybridGateBarVisibleCheckConfig`) — README §12.2. The July 66%→40%
+grid is a published number on deleted data; avoid-v1 failed. The next honest
+test is gate-bar v3.1.
+
+The CLI default `--prox_feature trunk` is a **negative control**.
 
 ---
 
