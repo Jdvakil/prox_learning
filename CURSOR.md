@@ -23,6 +23,51 @@ Newest session at the top.
 
 ---
 
+## 2026-08-25 21:58 MDT — PACT-raw train running
+
+- **When:** 2026-08-25 ~21:58 America/Denver. User: "running it now."
+- **What:** `imitate_episodes.py` with `--use_proximity --prox_feature raw
+  --prox_layout per_sensor`. PID 1841920, GPU ~3.5 GB. Dir
+  `submodules/act/ckpts/pact_place_corridor_v5/20260825_215846_pact_place_corridor_raw_s0/`.
+  Wandb `pact_place_corridor_raw_s0`. Epochs already ticking (~1.75 s/ep).
+- **Do not:** kill, start a second GPU job, bake encoder tokens, or
+  `imitate_episodes.py --eval`.
+- **After finish:** eval both vanilla + this dir with
+  `eval_act_place_corridor.py --temp_agg_off`.
+
+---
+
+## 2026-08-25 21:57 MDT — vanilla ACT done; PACT-raw is next
+
+- **When:** 2026-08-25 ~21:57 America/Denver. User: "training done, what next."
+- **Vanilla:** 2000/2000 finished 17:13 MDT. Best val loss **0.061355 @ epoch
+  1853**. Dir
+  `submodules/act/ckpts/pact_place_corridor_v5/20260825_161821_act_place_corridor_s0/`
+  (`policy_best.ckpt`, `policy_last.ckpt`). No `prox_config.json` (cameras
+  only). GPU idle. Wandb `act_place_corridor_s0`.
+- **Next (user runs):** PACT-raw, same hypers, `--use_proximity
+  --prox_feature raw --prox_layout per_sensor`. Not the 32-d surface
+  encoder. Do not eval yet (one GPU). Do not `imitate_episodes.py --eval`.
+- **After PACT-raw:** `eval_act_place_corridor.py --temp_agg_off` on both
+  ckpt dirs. Worktree already `977acd6`.
+
+---
+
+## 2026-08-25 16:19 MDT — vanilla ACT corridor train running
+
+- **When:** 2026-08-25 ~16:18 America/Denver. User: "okay, it is training."
+- **What:** `imitate_episodes.py` vanilla ACT (no `--use_proximity`). PID
+  1793684, GPU ~2.5 GB. Ckpt dir
+  `submodules/act/ckpts/pact_place_corridor_v5/20260825_161821_act_place_corridor_s0/`.
+  Wandb `act_place_corridor_s0`. ~1.65 s/epoch, 2000 epochs → ~55 min.
+- **Not this job:** surface encoder (already done). PACT-raw. Embedding tokens.
+- **Do not:** kill tmux, start a second GPU train, bake tokens, or
+  `imitate_episodes.py --eval` on a future PACT ckpt.
+- **After finish:** PACT-raw cmd in README §13.1. Then eval
+  `eval_act_place_corridor.py --temp_agg_off`.
+
+---
+
 ## 2026-08-25 15:37 MDT — test probe agrees with trainer
 
 - **When:** 2026-08-25 ~15:37 America/Denver. User ran `encoders.probe
