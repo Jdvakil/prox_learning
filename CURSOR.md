@@ -23,6 +23,48 @@ Newest session at the top.
 
 ---
 
+## 2026-08-26 16:37 MDT — fast vanilla eval running (n=20)
+
+- **When:** 2026-08-26 ~16:37 America/Denver. User: "ran the evaluation."
+- **Job:** metrics-only vanilla, PID 9084. Wrist camera only. ~37 s/ep
+  (was ~16 min). RSS ~6 GB, GPU ~1 GB. 4/20 done at check. No
+  `eval_summary.json` yet. `episodes.jsonl` live.
+- **Partial (not a result):** 0/4 place-success, 2/4 bar hit.
+- **Next:** let n=20 finish, then PACT-raw n=20. Same flags, raw ckpt dir.
+
+---
+
+## 2026-08-26 15:26 MDT — kill slow eval; metrics-only fast path
+
+- **When:** 2026-08-26 ~15:26 America/Denver. User: eval too slow for a
+  week; will kill processes; needs a better way.
+- **Why:** Place-corridor eval reused the datagen pipeline: 40 sensors at
+  60 Hz, keep every RGB/depth frame until the house ends, reload the 321 MB
+  ACT net every episode. ~16 min/ep, OOM at ~34/50. That is not the policy
+  being "bad"; it is eval cost.
+- **What:** `eval_act_place_corridor.py` default is now metrics-only:
+  skip MP4/HDF5, drop cached frames, load policy once, vanilla strips skin
+  cameras, PACT skin at policy rate not 60 Hz. Writes `episodes.jsonl` each
+  rollout. `--save_trajectories` restores the old path.
+- **Week path:** encoder already trained; **do not** bake tokens this week.
+  Headline = vanilla vs PACT-raw. n=20 both arms, then n=50 if numbers move.
+- **User:** kill the old eval, then run README §13.1 fast eval cmds.
+
+---
+
+## 2026-08-26 15:23 MDT — vanilla eval 16/50, RAM climbing
+
+- **When:** 2026-08-26 ~15:23 America/Denver. User: "updates."
+- **Job:** same vanilla eval PID 1898751, ~4h37m. Episode **16/50** in
+  progress. ~16.3 min/ep. GPU ~1.7 GB. No `eval_summary.json`.
+- **Partial (not a result):** 16 done, place-success **2/16**. Bar-hit not
+  in `running_log` (stdout only). Videos not landing in output dir.
+- **RAM:** RSS **32 GB** (49%). Available ~23 GB. Swap 1.8/2.0 Gi. Same
+  leak that SIGKILL'd the last run at 34/50. Linear extra ~2 GB/ep will
+  likely die again before 50. Do not start PACT eval on this GPU.
+
+---
+
 ## 2026-08-26 10:47 MDT — vanilla eval killed at 34/50; user restarted
 
 - **When:** 2026-08-26 ~10:47 America/Denver. User: "it was killed... restarting."

@@ -1679,17 +1679,30 @@ python imitate_episodes.py \
     --use_proximity --prox_feature raw --prox_layout per_sensor \
     --wandb_run_name pact_place_corridor_raw_s0
 
-# 3. Eval. PYTHONPATH must put the worktree FIRST. Horizon 800 (demos are 244–635).
-#    Never imitate_episodes.py --eval on the PACT ckpt.
+# 3. Eval. Metrics-only by default (no MP4/HDF5). PYTHONPATH worktree FIRST.
+#    Vanilla skips 40-sensor 60 Hz depth. PACT still renders 8×8 skin at policy rate.
+#    Start n=20 (~hour-scale). Then n=50. Never imitate_episodes.py --eval.
 PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
-    --ckpt_dir ckpts/pact_place_corridor_v5/<dated>_<run> \
-    --output_dir /home/jaydv/code/prox_learning/eval_output/<run> \
-    --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
+    --ckpt_dir ckpts/pact_place_corridor_v5/20260825_161821_act_place_corridor_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_vanilla_s0 \
+    --num_rollouts 20 --chunk_size 50 --temp_agg_off --task_horizon 800
+
+PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
+MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
+    --ckpt_dir ckpts/pact_place_corridor_v5/20260825_215846_pact_place_corridor_raw_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_raw_s0 \
+    --num_rollouts 20 --chunk_size 50 --temp_agg_off --task_horizon 800
 ```
 
 Headline numbers: place-success and `bar_hit_rate` (arm vs `pact_intrusion_*`)
-in `eval_summary.json`. `--temp_agg_off` is required.
+in `eval_summary.json`. Progress also lands in `episodes.jsonl` after each
+rollout so a kill is not a total loss. `--temp_agg_off` is required. The 32-d
+surface encoder is **not** this eval; that is a later ablation.
+
+Place-corridor eval is **not** the obstacle `--eval_cell` loop. The bar is in
+the sampler. Old ~16 min/ep + OOM was the datagen path (40 sensors × 60 Hz,
+full histories, reload 321 MB each episode). Metrics-only eval is the week path.
 
 ### The three eval cells
 

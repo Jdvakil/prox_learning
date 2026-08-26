@@ -298,8 +298,8 @@ pick-and-place rows. Wrist RGB only. Scene XML `pact_place_corridor_v2`.
 Commands: README §13.1. Train vanilla vs `--use_proximity --prox_feature raw
 --prox_layout per_sensor`, chunk 50, no image dropout. Eval
 `eval_act_place_corridor.py --temp_agg_off`. Metric: place-success +
-`bar_hit_rate`. Local `eval_summary.json` only — coauthor win is not a paper
-number until we rerun it.
+`bar_hit_rate`. Use the metrics-only eval (default): n=20 then n=50. Local
+`eval_summary.json` only — coauthor win is not a paper number until we rerun it.
 
 Local 32-d surface embedding (2026-08-25): compressor gate passed on 15 test
 rows (100% validity, 20.6 mm XYZ, recon pixel 87/95%). That is a reconstruction
