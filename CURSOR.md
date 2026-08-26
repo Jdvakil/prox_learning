@@ -23,6 +23,39 @@ Newest session at the top.
 
 ---
 
+## 2026-08-26 10:47 MDT — vanilla eval killed at 34/50; user restarted
+
+- **When:** 2026-08-26 ~10:47 America/Denver. User: "it was killed... restarting."
+- **Killed run:** started 01:11, SIGKILL ~10:30 after **34/50** rollouts.
+  ~16 min/ep. No `eval_summary.json`. Swap was 1.9/2.0 Gi — likely OOM.
+  Output dir only configs + `running_log.log` (no kept h5/mp4 in that folder).
+- **Restart:** same vanilla cmd, same dir, from episode 0. PID 1898751.
+  GPU python attached. Do not kill.
+- **Risk:** same 50-ep + `save_videos=True` may OOM again near ~30+. Watch
+  `free -h`. If it dies, next run needs videos off (no CLI flag yet).
+- **ETA:** ~13 h for 50 eps if it lives. Then PACT-raw eval.
+
+---
+
+## 2026-08-26 01:07 MDT — both corridor trains done; eval next
+
+- **When:** 2026-08-26 ~01:07 America/Denver. User: "both jobs are done."
+  GPU idle.
+- **Vanilla:** `20260825_161821_act_place_corridor_s0` — best val 0.061355
+  @ epoch 1853. No `prox_config.json`.
+- **PACT-raw:** `20260825_215846_pact_place_corridor_raw_s0` — finished
+  22:55 MDT. Best val 0.067665 @ epoch 1916. `prox_config.json` present
+  (raw / per_sensor / min). Wandb `nle5g3e0`.
+- **Next (user runs, serial, one GPU):** `eval_act_place_corridor.py
+  --temp_agg_off` on each dir, 50 rollouts, horizon 800. Worktree
+  `977acd6` already on disk. Place-corridor has **no** `--eval_cell`
+  loop (bar is in the sampler). Headline: `eval_summary.json`
+  place-success + `bar_hit_rate`. Never `imitate_episodes.py --eval`.
+- **Not this:** surface-embedding ACT. Encoder bake still blocked on
+  split-manifest wire.
+
+---
+
 ## 2026-08-25 21:58 MDT — PACT-raw train running
 
 - **When:** 2026-08-25 ~21:58 America/Denver. User: "running it now."
