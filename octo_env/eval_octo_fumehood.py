@@ -35,6 +35,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 
 from fumehood_env.cluttered_fumehood_configs import FrankaSkinClutteredFumehoodConfig
 
+N_SENSORS = 40           # must match the RLDS builder
 DEAD_PIXEL_M = 0.005
 FAR_M = 4.0
 
@@ -82,14 +83,27 @@ class OctoRemotePolicy(InferencePolicy):
             img = (img * 255).astype(np.uint8) if img.max() <= 1.0 else img.astype(np.uint8)
         return cv2.resize(img, (hw[1], hw[0]), interpolation=cv2.INTER_AREA)
 
+    @staticmethod
+    def _sensor_names(obs) -> list[str]:
+        """Live observations expose each proximity sensor as a TOP-LEVEL key named
+        after its camera (ProximityDepthBufferSensor is constructed with
+        uuid=camera_name); only the recorded h5 groups them under obs/proximity.
+        Reading obs["proximity"] therefore found nothing and the state silently
+        stayed 9-dim, which the model rejected as (1,2,9) against (1,2,49).
+        Sorted by name to match the dataset builder's sensor order exactly."""
+        return sorted(k for k in obs
+                      if k.startswith("link") and "sensor_" in k
+                      and not k.endswith(("_viz_rgb", "_viz_depth_turbo")))
+
     def _proximity_vector(self, obs):
-        prox = obs.get("proximity") or {}
-        names = sorted(prox.keys())
-        if not names:
-            return np.zeros(0, dtype=np.float32)
+        names = self._sensor_names(obs)
+        if len(names) != N_SENSORS:
+            raise RuntimeError(
+                f"expected {N_SENSORS} proximity sensors in the observation, found "
+                f"{len(names)}: {names[:5]}{'...' if len(names) > 5 else ''}")
         vals = []
         for n in names:
-            d = np.asarray(prox[n]).reshape(-1)
+            d = np.asarray(obs[n]).reshape(-1)
             d = d[d > DEAD_PIXEL_M]
             vals.append(float(d.min()) if d.size else FAR_M)
         return np.asarray(vals, dtype=np.float32)
