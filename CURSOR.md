@@ -23,6 +23,85 @@ Newest session at the top.
 
 ---
 
+## 2026-08-26 22:31 MDT — PACT-raw n=20 done; both smoke evals in
+
+- **When:** 2026-08-26 22:08 America/Denver finish. User: "updates." GPU idle.
+- **PACT-raw n=20:** place-success **7/20 (35%)**, bar_hit **4/20 (20%)**,
+  collision-free 16/20 (80%). `use_proximity=true`. ~15 min/ep, ~5 h wall.
+  Files: `eval_output/place_corridor_raw_s0/eval_summary.json`.
+- **Vs vanilla n=20:** success 15% vs 35%, bar 30% vs 20%. Fisher two-sided
+  p = 0.27 (success) and 0.72 (bar). **Not a paper number.**
+- **Wrote:** `experiments.md` hallway row as local n=20 smoke, not a cite.
+- **Next if more power:** same eval, `--num_rollouts 50`.
+
+---
+
+## 2026-08-26 17:08 MDT — PACT-raw still on episode 0
+
+- **When:** 2026-08-26 ~17:08 America/Denver. User: "updates."
+- **Job:** PID 14153, ~11 min, CPU ~100%, GPU ~13%, RSS 6 GB (flat). Log last
+  write 16:58:32. Still `collected=0/20`. Not hung: first 800-step rollout
+  with 40 × 8×8 renders. ~11 min/ep ⇒ n=20 ~3–4 h. No jsonl yet.
+- **Do not kill.** Vanilla was fast because skin cameras were stripped.
+
+---
+
+## 2026-08-26 17:02 MDT — ACT vs PACT headline row
+
+- **When:** 2026-08-26 ~17:02 America/Denver. User: add PACT vs ACT; those are the headline numbers.
+- **Why:** Outsider table buried 66% vs 40% as "cameras vs cameras + skin".
+- **What:** `experiments.md` now defines ACT/PACT up top. First table row is **ACT vs PACT (headline)** with 66% vs 40% hidden-bar crashes. Dropped the duplicate main-test row.
+- **Not done:** User runs nothing.
+
+
+## 2026-08-26 16:59 MDT — PACT-raw n=20 eval running
+
+- **When:** 2026-08-26 ~16:58 America/Denver. User: same tmux.
+- **Job:** PID 14153. Skin ON (`proximity ON | (40, 8, 8)`). 41 cameras.
+  RSS ~6 GB. Episode 0/20. Do not kill. Then compare both
+  `eval_summary.json`. n=20 is smoke.
+
+---
+
+## 2026-08-26 16:56 MDT — simpler descriptions for outsiders
+
+- **When:** 2026-08-26 ~16:56 America/Denver. User: make description simpler for people who do not know the project.
+- **Why:** Names like PACT, CVAE, AUC, trunk were blocking a non-expert read.
+- **What:** Rewrote `experiments.md` names + descriptions in plain words. Kept x% vs y% results. Short intro: arm, cameras, 40-sensor skin.
+- **Not done:** User runs nothing.
+
+
+## 2026-08-26 16:56 MDT — vanilla n=20 eval done
+
+- **When:** 2026-08-26 16:52 America/Denver. GPU idle. Prompt back.
+- **Vanilla (cameras only, n=20, ~49 s/ep mean, 16 min wall):**
+  place-success **3/20 (15%)**, bar_hit **6/20 (30%)**, collision-free
+  14/20 (70%). `use_proximity=false`. Sides L9/R11. Success eps 8,17,19.
+  Files: `eval_output/place_corridor_vanilla_s0/eval_summary.json` +
+  `episodes.jsonl`.
+- **Not a paper number.** n=20 smoke. Do not paste into `paper.md` /
+  `experiments.md` as a result.
+- **Next:** PACT-raw n=20. Same eval flags, raw ckpt dir.
+
+---
+
+## 2026-08-26 16:49 MDT — experiments.md results as x% vs y%
+
+- **When:** 2026-08-26 ~16:49 America/Denver. User: results need more numerical x% vs y% plus some text.
+- **Why:** First pass was STE prose with few paired rates.
+- **What:** Rewrote the Results column in `experiments.md`. Same tests. Each result is a comparison plus a short note. Numbers still from README §14 / STATUS / PACT / paper.
+- **Not done:** User runs nothing.
+
+
+## 2026-08-26 16:44 MDT — experiments.md one-line table
+
+- **When:** 2026-08-26 ~16:44 America/Denver. User: table of experiment / description / results, one-liner, ASD-STE100, write `experiments.md`.
+- **Why:** Docs already hold the numbers (`README.md` §14, `STATUS.md`, `PACT.md`, `paper.md`, `CURSOR.md`). Need one short table.
+- **What:** New `experiments.md`. README intro + routing row point at it. Full numbers stay in README §14.
+- **How:** STE sentences. Completed tests plus three incomplete rows (place-corridor, gate-bar collect, test-time blur). No new claims.
+- **Not done:** User runs nothing. Do not treat place-corridor partial eval as a result.
+
+
 ## 2026-08-26 16:37 MDT — fast vanilla eval running (n=20)
 
 - **When:** 2026-08-26 ~16:37 America/Denver. User: "ran the evaluation."

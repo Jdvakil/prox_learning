@@ -21,7 +21,8 @@ policy with a raw-skin token collides in **40%** (Fisher p = .016). Success rate
 Everything else in this repo is either the machinery that produced that number, or a follow-up
 that did not work.
 
-For the plain-language version of the science, read **`STATUS.md`**. For the latest written
+For the plain-language version of the science, read **`STATUS.md`**. For a one-line
+table of each test, read **`experiments.md`**. For the latest written
 report, read **`reports/2026-08-14/report.md`**. For why PACT success is flat and how to
 beat ACT on **collision avoidance**, read **`PACT.md`**. For a copy-paste brief for a
 paper-writing agent (claim fence), read **`paper.md`**. This file is the manual: what
@@ -56,6 +57,7 @@ every file is, what to run, and what will bite you.
 | I want to… | run | section |
 |---|---|---|
 | understand the result in plain English | read `STATUS.md` | — |
+| see each test in one line | read `experiments.md` | [14](#14-every-number-in-one-place) |
 | why PACT success is flat / beat ACT on collisions | read `PACT.md` | [13](#13-recipe-c--act-and-pact) |
 | feed a paper-writing agent (claim fence) | read `paper.md` | — |
 | read the latest progress report | `reports/2026-08-14/report.md` | — |
