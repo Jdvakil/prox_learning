@@ -23,6 +23,20 @@ Newest session at the top.
 
 ---
 
+## 2026-08-27 14:07 MDT — docs: hallway n=50 ACT vs PACT-raw
+
+- **When:** 2026-08-27 ~14:07 America/Denver. User: write n=50 into markdown; they push.
+- **Result:** ACT 14/50 (28%) place, 17/50 (34%) bar, 33/50 collision-free.
+  PACT-raw 21/50 (42%) place, 18/50 (36%) bar, 32/50 collision-free.
+  Fisher success p = 0.21, bar p = 1.0. No safety win. Success gap noise.
+  n=20 smoke was luck. Files: `eval_output/place_corridor_vanilla_s0_n50/` and
+  `place_corridor_raw_s0_n50/`.
+- **Wrote:** `experiments.md`, README §13.1 + §14 + decision log, `PACT.md` §8,
+  `STATUS.md` header, `paper.md` do-not-cite. Headline stays 66→40.
+- **Not done:** user commits and pushes. Encoder bake and gate-bar still parked.
+
+---
+
 ## 2026-08-27 00:52 MDT — PACT n=50 RAM: leave running
 
 - **When:** 2026-08-27 ~00:52 America/Denver. User: do not let RAM kill overnight PACT n=50.

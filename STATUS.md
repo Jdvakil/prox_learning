@@ -1,16 +1,17 @@
 # STATUS — prox_learning
 
-**Date:** 2026-08-26 · **Branch:** `main` · **Machine:** one RTX 4090, 62 GB RAM
+**Date:** 2026-08-27 · **Branch:** `main` · **Machine:** one RTX 4090, 62 GB RAM
 
 This file is the plain-English status of the project: what we are trying to prove, what we built, what
 the numbers say, what went wrong, and what to do next. It is written to be readable by someone who has
 never seen this repo.
 
-**Update 2026-08-26 (hallway smoke, not a paper number).** We trained cameras-only (ACT) and
-cameras-plus-skin (PACT-raw) on 152 coauthor hallway pick-and-place demos and tested each 20 times.
-Place success **15% vs 35%**. Bar hits **30% vs 20%**. Fisher p = 0.27 and 0.72 — luck can still
-explain the gap. The published headline is still the 2026-07-05 hidden-bar crash cut **66% vs 40%**
-(n=50, p = 0.016). Details: `experiments.md`, README §13.1.
+**Update 2026-08-27 (hallway n=50, not a paper number).** We trained cameras-only (ACT) and
+cameras-plus-skin (PACT-raw) on 152 coauthor hallway pick-and-place demos and tested each 50 times.
+Place success **28% vs 42%** (Fisher p = 0.21). Bar hits **34% vs 36%** (p = 1.0). The skin did not
+cut bar hits. The extra successful places are still luck. An earlier n=20 smoke (15% vs 35%, bar
+30% vs 20%) was noise, especially on bar. The published headline is still the 2026-07-05 hidden-bar
+crash cut **66% vs 40%** (n=50, p = 0.016). Details: `experiments.md`, README §13.1.
 
 **How to read it.** Sections 1–5 are the whole story and need no background. Section 6 onward gets more
 detailed. Section 11 is file paths and commands — skip it unless you are going to run something.

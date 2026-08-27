@@ -298,10 +298,11 @@ pick-and-place rows. Wrist RGB only. Scene XML `pact_place_corridor_v2`.
 Commands: README §13.1. Train vanilla vs `--use_proximity --prox_feature raw
 --prox_layout per_sensor`, chunk 50, no image dropout. Eval
 `eval_act_place_corridor.py --temp_agg_off`. Metric: place-success +
-`bar_hit_rate`. Local n=20 smoke (2026-08-26): place-success **15% vs 35%**
-(ACT vs PACT-raw), bar hit **30% vs 20%**, Fisher p = 0.27 / 0.72. Direction
-matches the coauthor story. **Not a paper number.** n=50 still optional. Files:
-`eval_output/place_corridor_vanilla_s0/` and `place_corridor_raw_s0/`.
+`bar_hit_rate`. Local n=50 (2026-08-27): place-success **28% vs 42%**
+(ACT vs PACT-raw, Fisher p = 0.21), bar hit **34% vs 36%** (p = 1.0).
+**No safety win.** Success gap is noise. **Not a paper number.** n=20 smoke
+(15% vs 35%, bar 30% vs 20%) was luck. Files:
+`eval_output/place_corridor_vanilla_s0_n50/` and `place_corridor_raw_s0_n50/`.
 
 Local 32-d surface embedding (2026-08-25): compressor gate passed on 15 test
 rows (100% validity, 20.6 mm XYZ, recon pixel 87/95%). That is a reconstruction
