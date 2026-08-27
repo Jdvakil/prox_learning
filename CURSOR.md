@@ -23,6 +23,29 @@ Newest session at the top.
 
 ---
 
+## 2026-08-27 00:52 MDT — PACT n=50 RAM: leave running
+
+- **When:** 2026-08-27 ~00:52 America/Denver. User: do not let RAM kill overnight PACT n=50.
+- **Live:** PID 65821. Metrics-only on (`cameras=41`, proximity ON). Tree RSS **8.1 GB**. MemAvailable **53 GB**. GPU 2.1 / 24 GB. Same ~6 GB footprint as n=20. Did **not** restart.
+- **Watch:** `eval_output/place_corridor_raw_s0_n50/rss_watch.log` every 5 min.
+- **Code (next run only):** `eval_act_place_corridor.py` now drops `task.sensor_suite` in metrics-only `get_history` so 50 eps cannot pin 50 camera suites. Current PID already imported the old hooks.
+- **Not done:** no sudo, cannot add swap or lower oom_score_adj.
+
+---
+
+## 2026-08-27 00:43 MDT — docs: local n=20 hallway ACT vs PACT-raw
+
+- **When:** 2026-08-27 ~00:43 America/Denver. User: update markdown including
+  `experiments.md`, then next steps.
+- **What:** Wrote the 2026-08-26 n=20 smoke into `experiments.md`, README
+  §13.1 + §14 + decision log, `PACT.md` §8, `STATUS.md` header, `paper.md`
+  do-not-cite. Numbers: ACT 15% place / 30% bar vs PACT-raw 35% / 20%;
+  Fisher p = 0.27 / 0.72. Fence: not a paper number; 66→40 stays headline.
+- **Next (user):** optional `--num_rollouts 50` for power (PACT ~13 h);
+  park encoder bake and gate-bar collect.
+
+---
+
 ## 2026-08-26 22:31 MDT — PACT-raw n=20 done; both smoke evals in
 
 - **When:** 2026-08-26 22:08 America/Denver finish. User: "updates." GPU idle.

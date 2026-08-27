@@ -1636,9 +1636,10 @@ Source: HuggingFace `Lundii/pact_place_corridor_v5`, cloned to
 schema, not the MJCF version. Panel from left or right at the fumehood mouth.
 `recovery.json` still says `conversion_authorized: false` — that is the
 coauthor freeze gate (`next_action: run_verify_pact_place_recovery_keys`);
-this checkout converts anyway so we can train. Do **not** paste coauthor
-"PACT beats ACT" numbers into `paper.md` until a local `eval_summary.json`
-exists.
+this checkout converts anyway so we can train. Local n=20
+`eval_summary.json` files exist (2026-08-26). They are **smoke**, not a
+paper number. Do **not** paste coauthor "PACT beats ACT" or this n=20 gap
+into `paper.md` until n=50 (or a pre-registered n) and Fisher p < 0.05.
 
 Eval env is **not** on molmospaces `main`. Pin a worktree of
 `977acd6719a8c05b688d3e70da356d61dd32d259` (first commit with
@@ -1697,14 +1698,21 @@ MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
     --num_rollouts 20 --chunk_size 50 --temp_agg_off --task_horizon 800
 ```
 
-Headline numbers: place-success and `bar_hit_rate` (arm vs `pact_intrusion_*`)
-in `eval_summary.json`. Progress also lands in `episodes.jsonl` after each
-rollout so a kill is not a total loss. `--temp_agg_off` is required. The 32-d
-surface encoder is **not** this eval; that is a later ablation.
+**Local n=20 (2026-08-26, metrics-only eval).** Not a paper number.
 
+| arm | ckpt dir | place-success | bar hit | collision-free | wall clock |
+|---|---|---|---|---|---|
+| ACT (cameras) | `20260825_161821_act_place_corridor_s0` | **3/20 (15%)** | **6/20 (30%)** | 14/20 (70%) | ~16 min (~49 s/ep) |
+| PACT-raw (skin) | `20260825_215846_pact_place_corridor_raw_s0` | **7/20 (35%)** | **4/20 (20%)** | 16/20 (80%) | ~5.2 h (~15.5 min/ep) |
+
+Fisher two-sided: success p = 0.27, bar-hit p = 0.72. Summaries:
+`eval_output/place_corridor_vanilla_s0/eval_summary.json` and
+`eval_output/place_corridor_raw_s0/eval_summary.json`. PACT is slow because
+each step renders 40 × 8×8 skin cameras (~13 h for n=50). Vanilla strips
+those cameras. n=50 is optional power, not required to have a local smoke.
+`--temp_agg_off` is required. The 32-d surface encoder is **not** this eval.
 Place-corridor eval is **not** the obstacle `--eval_cell` loop. The bar is in
-the sampler. Old ~16 min/ep + OOM was the datagen path (40 sensors × 60 Hz,
-full histories, reload 321 MB each episode). Metrics-only eval is the week path.
+the sampler. Old ~16 min/ep + OOM was the datagen path (40 sensors × 60 Hz).
 
 ### The three eval cells
 
@@ -1812,6 +1820,8 @@ High-leverage next experiments live in **`PACT.md`** (do these, not another trun
 | Blur saturation | σ = 2 removes ~98% of fine detail | `blur_sweep_preview.png` |
 | Test throughput | 3.56 min/rollout over 225 rollouts | blur grid |
 | Test memory | 8 GB base + 0.5 GB/rollout | measured |
+| Place-corridor local n=20, ACT vs PACT-raw | success **15% vs 35%**; bar hit **30% vs 20%**; Fisher p = 0.27 / 0.72 | 2026-08-26 smoke; **not a paper number** |
+| Place-corridor eval time | ACT ~49 s/ep; PACT-raw ~15.5 min/ep (40 × 8×8 renders) | same eval |
 
 ---
 
@@ -1930,6 +1940,10 @@ Compressed history. The full narrative for the most recent stretch is in `STATUS
   (`FrankaSkinHybridGateBarVisibleCheckConfig`). Blind straight hits the pole; fixed-side bow
   hits the other half. `bar_hit_rate` is the metric. Headline arms train at chunk 50 with no
   image dropout; eval adds `--eval_sampler gate`.
+- **Place-corridor local n=20 (2026-08-26).** Coauthor `pact_place_corridor_v5`, 152 demos,
+  vanilla vs PACT-raw, metrics-only eval, `--temp_agg_off`. Place-success 15% vs 35%,
+  bar hit 30% vs 20% (Fisher p = 0.27 / 0.72). Direction matches the coauthor story.
+  **Not a paper number.** n=50 still optional. Do not replace the 2026-07-05 66→40 grid.
 
 ### Unresolved
 

@@ -118,6 +118,11 @@ You type counts; it reads no files. Example:
   (v3.1: tall pole snapped onto the TCP line). Its numbers may replace the
   headline only once its own `eval_summary.json` files exist. Do not collect
   until the Visible check shows a pole in the doorway and an ~18 cm veer.
+- Place-corridor / `pact_place_corridor_v5` local n=20 (2026-08-26):
+  place-success 15% vs 35%, bar hit 30% vs 20%, Fisher p = 0.27 / 0.72.
+  **Do not cite.** Do not replace the 2026-07-05 66→40 grid. n=50 does not
+  exist yet. Coauthor “PACT beats ACT” on this task is still unreproduced
+  at paper n.
 - Multi-seed. Published grid = **one seed, one dataset**.
 - Real robot / hardware skin. Sim only.
 - PACT uses a trained CVAE **encoder** at runtime. Runtime latent `z = 0`. The CVAE
