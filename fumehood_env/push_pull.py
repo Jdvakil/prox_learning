@@ -195,8 +195,7 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     # Searched in order; the first fully feasible combination wins, so the
     # leading entries are the ones that make the nicest demonstration.
     MIN_PUSH = 0.05                      # never command a shorter push than this
-    MAX_PATH_CHECKS = 16                 # chain-check budget, per direction pass
-    STAGE1_PER_DIR = 60                  # waypoint checks kept per direction
+    MAX_PATH_CHECKS = 24                 # chain-check budget, per direction pass
     _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
     _LIFTS = (0.030, 0.0)                # approach height above contact
     _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
@@ -326,23 +325,10 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
             retreat = _translated(push_end, [-u[0] * 0.05, -u[1] * 0.05, pc.retreat_z])
             combos.append((u, dist, standoff, yaw, approach, contact, push_end, retreat))
 
-        # Stage 1: the four waypoints only. Checking all 1008 costs 16 batched
-        # solver calls per episode, which is where the long runs were dying; cap
-        # it per direction instead, so the budget shrinks without the drawn
-        # direction losing its share to the ones that stretch the arm less.
-        base_xy0 = self.task.env.current_robot.robot_view.base.pose[:2, 3]
-        reach_all = np.array([max(float(np.linalg.norm(q[:2, 3] - base_xy0)) for q in c[4:])
-                              for c in combos])
-        keep = []
-        for u in self._direction_candidates(u0):
-            grp = [i for i, c in enumerate(combos) if np.allclose(c[0], u, atol=1e-9)]
-            grp.sort(key=lambda i: reach_all[i])
-            keep += grp[:self.STAGE1_PER_DIR]
-        keep = np.array(sorted(keep))
-
-        ends = np.stack([p for i in keep for p in combos[i][4:]])
-        ends_ok = np.zeros(len(combos), dtype=bool)
-        ends_ok[keep] = self._feasible_mask(ends).reshape(len(keep), 4).all(axis=1)
+        # Stage 1: the four waypoints only. Cheap enough to run over the whole
+        # grid, and it discards the great majority before the path check.
+        ends = np.stack([p for c in combos for p in c[4:]])
+        ends_ok = self._feasible_mask(ends).reshape(len(combos), 4).all(axis=1)
 
         # Order survivors by how far the arm has to stretch, least first: the
         # least-extended option is the one most likely to track cleanly.
@@ -468,11 +454,6 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     """Grasp, drag along the bench toward the mouth (small lift to break
     friction, no transport height), release, retreat."""
 
-    DRAG_SCALES = (1.0, 0.85, 0.7, 0.55, 0.4)
-    PREGRASP_ZS = (0.04, 0.03, 0.02)
-    RETREAT_ZS = (0.06, 0.10, 0.04)
-    MAX_PATH_CHECKS = 12
-
     def get_all_phases(self):
         """Without this the drag segment - the only one that distinguishes a
         pull from a pick - records phase -1 in the observation stream."""
@@ -493,45 +474,25 @@ class PullPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         start_ee = self.task.env.current_robot.robot_view.get_move_group(
             gripper_mg_id).leaf_frame_to_world
 
-        # Three fixed magnitudes were not enough: the pregrasp offset and the
-        # retreat height were hardcoded, and a short hood has room for neither.
-        # Search them the way the push policy searches its waypoints, longest
-        # drag first so the demonstration stays as close to the drawn goal as
-        # the arm allows.
-        combos = []
-        for scale in self.DRAG_SCALES:
-            for pre_z in self.PREGRASP_ZS:
-                for ret_z in self.RETREAT_ZS:
-                    poses = {
-                        "pregrasp": _translated(anchor, [0.0, 0.0, pre_z]),
-                        "grasp": anchor,
-                        "drag_end": _translated(anchor, [d[0] * scale, d[1] * scale,
-                                                         pc.drag_lift]),
-                    }
-                    poses["retreat"] = _translated(poses["drag_end"], [0.0, 0.0, ret_z])
-                    combos.append((scale, poses))
-
-        ends = np.stack([q for _, poses in combos
-                         for q in (poses["pregrasp"], poses["grasp"],
-                                   poses["drag_end"], poses["retreat"])])
-        ok = PushPlannerPolicy._feasible_mask(self, ends).reshape(len(combos), 4).all(axis=1)
-
-        for idx in np.flatnonzero(ok)[:self.MAX_PATH_CHECKS]:
-            scale, poses = combos[int(idx)]
+        for scale in (1.0, 0.75, 0.5):
+            poses = {
+                "pregrasp": _translated(anchor, [0.0, 0.0, pc.pregrasp_z_offset]),
+                "grasp": anchor,
+                "drag_end": _translated(anchor, [d[0] * scale, d[1] * scale, pc.drag_lift]),
+            }
+            poses["retreat"] = _translated(poses["drag_end"], [0.0, 0.0, pc.retreat_z])
             chain = [start_ee, poses["pregrasp"], poses["grasp"],
                      poses["drag_end"], poses["retreat"]]
-            if PushPlannerPolicy._trackable(self, chain):
+            path = list(chain[1:])
+            for a, b in zip(chain[:-1], chain[1:]):
+                path += PushPlannerPolicy._interpolate(a, b, 4)
+            if PushPlannerPolicy._feasible_mask(self, np.stack(path)).all():
                 new_goal = list(tc.pickup_obj_goal_pose)
                 new_goal[0] = float(start[0] + d[0] * scale)
                 new_goal[1] = float(start[1] + d[1] * scale)
                 tc.pickup_obj_goal_pose = new_goal
-                log.info(f"[Pull] drag_scale={scale:.2f} "
-                         f"ends-ok={int(ok.sum())}/{len(combos)}")
                 return poses
-        raise ValueError(
-            f"no trackable drag path: {len(combos)} candidates, "
-            f"{int(ok.sum())} with reachable waypoints "
-            f"(object at {np.round(start, 3)})")
+        raise ValueError("IK failed for drag waypoints at every distance")
 
     def _compute_trajectory(self) -> list[ActionPrimitive]:
         pc = self.policy_config
