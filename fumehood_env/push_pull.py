@@ -195,7 +195,7 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
     # Searched in order; the first fully feasible combination wins, so the
     # leading entries are the ones that make the nicest demonstration.
     MIN_PUSH = 0.05                      # never command a shorter push than this
-    MAX_PATH_CHECKS = 24                 # chain-check budget, per direction pass
+    MAX_PATH_CHECKS = 48                 # chain-check budget, per direction pass
     _STANDOFFS = (0.055, 0.040, 0.028)   # how far behind the object the EE starts
     _LIFTS = (0.030, 0.0)                # approach height above contact
     _DIST_SCALES = (1.0, 0.7)            # fraction of the drawn push distance
@@ -252,21 +252,29 @@ class PushPlannerPolicy(BaseObjectManipulationPlannerPolicy):
         base_pose = rv.base.pose
         q = rv.get_qpos_dict()
 
-        samples = []
-        for a, b in zip(chain[:-1], chain[1:]):
-            samples += self._interpolate(a, b, self.PATH_SAMPLES) + [b]
-
-        for pose in samples:
-            jp = robot.kinematics.ik(mg_id, pose, rv.move_group_ids(), q,
-                                     base_pose=base_pose)
-            if jp is None:
-                return False
-            jump = max((float(np.max(np.abs(np.asarray(v) - np.asarray(q[k]))))
-                        for k, v in jp.items() if k in q and np.size(q[k])),
-                       default=0.0)
-            if jump > self.MAX_JOINT_STEP:
-                return False
-            q = {**q, **jp}
+        # The first leg is a free-space transit from wherever the arm parked to
+        # the approach pose. Reaching from home into the back of a hood legitimately
+        # swings every joint through a wide arc, so holding it to the same
+        # per-sample continuity limit as the short interaction legs rejects
+        # essentially every candidate - preflight showed 596 candidates with
+        # reachable waypoints and not one accepted. Solvability is required
+        # throughout; smoothness is only demanded once the gripper is working
+        # around the object.
+        legs = list(zip(chain[:-1], chain[1:]))
+        for i, (a, b) in enumerate(legs):
+            enforce_smooth = i > 0
+            for pose in self._interpolate(a, b, self.PATH_SAMPLES) + [b]:
+                jp = robot.kinematics.ik(mg_id, pose, rv.move_group_ids(), q,
+                                         base_pose=base_pose)
+                if jp is None:
+                    return False
+                if enforce_smooth:
+                    jump = max((float(np.max(np.abs(np.asarray(v) - np.asarray(q[k]))))
+                                for k, v in jp.items() if k in q and np.size(q[k])),
+                               default=0.0)
+                    if jump > self.MAX_JOINT_STEP:
+                        return False
+                q = {**q, **jp}
         return True
 
     def _feasible_mask(self, poses: np.ndarray) -> np.ndarray:
