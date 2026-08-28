@@ -18,7 +18,9 @@ for path in (ROOT / "scripts", ROOT / "submodules" / "molmospaces"):
 
 import pact_skin_resolvability as psr  # noqa: E402
 from pact_place_v98_pendant_contract import (  # noqa: E402
+    ADMISSION_FLOOR,
     MAX_SIDE_IMBALANCE,
+    MIN_DETOUR_SLACK_M,
     MIN_ROUTE_INTRUSION_FRAMES,
     PHYSICS_CLEAN_FAMILIES,
     PENDANT_BOTTOM_Z_BOUNDS_M,
@@ -27,6 +29,9 @@ from pact_place_v98_pendant_contract import (  # noqa: E402
     PENDANT_HALF_X_M,
     PENDANT_HALF_Y_BOUNDS_M,
     build_pendant_fixture,
+    fixture_bow_detour_slack_m,
+    fixture_bow_lateral_limit_m,
+    fixture_bow_waypoint_abs_y_m,
     pendant_aabb,
 )
 from pact_place_corridor_contract import sha256_file, sha256_payload  # noqa: E402
@@ -114,6 +119,8 @@ def score_candidate(
     side_totals = [by_side[side]["sum_total_pixel_hits"] for side in ("left", "right")]
     low_hits, high_hits = min(side_totals), max(side_totals)
     route_values = [entry["route_intrusion_frames"] for entry in entries]
+    half_y = float(fixture["half_m"][1])
+    detour_slack_m = float(fixture_bow_detour_slack_m(half_y))
     return {
         "fixture": fixture,
         "aabb_low_m": low.tolist(),
@@ -125,11 +132,17 @@ def score_candidate(
         "worst_variant_total_pixel_hits": int(min(e["total_pixel_hits"] for e in entries)),
         "worst_variant_route_intrusion_frames": int(min(route_values)),
         "side_imbalance_ratio": float(high_hits / low_hits) if low_hits else None,
+        "detour_slack_m": detour_slack_m,
+        "fixture_bow_waypoint_abs_y_m": float(fixture_bow_waypoint_abs_y_m(half_y)),
+        "fixture_bow_lateral_limit_m": float(fixture_bow_lateral_limit_m()),
         "corridor_link_responds_every_variant": bool(
             all(entry["corridor_link_responders"] for entry in entries)
         ),
         "meets_selection_constraints": bool(
             min(route_values) >= MIN_ROUTE_INTRUSION_FRAMES
+            and detour_slack_m + 1e-9 >= MIN_DETOUR_SLACK_M
+            and min(e["n_sensors_ge_2px"] for e in entries)
+            >= ADMISSION_FLOOR["min_distinct_changed_sensors_per_role_side"]
             and low_hits > 0
             and high_hits / low_hits <= MAX_SIDE_IMBALANCE
         ),
@@ -178,7 +191,7 @@ def main() -> int:
     records = _candidate_records(cache)
     selected = select_candidate(records)
     document = {
-        "schema_version": "pact_place_v9_8_pendant_siting_v1",
+        "schema_version": "pact_place_v9_8_pendant_siting_v2",
         "role": "occlusion_free_siting_screen_not_admission",
         "authorizes_gate": False,
         "authorizes_collection": False,
@@ -193,7 +206,21 @@ def main() -> int:
                 "worst_variant_total_pixel_hits",
             ],
             "min_route_intrusion_frames_every_variant": MIN_ROUTE_INTRUSION_FRAMES,
+            "min_detour_slack_m": MIN_DETOUR_SLACK_M,
+            "min_worst_variant_sensors_ge_2px": ADMISSION_FLOOR[
+                "min_distinct_changed_sensors_per_role_side"
+            ],
             "max_side_imbalance": MAX_SIDE_IMBALANCE,
+        },
+        "previous_selection_admitted_zero_slack": {
+            "half_y_m": 0.18,
+            "detour_slack_m": 0.0,
+            "artifact": "diagnostics_output/pact_place_v98_pendant_siting/siting.json",
+            "note": (
+                "The first S1 rule maximised sensors subject to intrusion "
+                ">= 100 and admitted half_y=0.18, which lands the fixture-bow "
+                "waypoint exactly on the lateral limit with zero slack."
+            ),
         },
         "records": records,
         "selected": selected,

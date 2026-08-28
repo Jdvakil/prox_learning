@@ -54,6 +54,8 @@ _PRIMITIVE_TYPES = (
     int(mujoco.mjtGeom.mjGEOM_CYLINDER),
     int(mujoco.mjtGeom.mjGEOM_ELLIPSOID),
 )
+PRIMITIVE_GEOM_TYPES = _PRIMITIVE_TYPES
+CONTACT_DISTANCE_M = 1e-10
 
 
 def counters() -> dict[str, int]:
@@ -112,7 +114,7 @@ def aabb_gap(model, data, left_gid: int, right_gid: int) -> float:
 # --------------------------------------------------------------------------
 # GJK distance over support functions
 # --------------------------------------------------------------------------
-def _mesh_vertices(model, gid: int) -> np.ndarray | None:
+def mesh_vertices(model, gid: int) -> np.ndarray | None:
     mesh_id = int(model.geom_dataid[gid])
     if mesh_id < 0:
         return None
@@ -123,6 +125,22 @@ def _mesh_vertices(model, gid: int) -> np.ndarray | None:
     return np.asarray(
         model.mesh_vert[start : start + count], dtype=np.float64
     ).reshape(-1, 3)
+
+
+def convex_hull_vertices(verts: np.ndarray) -> np.ndarray:
+    """Unique convex-hull vertices. GJK support is identical to the full cloud."""
+    points = np.asarray(verts, dtype=np.float64).reshape(-1, 3)
+    if points.shape[0] <= 4:
+        return np.ascontiguousarray(points, dtype=np.float64)
+    try:
+        from scipy.spatial import ConvexHull, QhullError
+    except ImportError:
+        return np.ascontiguousarray(points, dtype=np.float64)
+    try:
+        hull = ConvexHull(points)
+    except QhullError:
+        return np.ascontiguousarray(points, dtype=np.float64)
+    return np.ascontiguousarray(points[np.unique(hull.vertices)], dtype=np.float64)
 
 
 def _support_local(gtype: int, size: np.ndarray, verts: np.ndarray | None,
@@ -151,23 +169,95 @@ def _support_local(gtype: int, size: np.ndarray, verts: np.ndarray | None,
     raise ValueError(f"no support function for geom type {gtype}")
 
 
-class _Shape:
-    """A geom posed in world, exposing a support function."""
+class GeomShape:
+    """A convex geom posed in world, exposing a GJK support function."""
 
-    def __init__(self, model, data, gid: int) -> None:
-        self.gtype = int(model.geom_type[gid])
-        self.pos = np.asarray(data.geom_xpos[gid], dtype=np.float64)
-        self.mat = np.asarray(data.geom_xmat[gid], dtype=np.float64).reshape(3, 3)
-        self.size = np.asarray(model.geom_size[gid], dtype=np.float64)
+    def __init__(
+        self,
+        gtype: int,
+        pos: np.ndarray,
+        mat: np.ndarray,
+        size: np.ndarray,
+        verts: np.ndarray | None = None,
+    ) -> None:
+        self.gtype = int(gtype)
+        self.pos = np.asarray(pos, dtype=np.float64).reshape(3)
+        self.mat = np.asarray(mat, dtype=np.float64).reshape(3, 3)
+        self.size = np.asarray(size, dtype=np.float64).reshape(-1)
         self.verts = (
-            None if self.gtype in _PRIMITIVE_TYPES else _mesh_vertices(model, gid)
+            None
+            if verts is None
+            else np.asarray(verts, dtype=np.float64).reshape(-1, 3)
         )
         self.supported = self.gtype in _PRIMITIVE_TYPES or self.verts is not None
+
+    @classmethod
+    def from_mujoco(cls, model, data, gid: int) -> "GeomShape":
+        gtype = int(model.geom_type[gid])
+        verts = None if gtype in _PRIMITIVE_TYPES else mesh_vertices(model, gid)
+        return cls(
+            gtype,
+            data.geom_xpos[gid],
+            data.geom_xmat[gid],
+            model.geom_size[gid],
+            verts,
+        )
+
+    @classmethod
+    def posed_axis_aligned_box(
+        cls, center: np.ndarray, half: np.ndarray
+    ) -> "GeomShape":
+        return cls(
+            int(mujoco.mjtGeom.mjGEOM_BOX),
+            np.asarray(center, dtype=np.float64).reshape(3),
+            np.eye(3, dtype=np.float64),
+            np.asarray(half, dtype=np.float64).reshape(3),
+            None,
+        )
 
     def support(self, direction: np.ndarray) -> np.ndarray:
         local_dir = self.mat.T @ direction
         local = _support_local(self.gtype, self.size, self.verts, local_dir)
         return self.mat @ local + self.pos
+
+    def world_aabb(self) -> tuple[np.ndarray, np.ndarray]:
+        pos, mat, size, gtype = self.pos, self.mat, self.size, self.gtype
+        if gtype == int(mujoco.mjtGeom.mjGEOM_BOX):
+            corners = np.array(
+                [
+                    [ix * size[0], iy * size[1], iz * size[2]]
+                    for ix in (-1.0, 1.0)
+                    for iy in (-1.0, 1.0)
+                    for iz in (-1.0, 1.0)
+                ],
+                dtype=np.float64,
+            )
+            world = corners @ mat.T + pos
+            return world.min(axis=0), world.max(axis=0)
+        if gtype == int(mujoco.mjtGeom.mjGEOM_SPHERE):
+            radius = float(size[0])
+            return pos - radius, pos + radius
+        if gtype in (
+            int(mujoco.mjtGeom.mjGEOM_CAPSULE),
+            int(mujoco.mjtGeom.mjGEOM_CYLINDER),
+        ):
+            radius, half_len = float(size[0]), float(size[1])
+            axis = mat[:, 2]
+            p1 = pos - axis * half_len
+            p2 = pos + axis * half_len
+            return np.minimum(p1, p2) - radius, np.maximum(p1, p2) + radius
+        if self.verts is not None:
+            world = self.verts @ mat.T + pos
+            return world.min(axis=0), world.max(axis=0)
+        raise ValueError(f"no world AABB for geom type {gtype}")
+
+
+class _Shape(GeomShape):
+    """Backward-compatible geom wrapper used by pair_distance."""
+
+    def __init__(self, model, data, gid: int) -> None:
+        other = GeomShape.from_mujoco(model, data, gid)
+        super().__init__(other.gtype, other.pos, other.mat, other.size, other.verts)
 
 
 def _closest_point_on_simplex(points: list[np.ndarray]) -> tuple[np.ndarray, list[int]]:
@@ -209,7 +299,7 @@ def _closest_point_on_simplex(points: list[np.ndarray]) -> tuple[np.ndarray, lis
     return best_point, best_set
 
 
-def gjk_distance(shape_a: _Shape, shape_b: _Shape) -> float:
+def gjk_distance(shape_a: GeomShape, shape_b: GeomShape) -> float:
     """Exact distance between two convex geoms. 0.0 means they intersect."""
     direction = shape_a.pos - shape_b.pos
     if np.linalg.norm(direction) < 1e-12:
@@ -218,7 +308,7 @@ def gjk_distance(shape_a: _Shape, shape_b: _Shape) -> float:
     for _ in range(_GJK_MAX_ITER):
         closest, keep = _closest_point_on_simplex(simplex)
         distance = float(np.linalg.norm(closest))
-        if distance < 1e-10:
+        if distance < CONTACT_DISTANCE_M:
             return 0.0                                   # origin inside: intersecting
         simplex = [simplex[i] for i in keep]
         direction = -closest                             # search toward the origin

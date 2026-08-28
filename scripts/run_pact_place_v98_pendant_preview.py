@@ -37,7 +37,9 @@ from pact_place_v9_contract import load_palette  # noqa: E402
 
 DEFAULT_OUTPUT_ROOT = ROOT / "diagnostics_output" / "pact_place_v98_pendant_preview"
 SCENE_XML = ROOT / "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v5.xml"
-DEFAULT_SEED = 980024
+# Pin every V9.8 screen row to the single seed that the V9.5 smoke actually
+# cleared (6/8). Varying the seed while freezing geometry was never validated.
+DEFAULT_SEED = 955339
 
 
 def build_v98_palette_and_layout(family_id: str, panel_side: str) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -50,17 +52,12 @@ def build_v98_palette_and_layout(family_id: str, panel_side: str) -> tuple[dict[
 
 
 def _candidate_fixture(candidate: int) -> dict[str, Any]:
-    candidates = (
-        (1.15, 0.15),
-        (1.14, 0.15),
-        (1.16, 0.15),
-        (1.18, 0.14),
+    del candidate
+    return build_pendant_fixture(
+        bottom_z_m=1.10,
+        half_y_m=0.056,
+        center_y_m=0.100,
     )
-    try:
-        bottom, half_y = candidates[int(candidate) % len(candidates)]
-    except (TypeError, ValueError):
-        raise ValueError(f"invalid V9.8 candidate: {candidate!r}") from None
-    return build_pendant_fixture(bottom_z_m=bottom, half_y_m=half_y)
 
 
 def build_row(
@@ -72,11 +69,14 @@ def build_row(
     implementation_sha256: str = "",
     seed: int = DEFAULT_SEED,
     pendant_fixture: dict[str, Any] | None = None,
+    pendant_lateral_bow: bool = True,
 ) -> dict[str, Any]:
     """Build one row; the fixture is a function of candidate, never panel side."""
     families = tuple(PHYSICS_CLEAN_FAMILIES)
     family_id = families[int(cell_index) % len(families)]
-    candidate_seed = int(seed + (cell_index // 2) * 1009 + int(candidate) * 7919)
+    # Constant across cells and candidates so the 24-row screen is 6 distinct
+    # instances repeated 4x. MIN_CLEAN_SUCCESSES=20 then means 5 of 6 cells.
+    candidate_seed = int(seed)
     base = _v93_row(
         index=800 + int(cell_index) * 20 + int(candidate),
         family_id=family_id,
@@ -97,6 +97,7 @@ def build_row(
         "preview_candidate": int(candidate),
         "pact_mounted_ceiling_fixture": fixture,
         "pact_v98_contract_version": CONTRACT_VERSION,
+        "pact_v98_pendant_lateral_bow": bool(pendant_lateral_bow),
     }
     row["episode_id"] = hashlib.sha256(
         f"pact-v9.8-pendant:{implementation_sha256}:{cell_index}:{candidate}:{candidate_seed}".encode()
@@ -195,6 +196,12 @@ def build_config(manifest: dict[str, Any], manifest_sha256: str) -> dict[str, An
         "manifest_sha256": manifest_sha256,
         "implementation_sha256": manifest["implementation_sha256"],
         "protected_artifact_sha256_before": _protected_artifact_hashes(),
+        "pinned_task_seed": DEFAULT_SEED,
+        "distinct_instance_count": 6,
+        "distinct_instance_claim": (
+            "24 rows are 6 distinct cells repeated 4x at pinned seed "
+            f"{DEFAULT_SEED}; MIN_CLEAN_SUCCESSES=20 means 5 of 6 cells"
+        ),
         "expert_screen_rows": manifest["expert_screen_rows"],
     }
     config["config_sha256"] = sha256_payload(config)

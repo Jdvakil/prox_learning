@@ -127,6 +127,11 @@ def test_pick_and_place_success_defaults_and_class_path() -> None:
         ({"root1": "cavity_obj_0/Cup_10", "root2": "pact_clutter_r1"}, "clutter"),
         ({"root2": "pact_clutter_00"}, "clutter"),
         ({"body1": "robot_0/fr3_link5", "root1": "robot_0/", "root2": "pact_clutter_15"}, "clutter"),
+        ({"root2": "pact_clutter_06"}, "clutter"),
+        ({"root2": "pact_clutter_mount_ceiling"}, "mounted_fixture"),
+        ({"body2": "pact_clutter_mount_wall_left"}, "mounted_fixture"),
+        ({"root2": "pact_clutter_mount_wall_right"}, "mounted_fixture"),
+        ({"body2": "pact_clutter_mount_v10"}, "mounted_fixture"),
     ],
 )
 def test_contact_taxonomy_adds_only_exempt_receptacle(pair, expected) -> None:
@@ -156,6 +161,12 @@ def test_contact_summary_exempts_receptacle_but_not_pedestal() -> None:
     audit._pair_totals["other_environment"] = 0
     audit._pair_totals["clutter"] = 2
     assert audit.summary()["collision_free"] is False
+    audit._pair_totals["clutter"] = 0
+    audit._pair_totals["mounted_fixture"] = 1
+    assert audit.summary()["collision_free"] is False
+    assert audit.summary()["contact_taxonomy_version"] == (
+        "pact_place_robot_environment_v3"
+    )
 
 
 def test_place_sampler_and_expert_are_additive_subclasses() -> None:

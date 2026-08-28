@@ -1550,19 +1550,673 @@ sensed as a slab while reading as household clutter to the wrist camera. The sup
 not "PACT avoids clutter". Mugs and apples at 0.075-0.09 m stay RGB-only decor by physics. The v9
 reports must state the resolving-power floor wherever they describe the hazards.
 
-### V9.8 ceiling pendant gate — stopped at expert feasibility
+### V9.8 ceiling pendant gate — stopped at the paired offset selection rule
 
 The V9.8 pendant implementation is pre-registered in
 [`docs/PACT_PLACE_V98_PENDANT_PLAN.md`](docs/PACT_PLACE_V98_PENDANT_PLAN.md). The
-S1 siting sweep selected a symmetric ceiling fixture at `x=0.72`, `y=0.0`,
+first S1 siting sweep selected a symmetric ceiling fixture at `x=0.72`, `y=0.0`,
 bottom `z=1.10`, and half-width `y=0.18`: 14 worst-case sensors at 2 px and
 181 route-intrusion frames across the six physics-clean F0/F1/F2 variants.
+That width lands the fixture-bow waypoint on the aperture limit with zero
+slack. S1 v2 required ≥ 20 mm detour slack and selected `half_y = 0.16`
+(13 sensors, 181 intrusion frames). The causal frozen-qpos smoke preserved
+the 40-sensor `[40,4,8,8]` renderer and had a zero repeat baseline, but it is
+not admission.
 
-The causal frozen-qpos smoke preserved the 40-sensor `[40,4,8,8]` renderer and
-had a zero repeat baseline, but it is not admission. The actual 24-row expert
-screen stopped the experiment at **0/24 clean successes** because every row
-had clutter contact, below the unchanged 20/24 threshold. Collection and
-training are not authorized. This does not establish that the skin can resolve
-ground clutter: ground clutter remains RGB-only decor that counts as failure on
-contact. The skin's roughly 0.25 m contiguous-silhouette resolving floor is why
-the pendant is 0.30 m wide.
+The first 24-row expert screen (0/24, all clutter contact) is a **void
+measurement of a mis-wired expert** and is retained, not reused. Pinning seed
+955339 and enabling the TCP-only lateral bow at `half_y = 0.18` produced
+fixture-free **6/8**, pendant+bow **0/8** (clutter during a 0.14–0.16 m
+inbound detour), and a pinned-seed **0/24**. That 0/8 measured a zero-slack
+detour. With the bow off, a same-run V9.5 replay is still **6/8 row for
+row**, and the same eight rows plus pendant are **0/8** on `mounted_fixture`
+contact (clutter 0, inbound bow 0.0 m). Sweeping `half_y` 0.16 / 0.14 / 0.12
+with the bow on is **0/8** at every width: unclipped waypoints and
+`mounted_fixture` contact on every complete row. Offsetting the pendant to
+`y = 0.100` with side-dependent ceiling envelopes (lag + 4 mm) passed the
+live `_bow_segment` preflight (algebra, dispatch, and no clipping — not
+swept-arm clearance) and left the V9.5 guard at **6/8**, but
+neither named candidate preserved the fixture-free clean rows (wide and
+conservative both 0/8 on the paired join). The 24-row gate was not run.
+The aperture is not widened. Collection and training are not authorized.
+
+A 2026-08-25 retained-qpos audit
+(`diagnostics_output/pact_place_v98_offset_contact_diagnosis/`) supersedes
+the earlier causal reading that "the wrist does not follow the TCP bow."
+Baseline-clean failures start outside the protected ceiling-fixture
+approach/pass/exit set: left in post-bow `pregrasp` (`fr3_link5_collision`),
+right in vessel/cross-vessel pass (`fr3_link6_collision` where reconstructable).
+The 0.208 / 0.108 lag constants are `unverified_provenance`; the
+`[0.044, 0.156]` face window is `physical_input_invalid`. There is no
+established claim that a wrist-height hazard is unavoidable in the 0.85 m
+aperture.
+
+Ground clutter remains RGB-only decor that counts as failure on contact, with
+no claim that the skin sees it. The skin's roughly 0.25 m contiguous-silhouette
+resolving floor is why the first S1-selected pendant is 0.36 m wide
+(`half_y = 0.18 m`); that width is zero-slack, and the narrower widths that
+have slack still fail on the pendant.
+
+A fixture-free 24-seed sweep of the V9.5 8-row smoke averaged 4.08/8 clean
+(51%). Only 4 of 24 seeds reach 7/8; 955339 is one of those four (sweep 7/8
+vs smoke/guard 6/8, unreconciled). A canonical varied-seed 24-row screen
+would expect ~12/24 against a bar of 20 (`narrow: true`).
+
+### V9.9 fixed pendant qualification — permanently closed
+
+[`docs/PACT_PLACE_V99_PENDANT_PLAN.md`](docs/PACT_PLACE_V99_PENDANT_PLAN.md)
+asked whether one fixed, identical ceiling-flush pendant can force ≥ 5 cm
+lateral detours on both inbound and outbound traversal while preserving the
+six clean F0/F1/F2 V9.5 cells. Independent reconstruction of the frozen eight
+rows succeeded (max TCP residual 0.87 mm). The conservative AABB filter
+certified 0 candidates; that is only a broad-phase screen. The final float64
+exact retained-qpos close-out scored all 12880 dual-transit AABB hits with
+all four predicates on all six cells and found 0 survivors. Scoped
+conclusion: **no survivor in the registered fixed rectangular-box lattice.**
+Routing, paired screens, and collection were not run. V9.8 artifacts and
+conclusions are unchanged. Collection, training, and eval are not authorized.
+
+### V10 connected compound pendant qualification
+
+[`docs/PACT_PLACE_V10_COMPOUND_PENDANT_PLAN.md`](docs/PACT_PLACE_V10_COMPOUND_PENDANT_PLAN.md)
+replaces V9.9’s single rectangular prism with one static, side-independent
+assembly of two paddles, two ceiling stems, and a crossbar. It preserves the
+frozen six-cell V9.5 layout and V9.9 safety, necessity, routing, and sensing
+gates. V9.9 remains permanently closed and is not reopened. The v1 siting
+catalog of 8,554,036 rows
+(`diagnostics_output/pact_place_v10_siting/siting.json`, payload SHA
+`923c9380319b343e43e55f018080995db8a4b59e5a5f3cbd7f5d1a3be79d0eb6`;
+catalog SHA
+`63369af3552bbb806a61fea97d281011374ee25bb375004876704b920b6f3443`)
+is a superseded robot/target prefilter; those rows did not pass posed-panel
+or clutter checks. Corrected siting v2
+(`diagnostics_output/pact_place_v10_siting_v2/siting.json`, payload SHA
+`2e0b2a56bd4c22ecc920927dc149adf9c1bbc0d1d3ccbd3ee433ea450b187c1c`;
+catalog SHA
+`b84e19bf269c39cd052551639c22d4cbb5b4348eaf6188663fae0659af824d6e`)
+has 150,288 panel-clear and full-environment exact two-lobe survivors
+(1,779 unique union AABBs). Planning-probe v2 is the trust anchor.
+Three-lobe search was not run. Offline routing
+(`diagnostics_output/pact_place_v10_route/route.json`, payload SHA
+`c0f1b35084d6950a88531c45e6805b06437add31c82ca5fd68bb5da4f5de3ff7`) found
+zero route-feasible unions and zero route-feasible morphologies. All 21,348
+union×cell×direction evaluations failed the registered ≥5 cm detour /
+open-side rewrite. `stop_reason: no_two_lobe_route_survivor`. That
+route-v1 result remains valid under contiguous-group-freeze and is not an
+error. A separately registered endpoint-only amendment
+(`diagnostics_output/pact_place_v10_route_v2/route.json`, payload SHA
+`e311ba01c77c14b3a930be8dd9d4d40e9de483710521f8662d2e3a55357f71e1`)
+reproduced 17,826 geometry-feasible evaluations and 1,032 unions, then
+found zero route-feasible unions and zero route-feasible morphologies:
+666,448 inbound identities passed sequential IK and failed strict
+environment. `stop_reason: no_route_v2_ik_clearance_survivor`. That
+route-v2 stop is a historical result of the flawed scalar environment
+predicate and is **not** physical infeasibility. `v10_closed: true` for
+the registered offline-search question. Signal screening, paired screens,
+collection, training, and ACT/PACT evaluation were not run under V10 and
+remain unauthorized.
+
+### V10.1 empirical pendant qualification — stopped before Phase 0
+
+[`docs/PACT_PLACE_V101_EMPIRICAL_QUALIFICATION_PLAN.md`](docs/PACT_PLACE_V101_EMPIRICAL_QUALIFICATION_PLAN.md)
+replaces further exhaustive route search with a 12-row empirical
+qualification of the frozen V10 `planning_probe_assembly()` / probe_v2
+two-lobe pendant on V9.3 families F0–F2 only. The frozen route is
+`rewrite_primitive=endpoint_only`,
+`qualification_mode=empirical_live_contact_v1`, slab padding 0.08 m, left
+lane −0.30 m, right lane +0.30 m. Empirical mode does not call the flawed
+scalar strict-environment preclearance; live MuJoCo contact auditing is
+the environment predicate. Historical V10 rows without the new markers
+keep contiguous-group-freeze behavior. All V9.9/V10 siting and route
+artifacts are preserved.
+
+Contract `pact_place_v101_empirical_qualification_v1` SHA
+`c550badd4a95bb0f46c84744ca9cb52b6fd5aa4290377edb8aacc2458087873b`.
+Preflight
+(`diagnostics_output/pact_place_v101_empirical_review/preflight.json`,
+artifact SHA
+`37f1d3739376a0fe8b84c7822ac5aeb65ac1fff61a2b84f91540bdf3ac89f7f3`)
+verified the siting-v2 trust anchor and admitted the fixed route **12/12**
+on V9.9 snapshot stock TCP. The 12-row review
+(`diagnostics_output/pact_place_v101_empirical_review/review_manifest.json`,
+artifact SHA
+`3a472dc165b0053766478dbc3f9e64af54b66e324ec6abd522bde9840675c841`)
+reconciled 12/12 rows with zero infrastructure failures and **0/12 clean
+successes** (0/2 in every family×side cell). `eligible_for_human_review:
+false`. `authorizes_gate: false`. Gallery:
+`diagnostics_output/pact_place_v101_empirical_review/videos/` (12/12
+three-pane videos). On the 11 complete rows, route telemetry is healthy
+(no fallback/clip/wrong-way/endpoint mutation; offline strict-env not
+used; zero pendant contact). Live causes: 8 `terminal_ik_cascade`, 3
+`clutter_collision_stability_event`, 1 F2-left `sampling_failure` with
+missing telemetry. Causal proximity
+(`diagnostics_output/pact_place_v101_empirical_causal/causal.json`,
+artifact SHA
+`30329d737be32663b93802c88ba6ced22a121e06b727ca2baa947747018b9364`)
+fail-closed with `missing_clean_cell` in all six cells and did not call
+`env.step`. Failure table SHA
+`74688c41674a15be909c2889b921e7809daa2fcc5a3cc75805d29e8e78fc1057`.
+`human_approval.json` is absent. Phase 0 was not run. Collection,
+training, and evaluation remain unauthorized.
+
+### V10.2 raised, collision-legible pendant — stopped at Step 0
+
+[`docs/PACT_PLACE_V102_RAISED_PENDANT_REMEDIATION_PLAN.md`](docs/PACT_PLACE_V102_RAISED_PENDANT_REMEDIATION_PLAN.md)
+answers three human-review objections to the V10.1 gallery: the arm appeared to
+pass through a pendant stem, the lobes sat too low against table clutter, and
+the empty-arm approach looked too fast. V10.2 raises the two-lobe assembly so
+its lowest point is `1.10 m` (a `0.38 m` gap above the `0.72 m` shelf top),
+thickens both stems and the crossbar x face to a 12 mm square in collision *and*
+visible geometry with no visual-only sleeve, keeps the frozen endpoint-only
+route (`empirical_live_contact_v2`, padding 0.08 m, lanes ∓0.30 m), assigns
+speed per named route piece (0.15 m/s empty-arm approach, 0.045 m/s pendant
+pass/exit, inherited 0.08 m/s pregrasp, unchanged outbound transport) instead of
+copying `segments[0].speed`, and renders review video at 1000/66 fps with
+`frame_stride = 1` — real time, against V10.1's 1.32×. It uses a distinct
+environment marker `pact_place_corridor_v10_2_raised_pendant` on the same
+compiled V10 scene; V10/V10.1 dispatch and geometry are behaviorally unchanged
+and every V10.1 artifact is preserved byte-for-byte.
+
+Contract `pact_place_v102_raised_pendant_v1` SHA
+`16f4c263d3b0310788b27e51303f0aa3feed0241e2c09ba254a69de25eb29a8b`;
+implementation SHA
+`c061bc50c4bd9a13c40250fdd081f0c0286a84e7e1ac619a0ba306b7d2f708e6`;
+assembly self-SHA
+`0751a8d4850994e59f0486bd46f411018608ccb37105a8c0c03e03cbecccdb27`;
+speed-schedule SHA
+`b9c17c5022780d8820bfff57db17f2e6715aa0d10bc2a025c25c21ce0a1e7d32`.
+
+**Step 0 failed and V10.2 stopped there.** Preflight
+(`diagnostics_output/pact_place_v102_preflight/preflight.json`, artifact SHA
+`6c5079916775e8a2093defb1547a3fa85ef9b32dcc4fddcf785ffa6c3276976d`) passed
+items 1–4 and failed items 5–7:
+
+- protected artifacts and the V10 scene hash matched (17 artifacts);
+- the raised assembly is panel-, clutter-, static- and initial-state-clear on
+  all six frozen cells, and its derived facts match the registered table;
+- exact stock-route necessity is **12/12** — the raised pendant still obstructs
+  every cell and direction, so it is not decorative;
+- the fixed endpoint-only route is admitted **12/12** with inbound detours
+  0.103–0.120 m and outbound 0.059–0.071 m;
+- complete sequential IK on the nominal route: only **5/12** cases, all of
+  them inbound, with every outbound case incomplete (erratum: an earlier
+  version of this paragraph said 4/12; the immutable preflight payload says
+  5/12 and is unchanged);
+- per-component clearance: **0/12** cases meet the 15 mm floor. Every case is
+  negative. The same-side lobe is penetrated by **56–77 mm** and its stem by
+  26–52 mm, inbound and outbound, on all three families. The crossbar and the
+  opposite-side components are clear throughout.
+
+Raising the lobe bottoms from `0.82/0.84 m` to `1.10 m` moved the pendant out of
+the table-clutter band and into the arm's own elbow/forearm envelope. The
+registered route is a **TCP** lane rewrite with the grasp-side endpoint frozen;
+it has no authority over where link5/link6 sit while the TCP tracks that lane.
+The V10 lattice cap `LOBE_TOP_MAX_M = 1.10` is exactly the boundary this design
+crosses. The human observation that the arm passes through the pendant is
+therefore confirmed as literal geometry for the raised design.
+
+Step 0 item 7 also failed, and its root cause is recorded separately in
+`diagnostics_output/pact_place_v102_preflight/contact_parity_root_cause.json`
+(artifact SHA `e4e544a999534b322d177d8b296aa4c7580d9b7627bf89bf0d42630fdd0774df`,
+produced by `scripts/diagnose_pact_place_v102_contact_parity.py`): with a stem
+deliberately posed to penetrate `robot_0/fr3_link5_collision` by 17–69 mm across
+19 poses, `data.contact` reported **nothing**, while the same scene carried 83
+other contacts. The pair is collision-compatible, so the contype filter is not
+the cause. `pact_place_v10_scene.pose_assembly_geoms` writes `model.geom_pos`
+and `model.geom_size` at runtime but leaves `model.geom_aabb`, `geom_rbound` and
+the pendant body's `model.bvh_aabb` at their compile-time 1 mm placeholder
+values, so MuJoCo's broadphase never proposes a pendant/robot pair. Refreshing
+only those bounds, at the same pose, makes the contact appear at
+`dist = −0.016630 m`, matching hardened GJK to six decimals. **Recorded "zero
+`mounted_fixture` contact" for the runtime-posed V10 pendant — including the
+V10.1 review rows — is therefore not evidence of clearance.** No V10/V10.1
+artifact was altered and `pose_assembly_geoms` was not repaired: that would
+change V10/V10.1 runtime behaviour, which the V10.2 plan forbids. It is flagged
+for the owner.
+
+Step 1 is complete: `tests/test_pact_place_v102_raised_pendant.py` is 41 passing
+behavioral tests covering marker/hash-gated dispatch, unchanged V10/V10.1
+behaviour, identical 12 mm collision and visible stem geometry, parked-control
+disabling, deliberate stem overlap seen by both `data.contact` and the contact
+classifier, full-waypoint IK accounting with qpos restoration on
+success/failure/exception paths, route-piece speeds and caps, row admission, and
+renderer timing (151 policy frames → 9.966 s). No V10.2 episode was generated:
+the six-row screen, the 12-row review and gallery, the causal replay, and the
+24-row Phase 0 were **not run**. `human_approval.json` is absent and was not
+inferred. Collection, training, and evaluation remain unauthorized.
+
+**Owner-requested diagnostic gallery (not the gate).** After the Step-0 stop the
+owner asked to see the twelve clips anyway. They were produced by
+`scripts/run_pact_place_v102_diagnostic_gallery.py` into
+`diagnostics_output/pact_place_v102_diagnostic_gallery/` (manifest SHA
+`9d0f7b4b6c8adc51261cf58bbed26a12ec68b5b62bfd1c446ac122c94918c0a1`,
+`is_registered_review: false`, `eligible_for_human_review: false`, every
+authorization false). This is **not** the registered review pack, is not an
+input to causal proximity or Phase 0, and must never be cited as one; the
+registered review path was not written and the Step-0 stop is untouched. The
+gallery runner is not part of the V10.2 implementation hash, which is unchanged.
+
+The twelve rows ran the real expert with the live contact audit. All 12
+reconciled and completed; **0/12** are clean; 11 end in `terminal_ik_cascade`
+and one in `clutter_collision_contact`. Every row's minimum per-frame
+robot/target-to-pendant clearance is **negative** — −0.0008 m to −0.0742 m —
+against the 15 mm floor, and across all twelve rows there are **zero** live
+pendant-contact frames and **zero** `mounted_fixture` contact entries. That
+pairing is the two Step-0 findings reproduced on live rollouts: the arm passes
+through the raised pendant, and the contact pipeline cannot see it. The speed
+schedule is visible and correct in the telemetry —
+`inbound_pendant_approach` commanded at 0.15 m/s and `inbound_pendant_pass` at
+0.045 m/s, against an inherited 0.20 m/s for both.
+
+The clips render every policy frame at `1000/66` fps, so they play in real time.
+The registered renderer's pendant pane is aimed from `y = -1.15 m`, outside the
+hood, where `hood_side_r` occludes it; the gallery overrides that camera
+in-process to a pose inside the aperture and records the override in its
+manifest under `pendant_side_camera_override`. Any successor version should
+adopt the corrected pose.
+
+### V10.3 static-pendant joint-route qualification — stopped at Step 0B
+
+[`docs/PACT_PLACE_V103_STATIC_PENDANT_IK_PHASE0_PLAN.md`](docs/PACT_PLACE_V103_STATIC_PENDANT_IK_PHASE0_PLAN.md)
+answers V10.2's two findings at once. The pendant becomes **static**: the
+selected lobe/stem/crossbar poses and sizes are compiled into their own scene
+before `MjModel` exists, the body carries no joint, freejoint, or mocap flag, and
+nothing writes `model.geom_pos` or `model.geom_size` at episode runtime — so the
+stale broad-phase bounds that made V10/V10.1/V10.2 pendant contact invisible
+cannot recur. The route becomes a **continuous joint-space plan**: a layered
+multi-branch IK graph over named control poses, with exact distance at every
+0.01 rad interpolation sample, pinned to the retained qpos at both ends, and
+executed as the selected joint trajectory rather than re-solved from TCP at
+runtime. The only search variable is the lobe height.
+
+**Step 0A passed.** `tests/test_pact_place_v103_static_pendant.py` is 34 passing
+behavioral tests — a compiled static scene whose pendant cannot move under
+repeated `mj_forward`, visible-equals-collision sizing, a clear/touching/
+penetrating contact-parity fixture where hardened distance and `data.contact`
+agree, the V10.2 errata read from the immutable payload, the 120-template
+lattice, fixed Halton seeds, dedup, graph ranking, and duration caps. The
+regression sweep before search was **302 passed**, with the same three
+pre-existing stale-scene-hash failures in `tests/test_pact_place_corridor.py`
+recorded rather than excluded.
+
+**Step 0B stopped, under an owner-approved early stop.** Nine of twelve
+cell/direction cases completed, **all with zero feasible routes at every one of
+the four registered heights** (0.92 / 0.96 / 1.00 / 1.04 m): the six outbound
+cases each evaluated all 120 registered templates and found none whose
+control-pose layers were all non-empty, and the three left-inbound cases were
+excluded at the pinned endpoint before any template work. The three right-inbound
+cases were still running after 4 h 42 m and are recorded as `not_evaluated`. The
+stop record
+(`diagnostics_output/pact_place_v103_ik_search/search.json`, artifact SHA
+`f06feaa3c09d5f95a006f66d00e45c8684962393967a1acc3ad40d21dc23df98`) is explicit
+that `search_exhaustive: false` and that not every registered template was
+evaluated.
+
+The stop is nonetheless conclusive, and the witness is
+`diagnostics_output/pact_place_v103_ik_search/endpoint_certificate.json`
+(artifact SHA
+`3ced3a35b71ac7a1cc9f94ab23549b0764dceef07508ab5302791e592c062fda`). Across all
+three left-inbound cells × all four heights × two retained frames, **all 24
+measurements are penetrations below the 0.020 m node floor**, with a
+`-0.02000 m` margin in every one and both instruments agreeing — analytic exact
+GJK returns 0.0 (intersecting) and hardened signed `mj_geomDistance` returns a
+negative distance. The binding component is always the negative lobe. What hits
+it changes with height: `robot_0/gripper/base` at 0.92 and 0.96 m
+(-0.4 to -14.3 mm), `robot_0/fr3_link7_collision` at 1.00 m (-14.8 to -22.8 mm),
+and `robot_0/fr3_link6_collision` at 1.04 m (-20.0 to -24.5 mm). A low lobe is
+struck by the hand, a high lobe by the wrist, and no z window in the lattice
+threads between them. Because that endpoint is pinned to the retained qpos and is
+the first interpolation sample of every edge leaving it, no route template can
+rescue those cells — so no height can route all twelve cases regardless of the
+three unevaluated ones. **The V10.2 result was never specific to the 1.10 m
+height**: moving the pendant 6–18 cm down reproduces it with a different arm link.
+
+Step 0C, the six-row smoke, the twelve-row review, the causal replay, and the
+24-row Phase 0 were **not run**; no episode was generated, `env.step` was never
+called, and no V10.3 episode runtime was built. `human_approval.json` is absent
+and was not sought. Collection, training, and evaluation remain unauthorized.
+
+### V10.4 first-shot static pendant — Steps 0–2 passed, stopped at Step 3
+
+[`docs/PACT_PLACE_V104_FIRST_SHOT_STATIC_PENDANT_PLAN.md`](docs/PACT_PLACE_V104_FIRST_SHOT_STATIC_PENDANT_PLAN.md)
+abandons the V9.5/V10.1 route family and builds on the already-qualified **V6c**
+environment and expert instead (23/24 Phase-0 with zero clutter contact). It adds
+one compiled-static, symmetric two-lobe pendant *outboard* at `|y| = 0.34 m`,
+lobes spanning `z = 0.98–1.04 m` — above the clutter, outside the arm's envelope,
+rather than in it. That is the axis the V10.3 close-out identified as the one
+that mattered. The only route change is a single registered speed cap on the
+first free-space segment (`0.20 → 0.12 m/s`).
+
+Contract `pact_place_v104_first_shot_static_pendant_v1` SHA
+`455379b852c994c6e4645b5650e8c690ebbc542509b40700316c8888db977707`; production
+scene `pact_place_corridor_v10_4.xml` SHA
+`01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7`.
+
+**Step 0 passed on all six items**
+(`diagnostics_output/pact_place_v104_preflight/preflight.json`, SHA
+`fe64e285332a3c530cab30599d2b862823a3c1e2db661a6961a0a1461f2c41d5`). Both
+read-only trust anchors reproduce **exactly**: the six retained V9.5 cells give
+**0.04052 m** against a 0.035 m floor and an audit value of 0.04052, and the 24
+frozen V6c Phase-0 trajectories give **0.05523 m** against a 0.050 m floor and an
+audit value of 0.05523 — 24/24 above floor. The eight rigid ±5 mm corners hold
+(V9.5 worst 0.03337 m, V6c worst 0.04800 m). Contact parity agrees across
+hardened signed `mj_geomDistance`, analytic GJK, live `data.contact`, and the
+place contact audit on **30/30** fixture cases. Route preservation is exact on
+**24/24** V6c manifests: identical poses, exactly one speed change at primitive 1
+segment 0, V6c itself never amended, max predicted 583 steps against the 840-step
+limit. The pendant body carries no joint, freejoint, or mocap, and its compiled
+bounds enclose the real geometry — the V10.2 stale-broad-phase defect cannot
+recur.
+
+**Step 1 passed at 6/6 strict clean successes**
+(`.../pact_place_v104_review_production/production_manifest.json`, SHA
+`fdcf757b4bff512c71c6e3ac241c151742523c89ec7531b46132af715e92b3af`), 3 left and 3
+right against a `≥5/6` bar, **zero pendant contact in every row**, minimum
+observed clearance **61.6 mm** — about three times the 20 mm floor — and 426–628
+control steps against a 1050 horizon. Six rows are a qualification check, not a
+clean-rate estimate.
+
+**Step 2 passed on both sides**
+(`.../pact_place_v104_causal/causal.json`, SHA
+`a30c863d61537edb58d24cc91b13291fa5d9efc47c7521b08b2304943f2f2ffc`): 23,684
+changed values on the left and 12,712 on the right, 6 changed sensors each, with
+`link5_back` and `link5_front`/`link6` responding — both far above the 7,209
+panel-preservation floor, side ratio 1.86 within the 4× limit.
+
+**Step 3 stopped.** With 6/6 rows clean there were no natural production
+failures, so all three failure clips had to be diagnostic negative controls. The
+first in the registered order, `left_lobe_contact`, cannot be made to touch: over
+the full frozen inward-shift grid `0.000–0.160 m` (**161 shifts recorded**) the
+maximum penetration reached is **2.579 mm**, below the registered 5–30 mm band.
+The clearance is mostly vertical and longitudinal, so a purely lateral shift
+closes it only asymptotically. The plan requires stopping rather than extending
+the grid, so the grid was not extended, no substitute control or source row was
+chosen, and the production XML was never modified
+(`.../pact_place_v104_review/control_shortfall_stop.json`, SHA
+`9a4abfec9992edaff3bf957dc90900c2a6dd50e430e8cb7f7cf873fe4d11103a`). The other
+two controls are reachable (9.57 mm and 36.64 mm at the grid end); the order rule
+is what binds. **This shortfall is a property of the control recipe, not the
+environment** — it happens because the pendant is far outside the arm's envelope,
+the same fact that makes Steps 0–2 pass comfortably.
+
+No review packet was produced, `human_approval.json` is absent and was not
+created, Phase 0 was not run, and collection, conversion, training, and
+learned-policy evaluation remain unauthorized.
+
+### V10.4 review-v2 — the six-video packet, published for owner review
+
+[`docs/PACT_PLACE_V104_REVIEW_REPAIR_PLAN.md`](docs/PACT_PLACE_V104_REVIEW_REPAIR_PLAN.md)
+repairs the two Step-3 defects without touching production geometry, routing,
+speeds, seeds, or results. The six V10.4 episodes are **reused byte-for-byte**;
+no replacement episode was generated and no `env.step` was called.
+
+**The v1 shortfall was a search defect, not a physical one.** Two things were
+wrong. The frozen grid ended at `0.160 m`, and the audited left-lobe contact
+occurs at `0.175 m` — 15 mm past where v1 stopped looking. And v1 displaced only
+the target component's geom rather than rigidly translating the whole assembly,
+which is what a physical intrusion would do. With both repaired, all three
+controls certify and every audited anchor reproduces exactly:
+
+| control | component | source row | shift | penetration | max frame | limiting body |
+|---|---|---|---:|---:|---:|---|
+| `left_lobe_contact` | `lobe_0` | 0 (left) | 0.175 m | **5.044 mm** | 88 | `fr3_link7` |
+| `right_lobe_contact` | `lobe_1` | 3 (right) | 0.132 m | **5.239 mm** | 245 | `gripper/base` |
+| `stem_contact` | `stem_0` | 0 (left) | 0.083 m | **5.455 mm** | 212 | `fr3_link7` |
+
+At the certified frame all four instruments agree on every control — signed
+distance negative, analytic GJK reporting intersection, live `data.contact`
+non-empty, and the place audit classifying `mounted_fixture` and nothing else.
+Each diagnostic scene is a separate compiled bundle (V3/V5 includes plus a
+metadata copy renamed to the diagnostic stem), reloaded through the real task
+sampler and confirmed compiled-static with bounds that enclose the shifted
+geometry — so the V10.2 stale-broad-phase defect cannot recur here either. The
+production XML is byte-identical before and after every control.
+
+**Provenance bridge.** Every file the Step-0 preflight bound still matches except
+one: the review runner, `b40e5a0f… → ddf96225…`, superseded by this repair. That
+single path is the entire allowlist, and the bridge forgives only that exact
+old→new transition — a different new hash on the same path still fails closed.
+The bridge also distinguishes the contract/implementation pair the v1 artifacts
+were actually **executed** under (`eb8f1174…` / `bd135e68…`) from the later live
+aggregate (`455379b8…` / `bf4af91…`), which is not what ran and is never bound.
+All six rows reconcile as strict-clean, 3 left and 3 right, minimum clearance
+61.6 mm, zero pendant contact.
+
+**The packet.** `diagnostics_output/pact_place_v104_review_v2/` holds exactly six
+MP4s — three complete production successes (rows 0 left, 3 right, 4 left) and
+three trimmed contact-centered controls — plus `provenance_bridge.json`,
+`control_certificates.json`, `review_preflight.json`, `review_manifest.json`, and
+`REVIEW.md`. All six decode back at 15.1515 fps with exact frame counts. Control
+windows match the registered anchors: 40–89 (50 frames), 197–260 (64), 164–227
+(64). Publication is atomic — rendered and decode-verified in a temporary
+directory, then moved into place in one step — and an existing final directory is
+refused.
+
+One correction to the plan's own numbers: the left-lobe stem contact that trims
+that clip does **not** reach 38.15 mm at frame 90. It *begins* at frame 90 at
+0.103 mm and only reaches 38.15 mm at frame 193. Both figures are real; the
+attribution was not. The certificate records them as separate frames, and the
+clip is trimmed at 89 so neither is shown.
+
+**Phase0-v2 is frozen and gated.** `scripts/run_pact_place_v104_phase0_v2.py`
+recomputes every binding from file bytes instead of trusting embedded self-hashes
+— a tampered artifact carries a tampered self-hash too — and refuses missing,
+stale, partial, agent-created, or extra-video approvals. It creates no gate
+directory and no row before the approval validates; run without one it exits with
+`missing owner approval`. The 24-row manifest and every threshold are unchanged
+(≥20/24 clean, ≥9/12 per side, zero pendant contact, ≥15 mm per-frame clearance),
+and a passing gate sets only `phase0_passed: true`.
+
+`human_approval.json` is absent and was not created. The required owner-authored
+schema is documented in the packet's `REVIEW.md`, and a test asserts that the
+documented bindings are exactly what the verifier demands, so a record pasted
+from it validates as written.
+
+### V10.5 V9.5 real clutter with a static pendant — stopped at Step 2
+
+[`docs/PACT_PLACE_V105_V95_CLUTTER_STATIC_PENDANT_PLAN.md`](docs/PACT_PLACE_V105_V95_CLUTTER_STATIC_PENDANT_PLAN.md)
+restores the settled **fixture-free V9.5** household-object clutter — the V5
+scene, `PactPlaceCorridorV93Sampler`, `load_v95_palette`, `build_v95_layout`,
+all four layout families, movable free bodies — and asks whether the V10.4
+pendant shape can be moved inboard far enough to matter while keeping a 15 mm
+floor. **It cannot, anywhere in the registered lattice.**
+
+Lineage note, because it has been confused before: V10.5 restores V9.5 real
+clutter but **not** the V9.5 low wall. The 51% seed-robustness result came from
+the fixture-free V9.3 sampler with the settled V9.5 palette and layout.
+
+**Step 1 passed.** Strict-clean status was re-derived from each retained row's
+own telemetry rather than imported; all 192 fragility rows agree with their
+stored boolean. **98/192 = 51.0% clean**, reproducing the recorded
+`mean_clean_rate` of 0.5104 exactly, with every family/side cell above the
+two-per-cell floor (minimum 8). Sixteen rows replayed through the live V9.3
+sampler: 16/16 reconstructed, TCP residual 0.067–0.163 mm against a 1 mm limit.
+
+**Step 2 selected nothing.** 96 scenes (32 `(x, r)` bundles × 3 poses) were
+scored against **all 98** retained strict-clean trajectories with no early
+termination and no failed rows. **0 survivors.** The binding predicate is
+universal: **32/32** bundles put at least one historically clean trajectory
+below the 15 mm floor. The trade is stark — the bundle with the most risk-band
+witnesses (`x = 0.780, r = 0.325`, **153** in the 15–35 mm band) drops to
+**3.4 mm** on its worst clean row, while the bundle with the highest floor
+(`x = 0.800, r = 0.320`) reaches only **9.4 mm**. Outboard raises the floor and
+empties the band; inboard fills the band and causes contact. The best candidates
+sit at the lattice's outer corner, and the plan forbids extending it, so it was
+not extended.
+
+Predicates 1, 2, 5, 6 and 9 rejected nothing: the pendant never intersected a
+household object, panel, tray or shell, initial clearance always held, the
+grasp/lift/release windows never bound, every closest-risk witness bound a
+lobe or stem on its own route side, and no clean row was made unclean by
+reconstruction differences.
+
+**A predicate defect was found and corrected before reporting.** The first
+aggregation counted a direction as a risk-band witness only if the row's
+*overall* lobe/stem minimum was already in band. Since the loaded outbound leg
+almost always passes closer than the inbound leg, that gate suppressed every
+inbound witness and made the lattice look as though the inbound approach never
+came near the pendant. It does — with the gate removed, `left:inbound`
+witnesses appear in 22/32 bundles and `right:inbound` in 5/32. The selection was
+unchanged (0 survivors either way) but the reported *reason* would have been
+wrong. The uncorrected run is preserved beside the corrected one, which was
+re-derived from the same stored per-row scores without re-measuring anything.
+
+Steps 3–6 did not run. Step 3 refuses without a selected bundle and was verified
+to do so. No contact certificate, causal comparison, production scene, manifest,
+review packet, video, or Phase-0 row exists, and no V10.5 scene was published.
+
+**One consequence for V10.4.** Registering `PactPlaceCorridorV105Sampler`
+required editing `enclosure_reach.py` and `run_pact_place_expert_screen.py`,
+both bound by the V10.4 Step-0 preflight. The V10.4 review-v2 provenance bridge
+now fails — correctly. Its data checks all still pass and the six published MP4s
+are byte-identical; only the scoped implementation binding moved. By V10.4's own
+rule that an implementation-hash change requires a new version rather than
+silent regeneration, that packet is no longer approvable as published and was
+**not** regenerated here.
+
+### V10.5 audit and erratum — the narrative was wrong in two places
+
+The V10.5 report above was audited as untrusted input
+(`scripts/audit_pact_place_v105.py`,
+`diagnostics_output/pact_place_v105_audit/audit.json`). All four sealed
+artifacts re-hash correctly, all **192/192** retained rows verify, and an
+**independently written flat-table aggregator** reproduced 9408 evaluations and
+agreed with the primary scorer on **192 checks with 0 disagreements**.
+
+Two reported claims were wrong:
+
+- **"21 active clutter free bodies" is incorrect — there are 8 household
+  objects.** The 21 counted nested MuJoCo mesh child bodies and the four
+  corridor chicane bodies as distinct objects.
+- **"`x=0.800, r=0.320` is the highest-floor candidate" is incorrect.** The
+  highest symmetric floor is `x=0.800, r=0.325` at **13.4388185 mm**, with
+  **zero** exact contacts and only **2 of 294** evaluations below 15 mm.
+  `r=0.320` is second at 9.3898271 mm. The V10.5 write-up mislabelled the
+  runner-up as the best, which understated how close the symmetric family came.
+
+98/192 strict-clean is confirmed valid (4 rows retain no trajectory; all four
+are unclean, so the count is unaffected). `risk_group_counts` was an ambiguous
+name and is now `band_evaluations_by_group`: per `pose_id|side` group, the
+number of **(trajectory, pose) evaluations** whose lobe/stem minimum lies in the
+15–35 mm band.
+
+### V10.6 asymmetric static pendant — qualifies geometrically, stopped at Step 4b
+
+[`docs/PACT_PLACE_V106_ASYMMETRIC_PENDANT_PLAN.md`](docs/PACT_PLACE_V106_ASYMMETRIC_PENDANT_PLAN.md)
+gives the two lobes independent radii — one **global** assembly for every layout
+family, not per-family placement — on a registered 9-candidate lattice
+(`x = 0.800`, `r_neg ∈ {0.325, 0.330, 0.335}`, `r_pos ∈ {0.295, 0.300, 0.305}`,
+three poses). The crossbar's centre and half-length are derived from the
+asymmetric stem endpoints, and connectivity is asserted rather than assumed.
+
+**The asymmetry resolves what V10.5 could not.** Scored against all 98 clean
+trajectories, **9/9 candidates are admissible and 4 achieve universal ≥15 mm
+clearance** — the preregistered fallback was never needed. Selected
+`x = 0.800, r_neg = 0.335, r_pos = 0.305`: **18.5703 mm** absolute minimum over
+294 evaluations, **0** below floor, **0** contacts, 10.0 mm to the environment.
+The negative side needs 30 mm more radius than the positive side, which no
+symmetric assembly can express.
+
+Certification passed: three compiled-static scenes with enclosing bounds, and
+**6/6** witnesses where recorded, compiled, signed `mj_geomDistance` and
+analytic GJK agree to five decimals. Every witness binds a lobe against a robot
+link during `outbound_vessel_pass`, independently confirming the audited finding
+that the meaningful near-pass is loaded outbound. Raw proximity causality passed
+all seven checks (4512 left / 2004 right changed values, ratio 2.251,
+deterministic, link5/link6 responding).
+
+**The stop is the contact-risk certificate.** No group reaches robot-pendant
+contact within the registered 30 mm displacement cap; `neg5|right` ends
+**1.018 mm** short. Three defects in that probe were found and fixed before the
+result was accepted — inherited contacts counted as new, a TCP-to-centre
+direction that *increased* clearance because the limiting pair is
+`lobe_0 ↔ fr3_link7`, and the held cup's grasp contacts counted as collisions.
+Both uncorrected runs are preserved. Per the plan, a failed Step-4 check stops
+V10.6, so the 48-row review pool and the six-video packet did not run.
+
+Whether the 30 mm straight-line TCP probe is too weak an operationalization, or
+the pendant is genuinely too far to matter, is an owner decision — changing the
+probe after seeing the result is what preregistration forbids.
+
+**Resolved in V10.7 (see below): the V10.6 Step-4b outcome is *diagnostically
+inconclusive*, not a demonstration of physical infeasibility.** A cardinal-axis
+TCP excursion is one weak operationalization of reachability; it holds the
+carried target fixed while the arm moves and explores no joint-space or
+closest-point direction. Repaired, it reaches contact in 1/6 groups. The V10.6
+record's causal hashes have also been corrected: it originally quoted
+`a0127a5e…`/`e1f4e76c…`, which belong to the *first, defective* probe run; the
+published artifact is payload `6338f85c…`, raw `b4464ea4…`.
+
+### V10.7 qualification repair — qualified offline, stopped at the pool floor
+
+[`docs/PACT_PLACE_V107_QUALIFICATION_REPAIR_PLAN.md`](docs/PACT_PLACE_V107_QUALIFICATION_REPAIR_PLAN.md)
+treats V10.6 geometry results as historical inputs and changes two things. The
+ranking becomes **risk-aligned** — universal ≥15 mm clearance first, extra
+clearance demoted *below* relevance — and the cardinal-TCP contact test is
+**retired as a gate**. The registered relevance test is natural exact clearance
+in the 15–35 mm band for all six `pose × side` groups plus six-group causal
+sensing.
+
+An immutable `specification.json` binds 9 sealed inputs and 20 implementation
+files before anything runs; every later stage re-verifies it. Score NPZs are
+written before the JSON that binds their raw SHA-256. The drift guard fired for
+real once, halting a chain when a test file was edited after sealing.
+
+**Selection changed.** The risk-aligned ranking picks
+`x = 0.800, r_neg = 0.330, r_pos = 0.300` — derived, with the runner asserting
+its sorted ranking equals an independent argmin and a test asserting no bundle
+string appears in the runner. V10.6 had picked `0.335|0.305`, the *farthest*
+admissible pendant. The new pick holds 16.8435 mm minimum over 294 evaluations,
+0 below floor, 0 contacts, and the most risk-band evaluations (142) of the four
+universal candidates; all six group minima lie in 15–35 mm.
+
+Certification passed on **11 witnesses** (6 minima + 5 threshold-near) with
+**zero** instrument disagreements. Six-group causality passed for **all six**
+groups (2012–4648 changed values, 7–9 sensors, side ratio 2.251).
+
+**The pool is where it stops: 21/48 clean = 43.8%**, Wilson 95%
+[30.7%, 57.7%], against floors of 32/48 overall and 14/24 · 8/16 · 4/8 on the
+balance axes. No packet was published, no video rendered.
+
+**The pendant caused none of it.** Across 48 episodes there were **zero**
+robot-or-target pendant contacts, and clean rows held 16.05–56.08 mm of
+clearance. The failures are ordinary V9.5 household clutter: 21 clutter
+contacts, 12 stability events, 11 task failures.
+
+43.8% brackets the V9.5 corpus's own **51.0%** (98/192). The 32/48 floor and the
+inherited 16/24 Phase-0 bar are both **66.7%** — above what this expert achieves
+on real V9.5 clutter, exactly as the V9.5 fragility artifact recorded
+(~12.25/24 expected against a bar of 20). The floor did what it was registered
+to do: it refused a curated six-video packet for an environment that would not
+pass Phase 0. **The open question is now the Phase-0 bar itself, not the
+geometry** — the environment is qualified offline and causally sensed.
+
+Three plumbing defects were exposed only by running real episodes, each fixed
+with a regression test and each failed run preserved: the scene-hash guard read
+`cfg.scene_xml` instead of `task_sampler_config.scene_xml_paths` (48/48
+`sampling_failure`); the retained row copies an explicit subset of `policy_info`
+that omitted the V10.5/V10.6 telemetry keys (48/48 `missing_frame_telemetry`);
+and the policy read `_pact_manifest_row`, a sampler attribute it does not have
+(null clearance on every completed episode).
+
+**Owner visual-review packet (review-only).**
+[`diagnostics_output/pact_place_v107_owner_review/`](diagnostics_output/pact_place_v107_owner_review/)
+holds six complete retained trajectories replayed from the failed pool, with
+[`REVIEW.md`](diagnostics_output/pact_place_v107_owner_review/REVIEW.md) and an
+immutable manifest. **The pool remains failed at 21/48**; the packet exists
+solely for owner visual assessment and neither reinterprets that result nor
+authorizes downstream work. Nothing was executed to produce it — no episode, no
+resampling, no `env.step`, no geometry or threshold change — and the manifest
+rows were rebuilt from the frozen generator with each `row_sha256` asserted
+against the executed row.
+
+Selection is derived from `pool.json`, not hand-picked: among 54,846 valid
+subsets balanced one-per-pose per outcome class, three left and three right, and
+≥2 layout families per class, it minimises the maximum pendant clearance (then
+total, then role-index tuple), which is what makes the pendant risk visually
+legible without altering an episode. Chosen: successes 6/28/8, failures
+45/40/20, with episode minima 24.248 / 26.307 / 16.052 mm and 21.517 / 21.399 /
+13.081 mm. **All three failures are natural; none is an induced pendant
+collision.** `scripts/verify_pact_place_v107_owner_review.py` re-derives the
+selection and reconciles every hash, frame count and duration independently —
+0 problems.

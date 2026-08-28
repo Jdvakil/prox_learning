@@ -34,7 +34,7 @@ from pact_place_corridor_contract import (  # noqa: E402
 
 TERMINAL_STATUSES = {"complete", "sampling_failure", "infrastructure_failure"}
 DISALLOWED_INITIAL_CONTACT_CLASSES = frozenset(
-    {"hazard_bar", "other_environment", "clutter"}
+    {"hazard_bar", "other_environment", "clutter", "mounted_fixture"}
 )
 ENDPOINT_SCALAR_KEYS = (
     "object_start_position_m",
@@ -183,6 +183,14 @@ def derive_failure_cause(
             "terminal_symptom": terminal_tracking.get("check_failure_branch"),
         }
     totals = (contact_audit or {}).get("contact_class_totals") or {}
+    mounted_contacts = int(totals.get("mounted_fixture", 0))
+    if mounted_contacts:
+        return {
+            "code": "mounted_fixture_collision_contact",
+            "causal_priority": "upstream_environment_interaction",
+            "mounted_fixture_contact_entries": mounted_contacts,
+            "terminal_symptom": terminal_tracking.get("check_failure_branch"),
+        }
     clutter_contacts = int(totals.get("clutter", 0))
     if clutter_contacts:
         return {
@@ -228,6 +236,12 @@ def _make_config(
         PactPlaceCorridorV96ClusterSampler,
         PactPlaceCorridorV97HazardSampler,
         PactPlaceCorridorV98PendantSampler,
+        PactPlaceCorridorV99PendantSampler,
+        PactPlaceCorridorV10CompoundPendantSampler,
+        PactPlaceCorridorV102RaisedPendantSampler,
+        PactPlaceCorridorV104Sampler,
+        PactPlaceCorridorV105Sampler,
+        PactPlaceCorridorV106Sampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -236,6 +250,22 @@ def _make_config(
     )
     config.task_type = "pick_and_place"
     config.task_horizon = 900
+    if sampler_class == "PactPlaceCorridorV106Sampler":
+        from pact_place_v106_contract import TASK_HORIZON_V106
+
+        config.task_horizon = int(TASK_HORIZON_V106)
+    if sampler_class == "PactPlaceCorridorV105Sampler":
+        # Registered V10.5 horizon. Same budget as V10.4: the one slowed
+        # initial segment costs about six extra control steps.
+        from pact_place_v105_runtime import TASK_HORIZON_V105
+
+        config.task_horizon = int(TASK_HORIZON_V105)
+    if sampler_class == "PactPlaceCorridorV104Sampler":
+        # Registered V10.4 horizon; the one slowed initial segment costs about
+        # six extra control steps against a 900-step V6c budget.
+        from pact_place_v104_runtime import TASK_HORIZON_V104
+
+        config.task_horizon = int(TASK_HORIZON_V104)
     config.end_on_success = False
     config.task_config = PickAndPlaceTaskConfig(task_cls=PactPlaceCorridorTask)
     config.proximity_sensor_period_ms = 0.0
@@ -244,8 +274,20 @@ def _make_config(
         MOLMO
         / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
     )
-    if sampler_class == "PactPlaceCorridorV97HazardSampler":
+    if sampler_class == "PactPlaceCorridorV106Sampler":
+        sampler_cls = PactPlaceCorridorV106Sampler
+    elif sampler_class == "PactPlaceCorridorV105Sampler":
+        sampler_cls = PactPlaceCorridorV105Sampler
+    elif sampler_class == "PactPlaceCorridorV104Sampler":
+        sampler_cls = PactPlaceCorridorV104Sampler
+    elif sampler_class == "PactPlaceCorridorV102RaisedPendantSampler":
+        sampler_cls = PactPlaceCorridorV102RaisedPendantSampler
+    elif sampler_class == "PactPlaceCorridorV97HazardSampler":
         sampler_cls = PactPlaceCorridorV97HazardSampler
+    elif sampler_class == "PactPlaceCorridorV10CompoundPendantSampler":
+        sampler_cls = PactPlaceCorridorV10CompoundPendantSampler
+    elif sampler_class == "PactPlaceCorridorV99PendantSampler":
+        sampler_cls = PactPlaceCorridorV99PendantSampler
     elif sampler_class == "PactPlaceCorridorV98PendantSampler":
         sampler_cls = PactPlaceCorridorV98PendantSampler
     elif sampler_class == "PactPlaceCorridorV96ClusterSampler":
@@ -260,6 +302,8 @@ def _make_config(
         sampler_cls = PactPlaceCorridorV9Sampler
     elif sampler_class == "PactPlaceCorridorV5Sampler":
         sampler_cls = PactPlaceCorridorV5Sampler
+    elif scene.name == "pact_place_corridor_v10.xml":
+        sampler_cls = PactPlaceCorridorV10CompoundPendantSampler
     elif scene.name == "pact_place_corridor_v5.xml":
         sampler_cls = PactPlaceCorridorV5Sampler
     elif scene.name == "pact_place_corridor_v4.xml":
@@ -426,6 +470,7 @@ def run_row(
                 and int(totals["hazard_bar"]) == 0
                 and int(totals["other_environment"]) == 0
                 and int(totals.get("clutter", 0)) == 0
+                and int(totals.get("mounted_fixture", 0)) == 0
                 and not clutter_stability_events
                 and place_receptacle_outside_placement(audit) == 0
             )
@@ -487,6 +532,19 @@ def run_row(
                 "planned_bow_m": policy_info.get("planned_bow_m"),
                 "bow_fallback_taken": bool(policy_info.get("bow_fallback_taken")),
                 "bow_diagnostics": policy_info.get("bow_diagnostics"),
+                "pendant_bow": policy_info.get("pendant_bow"),
+                "pendant_v99": policy_info.get("pendant_v99"),
+                "pendant_v10": policy_info.get("pendant_v10"),
+                "pendant_frame_telemetry": policy_info.get("pendant_frame_telemetry"),
+                "pact_v104_frame_telemetry": policy_info.get("pact_v104_frame_telemetry"),
+                "pact_v104_speed_amendment": policy_info.get("pact_v104_speed_amendment"),
+                # The retained row copies an explicit subset of policy_info, so
+                # a new environment's telemetry must be listed here or it is
+                # silently dropped and every row reads as missing telemetry.
+                "pact_v105_frame_telemetry": policy_info.get("pact_v105_frame_telemetry"),
+                "pact_v105_speed_amendment": policy_info.get("pact_v105_speed_amendment"),
+                "pact_v106_frame_telemetry": policy_info.get("pact_v106_frame_telemetry"),
+                "pact_v106_speed_amendment": policy_info.get("pact_v106_speed_amendment"),
                 "contact_audit": audit,
                 "clutter_stability_events": clutter_stability_events,
                 "clutter_stability_ok": not bool(clutter_stability_events),
@@ -571,6 +629,15 @@ def summarize(
         > 0
         for item in complete
     )
+    mounted_fixture_contact = sum(
+        int(
+            item.get("contact_audit", {})
+            .get("contact_class_totals", {})
+            .get("mounted_fixture", 0)
+        )
+        > 0
+        for item in complete
+    )
     bow_fallback = sum(item.get("bow_fallback_taken") is True for item in complete)
     try:
         row_root = Path(output_root).resolve().relative_to(ROOT)
@@ -621,6 +688,7 @@ def summarize(
         },
         "other_environment_contact_episodes": other_contact,
         "clutter_contact_episodes": clutter_contact,
+        "mounted_fixture_contact_episodes": mounted_fixture_contact,
         "place_receptacle_contact_exempt": False,
         "place_receptacle_exempt_during_placement_including_preplace": True,
         "place_receptacle_outside_placement_episodes": sum(

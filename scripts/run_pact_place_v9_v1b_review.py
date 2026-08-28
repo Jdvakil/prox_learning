@@ -18,7 +18,7 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import cv2
 import numpy as np
@@ -161,12 +161,15 @@ def overlay(
     terminal: bool,
     clean_success: bool,
     clip_label: str = "",
+    extra_lines: Sequence[str] | None = None,
 ) -> np.ndarray:
     width, height = pane_wh
     composite = np.concatenate([wrist_rgb, third_rgb, review_rgb], axis=1)
     frame = cv2.cvtColor(composite, cv2.COLOR_RGB2BGR)
+    extra = [str(line) for line in (extra_lines or []) if str(line)]
+    header_h = 104 + 22 * len(extra)
     shade = frame.copy()
-    cv2.rectangle(shade, (0, 0), (frame.shape[1], 104), (0, 0, 0), thickness=-1)
+    cv2.rectangle(shade, (0, 0), (frame.shape[1], header_h), (0, 0, 0), thickness=-1)
     cv2.rectangle(shade, (0, height - 46), (frame.shape[1], height), (0, 0, 0), thickness=-1)
     frame = cv2.addWeighted(shade, 0.68, frame, 0.32, 0.0)
 
@@ -202,6 +205,8 @@ def overlay(
         (120, 235, 120) if skin_detect else (180, 180, 220),
         1,
     )
+    for extra_index, line in enumerate(extra):
+        put(line, (12, 120 + extra_index * 22), 0.40, (230, 220, 160), 1)
     put("wrist (RGB policy view)", (12, height - 20), 0.42, (245, 245, 245), 1)
     put("third-person", (width + 12, height - 20), 0.42, (245, 245, 245), 1)
     put(
@@ -288,6 +293,8 @@ def _render_review_video(job: dict[str, Any]) -> dict[str, Any]:
     )
 
     row = job["row"]
+    scene_xml = Path(job["scene_xml"]) if job.get("scene_xml") else SCENE_XML
+    sampler_class = str(row.get("sampler_class") or job.get("sampler_class") or V9_SAMPLER_CLASS)
     steps = list(json.loads(Path(job["trajectory_path"]).read_text())["steps"])
     output = Path(job["video_path"])
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -298,8 +305,8 @@ def _render_review_video(job: dict[str, Any]) -> dict[str, Any]:
         scratch = Path(tempfile.mkdtemp(prefix="pact_place_v9_review_"))
         config = _make_config(
             scratch / "dummy.json",
-            scene_xml=SCENE_XML,
-            sampler_class=str(row.get("sampler_class") or V9_SAMPLER_CLASS),
+            scene_xml=scene_xml,
+            sampler_class=sampler_class,
         )
         sampler = config.task_sampler_config.task_sampler_class(config)
         sampler.seed_task_sampling(int(result["selected_seed"]["seed_u32"]))
@@ -457,6 +464,35 @@ def _render_review_video(job: dict[str, Any]) -> dict[str, Any]:
                 max_drift = max(max_drift, float(np.linalg.norm(cur_p - init_p)))
 
             terminal = step_idx == n_steps - 1
+            extra_lines = list(job.get("extra_overlay_lines") or [])
+            if not extra_lines:
+                route = result.get("pendant_v10") or {}
+                inbound = dict(route.get("inbound") or {})
+                outbound = dict(route.get("outbound") or {})
+                extra_lines = [
+                    (
+                        f"route {inbound.get('rewrite_primitive') or outbound.get('rewrite_primitive') or 'none'} "
+                        f"mode={inbound.get('qualification_mode') or outbound.get('qualification_mode') or 'historical'} "
+                        f"in_y={inbound.get('lane_y_m')} out_y={outbound.get('lane_y_m')} "
+                        f"pad={inbound.get('padding_m')}/{outbound.get('padding_m')}"
+                    ),
+                    (
+                        f"detour in={inbound.get('min_abs_detour_m')} out={outbound.get('min_abs_detour_m')} "
+                        f"endpoints={inbound.get('frozen_endpoint_preserved')}/{outbound.get('frozen_endpoint_preserved')} "
+                        f"fallback={inbound.get('fallback_taken')}/{outbound.get('fallback_taken')} "
+                        f"clip={inbound.get('clipped')}/{outbound.get('clipped')} "
+                        f"wrong={inbound.get('wrong_way')}/{outbound.get('wrong_way')}"
+                    ),
+                    (
+                        f"offline_strict_env used="
+                        f"{inbound.get('offline_strict_environment_preclearance_used')}/"
+                        f"{outbound.get('offline_strict_environment_preclearance_used')} "
+                        f"intentionally_not="
+                        f"{inbound.get('strict_environment_preclearance_intentionally_not_used')}/"
+                        f"{outbound.get('strict_environment_preclearance_intentionally_not_used')} "
+                        f"contact={result.get('failure_cause') or 'none'}"
+                    ),
+                ]
             frame = overlay(
                 wrist_rgb,
                 third_rgb,
@@ -476,6 +512,7 @@ def _render_review_video(job: dict[str, Any]) -> dict[str, Any]:
                 terminal=terminal,
                 clean_success=bool(result.get("clean_success")),
                 clip_label=str(job.get("clip_label") or ""),
+                extra_lines=extra_lines,
             )
             writer.write(frame)
 

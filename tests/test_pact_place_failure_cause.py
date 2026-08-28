@@ -31,6 +31,21 @@ def test_stability_collision_precedes_empty_gripper_symptom() -> None:
     assert cause["step"] == 105
 
 
+def test_mounted_fixture_contact_precedes_clutter_and_terminal() -> None:
+    cause = derive_failure_cause(
+        task_success=False,
+        contact_audit={
+            "contact_class_totals": {"mounted_fixture": 12, "clutter": 80}
+        },
+        clutter_stability_events=[],
+        terminal_tracking={"check_failure_branch": "pos_err"},
+    )
+    assert cause is not None
+    assert cause["code"] == "mounted_fixture_collision_contact"
+    assert cause["mounted_fixture_contact_entries"] == 12
+    assert cause["terminal_symptom"] == "pos_err"
+
+
 def test_review_filename_uses_causal_collision_label() -> None:
     stem = clip_stem(
         9,

@@ -52,13 +52,14 @@ def aggregate(arm: str, results: list[dict], drivers: list[dict]) -> dict[str, A
         ),
         "contact_episode_counts": {
             contact: sum(
-                result["contact_audit"]["contact_class_totals"][contact] > 0
+                result["contact_audit"]["contact_class_totals"].get(contact, 0) > 0
                 for result in results
             )
             for contact in (
                 "hazard_bar",
                 "other_environment",
                 "clutter",
+                "mounted_fixture",
                 "place_receptacle",
             )
         },
