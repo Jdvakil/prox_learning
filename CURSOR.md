@@ -4,9 +4,8 @@ Living log of agent edits in this checkout. Read this before new work. Append
 a dated block after every non-trivial change. Do not replace history; add
 below.
 
-**Science / method notes** live in [`PACT.md`](PACT.md). **Paper-agent brief**
-lives in [`paper.md`](paper.md). **How to run the repo** lives in
-[`README.md`](README.md). This file is only *what the agent changed, why, how, when*.
+Science, claims, and how to run live in [`README.md`](README.md). This file is
+only *what the agent changed, why, how, when*.
 
 How to append:
 
