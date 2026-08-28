@@ -326,6 +326,130 @@ def test_trained_checkpoint_keeps_calibrated_validity_threshold(tmp_path):
     assert enc.payload["min_surface_range_m"] == pytest.approx(0.005)
     assert enc.payload["max_surface_range_m"] == pytest.approx(0.20)
     assert len(enc.payload["sensor_order"]) == 40
+    assert enc.frozen is True
+    assert enc.policy_tap == "embedding"
+    assert enc.act_feat_dim == 32
+
+
+def test_readout_tap_shape_and_grads():
+    frozen = load_encoder("surface_embedding", device="cpu")
+    live = load_encoder(
+        "surface_embedding", device="cpu", frozen=False, policy_tap="readout"
+    )
+    prox = torch.full((2, 3, 8, 8), 0.10)
+    z_frozen = frozen.policy_features(prox)
+    z_live = live.policy_features(prox)
+    assert z_frozen.shape == (2, 3, 32)
+    assert z_live.shape == (2, 3, 128)
+    assert not any(p.requires_grad for p in frozen.parameters())
+    assert any(p.requires_grad for p in live.parameters())
+    assert z_live.requires_grad
+    z_live.sum().backward()
+    assert any(
+        p.grad is not None and float(p.grad.abs().sum()) > 0
+        for p in live.parameters()
+    )
+
+
+def test_finetune_encode_pooled_history_keeps_grad():
+    from encoders.pact import encode_for_act
+
+    enc = load_encoder(
+        "surface_embedding", device="cpu", frozen=False, policy_tap="readout"
+    )
+    hist = torch.full((1, 8, 2, 8, 8), 0.11)
+    out = encode_for_act(enc, hist)
+    assert out.shape == (1, 2, 128)
+    assert out.requires_grad
+    out.mean().backward()
+    assert any(p.grad is not None for p in enc.parameters())
+
+
+def test_load_pretrained_then_unfreeze(tmp_path):
+    from encoders.surface_geometry import (
+        SURFACE_READOUT_DIM,
+        SurfaceEmbeddingEncoder,
+        save_encoder_checkpoint,
+        save_frozen_checkpoint,
+    )
+
+    path = tmp_path / "pact_surface_embedding_encoder_v1.pt"
+    save_frozen_checkpoint(path, SurfaceEmbeddingEncoder(), "embedding")
+    enc = SurfaceGeometryEncoder(
+        kind="embedding",
+        checkpoint=path,
+        device="cpu",
+        frozen=False,
+        policy_tap="readout",
+    )
+    assert enc.frozen is False
+    assert enc.policy_tap == "readout"
+    assert enc.act_feat_dim == SURFACE_READOUT_DIM
+    assert all(p.requires_grad for p in enc.parameters())
+    dest = tmp_path / "prox_encoder_best.pt"
+    save_encoder_checkpoint(
+        dest,
+        enc.inner,
+        "embedding",
+        extra={"policy_tap": "readout"},
+        frozen=False,
+    )
+    payload = torch.load(dest, map_location="cpu")
+    assert payload["frozen"] is False
+    assert payload["policy_tap"] == "readout"
+    assert payload["policy_feature_dim"] == SURFACE_READOUT_DIM
+
+
+def test_hdf5_layout_force_live_skips_baked_tokens(tmp_path):
+    import h5py
+    from encoders.pact import hdf5_proximity_layout
+
+    with h5py.File(tmp_path / "episode_0.hdf5", "w") as handle:
+        obs = handle.create_group("observations")
+        obs.create_dataset(
+            "proximity_embeddings", data=np.zeros((2, 40, 32), dtype=np.float32)
+        )
+        obs.create_dataset(
+            "proximity", data=np.zeros((2, 40, 8, 8), dtype=np.float32)
+        )
+    assert hdf5_proximity_layout(tmp_path, "surface_embedding") == "embeddings"
+    assert (
+        hdf5_proximity_layout(
+            tmp_path, "surface_embedding", force_live=True
+        )
+        == "raw_causal"
+    )
+
+
+def test_resolve_act_encoder_load_prefers_finetuned(tmp_path):
+    from encoders.pact import resolve_act_encoder_load
+    from encoders.surface_geometry import (
+        SurfaceEmbeddingEncoder,
+        save_encoder_checkpoint,
+        save_frozen_checkpoint,
+    )
+
+    pretrain = tmp_path / "pretrain.pt"
+    save_frozen_checkpoint(pretrain, SurfaceEmbeddingEncoder(), "embedding")
+    best = tmp_path / "prox_encoder_best.pt"
+    save_encoder_checkpoint(
+        best,
+        SurfaceEmbeddingEncoder(),
+        "embedding",
+        extra={"policy_tap": "readout"},
+        frozen=False,
+    )
+    kwargs = resolve_act_encoder_load(
+        tmp_path,
+        {
+            "finetune_prox_encoder": True,
+            "prox_encoder_ckpt": str(pretrain),
+            "prox_policy_tap": "readout",
+        },
+    )
+    assert kwargs["checkpoint"] == str(best)
+    assert kwargs["frozen"] is False
+    assert kwargs["policy_tap"] == "readout"
 
 
 def test_training_sampler_balances_classes_and_softens_sensor_imbalance():

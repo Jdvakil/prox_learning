@@ -22,6 +22,32 @@ Newest session at the top.
 
 ---
 
+## 2026-08-28 — unfreeze geometry encoder; CLS readout at train/eval
+
+- **When:** 2026-08-28 America/Denver. User: no frozen encoder; finetune with readout
+  tokens at inference.
+- **Why:** Frozen 32-d embedding bake is a compressor tap. Policy never trained the
+  stem. User wants the CLS hidden state as the ACT token, same forward train and eval,
+  grads on.
+- **What:**
+  - `SurfaceEmbeddingEncoder` / `SurfaceProximityEncoder`: `encode_sequence` +
+    `readout_tokens()` → `(B, 1, 128)` CLS. Pretrain heads unchanged.
+  - `SurfaceGeometryEncoder(frozen=False, policy_tap="readout")` → `(B, S, 128)`,
+    grads on. Default still frozen 32-d / XYZ.
+  - `--finetune_prox_encoder` on `imitate_episodes.py`: needs
+    `--prox_feature surface_embedding` + `--prox_encoder_ckpt`. Forces
+    `raw_causal`. Adds encoder param group. Saves `prox_encoder_best.pt`.
+  - Eval / heatmap load that file, tap=readout, `.eval()`.
+  - Do not bake tokens for this arm.
+- **Files:** `encoders/surface_geometry.py`, `encoders/pact.py`, `encoders/__init__.py`,
+  `encoders/__main__.py`, `tests/test_encoders.py`, `submodules/act/imitate_episodes.py`,
+  `detr/main.py`, `eval_act_obstacle.py`, `attn_heatmap.py`, `eval_train_set.py`,
+  `README.md`.
+- **Not done:** user runs pytest, then the train command in README §4.4. No eval
+  number. Not a claim. Headline stays PACT-raw.
+
+---
+
 ## 2026-08-27 14:07 MDT — docs: hallway n=50 ACT vs PACT-raw
 
 - **When:** 2026-08-27 ~14:07 America/Denver. User: write n=50 into markdown; they push.

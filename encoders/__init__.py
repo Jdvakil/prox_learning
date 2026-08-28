@@ -4,7 +4,8 @@ Names are the *job*, not the coauthor:
 
 - ``peak_closeness`` — 40-sensor snapshot → per-sensor peak closeness (PACT-raw)
 - ``nearest_surface`` — causal 8×8 history → sensor-local XYZ (20 cm cap)
-- ``surface_embedding`` — same net → frozen 32-d geometry embedding
+- ``surface_embedding`` — same net → 32-d geometry embedding (frozen tap)
+  or 128-d CLS readout (finetune tap)
 
 Usage (repo root on ``PYTHONPATH``, which is true when you run from
 ``/home/jaydv/code/prox_learning``):
@@ -91,8 +92,8 @@ def list_encoders() -> dict[str, str]:
             "Input (B, 40, 8, 8) m → (B, 40, 3). Pass checkpoint for trained weights."
         ),
         "surface_embedding": (
-            "Same net. Frozen 32-d geometry embedding. "
-            "Input (B, 40, 8, 8) m → (B, 40, 32). Pass checkpoint for trained weights."
+            "Same net. 32-d frozen embedding, or 128-d CLS readout when "
+            "unfrozen. Input (B, 40, 8, 8) m → (B, 40, 32) or (B, 40, 128)."
         ),
     }
 
@@ -118,6 +119,8 @@ def load_encoder(
     if key == "peak_closeness":
         layout = kwargs.pop("layout", "per_sensor")
         tokens_per_sensor = kwargs.pop("tokens_per_sensor", 8)
+        kwargs.pop("frozen", None)
+        kwargs.pop("policy_tap", None)
         if kwargs:
             raise TypeError(f"unexpected kwargs for peak_closeness: {sorted(kwargs)}")
         return PeakClosenessEncoder(
@@ -130,6 +133,8 @@ def load_encoder(
     if key in ("cvae_trunk", "cvae_delta"):
         layout = kwargs.pop("layout", "global")
         tokens_per_sensor = kwargs.pop("tokens_per_sensor", 8)
+        kwargs.pop("frozen", None)
+        kwargs.pop("policy_tap", None)
         if kwargs:
             raise TypeError(f"unexpected kwargs for {key}: {sorted(kwargs)}")
         feature = "trunk" if key == "cvae_trunk" else "delta"
@@ -142,12 +147,20 @@ def load_encoder(
         )
     kwargs.pop("layout", None)
     kwargs.pop("tokens_per_sensor", None)
+    frozen = bool(kwargs.pop("frozen", True))
+    policy_tap = kwargs.pop("policy_tap", None)
     if kwargs:
         raise TypeError(f"unexpected kwargs for {key}: {sorted(kwargs)}")
     from .surface_geometry import SurfaceGeometryEncoder as _SurfaceGeometryEncoder
 
     kind = "xyz" if key == "nearest_surface" else "embedding"
-    return _SurfaceGeometryEncoder(kind=kind, checkpoint=checkpoint, device=device)
+    return _SurfaceGeometryEncoder(
+        kind=kind,
+        checkpoint=checkpoint,
+        device=device,
+        frozen=frozen,
+        policy_tap=policy_tap,
+    )
 
 
 _SURFACE_EXPORTS = {
@@ -157,6 +170,7 @@ _SURFACE_EXPORTS = {
     "SCHEMA_SURFACE_EMBEDDING",
     "SCHEMA_SURFACE_XYZ",
     "SURFACE_EMBEDDING_DIM",
+    "SURFACE_READOUT_DIM",
     "SurfaceEmbeddingEncoder",
     "SurfaceGeometryEncoder",
     "SurfaceProximityEncoder",
@@ -166,10 +180,12 @@ _SURFACE_EXPORTS = {
     "load_frozen_proximity_encoder",
     "load_frozen_surface_embedding_encoder",
     "load_frozen_surface_encoder",
+    "load_surface_encoder",
     "nearest_surface_target",
     "nearest_surface_target_batch",
     "pack_frozen_payload",
     "parameter_count",
+    "save_encoder_checkpoint",
     "save_frozen_checkpoint",
     "to_causal_closeness",
 }
@@ -179,6 +195,7 @@ _PACT_EXPORTS = {
     "encode_for_act",
     "hdf5_proximity_layout",
     "is_geometry_feature",
+    "resolve_act_encoder_load",
 }
 
 
@@ -209,6 +226,7 @@ __all__ = [
     "PeakClosenessEncoder",
     "ProxCVAEEncoder",
     "SURFACE_EMBEDDING_DIM",
+    "SURFACE_READOUT_DIM",
     "SafetyCVAE",
     "SurfaceEmbeddingEncoder",
     "SurfaceGeometryEncoder",
@@ -228,12 +246,15 @@ __all__ = [
     "load_frozen_proximity_encoder",
     "load_frozen_surface_embedding_encoder",
     "load_frozen_surface_encoder",
+    "load_surface_encoder",
     "nearest_surface_target",
     "nearest_surface_target_batch",
     "pack_frozen_payload",
     "parameter_count",
     "resolve_encoder_name",
     "resolve_prox_layout",
+    "resolve_act_encoder_load",
+    "save_encoder_checkpoint",
     "save_frozen_checkpoint",
     "SCHEMA_SURFACE_EMBEDDING",
     "SCHEMA_SURFACE_XYZ",

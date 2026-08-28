@@ -56,7 +56,8 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 | **Headline 66% → 40%** (invisible-cell collisions, n=50, p = 0.016) | **The paper number.** Source datagen (`hybrid_obstacle_v1` / `hybrid_invis_obstacle_v1`), converted `obstacle_prox_v2`, and July ckpts were wiped 2026-08-24. Archived metrics: `reports/eval_summaries/`. Not retrainable from this checkout until you collect again. |
 | Hallway `pact_place_corridor_v5` n=50 | **Done, not a paper number.** Place-success 28% vs 42% (ACT vs PACT-raw, Fisher p = 0.21); bar hit 34% vs 36% (p = 1.0). No safety win. Success gap is noise. n=20 smoke (15% vs 35%, bar 30% vs 20%) was luck. Data + ckpts + eval on disk. |
 | Gate-bar v3.1 collect | **Parked.** Only `assets/datagen/hybrid_gate_bar_check` (and clutter check). Do not collect 200 until the Visible check shows a tall pole in the doorway and an ~18 cm veer. |
-| Surface-embedding bake into ACT | **Parked.** Compressor gate passed (20.6 mm XYZ, 100% validity). That grades the compressor, not the robot. ACT `load_data` still shuffles 80/20 — reuse `split_manifest.json` before `--prox_feature surface_embedding`. Headline arm stays PACT-raw. |
+| Surface-embedding bake into ACT | **Parked** as an ablation. Compressor gate passed (20.6 mm XYZ). Do not bake 32-d HDF5 tokens. |
+| Surface readout finetune | **Live path.** Unfreeze the pretrained geometry net. ACT sees 128-d CLS readout tokens, same at train and eval. `--finetune_prox_encoder`. No numbers yet. Headline arm stays PACT-raw until this eval exists. |
 | Safety-CVAE `cvae_v3/model.pt` | **Deleted 2026-08-24.** PACT-raw never needed it. Retrain from `assets/safety/sweep_v3.h5` if you want the reflex demos. `--prox_feature trunk` / `delta` need those weights and are negative controls. |
 | Live training set | `act_style_data/pact_place_corridor_v5` (152 eps). Not `obstacle_prox_v2`. |
 
@@ -73,6 +74,7 @@ hidden-bar cell did.
 |---|---|
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
 | reproduce hallway ACT vs PACT | [§4.3](#43-live--hallway-act-vs-pact) |
+| finetune the skin encoder into ACT | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | collect the next obstacle set (gate-bar) | [§4.7](#47-parked--gate-bar-v31) |
 | understand the 66% → 40% result | [§6](#6-headline-result) |
 | see every test in one line | [§7](#7-every-experiment-one-line) |
@@ -329,8 +331,48 @@ python -m encoders.probe \
 ```
 
 **152-episode run (2026-08-25):** 100% balanced validity and recall; recon pixel P/R 87.4 / 95.3%;
-XYZ MAE **20.6 mm** (0.6 mm over the 20 mm preference). Hard gate pass; bake is an **ablation**
-only. Do not train `--prox_feature surface_embedding` until ACT reuses `split_manifest.json`.
+XYZ MAE **20.6 mm** (0.6 mm over the 20 mm preference). Hard gate pass. That grades the
+compressor, not the robot.
+
+**Do not bake 32-d tokens.** Frozen embedding HDF5 is an ablation. The live geometry arm
+finetunes the encoder and feeds the **128-d CLS readout** (one token per sensor) into ACT at
+train and at eval. Same forward. No `encode_tokens`. Live layout is `raw_causal` (last 8 pooled
+steps). ACT still shuffles 80/20 vs the encoder `split_manifest.json` — this is a policy
+experiment, not an honest compressor test.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning/submodules/act
+export PYTHONPATH="$PWD:$PYTHONPATH"
+export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+
+CKPT=/home/jaydv/code/prox_learning/experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt
+
+python imitate_episodes.py \
+    --task_name pact_place_corridor_v5 --policy_class ACT --ckpt_dir ckpts \
+    --kl_weight 10 --chunk_size 50 --hidden_dim 512 --dim_feedforward 3200 \
+    --batch_size 8 --lr 1e-5 --seed 0 --num_epochs 2000 \
+    --use_proximity --prox_feature surface_embedding --prox_layout per_sensor \
+    --prox_encoder_ckpt "$CKPT" \
+    --finetune_prox_encoder \
+    --wandb_run_name pact_place_corridor_readout_s0
+```
+
+Eval (after the run dir exists). Loads `prox_encoder_best.pt` from that dir, not the pretrain
+file. Same `eval_act_place_corridor.py` flags as [§4.3](#43-live--hallway-act-vs-pact).
+
+```bash
+PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
+MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
+    --ckpt_dir ckpts/pact_place_corridor_v5/<dated>_pact_place_corridor_readout_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50 \
+    --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
+```
+
+`--prox_policy_tap readout` is implied by `--finetune_prox_encoder`. Do **not** pass baked
+`--prox_feature surface_embedding` without `--finetune_prox_encoder` until ACT reuses
+`split_manifest.json`. Headline corridor arm remains vanilla vs PACT-raw until this eval
+exists.
 
 Do **not** mix closeness maps: peak-closeness `D_MAX = 0.5 m`; surface geometry
 `MAX_SURFACE_RANGE_M = 0.20 m` (trap 16).
@@ -610,6 +652,7 @@ The dumb version won.
 | **ACT** | Off-the-shelf action-chunking transformer. Cameras + joints. Nothing about it is ours except the proximity token path |
 | **vanilla** | Cameras only. The comparison point |
 | **PACT-raw** | Same brain + 40 peak-closeness numbers. **The one that works** |
+| **PACT-readout** | Same brain + 40 live 128-d CLS tokens; encoder finetuned with ACT. No number yet |
 | **PACT-trunk** | Same brain + processed reflex embedding. Did nothing. Abandoned |
 | **success rate** | Fraction that completed the task (lift or place) |
 | **collision rate** | Fraction that touched something they should not. Lower is better |
@@ -702,6 +745,7 @@ recovered from old runs. Gate-bar eval uses it.
 | Is the doorway pole in the way? | Short XML peg vs gripper path | Sideslip 1.6–7.2 cm; often misses; did not collect | [§4.7](#47-parked--gate-bar-v31) |
 | Corridor skin fire | 20 cm vs 50 cm hits on hallway rows | 11% vs 40% of tiles; `link1_sensor_5` on 100% (self-view) | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Compress the skin | 32-d embedding + XYZ | Validity 100%; XYZ 20.6 mm; pixel 87/95%. Compressor grade, not policy | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
+| Finetune readout into ACT | Unfreeze encoder; 128-d CLS tokens live at train/eval | **No policy number yet** | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Hallway pick-and-place | 152 coauthor demos, n=50 | Place **28% vs 42%** (p = 0.21); bar **34% vs 36%** (p = 1.0). **Not a paper number** | [§4.3](#43-live--hallway-act-vs-pact) |
 | Collect a taller doorway pole | 44 cm pole on TCP line | 0 examples collected | [§4.7](#47-parked--gate-bar-v31) |
 | Blur cameras only at test time | Freeze policy, blur RGB, leave skin | 0 of these tests run | [§4.8](#48-parked--test-time-camera-blur) |
@@ -746,6 +790,7 @@ cell. Do not sell the Safety-CVAE as the PACT encoder.
   after its own summaries exist.
 - Place-corridor local n=50: **do not cite.** No safety win. Do not replace 66→40. Coauthor
   "PACT beats ACT" on this hallway is not reproduced.
+- Finetuned CLS-readout PACT: **no eval yet.** Do not cite. Commands in [§4.4](#44-live--corridor-skin-fire--compress-skin).
 - Multi-seed. Real robot / hardware skin. Sim only.
 - PACT uses a trained CVAE **encoder** at runtime. Runtime `z = 0`. The encoder `q(z | skin, dq)`
   is train-only. The arm that worked **bypasses** the CVAE: `--prox_feature raw`.
@@ -893,8 +938,14 @@ Two front-ends, named by **job**. Same live tensor `(B, 40, 8, 8)` metres. Run f
 |---|---|---|---|---|
 | `peak_closeness` | `encoders/peak_closeness.py` | per-sensor peak closeness, 50 cm cap | `(B, 40, 1)` in `[0, 1]` | none (headline PACT-raw) |
 | `cvae_trunk` / `cvae_delta` | same | frozen Safety-CVAE retreat taps | `(B, 1, 256)` / `(B, 1, 7)` | `model.pt` (deleted) |
-| `nearest_surface` | `encoders/surface_geometry.py` | nearest in-range XYZ, 20 cm cap | `(B, 40, 3)` metres | frozen `pact_surface_encoder_v1` |
-| `surface_embedding` | same | 32-d geometry embedding | `(B, 40, 32)` | frozen `pact_surface_embedding_encoder_v1` |
+| `nearest_surface` | `encoders/surface_geometry.py` | nearest in-range XYZ, 20 cm cap | `(B, 40, 3)` metres | `pact_surface_encoder_v1` (frozen default) |
+| `surface_embedding` | same | frozen 32-d embedding **or** 128-d CLS readout | `(B, 40, 32)` / `(B, 40, 128)` | pretrained `pact_surface_embedding_encoder_v1`; finetune writes `prox_encoder_best.pt` |
+
+The **live geometry arm** skips bake. `--finetune_prox_encoder` loads the pretrained stem,
+unfreezes it, and injects the CLS hidden state (`encoded[:, 0]`, 128-d) as `proximity_positions`
+`(B, 40, 128)`. Auxiliary 32-d embedding / XYZ / recon heads stay on the net for the compressor
+trainer; ACT does not use them. Eval loads `prox_encoder_best.pt` from the ACT run dir and runs
+the same readout.
 
 ```python
 from encoders import load_encoder
@@ -902,13 +953,21 @@ from encoders import load_encoder
 prox = ...  # (B, 40, 8, 8) metres
 raw = load_encoder("peak_closeness")
 feat = raw.policy_features(prox)   # (B, 40, 1)
+
+live = load_encoder(
+    "surface_embedding",
+    checkpoint="…/pact_surface_embedding_encoder_v1.pt",
+    frozen=False,
+    policy_tap="readout",
+)
+tok = live.policy_features(prox)   # (B, 40, 128) CLS readout; grads on
 ```
 
 Aliases: `raw` → `peak_closeness`, `xyz` → `nearest_surface`, `embedding` → `surface_embedding`.
 Without a geometry checkpoint the conv-transformer is random (shapes still work).
 `submodules/act/prox_cvae.py` is a shim to `encoders/peak_closeness.py`.
 
-Bake frozen 32-d tokens (after the split-manifest wire):
+Bake frozen 32-d tokens (ablation only, after the split-manifest wire):
 
 ```bash
 python -m encoders.encode_tokens \
@@ -942,6 +1001,9 @@ Published PACT train set: **105** demos (47 visible / 49 hidden / 29 none).
 |---|---|---|
 | `--use_proximity` | off | turns on PACT |
 | `--prox_feature` | `raw` | `raw` / `trunk` / `delta` / geometry names |
+| `--finetune_prox_encoder` | off | unfreeze geometry stem; CLS readout; live `raw_causal` |
+| `--prox_policy_tap` | (implied) | `embedding` (frozen 32-d) / `readout` (128-d CLS) / `xyz` |
+| `--prox_encoder_lr` | same as `--lr` | encoder param group when finetuning |
 | `--prox_layout` | `per_sensor` | `per_sensor` = 40 named tokens; `global` = published mash |
 | `--prox_tokens_per_sensor` | 8 | K; `per_sensor` clamps 8→1 |
 | `--chunk_size` | — | 100 on published grid; **50** on hallway and gate-bar |
@@ -1229,16 +1291,19 @@ Every one of these has already cost real time.
     = **invalid**, not a regression target. Never mix `featurize_*` and `depth_to_closeness` on
     the same tensor.
 17. **Two argument parsers.** New train flags must also be no-ops in `detr/main.py`.
-18. **Depth minimum range** scales with scene size. At room scale the default deletes the whole
+18. **Baked 32-d tokens skip the encoder.** `proximity_layout=embeddings` sets the train-time
+    encoder to `None`. `--finetune_prox_encoder` forces `raw_causal` and keeps the net. Eval of a
+    finetuned run must load `prox_encoder_best.pt`, not the pretrain file.
+19. **Depth minimum range** scales with scene size. At room scale the default deletes the whole
     band this project studies. Set it small and re-check datasets.
-19. **Hiding something from cameras hides it from depth too** if you use transparency or the
+20. **Hiding something from cameras hides it from depth too** if you use transparency or the
     wrong display layer. Invisible-to-cameras, visible-to-skin needs separate geom-group masks —
     the hidden-bar mechanism.
-20. **Driver mismatch is silent until GPU use.** Preflight `torch.cuda.is_available()`; reboot if
+21. **Driver mismatch is silent until GPU use.** Preflight `torch.cuda.is_available()`; reboot if
     false. A 2026-07-28 overnight run failed every attempt.
-21. **Test the summary step of a long script** before the long part. Blur grid ran 13 h then
+22. **Test the summary step of a long script** before the long part. Blur grid ran 13 h then
     printed an empty table (timestamp prefix vs glob).
-22. **Place-corridor eval with videos on OOMs** near ~30/50 (~2 GB/ep). Metrics-only is the path.
+23. **Place-corridor eval with videos on OOMs** near ~30/50 (~2 GB/ep). Metrics-only is the path.
 
 ---
 
@@ -1273,6 +1338,8 @@ Every one of these has already cost real time.
   July grid not reproducible from this disk.
 - **Place-corridor local n=50 (2026-08-27).** 28% vs 42% place, 34% vs 36% bar. No safety win.
   **Not a paper number.** Do not replace 66→40.
+- **Readout finetune (2026-08-28).** Drop frozen 32-d bake for the live geometry arm. ACT consumes
+  128-d CLS tokens; encoder trains with BC. No eval yet. Not a claim.
 
 ### Unresolved
 

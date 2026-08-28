@@ -25,7 +25,13 @@ def main() -> None:
 
     emb = load_encoder("surface_embedding", device="cpu")
     z = emb.policy_features(prox)
-    print(f"surface_embedding {tuple(z.shape)}  (untrained weights)")
+    print(f"surface_embedding {tuple(z.shape)}  (untrained weights, frozen 32-d)")
+
+    live = load_encoder(
+        "surface_embedding", device="cpu", frozen=False, policy_tap="readout"
+    )
+    r = live.policy_features(prox)
+    print(f"surface_readout   {tuple(r.shape)}  (untrained weights, live 128-d CLS)")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,12 @@
 """ACT glue for skin encoders.
 
-Frozen 32-d / XYZ tokens go into DETRVAE + EpisodicDataset from here.
+Live readout tokens (or frozen 32-d / XYZ) go into DETRVAE + EpisodicDataset
+from here. Finetune path never reads baked HDF5 embeddings.
 """
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
@@ -28,6 +30,8 @@ def build_pact_encoder(
     device: str = "cuda",
     layout: str = "per_sensor",
     tokens_per_sensor: int = 8,
+    frozen: bool = True,
+    policy_tap: str | None = None,
 ):
     """One constructor for peak-closeness, CVAE taps, and surface geometry."""
     return load_encoder(
@@ -36,12 +40,21 @@ def build_pact_encoder(
         device=device,
         layout=layout,
         tokens_per_sensor=tokens_per_sensor,
+        frozen=frozen,
+        policy_tap=policy_tap,
     )
 
 
-def hdf5_proximity_layout(dataset_dir: str | Path, feature: str) -> str:
+def hdf5_proximity_layout(
+    dataset_dir: str | Path,
+    feature: str,
+    *,
+    force_live: bool = False,
+) -> str:
     """How the dataloader should read skin from episode_0.hdf5."""
     key = resolve_encoder_name(feature)
+    if force_live and key in GEOMETRY_KEYS:
+        return "raw_causal"
     first = Path(dataset_dir) / "episode_0.hdf5"
     if not first.is_file():
         return "raw_causal" if key in GEOMETRY_KEYS else "raw"
@@ -89,3 +102,37 @@ def causal_pooled_window(proximity: np.ndarray, timestep: int) -> np.ndarray:
             (np.repeat(block[:1], 8 - len(block), axis=0), block), axis=0
         )
     return block
+
+
+def resolve_act_encoder_load(
+    ckpt_dir: str | Path,
+    pcfg: dict[str, Any],
+    cli_ckpt: str = "",
+) -> dict[str, Any]:
+    """Kwargs for ``build_pact_encoder`` at eval. Finetuned run-dir weights win."""
+    finetune = bool(pcfg.get("finetune_prox_encoder"))
+    tap = pcfg.get("prox_policy_tap") or None
+    if not tap:
+        tap = "readout" if finetune else None
+    run_dir = Path(ckpt_dir)
+    finetuned_name = pcfg.get("prox_encoder_finetuned") or "prox_encoder_best.pt"
+    candidates = [
+        run_dir / finetuned_name,
+        run_dir / "prox_encoder_best.pt",
+        run_dir / "prox_encoder.pt",
+    ]
+    checkpoint = None
+    if finetune:
+        for path in candidates:
+            if path.is_file():
+                checkpoint = str(path)
+                break
+    if checkpoint is None:
+        checkpoint = cli_ckpt or pcfg.get("prox_encoder_ckpt") or None
+        if checkpoint == "":
+            checkpoint = None
+    return {
+        "checkpoint": checkpoint,
+        "frozen": not finetune,
+        "policy_tap": tap,
+    }

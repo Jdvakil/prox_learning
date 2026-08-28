@@ -35,8 +35,10 @@ CAUSAL_CONTROL_STEPS = 8
 SUBFRAMES_PER_CONTROL_STEP = 4
 CAUSAL_FRAMES = CAUSAL_CONTROL_STEPS * SUBFRAMES_PER_CONTROL_STEP
 SURFACE_EMBEDDING_DIM = 32
+SURFACE_READOUT_DIM = 128
 SCHEMA_SURFACE_XYZ = "pact_surface_encoder_v1"
 SCHEMA_SURFACE_EMBEDDING = "pact_surface_embedding_encoder_v1"
+POLICY_TAPS = frozenset({"embedding", "readout", "xyz"})
 
 
 def native_camera_intrinsic(
@@ -336,8 +338,11 @@ class SurfaceProximityEncoder(nn.Module):
             nn.Linear(128, 4),
         )
         nn.init.normal_(self.cls_token, std=0.02)
+        self.n_readout = 1
+        self.readout_dim = SURFACE_READOUT_DIM
 
-    def forward(self, frames: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    def encode_sequence(self, frames: torch.Tensor) -> torch.Tensor:
+        """Frame tokens + CLS readout. ``(B, 1+32, 128)``. Gradients flow."""
         if frames.ndim != 4 or frames.shape[1:] != (CAUSAL_FRAMES, 8, 8):
             raise ValueError(
                 f"expected (B,{CAUSAL_FRAMES},8,8), got {tuple(frames.shape)}"
@@ -345,10 +350,17 @@ class SurfaceProximityEncoder(nn.Module):
         batch = frames.shape[0]
         features = self.conv_stem(frames.reshape(batch * CAUSAL_FRAMES, 1, 8, 8))
         tokens = self.frame_projection(features.flatten(1)).reshape(
-            batch, CAUSAL_FRAMES, 128
+            batch, CAUSAL_FRAMES, SURFACE_READOUT_DIM
         )
         cls = self.cls_token.expand(batch, -1, -1)
-        encoded = self.transformer(self.position(torch.cat((cls, tokens), dim=1)))
+        return self.transformer(self.position(torch.cat((cls, tokens), dim=1)))
+
+    def readout_tokens(self, frames: torch.Tensor) -> torch.Tensor:
+        """CLS hidden states the policy should consume. ``(B, 1, 128)``."""
+        return self.encode_sequence(frames)[:, : self.n_readout]
+
+    def forward(self, frames: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        encoded = self.encode_sequence(frames)
         output = self.head(encoded[:, 0])
         xyz_normalized = output[:, :3]
         validity_logit = output[:, 3]
@@ -376,11 +388,11 @@ class SurfaceProximityEncoder(nn.Module):
 
 
 class SurfaceEmbeddingEncoder(nn.Module):
-    """Frozen 32-D geometry embedding with surface/validity auxiliary heads.
+    """Conv-transformer with a CLS readout plus 32-d embedding auxiliary heads.
 
-    The policy consumes the embedding. A reconstruction head preserves the
-    latest native 8x8 closeness map, while the auxiliary head keeps the v1
-    nearest-surface and validity metrics directly comparable.
+    Pretrain uses the 32-d embedding (XYZ / validity / reconstruction). The
+    ACT policy can consume either that frozen embedding or the 128-d CLS
+    readout (same token, no extra projection) and fine-tune the stem.
     """
 
     def __init__(self, embedding_dim: int = SURFACE_EMBEDDING_DIM) -> None:
@@ -427,10 +439,11 @@ class SurfaceEmbeddingEncoder(nn.Module):
             nn.Linear(128, 64),
         )
         nn.init.normal_(self.cls_token, std=0.02)
+        self.n_readout = 1
+        self.readout_dim = SURFACE_READOUT_DIM
 
-    def forward(
-        self, frames: torch.Tensor
-    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    def encode_sequence(self, frames: torch.Tensor) -> torch.Tensor:
+        """Frame tokens + CLS readout. ``(B, 1+32, 128)``. Gradients flow."""
         if frames.ndim != 4 or frames.shape[1:] != (CAUSAL_FRAMES, 8, 8):
             raise ValueError(
                 f"expected (B,{CAUSAL_FRAMES},8,8), got {tuple(frames.shape)}"
@@ -440,12 +453,20 @@ class SurfaceEmbeddingEncoder(nn.Module):
             frames.reshape(batch * CAUSAL_FRAMES, 1, 8, 8)
         )
         tokens = self.frame_projection(features.flatten(1)).reshape(
-            batch, CAUSAL_FRAMES, 128
+            batch, CAUSAL_FRAMES, SURFACE_READOUT_DIM
         )
         cls = self.cls_token.expand(batch, -1, -1)
-        encoded = self.transformer(
-            self.position(torch.cat((cls, tokens), dim=1))
-        )
+        return self.transformer(self.position(torch.cat((cls, tokens), dim=1)))
+
+    def readout_tokens(self, frames: torch.Tensor) -> torch.Tensor:
+        """CLS hidden states the policy should consume. ``(B, 1, 128)``."""
+        return self.encode_sequence(frames)[:, : self.n_readout]
+
+    def forward(
+        self, frames: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        encoded = self.encode_sequence(frames)
+        batch = frames.shape[0]
         embedding = self.embedding_head(encoded[:, 0])
         auxiliary = self.auxiliary_head(embedding)
         xyz_normalized = auxiliary[:, :3]
@@ -511,24 +532,56 @@ def _validate_checkpoint_semantics(payload: dict[str, Any]) -> None:
         raise ValueError("surface encoder sensor_order differs from runtime")
 
 
+def _apply_freeze(model: nn.Module, frozen: bool) -> None:
+    if frozen:
+        model.eval()
+        for parameter in model.parameters():
+            parameter.requires_grad_(False)
+        return
+    for parameter in model.parameters():
+        parameter.requires_grad_(True)
+
+
+def load_surface_encoder(
+    checkpoint_path: str | Path,
+    *,
+    kind: str,
+    map_location: str | torch.device = "cpu",
+    frozen: bool = True,
+) -> tuple[nn.Module, dict[str, Any]]:
+    """Load a ``pact_surface_*_v1`` file. ``frozen=False`` keeps grads for ACT."""
+    if kind not in ("xyz", "embedding"):
+        raise ValueError(f"kind must be 'xyz' or 'embedding', got {kind!r}")
+    payload = torch.load(checkpoint_path, map_location=map_location)
+    expected = SCHEMA_SURFACE_XYZ if kind == "xyz" else SCHEMA_SURFACE_EMBEDDING
+    if payload.get("schema_version") != expected:
+        raise ValueError(
+            f"not a {expected} checkpoint (got {payload.get('schema_version')!r})"
+        )
+    if kind == "embedding" and payload.get("policy_feature_dim") not in (
+        None,
+        SURFACE_EMBEDDING_DIM,
+        SURFACE_READOUT_DIM,
+    ):
+        raise ValueError("front-end policy feature dimension changed")
+    _validate_checkpoint_semantics(payload)
+    model: nn.Module = (
+        SurfaceProximityEncoder() if kind == "xyz" else SurfaceEmbeddingEncoder()
+    )
+    model.load_state_dict(payload["model_state_dict"])
+    _apply_freeze(model, frozen)
+    return model, payload
+
+
 def load_frozen_surface_encoder(
     checkpoint_path: str | Path,
     *,
     map_location: str | torch.device = "cpu",
 ) -> tuple[SurfaceProximityEncoder, dict[str, Any]]:
-    payload = torch.load(checkpoint_path, map_location=map_location)
-    if payload.get("schema_version") != SCHEMA_SURFACE_XYZ:
-        raise ValueError("not a pact_surface_encoder_v1 checkpoint")
-        raise ValueError("not a pact_surface_encoder_v1 checkpoint")
-    if payload.get("frozen") is not True:
-        raise ValueError("front-end checkpoint is not marked frozen")
-    _validate_checkpoint_semantics(payload)
-    model = SurfaceProximityEncoder()
-    model.load_state_dict(payload["model_state_dict"])
-    model.eval()
-    for parameter in model.parameters():
-        parameter.requires_grad_(False)
-    return model, payload
+    model, payload = load_surface_encoder(
+        checkpoint_path, kind="xyz", map_location=map_location, frozen=True
+    )
+    return model, payload  # type: ignore[return-value]
 
 
 def load_frozen_surface_embedding_encoder(
@@ -536,21 +589,10 @@ def load_frozen_surface_embedding_encoder(
     *,
     map_location: str | torch.device = "cpu",
 ) -> tuple[SurfaceEmbeddingEncoder, dict[str, Any]]:
-    payload = torch.load(checkpoint_path, map_location=map_location)
-    if payload.get("schema_version") != SCHEMA_SURFACE_EMBEDDING:
-        raise ValueError("not a pact_surface_embedding_encoder_v1 checkpoint")
-        raise ValueError("not a pact_surface_embedding_encoder_v1 checkpoint")
-    if payload.get("frozen") is not True:
-        raise ValueError("front-end checkpoint is not marked frozen")
-    if payload.get("policy_feature_dim") != SURFACE_EMBEDDING_DIM:
-        raise ValueError("front-end policy feature dimension changed")
-    _validate_checkpoint_semantics(payload)
-    model = SurfaceEmbeddingEncoder()
-    model.load_state_dict(payload["model_state_dict"])
-    model.eval()
-    for parameter in model.parameters():
-        parameter.requires_grad_(False)
-    return model, payload
+    model, payload = load_surface_encoder(
+        checkpoint_path, kind="embedding", map_location=map_location, frozen=True
+    )
+    return model, payload  # type: ignore[return-value]
 
 
 def load_frozen_proximity_encoder(
@@ -588,6 +630,7 @@ def pack_frozen_payload(
             "sensor_fovy_deg": SENSOR_FOVY_DEG,
             "sensor_order": list(HYBRID_SKIN_SENSOR_ORDER),
             "causal_frames": CAUSAL_FRAMES,
+            "readout_dim": SURFACE_READOUT_DIM,
             "preprocessing_schema": "pact_surface_closeness_v1",
         }
     elif kind == "embedding":
@@ -595,6 +638,7 @@ def pack_frozen_payload(
             "schema_version": SCHEMA_SURFACE_EMBEDDING,
             "frozen": True,
             "policy_feature_dim": SURFACE_EMBEDDING_DIM,
+            "readout_dim": SURFACE_READOUT_DIM,
             "model_state_dict": model.state_dict(),
             "max_surface_range_m": MAX_SURFACE_RANGE_M,
             "min_surface_range_m": MIN_SURFACE_RANGE_M,
@@ -623,14 +667,47 @@ def save_frozen_checkpoint(
     return dest
 
 
+def save_encoder_checkpoint(
+    path: str | Path,
+    model: nn.Module,
+    kind: str,
+    extra: dict[str, Any] | None = None,
+    *,
+    frozen: bool = True,
+) -> Path:
+    """Write a surface encoder ``.pt``. ``frozen=False`` marks an ACT-finetuned net."""
+    extra = dict(extra or {})
+    extra["frozen"] = bool(frozen)
+    if not frozen and extra.get("policy_tap") == "readout":
+        extra["policy_feature_dim"] = SURFACE_READOUT_DIM
+    return save_frozen_checkpoint(path, model, kind, extra)
+
+
+def _default_policy_tap(kind: str, policy_tap: str | None) -> str:
+    if policy_tap is None:
+        return "xyz" if kind == "xyz" else "embedding"
+    if policy_tap not in POLICY_TAPS:
+        raise ValueError(
+            f"policy_tap must be one of {sorted(POLICY_TAPS)}, got {policy_tap!r}"
+        )
+    if policy_tap == "embedding" and kind != "embedding":
+        raise ValueError("policy_tap='embedding' needs kind='embedding'")
+    if policy_tap == "xyz" and kind != "xyz":
+        raise ValueError("policy_tap='xyz' needs kind='xyz'")
+    return policy_tap
+
+
 class SurfaceGeometryEncoder(nn.Module):
     """Full-skin wrapper around the shared conv-transformer.
 
-    ``kind='xyz'`` -> ``(B, S, 3)`` local metres (zeros when invalid).
-    ``kind='embedding'`` -> ``(B, S, 32)`` geometry embedding.
+    ``kind='xyz'`` + tap ``xyz`` -> ``(B, S, 3)`` local metres (zeros when invalid).
+    ``kind='embedding'`` + tap ``embedding`` -> ``(B, S, 32)`` frozen compressor.
+    Either kind + tap ``readout`` -> ``(B, S, 128)`` CLS hidden (ACT finetune).
 
     Without ``checkpoint`` the net is randomly initialized (shape tests / wiring).
-    Pass a frozen ``pact_surface_*_v1`` checkpoint for real features.
+    Pass a ``pact_surface_*_v1`` checkpoint for real features. ``frozen=False``
+    leaves grads on so ACT can finetune the stem; train and eval then both run
+    the live readout, not baked HDF5 tokens.
     """
 
     def __init__(
@@ -640,12 +717,16 @@ class SurfaceGeometryEncoder(nn.Module):
         device: str = "cpu",
         *,
         inner: nn.Module | None = None,
+        frozen: bool = True,
+        policy_tap: str | None = None,
     ) -> None:
         super().__init__()
         if kind not in ("xyz", "embedding"):
             raise ValueError(f"kind must be 'xyz' or 'embedding', got {kind!r}")
         self.kind = kind
         self.name = "nearest_surface" if kind == "xyz" else "surface_embedding"
+        self.frozen = bool(frozen)
+        self.policy_tap = _default_policy_tap(kind, policy_tap)
         self.sensor_order: list[str] = list(HYBRID_SKIN_SENSOR_ORDER)
         self.n_sensors = len(self.sensor_order)
         self.n_act_sensors = self.n_sensors
@@ -657,30 +738,35 @@ class SurfaceGeometryEncoder(nn.Module):
         if inner is not None:
             self.inner = inner
         elif checkpoint is not None:
-            loader = (
-                load_frozen_surface_encoder
-                if kind == "xyz"
-                else load_frozen_surface_embedding_encoder
+            self.inner, self.payload = load_surface_encoder(
+                checkpoint,
+                kind=kind,
+                map_location=device,
+                frozen=self.frozen,
             )
-            self.inner, self.payload = loader(checkpoint, map_location=device)
         else:
             self.inner = (
                 SurfaceProximityEncoder()
                 if kind == "xyz"
                 else SurfaceEmbeddingEncoder()
             )
-            self.inner.eval()
 
-        self.act_feat_dim = 3 if kind == "xyz" else SURFACE_EMBEDDING_DIM
+        if self.policy_tap == "readout":
+            self.act_feat_dim = SURFACE_READOUT_DIM
+        elif self.kind == "xyz":
+            self.act_feat_dim = 3
+        else:
+            self.act_feat_dim = SURFACE_EMBEDDING_DIM
         self.feat_dim = self.act_feat_dim
         self.validity_threshold = float(
             self.payload.get("validity_threshold", 0.5) if self.payload else 0.5
         )
-        self.inner.eval()
-        for parameter in self.inner.parameters():
-            parameter.requires_grad_(False)
+        _apply_freeze(self.inner, self.frozen)
         self.to(device)
-        self.eval()
+        if self.frozen:
+            self.eval()
+        else:
+            self.train()
 
     def _windows_on_device(
         self,
@@ -706,7 +792,26 @@ class SurfaceGeometryEncoder(nn.Module):
             feat = feat.squeeze(0)
         return feat
 
-    @torch.no_grad()
+    def _encode_policy(
+        self,
+        skin: torch.Tensor | np.ndarray,
+        unit: str,
+    ) -> torch.Tensor:
+        windows, squeeze_batch, squeeze_sensor = self._windows_on_device(skin, unit)
+        batch, n_sensors = windows.shape[:2]
+        flat = windows.reshape(batch * n_sensors, CAUSAL_FRAMES, 8, 8)
+        if self.policy_tap == "readout":
+            feat = self.inner.readout_tokens(flat).reshape(batch * n_sensors, -1)
+        elif self.kind == "xyz":
+            feat, _valid, _probabilities = self.inner.predict(
+                flat, validity_threshold=self.validity_threshold
+            )
+        else:
+            feat = self.inner.policy_features(flat)
+        return self._reshape_out(
+            feat, batch, n_sensors, squeeze_batch, squeeze_sensor
+        )
+
     def policy_features(
         self,
         skin: torch.Tensor | np.ndarray,
@@ -714,18 +819,11 @@ class SurfaceGeometryEncoder(nn.Module):
         unit: str = "metres",
     ) -> torch.Tensor:
         """Encode a skin tensor. See ``to_causal_closeness`` for accepted shapes."""
-        windows, squeeze_batch, squeeze_sensor = self._windows_on_device(skin, unit)
-        batch, n_sensors = windows.shape[:2]
-        flat = windows.reshape(batch * n_sensors, CAUSAL_FRAMES, 8, 8)
-        if self.kind == "xyz":
-            feat, _valid, _probabilities = self.inner.predict(
-                flat, validity_threshold=self.validity_threshold
-            )
-        else:
-            feat = self.inner.policy_features(flat)
-        return self._reshape_out(feat, batch, n_sensors, squeeze_batch, squeeze_sensor)
+        if self.frozen:
+            with torch.no_grad():
+                return self._encode_policy(skin, unit)
+        return self._encode_policy(skin, unit)
 
-    @torch.no_grad()
     def forward(
         self,
         skin: torch.Tensor | np.ndarray,
@@ -774,7 +872,6 @@ class SurfaceGeometryEncoder(nn.Module):
             "reconstruction": pack(reconstruction),
         }
 
-    @torch.no_grad()
     def encode_pooled_history(
         self,
         history: torch.Tensor | np.ndarray,
@@ -801,17 +898,16 @@ class SurfaceGeometryEncoder(nn.Module):
             )
         batch, n_hist, n_sensors, height, width = x.shape
         if n_hist < CAUSAL_CONTROL_STEPS:
-            pad = x[:, :1].expand(batch, CAUSAL_CONTROL_STEPS - n_hist, n_sensors, height, width)
+            pad = x[:, :1].expand(
+                batch, CAUSAL_CONTROL_STEPS - n_hist, n_sensors, height, width
+            )
             x = torch.cat((pad, x), dim=1)
         elif n_hist > CAUSAL_CONTROL_STEPS:
             x = x[:, -CAUSAL_CONTROL_STEPS:]
         # (B, 8, S, 8, 8) -> (B, S, 32, 8, 8)
         x = x.permute(0, 2, 1, 3, 4)
-        x = (
-            x.unsqueeze(3)
-            .expand(-1, -1, -1, SUBFRAMES_PER_CONTROL_STEP, -1, -1)
-            .reshape(batch, n_sensors, CAUSAL_FRAMES, height, width)
-        )
+        x = x.unsqueeze(3).repeat(1, 1, 1, SUBFRAMES_PER_CONTROL_STEP, 1, 1)
+        x = x.reshape(batch, n_sensors, CAUSAL_FRAMES, height, width)
         feat = self.policy_features(x, unit=unit)
         if squeeze_batch:
             return feat[0]
