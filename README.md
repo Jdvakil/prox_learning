@@ -74,6 +74,7 @@ hidden-bar cell did.
 |---|---|
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
 | reproduce hallway ACT vs PACT | [§4.3](#43-live--hallway-act-vs-pact) |
+| run Amine's 40-row place protocol on local ckpts | [§4.3.1](#431-live--amine-40-row-place-protocol) |
 | finetune the skin encoder into ACT | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | collect the next obstacle set (gate-bar) | [§4.7](#47-parked--gate-bar-v31) |
 | understand the 66% → 40% result | [§6](#6-headline-result) |
@@ -285,7 +286,8 @@ python imitate_episodes.py \
     --wandb_run_name pact_place_corridor_raw_s0
 
 # 3. Eval. Metrics-only by default (no MP4/HDF5). PYTHONPATH worktree FIRST.
-#    Vanilla skips 40-sensor 60 Hz depth. PACT still renders 8×8 skin at policy rate.
+#    Vanilla skips 40-sensor 60 Hz depth. --temp_agg_off gates PACT 8×8 skin
+#    to chunk queries (not every control step).
 PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
     --ckpt_dir ckpts/pact_place_corridor_v5/20260825_161821_act_place_corridor_s0 \
@@ -302,6 +304,81 @@ MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
 `--save_trajectories` restores the slow datagen path (~16 min/ep, OOM near 30). Default
 metrics-only: ACT ~1 min/ep, PACT-raw ~15.5 min/ep. Place-corridor is **not** the obstacle
 `--eval_cell` loop; the bar is in the sampler.
+
+<a id="431-live--amine-40-row-place-protocol"></a>
+### 4.3.1 Live — Amine 40-row place protocol on local ckpts
+
+Amine's launcher (`run_pact_place_eval_chunk100.py` on his box) is a hashed contract:
+chunk **100**, frozen **32-d** embeddings, `run_manifest.json`, encoder sha
+`6fd2dd03…`, seed 3101, 10 workers, plus `PACT_PERMUTED` from a `(40, 900, 40, 32)`
+token plan. That worker is `amine/act/eval_pact_place_chunk100_row.py`. It **cannot**
+`strict=True` load the three local hallway ckpts (chunk 50; raw K=8 dim 1; readout
+128-d CLS). `PACT_PERMUTED` stays off until a 32-d plan exists for these models.
+
+What we **do** reuse: his frozen **40 scenes** (20 left / 20 right, master seed
+`2026082101`, `PactPlaceCorridorV2Sampler`, house 1). Same XML, same contact audit.
+Policy load stays `eval_act_place_corridor.py` (`prox_config.json`, `--temp_agg_off`).
+Horizon 900 (his eval length). Skin stack is still `HYBRID_SKIN_SENSOR_ORDER`
+(link5_back before front). His manifest names front first; that list is **not** used
+to stack tokens.
+
+One GPU. `--workers 10` is clamped to 2. Smoke = rows 0 and 1. Full = 40 per arm.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+
+# smoke first (2 rows × arms). Stop if gripper never closes.
+python scripts/run_pact_place_eval_chunk100.py \
+    --manifest configs/pact_place_eval_chunk100_manifest.json \
+    --output-root /home/jaydv/code/prox_learning/eval_output/pact_place_chunk100_jay \
+    --mode smoke \
+    --workers 1 \
+    --arms ACT PACT PACT_READOUT
+
+# full 40-row protocol
+python scripts/run_pact_place_eval_chunk100.py \
+    --manifest configs/pact_place_eval_chunk100_manifest.json \
+    --output-root /home/jaydv/code/prox_learning/eval_output/pact_place_chunk100_jay \
+    --mode full \
+    --workers 1 \
+    --arms ACT PACT PACT_READOUT
+```
+
+`--arms ACT PACT PACT_PERMUTED` (his paste) runs ACT + PACT-raw and **skips**
+permuted. PACT here is **PACT-raw**, not his 32-d screen PACT. Readout is the extra
+arm `PACT_READOUT`. Kill-safe: existing `result.json` with `status=complete` is
+skipped. Primary local endpoints stay place-success, `collision_free_task_success`,
+bar-hit, `gripper_close_commanded`. **Not a paper number.** Do not mix with the
+random-house n=50 in [§4.3](#43-live--hallway-act-vs-pact) or with his seed-3101
+chunk-100 table.
+
+**Why PACT is 12–15 h/model.** Measured 2026-08-29 smoke: ACT 119.5 s / 2 eps.
+PACT-raw **2121 s / 2 eps (~18 min/ep)** with `renders=19 skip=883`. Chunk-gate
+worked. The leftover tax is 19 × 40 EGL `update_scene` (~1.4 s/camera on this
+house). Default eval skin is now `mj_multiRay` (center pixel, geom group 2
+hidden). `--egl-prox` is the old rasterizer; do not use it on the inner loop.
+`--fast-prox-rays` is already the default.
+
+**18-day loop.** Ctrl+C the current PACT_READOUT EGL run. Same 18 min/ep. Logs
+now stream. Inner loop: one arm, smoke (rays default). Direction:
+`--mode full --limit-rows 10`. 40-row table also rays unless you pass
+`--egl-prox` on a 2-row check. Train 2000 ep is a separate 12 h.
+
+```bash
+# kill the EGL readout first (Ctrl+C), then:
+python scripts/run_pact_place_eval_chunk100.py \
+    --manifest configs/pact_place_eval_chunk100_manifest.json \
+    --output-root /home/jaydv/code/prox_learning/eval_output/pact_place_chunk100_jay \
+    --mode smoke --workers 1 --arms PACT_READOUT
+
+# 10-row direction cut
+python scripts/run_pact_place_eval_chunk100.py \
+    --manifest configs/pact_place_eval_chunk100_manifest.json \
+    --output-root /home/jaydv/code/prox_learning/eval_output/pact_place_chunk100_jay_fast10 \
+    --mode full --limit-rows 10 --workers 1 --arms PACT PACT_READOUT
+```
 
 <a id="44-live--corridor-skin-fire--compress-skin"></a>
 ### 4.4 Live — corridor skin fire + compress skin
@@ -359,13 +436,26 @@ python imitate_episodes.py \
 ```
 
 Eval (after the run dir exists). Loads `prox_encoder_best.pt` from that dir, not the pretrain
-file. Same `eval_act_place_corridor.py` flags as [§4.3](#43-live--hallway-act-vs-pact).
+file. `--temp_agg_off` is required. With it on, RGB/skin EGL run only on chunk
+queries (~16 / 800 steps). Same actions as the old every-step render; n=50 PACT
+should finish under 4 h, not ~12 h.
 
 ```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning/amine/act
+export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+
+python eval_pact_collision_row.py \
+    --checkpoint-dir /home/jaydv/code/prox_learning/submodules/act/ckpts/pact_place_corridor_v5/20260828_003136_pact_place_corridor_readout_s0 \
+    --output-dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_fast \
+    --num-rollouts 50
+
+# same eval, from the ACT submodule:
+cd /home/jaydv/code/prox_learning/submodules/act
 PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
-    --ckpt_dir ckpts/pact_place_corridor_v5/<dated>_pact_place_corridor_readout_s0 \
-    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50 \
+    --ckpt_dir ckpts/pact_place_corridor_v5/20260828_003136_pact_place_corridor_readout_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_fast \
     --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
 ```
 
@@ -1036,6 +1126,7 @@ pyproject.toml       not installed; see §3
 scripts/             analysis / training / figures / housekeeping.sh
 encoders/            peak closeness + surface geometry
 tests/               encoder + PACT-raw unit tests
+configs/             frozen eval manifests (Amine 40-row place protocol)
 submodules/act/      ACT fork — train and eval
 submodules/molmospaces/  simulator + demonstration collection
 submodules/MolmoBot/ unused
@@ -1083,6 +1174,8 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `housekeeping.sh` | tiered disk cleanup, dry-run default |
 | `foxglove_viz.py` | h5 → `.mcap` |
 | `hybrid_viz_lib.py` | shared MuJoCo/EGL helpers |
+| `run_pact_place_eval_chunk100.py` | Amine 40-row place protocol on local ACT/PACT ckpts |
+| `pact_place_eval_chunk100_contract.py` | frozen 40-row scene hashes (vendored) |
 
 Visualizer: `submodules/molmospaces/scripts/datagen/visualize_environment.py`.
 
@@ -1094,6 +1187,7 @@ ARCHIVE (era over, still imported or historic): `test_and_reconstruct_hybrid.py`
 
 Upstream ends at `742c753`. This project adds proximity fusion, in-env eval, blur / dropout.
 `imitate_episodes.py` trains. `eval_act_obstacle.py` and `eval_act_place_corridor.py` evaluate.
+`--manifest` on the place eval runs Amine's frozen 40-row protocol ([§4.3.1](#431-live--amine-40-row-place-protocol)).
 `constants.py` `TASK_CONFIGS`:
 
 | task | dataset | eps / len | on disk? |
@@ -1246,7 +1340,7 @@ collisions).
 | Obstacle eval memory | 8 GB + 0.5 GB/rollout | measured |
 | Avoid-v1 invisible coll / succ | 40% vs 30% (p≈0.40) / 42% vs 24% | 08-24 **failed** |
 | Place-corridor n=50 ACT vs PACT | place **28% vs 42%**; bar **34% vs 36%**; p = 0.21 / 1.0 | 08-27 **not paper** |
-| Place-corridor eval time | ACT ~1 min/ep; PACT-raw ~15.5 min/ep | n=50 |
+| Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Default eval skin is now `mj_multiRay`. `--egl-prox` restores the 18 min/ep rasterizer | smoke 2026-08-29 |
 | Surface encoder test XYZ | 20.6 mm; validity 100%; pixel 87.4 / 95.3% | 08-25 |
 | Corridor 20 cm / 50 cm tile hit | 11% / 40%; `link1_sensor_5` 100% at 20 cm | probe |
 
@@ -1304,6 +1398,15 @@ Every one of these has already cost real time.
 22. **Test the summary step of a long script** before the long part. Blur grid ran 13 h then
     printed an empty table (timestamp prefix vs glob).
 23. **Place-corridor eval with videos on OOMs** near ~30/50 (~2 GB/ep). Metrics-only is the path.
+24. **Amine `eval_pact_place_chunk100_row.py` will not load local hallway ckpts.** That worker
+    wants chunk 100, frozen 32-d embeddings, `run_manifest.json`, and hashed encoder paths.
+    Local models are chunk 50 (raw K=8 dim 1, or readout 128-d). Use
+    `scripts/run_pact_place_eval_chunk100.py` ([§4.3.1](#431-live--amine-40-row-place-protocol)).
+    `PACT_PERMUTED` needs his `(40,900,40,32)` token plan; it is not on this disk. One GPU:
+    do not pass `--workers 10`.
+25. **PACT 12–15 h is 40 EGL `update_scene`, even gated.** Smoke 2026-08-29: PACT-raw
+    `renders=19 skip=883` and still **2121 s / 2 eps**. Default skin is `mj_multiRay`.
+    `--egl-prox` is the slow rasterizer. Kill any in-flight EGL readout.
 
 ---
 
@@ -1340,6 +1443,9 @@ Every one of these has already cost real time.
   **Not a paper number.** Do not replace 66→40.
 - **Readout finetune (2026-08-28).** Drop frozen 32-d bake for the live geometry arm. ACT consumes
   128-d CLS tokens; encoder trains with BC. No eval yet. Not a claim.
+- **Amine 40-row place protocol (2026-08-29).** Reuse his frozen scenes, not his policy loader.
+  Local launcher `scripts/run_pact_place_eval_chunk100.py`. `PACT_PERMUTED` skipped. Not a
+  paper number. Do not mix with random-house n=50.
 
 ### Unresolved
 
@@ -1421,6 +1527,7 @@ MJCF arm → <Config> datagen → assets/datagen/<run>/*.h5
                                     imitate_episodes.py → ckpts/<task>/<run>/
                                               ↓
                          eval_act_obstacle.py / eval_act_place_corridor.py
+                         scripts/run_pact_place_eval_chunk100.py  (40 frozen rows)
                                               ↓
                                     eval_output/.../eval_summary.json
                                               ↓

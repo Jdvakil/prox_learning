@@ -22,6 +22,85 @@ Newest session at the top.
 
 ---
 
+## 2026-08-29 — rays default; EGL was 18 min/ep gated
+
+- **When:** 2026-08-29 America/Denver. User: 35 min wait ridiculous.
+- **Why:** PACT smoke **2121.4 s / 2 rows**. `renders=19 skip=883` — gate worked.
+  Tax is 19×40 EGL `update_scene` (~1.4 s/cam). PACT_READOUT still on that path.
+- **What:** `mj_multiRay` default for PACT eval. `--egl-prox` opt-in for the
+  rasterizer. Launcher streams already. README §4.3.1 / trap 25.
+- **Not done:** user Ctrl+C readout, rerun `--arms PACT_READOUT` (ACT+PACT json
+  skip). Rays ≠ EGL pixels.
+
+---
+
+## 2026-08-29 — mj_multiRay signature + transformers spam
+
+- **When:** 2026-08-29 America/Denver. Readout smoke died: `TypeError: mj_multiRay()`.
+  Wall of HuggingFace `ProximityDepthBufferSensor` alias warnings.
+- **Why:** This MuJoCo wants `normal=None` plus column arrays `[m,1]`. Patch
+  `getattr` on every `sys.modules` entry poked transformers lazy image processors.
+- **What:** Column-shaped `mj_multiRay` + `normal`. Patch only `molmo_spaces.*`.
+  Launcher `--no-skip-existing` (row 000 was leftover EGL readout).
+- **Not done:** user reruns readout smoke with `--no-skip-existing`.
+
+---
+
+## 2026-08-29 — PACT eval 12–15 h; stream + skip + rays
+
+- **When:** 2026-08-29 America/Denver. User: PACT not loading faster; 18-day
+  deadline; 12–15 h/model too slow.
+- **Why:** Cost is 40 EGL 8×8 `update_scene` calls, not ckpt I/O. ACT smoke
+  already `renders=19 skip=883` in 119 s/2 eps. PACT smoke sat ~15 min on row 0
+  with launcher `capture_output=True` (no live `renders=`). Two remaining
+  taxes: skip missing `ProximityDepthBufferSensor` across duplicate
+  `molmo_spaces` modules, and 19×40 EGL even when skip works.
+- **What:**
+  - `eval_act_place_corridor.py`: skip by class name + patch every
+    `ProximityDepthBufferSensor.get_observation`; batch 40-cam
+    `record_proximity_depths` on chunk query; heartbeat `skin query #N`;
+    `--fast_prox_rays` (`mj_multiRay`, group 2 hidden).
+  - `scripts/run_pact_place_eval_chunk100.py`: stream worker logs,
+    `PYTHONUNBUFFERED=1`, `--fast-prox-rays`.
+  - README §4.3.1 18-day loop; trap 25.
+- **Not done:** user Ctrl+C current smoke; rerun PACT-only with
+  `--fast-prox-rays` then EGL 40-row table. Rays ≠ paper table.
+
+---
+
+## 2026-08-29 — Amine 40-row place protocol on local ACT/PACT ckpts
+
+- **When:** 2026-08-29 America/Denver. User pasted Amine
+  `run_pact_place_eval_chunk100.py --arms ACT PACT PACT_PERMUTED` and asked to
+  eval local models with his scripts (`amine/act/eval_pact_place_chunk100_row.py`).
+- **Why:** His worker is a hashed chunk-100 / 32-d / `run_manifest.json` pipeline.
+  Local ckpts are chunk 50 (vanilla, PACT-raw K=8 dim 1, readout 128-d). `strict=True`
+  load dies. `PACT_PERMUTED` needs his `(40,900,40,32)` token plan (not on disk).
+  Original `eval_pact_collision_row.py` in `amine/act` is still the fast wrapper.
+- **What:** Reuse his **40 frozen scenes**, keep Jay policy load.
+  - Vendored `scripts/pact_place_eval_chunk100_contract.py` +
+    `configs/pact_place_eval_chunk100_manifest.json` from
+    `origin/experiment/pact-valid-ablation-followup-v1`.
+  - `eval_act_place_corridor.py --manifest` pins `set_pact_manifest_row` /
+    `task_seed_u32`. `--temp_agg_off`. Horizon 900.
+  - `scripts/run_pact_place_eval_chunk100.py` launches ACT / PACT-raw /
+    PACT_READOUT. `--workers 10` clamped to 2. `PACT_PERMUTED` skipped.
+  - Gripper-close flag on `ACTInferencePolicy`. README §4.3.1, trap 24.
+- **Not done:** user runs smoke then full. No eval number. Not a claim. Do not
+  mix with random-house n=50.
+
+---
+
+## 2026-08-29 — fast place-corridor eval (chunk-gated skin)
+
+- **When:** 2026-08-29 America/Denver. User: convert `amine/act/eval_pact_collision_row.py`; 12 h/model too slow; want <4 h.
+- **Why:** n=50 PACT profile was ~0.75 s/step sensor EGL × 800 (40×8×8 every control step). `--temp_agg_off` already ignores those frames. Rendering them was waste.
+- **What:** `ACTInferencePolicy.needs_fresh_policy_observation`. `eval_act_place_corridor.py` monkeypatches `SensorSuite.get_observations` so RGB/skin EGL run only on chunk queries. Physics + 2 ms contact audit unchanged. `amine/act/eval_pact_collision_row.py` is now the hallway entry: `--checkpoint-dir` → `policy_best.ckpt`, forces `--temp_agg_off`. README §4.4.
+- **How:** Stale last observation reused on idle steps; prox depth buffer cleared before each real query so skin is live at chunk boundaries. Bit-identical executed actions vs old temp_agg_off path.
+- **Not done:** user runs n=50 readout. Old incomplete `eval_output/place_corridor_readout_s0_n50` (36/50) is not this run.
+
+---
+
 ## 2026-08-28 — unfreeze geometry encoder; CLS readout at train/eval
 
 - **When:** 2026-08-28 America/Denver. User: no frozen encoder; finetune with readout
