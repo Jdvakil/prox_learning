@@ -228,14 +228,13 @@ Open `gallery.html` after `--all`. Useful switches: `--format png|mp4|both`,
 `scripts/dataset_viz.py` reads a folder of trajectory HDF5s and writes one Foxglove `.mcap`
 (3D FK, RGB, skin heatmap, joint plots — still one concatenated timeline) plus **one short
 tiled MP4 per episode** and an `index.html` that browses them. The MP4 layout is
-wrist | table | **live prox 3D** (robot skeleton +
-back-projected 8×8 returns, turbo: red=near), then the 8×8 mosaic, qpos / qvel, HUD.
-Auto-detects ACT `episode_*.hdf5`, HuggingFace `rows/*/trajectory.h5`, and datagen
-`house_*/trajectories*.h5`. Missing wrist / table / heatmap tiles are **dropped** (no
-slate). Leftover RGB grows; heatmap fills the left column when no RGB. Hallway v5 has
-**no table / exo** — that slot is gone, wrist uses the full left width. Skin comes from
-the tensor, not the sidecar heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or
-**66 ms** (not ACT's train `DT=0.02`).
+wrist | table | **live prox 3D**, then the 8×8 mosaic **fills** the leftover left
+panel (tiles stretch; no blank band). qpos / qvel / HUD sit below. Missing wrist /
+table / heatmap tiles are **dropped** (no slate). Leftover RGB grows; heatmap takes
+the whole left column when no RGB. Hallway v5 has **no table / exo** — that slot is
+gone, wrist uses the full left width. Skin comes from the tensor, not the sidecar
+heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or **66 ms** (not ACT's train
+`DT=0.02`).
 ACT hdf5 has no saved `cam2world`; the 3D panel uses MuJoCo FK camera poses. Datagen /
 HF rows use saved `cam2world_gl` when present.
 
@@ -284,6 +283,33 @@ dataset time, so the plots line up with the `.mcap`.
 
 Clip playback is now **wall-clock real time**: the writer divides the frame rate by
 `--stride` (before, `--stride 2` silently played at 2× speed).
+
+**`--cam3d` puts the returns in the real scene (added 2026-08-31, opt-in).** By default the
+right panel is `render_view3d`: the skin returns floating beside a stick-figure arm, which
+does not say *what* a point hit. With `--cam3d` the panel becomes `render_cam3d`: the table
+(exo) camera's own frame with the returns drawn on top, so a point sits on the pixels of the
+wall, shelf or object it bounced off. Nothing is replaced — `render_view3d` is untouched and
+stays the default; drop the flag to get it back.
+
+```bash
+python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick_and_place     --cam3d --max-episodes 2 --stride 4 --no-mcap --force
+```
+
+How it projects: `obs/sensor_param/<cam>/extrinsic_cv` (world→camera) and `intrinsic_cv` (K)
+are read per frame into `Episode.cam_params`, and the world points from
+`proximity_world_points` go through `K · (R·p + t)`. **Trap:** the stored `intrinsic_cv` is
+the calibration of a **480×480** render (`cx = cy = 240`), but the sidecar mp4 is **624×352**
+with the same *vertical* field of view. `camera_matrices` rescales the focal length by
+`H_frame / (2·cy)` and re-centres the principal point; without that the points sit ~35 px low
+and spread too wide. The correction is a no-op when the frame already matches the stored size.
+
+Three limits, by design:
+- **No occlusion test.** A point behind the hood wall still draws over the wall. The panel
+  shows where a return *projects*, not whether the camera could see it.
+- **Datagen h5 only.** ACT `episode_*.hdf5` stores no camera calibration, so `render_cam3d`
+  returns `None` and the old 3D panel is drawn instead. No flag change, no error.
+- **Letterboxed.** A 624×352 frame in a 400×480 panel leaves bars above and below. Ask if you
+  want it cropped to the points instead.
 
 ```bash
 conda activate mlspaces

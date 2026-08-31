@@ -84,8 +84,8 @@ EP_GAP_S = 0.5
 DEFAULT_DT = 0.066  # datagen policy_dt; ACT hdf5 does not store dt
 DEAD_PIXEL_M = 0.005
 JPEG_QUALITY = 80
-TILE_W, TILE_H = 320, 240
-HEAT_H = 240
+TILE_W, TILE_H = 320, 160  # RGB strip; leftover left column is the heatmap
+HEAT_H = 320
 VIEW3D_W, VIEW3D_H = 400, TILE_H + HEAT_H  # 3D tab sits beside wrist+heatmap
 PLOT_H = 110
 HUD_H = 40
@@ -277,7 +277,10 @@ def _pool_prox(arr: np.ndarray, pool: str) -> np.ndarray:
 # --------------------------------------------------------------------------- #
 def render_heatmap(d8s: np.ndarray, names: list[str], near: float, far: float,
                    out_w: int, out_h: int) -> np.ndarray:
-    """d8s: (N, 8, 8) metres -> BGR uint8 mosaic, one row per link."""
+    """d8s: (N, 8, 8) metres -> BGR uint8 mosaic, one row per link.
+
+    Tiles stretch to fill ``out_w`` x ``out_h`` (no leftover blank band).
+    """
     canvas = np.full((out_h, out_w, 3), 18, np.uint8)
     if d8s is None or len(d8s) == 0:
         cv2.putText(canvas, "no proximity in this file", (16, out_h // 2),
@@ -287,30 +290,34 @@ def render_heatmap(d8s: np.ndarray, names: list[str], near: float, far: float,
     for i, n in enumerate(names):
         groups.setdefault(_link_prefix(n), []).append(i)
     n_rows = max(len(groups), 1)
-    n_cols = max((len(v) for v in groups.values()), default=1)
-    pad = 2
-    label_h = 12
-    cell = min((out_w - pad * (n_cols + 1)) // n_cols,
-                (out_h - pad * (n_rows + 1) - label_h * n_rows) // n_rows)
-    cell = max(cell, 8)
+    pad = 3
+    caption_h = 12
+    link_w = 70
+    grid_w = max(out_w - link_w, 32)
     for r, (link, idxs) in enumerate(groups.items()):
+        y0 = r * out_h // n_rows
+        y1 = (r + 1) * out_h // n_rows
+        row_h = y1 - y0
+        n_c = max(len(idxs), 1)
+        cell_w = max(8, (grid_w - pad * (n_c + 1)) // n_c)
+        cell_h = max(8, row_h - caption_h - pad)
+        cv2.putText(canvas, link, (out_w - link_w + 2, y0 + min(14, row_h - 2)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (120, 200, 255), 1, cv2.LINE_AA)
         for c, i in enumerate(idxs):
             patch = np.asarray(d8s[i], np.float32)
             valid = np.isfinite(patch) & (patch >= DEAD_PIXEL_M)
             norm = np.clip((patch - near) / max(far - near, 1e-6), 0.0, 1.0)
             col = (_TURBO(1.0 - norm)[..., :3] * 255).astype(np.uint8)
             col[~valid] = 40
-            tile = cv2.resize(col, (cell, cell), interpolation=cv2.INTER_NEAREST)
+            tile = cv2.resize(col, (cell_w, cell_h), interpolation=cv2.INTER_NEAREST)
             tile = tile[:, :, ::-1]  # RGB -> BGR
-            x = pad + c * (cell + pad)
-            y = pad + r * (cell + pad + label_h) + label_h
-            y2, x2 = min(y + cell, out_h), min(x + cell, out_w)
+            x = pad + c * (cell_w + pad)
+            y = y0 + caption_h
+            y2, x2 = min(y + cell_h, out_h), min(x + cell_w, grid_w)
             canvas[y:y2, x:x2] = tile[: y2 - y, : x2 - x]
             cv2.putText(canvas, names[i].replace("sensor_", "s"),
-                        (x, y - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.28,
+                        (x, y0 + caption_h - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.28,
                         (180, 180, 180), 1, cv2.LINE_AA)
-        cv2.putText(canvas, link, (out_w - 90, pad + r * (cell + pad + label_h) + 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.32, (120, 200, 255), 1, cv2.LINE_AA)
     return canvas
 
 
@@ -365,6 +372,100 @@ def proximity_world_points(ep: Episode, t: int, model, data, cam_id: dict,
     if not all_pts:
         return np.zeros((0, 3)), np.zeros((0,))
     return np.concatenate(all_pts), np.concatenate(all_d)
+
+
+def _scene_cam(ep: Episode) -> str | None:
+    """RGB camera to draw the returns on: the table / exo view, else the wrist."""
+    for want in ("table", "wrist"):
+        for name in ep.images:
+            if CAM_ALIAS.get(name) == want and name in ep.cam_params:
+                return name
+    return None
+
+
+def camera_matrices(ep: Episode, cam: str, t: int, w: int, h: int):
+    """(R, tvec, K) that carry a world point to a pixel of this camera's frame.
+
+    sensor_param stores the calibration of a square render (cx = cy = 240 for a
+    480x480 sensor), while the sidecar mp4 is a wider frame (624x352) with the
+    same vertical field of view. Scale the focal length by the height ratio and
+    move the principal point to the middle of the decoded frame. The correction
+    is a no-op when the frame already matches the stored sensor size.
+    """
+    prm = ep.cam_params.get(cam)
+    if not prm:
+        return None
+    ext = np.asarray(prm["extrinsic_cv"])
+    kin = np.asarray(prm["intrinsic_cv"])
+    e = ext[min(t, len(ext) - 1)]
+    k = np.array(kin[min(t, len(kin) - 1)], np.float64)
+    cy = float(k[1, 2])
+    if cy <= 1e-6:
+        return None
+    scale = h / (2.0 * cy)
+    k[0, 0] *= scale
+    k[1, 1] *= scale
+    k[0, 2] = (w - 1) / 2.0
+    k[1, 2] = (h - 1) / 2.0
+    return np.asarray(e[:, :3], np.float64), np.asarray(e[:, 3], np.float64), k
+
+
+def render_cam3d(ep: Episode, t: int, pts: np.ndarray, depths: np.ndarray,
+                 near: float, far: float, w: int, h: int,
+                 cam: str | None = None) -> np.ndarray | None:
+    """BGR panel: the skin returns drawn on the scene camera's own frame.
+
+    The synthetic panel of render_view3d shows the returns in empty space. This
+    one puts them on the pixels of whatever they bounced off, so a point can be
+    read against the object it belongs to. Returns None when the episode has no
+    usable camera calibration, so the caller keeps the old panel.
+    """
+    name = cam or _scene_cam(ep)
+    if name is None or name not in ep.images:
+        return None
+    frame = _index(ep.images[name], t, ep.T)
+    if frame is None:
+        return None
+    img = np.ascontiguousarray(_as_rgb(frame)[:, :, ::-1])   # RGB -> BGR
+    fh, fw = img.shape[:2]
+    mats = camera_matrices(ep, name, t, fw, fh)
+    if mats is None:
+        return None
+    R, tvec, K = mats
+
+    n = 0
+    if len(pts):
+        p = np.asarray(pts, np.float64)
+        d = np.asarray(depths, np.float64)
+        if len(p) > 2400:
+            step = int(np.ceil(len(p) / 2400))
+            p, d = p[::step], d[::step]
+        pc = (R @ p.T).T + tvec
+        z = pc[:, 2]
+        front = z > 0.02
+        uvw = (K @ pc.T).T
+        zc = np.where(np.abs(uvw[:, 2]) < 1e-9, 1e-9, uvw[:, 2])
+        u, v = uvw[:, 0] / zc, uvw[:, 1] / zc
+        norm = np.clip((d - near) / max(far - near, 1e-6), 0, 1)
+        rgb = (_TURBO(1.0 - norm)[:, :3] * 255).astype(np.uint8)
+        for i in np.argsort(-z):          # far first, so near points land on top
+            if not front[i]:
+                continue
+            x, y = int(round(u[i])), int(round(v[i]))
+            if 0 <= x < fw and 0 <= y < fh:
+                col = (int(rgb[i, 2]), int(rgb[i, 1]), int(rgb[i, 0]))
+                cv2.circle(img, (x, y), 2, col, -1, cv2.LINE_AA)
+                n += 1
+
+    panel = _letterbox(img, w, h)
+    # the camera frame is mostly bright, so outline the captions
+    for text, org, size in ((f"prox on {CAM_ALIAS.get(name, name)}", (8, 18), 0.5),
+                            (f"{n} pts  red=near", (8, h - 10), 0.4)):
+        cv2.putText(panel, text, org, cv2.FONT_HERSHEY_SIMPLEX, size,
+                    (0, 0, 0), 3, cv2.LINE_AA)
+        cv2.putText(panel, text, org, cv2.FONT_HERSHEY_SIMPLEX, size,
+                    (255, 255, 255), 1, cv2.LINE_AA)
+    return panel
 
 
 def render_view3d(model, data, pts: np.ndarray, depths: np.ndarray,
@@ -794,6 +895,7 @@ class Episode:
     attrs: dict
     extras: dict = field(default_factory=dict)
     embeddings: np.ndarray | None = None
+    cam_params: dict = field(default_factory=dict)  # rgb cam -> extrinsic_cv / intrinsic_cv
 
 
 def load_act(ref: EpisodeRef, prox_pool: str, dt_override: float | None) -> Episode:
@@ -875,6 +977,14 @@ def load_datagen(ref: EpisodeRef, prox_pool: str, dt_override: float | None,
         prox = None
         names: list[str] = []
         cam2w = {}
+        cam_params = {}
+        for cam in RGB_STEMS:
+            grp = f"obs/sensor_param/{cam}"
+            if f"{grp}/extrinsic_cv" in t and f"{grp}/intrinsic_cv" in t:
+                cam_params[cam] = {
+                    "extrinsic_cv": np.asarray(t[f"{grp}/extrinsic_cv"][:T], np.float64),
+                    "intrinsic_cv": np.asarray(t[f"{grp}/intrinsic_cv"][:T], np.float64),
+                }
         if "obs/proximity" in t:
             order = [n for n in HYBRID_SKIN_SENSOR_ORDER if n in t["obs/proximity"]]
             extra = [n for n in t["obs/proximity"] if n not in order]
@@ -925,7 +1035,7 @@ def load_datagen(ref: EpisodeRef, prox_pool: str, dt_override: float | None,
         label=ref.label, T=T, dt=dt, images=images, qpos=qpos, qvel=qvel,
         action=action, proximity=prox, sensor_names=names, cam2w=cam2w,
         tcp=tcp, base=base, phase=phase, success=success, scene=scene,
-        targets=targets, attrs=attrs, extras=extras,
+        targets=targets, attrs=attrs, extras=extras, cam_params=cam_params,
     )
 
 
@@ -1342,7 +1452,7 @@ def _ee_body(model) -> str | None:
 def export_episode(ep: Episode, ch: Channels | None, *, model, data, mesh_update,
                    pub_bodies, offset_ns: int, near: float, far: float,
                    d_max: float, stride: int, jpeg_q: int,
-                   writer) -> tuple[int, list]:
+                   writer, cam3d: bool = False) -> tuple[int, list]:
     """Write one episode. Returns (duration_ns, per-frame records for timeline)."""
     mujoco = __import__("mujoco") if model is not None else None
     T, dt = ep.T, ep.dt
@@ -1441,10 +1551,18 @@ def export_episode(ep: Episode, ch: Channels | None, *, model, data, mesh_update
                     orientation=Quaternion(x=float(tcp_pose[4]), y=float(tcp_pose[5]),
                                            z=float(tcp_pose[6]), w=float(tcp_pose[3])))),
                            log_time=ns)
-            view3d = render_view3d(model, data, pts, dd, near, far, VIEW3D_W, VIEW3D_H)
+            view3d = render_cam3d(ep, t, pts, dd, near, far,
+                                  VIEW3D_W, VIEW3D_H) if cam3d else None
+            if view3d is None:
+                view3d = render_view3d(model, data, pts, dd, near, far,
+                                       VIEW3D_W, VIEW3D_H)
         else:
             pts, dd = proximity_world_points(ep, t, None, None, {}, near, d_max)
-            view3d = render_view3d(None, None, pts, dd, near, far, VIEW3D_W, VIEW3D_H)
+            view3d = render_cam3d(ep, t, pts, dd, near, far,
+                                  VIEW3D_W, VIEW3D_H) if cam3d else None
+            if view3d is None:
+                view3d = render_view3d(None, None, pts, dd, near, far,
+                                       VIEW3D_W, VIEW3D_H)
 
         if ch is not None:
             for name, arr in ep.images.items():
@@ -1822,7 +1940,7 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
                 ep, ch, model=model, data=data, mesh_update=mesh_update,
                 pub_bodies=pub_bodies or [], offset_ns=offset_ns, near=args.near,
                 far=args.far, d_max=args.d_max, stride=args.stride,
-                jpeg_q=args.jpeg_quality, writer=ep_writer,
+                jpeg_q=args.jpeg_quality, writer=ep_writer, cam3d=args.cam3d,
             )
         except Exception as e:
             if ep_video is not None:
@@ -1908,6 +2026,8 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "groups": ep_groups,
         "duration_s": (offset_ns / 1e9) if n_ok else 0.0,
         "stride": args.stride,
+        "cam3d": bool(args.cam3d),
+        "has_cam_params": sorted(first.cam_params),
         "no_mcap": bool(args.no_mcap),
     }
     (out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
@@ -1953,6 +2073,9 @@ def main() -> None:
     ap.add_argument("--jpeg-quality", type=int, default=JPEG_QUALITY)
     ap.add_argument("--no-mcap", action="store_true")
     ap.add_argument("--no-video", action="store_true")
+    ap.add_argument("--cam3d", action="store_true",
+                    help="right panel = the table camera frame with the skin "
+                         "returns drawn on it, instead of the synthetic 3D view")
     ap.add_argument("--one-video", action="store_true",
                     help="old behaviour: one concatenated dataset.mp4 instead of "
                          "one clip per episode under episodes/<type>/")

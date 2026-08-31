@@ -22,6 +22,18 @@ Newest session at the top.
 
 ---
 
+## 2026-08-31 — heatmap fills leftover panel
+
+- **When:** 2026-08-31. User: pick `episodes/free/0000_house_1_traj_0.mp4` 8x8 grid
+  tiny, blank band to the right.
+- **Why:** `render_heatmap` used square `min(w,h)` cells (~20 px) left-aligned. RGB
+  strip was 240 px so heatmap only got 240 px height.
+- **What:** Tiles stretch per-row to fill width; RGB strip 160 px, heatmap 320 px.
+  README §4.2.1.
+- **Not done:** user `--force` regen (this clip, or whole pick).
+
+---
+
 ## 2026-08-31 — drop empty RGB tiles in dataset.mp4
 
 - **When:** 2026-08-31. User: Check_r5 (and same layout) blank RGB box steals space
