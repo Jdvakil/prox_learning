@@ -22,6 +22,23 @@ Newest session at the top.
 
 ---
 
+## 2026-08-31 — audit compilation videos + live prox 3D panel
+
+- **When:** 2026-08-31. User: compilation video for every unique dataset (audit what
+  exists vs still collect); extra panel with proximity returns in 3D as the robot moves.
+- **Why:** `--each` mixed in DUP copies (`pact_20260622/data/openfrontcluttered_52_act`
+  and `raw_openfrontcluttered`). MP4 had no world-frame skin cloud. `--no-mcap` skipped
+  FK so 3D would have been empty if we only logged in the MCAP path.
+- **What:** MP4 layout wrist|table + prox-3D (FK skeleton + turbo back-projected
+  returns). `--each` skips DUP copies (`--keep-dups` to keep). Writes per-dataset
+  `audit.json` and parent `experiments_output/default/dataset_viz/index.html`.
+  `export_episode` always FK+3D even with `--no-mcap`. README §4.2.1.
+- **How:** `proximity_world_points` uses saved `cam2world_gl` or MuJoCo `cam_xmat`.
+  Numpy look-at projector (no EGL). H.264 remux unchanged.
+- **Not done:** full `--each --no-mcap --stride 2` encode on this machine (long).
+
+---
+
 ## 2026-08-31 — H.264 so Cursor plays dataset.mp4
 
 - **When:** 2026-08-31. User: encode videos for VS Code / Cursor IDE preview.

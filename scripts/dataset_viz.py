@@ -8,13 +8,15 @@ Auto-detects three layouts this repo actually uses:
 
 Every episode is laid end-to-end on one timeline (0.5 s gap). The MCAP is the
 interactive visualizer (Foxglove). The MP4 + index.html is the "whole dataset
-in one video" path with wrist / table RGB, a live 8x8 skin mosaic, and joint
-position / velocity plots.
+in one video" path: wrist / table RGB, 8x8 skin mosaic, live prox-3D (FK +
+back-projected returns), and joint position / velocity plots.
 
   conda activate mlspaces
   cd /home/jaydv/code/prox_learning
+  python scripts/dataset_viz.py --reencode experiments_output/default/dataset_viz
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
-  python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --each --max-episodes 2
+  python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
+      --out experiments_output/default/dataset_viz --each --no-mcap --stride 2
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
   python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
 """
@@ -68,9 +70,11 @@ DEAD_PIXEL_M = 0.005
 JPEG_QUALITY = 80
 TILE_W, TILE_H = 320, 240
 HEAT_H = 240
+VIEW3D_W, VIEW3D_H = 400, TILE_H + HEAT_H  # 3D tab sits beside wrist+heatmap
 PLOT_H = 110
 HUD_H = 40
-CANVAS_W = TILE_W * 2
+RGB_W = TILE_W * 2
+CANVAS_W = RGB_W + VIEW3D_W
 CANVAS_H = TILE_H + HEAT_H + PLOT_H * 2 + HUD_H
 # H.264 yuv420p needs even W/H (VS Code / Cursor media preview).
 CANVAS_W += CANVAS_W % 2
@@ -293,6 +297,130 @@ def render_heatmap(d8s: np.ndarray, names: list[str], near: float, far: float,
     return canvas
 
 
+def _look_at(eye: np.ndarray, target: np.ndarray):
+    f = target - eye
+    n = np.linalg.norm(f) + 1e-9
+    f = f / n
+    up = np.array([0.0, 0.0, 1.0])
+    r = np.cross(f, up)
+    if np.linalg.norm(r) < 1e-6:
+        r = np.cross(f, np.array([1.0, 0.0, 0.0]))
+    r = r / (np.linalg.norm(r) + 1e-9)
+    u = np.cross(r, f)
+    R = np.stack([r, -u, f], axis=0)
+    tvec = -R @ eye
+    return R, tvec
+
+
+def _project(pts: np.ndarray, R: np.ndarray, tvec: np.ndarray, w: int, h: int, fov=42.0):
+    if pts.size == 0:
+        return np.zeros(0), np.zeros(0), np.zeros(0), np.zeros(0, bool)
+    f = (0.5 * h) / np.tan(np.deg2rad(fov / 2))
+    pc = (R @ pts.T).T + tvec
+    z = pc[:, 2]
+    vis = z > 0.08
+    zc = np.clip(z, 0.08, None)
+    u = f * pc[:, 0] / zc + (w - 1) / 2.0
+    v = f * pc[:, 1] / zc + (h - 1) / 2.0
+    return u, v, z, vis
+
+
+def proximity_world_points(ep: Episode, t: int, model, data, cam_id: dict,
+                           near: float, d_max: float) -> tuple[np.ndarray, np.ndarray]:
+    if ep.proximity is None or not ep.sensor_names:
+        return np.zeros((0, 3)), np.zeros((0,))
+    all_pts, all_d = [], []
+    for i, name in enumerate(ep.sensor_names):
+        d8 = ep.proximity[t, i]
+        if name in ep.cam2w:
+            c2w = ep.cam2w[name][min(t, len(ep.cam2w[name]) - 1)]
+        elif model is not None and name in cam_id:
+            c2w = np.eye(4)
+            cid = cam_id[name]
+            c2w[:3, :3] = data.cam_xmat[cid].reshape(3, 3) @ np.diag([1.0, -1.0, -1.0])
+            c2w[:3, 3] = data.cam_xpos[cid]
+        else:
+            continue
+        pts, d = fv.backproject(d8, c2w, near, d_max)
+        if len(pts):
+            all_pts.append(pts)
+            all_d.append(d)
+    if not all_pts:
+        return np.zeros((0, 3)), np.zeros((0,))
+    return np.concatenate(all_pts), np.concatenate(all_d)
+
+
+def render_view3d(model, data, pts: np.ndarray, depths: np.ndarray,
+                   near: float, far: float, w: int, h: int) -> np.ndarray:
+    """BGR panel: robot skeleton + live skin returns in world (turbo: red=near)."""
+    img = np.full((h, w, 3), 16, np.uint8)
+    cv2.putText(img, "prox 3D", (8, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                (230, 230, 230), 1, cv2.LINE_AA)
+    bones = []
+    center = np.array([0.35, 0.0, 0.45])
+    if model is not None and data is not None:
+        xs = []
+        for i in range(model.nbody):
+            name = model.body(i).name
+            if not name or name == "world":
+                continue
+            pid = int(model.body_parentid[i])
+            pb = data.xpos[i]
+            xs.append(pb)
+            if pid >= 0:
+                bones.append((data.xpos[pid].copy(), pb.copy()))
+        if xs:
+            center = np.mean(np.stack(xs), axis=0)
+    if len(pts):
+        center = 0.6 * center + 0.4 * pts.mean(axis=0)
+    eye = center + np.array([1.55, -1.75, 1.15])
+    R, tvec = _look_at(eye, center)
+
+    # ground grid
+    grid = []
+    for a in np.linspace(-0.6, 1.4, 9):
+        grid.append((np.array([a, -0.8, 0.0]), np.array([a, 0.8, 0.0])))
+        grid.append((np.array([-0.4, a - 0.4, 0.0]), np.array([1.4, a - 0.4, 0.0])))
+    for a, b in grid:
+        segs = np.stack([a, b])
+        u, v, z, vis = _project(segs, R, tvec, w, h)
+        if vis.all():
+            cv2.line(img, (int(u[0]), int(v[0])), (int(u[1]), int(v[1])),
+                     (40, 40, 44), 1, cv2.LINE_AA)
+
+    for a, b in bones:
+        segs = np.stack([a, b])
+        u, v, z, vis = _project(segs, R, tvec, w, h)
+        if vis.all():
+            cv2.line(img, (int(np.clip(u[0], 0, w - 1)), int(np.clip(v[0], 0, h - 1))),
+                     (int(np.clip(u[1], 0, w - 1)), int(np.clip(v[1], 0, h - 1))),
+                     (180, 175, 170), 2, cv2.LINE_AA)
+
+    n = 0
+    if len(pts):
+        if len(pts) > 2400:
+            step = int(np.ceil(len(pts) / 2400))
+            pts, depths = pts[::step], depths[::step]
+        u, v, z, vis = _project(pts, R, tvec, w, h)
+        order = np.argsort(-z)
+        norm = np.clip((depths - near) / max(far - near, 1e-6), 0, 1)
+        rgb = (_TURBO(1.0 - norm)[:, :3] * 255).astype(np.uint8)
+        for i in order:
+            if not vis[i]:
+                continue
+            x, y = int(u[i]), int(v[i])
+            if 0 <= x < w and 0 <= y < h:
+                col = (int(rgb[i, 2]), int(rgb[i, 1]), int(rgb[i, 0]))  # RGB->BGR
+                cv2.circle(img, (x, y), 2, col, -1, cv2.LINE_AA)
+                n += 1
+    cv2.putText(img, f"{n} pts  red=near", (8, h - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
+                (160, 160, 160), 1, cv2.LINE_AA)
+    if model is None:
+        cv2.putText(img, "no FK", (8, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+                    (80, 80, 200), 1, cv2.LINE_AA)
+    return img
+
+
 def _sparkline(dst: np.ndarray, ys: np.ndarray, t: int, title: str) -> None:
     h, w = dst.shape[:2]
     dst[:] = 18
@@ -343,6 +471,11 @@ _EVAL_PARTS = {
     "results", "eval", "eval_output", "eval_outputs", "eval_outputs_nonvideo",
     "eval_output_full", "final_outputs", "early_smoke_evals", "videos",
 }
+# Nested copies of act_style_52 / raw_h5 inside pact_20260622/data/.
+_DUP_NEEDLES = (
+    "pact_20260622/data/openfrontcluttered_52_act",
+    "pact_20260622/data/raw_openfrontcluttered",
+)
 
 
 def _skip_path(p: Path, include_eval: bool) -> bool:
@@ -419,6 +552,20 @@ def scan_dataset_roots(root: Path, include_eval: bool = False) -> list[DatasetRo
     return found
 
 
+def is_dup_dataset(ds: DatasetRoot) -> bool:
+    s = str(ds.path)
+    return any(n in s for n in _DUP_NEEDLES)
+
+
+def unique_catalog(roots: list[DatasetRoot], keep_dups: bool) -> tuple[list[DatasetRoot], list[DatasetRoot]]:
+    if keep_dups:
+        return list(roots), []
+    kept, skipped = [], []
+    for ds in roots:
+        (skipped if is_dup_dataset(ds) else kept).append(ds)
+    return kept, skipped
+
+
 def print_catalog(roots: list[DatasetRoot], scan_root: Path) -> None:
     print(f"datasets under {scan_root}  n={len(roots)}")
     for i, ds in enumerate(roots):
@@ -426,7 +573,84 @@ def print_catalog(roots: list[DatasetRoot], scan_root: Path) -> None:
             rel = ds.path.relative_to(scan_root)
         except ValueError:
             rel = ds.path
-        print(f"  [{i:02d}] {ds.kind:8s}  eps={ds.n_eps:4d}  {rel}")
+        mark = "  DUP" if is_dup_dataset(ds) else ""
+        print(f"  [{i:02d}] {ds.kind:8s}  eps={ds.n_eps:4d}  {rel}{mark}")
+
+
+def episode_gaps(ep: Episode, *, has_fk: bool) -> list[str]:
+    gaps = []
+    if not any(k in ep.images for k in ("wrist_camera", "wrist", "wrist_rgb")):
+        gaps.append("no wrist RGB")
+    if not any(k in ep.images for k in ("exo_camera_1", "table", "table_camera", "top")):
+        gaps.append("no table RGB")
+    if ep.proximity is None:
+        gaps.append("no proximity")
+    if not has_fk:
+        gaps.append("no FK (3D skeleton off)")
+    elif ep.proximity is not None and not ep.cam2w:
+        gaps.append("prox 3D from FK cameras (no saved cam2w)")
+    return gaps
+
+
+_AUDIT_HTML = """<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>dataset audit</title>
+<style>
+body { background:#111; color:#ddd; font:14px/1.4 system-ui,sans-serif; margin:24px; }
+a { color:#8cf; }
+table { border-collapse:collapse; width:100%; }
+th, td { border-bottom:1px solid #333; padding:8px 10px; text-align:left; vertical-align:top; }
+th { color:#aaa; font-weight:600; }
+.gap { color:#f6a; }
+.ok { color:#8c8; }
+video { width:320px; background:#000; }
+.slug { font-family:ui-monospace,monospace; font-size:12px; }
+</style></head><body>
+<h1>dataset audit</h1>
+<p>One compilation MP4 per unique dataset. Right panel in each video is live prox 3D.</p>
+<p>n=%%N%% unique &nbsp; skipped dups=%%NDUP%%</p>
+<table>
+<thead><tr><th>video</th><th>dataset</th><th>eps</th><th>cams / prox</th><th>gaps</th></tr></thead>
+<tbody>
+%%ROWS%%
+</tbody></table>
+</body></html>
+"""
+
+
+def write_audit_index(out_base: Path, n_skipped_dups: int = 0) -> None:
+    rows = []
+    for p in sorted(out_base.glob("*/audit.json")):
+        try:
+            rows.append(json.loads(p.read_text()))
+        except Exception:
+            continue
+    body = []
+    for r in rows:
+        slug = r.get("slug", "")
+        gaps = r.get("gaps") or []
+        gap_html = ", ".join(f'<span class="gap">{g}</span>' for g in gaps) if gaps \
+            else '<span class="ok">ok</span>'
+        cams = ", ".join(r.get("cams") or [])
+        prox = r.get("prox_shape")
+        prox_s = "none" if not r.get("has_prox") else str(prox)
+        vid = f"{slug}/dataset.mp4"
+        body.append(
+            f'<tr><td><video src="{vid}" controls preload="metadata"></video></td>'
+            f'<td class="slug">{slug}<br><a href="{vid}">mp4</a> · '
+            f'<a href="{slug}/index.html">html</a></td>'
+            f'<td>{r.get("n_eps_exported")}/{r.get("n_eps_total")}</td>'
+            f'<td>{cams or "—"}<br>prox={prox_s}</td>'
+            f'<td>{gap_html}</td></tr>'
+        )
+    html = (_AUDIT_HTML
+            .replace("%%N%%", str(len(rows)))
+            .replace("%%NDUP%%", str(n_skipped_dups))
+            .replace("%%ROWS%%", "\n".join(body)))
+    (out_base / "index.html").write_text(html)
+    (out_base / "audit.json").write_text(json.dumps({
+        "n": len(rows), "n_skipped_dups": n_skipped_dups, "rows": rows,
+    }, indent=2) + "\n")
+    print(f"audit index  {out_base / 'index.html'}")
 
 
 def discover(root: Path) -> tuple[str, list[EpisodeRef]]:
@@ -1045,7 +1269,7 @@ def _ee_body(model) -> str | None:
     return None
 
 
-def export_episode(ep: Episode, ch: Channels, *, model, data, mesh_update,
+def export_episode(ep: Episode, ch: Channels | None, *, model, data, mesh_update,
                    pub_bodies, offset_ns: int, near: float, far: float,
                    d_max: float, stride: int, jpeg_q: int,
                    writer) -> tuple[int, list]:
@@ -1085,15 +1309,16 @@ def export_episode(ep: Episode, ch: Channels, *, model, data, mesh_update,
     desc = ep.scene.get("task_description") or ""
     if desc:
         bits.append(desc)
-    ch.log.log(Log(timestamp=ts0, level=LogLevel.Info,
-                   message="  ".join(str(b) for b in bits), name="task"),
-               log_time=ns0)
-    gt = fv.scene_gt(ep.scene, ts0) if ep.scene else None
-    if gt:
-        ch.gt.log(gt, log_time=ns0)
-    tgt = fv.target_markers(ep.targets, ts0) if ep.targets else None
-    if tgt:
-        ch.tgt.log(tgt, log_time=ns0)
+    if ch is not None:
+        ch.log.log(Log(timestamp=ts0, level=LogLevel.Info,
+                       message="  ".join(str(b) for b in bits), name="task"),
+                   log_time=ns0)
+        gt = fv.scene_gt(ep.scene, ts0) if ep.scene else None
+        if gt:
+            ch.gt.log(gt, log_time=ns0)
+        tgt = fv.target_markers(ep.targets, ts0) if ep.targets else None
+        if tgt:
+            ch.tgt.log(tgt, log_time=ns0)
 
     inv_phase = {v: k for k, v in (ep.scene.get("policy_phases") or {}).items()}
     last_phase = None
@@ -1114,38 +1339,22 @@ def export_episode(ep: Episode, ch: Channels, *, model, data, mesh_update,
             for adr in finger_qadr:
                 data.qpos[adr] = grip
             mujoco.mj_forward(model, data)
-            tfs = []
-            for bname in pub_bodies:
-                bid = model.body(bname).id
-                p, qt = data.xpos[bid], data.xquat[bid]
-                tfs.append(FrameTransform(
-                    timestamp=ts, parent_frame_id="world", child_frame_id=bname,
-                    translation=Vector3(x=float(p[0]), y=float(p[1]), z=float(p[2])),
-                    rotation=Quaternion(x=float(qt[1]), y=float(qt[2]),
-                                       z=float(qt[3]), w=float(qt[0]))))
-            ch.tf.log(FrameTransforms(transforms=tfs), log_time=ns)
-            if t == 0:
-                ch.mesh.log(mesh_update, log_time=ns)
+            if ch is not None:
+                tfs = []
+                for bname in pub_bodies:
+                    bid = model.body(bname).id
+                    p, qt = data.xpos[bid], data.xquat[bid]
+                    tfs.append(FrameTransform(
+                        timestamp=ts, parent_frame_id="world", child_frame_id=bname,
+                        translation=Vector3(x=float(p[0]), y=float(p[1]), z=float(p[2])),
+                        rotation=Quaternion(x=float(qt[1]), y=float(qt[2]),
+                                           z=float(qt[3]), w=float(qt[0]))))
+                ch.tf.log(FrameTransforms(transforms=tfs), log_time=ns)
+                if t == 0:
+                    ch.mesh.log(mesh_update, log_time=ns)
 
-            all_pts, all_d = [], []
-            if ep.proximity is not None:
-                for i, name in enumerate(ep.sensor_names):
-                    d8 = ep.proximity[t, i]
-                    if name in ep.cam2w:
-                        c2w = ep.cam2w[name][min(t, len(ep.cam2w[name]) - 1)]
-                    elif name in cam_id:
-                        c2w = np.eye(4)
-                        cid = cam_id[name]
-                        c2w[:3, :3] = data.cam_xmat[cid].reshape(3, 3) @ np.diag([1.0, -1.0, -1.0])
-                        c2w[:3, 3] = data.cam_xpos[cid]
-                    else:
-                        continue
-                    pts, d = fv.backproject(d8, c2w, near, d_max)
-                    if len(pts):
-                        all_pts.append(pts)
-                        all_d.append(d)
-                pts = np.concatenate(all_pts) if all_pts else np.zeros((0, 3))
-                dd = np.concatenate(all_d) if all_d else np.zeros((0,))
+            pts, dd = proximity_world_points(ep, t, model, data, cam_id, near, d_max)
+            if ch is not None:
                 ch.pc.log(fv.pack_cloud(pts, dd, ts, near, far), log_time=ns)
 
             tcp_pose = None
@@ -1155,75 +1364,78 @@ def export_episode(ep: Episode, ch: Channels, *, model, data, mesh_update,
                 bid = model.body(ee_name).id
                 p, qt = data.xpos[bid], data.xquat[bid]
                 tcp_pose = np.array([p[0], p[1], p[2], qt[0], qt[1], qt[2], qt[3]], np.float64)
-            if tcp_pose is not None:
+            if ch is not None and tcp_pose is not None:
                 ch.tcp.log(PoseInFrame(timestamp=ts, frame_id="world", pose=Pose(
                     position=Vector3(x=float(tcp_pose[0]), y=float(tcp_pose[1]),
                                      z=float(tcp_pose[2])),
                     orientation=Quaternion(x=float(tcp_pose[4]), y=float(tcp_pose[5]),
                                            z=float(tcp_pose[6]), w=float(tcp_pose[3])))),
                            log_time=ns)
+            view3d = render_view3d(model, data, pts, dd, near, far, VIEW3D_W, VIEW3D_H)
+        else:
+            pts, dd = proximity_world_points(ep, t, None, None, {}, near, d_max)
+            view3d = render_view3d(None, None, pts, dd, near, far, VIEW3D_W, VIEW3D_H)
 
-        for name, arr in ep.images.items():
-            fr = _index(arr, t, T)
-            if fr is None:
-                continue
-            payload = _jpeg(_as_rgb(fr), jpeg_q)
-            if not payload:
-                continue
-            topic = _cam_topic(name) if name in CAM_ALIAS or name in ("wrist_camera", "exo_camera_1") \
-                else f"/camera/{name}"
-            if name == "sensors_rgb":
-                topic = "/sensors/rgb256"
-            if topic not in ch.img:
-                continue
-            ch.img[topic].log(
-                CompressedImage(timestamp=ts, frame_id=topic.strip("/"),
-                                data=payload, format="jpeg"),
-                log_time=ns,
-            )
-
-        heat = None
-        if ep.proximity is not None:
-            heat_rgb = render_heatmap(ep.proximity[t], ep.sensor_names, near, far,
-                                      CANVAS_W, HEAT_H)
-            heat_rgb = heat_rgb[:, :, ::-1]  # BGR -> RGB for _jpeg
-            payload = _jpeg(heat_rgb, jpeg_q)
-            if payload and "/sensors/heatmap" in ch.img:
-                ch.img["/sensors/heatmap"].log(
-                    CompressedImage(timestamp=ts, frame_id="sensors/heatmap",
+        if ch is not None:
+            for name, arr in ep.images.items():
+                fr = _index(arr, t, T)
+                if fr is None:
+                    continue
+                payload = _jpeg(_as_rgb(fr), jpeg_q)
+                if not payload:
+                    continue
+                topic = _cam_topic(name) if name in CAM_ALIAS or name in ("wrist_camera", "exo_camera_1") \
+                    else f"/camera/{name}"
+                if name == "sensors_rgb":
+                    topic = "/sensors/rgb256"
+                if topic not in ch.img:
+                    continue
+                ch.img[topic].log(
+                    CompressedImage(timestamp=ts, frame_id=topic.strip("/"),
                                     data=payload, format="jpeg"),
                     log_time=ns,
                 )
-            heat = heat_rgb
 
-        if ep.embeddings is not None and "/sensors/embeddings" in ch.img:
-            emb = ep.embeddings[t]
-            lo, hi = float(np.min(emb)), float(np.max(emb))
-            norm = (emb - lo) / max(hi - lo, 1e-6)
-            img = (_TURBO(norm)[..., :3] * 255).astype(np.uint8)
-            img = cv2.resize(img, (max(img.shape[1] * 8, 32), max(img.shape[0] * 8, 40)),
-                             interpolation=cv2.INTER_NEAREST)
-            payload = _jpeg(img, jpeg_q)
-            if payload:
-                ch.img["/sensors/embeddings"].log(
-                    CompressedImage(timestamp=ts, frame_id="sensors/embeddings",
-                                    data=payload, format="jpeg"),
-                    log_time=ns,
-                )
+            if ep.proximity is not None:
+                heat_rgb = render_heatmap(ep.proximity[t], ep.sensor_names, near, far,
+                                          RGB_W, HEAT_H)
+                heat_rgb = heat_rgb[:, :, ::-1]  # BGR -> RGB for _jpeg
+                payload = _jpeg(heat_rgb, jpeg_q)
+                if payload and "/sensors/heatmap" in ch.img:
+                    ch.img["/sensors/heatmap"].log(
+                        CompressedImage(timestamp=ts, frame_id="sensors/heatmap",
+                                        data=payload, format="jpeg"),
+                        log_time=ns,
+                    )
+
+            if ep.embeddings is not None and "/sensors/embeddings" in ch.img:
+                emb = ep.embeddings[t]
+                lo, hi = float(np.min(emb)), float(np.max(emb))
+                norm = (emb - lo) / max(hi - lo, 1e-6)
+                img = (_TURBO(norm)[..., :3] * 255).astype(np.uint8)
+                img = cv2.resize(img, (max(img.shape[1] * 8, 32), max(img.shape[0] * 8, 40)),
+                                 interpolation=cv2.INTER_NEAREST)
+                payload = _jpeg(img, jpeg_q)
+                if payload:
+                    ch.img["/sensors/embeddings"].log(
+                        CompressedImage(timestamp=ts, frame_id="sensors/embeddings",
+                                        data=payload, format="jpeg"),
+                        log_time=ns,
+                    )
 
         jmsg = joint_msg(ep, t)
-        ch.joints.log(jmsg, log_time=ns)
-
-        if ep.phase is not None:
-            ph = int(ep.phase[t])
-            if ph != last_phase:
-                ch.log.log(Log(timestamp=ts, level=LogLevel.Info,
-                               message=f"phase -> {inv_phase.get(ph, ph)}", name="phase"),
-                           log_time=ns)
-                last_phase = ph
+        if ch is not None:
+            ch.joints.log(jmsg, log_time=ns)
+            if ep.phase is not None:
+                ph = int(ep.phase[t])
+                if ph != last_phase:
+                    ch.log.log(Log(timestamp=ts, level=LogLevel.Info,
+                                   message=f"phase -> {inv_phase.get(ph, ph)}", name="phase"),
+                               log_time=ns)
+                    last_phase = ph
 
         if writer is not None:
-            frame = compose_frame(ep, t, heat)
+            frame = compose_frame(ep, t, None, view3d, near, far)
             writer.write(frame)
 
         rec = {
@@ -1238,14 +1450,17 @@ def export_episode(ep: Episode, ch: Channels, *, model, data, mesh_update,
     ok = ep.success
     level = LogLevel.Info if ok else (LogLevel.Warning if ok is False else LogLevel.Info)
     ending = "SUCCESS" if ok else ("FAIL" if ok is False else "END")
-    ch.log.log(Log(timestamp=ts_end, level=level,
-                   message=f"=== {ep.label} {ending}", name="task"),
-               log_time=ns_end)
+    if ch is not None:
+        ch.log.log(Log(timestamp=ts_end, level=level,
+                       message=f"=== {ep.label} {ending}", name="task"),
+                   log_time=ns_end)
     return int(round(T * dt * 1e9)), records
 
 
-def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None) -> np.ndarray:
-    """BGR tiled frame: wrist | table / heatmap / qpos / qvel / HUD."""
+def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None,
+                   view3d_bgr: np.ndarray | None, near: float = 0.02,
+                   far: float = 0.60) -> np.ndarray:
+    """BGR mosaic: wrist | table | prox-3D, heatmap, qpos, qvel, HUD."""
     canvas = np.full((CANVAS_H, CANVAS_W, 3), 12, np.uint8)
     wrist = _index(ep.images.get("wrist_camera"), t, ep.T)
     table = None
@@ -1258,18 +1473,22 @@ def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None) -> np.ndarra
     timg = _letterbox(_as_rgb(table), TILE_W, TILE_H) if table is not None \
         else _slate(TILE_W, TILE_H, "no table RGB")
     canvas[0:TILE_H, 0:TILE_W] = wimg[:, :, ::-1]
-    canvas[0:TILE_H, TILE_W:CANVAS_W] = timg[:, :, ::-1]
-    y = TILE_H
+    canvas[0:TILE_H, TILE_W:RGB_W] = timg[:, :, ::-1]
     if heat_rgb is None and ep.proximity is not None:
-        heat_bgr = render_heatmap(ep.proximity[t], ep.sensor_names, 0.02, 0.60,
-                                 CANVAS_W, HEAT_H)
+        heat_bgr = render_heatmap(ep.proximity[t], ep.sensor_names, near, far,
+                                 RGB_W, HEAT_H)
     elif heat_rgb is not None:
         heat_bgr = heat_rgb[:, :, ::-1] if heat_rgb.shape[2] == 3 else heat_rgb
-        heat_bgr = cv2.resize(heat_bgr, (CANVAS_W, HEAT_H), interpolation=cv2.INTER_NEAREST)
+        heat_bgr = cv2.resize(heat_bgr, (RGB_W, HEAT_H), interpolation=cv2.INTER_NEAREST)
     else:
-        heat_bgr = _slate(CANVAS_W, HEAT_H, "no proximity")
-    canvas[y:y + HEAT_H] = heat_bgr
-    y += HEAT_H
+        heat_bgr = _slate(RGB_W, HEAT_H, "no proximity")
+    canvas[TILE_H:TILE_H + HEAT_H, 0:RGB_W] = heat_bgr
+    if view3d_bgr is None:
+        view3d_bgr = _slate(VIEW3D_W, VIEW3D_H, "no 3D / no FK")
+    else:
+        view3d_bgr = cv2.resize(view3d_bgr, (VIEW3D_W, VIEW3D_H), interpolation=cv2.INTER_AREA)
+    canvas[0:VIEW3D_H, RGB_W:RGB_W + VIEW3D_W] = view3d_bgr
+    y = TILE_H + HEAT_H
     _sparkline(canvas[y:y + PLOT_H], ep.qpos[:ep.T, : min(7, ep.qpos.shape[1])], t,
                "qpos q1..q7 (rad)")
     y += PLOT_H
@@ -1287,7 +1506,7 @@ def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None) -> np.ndarra
         if k in ep.attrs:
             attr += f"  {k}={ep.attrs[k]}"
     text = f"{ep.label}  t={t}/{ep.T - 1}{skin}{attr}"
-    cv2.putText(hud, text[:110], (8, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
+    cv2.putText(hud, text[:140], (8, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (220, 220, 220), 1, cv2.LINE_AA)
     cv2.putText(canvas, "wrist", (8, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (255, 255, 255), 1, cv2.LINE_AA)
@@ -1404,32 +1623,18 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     all_t, all_q, all_v, all_skin = [], [], [], []
     episodes_meta = []
     n_ok = 0
+    n_total = len(refs)
     for i, ref in enumerate(refs):
         ep = first if i == 0 else load_episode(ref, **kw)
         start_s = offset_ns / 1e9
         print(f"[{i+1}/{len(refs)}] {ep.label} T={ep.T} dt={ep.dt:.3f}s "
               f"cams={list(ep.images)} prox={None if ep.proximity is None else ep.proximity.shape}")
-        if args.no_mcap:
-            recs = []
-            for t in range(0, ep.T, args.stride):
-                if writer is not None:
-                    writer.write(compose_frame(ep, t, None))
-                q = ep.qpos[t]
-                recs.append({
-                    "t": start_s + t * ep.dt,
-                    "q": [float(q[j]) for j in range(min(7, q.shape[0]))],
-                    "v": [float(ep.qvel[t, j]) for j in range(min(7, ep.qvel.shape[0]))],
-                    "skin_min": (float(np.min(ep.proximity[t]))
-                                 if ep.proximity is not None else None),
-                })
-            dur_ns = int(round(ep.T * ep.dt * 1e9))
-        else:
-            dur_ns, recs = export_episode(
-                ep, ch, model=model, data=data, mesh_update=mesh_update,
-                pub_bodies=pub_bodies, offset_ns=offset_ns, near=args.near,
-                far=args.far, d_max=args.d_max, stride=args.stride,
-                jpeg_q=args.jpeg_quality, writer=writer,
-            )
+        dur_ns, recs = export_episode(
+            ep, ch, model=model, data=data, mesh_update=mesh_update,
+            pub_bodies=pub_bodies or [], offset_ns=offset_ns, near=args.near,
+            far=args.far, d_max=args.d_max, stride=args.stride,
+            jpeg_q=args.jpeg_quality, writer=writer,
+        )
         for rec in recs:
             all_t.append(rec["t"])
             all_q.append(rec["q"])
@@ -1472,6 +1677,28 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     }
     write_html(out_dir, timeline)
 
+    gaps = episode_gaps(first, has_fk=model is not None)
+    audit = {
+        "slug": out_dir.name,
+        "src": str(src),
+        "kind": kind,
+        "n_eps_total": n_total,
+        "n_eps_exported": n_ok,
+        "cams": sorted(cam_names),
+        "has_prox": first.proximity is not None,
+        "prox_shape": None if first.proximity is None else list(first.proximity.shape),
+        "has_table": has_table,
+        "has_wrist": has_wrist,
+        "has_fk": model is not None,
+        "has_cam2w": bool(first.cam2w),
+        "gaps": gaps,
+        "video": "dataset.mp4",
+        "duration_s": (offset_ns / 1e9) if n_ok else 0.0,
+        "stride": args.stride,
+        "no_mcap": bool(args.no_mcap),
+    }
+    (out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
+
     print(f"\n{n_ok} episode(s), {offset_ns/1e9:.1f}s timeline")
     print(f"  html    {out_dir / 'index.html'}")
     if not args.no_video:
@@ -1487,10 +1714,12 @@ def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    ap.add_argument("--data", required=True, type=Path,
+    ap.add_argument("--data", default=None, type=Path,
                     help="folder of h5 / hdf5, a parent of many datasets, or one file")
     ap.add_argument("--out", default=None, type=Path,
                     help="output dir (default: <data>/dataset_viz) or a .mcap path")
+    ap.add_argument("--reencode", type=Path, default=None,
+                    help="H.264-encode every dataset.mp4 under this dir (Cursor / VS Code)")
     ap.add_argument("--list", action="store_true",
                     help="print catalog (mixed tree) or episode list (one dataset)")
     ap.add_argument("--each", action="store_true",
@@ -1510,10 +1739,25 @@ def main() -> None:
     ap.add_argument("--jpeg-quality", type=int, default=JPEG_QUALITY)
     ap.add_argument("--no-mcap", action="store_true")
     ap.add_argument("--no-video", action="store_true")
+    ap.add_argument("--keep-dups", action="store_true",
+                    help="include nested copies (pact_20260622 copies of act_style_52)")
     ap.add_argument("--include-sensor-rgb", action="store_true",
                     help="also ingest sensors_rgb256 sidecar (huge)")
     ap.add_argument("--include-depth", action="store_true")
     args = ap.parse_args()
+
+    if args.reencode is not None:
+        root = args.reencode.expanduser().resolve()
+        files = sorted(root.rglob("dataset.mp4")) if root.is_dir() else ([root] if root.is_file() else [])
+        if not files:
+            raise SystemExit(f"no dataset.mp4 under {root}")
+        for p in files:
+            print(f"encode {p}")
+            encode_h264_ide(p)
+        return
+
+    if args.data is None:
+        raise SystemExit("pass --data PATH  or  --reencode DIR")
 
     src = args.data.expanduser().resolve()
     catalog = [] if src.is_file() else scan_dataset_roots(src, include_eval=args.include_eval)
@@ -1522,18 +1766,23 @@ def main() -> None:
         print_catalog(catalog, src)
         if args.list and not args.each:
             print("\npass one child path, or --each (one viz per row). "
-                  "--include-eval adds results/ rollouts.")
+                  "--include-eval adds results/ rollouts. DUP rows skipped by --each "
+                  "unless --keep-dups.")
             return
         if not args.each:
             raise SystemExit(
                 "mixed tree — pick one child from the list, or pass --each"
             )
+        catalog, skipped_dups = unique_catalog(catalog, args.keep_dups)
+        if skipped_dups:
+            print(f"skip {len(skipped_dups)} DUP cop(y/ies); --keep-dups to include")
         out_base = (args.out.expanduser().resolve() if args.out
                     else _ROOT / "experiments_output/default/dataset_viz")
         for ds in catalog:
             slug = _slug(src, ds.path)
             print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
             run_one(ds.path, out_base / slug, out_base / slug / "dataset.mcap", args)
+        write_audit_index(out_base, n_skipped_dups=len(skipped_dups))
         return
 
     if len(catalog) == 1 and src != catalog[0].path and src.is_dir():
@@ -1544,6 +1793,7 @@ def main() -> None:
                     else _ROOT / "experiments_output/default/dataset_viz")
         slug = _slug(src.parent, catalog[0].path)
         run_one(catalog[0].path, out_base / slug, out_base / slug / "dataset.mcap", args)
+        write_audit_index(out_base)
         return
 
     out_dir, mcap_path = _out_paths(src, args)

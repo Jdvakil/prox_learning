@@ -227,13 +227,22 @@ Open `gallery.html` after `--all`. Useful switches: `--format png|mp4|both`,
 
 `scripts/dataset_viz.py` reads a folder of trajectory HDF5s and writes **one** concatenated
 timeline: Foxglove `.mcap` (3D FK, RGB, skin heatmap, joint plots) plus a tiled `dataset.mp4`
-+ `index.html` (wrist / table RGB, 8×8 skin mosaic, qpos / qvel, episode list). Auto-detects
-ACT `episode_*.hdf5`, HuggingFace `rows/*/trajectory.h5`, and datagen `house_*/trajectories*.h5`.
-Missing cameras become a slate (hallway v5 has **no table / exo**). Skin comes from the
-tensor, not the sidecar heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or **66 ms**
-(not ACT's train `DT=0.02`).
++ `index.html`. The MP4 layout is wrist | table | **live prox 3D** (robot skeleton +
+back-projected 8×8 returns, turbo: red=near), then the 8×8 mosaic, qpos / qvel, HUD.
+Auto-detects ACT `episode_*.hdf5`, HuggingFace `rows/*/trajectory.h5`, and datagen
+`house_*/trajectories*.h5`. Missing cameras become a slate (hallway v5 has **no table / exo**).
+Skin comes from the tensor, not the sidecar heatmap mp4. dt defaults to
+`obs_scene.policy_dt_ms` or **66 ms** (not ACT's train `DT=0.02`).
+ACT hdf5 has no saved `cam2world`; the 3D panel uses MuJoCo FK camera poses. Datagen /
+HF rows use saved `cam2world_gl` when present.
 
-All live clones sit under `data/`. Do **not** pass that parent without `--list` / `--each` — it is a mixed tree (hallway rows + the `molmo-pi0-eval-videos` dump). `--list` prints one row per dataset. `--each` writes one viz dir per row. `results/` eval rollouts stay out unless `--include-eval`.
+All live clones sit under `data/`. Do **not** pass that parent without `--list` / `--each` —
+it is a mixed tree (hallway rows + the `molmo-pi0-eval-videos` dump). `--list` prints one
+row per dataset (`DUP` = nested copy of openfront 52 / raw_h5). `--each` writes one viz
+dir per **unique** row and an audit `index.html` at the out root (gaps: no table, no prox,
+…). `results/` eval rollouts stay out unless `--include-eval`. `--keep-dups` keeps the
+copies. Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
+finishes; reopen each `dataset.mp4` in Cursor.
 
 ```bash
 conda activate mlspaces
@@ -246,6 +255,11 @@ python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
     --out experiments_output/default/dataset_viz \
     --each --max-episodes 2
+
+# audit: every unique dataset, all episodes, H.264 + 3D panel (no Foxglove)
+python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
+    --out experiments_output/default/dataset_viz \
+    --each --no-mcap --stride 2
 
 # hallway HF rows (152)
 python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
