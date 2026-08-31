@@ -22,6 +22,20 @@ Newest session at the top.
 
 ---
 
+## 2026-08-31 — drop empty RGB tiles in dataset.mp4
+
+- **When:** 2026-08-31. User: Check_r5 (and same layout) blank RGB box steals space
+  from heatmap / prox 3D.
+- **Why:** `compose_frame` always reserved wrist|table. Missing cam drew "no table RGB"
+  slate (hallway, sweep).
+- **What:** `_present_rgb` only draws cams that have pixels. 1 cam → full 640-wide
+  tile. 0 RGB → heatmap fills left 640×480. No prox → no heatmap slate; RGB grows
+  tall. README §4.2.1.
+- **Not done:** user `--force` regen of hallway / Check_r5 (Check_r5 already has
+  both RGB so layout stays two tiles).
+
+---
+
 ## 2026-08-31 — audit compilation videos + live prox 3D panel
 
 - **When:** 2026-08-31. User: compilation video for every unique dataset (audit what
@@ -35,7 +49,9 @@ Newest session at the top.
   `export_episode` always FK+3D even with `--no-mcap`. README §4.2.1.
 - **How:** `proximity_world_points` uses saved `cam2world_gl` or MuJoCo `cam_xmat`.
   Numpy look-at projector (no EGL). H.264 remux unchanged.
-- **Not done:** full `--each --no-mcap --stride 2` encode on this machine (long).
+- **Not done:** none. Videos at `experiments_output/default/dataset_viz/`. Open
+  `index.html`. Stride 2. 3 DUP copies skipped. Some fumehood pick h5 chunks
+  LZF-fail (skipped, not missing on purpose).
 
 ---
 

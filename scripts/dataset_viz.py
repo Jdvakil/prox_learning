@@ -7,16 +7,31 @@ Auto-detects three layouts this repo actually uses:
   datagen      house_*/trajectories*.h5 + episode_*_*_batch_*.mp4
 
 Every episode is laid end-to-end on one timeline (0.5 s gap). The MCAP is the
-interactive visualizer (Foxglove). The MP4 + index.html is the "whole dataset
-in one video" path: wrist / table RGB, 8x8 skin mosaic, live prox-3D (FK +
-back-projected returns), and joint position / velocity plots.
+interactive visualizer (Foxglove). The MP4s + index.html are the browsing path:
+wrist / table RGB, 8x8 skin mosaic, live prox-3D (FK + back-projected returns),
+and joint position / velocity plots.
+
+Video is written as one short clip per episode, filed by trajectory type:
+
+  episodes/<behavior_class>/<idx>_<label>.mp4
+
+index.html lists the clips by type and plays one at a time. --group-by picks a
+different attribute for the folder name. --one-video restores the old single
+concatenated dataset.mp4.
+
+Output is not selectable. Everything lands under the fixed root
+/home/jaydv/code/prox_learning/experiments_output/default/dataset_viz, in a folder
+that mirrors the dataset path with the <repo>/data prefix removed:
+
+  data/molmo-pi0-eval-videos/data/fumehood/pick
+      -> <root>/molmo-pi0-eval-videos/data/fumehood/pick/
 
   conda activate mlspaces
   cd /home/jaydv/code/prox_learning
   python scripts/dataset_viz.py --reencode experiments_output/default/dataset_viz
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
-      --out experiments_output/default/dataset_viz --each --no-mcap --stride 2
+      --each --no-mcap --stride 2
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
   python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
 """
@@ -53,6 +68,7 @@ from foxglove.schemas import (
 )
 
 _ROOT = Path(__file__).resolve().parents[1]
+_OUT_BASE = Path("/home/jaydv/code/prox_learning/experiments_output/default/dataset_viz")
 _SCRIPTS = Path(__file__).resolve().parent
 _ACT = _ROOT / "submodules" / "act"
 for _p in (_SCRIPTS, _ACT):
@@ -159,9 +175,10 @@ def _json_row(blob) -> dict:
     if not raw:
         return {}
     try:
-        return json.loads(raw.decode("utf-8"))
+        obj = json.loads(raw.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
         return {}
+    return obj if isinstance(obj, dict) else {}
 
 
 def _jsonable(v):
@@ -606,7 +623,8 @@ video { width:320px; background:#000; }
 .slug { font-family:ui-monospace,monospace; font-size:12px; }
 </style></head><body>
 <h1>dataset audit</h1>
-<p>One compilation MP4 per unique dataset. Right panel in each video is live prox 3D.</p>
+<p>One row per unique dataset. Each dataset holds one short clip per episode, filed under
+episodes/&lt;trajectory type&gt;/; the preview below is its first clip. Right panel is live prox 3D.</p>
 <p>n=%%N%% unique &nbsp; skipped dups=%%NDUP%%</p>
 <table>
 <thead><tr><th>video</th><th>dataset</th><th>eps</th><th>cams / prox</th><th>gaps</th></tr></thead>
@@ -618,12 +636,22 @@ video { width:320px; background:#000; }
 
 
 def write_audit_index(out_base: Path, n_skipped_dups: int = 0) -> None:
+    out_base.mkdir(parents=True, exist_ok=True)
+    skip_slugs = {"openfront_52"}
     rows = []
-    for p in sorted(out_base.glob("*/audit.json")):
+    # Output folders mirror the dataset path, so an audit sits at any depth.
+    for p in sorted(out_base.rglob("audit.json")):
+        rel = p.relative_to(out_base)
+        if len(rel.parts) == 1:
+            continue  # the roll-up this function writes, not a dataset
+        slug = str(rel.parent)
+        if any(part.startswith("_") for part in rel.parts) or slug in skip_slugs:
+            continue
         try:
-            rows.append(json.loads(p.read_text()))
+            rec = json.loads(p.read_text())
         except Exception:
             continue
+        rows.append(rec)
     body = []
     for r in rows:
         slug = r.get("slug", "")
@@ -633,12 +661,13 @@ def write_audit_index(out_base: Path, n_skipped_dups: int = 0) -> None:
         cams = ", ".join(r.get("cams") or [])
         prox = r.get("prox_shape")
         prox_s = "none" if not r.get("has_prox") else str(prox)
-        vid = f"{slug}/dataset.mp4"
+        vid = f"{slug}/{r.get('video') or 'dataset.mp4'}"
         body.append(
             f'<tr><td><video src="{vid}" controls preload="metadata"></video></td>'
             f'<td class="slug">{slug}<br><a href="{vid}">mp4</a> · '
             f'<a href="{slug}/index.html">html</a></td>'
-            f'<td>{r.get("n_eps_exported")}/{r.get("n_eps_total")}</td>'
+            f'<td>{r.get("n_eps_exported")}/{r.get("n_eps_total")}'
+            f'<br><span class="slug">{r.get("n_videos", 1)} clip(s)</span></td>'
             f'<td>{cams or "—"}<br>prox={prox_s}</td>'
             f'<td>{gap_html}</td></tr>'
         )
@@ -818,13 +847,16 @@ def load_datagen(ref: EpisodeRef, prox_pool: str, dt_override: float | None,
         base = np.asarray(t["obs/extra/robot_base_pose"], np.float64) if "obs/extra/robot_base_pose" in t else None
         phase = np.asarray(t["obs/extra/policy_phase"][:T], int) if "obs/extra/policy_phase" in t else None
         success = bool(np.asarray(t["success"])[-1]) if "success" in t else None
+        qpos_blob = t["obs/agent/qpos"][:T]
+        qvel_blob = t["obs/agent/qvel"][:T] if "obs/agent/qvel" in t else None
+        act_blob = t["actions/joint_pos"][:T] if "actions/joint_pos" in t else None
         q_rows, dq_rows, grip = [], [], []
         for i in range(T):
-            qp = _json_row(t["obs/agent/qpos"][i])
+            qp = _json_row(qpos_blob[i])
             arm = list(qp.get("arm") or [0.0] * 7)
             g = list(qp.get("gripper") or [0.0])
             q_rows.append(arm[:7] + (g[:2] if len(g) >= 2 else g + [0.0]))
-            qv = _json_row(t["obs/agent/qvel"][i]) if "obs/agent/qvel" in t else {}
+            qv = _json_row(qvel_blob[i]) if qvel_blob is not None else {}
             arm_v = list(qv.get("arm") or [0.0] * 7)
             gv = list(qv.get("gripper") or [0.0, 0.0])
             dq_rows.append(arm_v[:7] + (gv[:2] if len(gv) >= 2 else gv + [0.0]))
@@ -832,10 +864,10 @@ def load_datagen(ref: EpisodeRef, prox_pool: str, dt_override: float | None,
         qpos = np.asarray(q_rows, np.float32)
         qvel = np.asarray(dq_rows, np.float32)
         action = None
-        if "actions/joint_pos" in t:
+        if act_blob is not None:
             a_rows = []
             for i in range(T):
-                d = _json_row(t["actions/joint_pos"][i])
+                d = _json_row(act_blob[i])
                 arm = list(d.get("arm") or [0.0] * 7)
                 g = list(d.get("gripper") or [0.0])
                 a_rows.append(arm[:7] + [float(g[0]) if g else 0.0])
@@ -1123,7 +1155,9 @@ _HTML = r"""<!DOCTYPE html>
   .sub { color: #888; font-size: 12px; }
   main { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); gap: 8px; padding: 8px; }
   video { width: 100%; background: #000; border-radius: 4px; }
-  #ep { max-height: 280px; overflow: auto; background: #1a1a1a; border-radius: 4px; }
+  #ep { max-height: 460px; overflow: auto; background: #1a1a1a; border-radius: 4px; }
+  #ep .grp { position: sticky; top: 0; background: #223040; color: #9cf; font-size: 12px;
+             font-weight: 600; padding: 4px 8px; }
   #ep button { display: block; width: 100%; text-align: left; background: none; border: 0;
                color: #ccc; padding: 4px 8px; cursor: pointer; font: inherit; }
   #ep button:hover, #ep button.active { background: #2a3a4a; color: #fff; }
@@ -1136,7 +1170,7 @@ _HTML = r"""<!DOCTYPE html>
 <header>
   <h1 id="title">dataset viz</h1>
   <div class="sub">
-    Tiled video = whole dataset. Plots follow playhead.
+    One short clip per episode, grouped by trajectory type. Plots follow the playhead.
     Foxglove: open <code>dataset.mcap</code>, import <code>foxglove_layout.json</code>
     (<a href="https://app.foxglove.dev">app.foxglove.dev</a> or desktop).
   </div>
@@ -1159,15 +1193,41 @@ function init(tl) {
   document.getElementById("title").textContent = tl.title + "  (" + tl.n_episodes + " eps, " +
     (tl.duration_s).toFixed(1) + "s)";
   const v = document.getElementById("v");
-  v.src = tl.video;
   const box = document.getElementById("ep");
-  tl.episodes.forEach((e, i) => {
-    const b = document.createElement("button");
-    b.textContent = e.label + "  T=" + e.T + (e.attrs && e.attrs.behavior_class ? "  " + e.attrs.behavior_class : "");
-    b.onclick = () => { v.currentTime = e.start_s; v.play(); };
-    box.appendChild(b);
-    e._btn = b;
+  const per = !!tl.per_episode;
+  let cur = null;
+  function select(e, play) {
+    cur = e;
+    if (per) {
+      if (e.video && v.getAttribute("src") !== e.video) v.src = e.video;
+      v.currentTime = 0;
+    } else {
+      v.currentTime = e.start_s;
+    }
+    if (play) v.play();
+    tl.episodes.forEach(x => x._btn.classList.toggle("active", x === e));
+    zoom(e);
+  }
+  const groups = new Map();
+  tl.episodes.forEach(e => {
+    const g = e.group || "all";
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(e);
   });
+  groups.forEach((eps, g) => {
+    const h = document.createElement("div");
+    h.className = "grp";
+    h.textContent = g + "  (" + eps.length + ")";
+    box.appendChild(h);
+    eps.forEach(e => {
+      const b = document.createElement("button");
+      b.textContent = e.label + "  T=" + e.T;
+      b.onclick = () => select(e, true);
+      box.appendChild(b);
+      e._btn = b;
+    });
+  });
+  if (!per) v.src = tl.video;
   const layout = {margin:{t:24,r:12,b:32,l:48}, paper_bgcolor:"#111", plot_bgcolor:"#161616",
     font:{color:"#ccc", size:11}, legend:{orientation:"h", y:1.12},
     xaxis:{title:"t (s)", gridcolor:"#333"}, yaxis:{gridcolor:"#333"}};
@@ -1188,15 +1248,25 @@ function init(tl) {
                     line:{color:"#fff", width:1}}];
     ["pq","pv","ps"].forEach(id => Plotly.relayout(id, {shapes: shape}));
   }
+  function zoom(e) {
+    const r = (per && e) ? {"xaxis.range": [e.start_s, e.start_s + (e.dur_s || 1)]}
+                         : {"xaxis.autorange": true};
+    ["pq","pv","ps"].forEach(id => Plotly.relayout(id, r));
+  }
   v.ontimeupdate = () => {
-    const t = v.currentTime;
+    const t = per ? ((cur ? cur.start_s : 0) + v.currentTime) : v.currentTime;
     cursor(t);
-    let cur = tl.episodes[0];
-    for (const e of tl.episodes) if (t >= e.start_s) cur = e;
-    tl.episodes.forEach(e => e._btn.classList.toggle("active", e === cur));
+    if (!per) {
+      cur = tl.episodes[0];
+      for (const e of tl.episodes) if (t >= e.start_s) cur = e;
+      tl.episodes.forEach(e => e._btn.classList.toggle("active", e === cur));
+    }
+    const span = per && cur ? (cur.dur_s || 0) : tl.duration_s;
     document.getElementById("hud").textContent =
-      (cur ? cur.label : "") + "   t=" + t.toFixed(2) + "s / " + tl.duration_s.toFixed(1) + "s";
+      (cur ? cur.label : "") + "   t=" + (per ? v.currentTime : t).toFixed(2) +
+      "s / " + span.toFixed(1) + "s";
   };
+  if (tl.episodes.length) select(tl.episodes[0], false);
 }
 </script>
 </body>
@@ -1457,38 +1527,78 @@ def export_episode(ep: Episode, ch: Channels | None, *, model, data, mesh_update
     return int(round(T * dt * 1e9)), records
 
 
-def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None,
-                   view3d_bgr: np.ndarray | None, near: float = 0.02,
-                   far: float = 0.60) -> np.ndarray:
-    """BGR mosaic: wrist | table | prox-3D, heatmap, qpos, qvel, HUD."""
-    canvas = np.full((CANVAS_H, CANVAS_W, 3), 12, np.uint8)
-    wrist = _index(ep.images.get("wrist_camera"), t, ep.T)
+def _present_rgb(ep: Episode, t: int) -> list[tuple[str, np.ndarray]]:
+    """RGB tiles that actually have pixels. Missing cams are omitted (no slate)."""
+    out: list[tuple[str, np.ndarray]] = []
+    wrist = None
+    for k in ("wrist_camera", "wrist", "wrist_rgb"):
+        if k in ep.images:
+            wrist = _index(ep.images[k], t, ep.T)
+            if wrist is not None:
+                break
+    if wrist is not None:
+        out.append(("wrist", _as_rgb(wrist)))
     table = None
     for k in ("exo_camera_1", "table", "table_camera", "top"):
         if k in ep.images:
             table = _index(ep.images[k], t, ep.T)
-            break
-    wimg = _letterbox(_as_rgb(wrist), TILE_W, TILE_H) if wrist is not None \
-        else _slate(TILE_W, TILE_H, "no wrist RGB")
-    timg = _letterbox(_as_rgb(table), TILE_W, TILE_H) if table is not None \
-        else _slate(TILE_W, TILE_H, "no table RGB")
-    canvas[0:TILE_H, 0:TILE_W] = wimg[:, :, ::-1]
-    canvas[0:TILE_H, TILE_W:RGB_W] = timg[:, :, ::-1]
-    if heat_rgb is None and ep.proximity is not None:
-        heat_bgr = render_heatmap(ep.proximity[t], ep.sensor_names, near, far,
-                                 RGB_W, HEAT_H)
-    elif heat_rgb is not None:
-        heat_bgr = heat_rgb[:, :, ::-1] if heat_rgb.shape[2] == 3 else heat_rgb
-        heat_bgr = cv2.resize(heat_bgr, (RGB_W, HEAT_H), interpolation=cv2.INTER_NEAREST)
-    else:
-        heat_bgr = _slate(RGB_W, HEAT_H, "no proximity")
-    canvas[TILE_H:TILE_H + HEAT_H, 0:RGB_W] = heat_bgr
+            if table is not None:
+                break
+    if table is not None:
+        out.append(("table", _as_rgb(table)))
+    return out
+
+
+def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None,
+                   view3d_bgr: np.ndarray | None, near: float = 0.02,
+                   far: float = 0.60) -> np.ndarray:
+    """BGR mosaic: present RGB only | prox-3D, heatmap, qpos, qvel, HUD.
+
+    Missing wrist/table/heatmap are not drawn as slates — leftover space goes
+    to the panels that have data.
+    """
+    canvas = np.full((CANVAS_H, CANVAS_W, 3), 12, np.uint8)
+    rgbs = _present_rgb(ep, t)
+    has_heat = ep.proximity is not None or heat_rgb is not None
+    n = len(rgbs)
+
     if view3d_bgr is None:
         view3d_bgr = _slate(VIEW3D_W, VIEW3D_H, "no 3D / no FK")
     else:
-        view3d_bgr = cv2.resize(view3d_bgr, (VIEW3D_W, VIEW3D_H), interpolation=cv2.INTER_AREA)
-    canvas[0:VIEW3D_H, RGB_W:RGB_W + VIEW3D_W] = view3d_bgr
-    y = TILE_H + HEAT_H
+        view3d_bgr = cv2.resize(view3d_bgr, (VIEW3D_W, VIEW3D_H),
+                                interpolation=cv2.INTER_AREA)
+
+    if n == 0 and not has_heat:
+        canvas[0:VIEW3D_H, 0:CANVAS_W] = cv2.resize(
+            view3d_bgr, (CANVAS_W, VIEW3D_H), interpolation=cv2.INTER_AREA)
+    else:
+        canvas[0:VIEW3D_H, RGB_W:RGB_W + VIEW3D_W] = view3d_bgr
+        rgb_h = VIEW3D_H if not has_heat else TILE_H
+        if n == 1:
+            img = _letterbox(rgbs[0][1], RGB_W, rgb_h)
+            canvas[0:rgb_h, 0:RGB_W] = img[:, :, ::-1]
+            cv2.putText(canvas, rgbs[0][0], (8, 18), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.45, (255, 255, 255), 1, cv2.LINE_AA)
+        elif n >= 2:
+            tw = RGB_W // 2
+            for i, (lab, fr) in enumerate(rgbs[:2]):
+                img = _letterbox(fr, tw, rgb_h)
+                x = i * tw
+                canvas[0:rgb_h, x:x + tw] = img[:, :, ::-1]
+                cv2.putText(canvas, lab, (x + 8, 18), cv2.FONT_HERSHEY_SIMPLEX,
+                            0.45, (255, 255, 255), 1, cv2.LINE_AA)
+        if has_heat:
+            hy = 0 if n == 0 else TILE_H
+            hh = VIEW3D_H if n == 0 else HEAT_H
+            if heat_rgb is not None:
+                heat_bgr = heat_rgb[:, :, ::-1] if heat_rgb.shape[2] == 3 else heat_rgb
+                heat_bgr = cv2.resize(heat_bgr, (RGB_W, hh), interpolation=cv2.INTER_NEAREST)
+            else:
+                heat_bgr = render_heatmap(ep.proximity[t], ep.sensor_names, near, far,
+                                          RGB_W, hh)
+            canvas[hy:hy + hh, 0:RGB_W] = heat_bgr
+
+    y = VIEW3D_H
     _sparkline(canvas[y:y + PLOT_H], ep.qpos[:ep.T, : min(7, ep.qpos.shape[1])], t,
                "qpos q1..q7 (rad)")
     y += PLOT_H
@@ -1508,36 +1618,88 @@ def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None,
     text = f"{ep.label}  t={t}/{ep.T - 1}{skin}{attr}"
     cv2.putText(hud, text[:140], (8, 26), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (220, 220, 220), 1, cv2.LINE_AA)
-    cv2.putText(canvas, "wrist", (8, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
-                (255, 255, 255), 1, cv2.LINE_AA)
-    cv2.putText(canvas, "table", (TILE_W + 8, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
-                (255, 255, 255), 1, cv2.LINE_AA)
     return canvas
 
 
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def _out_paths(src: Path, args) -> tuple[Path, Path]:
-    if args.out is None:
-        out_dir = (src.parent if src.is_file() else src) / "dataset_viz"
-        mcap_path = out_dir / "dataset.mcap"
-    elif str(args.out).endswith(".mcap"):
-        mcap_path = args.out.expanduser().resolve()
-        out_dir = mcap_path.parent
+def out_dir_for(ds_path: Path) -> Path:
+    """Map a dataset path to its output folder under the fixed _OUT_BASE root.
+
+    The output mirrors the dataset path, with the <repo>/data prefix removed:
+
+        <repo>/data/molmo-pi0-eval-videos/data/fumehood/pick
+            -> <_OUT_BASE>/molmo-pi0-eval-videos/data/fumehood/pick
+
+    A dataset elsewhere in the checkout keeps its repo-relative path
+    (act_style_data/...). A dataset outside the checkout keeps its absolute path
+    without the leading "/". A single .h5 file maps to <parent>/<stem>.
+    """
+    p = ds_path.expanduser().resolve()
+    if p.is_file():
+        p = p.parent / p.stem
+    for base in (_ROOT / "data", _ROOT):
+        try:
+            rel = p.relative_to(base)
+        except ValueError:
+            continue
+        if rel.parts:
+            return _OUT_BASE / rel
+    return _OUT_BASE / Path(*p.parts[1:])
+
+
+def _out_paths(src: Path) -> tuple[Path, Path]:
+    out_dir = out_dir_for(src)
+    return out_dir, out_dir / "dataset.mcap"
+
+
+_GROUP_KEYS = ("behavior_class", "intrusion_side", "has_bar", "clean_success")
+
+
+def _safe_name(s) -> str:
+    """Filesystem-safe fragment for a clip file name or a group folder."""
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", str(s)).strip("_") or "unnamed"
+
+
+def episode_group(ep: Episode, key: str | None = None) -> str:
+    """Trajectory type of one episode — the folder its clip goes in.
+
+    Without --group-by, the first attribute of _GROUP_KEYS that the episode
+    carries wins: datagen writes behavior_class, obstacle ACT writes the rest.
+    An episode with none of them falls back to its success flag, then to "all".
+    """
+    if key:
+        val = ep.attrs.get(key)
     else:
-        out_dir = args.out.expanduser().resolve()
-        mcap_path = out_dir / "dataset.mcap"
-    return out_dir, mcap_path
+        val = next((ep.attrs[k] for k in _GROUP_KEYS
+                    if ep.attrs.get(k) not in (None, "")), None)
+        if val is None and ep.success is not None:
+            val = "success" if ep.success else "fail"
+    return _safe_name(val) if val not in (None, "") else "all"
 
 
-def _slug(scan_root: Path, ds_path: Path) -> str:
-    try:
-        rel = ds_path.relative_to(scan_root)
-        s = str(rel) if str(rel) != "." else ds_path.name
-    except ValueError:
-        s = ds_path.name
-    return s.replace("/", "_").replace(" ", "_")
+def _open_writer(path: Path, dt: float, stride: int = 1):
+    """Open an mp4 writer that plays back at wall-clock speed.
+
+    --stride N keeps every Nth step, so the frame rate has to drop by N too.
+    Without that division a strided clip runs N times too fast.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fps = max(1.0, min(60.0, (1.0 / max(dt, 1e-3)) / max(int(stride), 1)))
+    w = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), fps,
+                        (CANVAS_W, CANVAS_H))
+    if not w.isOpened():
+        raise SystemExit(f"cv2 could not open {path} for write")
+    return w
+
+
+def _has_output(dest: Path) -> bool:
+    """True when dest holds a finished run: an audit plus at least one video."""
+    if not (dest / "audit.json").is_file():
+        return False
+    return ((dest / "dataset.mp4").is_file()
+            or any((dest / "episodes").rglob("*.mp4")))
 
 
 def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
@@ -1549,8 +1711,14 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         raise SystemExit(f"no episodes after filters under {src}")
 
     print(f"format={kind}  n={len(refs)}  root={src}")
-    for r in refs:
-        print(" ", peek_summary(r))
+    preview = refs if len(refs) <= 8 else list(refs[:4]) + list(refs[-2:])
+    for r in preview:
+        try:
+            print(" ", peek_summary(r))
+        except Exception as e:
+            print(f"  {r.label} peek fail: {e}")
+    if len(refs) > 8:
+        print(f"  ... {len(refs) - 6} more")
     if args.list and not args.each:
         return
 
@@ -1559,7 +1727,18 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
               include_sensor_rgb=args.include_sensor_rgb,
               include_depth=args.include_depth)
 
-    first = load_episode(refs[0], **kw)
+    first = None
+    skip_n = 0
+    for i, ref in enumerate(refs):
+        try:
+            first = load_episode(ref, **kw)
+            skip_n = i
+            break
+        except Exception as e:
+            print(f"SKIP {ref.label}: {e}")
+    if first is None:
+        raise SystemExit(f"every episode failed to load under {src}")
+    refs = refs[skip_n:]
     image_topics = ["/camera/wrist", "/camera/table", "/sensors/heatmap"]
     if args.include_sensor_rgb:
         image_topics.append("/sensors/rgb256")
@@ -1594,14 +1773,11 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         model = data = mesh_update = None
         pub_bodies = []
 
+    one_video = bool(args.one_video)
     writer = None
     video_path = out_dir / "dataset.mp4"
-    if not args.no_video:
-        fps = max(1, min(60, int(round(1.0 / max(first.dt, 1e-3)))))
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-        writer = cv2.VideoWriter(str(video_path), fourcc, fps, (CANVAS_W, CANVAS_H))
-        if not writer.isOpened():
-            raise SystemExit(f"cv2 could not open {video_path} for write")
+    if not args.no_video and one_video:
+        writer = _open_writer(video_path, first.dt, args.stride)
 
     ctx = ch = mcap_writer = None
     if not args.no_mcap:
@@ -1624,17 +1800,40 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     episodes_meta = []
     n_ok = 0
     n_total = len(refs)
+    n_skip = 0
     for i, ref in enumerate(refs):
-        ep = first if i == 0 else load_episode(ref, **kw)
+        try:
+            ep = first if i == 0 else load_episode(ref, **kw)
+        except Exception as e:
+            print(f"  SKIP {ref.label}: {e}")
+            n_skip += 1
+            continue
         start_s = offset_ns / 1e9
-        print(f"[{i+1}/{len(refs)}] {ep.label} T={ep.T} dt={ep.dt:.3f}s "
+        group = episode_group(ep, args.group_by)
+        print(f"[{i+1}/{len(refs)}] {ep.label} [{group}] T={ep.T} dt={ep.dt:.3f}s "
               f"cams={list(ep.images)} prox={None if ep.proximity is None else ep.proximity.shape}")
-        dur_ns, recs = export_episode(
-            ep, ch, model=model, data=data, mesh_update=mesh_update,
-            pub_bodies=pub_bodies or [], offset_ns=offset_ns, near=args.near,
-            far=args.far, d_max=args.d_max, stride=args.stride,
-            jpeg_q=args.jpeg_quality, writer=writer,
-        )
+        ep_video = None
+        ep_writer = writer
+        if not args.no_video and not one_video:
+            ep_video = out_dir / "episodes" / group / f"{i:04d}_{_safe_name(ep.label)}.mp4"
+            ep_writer = _open_writer(ep_video, ep.dt, args.stride)
+        try:
+            dur_ns, recs = export_episode(
+                ep, ch, model=model, data=data, mesh_update=mesh_update,
+                pub_bodies=pub_bodies or [], offset_ns=offset_ns, near=args.near,
+                far=args.far, d_max=args.d_max, stride=args.stride,
+                jpeg_q=args.jpeg_quality, writer=ep_writer,
+            )
+        except Exception as e:
+            if ep_video is not None:
+                ep_writer.release()
+                ep_video.unlink(missing_ok=True)
+            print(f"  SKIP export {ep.label}: {e}")
+            n_skip += 1
+            continue
+        if ep_video is not None:
+            ep_writer.release()
+            encode_h264_ide(ep_video)
         for rec in recs:
             all_t.append(rec["t"])
             all_q.append(rec["q"])
@@ -1644,6 +1843,9 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
             "label": ep.label,
             "T": ep.T,
             "start_s": start_s,
+            "dur_s": dur_ns / 1e9,
+            "group": group,
+            "video": str(ep_video.relative_to(out_dir)) if ep_video is not None else None,
             "attrs": {k: ep.attrs[k] for k in ep.attrs
                       if k not in ("file",) and not str(k).startswith("pact_")},
         })
@@ -1661,9 +1863,12 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     qvel = {f"v{j+1}": [row[j] if j < len(row) else None for row in all_v]
             for j in range(7)}
     t_ds, packed = downsample_series(all_t, {"qpos": qpos, "qvel": qvel, "skin_min": all_skin})
+    ep_videos = [e["video"] for e in episodes_meta if e.get("video")]
+    ep_groups = sorted({e["group"] for e in episodes_meta})
     timeline = {
         "title": src.name,
-        "video": "dataset.mp4",
+        "per_episode": not one_video,
+        "video": "dataset.mp4" if one_video and not args.no_video else None,
         "n_episodes": n_ok,
         "n_frames": len(all_t),
         "duration_s": (offset_ns / 1e9) if n_ok else 0.0,
@@ -1678,12 +1883,17 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     write_html(out_dir, timeline)
 
     gaps = episode_gaps(first, has_fk=model is not None)
+    try:
+        slug = str(out_dir.relative_to(_OUT_BASE))
+    except ValueError:
+        slug = out_dir.name
     audit = {
-        "slug": out_dir.name,
+        "slug": slug,
         "src": str(src),
         "kind": kind,
         "n_eps_total": n_total,
         "n_eps_exported": n_ok,
+        "n_eps_skipped": n_skip,
         "cams": sorted(cam_names),
         "has_prox": first.proximity is not None,
         "prox_shape": None if first.proximity is None else list(first.proximity.shape),
@@ -1692,17 +1902,23 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "has_fk": model is not None,
         "has_cam2w": bool(first.cam2w),
         "gaps": gaps,
-        "video": "dataset.mp4",
+        "video": ("dataset.mp4" if one_video and not args.no_video
+                  else (ep_videos[0] if ep_videos else None)),
+        "n_videos": (1 if one_video else len(ep_videos)),
+        "groups": ep_groups,
         "duration_s": (offset_ns / 1e9) if n_ok else 0.0,
         "stride": args.stride,
         "no_mcap": bool(args.no_mcap),
     }
     (out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
 
-    print(f"\n{n_ok} episode(s), {offset_ns/1e9:.1f}s timeline")
+    print(f"\n{n_ok} episode(s), {n_skip} skipped, {offset_ns/1e9:.1f}s timeline")
     print(f"  html    {out_dir / 'index.html'}")
-    if not args.no_video:
+    if not args.no_video and one_video:
         print(f"  video   {video_path}")
+    elif not args.no_video:
+        print(f"  videos  {len(ep_videos)} clip(s) in {out_dir / 'episodes'}"
+              f"  groups={ep_groups}")
     if not args.no_mcap:
         print(f"  mcap    {mcap_path}")
         print(f"  layout  {out_dir / 'foxglove_layout.json'}")
@@ -1716,8 +1932,6 @@ def main() -> None:
     )
     ap.add_argument("--data", default=None, type=Path,
                     help="folder of h5 / hdf5, a parent of many datasets, or one file")
-    ap.add_argument("--out", default=None, type=Path,
-                    help="output dir (default: <data>/dataset_viz) or a .mcap path")
     ap.add_argument("--reencode", type=Path, default=None,
                     help="H.264-encode every dataset.mp4 under this dir (Cursor / VS Code)")
     ap.add_argument("--list", action="store_true",
@@ -1739,8 +1953,17 @@ def main() -> None:
     ap.add_argument("--jpeg-quality", type=int, default=JPEG_QUALITY)
     ap.add_argument("--no-mcap", action="store_true")
     ap.add_argument("--no-video", action="store_true")
+    ap.add_argument("--one-video", action="store_true",
+                    help="old behaviour: one concatenated dataset.mp4 instead of "
+                         "one clip per episode under episodes/<type>/")
+    ap.add_argument("--group-by", default=None, metavar="ATTR",
+                    help="episode attribute naming the episodes/<type>/ folder "
+                         "(default: first present of "
+                         "behavior_class, intrusion_side, has_bar, clean_success)")
     ap.add_argument("--keep-dups", action="store_true",
                     help="include nested copies (pact_20260622 copies of act_style_52)")
+    ap.add_argument("--force", action="store_true",
+                    help="redo datasets that already have audit.json")
     ap.add_argument("--include-sensor-rgb", action="store_true",
                     help="also ingest sensors_rgb256 sidecar (huge)")
     ap.add_argument("--include-depth", action="store_true")
@@ -1748,9 +1971,9 @@ def main() -> None:
 
     if args.reencode is not None:
         root = args.reencode.expanduser().resolve()
-        files = sorted(root.rglob("dataset.mp4")) if root.is_dir() else ([root] if root.is_file() else [])
+        files = sorted(root.rglob("*.mp4")) if root.is_dir() else ([root] if root.is_file() else [])
         if not files:
-            raise SystemExit(f"no dataset.mp4 under {root}")
+            raise SystemExit(f"no .mp4 under {root}")
         for p in files:
             print(f"encode {p}")
             encode_h264_ide(p)
@@ -1776,27 +1999,27 @@ def main() -> None:
         catalog, skipped_dups = unique_catalog(catalog, args.keep_dups)
         if skipped_dups:
             print(f"skip {len(skipped_dups)} DUP cop(y/ies); --keep-dups to include")
-        out_base = (args.out.expanduser().resolve() if args.out
-                    else _ROOT / "experiments_output/default/dataset_viz")
         for ds in catalog:
-            slug = _slug(src, ds.path)
+            dest = out_dir_for(ds.path)
+            slug = dest.relative_to(_OUT_BASE)
+            if not args.force and _has_output(dest):
+                print(f"\n======== {slug} already done ========")
+                continue
             print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
-            run_one(ds.path, out_base / slug, out_base / slug / "dataset.mcap", args)
-        write_audit_index(out_base, n_skipped_dups=len(skipped_dups))
+            run_one(ds.path, dest, dest / "dataset.mcap", args)
+        write_audit_index(_OUT_BASE, n_skipped_dups=len(skipped_dups))
         return
 
     if len(catalog) == 1 and src != catalog[0].path and src.is_dir():
         src = catalog[0].path
 
     if args.each and catalog:
-        out_base = (args.out.expanduser().resolve() if args.out
-                    else _ROOT / "experiments_output/default/dataset_viz")
-        slug = _slug(src.parent, catalog[0].path)
-        run_one(catalog[0].path, out_base / slug, out_base / slug / "dataset.mcap", args)
-        write_audit_index(out_base)
+        dest = out_dir_for(catalog[0].path)
+        run_one(catalog[0].path, dest, dest / "dataset.mcap", args)
+        write_audit_index(_OUT_BASE)
         return
 
-    out_dir, mcap_path = _out_paths(src, args)
+    out_dir, mcap_path = _out_paths(src)
     run_one(src, out_dir, mcap_path, args)
 
 

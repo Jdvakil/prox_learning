@@ -225,14 +225,17 @@ Open `gallery.html` after `--all`. Useful switches: `--format png|mp4|both`,
 <a id="421-live--visualize-a-dataset-folder"></a>
 ### 4.2.1 Live — visualize a dataset folder
 
-`scripts/dataset_viz.py` reads a folder of trajectory HDF5s and writes **one** concatenated
-timeline: Foxglove `.mcap` (3D FK, RGB, skin heatmap, joint plots) plus a tiled `dataset.mp4`
-+ `index.html`. The MP4 layout is wrist | table | **live prox 3D** (robot skeleton +
+`scripts/dataset_viz.py` reads a folder of trajectory HDF5s and writes one Foxglove `.mcap`
+(3D FK, RGB, skin heatmap, joint plots — still one concatenated timeline) plus **one short
+tiled MP4 per episode** and an `index.html` that browses them. The MP4 layout is
+wrist | table | **live prox 3D** (robot skeleton +
 back-projected 8×8 returns, turbo: red=near), then the 8×8 mosaic, qpos / qvel, HUD.
 Auto-detects ACT `episode_*.hdf5`, HuggingFace `rows/*/trajectory.h5`, and datagen
-`house_*/trajectories*.h5`. Missing cameras become a slate (hallway v5 has **no table / exo**).
-Skin comes from the tensor, not the sidecar heatmap mp4. dt defaults to
-`obs_scene.policy_dt_ms` or **66 ms** (not ACT's train `DT=0.02`).
+`house_*/trajectories*.h5`. Missing wrist / table / heatmap tiles are **dropped** (no
+slate). Leftover RGB grows; heatmap fills the left column when no RGB. Hallway v5 has
+**no table / exo** — that slot is gone, wrist uses the full left width. Skin comes from
+the tensor, not the sidecar heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or
+**66 ms** (not ACT's train `DT=0.02`).
 ACT hdf5 has no saved `cam2world`; the 3D panel uses MuJoCo FK camera poses. Datagen /
 HF rows use saved `cam2world_gl` when present.
 
@@ -244,6 +247,44 @@ dir per **unique** row and an audit `index.html` at the out root (gaps: no table
 copies. Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
 finishes; reopen each `dataset.mp4` in Cursor.
 
+**The output location is fixed — there is no `--out` flag (removed 2026-08-31).** Every run
+writes under `experiments_output/default/dataset_viz/`, in a folder that mirrors the dataset
+path with the `data/` prefix removed:
+
+| dataset path | output folder |
+|---|---|
+| `data/molmo-pi0-eval-videos/data/fumehood/pick` | `…/dataset_viz/molmo-pi0-eval-videos/data/fumehood/pick/` |
+| `data/pact_place_corridor_v5` | `…/dataset_viz/pact_place_corridor_v5/` |
+| `act_style_data/foo` (in the checkout, not under `data/`) | `…/dataset_viz/act_style_data/foo/` |
+| `/mnt/scratch/ds` (outside the checkout) | `…/dataset_viz/mnt/scratch/ds/` |
+
+A single `.h5` file maps to `<parent>/<stem>/`. The audit `index.html` at the root walks the
+whole tree, so nested folders show as `a/b/c` rows. Folders written before 2026-08-31 use the
+old flat `a_b_c` slug; they still show in the index — delete them or re-run to get the nested
+layout. `--force` redoes a dataset that already has an audit plus at least one video.
+
+**Video is one clip per episode, filed by trajectory type (changed 2026-08-31).** The old
+single hour-long `dataset.mp4` is gone by default. Each dataset folder now holds:
+
+```
+<dataset>/episodes/<trajectory type>/<idx>_<episode label>.mp4   # e.g. free/0007_house_1_traj_3.mp4
+<dataset>/index.html                                             # clip list, grouped by type
+<dataset>/dataset.mcap                                           # still the whole timeline
+```
+
+The type is the first attribute the episode carries out of `behavior_class`,
+`intrusion_side`, `has_bar`, `clean_success`; with none of them it falls back to
+success / fail, then to `all`. `--group-by ATTR` names the folder from a different
+attribute (`--group-by traj` gives one folder per trajectory index). `--one-video`
+restores the old single concatenated `dataset.mp4`.
+
+`index.html` lists the clips under a sticky per-type header. Clicking one loads that clip
+and zooms the qpos / qvel / skin plots to that episode; the playhead still reads global
+dataset time, so the plots line up with the `.mcap`.
+
+Clip playback is now **wall-clock real time**: the writer divides the frame rate by
+`--stride` (before, `--stride 2` silently played at 2× speed).
+
 ```bash
 conda activate mlspaces
 cd /home/jaydv/code/prox_learning
@@ -253,36 +294,34 @@ python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
 
 # smoke one viz per dataset (2 eps each)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
-    --out experiments_output/default/dataset_viz \
     --each --max-episodes 2
 
 # audit: every unique dataset, all episodes, H.264 + 3D panel (no Foxglove)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
-    --out experiments_output/default/dataset_viz \
     --each --no-mcap --stride 2
 
-# hallway HF rows (152)
+# hallway HF rows (152)   -> .../dataset_viz/pact_place_corridor_v5/
 python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
-    --out experiments_output/default/dataset_viz/pact_place_corridor_v5 \
     --max-episodes 2
 
 # fumehood pick houses (datagen, exo+wrist)
+#   -> .../dataset_viz/molmo-pi0-eval-videos/data/fumehood/pick/
 python scripts/dataset_viz.py \
     --data data/molmo-pi0-eval-videos/data/fumehood/pick \
-    --out experiments_output/default/dataset_viz/fumehood_pick \
     --max-episodes 2
 
 # open-front ACT hdf5 (52)
+#   -> .../dataset_viz/molmo-pi0-eval-videos/data/openfrontcluttered/act_style_52/data/act_style/
 python scripts/dataset_viz.py \
     --data data/molmo-pi0-eval-videos/data/openfrontcluttered/act_style_52/data/act_style \
-    --out experiments_output/default/dataset_viz/openfront_52 \
     --max-episodes 2
 ```
 
-Open `index.html` in a browser, or open `dataset.mp4` in Cursor / VS Code (H.264
+Open `index.html` in a browser, or open any `episodes/<type>/*.mp4` in Cursor / VS Code (H.264
 `yuv420p` — MPEG-4 `mp4v` will not play in the IDE). Foxglove: open `dataset.mcap` in
 [Foxglove](https://app.foxglove.dev) and import `foxglove_layout.json` from the same out dir.
-`--no-mcap` / `--no-video` skip one side. `--stride 2` halves cost. `--include-sensor-rgb` pulls the 256²
+`--no-mcap` / `--no-video` skip one side. `--stride 2` halves cost and keeps real-time
+playback. `--reencode DIR` H.264-remuxes every `.mp4` under `DIR`. `--include-sensor-rgb` pulls the 256²
 mosaic sidecar (large). `foxglove_viz.py` remains the older datagen-only exporter.
 
 <p align="center">
