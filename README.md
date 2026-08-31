@@ -233,37 +233,42 @@ Missing cameras become a slate (hallway v5 has **no table / exo**). Skin comes f
 tensor, not the sidecar heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or **66 ms**
 (not ACT's train `DT=0.02`).
 
-Clone another dataset, point `--data` at it, get another visualizer dir.
+All live clones sit under `data/`. Do **not** pass that parent without `--list` / `--each` — it is a mixed tree (hallway rows + the `molmo-pi0-eval-videos` dump). `--list` prints one row per dataset. `--each` writes one viz dir per row. `results/` eval rollouts stay out unless `--include-eval`.
 
 ```bash
 conda activate mlspaces
 cd /home/jaydv/code/prox_learning
 
-# list what it found (no write)
-python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 --list
+# catalog everything under data/ (no write)
+python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
 
-# smoke: first two episodes
-python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 \
-    --out experiments_output/default/dataset_viz/pact_place_corridor_v5_smoke \
-    --max-episodes 2
+# smoke one viz per dataset (2 eps each)
+python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
+    --out experiments_output/default/dataset_viz \
+    --each --max-episodes 2
 
-# full ACT convert (152 eps, ~27 min of video at 15 fps — slow, huge)
-python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 \
-    --out experiments_output/default/dataset_viz/pact_place_corridor_v5
-
-# HF clone (sidecar mp4s, same hallway rows)
+# hallway HF rows (152)
 python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
-    --out experiments_output/default/dataset_viz/pact_place_corridor_v5_hf \
+    --out experiments_output/default/dataset_viz/pact_place_corridor_v5 \
     --max-episodes 2
 
-# datagen run (exo + wrist + FK point cloud)
-python scripts/dataset_viz.py --data assets/datagen/hybrid_gate_bar_check \
-    --out experiments_output/default/dataset_viz/gate_bar_check
+# fumehood pick houses (datagen, exo+wrist)
+python scripts/dataset_viz.py \
+    --data data/molmo-pi0-eval-videos/data/fumehood/pick \
+    --out experiments_output/default/dataset_viz/fumehood_pick \
+    --max-episodes 2
+
+# open-front ACT hdf5 (52)
+python scripts/dataset_viz.py \
+    --data data/molmo-pi0-eval-videos/data/openfrontcluttered/act_style_52/data/act_style \
+    --out experiments_output/default/dataset_viz/openfront_52 \
+    --max-episodes 2
 ```
 
-Open `index.html` in a browser, or open `dataset.mcap` in [Foxglove](https://app.foxglove.dev)
-(desktop app also fine) and import `foxglove_layout.json` from the same out dir. `--no-mcap` /
-`--no-video` skip one side. `--stride 2` halves cost. `--include-sensor-rgb` pulls the 256²
+Open `index.html` in a browser, or open `dataset.mp4` in Cursor / VS Code (H.264
+`yuv420p` — MPEG-4 `mp4v` will not play in the IDE). Foxglove: open `dataset.mcap` in
+[Foxglove](https://app.foxglove.dev) and import `foxglove_layout.json` from the same out dir.
+`--no-mcap` / `--no-video` skip one side. `--stride 2` halves cost. `--include-sensor-rgb` pulls the 256²
 mosaic sidecar (large). `foxglove_viz.py` remains the older datagen-only exporter.
 
 <p align="center">

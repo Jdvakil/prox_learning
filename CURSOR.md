@@ -22,6 +22,29 @@ Newest session at the top.
 
 ---
 
+## 2026-08-31 — H.264 so Cursor plays dataset.mp4
+
+- **When:** 2026-08-31. User: encode videos for VS Code / Cursor IDE preview.
+- **Why:** OpenCV `mp4v` is MPEG-4 Part 2. Chromium previewer wants H.264 + yuv420p.
+- **What:** `encode_h264_ide` after write (`libx264`, `+faststart`). Existing
+  `experiments_output/default/dataset_viz/*/dataset.mp4` re-encoded.
+- **Not done:** user re-opens the mp4 in the editor.
+
+---
+
+## 2026-08-31 — data/ catalog + --each
+
+- **When:** 2026-08-31. User: all data lives in `/home/jaydv/code/prox_learning/data`
+  (hallway clone + `Likerener/molmo-pi0-eval-videos`).
+- **Why:** pointing `--data data/` mixed 112 ACT hdf5 from nested openfront copies and
+  skipped hallway / fumehood. The HF dump is many datasets, not one.
+- **What:** `scan_dataset_roots` + `--list` catalog + `--each` (one viz per dataset).
+  Skip `results/` / `eval/` / `videos/` unless `--include-eval`. README §4.2.1 uses
+  `data/` paths.
+- **Not done:** user `--list` then smoke `--each --max-episodes 2`.
+
+---
+
 ## 2026-08-30 — dataset folder visualizer
 
 - **When:** 2026-08-30 America/Denver. User: folder of h5 → one trajectory/dataset video

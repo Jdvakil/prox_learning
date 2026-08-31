@@ -13,15 +13,18 @@ position / velocity plots.
 
   conda activate mlspaces
   cd /home/jaydv/code/prox_learning
-  python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5
+  python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
+  python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --each --max-episodes 2
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
-  python scripts/dataset_viz.py --data assets/datagen/hybrid_gate_bar_check --list
+  python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import shutil
+import subprocess
 import sys
 from collections import OrderedDict
 from dataclasses import dataclass, field
@@ -69,6 +72,9 @@ PLOT_H = 110
 HUD_H = 40
 CANVAS_W = TILE_W * 2
 CANVAS_H = TILE_H + HEAT_H + PLOT_H * 2 + HUD_H
+# H.264 yuv420p needs even W/H (VS Code / Cursor media preview).
+CANVAS_W += CANVAS_W % 2
+CANVAS_H += CANVAS_H % 2
 
 CAM_ALIAS = {
     "wrist_camera": "wrist",
@@ -107,6 +113,43 @@ _EE_BODIES = (
 # --------------------------------------------------------------------------- #
 # Small helpers
 # --------------------------------------------------------------------------- #
+def _mp4_codec(path: Path) -> str:
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0",
+         "-show_entries", "stream=codec_name", "-of", "csv=p=0", str(path)],
+        capture_output=True, text=True,
+    )
+    return probe.stdout.strip().lower() if probe.returncode == 0 else ""
+
+
+def encode_h264_ide(mp4_path: Path) -> None:
+    """MPEG-4 Part 2 (OpenCV mp4v) does not play in VS Code / Cursor. H.264 does."""
+    if not mp4_path.is_file():
+        return
+    if _mp4_codec(mp4_path) == "h264":
+        return
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg is None:
+        print(f"ffmpeg missing — {mp4_path} stays MPEG-4 (IDE will not play it)")
+        return
+    tmp = mp4_path.with_name(mp4_path.stem + ".h264tmp.mp4")
+    cmd = [
+        ffmpeg, "-y", "-i", str(mp4_path),
+        "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        "-preset", "fast", "-crf", "20",
+        "-movflags", "+faststart",
+        str(tmp),
+    ]
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0 or not tmp.is_file():
+        print(f"ffmpeg h264 failed on {mp4_path}: {(r.stderr or '')[-400:]}")
+        if tmp.exists():
+            tmp.unlink()
+        return
+    tmp.replace(mp4_path)
+    print(f"  h264    {mp4_path}")
+
+
 def _json_row(blob) -> dict:
     raw = bytes(np.asarray(blob).tobytes()).split(b"\x00", 1)[0]
     if not raw:
@@ -287,18 +330,119 @@ class EpisodeRef:
     h5_dir: Path
 
 
+@dataclass
+class DatasetRoot:
+    kind: str
+    path: Path
+    n_eps: int
+    label: str
+
+
+_SKIP_ALWAYS = {".git", "dataset_viz"}
+_EVAL_PARTS = {
+    "results", "eval", "eval_output", "eval_outputs", "eval_outputs_nonvideo",
+    "eval_output_full", "final_outputs", "early_smoke_evals", "videos",
+}
+
+
+def _skip_path(p: Path, include_eval: bool) -> bool:
+    parts = p.parts
+    if any(x in _SKIP_ALWAYS for x in parts):
+        return True
+    if "debug" in parts:
+        return True
+    if not include_eval and any(x in _EVAL_PARTS for x in parts):
+        return True
+    return False
+
+
+def _count_trajs(h5_path: Path) -> int:
+    try:
+        with h5py.File(h5_path, "r") as f:
+            return sum(1 for k in f if str(k).startswith("traj_"))
+    except Exception:
+        return 0
+
+
+def scan_dataset_roots(root: Path, include_eval: bool = False) -> list[DatasetRoot]:
+    """Independent dataset folders under root (does not smash mixed trees)."""
+    root = root.expanduser().resolve()
+    if root.is_file():
+        return []
+
+    found: list[DatasetRoot] = []
+    seen: set[Path] = set()
+
+    act_dirs: set[Path] = set()
+    for p in root.rglob("episode_*.hdf5"):
+        if _skip_path(p, include_eval):
+            continue
+        act_dirs.add(p.parent)
+    for d in sorted(act_dirs):
+        if d in seen:
+            continue
+        n = len(list(d.glob("episode_*.hdf5")))
+        found.append(DatasetRoot("act", d, n, d.name))
+        seen.add(d)
+
+    hf_roots: set[Path] = set()
+    for p in root.rglob("trajectory.h5"):
+        if _skip_path(p, include_eval):
+            continue
+        if p.parent.parent.name == "rows":
+            hf_roots.add(p.parent.parent.parent)
+        else:
+            hf_roots.add(p.parent.parent)
+    for d in sorted(hf_roots):
+        if d in seen or not d.is_dir():
+            continue
+        n = len(list(d.glob("rows/*/trajectory.h5"))) or len(
+            [x for x in d.rglob("trajectory.h5") if not _skip_path(x, include_eval)]
+        )
+        found.append(DatasetRoot("hf", d, n, d.name))
+        seen.add(d)
+
+    run_dirs: set[Path] = set()
+    for p in root.rglob("trajectories*.h5"):
+        if _skip_path(p, include_eval):
+            continue
+        run_dirs.add(p.parent.parent if p.parent.name.startswith("house_") else p.parent)
+    for d in sorted(run_dirs):
+        if d in seen:
+            continue
+        h5s = sorted(d.glob("house_*/trajectories*.h5")) or sorted(d.glob("trajectories*.h5"))
+        n = sum(_count_trajs(h) for h in h5s)
+        found.append(DatasetRoot("datagen", d, n, d.name))
+        seen.add(d)
+
+    found.sort(key=lambda x: (x.kind, str(x.path)))
+    return found
+
+
+def print_catalog(roots: list[DatasetRoot], scan_root: Path) -> None:
+    print(f"datasets under {scan_root}  n={len(roots)}")
+    for i, ds in enumerate(roots):
+        try:
+            rel = ds.path.relative_to(scan_root)
+        except ValueError:
+            rel = ds.path
+        print(f"  [{i:02d}] {ds.kind:8s}  eps={ds.n_eps:4d}  {rel}")
+
+
 def discover(root: Path) -> tuple[str, list[EpisodeRef]]:
     root = root.expanduser().resolve()
     if root.is_file():
         return _discover_file(root)
 
     act = sorted(root.glob("episode_*.hdf5")) + sorted(root.glob("episode_*.h5"))
-    if not act:
-        act = sorted(p for p in root.glob("**/episode_*.hdf5")
-                     if "dataset_viz" not in p.parts)
-    rows = sorted(p for p in root.glob("**/trajectory.h5") if p.is_file())
-    batches = sorted(p for p in root.glob("**/trajectories*.h5")
-                     if p.is_file() and "dataset_viz" not in p.parts)
+    rows = sorted(
+        p for p in root.glob("**/trajectory.h5")
+        if p.is_file() and not _skip_path(p, include_eval=True)
+    )
+    batches = sorted(
+        p for p in root.glob("**/trajectories*.h5")
+        if p.is_file() and not _skip_path(p, include_eval=True)
+    )
 
     if act:
         refs = [
@@ -1155,47 +1299,7 @@ def compose_frame(ep: Episode, t: int, heat_rgb: np.ndarray | None) -> np.ndarra
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def main() -> None:
-    ap = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    ap.add_argument("--data", required=True, type=Path,
-                    help="folder of h5 / hdf5, or one file")
-    ap.add_argument("--out", default=None, type=Path,
-                    help="output dir (default: <data>/dataset_viz) or a .mcap path")
-    ap.add_argument("--list", action="store_true", help="print discovered episodes and exit")
-    ap.add_argument("--max-episodes", type=int, default=None)
-    ap.add_argument("--start-episode", type=int, default=0)
-    ap.add_argument("--stride", type=int, default=1)
-    ap.add_argument("--dt", type=float, default=None,
-                    help="seconds per step (default: obs_scene.policy_dt_ms or 0.066)")
-    ap.add_argument("--prox-pool", choices=("mean", "min"), default="mean")
-    ap.add_argument("--mount-z", type=float, default=0.35)
-    ap.add_argument("--near", type=float, default=0.02)
-    ap.add_argument("--far", type=float, default=0.60)
-    ap.add_argument("--d-max", type=float, default=1.5)
-    ap.add_argument("--jpeg-quality", type=int, default=JPEG_QUALITY)
-    ap.add_argument("--no-mcap", action="store_true")
-    ap.add_argument("--no-video", action="store_true")
-    ap.add_argument("--include-sensor-rgb", action="store_true",
-                    help="also ingest sensors_rgb256 sidecar (huge)")
-    ap.add_argument("--include-depth", action="store_true")
-    args = ap.parse_args()
-
-    kind, refs = discover(args.data)
-    refs = refs[args.start_episode:]
-    if args.max_episodes is not None:
-        refs = refs[: args.max_episodes]
-    if not refs:
-        raise SystemExit("no episodes after --start-episode / --max-episodes")
-
-    print(f"format={kind}  n={len(refs)}  root={args.data}")
-    for r in refs:
-        print(" ", peek_summary(r))
-    if args.list:
-        return
-
-    src = args.data.expanduser().resolve()
+def _out_paths(src: Path, args) -> tuple[Path, Path]:
     if args.out is None:
         out_dir = (src.parent if src.is_file() else src) / "dataset_viz"
         mcap_path = out_dir / "dataset.mcap"
@@ -1205,8 +1309,33 @@ def main() -> None:
     else:
         out_dir = args.out.expanduser().resolve()
         mcap_path = out_dir / "dataset.mcap"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    return out_dir, mcap_path
 
+
+def _slug(scan_root: Path, ds_path: Path) -> str:
+    try:
+        rel = ds_path.relative_to(scan_root)
+        s = str(rel) if str(rel) != "." else ds_path.name
+    except ValueError:
+        s = ds_path.name
+    return s.replace("/", "_").replace(" ", "_")
+
+
+def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
+    kind, refs = discover(src)
+    refs = refs[args.start_episode:]
+    if args.max_episodes is not None:
+        refs = refs[: args.max_episodes]
+    if not refs:
+        raise SystemExit(f"no episodes after filters under {src}")
+
+    print(f"format={kind}  n={len(refs)}  root={src}")
+    for r in refs:
+        print(" ", peek_summary(r))
+    if args.list and not args.each:
+        return
+
+    out_dir.mkdir(parents=True, exist_ok=True)
     kw = dict(prox_pool=args.prox_pool, dt=args.dt,
               include_sensor_rgb=args.include_sensor_rgb,
               include_depth=args.include_depth)
@@ -1318,6 +1447,7 @@ def main() -> None:
 
     if writer is not None:
         writer.release()
+        encode_h264_ide(video_path)
     if mcap_writer is not None:
         mcap_writer.close()
 
@@ -1351,6 +1481,73 @@ def main() -> None:
         print(f"  layout  {out_dir / 'foxglove_layout.json'}")
         print("Open the mcap in Foxglove (app.foxglove.dev or desktop) and import the layout.")
         print("Or open index.html in a browser for the tiled dataset video + plots.")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument("--data", required=True, type=Path,
+                    help="folder of h5 / hdf5, a parent of many datasets, or one file")
+    ap.add_argument("--out", default=None, type=Path,
+                    help="output dir (default: <data>/dataset_viz) or a .mcap path")
+    ap.add_argument("--list", action="store_true",
+                    help="print catalog (mixed tree) or episode list (one dataset)")
+    ap.add_argument("--each", action="store_true",
+                    help="one visualizer per dataset under --data")
+    ap.add_argument("--include-eval", action="store_true",
+                    help="also catalog results/ eval rollouts")
+    ap.add_argument("--max-episodes", type=int, default=None)
+    ap.add_argument("--start-episode", type=int, default=0)
+    ap.add_argument("--stride", type=int, default=1)
+    ap.add_argument("--dt", type=float, default=None,
+                    help="seconds per step (default: obs_scene.policy_dt_ms or 0.066)")
+    ap.add_argument("--prox-pool", choices=("mean", "min"), default="mean")
+    ap.add_argument("--mount-z", type=float, default=0.35)
+    ap.add_argument("--near", type=float, default=0.02)
+    ap.add_argument("--far", type=float, default=0.60)
+    ap.add_argument("--d-max", type=float, default=1.5)
+    ap.add_argument("--jpeg-quality", type=int, default=JPEG_QUALITY)
+    ap.add_argument("--no-mcap", action="store_true")
+    ap.add_argument("--no-video", action="store_true")
+    ap.add_argument("--include-sensor-rgb", action="store_true",
+                    help="also ingest sensors_rgb256 sidecar (huge)")
+    ap.add_argument("--include-depth", action="store_true")
+    args = ap.parse_args()
+
+    src = args.data.expanduser().resolve()
+    catalog = [] if src.is_file() else scan_dataset_roots(src, include_eval=args.include_eval)
+
+    if len(catalog) > 1:
+        print_catalog(catalog, src)
+        if args.list and not args.each:
+            print("\npass one child path, or --each (one viz per row). "
+                  "--include-eval adds results/ rollouts.")
+            return
+        if not args.each:
+            raise SystemExit(
+                "mixed tree — pick one child from the list, or pass --each"
+            )
+        out_base = (args.out.expanduser().resolve() if args.out
+                    else _ROOT / "experiments_output/default/dataset_viz")
+        for ds in catalog:
+            slug = _slug(src, ds.path)
+            print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
+            run_one(ds.path, out_base / slug, out_base / slug / "dataset.mcap", args)
+        return
+
+    if len(catalog) == 1 and src != catalog[0].path and src.is_dir():
+        src = catalog[0].path
+
+    if args.each and catalog:
+        out_base = (args.out.expanduser().resolve() if args.out
+                    else _ROOT / "experiments_output/default/dataset_viz")
+        slug = _slug(src.parent, catalog[0].path)
+        run_one(catalog[0].path, out_base / slug, out_base / slug / "dataset.mcap", args)
+        return
+
+    out_dir, mcap_path = _out_paths(src, args)
+    run_one(src, out_dir, mcap_path, args)
 
 
 if __name__ == "__main__":
