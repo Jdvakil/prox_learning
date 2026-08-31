@@ -1,0 +1,171 @@
+{
+  "accepted_by_cell": {},
+  "accepted_total": 0,
+  "attempted_by_cell": {
+    "F0_target_side_stagger|left|neg5": 1
+  },
+  "attempts_total": 1,
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "budget": {
+    "extended": false,
+    "max_scientific_attempts": 900,
+    "max_wall_clock_hours": 16.0
+  },
+  "contract_payload_sha256": "59a0d9d42d58acba0ed3de99c879bb160942fb5f6ab657e2dc1e8e78ab8d7497",
+  "contract_version": "pact_place_v108_exploratory_collection_v1",
+  "dataset_root": "assets/datagen/pact_place_corridor_v10_8",
+  "elapsed_hours": 0.08978194925520155,
+  "eligible_for_human_review": false,
+  "environment_version": "pact_place_corridor_v10_6_v95_clutter_asymmetric_pendant",
+  "failure_taxonomy": {
+    "grasp_phase_failed": 1,
+    "place_phase_failed": 1,
+    "task_not_successful": 1
+  },
+  "human_approval_present": false,
+  "is_exploratory_owner_override": true,
+  "is_phase0_pass": false,
+  "ledger_path": "diagnostics_output/pact_place_v108_collection/ledger.jsonl",
+  "ledger_records": 1,
+  "ledger_sha256": "933c2ff41b66fbc1c8342236c8b80aff012c03b79649942bc6e77af746be4a87",
+  "molmospaces_source_commit": "a3b1863dc7ca80329655580cafa966686b6e59fa",
+  "payload_sha256": "174638ee7feeb0432b54fa186d8f721bb65b1d4a00175e12faa20f66294955d7",
+  "phase0_passed": false,
+  "preflight": {
+    "cgroup_pid": {
+      "cpu_max": "1536000 100000",
+      "effective_cpus": 15.36,
+      "memory_free_gb": 144.641806336,
+      "passed": true,
+      "pids_current": "566",
+      "pids_headroom": 3274,
+      "pids_max": "3840",
+      "pids_needed_estimate": 24,
+      "workers_fit_cpu": true,
+      "workers_requested": 1
+    },
+    "disk": {
+      "free_gb": 44.38142976,
+      "headroom_after_peak_gb": 37.18142976,
+      "min_free_gb_required": 12.0,
+      "passed": true,
+      "projected_peak_gb": 7.2,
+      "total_gb": 268.435456,
+      "used_pct": 83.46662902832031
+    },
+    "passed": true,
+    "scene": {
+      "certification_passed": true,
+      "passed": true,
+      "problems": [],
+      "scenes": {
+        "center": {
+          "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_center.xml",
+          "sha256": "b5a41d0d8934240b078f1cdbf3a6991b2e94a46558ddf1c9eae0119c8b8e138a"
+        },
+        "neg5": {
+          "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_neg5.xml",
+          "sha256": "df50679c749c6ad771d00023e73a08e0bfaf59d5391df9b42cf05de4ed7893a7"
+        },
+        "pos5": {
+          "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_pos5.xml",
+          "sha256": "762a5a4662a8fc0d31a3a0ee1135b347d6dd2c882daf4e65c2f706ab2d6fe565"
+        }
+      },
+      "selected": {
+        "r_neg_m": 0.33,
+        "r_pos_m": 0.3,
+        "x_m": 0.8
+      }
+    },
+    "thread_pool_env": {
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "thread_pool_pinned_before_workers": true
+  },
+  "quotas": {
+    "by_cell": {
+      "F0_target_side_stagger|left|center": 6,
+      "F0_target_side_stagger|left|neg5": 7,
+      "F0_target_side_stagger|left|pos5": 6,
+      "F0_target_side_stagger|right|center": 7,
+      "F0_target_side_stagger|right|neg5": 6,
+      "F0_target_side_stagger|right|pos5": 6,
+      "F1_inner_panel_stagger|left|center": 7,
+      "F1_inner_panel_stagger|left|neg5": 6,
+      "F1_inner_panel_stagger|left|pos5": 6,
+      "F1_inner_panel_stagger|right|center": 6,
+      "F1_inner_panel_stagger|right|neg5": 6,
+      "F1_inner_panel_stagger|right|pos5": 7,
+      "F2_outer_panel_stagger|left|center": 6,
+      "F2_outer_panel_stagger|left|neg5": 6,
+      "F2_outer_panel_stagger|left|pos5": 7,
+      "F2_outer_panel_stagger|right|center": 6,
+      "F2_outer_panel_stagger|right|neg5": 7,
+      "F2_outer_panel_stagger|right|pos5": 6,
+      "F3_aperture_side_stagger|left|center": 7,
+      "F3_aperture_side_stagger|left|neg5": 6,
+      "F3_aperture_side_stagger|left|pos5": 6,
+      "F3_aperture_side_stagger|right|center": 6,
+      "F3_aperture_side_stagger|right|neg5": 6,
+      "F3_aperture_side_stagger|right|pos5": 7
+    },
+    "by_family": {
+      "F0_target_side_stagger": 38,
+      "F1_inner_panel_stagger": 38,
+      "F2_outer_panel_stagger": 38,
+      "F3_aperture_side_stagger": 38
+    },
+    "by_pose": {
+      "center": 51,
+      "neg5": 50,
+      "pos5": 51
+    },
+    "by_side": {
+      "left": 76,
+      "right": 76
+    },
+    "total": 152
+  },
+  "quotas_met": false,
+  "remaining_quota": {
+    "F0_target_side_stagger|left|center": 6,
+    "F0_target_side_stagger|left|neg5": 7,
+    "F0_target_side_stagger|left|pos5": 6,
+    "F0_target_side_stagger|right|center": 7,
+    "F0_target_side_stagger|right|neg5": 6,
+    "F0_target_side_stagger|right|pos5": 6,
+    "F1_inner_panel_stagger|left|center": 7,
+    "F1_inner_panel_stagger|left|neg5": 6,
+    "F1_inner_panel_stagger|left|pos5": 6,
+    "F1_inner_panel_stagger|right|center": 6,
+    "F1_inner_panel_stagger|right|neg5": 6,
+    "F1_inner_panel_stagger|right|pos5": 7,
+    "F2_outer_panel_stagger|left|center": 6,
+    "F2_outer_panel_stagger|left|neg5": 6,
+    "F2_outer_panel_stagger|left|pos5": 7,
+    "F2_outer_panel_stagger|right|center": 6,
+    "F2_outer_panel_stagger|right|neg5": 7,
+    "F2_outer_panel_stagger|right|pos5": 6,
+    "F3_aperture_side_stagger|left|center": 7,
+    "F3_aperture_side_stagger|left|neg5": 6,
+    "F3_aperture_side_stagger|left|pos5": 6,
+    "F3_aperture_side_stagger|right|center": 6,
+    "F3_aperture_side_stagger|right|neg5": 6,
+    "F3_aperture_side_stagger|right|pos5": 7
+  },
+  "root_source_commit": "ccf298de3f57276586ea8f3b82939e2f839c7733",
+  "schema_version": "pact_place_v108_collection_v1",
+  "stop_reason": "smoke_only",
+  "target_successes": 152,
+  "v107_phase0_result": "failed_8_of_24_permanently_closed"
+}

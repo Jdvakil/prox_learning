@@ -1,0 +1,199 @@
+{
+  "arms": {
+    "act": {
+      "arm": "act",
+      "best_epoch": 1883,
+      "best_val_kl": 0.0003007790073752403,
+      "best_val_l1": 0.10885335505008698,
+      "best_val_loss": 0.11186113953590393,
+      "checkpoint_dir": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/act_seed3101",
+      "completed_all_epochs": true,
+      "dataset_tree_sha256": "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+      "epochs_expected": 2000,
+      "epochs_recorded": 2000,
+      "final_epoch_train_loss": 0.08953987061977386,
+      "final_epoch_val_loss": 0.1247699186205864,
+      "hashes": {
+        "dataset_stats.pkl": "dffc807f093b5a726f9a8cdd759bac8cad820cea0c71d166afd11c337875ab57",
+        "policy_best.ckpt": "81be04ceddc437aa85919ee47af1b7f22ef712e5fc1102f43343bedf6074522e",
+        "policy_last.ckpt": "08c12322218ccc704046b6f364c319e57f9a70485e1c98230fc2779d82136b0b",
+        "run_manifest.json": "202d56feec65aa312fdde36a7a6c33a75c18a2845ab9f71125db19aaa3993044"
+      },
+      "input_proj_proximity_shape": null,
+      "offline_smoke": {
+        "action_std": 0.9807205200195312,
+        "batch": 8,
+        "deterministic_repeat": true,
+        "episodes": [
+          0,
+          1,
+          9,
+          15,
+          20,
+          26,
+          27,
+          37
+        ],
+        "finite": true,
+        "min_per_sample_std": 0.8278311491012573,
+        "nonconstant": true,
+        "output_shape": [
+          8,
+          100,
+          8
+        ],
+        "output_shape_expected": [
+          8,
+          100,
+          8
+        ],
+        "shape_ok": true,
+        "timestep": 40
+      },
+      "problems": [],
+      "proximity_proof": {
+        "applicable": false
+      },
+      "recorded_best_epoch": 1883,
+      "run_manifest_sha256": "128c1cc53ab4473a7be582cbc91ee3b5be3e2619829c45482c930aee61ee137d",
+      "split_manifest_sha256": "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+      "strict_reload_ok": true
+    },
+    "pact": {
+      "arm": "pact",
+      "best_epoch": 1841,
+      "best_val_kl": 0.0003531612455844879,
+      "best_val_l1": 0.11195546388626099,
+      "best_val_loss": 0.11548706889152527,
+      "checkpoint_dir": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/pact_seed3101",
+      "completed_all_epochs": true,
+      "dataset_tree_sha256": "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+      "epochs_expected": 2000,
+      "epochs_recorded": 2000,
+      "final_epoch_train_loss": 0.08663468807935715,
+      "final_epoch_val_loss": 0.1264311820268631,
+      "hashes": {
+        "dataset_stats.pkl": "dffc807f093b5a726f9a8cdd759bac8cad820cea0c71d166afd11c337875ab57",
+        "policy_best.ckpt": "a69807cbcd3593754e240ee56b3c3082f8df953dd3efea3de3fabdfc917ca929",
+        "policy_last.ckpt": "301963c16e1f7f962ca0589d4809f55aeb45c2dacc0330a4c68fd4b03f772dce",
+        "run_manifest.json": "01d46057ff91e3d7a99e3dac8388d465de0697a6e07c0f1f30a0f2dd8a3612fe"
+      },
+      "input_proj_proximity_shape": [
+        512,
+        32
+      ],
+      "offline_smoke": {
+        "action_std": 0.9939340353012085,
+        "batch": 8,
+        "deterministic_repeat": true,
+        "episodes": [
+          0,
+          1,
+          9,
+          15,
+          20,
+          26,
+          27,
+          37
+        ],
+        "finite": true,
+        "min_per_sample_std": 0.8446099758148193,
+        "nonconstant": true,
+        "output_shape": [
+          8,
+          100,
+          8
+        ],
+        "output_shape_expected": [
+          8,
+          100,
+          8
+        ],
+        "shape_ok": true,
+        "timestep": 40
+      },
+      "problems": [],
+      "proximity_proof": {
+        "applicable": true,
+        "max_abs_action_delta": 1.3764121532440186,
+        "mean_abs_action_delta": 0.21878266334533691,
+        "method": "same batch with real vs zeroed frozen embeddings",
+        "proximity_consumed": true
+      },
+      "recorded_best_epoch": 1841,
+      "run_manifest_sha256": "7fd4d138648b3aa09fbffc4f1b32a93a8dde6814e46090fbe7ba8cf127f0138f",
+      "split_manifest_sha256": "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+      "strict_reload_ok": true
+    }
+  },
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "cleared_for_live_evaluation": true,
+  "command_diff": {
+    "differing_values": {
+      "--ckpt_dir": [
+        "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/act_seed3101",
+        "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/pact_seed3101"
+      ]
+    },
+    "identical_except_allowance": true,
+    "only_in_act": {},
+    "only_in_pact": {
+      "--n_proximity_sensors": "40",
+      "--prox_tokens_per_sensor": "1",
+      "--proximity_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+      "--proximity_feature_dim": "32",
+      "--use_proximity": true
+    },
+    "violations": []
+  },
+  "contract_version": "pact_place_v109_train_eval_v1",
+  "eligible_for_human_review": false,
+  "human_approval_present": false,
+  "is_phase0_pass": false,
+  "payload_sha256": "d09f3458c54b6d49f879d02d96bc0e6bc468cf2e94d2aa25e12af2a5acc77b8e",
+  "phase0_passed": false,
+  "preflight_payload_sha256": "bace1507d570754722f5b76d4556b2099f903d71efe5d1fb5d8ce2d0f573423e",
+  "problems": [],
+  "role": "post-training verification of the V10.9 ACT/PACT pair",
+  "schema_version": "pact_place_v109_training_verification_v1",
+  "shared_bindings": {
+    "dataset_tree_sha256": {
+      "act": "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+      "pact": "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec"
+    },
+    "split_manifest_sha256": {
+      "act": "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+      "pact": "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db"
+    }
+  },
+  "timing": {
+    "act": {
+      "arm": "act",
+      "elapsed_minutes": 72.03,
+      "elapsed_seconds": 4321.9,
+      "finished_utc": "2026-08-29T06:09:27Z",
+      "log": "/tmp/claude-0/-root-prox-learning-pact-remediation/123ba6b7-d01d-49bb-bee6-0c7b3425d724/scratchpad/v109_train/act.log",
+      "returncode": 0,
+      "started_utc": "2026-08-29T04:57:25Z"
+    },
+    "pact": {
+      "arm": "pact",
+      "elapsed_minutes": 75.95,
+      "elapsed_seconds": 4556.7,
+      "finished_utc": "2026-08-29T07:25:24Z",
+      "log": "/tmp/claude-0/-root-prox-learning-pact-remediation/123ba6b7-d01d-49bb-bee6-0c7b3425d724/scratchpad/v109_train/pact.log",
+      "returncode": 0,
+      "started_utc": "2026-08-29T06:09:27Z"
+    },
+    "preflight_payload_sha256": "bace1507d570754722f5b76d4556b2099f903d71efe5d1fb5d8ce2d0f573423e",
+    "schema_version": "pact_place_v109_training_timing_v1",
+    "training_root": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101"
+  },
+  "training_root": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101",
+  "verified": true
+}

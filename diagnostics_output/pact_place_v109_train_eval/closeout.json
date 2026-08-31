@@ -1,0 +1,1417 @@
+{
+  "artifacts": {
+    "analysis": {
+      "path": "diagnostics_output/pact_place_v109_eval/analysis.json",
+      "sha256": "8905ddc1aa370fcad2949ce890bd21cb96dae713e50dba6871bff4e250016c7b"
+    },
+    "conversion_manifest": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/conversion_manifest.json",
+      "sha256": "b4d9940756d3f3660e8fc495b94cf5f108df651e581975f523277ffab5b63fdc"
+    },
+    "conversion_manifest_encoded": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/conversion_manifest_encoded.json",
+      "sha256": "cabcff10625f0f93396eaa5911db9e3d5a6d52566f81d8e1052dd108f8e6f140"
+    },
+    "embedding_report": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/embedding_report.json",
+      "sha256": "0ef3a567d153e7a4e486d77f198cca78f8bada92f4b11949dcd5eafe1530eb83"
+    },
+    "eval_manifest": {
+      "path": "diagnostics_output/pact_place_v109_eval/eval_manifest.json",
+      "sha256": "02a3a877dcada62e9728b6172729b449e5a577762e440fcfa3226244068bce12"
+    },
+    "eval_seed_audit": {
+      "path": "diagnostics_output/pact_place_v109_eval/eval_seed_audit.json",
+      "sha256": "a872eb3e1ac497b2bddd34dc969843d6a46abac51b108b344386c0504e4d1dca"
+    },
+    "full_run": {
+      "path": "diagnostics_output/pact_place_v109_eval/full_run.json",
+      "sha256": "773358a69e3980eab690139dbaf1da193c8a92c0672f6eaaaa570603850056e1"
+    },
+    "smoke_run": {
+      "path": "diagnostics_output/pact_place_v109_eval/smoke_run.json",
+      "sha256": "c810e1819e196fd02ad82f95516a01ce8fd78f827e80534e5cc545de68c42bc7"
+    },
+    "source_manifest": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/source_manifest.json",
+      "sha256": "874fe0f5d75cdf96172fbbbb4b68eacd6221de5901e004e1718009dfb20f35f1"
+    },
+    "split_manifest": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/split_manifest.json",
+      "sha256": "78787b24db9aff2619b39cc29dce123ab21ba2adfe7f72f58fe9f30c71e6893a"
+    },
+    "training_preflight": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/training_preflight.json",
+      "sha256": "e95fe9de9fe2eb1eec33c0df92462fcb3435da95b6969537e72a3e8eb586651c"
+    },
+    "training_verification": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/training_verification.json",
+      "sha256": "6685b697e494742fda0af3eb724c2b24bc8c2eb2801db6a4a079f46ac9b72ba0"
+    },
+    "v108_erratum": {
+      "path": "diagnostics_output/pact_place_v109_train_eval/v108_erratum.json",
+      "sha256": "f9a52db0c4bc5bd5a3da54174d4a65e828571aadee57397c1fdef24d2a604df9"
+    }
+  },
+  "authorization": "explicit owner authorization, despite V10.7's failed Phase-0 gate and V10.8's owner-instructed early stop",
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "contract_version": "pact_place_v109_train_eval_v1",
+  "conversion": {
+    "converted_t_max": 626,
+    "converted_t_min": 355,
+    "converted_t_sum": 71370,
+    "dataset_dir": "assets/act_style_data/pact_place_v108_141",
+    "episodes": 141,
+    "final_tree_file_sha256": "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+    "pre_embedding_tree_file_sha256": "52391a7eefbdea97b6d09a8c93cea7428a77f2b43bf69a713e1f3b4634ad239e",
+    "sensor_order_is_alphabetical": false,
+    "sensor_order_sha256": "2198e29b796ce63f43d8b0db50a92da7d4429895f8571f7d87b655bc265c8fe1"
+  },
+  "deviations": [
+    {
+      "actual": "2,854,800 windows",
+      "id": "D1",
+      "impact": "none; the dropped row carries no training target",
+      "planned": "run the encoder over all 2,860,440 sensor windows",
+      "topic": "converted corpus is one timestep shorter per episode",
+      "why": "2,860,440 counts the raw V10.8 HDF5 corpus. The converted ACT corpus drops each episode's trailing empty action row (proven V5 semantics), giving 71,370 timesteps. Embeddings are generated over the converted corpus, which is what training reads."
+    },
+    {
+      "actual": "episode_horizon=635; raw T_max=627, converted T_max=626",
+      "id": "D2",
+      "impact": "none; the value is unchanged from the plan",
+      "planned": "episode_horizon=635 because verified T_max=627",
+      "topic": "episode_horizon justification",
+      "why": "627 is the raw HDF5 maximum; the converted maximum is one lower. 635 exceeds both and matches the V5 chunk-100 experiment exactly."
+    },
+    {
+      "actual": "the semantic tree hash is recorded but dropped as an integrity anchor after the encoding pass",
+      "id": "D3",
+      "impact": "none -- training verifies act_file_sha256 and converted_tree_file_sha256, which are raw-file byte digests and are deterministic",
+      "planned": "write conversion and tree-hash manifests",
+      "topic": "inherited semantic-hash defect",
+      "why": "the V5 converter's _semantic_sha256 hashes numpy object arrays with tobytes(), which serialises pointers rather than string contents; observations/proximity_sensor_names is such a dataset"
+    },
+    {
+      "actual": "the split and evaluation manifests are written as text so their self-hashes validate on reload",
+      "id": "D4",
+      "impact": "none; both superseded attempts are retained and neither was used",
+      "planned": "write create-only manifests",
+      "topic": "self-hash collisions with the immutable writer",
+      "why": "write_immutable_create_only appends its own payload_sha256, which the split and evaluation loaders then include when recomputing the self-hash, making the manifest permanently unloadable. Caught by loading through the real training loader before training started."
+    },
+    {
+      "actual": "split.source_collection_tree_sha256 is the pre-embedding tree 52391a7eefbdea97b6d09a8c93cea7428a77f2b43bf69a713e1f3b4634ad239e; training verified the post-embedding tree 9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+      "id": "D5",
+      "impact": "none. fixed_split_data.verify_dataset cross-checked every split episode against the encoded manifest and matched all 141, and training verified --expect_dataset_tree_sha256 against the post-embedding tree. Not corrected in place because doing so would change split_manifest_sha256 and invalidate the completed runs; both hashes are recorded and each is correct for what it names.",
+      "planned": "one split manifest bound to the converted dataset",
+      "topic": "the split manifest names the pre-embedding tree hash",
+      "why": "the split was built from conversion_manifest.json, whose file hashes predate the embedding pass. The episode identities are identical in both manifests, and the split assignment depends only on attempt_id and cell, never on a file hash."
+    }
+  ],
+  "eligible_for_human_review": false,
+  "embeddings": {
+    "all_finite": true,
+    "dead_dimension_count": 0,
+    "encoder_class": "SurfaceEmbeddingEncoder",
+    "encoder_schema": "pact_surface_embedding_encoder_v1",
+    "encoder_sensor_order_matches": true,
+    "encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+    "episodes_preserved": 141,
+    "global_std": 1.112709266404834,
+    "per_dimension_std_max": 1.3933764205193861,
+    "per_dimension_std_median": 0.5269251107817362,
+    "per_dimension_std_min": 0.2494915810967928,
+    "preservation_method": "element-wise re-derivation of action, qpos, qvel, wrist RGB, raw proximity and per-sensor extrinsics/intrinsics from the V10.8 source HDF5 and MP4",
+    "proximity_valid_true_fraction": 0.1272176684881603,
+    "windows_encoded": 2854800
+  },
+  "evaluation": {
+    "arms": {
+      "ACT": {
+        "by_cell": {
+          "F0_target_side_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F0_target_side_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|neg5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|pos5": {
+            "collision_free_task_success": 1,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|left|neg5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|right|neg5": {
+            "collision_free_task_success": 1,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger|right|pos5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 2
+          },
+          "F2_outer_panel_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F2_outer_panel_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F2_outer_panel_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|right|neg5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F2_outer_panel_stagger|right|pos5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F3_aperture_side_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F3_aperture_side_stagger|right|neg5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|right|pos5": {
+            "collision_free_task_success": 1,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          }
+        },
+        "by_family_id": {
+          "F0_target_side_stagger": {
+            "collision_free_task_success": 1,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 2
+          },
+          "F1_inner_panel_stagger": {
+            "collision_free_task_success": 3,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 3,
+            "task_success": 4
+          },
+          "F2_outer_panel_stagger": {
+            "collision_free_task_success": 2,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 2,
+            "task_success": 4
+          },
+          "F3_aperture_side_stagger": {
+            "collision_free_task_success": 2,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 2,
+            "task_success": 4
+          }
+        },
+        "by_intrusion_side": {
+          "left": {
+            "collision_free_task_success": 1,
+            "n": 20,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 6
+          },
+          "right": {
+            "collision_free_task_success": 7,
+            "n": 20,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 7,
+            "task_success": 8
+          }
+        },
+        "by_pose_id": {
+          "center": {
+            "collision_free_task_success": 0,
+            "n": 14,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "neg5": {
+            "collision_free_task_success": 4,
+            "n": 13,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 4,
+            "task_success": 6
+          },
+          "pos5": {
+            "collision_free_task_success": 4,
+            "n": 13,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 4,
+            "task_success": 7
+          }
+        },
+        "clutter_contact_episode": {
+          "count": 17,
+          "rate": 0.425,
+          "wilson_95": {
+            "high": 0.5780519956394001,
+            "low": 0.28509168524815875,
+            "point": 0.425
+          }
+        },
+        "clutter_contact_frames_total": 87688,
+        "clutter_stability_events_total": 16,
+        "collision_free_task_success": {
+          "count": 8,
+          "rate": 0.2,
+          "wilson_95": {
+            "high": 0.34757607381856676,
+            "low": 0.10499864973166874,
+            "point": 0.2
+          }
+        },
+        "control_steps": {
+          "at_horizon": 40,
+          "max": 900,
+          "mean": 900.0,
+          "median": 900,
+          "min": 900
+        },
+        "failure_taxonomy": {
+          "hazard_bar_contact": 10,
+          "other_environment_contact": 2,
+          "target_contact_without_task_success": 12,
+          "task_failure_after_gripper_close": 2
+        },
+        "gripper_close_commanded": {
+          "count": 39,
+          "rate": 0.975,
+          "wilson_95": {
+            "high": 0.9955732825922052,
+            "low": 0.8711834051199223,
+            "point": 0.975
+          }
+        },
+        "hazard_bar_contact_episode": {
+          "count": 10,
+          "rate": 0.25,
+          "wilson_95": {
+            "high": 0.40194259066970106,
+            "low": 0.14186967895549518,
+            "point": 0.25
+          }
+        },
+        "hazard_bar_frames_total": 140424,
+        "hazard_free_task_success": {
+          "count": 14,
+          "rate": 0.35,
+          "wilson_95": {
+            "high": 0.5049440300646263,
+            "low": 0.2213433317104915,
+            "point": 0.35
+          }
+        },
+        "n": 40,
+        "other_environment_contact_episode": {
+          "count": 3,
+          "rate": 0.075,
+          "wilson_95": {
+            "high": 0.19864530159097524,
+            "low": 0.025835556771858226,
+            "point": 0.075
+          }
+        },
+        "other_environment_frames_total": 4118,
+        "pendant_contact_episode": {
+          "count": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "high": 0.08762453925039232,
+            "low": 0.0,
+            "point": 0.0
+          }
+        },
+        "pendant_contact_frames_total": 0,
+        "pendant_free_task_success": {
+          "count": 14,
+          "rate": 0.35,
+          "wilson_95": {
+            "high": 0.5049440300646263,
+            "low": 0.2213433317104915,
+            "point": 0.35
+          }
+        },
+        "place_receptacle_contact_episode": {
+          "count": 1,
+          "rate": 0.025,
+          "wilson_95": {
+            "high": 0.1288165948800778,
+            "low": 0.0044267174077949195,
+            "point": 0.025
+          }
+        },
+        "place_receptacle_frames_total": 1025,
+        "strict_clean_task_success": {
+          "count": 8,
+          "rate": 0.2,
+          "wilson_95": {
+            "high": 0.34757607381856676,
+            "low": 0.10499864973166874,
+            "point": 0.2
+          }
+        },
+        "task_success": {
+          "count": 14,
+          "rate": 0.35,
+          "wilson_95": {
+            "high": 0.5049440300646263,
+            "low": 0.2213433317104915,
+            "point": 0.35
+          }
+        }
+      },
+      "PACT": {
+        "by_cell": {
+          "F0_target_side_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F0_target_side_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|neg5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F0_target_side_stagger|right|pos5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|left|neg5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 2
+          },
+          "F1_inner_panel_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F1_inner_panel_stagger|right|center": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger|right|neg5": {
+            "collision_free_task_success": 1,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger|right|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F2_outer_panel_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|left|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F2_outer_panel_stagger|right|neg5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F2_outer_panel_stagger|right|pos5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F3_aperture_side_stagger|left|center": {
+            "collision_free_task_success": 0,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|left|neg5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F3_aperture_side_stagger|left|pos5": {
+            "collision_free_task_success": 1,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|right|center": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 0
+          },
+          "F3_aperture_side_stagger|right|neg5": {
+            "collision_free_task_success": 0,
+            "n": 2,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger|right|pos5": {
+            "collision_free_task_success": 1,
+            "n": 1,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          }
+        },
+        "by_family_id": {
+          "F0_target_side_stagger": {
+            "collision_free_task_success": 0,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 0,
+            "task_success": 1
+          },
+          "F1_inner_panel_stagger": {
+            "collision_free_task_success": 3,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 3,
+            "task_success": 5
+          },
+          "F2_outer_panel_stagger": {
+            "collision_free_task_success": 1,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 1
+          },
+          "F3_aperture_side_stagger": {
+            "collision_free_task_success": 2,
+            "n": 10,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 2,
+            "task_success": 4
+          }
+        },
+        "by_intrusion_side": {
+          "left": {
+            "collision_free_task_success": 2,
+            "n": 20,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 2,
+            "task_success": 5
+          },
+          "right": {
+            "collision_free_task_success": 4,
+            "n": 20,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 4,
+            "task_success": 6
+          }
+        },
+        "by_pose_id": {
+          "center": {
+            "collision_free_task_success": 1,
+            "n": 14,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 1,
+            "task_success": 2
+          },
+          "neg5": {
+            "collision_free_task_success": 3,
+            "n": 13,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 3,
+            "task_success": 6
+          },
+          "pos5": {
+            "collision_free_task_success": 2,
+            "n": 13,
+            "pendant_contact_episode": 0,
+            "strict_clean_task_success": 2,
+            "task_success": 3
+          }
+        },
+        "clutter_contact_episode": {
+          "count": 18,
+          "rate": 0.45,
+          "wilson_95": {
+            "high": 0.6017117011155924,
+            "low": 0.30705075280944694,
+            "point": 0.45
+          }
+        },
+        "clutter_contact_frames_total": 123001,
+        "clutter_stability_events_total": 16,
+        "collision_free_task_success": {
+          "count": 6,
+          "rate": 0.15,
+          "wilson_95": {
+            "high": 0.2907262603902003,
+            "low": 0.07061091708507435,
+            "point": 0.15
+          }
+        },
+        "control_steps": {
+          "at_horizon": 40,
+          "max": 900,
+          "mean": 900.0,
+          "median": 900,
+          "min": 900
+        },
+        "failure_taxonomy": {
+          "hazard_bar_contact": 7,
+          "target_contact_without_task_success": 16,
+          "task_failure_after_gripper_close": 6
+        },
+        "gripper_close_commanded": {
+          "count": 38,
+          "rate": 0.95,
+          "wilson_95": {
+            "high": 0.9861796228538989,
+            "low": 0.834958291820748,
+            "point": 0.95
+          }
+        },
+        "hazard_bar_contact_episode": {
+          "count": 8,
+          "rate": 0.2,
+          "wilson_95": {
+            "high": 0.34757607381856676,
+            "low": 0.10499864973166874,
+            "point": 0.2
+          }
+        },
+        "hazard_bar_frames_total": 43845,
+        "hazard_free_task_success": {
+          "count": 10,
+          "rate": 0.25,
+          "wilson_95": {
+            "high": 0.40194259066970106,
+            "low": 0.14186967895549518,
+            "point": 0.25
+          }
+        },
+        "n": 40,
+        "other_environment_contact_episode": {
+          "count": 1,
+          "rate": 0.025,
+          "wilson_95": {
+            "high": 0.1288165948800778,
+            "low": 0.0044267174077949195,
+            "point": 0.025
+          }
+        },
+        "other_environment_frames_total": 994,
+        "pendant_contact_episode": {
+          "count": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "high": 0.08762453925039232,
+            "low": 0.0,
+            "point": 0.0
+          }
+        },
+        "pendant_contact_frames_total": 0,
+        "pendant_free_task_success": {
+          "count": 11,
+          "rate": 0.275,
+          "wilson_95": {
+            "high": 0.4283525083312457,
+            "low": 0.1610785343314309,
+            "point": 0.275
+          }
+        },
+        "place_receptacle_contact_episode": {
+          "count": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "high": 0.08762453925039232,
+            "low": 0.0,
+            "point": 0.0
+          }
+        },
+        "place_receptacle_frames_total": 0,
+        "strict_clean_task_success": {
+          "count": 6,
+          "rate": 0.15,
+          "wilson_95": {
+            "high": 0.2907262603902003,
+            "low": 0.07061091708507435,
+            "point": 0.15
+          }
+        },
+        "task_success": {
+          "count": 11,
+          "rate": 0.275,
+          "wilson_95": {
+            "high": 0.4283525083312457,
+            "low": 0.1610785343314309,
+            "point": 0.275
+          }
+        }
+      }
+    },
+    "full_run": {
+      "elapsed_hours": 2.438,
+      "mean_rollout_minutes": 17.84,
+      "rollouts_attempted": 80,
+      "rollouts_complete": 80,
+      "workers": 10
+    },
+    "historical_context": {
+      "comparable": false,
+      "note": "Quoted for context only. The environment (certified V10.7 static pendant on real V9.5 clutter vs the V2 corridor) and the training corpus (141 V10.8 demonstrations vs 152 V5 demonstrations) both changed, so this is not a like-for-like comparison.",
+      "v5_chunk100_task_success": {
+        "ACT": 13,
+        "PACT": 19,
+        "n": 40
+      }
+    },
+    "instances": 40,
+    "interpretation_limits": [
+      "single seed (3101), one training run per arm, no replication",
+      "40 paired instances; the paired interval is wide by construction",
+      "the primary endpoint interval crosses zero",
+      "validation loss alone is not evidence of policy superiority",
+      "the training corpus is unbalanced: F3 holds 26 of 38 target episodes",
+      "V10.7's Phase-0 gate failed at 8/24 and is permanently closed; nothing here reopens it"
+    ],
+    "manifest_sha256": "124d9c1736bd40ca388a928db0d0065003aa71e53397a95a18154be38c0fff38",
+    "paired": {
+      "clutter_contact_episode": {
+        "act_successes": 17,
+        "both": 11,
+        "discordant_act_only": 6,
+        "discordant_pact_only": 7,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 6,
+          "discordant_pact_only": 7,
+          "discordant_total": 13,
+          "p_value": 1.0
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 16,
+        "pact_successes": 18,
+        "paired_95_interval_pp": [
+          -15.15,
+          20.15
+        ],
+        "paired_difference_pp": 2.5
+      },
+      "collision_free_task_success": {
+        "act_successes": 8,
+        "both": 4,
+        "discordant_act_only": 4,
+        "discordant_pact_only": 2,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 4,
+          "discordant_pact_only": 2,
+          "discordant_total": 6,
+          "p_value": 0.6875
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 30,
+        "pact_successes": 6,
+        "paired_95_interval_pp": [
+          -16.9,
+          6.9
+        ],
+        "paired_difference_pp": -5.0
+      },
+      "hazard_bar_contact_episode": {
+        "act_successes": 10,
+        "both": 5,
+        "discordant_act_only": 5,
+        "discordant_pact_only": 3,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 5,
+          "discordant_pact_only": 3,
+          "discordant_total": 8,
+          "p_value": 0.7265625
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 27,
+        "pact_successes": 8,
+        "paired_95_interval_pp": [
+          -18.77,
+          8.77
+        ],
+        "paired_difference_pp": -5.0
+      },
+      "pendant_free_task_success": {
+        "act_successes": 14,
+        "both": 9,
+        "discordant_act_only": 5,
+        "discordant_pact_only": 2,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 5,
+          "discordant_pact_only": 2,
+          "discordant_total": 7,
+          "p_value": 0.453125
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 24,
+        "pact_successes": 11,
+        "paired_95_interval_pp": [
+          -20.25,
+          5.25
+        ],
+        "paired_difference_pp": -7.5
+      },
+      "strict_clean_task_success": {
+        "act_successes": 8,
+        "both": 4,
+        "discordant_act_only": 4,
+        "discordant_pact_only": 2,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 4,
+          "discordant_pact_only": 2,
+          "discordant_total": 6,
+          "p_value": 0.6875
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 30,
+        "pact_successes": 6,
+        "paired_95_interval_pp": [
+          -16.9,
+          6.9
+        ],
+        "paired_difference_pp": -5.0
+      },
+      "task_success": {
+        "act_successes": 14,
+        "both": 9,
+        "discordant_act_only": 5,
+        "discordant_pact_only": 2,
+        "exact_mcnemar": {
+          "defined": true,
+          "discordant_act_only": 5,
+          "discordant_pact_only": 2,
+          "discordant_total": 7,
+          "p_value": 0.453125
+        },
+        "interval_crosses_zero": true,
+        "n_pairs": 40,
+        "neither": 24,
+        "pact_successes": 11,
+        "paired_95_interval_pp": [
+          -20.25,
+          5.25
+        ],
+        "paired_difference_pp": -7.5
+      }
+    },
+    "rollouts": 80,
+    "sampler_class": "PactPlaceCorridorV106Sampler",
+    "scene_by_pose": {
+      "center": {
+        "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_center.xml",
+        "sha256": "b5a41d0d8934240b078f1cdbf3a6991b2e94a46558ddf1c9eae0119c8b8e138a"
+      },
+      "neg5": {
+        "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_neg5.xml",
+        "sha256": "df50679c749c6ad771d00023e73a08e0bfaf59d5391df9b42cf05de4ed7893a7"
+      },
+      "pos5": {
+        "relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_pos5.xml",
+        "sha256": "762a5a4662a8fc0d31a3a0ee1135b347d6dd2c882daf4e65c2f706ab2d6fe565"
+      }
+    },
+    "seed_disjoint": true,
+    "smoke": {
+      "infrastructure_healthy": true,
+      "instances": 4,
+      "mean_rollout_minutes": 16.22,
+      "rollouts_complete": 8
+    }
+  },
+  "forbidden_next_steps": [
+    "another training seed",
+    "hyperparameter tuning",
+    "further demonstration collection",
+    "any additional ablation",
+    "PACT_PERMUTED"
+  ],
+  "human_approval_present": false,
+  "is_phase0_pass": false,
+  "payload_sha256": "3247cbfd1a6b0e743bd416567958b12868a2a1722b363fd1506dd30cbd4b8fca",
+  "phase0_passed": false,
+  "preserved_byte_for_byte": [
+    "assets/act_style_data/pact_place_corridor_v2_recovered_152",
+    "/root/pact_place_152_pact_vs_act_chunk100_seed3101",
+    "diagnostics_output/pact_place_v108_collection",
+    "diagnostics_output/pact_place_v107_*",
+    "diagnostics_output/pact_place_v104_* through v106_*"
+  ],
+  "role": "V10.9 exploratory conversion, ACT-vs-PACT training, and paired learned-policy evaluation on the 141 accepted V10.8 demonstrations",
+  "schema_version": "pact_place_v109_closeout_v1",
+  "source": {
+    "accepted_rows": 141,
+    "attempts": 353,
+    "by_family": {
+      "F0_target_side_stagger": 39,
+      "F1_inner_panel_stagger": 38,
+      "F2_outer_panel_stagger": 38,
+      "F3_aperture_side_stagger": 26
+    },
+    "by_side": {
+      "left": 75,
+      "right": 66
+    },
+    "cells_exactly_at_quota": 17,
+    "cells_over_quota": {
+      "F0_target_side_stagger|right|center": 1,
+      "F2_outer_panel_stagger|left|neg5": 1
+    },
+    "cells_short": {
+      "F2_outer_panel_stagger|left|center": 1,
+      "F3_aperture_side_stagger|left|pos5": 1,
+      "F3_aperture_side_stagger|right|center": 1,
+      "F3_aperture_side_stagger|right|neg5": 5,
+      "F3_aperture_side_stagger|right|pos5": 5
+    },
+    "checks_failed": 0,
+    "checks_total": 33,
+    "t_max": 627,
+    "t_min": 356,
+    "t_sum": 71511
+  },
+  "split": {
+    "cells_in_train": 24,
+    "cells_in_validation": 23,
+    "f3_deficit": 12,
+    "split_manifest_sha256": "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+    "train": 113,
+    "validation": 28,
+    "validation_by_family": {
+      "F0_target_side_stagger": 8,
+      "F1_inner_panel_stagger": 8,
+      "F2_outer_panel_stagger": 7,
+      "F3_aperture_side_stagger": 5
+    }
+  },
+  "training": {
+    "act_submodule_head": "a22d02bfef5bec18eb48e1fc5cd3d7d21986e8b1",
+    "act_train_commit_v5": "01751759c49d7237f2b14ff8a16fd3c10ae4c089",
+    "arms": {
+      "act": {
+        "best_epoch": 1883,
+        "best_val_l1": 0.10885335505008698,
+        "best_val_loss": 0.11186113953590393,
+        "completed_all_epochs": true,
+        "epochs_recorded": 2000,
+        "final_epoch_val_loss": 0.1247699186205864,
+        "hashes": {
+          "dataset_stats.pkl": "dffc807f093b5a726f9a8cdd759bac8cad820cea0c71d166afd11c337875ab57",
+          "policy_best.ckpt": "81be04ceddc437aa85919ee47af1b7f22ef712e5fc1102f43343bedf6074522e",
+          "policy_last.ckpt": "08c12322218ccc704046b6f364c319e57f9a70485e1c98230fc2779d82136b0b",
+          "run_manifest.json": "202d56feec65aa312fdde36a7a6c33a75c18a2845ab9f71125db19aaa3993044"
+        },
+        "input_proj_proximity_shape": null,
+        "offline_smoke": {
+          "action_std": 0.9807205200195312,
+          "batch": 8,
+          "deterministic_repeat": true,
+          "episodes": [
+            0,
+            1,
+            9,
+            15,
+            20,
+            26,
+            27,
+            37
+          ],
+          "finite": true,
+          "min_per_sample_std": 0.8278311491012573,
+          "nonconstant": true,
+          "output_shape": [
+            8,
+            100,
+            8
+          ],
+          "output_shape_expected": [
+            8,
+            100,
+            8
+          ],
+          "shape_ok": true,
+          "timestep": 40
+        },
+        "proximity_proof": {
+          "applicable": false
+        },
+        "strict_reload_ok": true
+      },
+      "pact": {
+        "best_epoch": 1841,
+        "best_val_l1": 0.11195546388626099,
+        "best_val_loss": 0.11548706889152527,
+        "completed_all_epochs": true,
+        "epochs_recorded": 2000,
+        "final_epoch_val_loss": 0.1264311820268631,
+        "hashes": {
+          "dataset_stats.pkl": "dffc807f093b5a726f9a8cdd759bac8cad820cea0c71d166afd11c337875ab57",
+          "policy_best.ckpt": "a69807cbcd3593754e240ee56b3c3082f8df953dd3efea3de3fabdfc917ca929",
+          "policy_last.ckpt": "301963c16e1f7f962ca0589d4809f55aeb45c2dacc0330a4c68fd4b03f772dce",
+          "run_manifest.json": "01d46057ff91e3d7a99e3dac8388d465de0697a6e07c0f1f30a0f2dd8a3612fe"
+        },
+        "input_proj_proximity_shape": [
+          512,
+          32
+        ],
+        "offline_smoke": {
+          "action_std": 0.9939340353012085,
+          "batch": 8,
+          "deterministic_repeat": true,
+          "episodes": [
+            0,
+            1,
+            9,
+            15,
+            20,
+            26,
+            27,
+            37
+          ],
+          "finite": true,
+          "min_per_sample_std": 0.8446099758148193,
+          "nonconstant": true,
+          "output_shape": [
+            8,
+            100,
+            8
+          ],
+          "output_shape_expected": [
+            8,
+            100,
+            8
+          ],
+          "shape_ok": true,
+          "timestep": 40
+        },
+        "proximity_proof": {
+          "applicable": true,
+          "max_abs_action_delta": 1.3764121532440186,
+          "mean_abs_action_delta": 0.21878266334533691,
+          "method": "same batch with real vs zeroed frozen embeddings",
+          "proximity_consumed": true
+        },
+        "strict_reload_ok": true
+      }
+    },
+    "command_diff": {
+      "differing_values": {
+        "--ckpt_dir": [
+          "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/act_seed3101",
+          "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/pact_seed3101"
+        ]
+      },
+      "identical_except_allowance": true,
+      "only_in_act": {},
+      "only_in_pact": {
+        "--n_proximity_sensors": "40",
+        "--prox_tokens_per_sensor": "1",
+        "--proximity_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+        "--proximity_feature_dim": "32",
+        "--use_proximity": true
+      },
+      "violations": []
+    },
+    "commands": {
+      "act": [
+        "python",
+        "imitate_episodes.py",
+        "--task_name",
+        "obstacle_baseline",
+        "--ckpt_dir",
+        "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/act_seed3101",
+        "--exact_ckpt_dir",
+        "--policy_class",
+        "ACT",
+        "--batch_size",
+        "8",
+        "--seed",
+        "3101",
+        "--num_epochs",
+        "2000",
+        "--lr",
+        "1e-5",
+        "--kl_weight",
+        "10",
+        "--chunk_size",
+        "100",
+        "--hidden_dim",
+        "512",
+        "--dim_feedforward",
+        "3200",
+        "--enc_layers",
+        "7",
+        "--dec_layers",
+        "7",
+        "--camera_names",
+        "wrist_camera",
+        "--dataset_dir",
+        "/root/prox_learning_pact_remediation/assets/act_style_data/pact_place_v108_141",
+        "--split_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v109_train_eval/split_manifest.json",
+        "--dataset_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v109_train_eval/conversion_manifest_encoded.json",
+        "--expect_split_sha256",
+        "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+        "--expect_dataset_tree_sha256",
+        "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+        "--episode_horizon",
+        "635",
+        "--state_dim",
+        "9",
+        "--action_dim",
+        "8",
+        "--num_workers",
+        "4",
+        "--ckpt_every",
+        "200",
+        "--no_wandb"
+      ],
+      "pact": [
+        "python",
+        "imitate_episodes.py",
+        "--task_name",
+        "obstacle_baseline",
+        "--ckpt_dir",
+        "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101/pact_seed3101",
+        "--exact_ckpt_dir",
+        "--policy_class",
+        "ACT",
+        "--batch_size",
+        "8",
+        "--seed",
+        "3101",
+        "--num_epochs",
+        "2000",
+        "--lr",
+        "1e-5",
+        "--kl_weight",
+        "10",
+        "--chunk_size",
+        "100",
+        "--hidden_dim",
+        "512",
+        "--dim_feedforward",
+        "3200",
+        "--enc_layers",
+        "7",
+        "--dec_layers",
+        "7",
+        "--camera_names",
+        "wrist_camera",
+        "--dataset_dir",
+        "/root/prox_learning_pact_remediation/assets/act_style_data/pact_place_v108_141",
+        "--split_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v109_train_eval/split_manifest.json",
+        "--dataset_manifest",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v109_train_eval/conversion_manifest_encoded.json",
+        "--expect_split_sha256",
+        "52acfd76598916b68a48deb4cd868ed0627a850e650c259cc727077d534155db",
+        "--expect_dataset_tree_sha256",
+        "9565875b415018d35d164b10555d74d98c077c1c24fa7c456df76c2a6a5e05ec",
+        "--episode_horizon",
+        "635",
+        "--state_dim",
+        "9",
+        "--action_dim",
+        "8",
+        "--num_workers",
+        "4",
+        "--ckpt_every",
+        "200",
+        "--no_wandb",
+        "--use_proximity",
+        "--n_proximity_sensors",
+        "40",
+        "--prox_tokens_per_sensor",
+        "1",
+        "--proximity_feature_dim",
+        "32",
+        "--proximity_encoder_sha256",
+        "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206"
+      ]
+    },
+    "root": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101",
+    "timing": {
+      "act": {
+        "arm": "act",
+        "elapsed_minutes": 72.03,
+        "elapsed_seconds": 4321.9,
+        "finished_utc": "2026-08-29T06:09:27Z",
+        "log": "/tmp/claude-0/-root-prox-learning-pact-remediation/123ba6b7-d01d-49bb-bee6-0c7b3425d724/scratchpad/v109_train/act.log",
+        "returncode": 0,
+        "started_utc": "2026-08-29T04:57:25Z"
+      },
+      "pact": {
+        "arm": "pact",
+        "elapsed_minutes": 75.95,
+        "elapsed_seconds": 4556.7,
+        "finished_utc": "2026-08-29T07:25:24Z",
+        "log": "/tmp/claude-0/-root-prox-learning-pact-remediation/123ba6b7-d01d-49bb-bee6-0c7b3425d724/scratchpad/v109_train/pact.log",
+        "returncode": 0,
+        "started_utc": "2026-08-29T06:09:27Z"
+      },
+      "preflight_payload_sha256": "bace1507d570754722f5b76d4556b2099f903d71efe5d1fb5d8ce2d0f573423e",
+      "schema_version": "pact_place_v109_training_timing_v1",
+      "training_root": "/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101"
+    },
+    "training_model_loader_source_unchanged": true
+  },
+  "v107_phase0_result": "failed_8_of_24_permanently_closed",
+  "v108_corrections": [
+    {
+      "id": "E1",
+      "status": "FALSE",
+      "topic": "pendant involvement"
+    },
+    {
+      "id": "E2",
+      "status": "OMITTED",
+      "topic": "the one pendant-contact attempt"
+    },
+    {
+      "id": "E3",
+      "status": "FALSE AND MISLEADING",
+      "topic": "worker deaths and infrastructure events"
+    },
+    {
+      "id": "E4",
+      "status": "AMBIGUOUS, OVERSTATES BALANCE",
+      "topic": "quota accounting"
+    },
+    {
+      "id": "E5",
+      "status": "OVERSTATED",
+      "topic": "splittability of the smallest cells"
+    },
+    {
+      "id": "E6",
+      "status": "UNREPRESENTATIVE SAMPLE",
+      "topic": "encoder-health provenance"
+    },
+    {
+      "id": "E7",
+      "status": "CORRECT BUT EASILY MISREAD",
+      "topic": "corpus dimensions"
+    }
+  ],
+  "v108_stop_reason": "owner_instructed_early_stop"
+}

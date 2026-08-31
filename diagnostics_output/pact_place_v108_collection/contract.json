@@ -1,0 +1,187 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "base_quota_per_cell": 6,
+  "bonus_cells": [
+    "F0_target_side_stagger|left|neg5",
+    "F0_target_side_stagger|right|center",
+    "F1_inner_panel_stagger|left|center",
+    "F1_inner_panel_stagger|right|pos5",
+    "F2_outer_panel_stagger|left|pos5",
+    "F2_outer_panel_stagger|right|neg5",
+    "F3_aperture_side_stagger|left|center",
+    "F3_aperture_side_stagger|right|pos5"
+  ],
+  "budget": {
+    "extension_permitted": false,
+    "max_scientific_attempts": 900,
+    "max_wall_clock_hours": 16.0
+  },
+  "contract_version": "pact_place_v108_exploratory_collection_v1",
+  "eligible_for_human_review": false,
+  "environment_version": "pact_place_corridor_v10_6_v95_clutter_asymmetric_pendant",
+  "human_approval_present": false,
+  "implementation_digest": "9abb32ecebc3595013656a3a0ef47cfbbf8c78d9940780c349e7c6d5bda4ffc1",
+  "implementation_files": {
+    "docs/PACT_PLACE_V108_EXPLORATORY_COLLECTION_PLAN.md": {
+      "present": false,
+      "raw_file_sha256": "absent"
+    },
+    "scripts/pact_place_v106_contract.py": {
+      "present": true,
+      "raw_file_sha256": "fdf512e527c74d3b83b8cbe88735ff9704066e2320d010a21a61bd4a0926d6cb"
+    },
+    "scripts/pact_place_v106_geometry.py": {
+      "present": true,
+      "raw_file_sha256": "9ce320124cc5d6d77da5c11258c184965c54cc8711e9f4055e7e91829bedbc78"
+    },
+    "scripts/pact_place_v107_contract.py": {
+      "present": true,
+      "raw_file_sha256": "c235988183c3746fbf4c7e63dfede8d5686ba2fb206f756f15edc4fca69cc692"
+    },
+    "scripts/pact_place_v108_contract.py": {
+      "present": true,
+      "raw_file_sha256": "84f0b930a00c07cc534652f036b05fbf8cd179994552621178326637badc953a"
+    },
+    "scripts/pact_place_v95_contract.py": {
+      "present": true,
+      "raw_file_sha256": "892570f3123403b46116dd582b48afc0942b3e851d48b742400278297090fc65"
+    },
+    "scripts/run_pact_place_v108_collect.py": {
+      "present": true,
+      "raw_file_sha256": "b57e619e58d111855c6be58791b6f8e05f4d55de20f5318644b3310d261d43cf"
+    },
+    "scripts/verify_pact_place_v108_dataset.py": {
+      "present": true,
+      "raw_file_sha256": "30fb57ec6613a8f1148cf7cfc6a9380bb260068034e270aaf1886582bcb5cbf9"
+    },
+    "submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py": {
+      "present": true,
+      "raw_file_sha256": "fdb9a63c274e6dd52729b86f276ecb6dfcfb9c7f20140b222d7a4640eade1487"
+    },
+    "submodules/molmospaces/molmo_spaces/tasks/pact_place_contact_audit.py": {
+      "present": true,
+      "raw_file_sha256": "07c49eb5b0a522321ddad0741af8455e4b5e5ea4df25c6020cab802b5b234f07"
+    },
+    "tests/test_pact_place_v108.py": {
+      "present": true,
+      "raw_file_sha256": "68e4991e2e45c5cf9f85a64ef83337d5307b26576c9886d1b964fc502c29ebfc"
+    }
+  },
+  "is_exploratory_owner_override": true,
+  "is_phase0_pass": false,
+  "payload_sha256": "59a0d9d42d58acba0ed3de99c879bb160942fb5f6ab657e2dc1e8e78ab8d7497",
+  "phase0_passed": false,
+  "quota_redistribution_permitted": false,
+  "quota_relaxation_permitted": false,
+  "quotas": {
+    "by_cell": {
+      "F0_target_side_stagger|left|center": 6,
+      "F0_target_side_stagger|left|neg5": 7,
+      "F0_target_side_stagger|left|pos5": 6,
+      "F0_target_side_stagger|right|center": 7,
+      "F0_target_side_stagger|right|neg5": 6,
+      "F0_target_side_stagger|right|pos5": 6,
+      "F1_inner_panel_stagger|left|center": 7,
+      "F1_inner_panel_stagger|left|neg5": 6,
+      "F1_inner_panel_stagger|left|pos5": 6,
+      "F1_inner_panel_stagger|right|center": 6,
+      "F1_inner_panel_stagger|right|neg5": 6,
+      "F1_inner_panel_stagger|right|pos5": 7,
+      "F2_outer_panel_stagger|left|center": 6,
+      "F2_outer_panel_stagger|left|neg5": 6,
+      "F2_outer_panel_stagger|left|pos5": 7,
+      "F2_outer_panel_stagger|right|center": 6,
+      "F2_outer_panel_stagger|right|neg5": 7,
+      "F2_outer_panel_stagger|right|pos5": 6,
+      "F3_aperture_side_stagger|left|center": 7,
+      "F3_aperture_side_stagger|left|neg5": 6,
+      "F3_aperture_side_stagger|left|pos5": 6,
+      "F3_aperture_side_stagger|right|center": 6,
+      "F3_aperture_side_stagger|right|neg5": 6,
+      "F3_aperture_side_stagger|right|pos5": 7
+    },
+    "by_family": {
+      "F0_target_side_stagger": 38,
+      "F1_inner_panel_stagger": 38,
+      "F2_outer_panel_stagger": 38,
+      "F3_aperture_side_stagger": 38
+    },
+    "by_pose": {
+      "center": 51,
+      "neg5": 50,
+      "pos5": 51
+    },
+    "by_side": {
+      "left": 76,
+      "right": 76
+    },
+    "total": 152
+  },
+  "reuses_v107_pool_or_phase0_rows": false,
+  "role": "exploratory demonstration collection under owner override",
+  "runtime": {
+    "default_workers": 12,
+    "max_sampling_retries": 12,
+    "proximity_sensor_period_ms": 16.6667,
+    "task_horizon": 1050
+  },
+  "sampler_class": "PactPlaceCorridorV106Sampler",
+  "schedule": "deterministic round-robin over cells with unmet quotas",
+  "schema_version": "pact_place_v108_contract_v1",
+  "streams": {
+    "collection_master_seed": 2026108001,
+    "collection_stream": "pact-place-v10.8-exploratory-collection",
+    "per_cell_streams": true
+  },
+  "target_successes": 152,
+  "trainable_schema": {
+    "action_keys": [
+      "commanded_action",
+      "ee_pose",
+      "ee_twist",
+      "joint_pos",
+      "joint_pos_rel"
+    ],
+    "agent_keys": [
+      "qpos",
+      "qvel"
+    ],
+    "n_proximity_sensors": 40,
+    "proximity_dtype": "float32",
+    "proximity_frame_shape": [
+      4,
+      8,
+      8
+    ],
+    "proximity_must_be_finite": true,
+    "proximity_must_be_nonconstant": true,
+    "wrist_rgb": "published by the datagen pipeline as episode_*_wrist_camera.mp4; validated by decoding and matching its frame count to T"
+  },
+  "upstream_inputs": {
+    "diagnostics_output/pact_place_v107_certification/certification.json": {
+      "present": true,
+      "raw_file_sha256": "faff1dd0a2e6f16d3169788c90868741c82c29f094318f3fdf4ec3b788e0a253"
+    },
+    "diagnostics_output/pact_place_v107_phase0/gate.json": {
+      "present": true,
+      "raw_file_sha256": "ff4f6aa1c08920c8c07dc30377ea270105e64c35894cade804319b4ea4116c10"
+    },
+    "diagnostics_output/pact_place_v107_pool/pool.json": {
+      "present": true,
+      "raw_file_sha256": "7df042aec02588a2673fd7a9d0e019a74584ad18b78151909ba272eaf4eec6b9"
+    },
+    "diagnostics_output/pact_place_v107_selection/selection.json": {
+      "present": true,
+      "raw_file_sha256": "2d8600f581d8e80f17c1ed5584c0c25015976d0b969970578446ccfd083a7dcc"
+    }
+  },
+  "uses_expert_screen_harness": false,
+  "uses_full_datagen_pipeline": true,
+  "v107_phase0_result": "failed_8_of_24_permanently_closed",
+  "v107_preserved_unmodified": true
+}

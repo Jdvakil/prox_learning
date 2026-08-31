@@ -998,3 +998,145 @@ it describes. Code and data drift is zero.
 `eligible_for_owner_visual_review: true`. `pool_passed: false`.
 `authorizes_downstream_work: false`. Every authorization field false.
 `human_approval.json` absent and not created.
+
+# V10.8 exploratory collection and V10.9 train/evaluate (owner override)
+
+**Neither reopens V10.7.** Its Phase-0 gate remains **failed at 8/24 and
+permanently closed**. V10.8 is an exploratory owner-override collection stopped
+early by owner instruction at **141 of 152** target successes, quotas unmet.
+V10.9 converts, trains and evaluates on those 141 under explicit owner
+authorization. Every authorization field on every V10.8/V10.9 artifact is false.
+
+## V10.8 erratum (create-only; `closeout.json` unmodified)
+
+Seven corrections, each re-derived from `ledger.jsonl` and the retained files:
+"no pendant involvement anywhere" was **false** (zero *accepted* rows contacted
+it, but rejected attempt `1a756c9304311cdc…` logged 42 `mounted_fixture`
+contacts, one pendant-contact frame and zero clearance); `infrastructure_halts:
+0` was **false** (eight `BrokenProcessPool` worker deaths, caused by terminating
+the pool on the owner's stop instruction — not spontaneous corruption, and
+distinct from the 12 `sampling_failure` ledger rows); **17** cells equal quota
+and **two** exceed it, five are short; only `F3|right|neg5` (1 episode) cannot
+split; the encoder statistics came from **120 windows of one episode**; and
+HDF5 `T = episode_steps + 1`, so T runs 356–627 summing to **71,511**.
+
+## V10.9 pipeline verification
+
+| stage | result |
+|---|---|
+| source freeze | **33/33 checks pass** — 353 rows, 141 accepted all strict-clean, every HDF5 hash matched, T 356–627 sum 71,511, 0 accepted pendant contacts, every seed reproduced from its cell stream |
+| conversion | 141 episodes, sensor order `2198e29b…` preserved (front-before-back, verified non-alphabetical) |
+| embeddings | 2,854,800 windows, **all finite, 0 dead dimensions**, global std 1.1127, per-dim std 0.249–1.393, 12.72% valid |
+| preservation | **141/141 proved** by re-deriving action, qpos, qvel, wrist RGB, raw proximity and extrinsics/intrinsics from the V10.8 source |
+| split | 113/28, 24 cells in train, 23 in validation, order-independent |
+| training | both arms 2000/2000 epochs, strict reload and offline smoke pass |
+| evaluation | 80/80 rollouts, 0 failures, 2.44 h |
+
+## Training
+
+ACT best epoch 1883, validation loss **0.11186**, 72.0 min.
+PACT best epoch 1841, validation loss **0.11549**, 76.0 min.
+PACT differs only by `--ckpt_dir` and the five proximity flags, verified by a
+parsed flag diff that fails closed. Proximity consumption proved causally: real
+versus zeroed embeddings on the same batch move PACT's actions by max **1.376**.
+
+## Paired evaluation: 40 held-out instances, 80 rollouts
+
+| endpoint | ACT | PACT | PACT−ACT | 95% CI (pp) | discordant P/A | exact McNemar |
+|---|---|---|---|---|---|---|
+| task success | 14/40 (35.0%) | 11/40 (27.5%) | −7.5 | [−20.2, +5.2] | 2/5 | 0.4531 |
+| **collision-free task success** | **8/40 (20.0%)** | **6/40 (15.0%)** | **−5.0** | **[−16.9, +6.9]** | 2/4 | **0.6875** |
+| strict-clean task success | 8/40 | 6/40 | −5.0 | [−16.9, +6.9] | 2/4 | 0.6875 |
+| pendant-free task success | 14/40 | 11/40 | −7.5 | [−20.2, +5.2] | 2/5 | 0.4531 |
+| intrusion-panel contact episodes | 10/40 | 8/40 | −5.0 | [−18.8, +8.8] | 3/5 | 0.7266 |
+| clutter-contact episodes | 17/40 | 18/40 | +2.5 | [−15.2, +20.1] | 7/6 | 1.0000 |
+
+Contact volume (descriptive, not paired): intrusion panel **43,845** entries for
+PACT against **140,424** for ACT (3.2× lower); clutter 123,001 against 87,688;
+other-environment 994 against 4,118; clutter-stability events 16 each. Pendant
+and mounted-fixture contact: **0 frames, 0 episodes, both arms**. Gripper close
+commanded in 38/40 (PACT) and 39/40 (ACT). Every episode ran the full 900
+control steps (`end_on_success=false`).
+
+Stratified, collision-free task success: by family ACT 1/3/2/2 vs PACT 0/3/1/2
+(F0–F3); by side ACT 1 left / 7 right vs PACT 2 / 4; by pose ACT 0/4/4 vs
+PACT 1/3/2 (center/neg5/pos5).
+
+## Verdict
+
+**Null.** PACT did not beat ACT on any endpoint. Every paired interval crosses
+zero, no McNemar p-value falls below 0.45, and the largest discordant split is
+2 versus 5 — a single seed on 40 paired instances cannot resolve a difference of
+this size. The historical V5 chunk-100 result (PACT 19/40 vs ACT 13/40 task
+success) reversed sign here, but the environment (certified V10.7 static pendant
+on real V9.5 clutter, versus the V2 corridor) and the training corpus (141 V10.8
+demonstrations, versus 152 V5) both changed, so it is **contextual only, not a
+like-for-like comparison**.
+
+The dataset is also **not balanced**: F3 holds 26 of 38 target episodes, sides
+run 75 left / 66 right, five cells are short and two over quota. Any per-family
+reading of the table above must account for that.
+
+`PACT_PERMUTED` was not run. No superiority claim is made from validation loss,
+from a single seed, or from an interval crossing zero.
+
+# V10.10 four-object ACT/PACT retraining and paired evaluation
+
+V10.10 preserves the certified V10.7 static pendant, scenes, route and 40-sensor
+suite, but activates exactly four household-clutter objects: `Soap_Bottle_30`,
+`Plate_10`, `Plate_22`, and `Soap_Bottle_11`. This is an exploratory owner-run
+comparison; it does not reopen V10.7's failed Phase-0 gate and every downstream
+authorization field remains false.
+
+## Corpus and training
+
+The collector produced **144/144 strict-clean demonstrations**, six in every
+family×side×pose cell, from 313 attempts in 6.50 hours. The deterministic split
+is **120/24**, exactly five train and one validation row per cell. Both models
+used seed 3101 and the same chunk-100 settings: 2,000 epochs, batch 8, learning
+rate 1e-5, KL 10, chunk 100, hidden 512, feed-forward 3,200, 7+7 layers, 8
+heads, wrist ResNet-18, state/action 9/8. A parsed-command check verifies that
+PACT differs only by its checkpoint directory and the five registered
+proximity flags.
+
+| | ACT | PACT |
+|---|---:|---:|
+| epochs | 2,000/2,000 | 2,000/2,000 |
+| best epoch | 1,998 | 1,859 |
+| best validation loss | 0.10621 | 0.10386 |
+| strict reload / offline smoke | pass | pass |
+
+PACT's proximity input is causally active: zeroing the frozen embeddings on the
+same batch changed actions by mean absolute 0.204 and maximum absolute 1.852.
+Validation loss is not an evaluation endpoint.
+
+## Paired held-out evaluation
+
+The repaired infrastructure run completed **80/80 rollouts with zero failures**
+over 40 paired instances in 5.746 hours. All ACT/PACT pairs had byte-identical
+initial observations across all 421 retained observation datasets.
+
+| endpoint | ACT | PACT | PACT−ACT | paired 95% CI (pp) | exact McNemar |
+|---|---:|---:|---:|---:|---:|
+| task success | 11/40 | 14/40 | +7.5 | [−10.01, +25.01] | 0.5811 |
+| **collision-free task success (primary)** | **7/40** | **10/40** | **+7.5** | **[−7.02, +22.02]** | **0.5078** |
+| strict-clean task success | 7/40 | 10/40 | +7.5 | [−7.02, +22.02] | 0.5078 |
+| clutter-contact episode | 22/40 | 17/40 | −12.5 | [−33.50, +8.50] | 0.3593 |
+| pendant-contact episode | 2/40 | 0/40 | −5.0 | not preregistered | 0.5000 |
+
+**Verdict: directional but inconclusive.** PACT leads by 3/40 on both task and
+collision-free task success, and contacts clutter in five fewer episodes, but
+the registered primary interval crosses zero. Under the preregistered rule this
+does not establish PACT superiority. It is nevertheless the intended
+four-object clutter environment and a useful follow-up to the negative V10.9
+result.
+
+The legacy evaluator did not emit the newer `v109r_funnel` fields, so funnel
+zeros in the current machine-readable analysis mean unavailable, not zero.
+Independent reconstruction from retained `GraspStateSensor` trajectories gives
+ACT 27 touched / 12 held and PACT 28 touched / 20 held. Contact summary mode
+also did not retain geom-pair identities, so aggregate contact classes are
+valid but per-object contact attribution is unavailable.
+
+Reference payloads: full run `c6c043e597d265dd3ba74c39fbc033724ecec332fc5e7b31df6486cfa8907009`;
+analysis `2c09430f581ab2c0f57f434d15f83753ae8563fd1ffeda275478911d61ea1301`.

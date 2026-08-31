@@ -2220,3 +2220,371 @@ legible without altering an episode. Chosen: successes 6/28/8, failures
 collision.** `scripts/verify_pact_place_v107_owner_review.py` re-derives the
 selection and reconciles every hash, frame count and duration independently —
 0 problems.
+## Place corridor v10.8: an exploratory collection under owner override (stopped early)
+
+**This is not a Phase-0 pass.** V10.7's gate failed at 8/24 and is permanently
+closed. V10.8 collected demonstrations anyway, under an explicit owner override
+for scientific curiosity, and the owner stopped it early at **141 of 152**
+target successes with quotas unmet.
+
+[`diagnostics_output/pact_place_v108_collection/`](diagnostics_output/pact_place_v108_collection/)
+holds the frozen contract, the 353-row ledger and the close-out. 141 accepted,
+212 rejected, 39.9% yield, 5.97 h, zero accepted rows with pendant contact.
+
+**A create-only erratum corrects the V10.8 record.**
+[`V108_ERRATUM.md`](diagnostics_output/pact_place_v109_train_eval/V108_ERRATUM.md)
+and its JSON sit beside `closeout.json`, which is **not** modified. Seven
+corrections, each re-derived from `ledger.jsonl` and the retained row files
+rather than copied from the close-out:
+
+- **E1** "no pendant involvement anywhere" was false. Zero *accepted* rows
+  contacted the pendant — that part stands.
+- **E2** one rejected attempt, `1a756c9304311cdc…`, recorded **42
+  `mounted_fixture` contacts, one pendant-contact frame and zero clearance**. It
+  is the only such row in 353 attempts and was correctly rejected.
+- **E3** `closeout.json` reports `infrastructure_halts: 0`. There were **eight**
+  `BrokenProcessPool` worker deaths, caused by terminating the pool on the
+  owner's stop instruction with a batch in flight — owner-stop-induced
+  terminations, not zero events and not spontaneous corruption. None advanced a
+  seed stream or entered the 353 scientific rows, and they are a different thing
+  from the **12 `sampling_failure`** ledger rows.
+- **E4** exactly **17** cells equal quota and **two** exceed it, so 19 meet or
+  exceed; **five** are short. "19 at quota" overstates the balance.
+- **E5** only `F3|right|neg5` (one episode) cannot appear in both splits;
+  `F3|right|pos5` (two) splits 1/1.
+- **E6** the encoder-health figures came from **120 windows of one episode**,
+  not the corpus.
+- **E7** `episode_steps` are control steps; HDF5 `T = episode_steps + 1`, so T
+  runs **356 to 627** and sums to **71,511**.
+
+## Place corridor v10.9: converting, training and evaluating the 141 demos (exploratory)
+
+Owner-authorized conversion, ACT-vs-PACT training and a paired learned-policy
+evaluation on the 141 accepted V10.8 demonstrations. Plan:
+[`docs/PACT_PLACE_V109_TRAIN_EVAL_PLAN.md`](docs/PACT_PLACE_V109_TRAIN_EVAL_PLAN.md).
+Artifacts:
+[`diagnostics_output/pact_place_v109_train_eval/`](diagnostics_output/pact_place_v109_train_eval/)
+and
+[`diagnostics_output/pact_place_v109_eval/`](diagnostics_output/pact_place_v109_eval/).
+**Neither V10.7 nor V10.8 is reinterpreted.** Every authorization field on every
+V10.9 artifact is false; `is_phase0_pass` is false throughout.
+
+**Source freeze.** `scripts/verify_pact_place_v109_source.py` re-derives the
+population from the ledger and the retained files and passes **33/33 checks**:
+353 unique rows, 141 accepted and all strict-clean, every HDF5 hash matching its
+row, 40 finite non-constant `(T,4,8,8)` float32 sensors per episode, T 356–627
+summing to 71,511, zero accepted pendant contacts, clearance minimum
+0.008272895299859126 m, and every task seed reproduced from its frozen cell
+stream. Rows are ordered canonically by registered cell, then `attempt_index`,
+then `attempt_id` — never by parallel-completion order. The manifest carries the
+imbalance in its own body: families **39/38/38/26**, sides **75 left / 66
+right**, two cells over quota, five short.
+
+**Conversion.** `scripts/convert_pact_place_v109_to_act.py` is a new adapter —
+the existing converter's `recovered_152` path is contract-specific — reusing the
+proven V5 semantics. The frozen sensor order is preserved exactly
+(`2198e29b796ce63f43d8b0db50a92da7d4429895f8571f7d87b655bc265c8fe1`), including
+`link5_front_*` **before** `link5_back_*`. That order is *not* alphabetical; the
+encoder is weight-shared but the PACT transformer assigns positional embeddings
+by sensor slot, so sorting would silently relabel every sensor. A test asserts
+it.
+
+**Embeddings.** The frozen `SurfaceEmbeddingEncoder`
+(`6fd2dd03…`, schema `pact_surface_embedding_encoder_v1`, whose checkpoint
+declares the same sensor-order hash) wrote `(T,40,32)` tokens over the whole
+converted corpus. `scripts/verify_pact_place_v109_embeddings.py` reads them back
+independently: **2,854,800 windows, all finite, 0 dead dimensions**, global std
+1.1127, per-dimension std 0.249–1.393, 12.72% of readings valid. Preservation is
+proved the strong way — `action`, `qpos`, `qvel`, wrist RGB, raw proximity and
+the per-sensor extrinsics/intrinsics were **re-derived from the V10.8 source for
+all 141 episodes** and compared element-wise. 141/141 preserved.
+
+**Split.** One byte-identical **113/28** split, master seed 2026082901,
+stratified over the 24 cells and decided only by SHA-256 of identity — never by
+loss, length, clearance or any learned outcome. All 24 cells appear in training,
+23 in validation; the sole-row `F3|right|neg5` goes to training and the two-row
+`F3|right|pos5` splits 1/1. Tests assert the counts, the per-cell floor and
+independence from input order.
+
+**Training.** Fresh root `/root/pact_place_v108_141_pact_vs_act_chunk100_seed3101`.
+V5 chunk-100 parameters exactly: seed 3101, 2000 epochs, batch 8, lr 1e-5, KL 10,
+chunk 100, hidden 512, ff 3200, 7+7 layers, 8 heads, ResNet-18, wrist only,
+state 9 / action 8, 4 workers, checkpoint every 200, no W&B,
+`episode_horizon=635`. A parsed flag diff runs before training and fails closed:
+PACT differs **only** by `--ckpt_dir` and the five proximity flags. The ACT
+submodule differs from the V5 training commit `01751759` by four **added**
+evaluation scripts and nothing else — 0 deletions, no training, model or loader
+source touched.
+
+| | ACT | PACT |
+|---|---|---|
+| epochs | 2000/2000 | 2000/2000 |
+| wall clock | 72.0 min | 76.0 min |
+| best epoch | 1883 | 1841 |
+| best validation loss | 0.11186 | 0.11549 |
+| strict reload / offline smoke | pass | pass |
+| `input_proj_proximity.weight` | n/a | `[512, 32]` |
+
+Proximity consumption is proved **causally**: the same batch run with real
+versus zeroed frozen embeddings moves PACT's actions by max 1.376, mean 0.219.
+
+**Paired evaluation — 40 held-out instances, 80 rollouts, 0 failures, 2.44 h.**
+A separately versioned evaluator binds `PactPlaceCorridorV106Sampler` and the
+three certified V10.7 scenes; the V2 scene and sampler are refused, and the
+V10.6 sampler independently verifies each loaded scene against the row's
+`pact_v106_scene_sha256`. Instances are balanced 10 per family, 20/20 by side,
+14/13/13 by pose, all 24 cells present, 16 doubled by hash-ranked constrained
+selection, with seeds asserted disjoint from 1,608 prior seeds.
+
+| endpoint | ACT | PACT | PACT−ACT | 95% CI (pp) | exact McNemar |
+|---|---|---|---|---|---|
+| task success | 14/40 | 11/40 | −7.5 | [−20.2, +5.2] | 0.4531 |
+| **collision-free task success** | **8/40** | **6/40** | **−5.0** | **[−16.9, +6.9]** | **0.6875** |
+| strict-clean task success | 8/40 | 6/40 | −5.0 | [−16.9, +6.9] | 0.6875 |
+| pendant-free task success | 14/40 | 11/40 | −7.5 | [−20.2, +5.2] | 0.4531 |
+| intrusion-panel contact | 10/40 | 8/40 | −5.0 | [−18.8, +8.8] | 0.7266 |
+| clutter contact | 17/40 | 18/40 | +2.5 | [−15.2, +20.1] | 1.0000 |
+
+**The result is null.** PACT did not beat ACT on any endpoint; every interval
+crosses zero and no McNemar p-value falls below 0.45. **Zero pendant contact in
+all 80 rollouts** — the certified pendant was never touched by a learned policy.
+The one directional signal is contact *volume*: PACT logged 43,845
+intrusion-panel contact entries against ACT's 140,424, a 3.2× reduction, while
+touching the panel in two fewer episodes — but the episode-level difference is
+not significant and the entry counts are not a paired test. The V5 chunk-100
+result (PACT 19/40 vs ACT 13/40) reversed sign here; the environment and the
+training corpus both changed, so that comparison is **contextual only**.
+
+Nothing here reopens V10.7, whose Phase-0 gate remains failed at 8/24 and
+permanently closed. Every authorization field on every V10.9 artifact is false.
+
+## Place corridor v10.10: four-object ACT/PACT replication
+
+V10.10 keeps the certified V10.7 static pendant and the V9.5 layout families,
+but activates exactly four household-clutter objects: `Soap_Bottle_30`,
+`Plate_10`, `Plate_22`, and `Soap_Bottle_11`. The target cup, pendant,
+intrusion panel, tray, and enclosure are not counted as clutter. The registered
+plan is
+[`docs/PACT_PLACE_V1010_FOUR_OBJECT_TRAIN_EVAL_PLAN.md`](docs/PACT_PLACE_V1010_FOUR_OBJECT_TRAIN_EVAL_PLAN.md).
+
+The source contains 144 strict-clean demonstrations, exactly six from every
+family×side×pendant-pose cell. The frozen split is 120/24: five training and one
+validation episode per cell. ACT and PACT use seed 3101, 2,000 epochs, batch 8,
+learning rate `1e-5`, KL weight 10, chunk size 100, hidden size 512, feed-forward
+size 3,200, 7+7 transformer layers, 8 heads, ResNet-18 wrist RGB, state/action
+dimensions 9/8, and no W&B. PACT differs only by the registered proximity-token
+flags; the preflight compares the parsed commands and refuses any other
+difference.
+
+### What a plain Git pull does not provide
+
+A byte-for-byte reproduction needs more than source code. Before handing this
+recipe to another machine, make sure the V10.10 scripts, tests, scene changes,
+and ACT submodule pointer have actually been committed and pushed. The large
+artifacts below are normally not stored in Git and must either be transferred
+separately or regenerated:
+
+- `diagnostics_output/pact_place_v1010_collection/` and the 144 raw HDF5 rows;
+- `assets/act_style_data/pact_place_v1010_144/`, if conversion is to be skipped;
+- `/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt`;
+- `/root/pact_place_v1010_144_pact_vs_act_chunk100_seed3101/`, if evaluating the
+  original checkpoints without retraining;
+- the frozen evaluation manifest and the small upstream seed-audit manifests if
+  the exact manifest hash, rather than just the same 40 evaluation rows, is
+  required.
+
+The reference source revisions are ACT submodule
+`f4f59d7975e7d1d52403df92ee8a789fbc3e14c3` and MolmoSpaces submodule
+`ed045d757fe0ccbd848ba7903773e32ec99f2f29`. Run
+`git submodule update --init --recursive`, then require
+`git -C submodules/act status --short` to print nothing. Training preflight
+fails if the ACT training/model/loader files are dirty.
+
+Reference runtime: Python 3.11.15, PyTorch 2.7.1+cu126, MuJoCo 3.5.0,
+NumPy 2.4.6, h5py 3.16.0, and an NVIDIA A10. Use the same environment when an
+exact checkpoint comparison matters. Fresh retraining on another GPU can be a
+scientific replication, but floating-point nondeterminism means it is not
+guaranteed to reproduce the checkpoint hashes or the exact 40-row counts.
+
+### Required artifact hashes
+
+| artifact | SHA-256 |
+|---|---|
+| frozen proximity encoder | `6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206` |
+| converted 144-episode tree | `69406b77e565049e9070557c010071e8544ef055c6568db6fd4b48d85a783597` |
+| split manifest | `35e5b7085eb2b2e18ec35a3624432bb95b5ec45de9f8012411b06a3ef83352f1` |
+| dataset statistics | `b4f67f412b605ec92641c55a12270b9afb5b22bff8ac219155ee0a4da34acffb` |
+| ACT `policy_best.ckpt` | `b14b51f48e15ef94e761284a0c373cd115f4005fbbd43d2508a4acbb2b5ff154` |
+| PACT `policy_best.ckpt` | `75889ea4332666e812f60190b9f8428a597b138f23523bf68040e8bfc2d3fb87` |
+| evaluation manifest | `35bcc74fa96b5bd6fe8fd161ae0ed3e44892bc38bde0eab6ec31468a316ba614` |
+
+Verify the external encoder before doing any conversion or PACT evaluation:
+
+```bash
+cd /root/prox_learning_pact_remediation
+PY=/root/act_retrain_venv/bin/python
+export MUJOCO_GL=egl
+export PYOPENGL_PLATFORM=egl
+export MLSPACES_ASSETS_DIR="$PWD/assets"
+
+test "$(sha256sum /root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt | cut -d' ' -f1)" = \
+  6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206
+$PY -m unittest tests.test_pact_place_v1010_eval_infrastructure -v
+```
+
+Use a fresh clone or fresh output namespace. The manifests, terminal row
+results, and reports are create-only. Do not delete or overwrite a completed
+run to make room for a retry. Allow about 35 GiB free for collection through
+trajectory-retaining evaluation; the training preflight alone requires 11.5
+GiB of peak space.
+
+### Optional: regenerate the 144 demonstrations
+
+Skip this section when the verified V10.10 collection directory has been
+transferred. From a clean output tree:
+
+```bash
+$PY scripts/run_pact_place_v1010_preflight.py --workers 6
+$PY scripts/run_pact_place_v1010_collect.py --workers 8
+
+$PY - <<'PY'
+import json
+from pathlib import Path
+p = Path("diagnostics_output/pact_place_v1010_collection/closeout.json")
+d = json.loads(p.read_text())
+assert d["quotas_met"] is True
+assert d["accepted_total"] == 144
+assert d["cells_short"] == {}
+print(d["payload_sha256"])
+PY
+```
+
+The reference collection used 313 attempts, took 6.50 hours, and produced six
+accepted rows in each of the 24 cells. Hardware timing is not a gate.
+
+### Recommended command: conversion through final evaluation
+
+Once the collection close-out and encoder exist, this driver verifies the
+source, converts all episodes, computes and verifies `(T,40,32)` frozen
+embeddings, creates the balanced split, trains ACT then PACT, verifies both
+checkpoints, builds the held-out manifest, runs the smoke and full evaluations,
+and finalizes the paired analysis:
+
+```bash
+LOG=/root/pact_place_v1010_repro_logs
+$PY scripts/run_pact_place_v1010_pipeline.py \
+  --log-dir "$LOG" \
+  --workers 8 \
+  --eval-workers 4
+```
+
+The driver may be restarted after a fully completed stage because it skips that
+stage's immutable marker. Do not assume an interrupted evaluation stage is
+automatically resumable; inspect its row artifacts and use a separately named
+output root rather than deleting evidence.
+
+### Training ACT and PACT explicitly
+
+If conversion, embedding verification, and the 120/24 split already exist, run
+the three training commands below. Preflight records the complete parsed ACT
+and PACT commands in `training_preflight.json`; inspect that artifact when an
+exact command line is needed for a bug report.
+
+```bash
+LOG=/root/pact_place_v1010_repro_logs
+mkdir -p "$LOG"
+
+$PY scripts/run_pact_place_v1010_train.py \
+  --stage preflight --log-dir "$LOG"
+$PY scripts/run_pact_place_v1010_train.py \
+  --stage train --log-dir "$LOG"
+$PY scripts/verify_pact_place_v1010_training.py
+```
+
+The hard-coded training root must be absent or empty before preflight:
+`/root/pact_place_v1010_144_pact_vs_act_chunk100_seed3101/`. ACT trains first,
+then its intermediate checkpoints are pruned; PACT trains second. Both retain
+`policy_best.ckpt`, `policy_last.ckpt`, `dataset_stats.pkl`,
+`run_manifest.json`, and `epoch_log.jsonl`.
+
+The reference verification is
+[`diagnostics_output/pact_place_v1010_train_eval/training_verification.json`](diagnostics_output/pact_place_v1010_train_eval/training_verification.json):
+
+| | ACT | PACT |
+|---|---:|---:|
+| epochs | 2,000/2,000 | 2,000/2,000 |
+| best epoch | 1,998 | 1,859 |
+| best validation loss | 0.10621 | 0.10386 |
+| strict reload and offline smoke | pass | pass |
+
+PACT's proximity-consumption check must pass: on the same batch, replacing the
+real embeddings with zeros changed its actions by mean absolute 0.204 and
+maximum absolute 1.852 in the reference run. Validation loss is not the policy
+comparison endpoint.
+
+### Evaluate an existing ACT/PACT checkpoint pair
+
+Put the checkpoints and the shared `dataset_stats.pkl` under the two exact
+training-root directories above, verify their hashes, and run:
+
+```bash
+$PY scripts/build_pact_place_v1010_eval_manifest.py
+
+$PY scripts/run_pact_place_v1010_eval.py \
+  --stage smoke --workers 4 --save-trajectory --h5-only
+
+$PY scripts/run_pact_place_v1010_eval.py \
+  --stage full --workers 4 --save-trajectory --h5-only
+
+$PY scripts/finalize_pact_place_v1010_eval.py
+```
+
+The evaluator hard-caps concurrency at four workers. Each process also forces
+its native BLAS/OpenMP pools to one thread; raising the worker count previously
+exhausted the container's PID/thread limit. `--h5-only` suppresses ffmpeg but
+still retains every `trajectory.h5` and `actions.npz`. The smoke is an
+infrastructure check only and never gates on policy performance. The reference
+smoke took about 37 minutes; the full 80-rollout evaluation took 5.75 hours on
+the A10.
+
+For byte-level evaluation reproduction, use the transferred frozen manifest
+instead of rebuilding it. Rebuilding without the older V10.7–V10.9 seed-audit
+manifests produces the same registered V10.10 row stream but a different audit
+payload and therefore a different manifest hash.
+
+### Reference V10.10 result
+
+The repaired run completed 80/80 rollouts with zero infrastructure failures.
+All 40 ACT/PACT pairs had identical initial observations across all 421 retained
+observation datasets.
+
+| endpoint | ACT | PACT | PACT−ACT | paired 95% CI (pp) | exact McNemar |
+|---|---:|---:|---:|---:|---:|
+| task success | 11/40 | 14/40 | +7.5 | [−10.01, +25.01] | 0.5811 |
+| **collision-free task success** | **7/40** | **10/40** | **+7.5** | **[−7.02, +22.02]** | **0.5078** |
+| strict-clean task success | 7/40 | 10/40 | +7.5 | [−7.02, +22.02] | 0.5078 |
+| clutter-contact episode | 22/40 | 17/40 | −12.5 | [−33.50, +8.50] | 0.3593 |
+| pendant-contact episode | 2/40 | 0/40 | −5.0 | not preregistered | 0.5000 |
+
+This is a directional PACT advantage, not a superiority claim: the registered
+primary interval crosses zero. The verified machine-readable artifacts are
+[`analysis.json`](diagnostics_output/pact_place_v1010_eval_infra_repair_01/analysis.json)
+and
+[`full_run.json`](diagnostics_output/pact_place_v1010_eval_infra_repair_01/full_run.json).
+Their payload hashes are respectively
+`2c09430f581ab2c0f57f434d15f83753ae8563fd1ffeda275478911d61ea1301`
+and `c6c043e597d265dd3ba74c39fbc033724ecec332fc5e7b31df6486cfa8907009`.
+
+Two secondary-reporting caveats do not affect the registered primary endpoint:
+
+- the legacy evaluator did not emit `v109r_funnel`, so `touched=0` and
+  `held=0` in the current `analysis.json` are unavailable values, not real
+  zeros; direct reconstruction from the retained `GraspStateSensor` gives ACT
+  27 touched / 12 held and PACT 28 touched / 20 held;
+- contact summary mode did not retain geom-pair identities, so per-object
+  contact counts cannot be reconstructed from `analysis.json`; only aggregate
+  contact classes and the per-object stability events are valid.
+
+As with V10.9, this exploratory comparison does not reopen V10.7's failed
+Phase-0 gate and does not authorize downstream collection, training, or
+evaluation by itself.
