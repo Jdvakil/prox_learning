@@ -22,6 +22,26 @@ Newest session at the top.
 
 ---
 
+## 2026-08-30 — dataset folder visualizer
+
+- **When:** 2026-08-30 America/Denver. User: folder of h5 → one trajectory/dataset video
+  (MCAP or web), wrist + table RGB, sensors, joint pos/vel, anything else; clone more
+  datasets later; just the script.
+- **Why:** `foxglove_viz.py` is datagen-only (`traj_*` + `_batch_*.mp4`, exo-id glob).
+  ACT `episode_*.hdf5` and HF `rows/*/trajectory.h5` (wrist-only, no `_batch_`) did not
+  load. `visualize_episodes.py` is one-episode RGB + wrong ALOHA joint names, no skin.
+- **What:** `scripts/dataset_viz.py` auto-detects ACT / HF / datagen, concatenates every
+  episode onto one timeline. Writes `dataset.mcap` + generated `foxglove_layout.json`
+  (Foxglove) and `dataset.mp4` + `index.html` + `timeline.json` (browser). Topics: wrist
+  / table RGB, 8×8 skin mosaic from the proximity tensor, optional embeddings, FK `/tf`
+  + `/proximity` cloud, `/joints` q/v/action/skin-min, `/task` attrs. README §4.2.1.
+- **How:** one episode in RAM at a time. Heatmap is numpy turbo mosaic (no matplotlib).
+  Reuses `foxglove_viz` FK / backproject / scene markers. Table cam absent → slate.
+- **Not done:** user runs the commands below. Full 152-ep corridor dump is long; smoke
+  with `--max-episodes 2` first.
+
+---
+
 ## 2026-08-29 — rays default; EGL was 18 min/ep gated
 
 - **When:** 2026-08-29 America/Denver. User: 35 min wait ridiculous.

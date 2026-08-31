@@ -82,6 +82,7 @@ hidden-bar cell did.
 | paste a paper-writing brief | [§8](#8-paper-claims) |
 | know the tensors | [§10](#10-method) |
 | inspect a scene before collecting | [§4.2](#42-live--inspect-scenes) |
+| visualize a cloned h5 folder | [§4.2.1](#421-live--visualize-a-dataset-folder) |
 | free disk | [§16](#16-housekeeping) |
 
 ---
@@ -220,6 +221,50 @@ OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
 Outputs: `experiments_output/default/environment_viz/<Config>/<scene>_house_<id>/sample_00/`.
 Open `gallery.html` after `--all`. Useful switches: `--format png|mp4|both`,
 `--keep-scene-lighting`, `--keep-config-robot`, `--show-sensors`, `--dry-run --all`.
+
+<a id="421-live--visualize-a-dataset-folder"></a>
+### 4.2.1 Live — visualize a dataset folder
+
+`scripts/dataset_viz.py` reads a folder of trajectory HDF5s and writes **one** concatenated
+timeline: Foxglove `.mcap` (3D FK, RGB, skin heatmap, joint plots) plus a tiled `dataset.mp4`
++ `index.html` (wrist / table RGB, 8×8 skin mosaic, qpos / qvel, episode list). Auto-detects
+ACT `episode_*.hdf5`, HuggingFace `rows/*/trajectory.h5`, and datagen `house_*/trajectories*.h5`.
+Missing cameras become a slate (hallway v5 has **no table / exo**). Skin comes from the
+tensor, not the sidecar heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or **66 ms**
+(not ACT's train `DT=0.02`).
+
+Clone another dataset, point `--data` at it, get another visualizer dir.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+
+# list what it found (no write)
+python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 --list
+
+# smoke: first two episodes
+python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 \
+    --out experiments_output/default/dataset_viz/pact_place_corridor_v5_smoke \
+    --max-episodes 2
+
+# full ACT convert (152 eps, ~27 min of video at 15 fps — slow, huge)
+python scripts/dataset_viz.py --data act_style_data/pact_place_corridor_v5 \
+    --out experiments_output/default/dataset_viz/pact_place_corridor_v5
+
+# HF clone (sidecar mp4s, same hallway rows)
+python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
+    --out experiments_output/default/dataset_viz/pact_place_corridor_v5_hf \
+    --max-episodes 2
+
+# datagen run (exo + wrist + FK point cloud)
+python scripts/dataset_viz.py --data assets/datagen/hybrid_gate_bar_check \
+    --out experiments_output/default/dataset_viz/gate_bar_check
+```
+
+Open `index.html` in a browser, or open `dataset.mcap` in [Foxglove](https://app.foxglove.dev)
+(desktop app also fine) and import `foxglove_layout.json` from the same out dir. `--no-mcap` /
+`--no-video` skip one side. `--stride 2` halves cost. `--include-sensor-rgb` pulls the 256²
+mosaic sidecar (large). `foxglove_viz.py` remains the older datagen-only exporter.
 
 <p align="center">
   <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/02_sensor_cones.png">
@@ -1172,12 +1217,14 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `verify_hybrid_skin_sensors.py` | per-sensor QA |
 | `build_hybrid_on_franka_skin.py` | builds `model_hybrid.xml` |
 | `housekeeping.sh` | tiered disk cleanup, dry-run default |
-| `foxglove_viz.py` | h5 → `.mcap` |
+| `dataset_viz.py` | folder of h5 → one MCAP + tiled MP4 + HTML (ACT / HF / datagen) |
+| `foxglove_viz.py` | datagen h5 → `.mcap` (older; prefer `dataset_viz.py`) |
 | `hybrid_viz_lib.py` | shared MuJoCo/EGL helpers |
 | `run_pact_place_eval_chunk100.py` | Amine 40-row place protocol on local ACT/PACT ckpts |
 | `pact_place_eval_chunk100_contract.py` | frozen 40-row scene hashes (vendored) |
 
-Visualizer: `submodules/molmospaces/scripts/datagen/visualize_environment.py`.
+Visualizer: `scripts/dataset_viz.py` for a folder of h5 (MCAP + HTML). Scene inspect:
+`submodules/molmospaces/scripts/datagen/visualize_environment.py`.
 
 ARCHIVE (era over, still imported or historic): `test_and_reconstruct_hybrid.py` (library for
 `figures.py` — do not delete), `analyze_dataset.py` / `dataset_probes.py` (29-sensor),
@@ -1244,7 +1291,8 @@ label** on obstacle runs (always `"bar"`).
 ACT hdf5: `episode_<g>.hdf5` with `/action (T, 8)`, `/observations/qpos (T, 9)`, images 240×320,
 optional `/observations/proximity (T, 40, 8, 8)` raw metres, stacked in
 `HYBRID_SKIN_SENSOR_ORDER`. Hallway convert writes wrist only. Dataloader reads **one random
-frame** per sample.
+frame** per sample. Dump a whole folder to one video / MCAP with `scripts/dataset_viz.py`
+([§4.2.1](#421-live--visualize-a-dataset-folder)).
 
 ---
 
