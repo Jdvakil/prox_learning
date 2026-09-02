@@ -1,0 +1,35 @@
+{
+  "added_camera": "exo_camera_1",
+  "base_ledger": "diagnostics_output/pact_place_v1010_collection/ledger.jsonl",
+  "base_ledger_sha256": "71b60af6025793c553bbf5f4d6627e2dfbf4637eb23fe31259f5a665a299d120",
+  "camera_system": "FrankaSkinHybridCameraSystem",
+  "created_utc": "2026-09-02T01:34:50Z",
+  "environment_version": "pact_place_corridor_v10_10_four_object",
+  "payload_sha256": "25686b1de88adf6eff8b7884a6480470eb3e7bb8d34d4eeec4e00107c118df40",
+  "purpose": "ten V10.10 demonstrations for collaborator camera-schema validation",
+  "required_calibration_keys": [
+    "extrinsic_cv",
+    "cam2world_gl",
+    "intrinsic_cv"
+  ],
+  "required_h5_group": "traj_0/obs/sensor_param/exo_camera_1",
+  "required_rgb_mp4": "episode_*_exo_camera_1.mp4",
+  "sampler_class": "PactPlaceCorridorV1010FourObjectSampler",
+  "schema_version": "pact_place_v1010_tablecam_validation10_v1",
+  "script": "scripts/run_pact_place_v1010_tablecam_validation.py",
+  "script_sha256": "8c8e3cd5814568ab0cc6fea072bf05d0e5d66ff3f595b27e6139e72813fd5d3f",
+  "target_cells": [
+    "F0_target_side_stagger|left|neg5",
+    "F0_target_side_stagger|right|center",
+    "F1_inner_panel_stagger|left|center",
+    "F1_inner_panel_stagger|right|pos5",
+    "F2_outer_panel_stagger|left|pos5",
+    "F2_outer_panel_stagger|right|neg5",
+    "F3_aperture_side_stagger|left|neg5",
+    "F3_aperture_side_stagger|right|center",
+    "F0_target_side_stagger|left|pos5",
+    "F1_inner_panel_stagger|right|neg5"
+  ],
+  "target_successes": 10,
+  "training_corpus_modified": false
+}

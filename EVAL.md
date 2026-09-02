@@ -1140,3 +1140,34 @@ valid but per-object contact attribution is unavailable.
 
 Reference payloads: full run `c6c043e597d265dd3ba74c39fbc033724ecec332fc5e7b31df6486cfa8907009`;
 analysis `2c09430f581ab2c0f57f434d15f83753ae8563fd1ffeda275478911d61ea1301`.
+
+# V10.11 mixed mesh/primitive clutter validation
+
+V10.11 is environment validation only. It uses three unchanged mesh clutter
+assets and three runtime primitives, including two bounded near-target draws;
+no cup/object dimensions or scene XML were edited.
+
+| stage | result |
+|---|---:|
+| focused implementation/regression sweep | 102 tests passed |
+| registered preflight | 96/96 passed |
+| review generation | 12/12 complete, 0 sampling/infrastructure failures |
+| deterministic packet selection | 3 strict-clean + 3 natural failures |
+| decodable review MP4s / matching reconstructed layouts | 6/6 / 6/6 |
+
+Preflight payload:
+`1fbeafb185643bb530b5b9d725dd0df43526951701932f170f10df65bb24861c`.
+Review-manifest payload:
+`a742c7b4222f3370393c3da6887d3b027c1258a2a342f0396cf34407e9c2440b`.
+
+The review set contains three clean task successes, one task success made
+non-clean by clutter contact, one task success with a soap-bottle stability
+event, and one task failure with a primitive-cylinder stability event. The packet is ready for
+owner visual review. All collection, conversion, Phase-0, training, and
+evaluation authorizations remain false.
+
+The appearance claim is deliberately narrow: the 40-sensor skin has no
+link-7/hand/gripper coverage, and the frozen V9.5 replay places the inbound
+vessel outside every sensor cone in 7/8 variants. See
+`docs/PACT_PLACE_SKIN_VISIBILITY.md` for the artifact-backed resolution and
+coverage limits.

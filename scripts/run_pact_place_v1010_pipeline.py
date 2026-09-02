@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from pact_place_v1010_contract import (  # noqa: E402
     COLLECTION_ROOT, CONVERTED_DATASET_ROOT, ENCODER_SHA256, EVAL_ROOT,
-    TARGET_SUCCESSES, WORK_ROOT,
+    TARGET_SUCCESSES, TRAINING_ROOT, WORK_ROOT,
 )
 
 ENCODER = "/root/pact_frontend_screen_artifacts/encoder_v1/embedding_encoder_frozen.pt"
@@ -114,9 +114,12 @@ def main() -> int:
         ("06_train_preflight", [PY, "scripts/run_pact_place_v1010_train.py",
                                 "--stage", "preflight", "--log-dir", str(scratch)],
          work / "training_preflight.json"),
+        # training_timing.json is written only after both arms finish, so it is
+        # the correct completion marker; without it a resumed pipeline re-runs
+        # training and is refused by the populated-directory guard.
         ("07_train", [PY, "scripts/run_pact_place_v1010_train.py",
                       "--stage", "train", "--log-dir", str(scratch)],
-         None),
+         Path(TRAINING_ROOT) / "training_timing.json"),
         ("08_train_verify", [PY, "scripts/verify_pact_place_v1010_training.py"],
          work / "training_verification.json"),
         ("09_eval_manifest", [PY, "scripts/build_pact_place_v1010_eval_manifest.py"],

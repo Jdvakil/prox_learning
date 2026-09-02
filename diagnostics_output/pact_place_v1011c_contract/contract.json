@@ -1,0 +1,96 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "composition": {
+    "active_slots": [
+      "01",
+      "03",
+      "04",
+      "06",
+      "08",
+      "09"
+    ],
+    "identity_sha256": "8df1150e315eaba592c2db47db78d3f6e384ae039512e2808966ac861ef45015",
+    "mesh_slots": [
+      "03",
+      "04",
+      "06"
+    ],
+    "primitive_slots": [
+      "01",
+      "08",
+      "09"
+    ]
+  },
+  "eligible_for_human_review": false,
+  "environment_version": "pact_place_corridor_v10_11c_33pct_taller_primitives",
+  "height_only_amendment": {
+    "cup_and_target_dimensions_unchanged": true,
+    "from_m": {
+      "01": 0.245,
+      "08": 0.18,
+      "09": 0.18
+    },
+    "mesh_objects_unchanged": true,
+    "multiplier": 1.33,
+    "to_m": {
+      "01": 0.32585000000000003,
+      "08": 0.2394,
+      "09": 0.2394
+    },
+    "xy_footprints_unchanged": true
+  },
+  "human_approval_present": false,
+  "parent": {
+    "contract_payload_sha256": "ea6cb25a0f697cd5379cd9f23f26309db03d7ac25c7fb44b1fc8f58f1f1f0eec",
+    "contract_version": "pact_place_v1011b_tall_primitive_validation_v1",
+    "environment_version": "pact_place_corridor_v10_11b_tall_primitives"
+  },
+  "payload_sha256": "4ab0b7d230fe819fe5bfac4a9af1199df867bfd86be79847baf7b1b49c583fc8",
+  "phase0_passed": false,
+  "plan": "docs/PACT_PLACE_V1011C_33PCT_TALLER_VALIDATION_PLAN.md",
+  "preflight": {
+    "cells": 24,
+    "replicates": 4,
+    "requires_all": true,
+    "rows": 96
+  },
+  "review": {
+    "clean_successes": 3,
+    "failures": 3,
+    "selection": "first three of each in frozen cell/attempt order"
+  },
+  "sampler_class": "PactPlaceCorridorV1011C33PctTallerPrimitiveSampler",
+  "schema_version": "pact_place_v1011c_33pct_taller_primitive_validation_v1",
+  "scope": "height_only_successor_through_owner_review",
+  "streams": {
+    "disjoint": true,
+    "historical_master_seeds": [
+      2026082101,
+      2026082901,
+      2026082902,
+      2026083001,
+      2026101001,
+      2026101002,
+      2026101003,
+      2026101101,
+      2026101102,
+      2026101111,
+      2026101112
+    ],
+    "new_master_seeds": [
+      2026101121,
+      2026101122
+    ],
+    "overlap": []
+  },
+  "visibility": {
+    "does_not_hardcode_visibility": true,
+    "paired_v1011b_and_v1011c_at_identical_robot_qpos": true,
+    "raw_production_proximity_path": true
+  }
+}

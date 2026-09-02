@@ -1,0 +1,147 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "composition": {
+    "active_slots": [
+      "01",
+      "03",
+      "04",
+      "06",
+      "08",
+      "09"
+    ],
+    "identity_sha256": "1067059a2fd06660a7261753f1e5296462cc485e49331302f0aadd9e42a4ca0d",
+    "inactive_slots": [
+      "00",
+      "02",
+      "05",
+      "07"
+    ],
+    "mesh_slots": [
+      "03",
+      "04",
+      "06"
+    ],
+    "near_target_slots": [
+      "08",
+      "09"
+    ],
+    "primitive_slots": [
+      "01",
+      "08",
+      "09"
+    ],
+    "primitive_specs": {
+      "01": {
+        "category": "vase",
+        "dimensions_m": [
+          0.09,
+          0.09,
+          0.22
+        ],
+        "primitive": {
+          "density_kg_m3": 1000.0,
+          "height_m": 0.22,
+          "radius_m": 0.045,
+          "rgba": [
+            0.78,
+            0.56,
+            0.28,
+            1.0
+          ],
+          "shape": "cylinder"
+        },
+        "role": "outbound_vessel",
+        "uid": "pact_primitive_cylinder_01"
+      },
+      "08": {
+        "category": "primitive_cylinder",
+        "dimensions_m": [
+          0.07,
+          0.07,
+          0.1
+        ],
+        "primitive": {
+          "density_kg_m3": 1000.0,
+          "height_m": 0.1,
+          "radius_m": 0.035,
+          "rgba": [
+            0.26,
+            0.57,
+            0.82,
+            1.0
+          ],
+          "shape": "cylinder"
+        },
+        "role": "decor",
+        "uid": "pact_primitive_cylinder_08"
+      },
+      "09": {
+        "category": "primitive_box",
+        "dimensions_m": [
+          0.07,
+          0.07,
+          0.1
+        ],
+        "primitive": {
+          "density_kg_m3": 1000.0,
+          "rgba": [
+            0.62,
+            0.36,
+            0.72,
+            1.0
+          ],
+          "shape": "box",
+          "size_m": [
+            0.07,
+            0.07,
+            0.1
+          ]
+        },
+        "role": "decor",
+        "uid": "pact_primitive_box_09"
+      }
+    }
+  },
+  "eligible_for_human_review": false,
+  "environment_version": "pact_place_corridor_v10_11_mixed_clutter",
+  "human_approval_present": false,
+  "payload_sha256": "0bea3cedf3471adc361839eb1b4376608e0a41431fdf6f7e21636ea5db5b80ad",
+  "phase0_passed": false,
+  "plan": "docs/PACT_PLACE_V1011_MIXED_CLUTTER_VALIDATION_PLAN.md",
+  "preflight": {
+    "cells": 24,
+    "replicates": 4,
+    "requires_all": true,
+    "rows": 96
+  },
+  "review": {
+    "clean_successes": 3,
+    "failures": 3,
+    "selection": "first three of each in frozen cell/attempt order"
+  },
+  "sampler_class": "PactPlaceCorridorV1011MixedClutterSampler",
+  "schema_version": "pact_place_v1011_mixed_clutter_validation_v1",
+  "scope": "environment_validation_only_through_owner_review",
+  "streams": {
+    "disjoint": true,
+    "historical_master_seeds": [
+      2026082101,
+      2026082901,
+      2026082902,
+      2026083001,
+      2026101001,
+      2026101002,
+      2026101003
+    ],
+    "new_master_seeds": [
+      2026101101,
+      2026101102
+    ],
+    "overlap": []
+  }
+}

@@ -222,3 +222,77 @@ No downstream stage reads it, and a test asserts that.
 No Phase-0 row, no packet, no video, no `human_approval.json`, no collection,
 conversion, training or evaluation. `pact_place_v107_review/` does not exist.
 No V10.4, V10.5 or V10.6 artifact was modified.
+
+## Phase-0 gate — built, frozen, and blocked on owner approval
+
+`scripts/run_pact_place_v107_phase0.py` did not exist until an owner approval
+was requested; it is now built and frozen. It runs the 24-row Cartesian
+manifest (4 families × 2 sides × 3 poses) on the certified static scenes with
+unchanged policy, routes, speeds, thresholds, seeds and failure definitions.
+
+Pass requires **all** of: ≥16/24 strict-clean, ≥7/12 per side, ≥4/8 per pose,
+≥2/4 per `side × pose`, **zero** robot/target pendant contact, and no incomplete
+row. No cherry-picking, replacement row, threshold relaxation or scientific
+retry is possible: the manifest is written before row 0 and the output root
+refuses to exist twice. A pass sets only `phase0_passed: true`; collection,
+conversion, training and evaluation stay false.
+
+**It is blocked, by design, on an owner-authored `human_approval.json`.** The
+verifier recomputes every binding from file bytes and refuses a record that is
+missing, stale, partial, has the wrong video inventory, or carries
+`created_by_agent: true`. The agent does not write that file: an approval this
+program authored would either be rejected here for being agent-created, or would
+have to carry a false `created_by_agent: false`.
+
+`--print-approval-template` emits the exact record, with all bindings and the
+six MP4 hashes filled in.
+
+### Standing caution recorded before any attempt
+
+The production pool measured **21/48 = 43.8%**, Wilson 95% [30.7%, 57.7%]. The
+Phase-0 bar is 16/24 = **66.7%** — the same rate, same environment, same policy.
+The 32/48 pool floor was registered precisely as the pre-check for this bar, and
+it was not met. Phase 0 executes exactly once.
+
+### Phase-0 runner repairs (before any approval was requested)
+
+The first version of the gate shipped with defects. All are repaired and
+covered by dedicated tests; the gate has still never been executed.
+
+1. **The inherited live-risk gate was missing.** V10.5 and V10.6 both register
+   `PHASE0_RISK_CONFIRM_MAX_M = 0.035` and require a completed row within it per
+   side *and* per pose; the first V10.7 runner dropped it entirely, so a gate
+   could have passed on rows that never came near the pendant. It is now
+   imported from the V10.6 contract — not redefined — reported as
+   `risk_witness_by_side` / `risk_witness_by_pose` with the binding row, and its
+   failures appear in `limiting_predicates`. An infrastructure row cannot supply
+   a witness.
+2. **Worker exceptions could abort the run.** Every `future.result()` is now
+   wrapped; a raising worker becomes an incomplete **infrastructure failure**
+   against its official row (`replaced: false`, `retried: false`) with its
+   traceback recorded. The whole execution sits in `try/finally`, and rows that
+   never reported are backfilled, so `gate.json` is always written and the
+   output directory is never left without a close-out.
+3. **Integrity was checked once, loosely.** `integrity_report()` now runs
+   **pre-run and post-run** over the review packet and its six MP4 hashes, the
+   specification (29 files; code/data drift fatal, plan-document drift recorded
+   separately), the three scenes, the runner implementation digest, the 24-row
+   manifest (count, unique episode IDs, disjointness from the pool, balance),
+   the thresholds, and the approval bindings. A pre-run failure stops before the
+   output root is created; a post-run failure blocks a pass.
+4. **Duplicate results** are detected and fail the gate.
+5. **Distributions** of episode length and commanded/realized TCP speed are
+   computed from the retained per-frame trajectories and recorded.
+
+`tests/test_pact_place_v107_phase0.py` adds **50** tests over approval
+rejection, every gate predicate, risk confirmation, pendant contact,
+incomplete/missing/duplicate results, worker exceptions, one-shot output
+behaviour, authorization ordering, and immutable artifact creation.
+
+**Frozen gate implementation digest:**
+`37ea3f76739c44a10ecfce94bdea3c6bc3470f82019a7cd994ec0afb14050cee`.
+
+An earlier report claimed a copy of the approval template sat in the session
+scratchpad. That path is ephemeral and not owner-accessible, and the template
+went stale the moment the runner was repaired; the file has been deleted and the
+template must be generated fresh from the frozen runner.

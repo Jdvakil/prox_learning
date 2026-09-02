@@ -2588,3 +2588,88 @@ Two secondary-reporting caveats do not affect the registered primary endpoint:
 As with V10.9, this exploratory comparison does not reopen V10.7's failed
 Phase-0 gate and does not authorize downstream collection, training, or
 evaluation by itself.
+
+## V10.11 mixed mesh/primitive clutter: ready for owner review
+
+V10.11 activates six table-clutter bodies: three unchanged mesh assets and
+three runtime MuJoCo primitives. Two primitives are sampled near the target in
+a bounded, target-relative annular sector. The cup and all existing object
+dimensions, the certified pendant scenes, routes, and 40-sensor suite are
+unchanged.
+
+The registered preflight passed **96/96** layouts, including containment,
+settling, exact compiled primitive geometry, initial contacts, corridor
+metrics, and full expert-route/IK construction. The review generator then
+completed 12/12 rows without infrastructure or sampling failures and published
+the first **3 strict-clean successes + 3 natural failures** in frozen role
+order. All six MP4s decode and their reconstructed layouts match the executed
+episodes.
+
+- executed plan and close-out:
+  [`docs/PACT_PLACE_V1011_MIXED_CLUTTER_VALIDATION_PLAN.md`](docs/PACT_PLACE_V1011_MIXED_CLUTTER_VALIDATION_PLAN.md)
+- review instructions and clips:
+  [`diagnostics_output/pact_place_v1011_review/REVIEW.md`](diagnostics_output/pact_place_v1011_review/REVIEW.md)
+- proximity-visibility limits:
+  [`docs/PACT_PLACE_SKIN_VISIBILITY.md`](docs/PACT_PLACE_SKIN_VISIBILITY.md)
+
+Status: **stopped for owner review**. Every downstream authorization remains
+false; this validation neither starts nor authorizes collection or training.
+
+## V10.11b / V10.11c: taller primitives
+
+V10.11b raises the three primitive heights while holding their XY footprints
+byte-identical; V10.11c scales all three again by 1.33, to slot 01 0.32585 m
+and slots 08/09 0.23940 m. Both are height-only successors: the palette, mesh
+assets, cup, certified scenes, routes and 40-sensor suite are unchanged, and
+each contract asserts the XY dimensions and mesh slots did not move. V10.11c
+raises only the inherited 0.25 m vessel-height ceiling it needs; every older
+sampler keeps `PactPlaceCorridorV9Sampler`'s original maximum.
+
+Both passed their registered 96/96 preflight and published a 3-success /
+3-failure owner-review packet.
+
+## V10.11d: every clutter position randomized
+
+V10.11c is settled in *what* the clutter is but not in *where* it stands.
+Measured across all eight family/side combinations of the frozen V9.5 layout,
+`Plate_10` sits at exactly `(0.980, -0.220)` and `Plate_22` at
+`(1.090, +0.300)` **in every one**, while the two vessels move only by the
+inherited millimetre-scale jitter.
+
+V10.11d keeps the palette, primitive shapes, heights and clutter-identity hash
+byte-identical to V10.11c — the contract asserts the identity hash matches —
+and redraws the centres of slots 01/03/04/06 per episode. Slots 08/09 keep
+their inherited target-relative annulus and are sampled last, so they see the
+final occupancy.
+
+Proposal boxes bound the draw; they do not decide admissibility. Every
+candidate must clear the bench shell and every already-placed body, and slot 01
+must additionally still satisfy `route_blocker_metrics` and
+`panel_corridor_metrics`. Two bounds are measured rather than chosen:
+
+- Slot 01's x floor is 0.650, not the wider span the route predicates alone
+  allow. The two vessels need 98 mm of x separation and slot 06 cannot go below
+  0.545 without leaving the shell, so a lower floor starves slot 06: over 800
+  synthetic layouts a 0.600 floor placed all four slots in 68.5% of draws
+  against 100% at 0.650.
+- No target-clearance rule is applied to these four slots. In a measured
+  V10.11c row the cup AABB overlaps slot 01's in all three axes — 55 mm in x,
+  15 mm in y — with zero forbidden contact, because the meshes do not touch, so
+  any conservative separation rule would reject V10.11c's own working layout.
+  Runtime settling and the initial-contact check stay the authority.
+
+Preflight passed **96/96** with 96/96 distinct positions in all six slots; the
+plates went from a single frozen coordinate each to roughly 200 mm of lateral
+spread. The review generator completed 12/12 rows with zero sampling and zero
+infrastructure failures.
+
+Clean-success rate is **3/12 (25%), identical to V10.11c**, and slot 01 being
+knocked during pregrasp — the dominant failure — occurs exactly 4 times in
+both, so it is inherited rather than caused by randomization. Task success was
+5/12 against V10.11c's 3/12. At 25% clean, collecting 100 episodes needs
+roughly 400 attempts; that is V10.11c's cost too, not a new one.
+
+- plan: [`docs/PACT_PLACE_V1011D_RANDOMIZED_CLUTTER_VALIDATION_PLAN.md`](docs/PACT_PLACE_V1011D_RANDOMIZED_CLUTTER_VALIDATION_PLAN.md)
+- review: [`diagnostics_output/pact_place_v1011d_review/REVIEW.md`](diagnostics_output/pact_place_v1011d_review/REVIEW.md)
+
+Status: **stopped for owner review.** Every downstream authorization is false.

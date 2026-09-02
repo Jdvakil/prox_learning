@@ -242,6 +242,10 @@ def _make_config(
         PactPlaceCorridorV104Sampler,
         PactPlaceCorridorV105Sampler,
         PactPlaceCorridorV106Sampler,
+        PactPlaceCorridorV1011MixedClutterSampler,
+        PactPlaceCorridorV1011BTallPrimitiveSampler,
+        PactPlaceCorridorV1011C33PctTallerPrimitiveSampler,
+        PactPlaceCorridorV1011DRandomizedLayoutSampler,
     )
 
     config = FrankaSkinPACTCollisionCorridorConfig(
@@ -251,7 +255,11 @@ def _make_config(
     config.task_type = "pick_and_place"
     config.task_horizon = 900
     if sampler_class in ("PactPlaceCorridorV106Sampler",
-                         "PactPlaceCorridorV1010FourObjectSampler"):
+                         "PactPlaceCorridorV1010FourObjectSampler",
+                         "PactPlaceCorridorV1011MixedClutterSampler",
+                         "PactPlaceCorridorV1011BTallPrimitiveSampler",
+                         "PactPlaceCorridorV1011C33PctTallerPrimitiveSampler",
+                         "PactPlaceCorridorV1011DRandomizedLayoutSampler"):
         # V10.10 is the V10.6 lane with four clutter slots parked, so it takes
         # the same registered horizon. Omitting it here left V10.10 on the
         # generic 900-step budget.
@@ -278,7 +286,15 @@ def _make_config(
         MOLMO
         / "molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v1.xml"
     )
-    if sampler_class == "PactPlaceCorridorV1010FourObjectSampler":
+    if sampler_class == "PactPlaceCorridorV1011DRandomizedLayoutSampler":
+        sampler_cls = PactPlaceCorridorV1011DRandomizedLayoutSampler
+    elif sampler_class == "PactPlaceCorridorV1011C33PctTallerPrimitiveSampler":
+        sampler_cls = PactPlaceCorridorV1011C33PctTallerPrimitiveSampler
+    elif sampler_class == "PactPlaceCorridorV1011BTallPrimitiveSampler":
+        sampler_cls = PactPlaceCorridorV1011BTallPrimitiveSampler
+    elif sampler_class == "PactPlaceCorridorV1011MixedClutterSampler":
+        sampler_cls = PactPlaceCorridorV1011MixedClutterSampler
+    elif sampler_class == "PactPlaceCorridorV1010FourObjectSampler":
         from molmo_spaces.tasks.enclosure_reach import (
             PactPlaceCorridorV1010FourObjectSampler,
         )

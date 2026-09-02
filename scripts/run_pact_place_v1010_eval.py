@@ -156,6 +156,15 @@ def subprocess_environment(*, h5_only: bool) -> dict[str, str]:
     environment.setdefault("PYTHONUNBUFFERED", "1")
     environment.setdefault("MLSPACES_ASSETS_DIR", str(ROOT / "assets"))
     environment.setdefault("PACT_CONTACT_AUDIT_SUMMARY_ONLY", "1")
+    # Pin every math-library thread pool, as the V10.8 collector does. Without
+    # this each rollout lets OpenMP size itself to the 128 visible CPUs, and a
+    # handful of concurrent rollouts exhaust the cgroup's 3840-PID budget:
+    # "libgomp: Thread creation failed: Resource temporarily unavailable",
+    # followed by CUDA failures on the survivors.
+    for _name, _value in (("OPENBLAS_NUM_THREADS", "1"), ("OMP_NUM_THREADS", "1"),
+                          ("MKL_NUM_THREADS", "1"), ("NUMEXPR_NUM_THREADS", "1"),
+                          ("VECLIB_MAXIMUM_THREADS", "1")):
+        environment[_name] = _value
     if h5_only:
         environment["PACT_V109_TRAJECTORY_H5_ONLY"] = "1"
     else:
