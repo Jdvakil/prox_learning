@@ -33,6 +33,8 @@ that mirrors the dataset path with the <repo>/data prefix removed:
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
       --each --no-mcap --stride 2
+  python scripts/dataset_viz.py --dashboard
+  python scripts/dataset_viz.py --serve
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
   python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
 """
@@ -40,12 +42,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import cv2
@@ -711,77 +716,442 @@ def episode_gaps(ep: Episode, *, has_fk: bool) -> list[str]:
     return gaps
 
 
-_AUDIT_HTML = """<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>dataset audit</title>
+_AUDIT_HTML = r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>dataset viz</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
-body { background:#111; color:#ddd; font:14px/1.4 system-ui,sans-serif; margin:24px; }
-a { color:#8cf; }
-table { border-collapse:collapse; width:100%; }
-th, td { border-bottom:1px solid #333; padding:8px 10px; text-align:left; vertical-align:top; }
-th { color:#aaa; font-weight:600; }
-.gap { color:#f6a; }
-.ok { color:#8c8; }
-video { width:320px; background:#000; }
-.slug { font-family:ui-monospace,monospace; font-size:12px; }
-</style></head><body>
-<h1>dataset audit</h1>
-<p>One row per unique dataset. Each dataset holds one short clip per episode, filed under
-episodes/&lt;trajectory type&gt;/; the preview below is its first clip. Right panel is live prox 3D.</p>
-<p>n=%%N%% unique &nbsp; skipped dups=%%NDUP%%</p>
-<table>
-<thead><tr><th>video</th><th>dataset</th><th>eps</th><th>cams / prox</th><th>gaps</th></tr></thead>
-<tbody>
-%%ROWS%%
-</tbody></table>
-</body></html>
+:root { color-scheme: dark; --bg:#111; --panel:#181818; --line:#2a2a2a; --txt:#ddd; --mut:#888; --acc:#8ab4ff; --ok:#7dce9a; --bad:#f6a; }
+* { box-sizing: border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--txt); font:13px/1.4 ui-sans-serif, system-ui, sans-serif; }
+a { color:var(--acc); }
+header { display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:10px 14px; border-bottom:1px solid var(--line); background:#161616; }
+h1 { font-size:15px; margin:0; font-weight:600; }
+.kpis { display:flex; gap:14px; color:var(--mut); font-variant-numeric: tabular-nums; }
+.kpis b { color:var(--txt); font-weight:600; }
+input, select { background:#222; color:var(--txt); border:1px solid #333; padding:4px 8px; }
+label.chk { color:var(--mut); }
+#app { display:grid; grid-template-columns: 320px minmax(0,1fr); height: calc(100% - 48px); }
+#list { overflow:auto; border-right:1px solid var(--line); }
+.row { padding:8px 12px; border-bottom:1px solid var(--line); cursor:pointer; }
+.row:hover { background:#1e1e1e; }
+.row.on { background:#1c2a38; }
+.row .slug { font:12px ui-monospace,monospace; word-break:break-all; }
+.row .meta { color:var(--mut); font-size:11px; margin-top:2px; }
+.chip { display:inline-block; padding:0 6px; margin:1px 2px 0 0; border:1px solid #333; font-size:11px; color:#bbb; }
+.chip.gap { color:var(--bad); border-color:#633; }
+.chip.ok { color:var(--ok); border-color:#364; }
+.meta { color:var(--mut); font-size:11px; }
+#main { overflow:auto; padding:12px; display:flex; flex-direction:column; gap:10px; }
+#stats { display:flex; flex-wrap:wrap; gap:8px; }
+.card { background:var(--panel); border:1px solid var(--line); padding:8px 10px; min-width:110px; }
+.card .l { color:var(--mut); font-size:11px; }
+.card .v { font-size:16px; font-variant-numeric: tabular-nums; }
+.split { display:grid; grid-template-columns: minmax(0,1.6fr) 280px; gap:10px; min-height: 320px; }
+video { width:100%; background:#000; max-height: 480px; }
+#eps { overflow:auto; max-height: 480px; background:var(--panel); border:1px solid var(--line); }
+#eps .grp { position:sticky; top:0; background:#223040; color:#9cf; font-size:12px; font-weight:600; padding:4px 8px; }
+#eps button { display:block; width:100%; text-align:left; background:none; border:0; color:#ccc; padding:4px 8px; cursor:pointer; font:inherit; }
+#eps button:hover, #eps button.active { background:#2a3a4a; color:#fff; }
+.plot { height:200px; }
+#msg { color:var(--mut); padding:24px; }
+#src { color:var(--mut); font:11px ui-monospace,monospace; word-break:break-all; }
+</style>
+</head>
+<body>
+<header>
+  <h1>dataset viz</h1>
+  <div class="kpis" id="kpis">loading…</div>
+  <input id="q" placeholder="filter slug / group / path" size="28"/>
+  <select id="kind"><option value="all">all kinds</option></select>
+  <label class="chk"><input type="checkbox" id="gaps"/> gaps only</label>
+  <span class="kpis" id="poll"></span>
+</header>
+<div id="app">
+  <div id="list"></div>
+  <div id="main"><div id="msg">pick a dataset</div></div>
+</div>
+<script type="application/json" id="bootstrap">%%BOOTSTRAP%%</script>
+<script>
+const POLL_MS = 4000;
+let cat = {rows:[]};
+let sel = null, tl = null, cur = null, cache = {};
+const $ = id => document.getElementById(id);
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => (
+    {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]
+  ));
+}
+
+function fmt(n, d) { return (n==null || n!==n) ? "—" : Number(n).toFixed(d); }
+function vidUrl(r, ep) {
+  if (ep && ep.video) return r.slug + "/" + ep.video;
+  if (r.video) return r.slug + "/" + r.video;
+  return r.slug + "/dataset.mp4";
+}
+
+function renderHeader() {
+  const rows = cat.rows || [];
+  const nEps = rows.reduce((s,r)=>s+(r.n_eps_exported||0),0);
+  const nVid = rows.reduce((s,r)=>s+(r.n_videos||0),0);
+  const nGap = rows.filter(r => (r.gaps||[]).length).length;
+  $("kpis").innerHTML =
+    `<span><b>${rows.length}</b> datasets</span>` +
+    `<span><b>${nEps}</b> eps</span>` +
+    `<span><b>${nVid}</b> clips</span>` +
+    `<span><b>${nGap}</b> with gaps</span>` +
+    (cat.by_kind ? `<span>${Object.entries(cat.by_kind).map(([k,n])=>k+"="+n).join(" · ")}</span>` : "");
+  const kinds = [...new Set(rows.map(r => r.kind).filter(Boolean))].sort();
+  const k = $("kind");
+  const cur = k.value;
+  k.innerHTML = '<option value="all">all kinds</option>' +
+    kinds.map(x => `<option value="${x}">${x}</option>`).join("");
+  if ([...k.options].some(o => o.value===cur)) k.value = cur;
+}
+
+function filtered() {
+  const q = $("q").value.toLowerCase();
+  const kind = $("kind").value;
+  const gapOnly = $("gaps").checked;
+  return (cat.rows||[]).filter(r => {
+    if (kind !== "all" && r.kind !== kind) return false;
+    if (gapOnly && !(r.gaps||[]).length) return false;
+    if (!q) return true;
+    const hay = [r.slug, r.src, r.kind, ...(r.groups||[]), ...(r.cams||[])].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function renderList() {
+  const rows = filtered();
+  $("list").innerHTML = rows.map(r => {
+    const on = sel && r.slug === sel.slug ? " on" : "";
+    const gaps = (r.gaps||[]).map(g => `<span class="chip gap">${g}</span>`).join("");
+    const gr = (r.groups||[]).slice(0,4).map(g => `<span class="chip">${g}</span>`).join("");
+    return `<div class="row${on}" data-slug="${esc(r.slug)}">
+      <div class="slug">${esc(r.slug)}</div>
+      <div class="meta">${r.kind||"?"} · ${r.n_eps_exported||0}/${r.n_eps_total||"?"} eps · ${r.n_videos||0} clips
+        ${r.has_prox ? "· prox" : ""} ${r.has_wrist?"· wrist":""} ${r.has_table?"· table":""}</div>
+      <div>${gr}${gaps || (r.has_prox && r.has_wrist ? '<span class="chip ok">ok</span>' : "")}</div>
+    </div>`;
+  }).join("") || `<div class="meta" style="padding:12px">no rows</div>`;
+  $("list").querySelectorAll(".row").forEach(el => {
+    el.onclick = () => select(cat.rows.find(x => x.slug === el.dataset.slug));
+  });
+}
+
+function cards(r, tlo) {
+  const items = [
+    ["kind", r.kind],
+    ["exported", `${r.n_eps_exported||0} / ${r.n_eps_total||"?"}`],
+    ["skipped", r.n_eps_skipped||0],
+    ["clips", r.n_videos||0],
+    ["duration", fmt(r.duration_s,1)+" s"],
+    ["stride", r.stride],
+    ["prox", r.has_prox ? (r.prox_shape||[]).join("×") : "none"],
+    ["wrist", r.has_wrist ? "yes" : "no"],
+    ["table", r.has_table ? "yes" : "no"],
+    ["FK", r.has_fk ? "yes" : "no"],
+  ];
+  if (tlo) {
+    items.push(["frames", tlo.n_frames], ["dt", fmt(tlo.dt,3)+" s"]);
+  }
+  if (r.skin_min_min != null) items.push(["skin min", fmt(r.skin_min_min,3)+" m"]);
+  return items.map(([l,v]) => `<div class="card"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+}
+
+function renderMain() {
+  const r = sel;
+  if (!r) { $("main").innerHTML = '<div id="msg">pick a dataset</div>'; return; }
+  const gaps = (r.gaps||[]).map(g => `<span class="chip gap">${g}</span>`).join("") || '<span class="chip ok">no gaps</span>';
+  $("main").innerHTML = `
+    <div id="stats">${cards(r, tl)}</div>
+    <div>${gaps} ${(r.groups||[]).map(g=>`<span class="chip">${esc(g)}</span>`).join("")}
+      ${(r.cams||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join("")}
+      <a href="${esc(r.slug)}/index.html">per-dataset html</a></div>
+    <div class="split">
+      <div>
+        <video id="v" controls preload="none"></video>
+        <div class="meta" id="hud"></div>
+      </div>
+      <div id="eps"></div>
+    </div>
+    <div id="pq" class="plot"></div>
+    <div id="pv" class="plot"></div>
+    <div id="ps" class="plot"></div>
+    <div id="src">${esc(r.src||"")}</div>`;
+  fillEpisodes();
+  drawPlots();
+}
+
+function fillEpisodes() {
+  const box = $("eps");
+  if (!box) return;
+  box.innerHTML = "";
+  const eps = (tl && tl.episodes) || [];
+  if (!eps.length) {
+    box.innerHTML = '<div class="meta" style="padding:8px">no episode list — open after viz finishes</div>';
+    const v = $("v");
+    if (sel.video) { v.src = vidUrl(sel); }
+    return;
+  }
+  const groups = new Map();
+  eps.forEach(e => {
+    const g = e.group || "all";
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(e);
+  });
+  groups.forEach((list, g) => {
+    const h = document.createElement("div");
+    h.className = "grp";
+    h.textContent = g + "  (" + list.length + ")";
+    box.appendChild(h);
+    list.forEach(e => {
+      const b = document.createElement("button");
+      b.textContent = e.label + "  T=" + e.T;
+      b.onclick = () => playEp(e, true);
+      box.appendChild(b);
+      e._btn = b;
+    });
+  });
+  playEp(eps[0], false);
+}
+
+function playEp(e, play) {
+  cur = e;
+  const v = $("v");
+  if (!v) return;
+  const url = vidUrl(sel, e);
+  if (v.getAttribute("src") !== url) v.src = url;
+  if (tl && tl.per_episode) v.currentTime = 0;
+  else if (e) v.currentTime = e.start_s || 0;
+  if (play) v.play();
+  ((tl && tl.episodes) || []).forEach(x => x._btn && x._btn.classList.toggle("active", x===e));
+  zoom(e);
+  v.ontimeupdate = () => {
+    const per = tl && tl.per_episode;
+    const t = per ? ((cur ? cur.start_s : 0) + v.currentTime) : v.currentTime;
+    cursor(t);
+    const span = per && cur ? (cur.dur_s || 0) : (tl ? tl.duration_s : 0);
+    $("hud").textContent = (cur ? cur.label : "") + "   t=" +
+      (per ? v.currentTime : t).toFixed(2) + "s / " + Number(span||0).toFixed(1) + "s";
+  };
+}
+
+function plotLayout(title) {
+  return {margin:{t:28,r:12,b:32,l:48}, paper_bgcolor:"#111", plot_bgcolor:"#161616",
+    font:{color:"#ccc", size:11}, legend:{orientation:"h", y:1.12},
+    title, xaxis:{title:"t (s)", gridcolor:"#333"}, yaxis:{gridcolor:"#333"}};
+}
+function traces(group, names) {
+  if (!tl || !tl[group]) return [];
+  return names.filter(n => tl[group][n]).map(n => ({
+    x: tl.t, y: tl[group][n], name: n, type: "scattergl", mode: "lines", line:{width:1}
+  }));
+}
+function drawPlots() {
+  if (typeof Plotly === "undefined") {
+    const el = $("pq");
+    if (el) el.innerHTML = '<div class="meta">Plotly CDN blocked — plots skip</div>';
+    return;
+  }
+  if (!tl) {
+    ["pq","pv","ps"].forEach(id => { const el=$(id); if (el) el.innerHTML = ""; });
+    return;
+  }
+  Plotly.react("pq", traces("qpos", ["q1","q2","q3","q4","q5","q6","q7"]), plotLayout("qpos (rad)"));
+  Plotly.react("pv", traces("qvel", ["v1","v2","v3","v4","v5","v6","v7"]), plotLayout("qvel (rad/s)"));
+  const skin = tl.skin_min ? [{x: tl.t, y: tl.skin_min, name:"skin_min", type:"scattergl", mode:"lines", line:{width:1.4}}] : [];
+  Plotly.react("ps", skin, plotLayout("skin min (m)"));
+}
+function cursor(t) {
+  if (typeof Plotly === "undefined") return;
+  const shape = [{type:"line", x0:t, x1:t, y0:0, y1:1, yref:"paper", line:{color:"#fff", width:1}}];
+  ["pq","pv","ps"].forEach(id => { if ($(id)) Plotly.relayout(id, {shapes: shape}); });
+}
+function zoom(e) {
+  if (typeof Plotly === "undefined" || !tl) return;
+  const per = tl.per_episode;
+  const r = (per && e) ? {"xaxis.range": [e.start_s, e.start_s + (e.dur_s || 1)]} : {"xaxis.autorange": true};
+  ["pq","pv","ps"].forEach(id => { if ($(id)) Plotly.relayout(id, r); });
+}
+
+async function select(r) {
+  if (!r) return;
+  sel = r;
+  try { history.replaceState(null, "", "#" + encodeURIComponent(r.slug)); } catch (e) {}
+  renderList();
+  tl = cache[r.slug] || null;
+  renderMain();
+  if (cache[r.slug]) return;
+  try {
+    const resp = await fetch(r.slug + "/timeline.json");
+    if (!resp.ok) throw new Error(resp.status);
+    tl = await resp.json();
+    cache[r.slug] = tl;
+    if (sel && sel.slug === r.slug) renderMain();
+  } catch (e) {
+    tl = cache[r.slug] || null;
+    const hud = $("hud");
+    if (hud && !tl) hud.textContent = "plots need --serve (file:// cannot fetch timeline.json)";
+  }
+}
+
+function pickInitial() {
+  const hash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+  const rows = cat.rows || [];
+  const fromHash = hash && rows.find(x => x.slug === hash);
+  const shown = filtered();
+  select(fromHash || shown[0] || rows[0] || null);
+}
+
+async function loadCat() {
+  try {
+    const r = await fetch("audit.json?t=" + Date.now());
+    if (!r.ok) throw new Error(r.status);
+    const next = await r.json();
+    cat = next;
+    renderHeader();
+    renderList();
+    $("poll").textContent = "live " + new Date().toLocaleTimeString();
+    if (sel) {
+      const still = (cat.rows||[]).find(x => x.slug === sel.slug);
+      if (still && still.n_videos !== sel.n_videos) {
+        sel = still;
+        delete cache[sel.slug];
+        select(sel);
+      } else if (still) {
+        sel = still;
+      }
+    } else {
+      pickInitial();
+    }
+  } catch (e) {
+    $("poll").textContent = "file:// snapshot — python scripts/dataset_viz.py --serve  for live + plots";
+  }
+}
+
+$("q").oninput = $("kind").onchange = $("gaps").onchange = renderList;
+document.addEventListener("keydown", e => {
+  if (e.target && e.target.tagName === "INPUT") return;
+  const rows = filtered();
+  if (!rows.length) return;
+  const i = Math.max(0, rows.findIndex(x => sel && x.slug === sel.slug));
+  if (e.key === "j" || e.key === "ArrowDown") {
+    e.preventDefault();
+    select(rows[Math.min(rows.length - 1, i + 1)]);
+  } else if (e.key === "k" || e.key === "ArrowUp") {
+    e.preventDefault();
+    select(rows[Math.max(0, i - 1)]);
+  } else if ((e.key === "n" || e.key === "N") && tl && tl.episodes) {
+    const ei = Math.max(0, tl.episodes.indexOf(cur));
+    playEp(tl.episodes[Math.min(tl.episodes.length - 1, ei + 1)], true);
+  } else if ((e.key === "p" || e.key === "P") && tl && tl.episodes) {
+    const ei = Math.max(0, tl.episodes.indexOf(cur));
+    playEp(tl.episodes[Math.max(0, ei - 1)], true);
+  }
+});
+try { cat = JSON.parse($("bootstrap").textContent); } catch (e) { cat = {rows:[]}; }
+renderHeader();
+pickInitial();
+loadCat();
+setInterval(loadCat, POLL_MS);
+</script>
+</body>
+</html>
 """
 
 
-def write_audit_index(out_base: Path, n_skipped_dups: int = 0) -> None:
-    out_base.mkdir(parents=True, exist_ok=True)
+def _collect_audit_rows(out_base: Path) -> list[dict]:
+    """Walk dataset folders only. Skip episodes/ (all the mp4s)."""
     skip_slugs = {"openfront_52"}
+    skip_dirs = {"episodes", "__pycache__"}
     rows = []
-    # Output folders mirror the dataset path, so an audit sits at any depth.
-    for p in sorted(out_base.rglob("audit.json")):
-        rel = p.relative_to(out_base)
-        if len(rel.parts) == 1:
-            continue  # the roll-up this function writes, not a dataset
-        slug = str(rel.parent)
-        if any(part.startswith("_") for part in rel.parts) or slug in skip_slugs:
+    root = out_base.resolve()
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in skip_dirs and not d.startswith(".")]
+        if "audit.json" not in filenames:
+            continue
+        folder = Path(dirpath)
+        if folder == root:
+            continue
+        slug = str(folder.relative_to(root))
+        if slug in skip_slugs:
             continue
         try:
-            rec = json.loads(p.read_text())
+            rec = json.loads((folder / "audit.json").read_text())
         except Exception:
             continue
+        rec["slug"] = slug
         rows.append(rec)
-    body = []
-    for r in rows:
-        slug = r.get("slug", "")
-        gaps = r.get("gaps") or []
-        gap_html = ", ".join(f'<span class="gap">{g}</span>' for g in gaps) if gaps \
-            else '<span class="ok">ok</span>'
-        cams = ", ".join(r.get("cams") or [])
-        prox = r.get("prox_shape")
-        prox_s = "none" if not r.get("has_prox") else str(prox)
-        vid = f"{slug}/{r.get('video') or 'dataset.mp4'}"
-        body.append(
-            f'<tr><td><video src="{vid}" controls preload="metadata"></video></td>'
-            f'<td class="slug">{slug}<br><a href="{vid}">mp4</a> · '
-            f'<a href="{slug}/index.html">html</a></td>'
-            f'<td>{r.get("n_eps_exported")}/{r.get("n_eps_total")}'
-            f'<br><span class="slug">{r.get("n_videos", 1)} clip(s)</span></td>'
-            f'<td>{cams or "—"}<br>prox={prox_s}</td>'
-            f'<td>{gap_html}</td></tr>'
-        )
-    html = (_AUDIT_HTML
-            .replace("%%N%%", str(len(rows)))
-            .replace("%%NDUP%%", str(n_skipped_dups))
-            .replace("%%ROWS%%", "\n".join(body)))
-    (out_base / "index.html").write_text(html)
-    (out_base / "audit.json").write_text(json.dumps({
-        "n": len(rows), "n_skipped_dups": n_skipped_dups, "rows": rows,
-    }, indent=2) + "\n")
-    print(f"audit index  {out_base / 'index.html'}")
+    rows.sort(key=lambda r: r.get("slug") or "")
+    return rows
+
+
+def write_audit_index(
+    out_base: Path,
+    n_skipped_dups: int = 0,
+    quiet: bool = False,
+    html: bool = True,
+) -> None:
+    """Write the dashboard catalog. Cheap. No encode. html=False skips index.html."""
+    out_base.mkdir(parents=True, exist_ok=True)
+    rows = _collect_audit_rows(out_base)
+    kinds = Counter(r.get("kind") or "?" for r in rows)
+    catalog = {
+        "n": len(rows),
+        "n_skipped_dups": n_skipped_dups,
+        "n_eps": sum(int(r.get("n_eps_exported") or 0) for r in rows),
+        "n_videos": sum(int(r.get("n_videos") or 0) for r in rows),
+        "n_gaps": sum(1 for r in rows if r.get("gaps")),
+        "by_kind": dict(kinds),
+        "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "rows": rows,
+    }
+    (out_base / "audit.json").write_text(json.dumps(catalog) + "\n")
+    if html:
+        boot = json.dumps(catalog).replace("</", "<\\/")
+        (out_base / "index.html").write_text(_AUDIT_HTML.replace("%%BOOTSTRAP%%", boot))
+    if not quiet:
+        print(f"audit index  {out_base / 'index.html'}  n={len(rows)}")
+
+
+def serve_dashboard(out_base: Path, port: int) -> None:
+    write_audit_index(out_base)
+    directory = str(out_base)
+
+    class Handler(SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, directory=directory, **kwargs)
+
+        def log_message(self, fmt, *args):
+            sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))
+
+        def end_headers(self):
+            self.send_header("Cache-Control", "no-store")
+            super().end_headers()
+
+        def do_GET(self):
+            path = self.path.split("?", 1)[0]
+            if path in ("/", "/index.html"):
+                write_audit_index(out_base, quiet=True)
+            elif path == "/audit.json":
+                write_audit_index(out_base, quiet=True, html=False)
+            super().do_GET()
+
+    class Server(ThreadingHTTPServer):
+        allow_reuse_address = True
+
+    httpd = Server(("127.0.0.1", port), Handler)
+    print(f"dashboard  http://127.0.0.1:{port}/")
+    print("new --each audits show up on refresh / 4s poll.  Ctrl-C stop.")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nstop")
+        httpd.server_close()
 
 
 def discover(root: Path) -> tuple[str, list[EpisodeRef]]:
@@ -2054,6 +2424,10 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "has_cam_params": sorted(first.cam_params),
         "no_mcap": bool(args.no_mcap),
     }
+    skin_vals = [float(x) for x in all_skin if x is not None and np.isfinite(x)]
+    if skin_vals:
+        audit["skin_min_min"] = min(skin_vals)
+        audit["skin_min_mean"] = float(sum(skin_vals) / len(skin_vals))
     (out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
 
     print(f"\n{n_ok} episode(s), {n_skip} skipped, {offset_ns/1e9:.1f}s timeline")
@@ -2114,7 +2488,19 @@ def main() -> None:
     ap.add_argument("--include-sensor-rgb", action="store_true",
                     help="also ingest sensors_rgb256 sidecar (huge)")
     ap.add_argument("--include-depth", action="store_true")
+    ap.add_argument("--dashboard", action="store_true",
+                    help="rebuild root index.html + audit.json only (no encode)")
+    ap.add_argument("--serve", nargs="?", const=8765, type=int, default=None,
+                    metavar="PORT",
+                    help="rebuild dashboard and serve it (default port 8765)")
     args = ap.parse_args()
+
+    if args.dashboard or args.serve is not None:
+        if args.serve is not None:
+            serve_dashboard(_OUT_BASE, args.serve)
+        else:
+            write_audit_index(_OUT_BASE)
+        return
 
     if args.reencode is not None:
         root = args.reencode.expanduser().resolve()
@@ -2127,7 +2513,7 @@ def main() -> None:
         return
 
     if args.data is None:
-        raise SystemExit("pass --data PATH  or  --reencode DIR")
+        raise SystemExit("pass --data PATH  or  --dashboard  or  --serve  or  --reencode DIR")
 
     src = args.data.expanduser().resolve()
     catalog = [] if src.is_file() else scan_dataset_roots(src, include_eval=args.include_eval)
@@ -2154,6 +2540,7 @@ def main() -> None:
                 continue
             print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
             run_one(ds.path, dest, dest / "dataset.mcap", args)
+            write_audit_index(_OUT_BASE, n_skipped_dups=len(skipped_dups), quiet=True)
         write_audit_index(_OUT_BASE, n_skipped_dups=len(skipped_dups))
         return
 
@@ -2168,6 +2555,7 @@ def main() -> None:
 
     out_dir, mcap_path = _out_paths(src)
     run_one(src, out_dir, mcap_path, args)
+    write_audit_index(_OUT_BASE)
 
 
 if __name__ == "__main__":

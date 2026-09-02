@@ -22,6 +22,26 @@ Newest session at the top.
 
 ---
 
+## 2026-09-01 — dataset viz dashboard
+
+- **When:** 2026-09-01. User: root
+  `experiments_output/default/dataset_viz/index.html` is a crude table; make a
+  real dashboard (stats, plots, clips) that stays cheap as data arrives fast.
+- **Why:** Old audit HTML baked one `<video>` per dataset. Browser preloaded
+  every clip. No filter, no Plotly, no live catalog.
+- **What:** `scripts/dataset_viz.py` writes a SPA dashboard. `--dashboard`
+  rebuilds catalog only. `--serve [PORT]` (default 8765) serves
+  `_OUT_BASE` and re-scans audits on each `audit.json` GET. `--each` rewrites
+  the catalog after every dataset. New audits get `skin_min_min` /
+  `skin_min_mean`. README §4.2.1 + trap 27.
+- **How:** Catalog is metadata only. One player (`preload=none`). Timeline
+  fetched per click and cached. Bootstrap JSON inside `index.html` so
+  `file://` still lists datasets. Poll 4 s.
+- **Not done:** User runs `--dashboard` then `--serve`. Old per-dataset
+  `index.html` pages stay.
+
+---
+
 ## 2026-09-01 — v1010 viz missed wrist/table RGB
 
 - **When:** 2026-09-01. User: viz of

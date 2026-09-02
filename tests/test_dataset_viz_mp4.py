@@ -7,7 +7,7 @@ from pathlib import Path
 _REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_REPO / "scripts"))
 
-from dataset_viz import RGB_STEMS, glob_mp4  # noqa: E402
+from dataset_viz import RGB_STEMS, glob_mp4, write_audit_index  # noqa: E402
 
 
 def _touch(path: Path) -> Path:
@@ -58,3 +58,31 @@ def test_glob_loose_refuses_two_matches(tmp_path: Path):
     _touch(tmp_path / "episode_aaa_wrist_camera.mp4")
     _touch(tmp_path / "episode_bbb_wrist_camera.mp4")
     assert glob_mp4(tmp_path, 0, "wrist_camera") is None
+
+
+def test_write_audit_index_dashboard(tmp_path):
+    import json
+
+    ds = tmp_path / "molmo" / "pick"
+    ds.mkdir(parents=True)
+    (ds / "audit.json").write_text(json.dumps({
+        "kind": "datagen",
+        "n_eps_exported": 2,
+        "n_eps_total": 2,
+        "n_videos": 2,
+        "gaps": [],
+        "has_prox": True,
+        "has_wrist": True,
+        "has_table": True,
+        "groups": ["free"],
+        "video": "episodes/free/0000_house_1_traj_0.mp4",
+    }))
+    write_audit_index(tmp_path, quiet=True)
+    html = (tmp_path / "index.html").read_text()
+    cat = json.loads((tmp_path / "audit.json").read_text())
+    assert "%%BOOTSTRAP%%" not in html
+    assert "dataset viz" in html
+    assert "molmo/pick" in html
+    assert cat["n"] == 1
+    assert cat["n_videos"] == 2
+    assert cat["rows"][0]["slug"] == "molmo/pick"

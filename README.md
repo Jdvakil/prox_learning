@@ -83,6 +83,7 @@ hidden-bar cell did.
 | know the tensors | [§10](#10-method) |
 | inspect a scene before collecting | [§4.2](#42-live--inspect-scenes) |
 | visualize a cloned h5 folder | [§4.2.1](#421-live--visualize-a-dataset-folder) |
+| browse every viz as a dashboard | [§4.2.1](#421-live--visualize-a-dataset-folder) |
 | free disk | [§16](#16-housekeeping) |
 
 ---
@@ -245,10 +246,10 @@ HF rows use saved `cam2world_gl` when present.
 All live clones sit under `data/`. Do **not** pass that parent without `--list` / `--each` —
 it is a mixed tree (hallway rows + the `molmo-pi0-eval-videos` dump). `--list` prints one
 row per dataset (`DUP` = nested copy of openfront 52 / raw_h5). `--each` writes one viz
-dir per **unique** row and an audit `index.html` at the out root (gaps: no table, no prox,
-…). `results/` eval rollouts stay out unless `--include-eval`. `--keep-dups` keeps the
+dir per **unique** row and rebuilds the root dashboard (`index.html` + `audit.json`).
+`results/` eval rollouts stay out unless `--include-eval`. `--keep-dups` keeps the
 copies. Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
-finishes; reopen each `dataset.mp4` in Cursor.
+finishes. Browse with `--serve`, not a Cursor preview of every mp4.
 
 **The output location is fixed — there is no `--out` flag (removed 2026-08-31).** Every run
 writes under `experiments_output/default/dataset_viz/`, in a folder that mirrors the dataset
@@ -261,10 +262,26 @@ path with the `data/` prefix removed:
 | `act_style_data/foo` (in the checkout, not under `data/`) | `…/dataset_viz/act_style_data/foo/` |
 | `/mnt/scratch/ds` (outside the checkout) | `…/dataset_viz/mnt/scratch/ds/` |
 
-A single `.h5` file maps to `<parent>/<stem>/`. The audit `index.html` at the root walks the
-whole tree, so nested folders show as `a/b/c` rows. Folders written before 2026-08-31 use the
-old flat `a_b_c` slug; they still show in the index — delete them or re-run to get the nested
-layout. `--force` redoes a dataset that already has an audit plus at least one video.
+A single `.h5` file maps to `<parent>/<stem>/`. The root
+`experiments_output/default/dataset_viz/index.html` is a **dashboard**, not a
+table of preloaded videos. It reads `audit.json` (one row of metadata per dataset)
+and loads **one** clip plus `timeline.json` plots when you click a row. Opening
+the HTML as `file://` shows the baked catalog and plays clips; Plotly plots and
+live refresh need a tiny HTTP server because browsers block `fetch` on
+`file://`:
+
+```bash
+python scripts/dataset_viz.py --dashboard   # rewrite catalog only, no encode
+python scripts/dataset_viz.py --serve       # http://127.0.0.1:8765/
+```
+
+`--serve` re-scans nested `audit.json` files on each catalog request, so a
+parallel `--each` run shows new datasets within a few seconds. `--each` also
+rewrites the catalog after every dataset. Do not open the root `index.html` in
+Cursor's simple preview if you want plots — use `--serve`. Folders written
+before 2026-08-31 use the old flat `a_b_c` slug; they still show in the index —
+delete them or re-run to get the nested layout. `--force` redoes a dataset that
+already has an audit plus at least one video.
 
 **Video is one clip per episode, filed by trajectory type (changed 2026-08-31).** The old
 single hour-long `dataset.mp4` is gone by default. Each dataset folder now holds:
@@ -322,6 +339,12 @@ cd /home/jaydv/code/prox_learning
 # catalog everything under data/ (no write)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
 
+# rewrite the dashboard catalog after encodes (cheap)
+python scripts/dataset_viz.py --dashboard
+
+# browse stats + one clip + plots (plots need this, not file://)
+python scripts/dataset_viz.py --serve
+
 # smoke one viz per dataset (2 eps each)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
     --each --max-episodes 2
@@ -354,7 +377,7 @@ python scripts/dataset_viz.py \
     --max-episodes 2
 ```
 
-Open `index.html` in a browser, or open any `episodes/<type>/*.mp4` in Cursor / VS Code (H.264
+Open `http://127.0.0.1:8765/` after `--serve`, or any `episodes/<type>/*.mp4` in Cursor / VS Code (H.264
 `yuv420p` — MPEG-4 `mp4v` will not play in the IDE). Foxglove: open `dataset.mcap` in
 [Foxglove](https://app.foxglove.dev) and import `foxglove_layout.json` from the same out dir.
 `--no-mcap` / `--no-video` skip one side. `--stride 2` halves cost and keeps real-time
@@ -1557,6 +1580,12 @@ Every one of these has already cost real time.
     / `no table RGB` even though both files sat next to `trajectory.h5`. Re-run
     `scripts/dataset_viz.py --force` after the glob fix. `obs/sensor_param` on this
     dump still has wrist only — `--cam3d` projects onto wrist, not table.
+27. **Root `dataset_viz/index.html` is not a video wall.** The old audit page
+    put a `<video preload>` in every row and the browser fetched every clip.
+    The dashboard fetches `audit.json` plus one `timeline.json` and one mp4.
+    `file://` cannot `fetch` those JSON files — use
+    `python scripts/dataset_viz.py --serve`. `--dashboard` is the no-encode
+    catalog rebuild when you are not serving.
 
 ---
 
