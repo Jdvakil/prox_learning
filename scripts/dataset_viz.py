@@ -3,7 +3,8 @@
 Auto-detects three layouts this repo actually uses:
 
   ACT          episode_*.hdf5  — RGB inside the file, optional (T, 40, 8, 8) proximity
-  HF rows      rows/*/trajectory.h5 + episode_00000000_*.mp4  (wrist-only clones)
+  HF rows      rows/*/trajectory.h5 + episode_00000000_*.mp4  (v5 wrist-only clones)
+               or accepted/<sha>/trajectory.h5 + episode_<sha>_{wrist,table}_camera.mp4
   datagen      house_*/trajectories*.h5 + episode_*_*_batch_*.mp4
 
 Every episode is laid end-to-end on one timeline (0.5 s gap). The MCAP is the
@@ -108,7 +109,7 @@ CAM_ALIAS = {
     "top": "table",
 }
 
-RGB_STEMS = ("wrist_camera", "exo_camera_1")
+RGB_STEMS = ("wrist_camera", "exo_camera_1", "table_camera")
 OPTIONAL_STEMS = ("sensors_rgb256", "wrist_camera_depth", "exo_camera_1_depth")
 
 _PLOT_BGR = [
@@ -810,7 +811,7 @@ def discover(root: Path) -> tuple[str, list[EpisodeRef]]:
         refs = []
         for p in rows:
             refs.append(EpisodeRef(
-                "datagen", p, "traj_0", 0,
+                "datagen", p, "traj_0", 0,  # vid_id=0 is traj index; mp4 id may be a sha
                 f"{p.parent.name}/traj_0", p.parent,
             ))
         refs.sort(key=lambda r: r.path.parent.name)
@@ -851,10 +852,32 @@ def _discover_file(path: Path) -> tuple[str, list[EpisodeRef]]:
 
 
 def glob_mp4(h5_dir: Path, vid_id: int, stem: str) -> Path | None:
-    exact = sorted(h5_dir.glob(f"episode_{vid_id:08d}_{stem}.mp4"))
-    batch = sorted(h5_dir.glob(f"episode_{vid_id:08d}_{stem}_batch_*.mp4"))
-    cands = exact + batch
-    return cands[0] if cands else None
+    """Sidecar mp4 for one camera stem next to the h5.
+
+    Name patterns this repo actually writes:
+
+      episode_{idx:08d}_{stem}.mp4                  HF v5 clones
+      episode_{idx:08d}_{stem}_batch_*_of_*.mp4     datagen houses
+      episode_{sha256}_{stem}.mp4                   v10 hallway dumps
+                                                    (folder name == sha)
+    """
+    padded = f"{vid_id:08d}"
+    exact = sorted(h5_dir.glob(f"episode_{padded}_{stem}.mp4"))
+    if exact:
+        return exact[0]
+    batch = sorted(h5_dir.glob(f"episode_{padded}_{stem}_batch_*.mp4"))
+    if batch:
+        return batch[0]
+    hashed = h5_dir / f"episode_{h5_dir.name}_{stem}.mp4"
+    if hashed.is_file():
+        return hashed
+    loose = sorted(
+        p for p in h5_dir.glob(f"episode_*_{stem}.mp4")
+        if "_batch_" not in p.name
+    )
+    if len(loose) == 1:
+        return loose[0]
+    return None
 
 
 def decode_mp4(path: Path) -> np.ndarray:
@@ -1061,9 +1084,10 @@ def peek_summary(ref: EpisodeRef) -> str:
         T = int(t["obs/extra/tcp_pose"].shape[0]) if "obs/extra/tcp_pose" in t \
             else int(t["obs/agent/qpos"].shape[0])
         nprox = len(t["obs/proximity"]) if "obs/proximity" in t else 0
-        mp4s = [p.name for p in ref.h5_dir.glob(f"episode_{ref.vid_id:08d}_*.mp4")]
+        mp4s = [glob_mp4(ref.h5_dir, ref.vid_id, stem) for stem in RGB_STEMS]
+        n_rgb = sum(p is not None for p in mp4s)
         return (f"{ref.label:28s} T={T:4d}  prox_sensors={nprox:2d}  "
-                f"mp4s={len(mp4s)}  file={ref.path.name}")
+                f"rgb_mp4s={n_rgb}  file={ref.path.name}")
 
 
 # --------------------------------------------------------------------------- #

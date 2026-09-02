@@ -232,7 +232,11 @@ wrist | table | **live prox 3D**, then the 8×8 mosaic **fills** the leftover le
 panel (tiles stretch; no blank band). qpos / qvel / HUD sit below. Missing wrist /
 table / heatmap tiles are **dropped** (no slate). Leftover RGB grows; heatmap takes
 the whole left column when no RGB. Hallway v5 has **no table / exo** — that slot is
-gone, wrist uses the full left width. Skin comes from the tensor, not the sidecar
+gone, wrist uses the full left width. **v10.10** (`data/pact_place_corridor/data/v1010`)
+**does** ship table + wrist; the sidecar names are `episode_{sha}_{wrist,table}_camera.mp4`,
+not `episode_00000000_exo_camera_1.mp4`. A glob that only knew the padded-int / `exo`
+names dropped both RGB tiles (heatmap + 3D only). `glob_mp4` now accepts the hash
+name and `table_camera`. Skin comes from the tensor, not the sidecar
 heatmap mp4. dt defaults to `obs_scene.policy_dt_ms` or **66 ms** (not ACT's train
 `DT=0.02`).
 ACT hdf5 has no saved `cam2world`; the 3D panel uses MuJoCo FK camera poses. Datagen /
@@ -329,6 +333,13 @@ python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
 # hallway HF rows (152)   -> .../dataset_viz/pact_place_corridor_v5/
 python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
     --max-episodes 2
+
+# v10.10 four-object (hash mp4 ids, table+wrist). --cam3d = wrist overlay
+# (no table calib in this dump). Full set: drop --max-episodes.
+#   -> .../dataset_viz/pact_place_corridor/data/v1010/accepted/
+python scripts/dataset_viz.py \
+    --data data/pact_place_corridor/data/v1010/accepted \
+    --cam3d --no-mcap --stride 2 --force
 
 # fumehood pick houses (datagen, exo+wrist)
 #   -> .../dataset_viz/molmo-pi0-eval-videos/data/fumehood/pick/
@@ -1539,6 +1550,13 @@ Every one of these has already cost real time.
 25. **PACT 12–15 h is 40 EGL `update_scene`, even gated.** Smoke 2026-08-29: PACT-raw
     `renders=19 skip=883` and still **2121 s / 2 eps**. Default skin is `mj_multiRay`.
     `--egl-prox` is the slow rasterizer. Kill any in-flight EGL readout.
+26. **v10 hallway RGB names are not v5 names.** `data/pact_place_corridor/data/v1010`
+    writes `episode_{sha256}_wrist_camera.mp4` and `episode_{sha256}_table_camera.mp4`.
+    Lundii v5 writes `episode_00000000_wrist_camera.mp4` and has **no table**. A viz
+    glob that only knew `episode_{idx:08d}_exo_camera_1.mp4` reported `no wrist RGB`
+    / `no table RGB` even though both files sat next to `trajectory.h5`. Re-run
+    `scripts/dataset_viz.py --force` after the glob fix. `obs/sensor_param` on this
+    dump still has wrist only — `--cam3d` projects onto wrist, not table.
 
 ---
 

@@ -22,6 +22,23 @@ Newest session at the top.
 
 ---
 
+## 2026-09-01 — v1010 viz missed wrist/table RGB
+
+- **When:** 2026-09-01. User: viz of
+  `experiments_output/default/dataset_viz/pact_place_corridor/data/v1010/accepted`
+  shows no wrist or table camera.
+- **Why:** `glob_mp4` only matched `episode_{vid_id:08d}_{stem}.mp4` with
+  `RGB_STEMS = (wrist_camera, exo_camera_1)`. HF discover always sets `vid_id=0`.
+  v10.10 sidecars are `episode_{sha}_{wrist,table}_camera.mp4`. Audit: `cams=[]`,
+  gaps `no wrist RGB` / `no table RGB`. Pixels were on disk.
+- **What:** `glob_mp4` also accepts folder-sha names and a sole `episode_*_{stem}.mp4`.
+  `RGB_STEMS` includes `table_camera`. README §4.2.1 + trap 26. Test
+  `tests/test_dataset_viz_mp4.py`.
+- **Not done:** user `--force` regen. 215 eps. `--cam3d` still wrist-only on this
+  dump (`sensor_param` has no table cam).
+
+---
+
 ## 2026-08-31 — heatmap fills leftover panel
 
 - **When:** 2026-08-31. User: pick `episodes/free/0000_house_1_traj_0.mp4` 8x8 grid
