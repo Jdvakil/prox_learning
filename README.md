@@ -1,8 +1,7 @@
 # prox_learning — proximity-skin sensing & safety for the Franka FR3
 
 A Franka FR3 wearing **40 proximity sensors** in MuJoCo, plus the policies and analysis that
-answer one question: *does a proximity skin make a robot arm safer when the cameras cannot see
-the obstacle?*
+answer one question: *does a proximity skin make a robot arm safer than cameras alone?*
 
 <p align="center">
   <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png">
@@ -15,10 +14,14 @@ the obstacle?*
   <sub>Canonical 40-sensor hybrid skin in a cabinet-cavity task — three automatically selected, text-free views.</sub>
 </p>
 
-**Current answer (2026-07-05, 50 rollouts per cell):** yes, on the safety axis. A vision-only ACT
-policy collides in **66%** of episodes when a hazard bar is hidden from the cameras. The same
-policy with a raw-skin token (**PACT-raw**) collides in **40%** (Fisher p = 0.016). Task success
-is unchanged. Safer, not a better picker.
+**Current answer (2026-09-03, hallway n=50 — the live paper MVP):** yes. On pick-and-place
+corridor v5, cameras-only ACT places in **28%** of rollouts, hits the bar in **34%**, and is
+collision-free in **66%**. The same policy with a finetuned 128-d CLS skin token
+(**PACT-readout**) places in **40%**, hits the bar in **12%**, and is collision-free in **88%**.
+Better on **both** axes versus ACT. Bar-hit / collision-free vs ACT: Fisher p = **0.016**; vs
+PACT-raw (36% bar / 64% free) p = **0.009**. Frozen peak-closeness (**PACT-raw**) does **not**
+cut hallway bar hits (36% vs 34%) and places at 42% (tied with readout). The 2026-07-05
+invisible-cell 66%→40% grid is archived and wiped; it is not this checkout's reproducible result.
 
 This file is the whole project document: what we built, what the numbers say, what you may claim,
 how to run every experiment, and what will bite you. Figures with PNGs from the 2026-08-14 weekly
@@ -54,19 +57,20 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 
 | Item | Status |
 |---|---|
-| **Headline 66% → 40%** (invisible-cell collisions, n=50, p = 0.016) | **The paper number.** Source datagen (`hybrid_obstacle_v1` / `hybrid_invis_obstacle_v1`), converted `obstacle_prox_v2`, and July ckpts were wiped 2026-08-24. Archived metrics: `reports/eval_summaries/`. Not retrainable from this checkout until you collect again. |
-| Hallway `pact_place_corridor_v5` n=50 | **Done, not a paper number.** Place-success 28% vs 42% (ACT vs PACT-raw, Fisher p = 0.21); bar hit 34% vs 36% (p = 1.0). No safety win. Success gap is noise. n=20 smoke (15% vs 35%, bar 30% vs 20%) was luck. Data + ckpts + eval on disk. |
+| **Hallway PACT-readout n=50** (place 40%, collision-free 88%, bar 12%) | **The live paper MVP.** Reproducible from this checkout. Ckpt `20260828_003136_pact_place_corridor_readout_s0`. Eval `eval_output/place_corridor_readout_s0_n50_fast/` (gitignored) and `reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`. vs ACT: place **28%→40%**, bar **34%→12%** (p = 0.016), collision-free **66%→88%**. vs PACT-raw: place 42% vs 40%, bar **36%→12%** (p = 0.009). Report both axes. [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) |
+| Hallway ACT vs PACT-raw n=50 | **Done. Control, not the MVP.** Place 28% vs 42% (p = 0.21); bar 34% vs 36% (p = 1.0). Raw closeness does not cut hallway bar hits. n=20 smoke was luck. |
+| Archived 66% → 40% (invisible-cell, 2026-07-05) | **Wiped.** Source datagen + `obstacle_prox_v2` + July ckpts gone 2026-08-24. Metrics only in `reports/eval_summaries/`. Not retrainable here. Do not mix with the hallway MVP. |
 | **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **On disk for viz. Not ACT-ready.** Do **not** pass them to `imitate_episodes.py`. Inventory, gaps, and the train/eval walkthrough: [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
 | Gate-bar v3.1 collect | **Parked.** Only `assets/datagen/hybrid_gate_bar_check` (and clutter check). Do not collect 200 until the Visible check shows a tall pole in the doorway and an ~18 cm veer. |
 | Surface-embedding bake into ACT | **Parked** as an ablation. Compressor gate passed (20.6 mm XYZ). Do not bake 32-d HDF5 tokens. |
-| Surface readout finetune | **Live path on v5.** Unfreeze the pretrained geometry net. ACT sees 128-d CLS readout tokens, same at train and eval. `--finetune_prox_encoder`. Ckpt on disk; n=50 eval not done. Headline arm stays PACT-raw until this eval exists. |
+| Surface readout finetune | **Done. This is the paper arm.** Unfreeze the pretrained geometry net. ACT sees 128-d CLS readout tokens at train and eval. `--finetune_prox_encoder`. n=50 numbers above. |
 | Safety-CVAE `cvae_v3/model.pt` | **Deleted 2026-08-24.** PACT-raw never needed it. Retrain from `assets/safety/sweep_v3.h5` if you want the reflex demos. `--prox_feature trunk` / `delta` need those weights and are negative controls. |
 | Live training set | **Only** `act_style_data/pact_place_corridor_v5` (152 eps). Not `obstacle_prox_v2`. Not the Sep clones under `data/`. |
 
-Proximity is redundant when vision already explains the demonstration. It helps when cameras
-cannot. That is the thesis. Nominal hallway pick-and-place did not produce a safety win. The
-hidden-bar cell did. New tabletop clones test a **different** question (cluttered place, table
-cam) and are not yet on the train/eval pipe.
+Proximity is redundant when vision already explains the demonstration. On this hallway, frozen
+peak-closeness (**PACT-raw**) is not enough. Finetuning the surface encoder and feeding live
+CLS tokens (**PACT-readout**) is. The wiped invisible-cell grid was a different task. New
+tabletop clones (cluttered place, table cam) are not yet on the train/eval pipe.
 
 ---
 
@@ -78,12 +82,12 @@ cam) and are not yet on the train/eval pipe.
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
 | train / eval the **new** Sep clones | [§4.17](#417-new-clones-2026-09-03--not-act-ready) — **not copy-paste ready** |
 | walk convert → train → eval (skeptic) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
-| leftover v5 GPU job (readout n=50) | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
+| cite the hallway paper MVP (readout n=50) | [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) [§8](#8-paper-claims) |
 | reproduce hallway ACT vs PACT | [§4.3](#43-live--hallway-act-vs-pact) |
 | run Amine's 40-row place protocol on local ckpts | [§4.3.1](#431-live--amine-40-row-place-protocol) |
 | finetune the skin encoder into ACT | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | collect the next obstacle set (gate-bar) | [§4.7](#47-parked--gate-bar-v31) |
-| understand the 66% → 40% result | [§6](#6-headline-result) |
+| understand the live MVP / archived 66% → 40% | [§6](#6-headline-result) |
 | see every test in one line | [§7](#7-every-experiment-one-line) |
 | paste a paper-writing brief | [§8](#8-paper-claims) |
 | know the tensors | [§10](#10-method) |
@@ -419,14 +423,22 @@ Source: HuggingFace `Lundii/pact_place_corridor_v5` cloned to `data/pact_place_c
 152 recovered pick-and-place demos (`clean_success`). Wrist RGB only. Scene XML
 `pact_place_corridor_v2`. Eval env is **not** molmospaces `main` — pin worktree `977acd6`.
 
-Local n=50 (2026-08-27, metrics-only): **not a paper number.**
+Local n=50, metrics-only, `--temp_agg_off`, horizon 800, house 1, `PactPlaceCorridorV2Sampler`.
+The **paper MVP** is PACT-readout ([§4.4](#44-live--corridor-skin-fire--compress-skin)). ACT and
+PACT-raw are the controls: frozen peak-closeness does **not** cut hallway bar hits.
 
 | arm | ckpt dir | place-success | bar hit | collision-free |
 |---|---|---|---|---|
 | ACT | `20260825_161821_act_place_corridor_s0` | 14/50 (**28%**) | 17/50 (**34%**) | 33/50 (66%) |
 | PACT-raw | `20260825_215846_pact_place_corridor_raw_s0` | 21/50 (**42%**) | 18/50 (**36%**) | 32/50 (64%) |
+| **PACT-readout** | `20260828_003136_pact_place_corridor_readout_s0` | 20/50 (**40%**) | 6/50 (**12%**) | 44/50 (**88%**) |
 
-Fisher two-sided: success p = 0.21, bar-hit p = 1.0. PACT does **not** cut bar hits.
+Fisher two-sided. ACT vs raw: place p = 0.21, bar p = 1.0. ACT vs readout: bar / collision-free
+p = **0.016**; place 14/50 → 20/50. Raw vs readout: bar p = **0.009**; place 21/50 vs 20/50.
+Readout beats ACT on **both** measured rates. Every readout success was collision-free (strict
+20/50). All six readout collisions were bar hits (no other-env / clutter). Sides 27 right / 23
+left; bar hits 1 right / 5 left. Archived JSON:
+`reports/eval_summaries/place_corridor_{vanilla,raw,readout_s0_n50_fast}.json`.
 
 ```bash
 conda activate mlspaces
@@ -528,9 +540,10 @@ python scripts/run_pact_place_eval_chunk100.py \
 permuted. PACT here is **PACT-raw**, not his 32-d screen PACT. Readout is the extra
 arm `PACT_READOUT`. Kill-safe: existing `result.json` with `status=complete` is
 skipped. Primary local endpoints stay place-success, `collision_free_task_success`,
-bar-hit, `gripper_close_commanded`. **Not a paper number.** Do not mix with the
+bar-hit, `gripper_close_commanded`. **Not the paper MVP.** Do not mix with the
 random-house n=50 in [§4.3](#43-live--hallway-act-vs-pact) or with his seed-3101
-chunk-100 table.
+chunk-100 table. The paper number is readout random-house n=50, not this 40-row
+protocol.
 
 **Why PACT is 12–15 h/model.** Measured 2026-08-29 smoke: ACT 119.5 s / 2 eps.
 PACT-raw **2121 s / 2 eps (~18 min/ep)** with `renders=19 skip=883`. Chunk-gate
@@ -613,25 +626,26 @@ python imitate_episodes.py \
     --wandb_run_name pact_place_corridor_readout_s0
 ```
 
-Eval (after the run dir exists). Loads `prox_encoder_best.pt` from that dir, not the pretrain
-file. `--temp_agg_off` is required. With it on, RGB/skin EGL run only on chunk
-queries (~16 / 800 steps). Same actions as the old every-step render; n=50 PACT
-should finish under 4 h, not ~12 h.
+**n=50 eval (2026-08-29, metrics-only) — the paper MVP.** Loads `prox_encoder_best.pt` from the
+run dir. `--temp_agg_off` required. Chunk-gated sensors: ~17 RGB/skin queries / 800 steps
+(`sensor_fresh_renders` / `sensor_skipped_renders` in the JSON). Wall-clock ~15 min/ep (gated
+EGL). Place **20/50 (40%)**, bar **6/50 (12%)**, collision-free **44/50 (88%)**. Beats ACT on
+both axes (place 28%→40%, bar 34%→12% p = 0.016, free 66%→88%). vs PACT-raw: bar 36%→12%
+(p = 0.009); place 42% vs 40%.
+JSON: `eval_output/place_corridor_readout_s0_n50_fast/eval_summary.json` and
+`reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`. Full three-arm table:
+[§4.3](#43-live--hallway-act-vs-pact).
+
+Do not re-run n=50 unless the ckpt or eval code changed. `amine/act` is gone; use the submodule
+script.
 
 ```bash
 conda activate mlspaces
-cd /home/jaydv/code/prox_learning/amine/act
+cd /home/jaydv/code/prox_learning/submodules/act
+export PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH"
 export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
 
-python eval_pact_collision_row.py \
-    --checkpoint-dir /home/jaydv/code/prox_learning/submodules/act/ckpts/pact_place_corridor_v5/20260828_003136_pact_place_corridor_readout_s0 \
-    --output-dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_fast \
-    --num-rollouts 50
-
-# same eval, from the ACT submodule:
-cd /home/jaydv/code/prox_learning/submodules/act
-PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
-MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
+python eval_act_place_corridor.py \
     --ckpt_dir ckpts/pact_place_corridor_v5/20260828_003136_pact_place_corridor_readout_s0 \
     --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_fast \
     --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
@@ -639,8 +653,7 @@ MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
 
 `--prox_policy_tap readout` is implied by `--finetune_prox_encoder`. Do **not** pass baked
 `--prox_feature surface_embedding` without `--finetune_prox_encoder` until ACT reuses
-`split_manifest.json`. Headline corridor arm remains vanilla vs PACT-raw until this eval
-exists.
+`split_manifest.json`.
 
 Do **not** mix closeness maps: peak-closeness `D_MAX = 0.5 m`; surface geometry
 `MAX_SURFACE_RANGE_M = 0.20 m` (trap 16).
@@ -778,7 +791,7 @@ Pilot σ ∈ {0, 1, 2, 4} cheaply before committing n=50 everywhere. Train-time 
 failed** experiment ([§4.12](#412-needs-datagen--train-time-blur)).
 
 <a id="49-needs-datagen--headline-act-vs-pact-66--40"></a>
-### 4.9 Needs datagen — headline ACT vs PACT (66% → 40%)
+### 4.9 Needs datagen — archived invisible-cell ACT vs PACT (66% → 40%)
 
 **Cannot run until you collect again.** `hybrid_obstacle_v1`, `hybrid_invis_obstacle_v1`, and
 `obstacle_prox_v2` are gone. Published numbers live in `reports/eval_summaries/`.
@@ -905,7 +918,7 @@ MolmoSpaces Pi / MS-bench, not this ACT/PACT pipe.
 
 | Fork | What it is | Do it? |
 |---|---|---|
-| **A. GPU jobs on the pipe that already works** | v5 hallway. Convert + 3 ckpts already on disk. Leftover = readout n=50 ([§4.4](#44-live--corridor-skin-fire--compress-skin)) or Amine 40-row ([§4.3.1](#431-live--amine-40-row-place-protocol)). | Retrain v5 = wasted GPU. Hallway n=50 already says **no safety win**. Not a paper number. |
+| **A. GPU jobs on the pipe that already works** | v5 hallway. Convert + 3 ckpts + readout n=50 **done** ([§4.4](#44-live--corridor-skin-fire--compress-skin)). Optional: Amine 40-row ([§4.3.1](#431-live--amine-40-row-place-protocol)). | Retrain v5 = wasted GPU. Paper MVP is readout 40% place / 88% collision-free. Do not overwrite that eval dir. |
 | **B. Train the new envs** | Pick **one** clone. Wire convert + `TASK_CONFIGS` + eval sampler/XML. Smoke. Then train. | This is the real ask. **Code first.** Not copy-paste from [§4.3](#43-live--hallway-act-vs-pact). |
 
 Best first set for **B**: `data/pact_pick_n_place_v2/data/v12` (**165**). Latest XML lives in-repo
@@ -1035,7 +1048,8 @@ Hallway eval **requires** the `977acd6` worktree first on `PYTHONPATH` (script d
 
 Obstacle eval pins cells: `visible` / `invisible` / `free`. Invisible = geom group 4
 (cameras skip, skin sees). Gate-bar ckpts need `--eval_sampler gate`. Source + ckpts for
-that line were **wiped**. Headline 66%→40% lives only in `reports/eval_summaries/`.
+that line were **wiped**. Archived 66%→40% lives only in `reports/eval_summaries/`. The live
+paper MVP is hallway readout n=50 ([§4.4](#44-live--corridor-skin-fire--compress-skin)).
 
 Default PACT skin at eval is `mj_multiRay`, not the EGL rasterizer used in datagen. Not
 bit-identical. `--egl-prox` is the old ~18 min/ep path (traps 25).
@@ -1060,8 +1074,8 @@ Surface geometry cap 20 cm; farther = **invalid**, not a regression target. Do n
 #### Leftover v5 commands (old env — not the new clones)
 
 Setup is [§3](#3-setup). Do **not** reconvert v5 (`act_style_data/pact_place_corridor_v5`
-exists). Train recipes stay in [§4.3](#43-live--hallway-act-vs-pact). Readout eval after the
-run dir exists:
+exists). Train recipes stay in [§4.3](#43-live--hallway-act-vs-pact). Readout n=50 **already
+ran** ([§4.4](#44-live--corridor-skin-fire--compress-skin)). Repro eval (new output dir):
 
 ```bash
 conda activate mlspaces
@@ -1072,11 +1086,12 @@ export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
 PYTHONPATH="/home/jaydv/code/molmospaces-pact-place:$PWD:$PYTHONPATH" \
 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
     --ckpt_dir ckpts/pact_place_corridor_v5/20260828_003136_pact_place_corridor_readout_s0 \
-    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_fast \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/place_corridor_readout_s0_n50_repro \
     --num_rollouts 50 --chunk_size 50 --temp_agg_off --task_horizon 800
 ```
 
-That does **not** test v12 / v1010 / mixed.
+Do **not** overwrite `eval_output/place_corridor_readout_s0_n50_fast/` — that dir is the MVP
+JSON. That command does **not** test v12 / v1010 / mixed.
 
 #### Morning next (other desktop)
 
@@ -1102,13 +1117,15 @@ colour, texture, or shape.
 **The question.** Does adding this skin make the robot *safer* than cameras alone? Fewer crashes.
 Not smarter, not faster.
 
-**The answer so far: yes, with an asterisk.** The skin helps a lot when it is the only sense that
-can perceive the obstacle. It helps less when cameras can also see the obstacle, and not at all
-when there is no obstacle.
+**The answer so far: yes, if the encoder trains with the policy.** On hallway pick-and-place,
+frozen peak-closeness does not cut bar hits. Finetuned 128-d CLS tokens do (12% bar, 88%
+collision-free, 40% place). The wiped invisible-cell grid was a different task, where raw
+closeness helped when cameras could not see the bar.
 
-**One surprise.** A small network that turns skin into a "flinch" joint motion works on its own.
-Feeding that polished reflex into the policy did **nothing**. Feeding the 40 raw distances worked.
-The dumb version won.
+**One surprise (still true).** A small network that turns skin into a "flinch" joint motion works
+on its own. Feeding that polished reflex into the policy did **nothing**. On the wiped obstacle
+cell, feeding 40 raw distances worked and the CVAE trunk did not. On this hallway, raw
+closeness is **not** enough — the encoder has to train with ACT.
 
 | Word | Meaning here |
 |---|---|
@@ -1117,8 +1134,8 @@ The dumb version won.
 | **imitation learning** | Copy demonstrations. The brain uses a sense only if the demos *cannot be explained without it* |
 | **ACT** | Off-the-shelf action-chunking transformer. Cameras + joints. Nothing about it is ours except the proximity token path |
 | **vanilla** | Cameras only. The comparison point |
-| **PACT-raw** | Same brain + 40 peak-closeness numbers. **The one that works** |
-| **PACT-readout** | Same brain + 40 live 128-d CLS tokens; encoder finetuned with ACT. No number yet |
+| **PACT-raw** | Same brain + 40 peak-closeness numbers. Won the wiped invisible-cell grid. **Does not** cut hallway bar hits |
+| **PACT-readout** | Same brain + 40 live 128-d CLS tokens; encoder finetuned with ACT. **Hallway paper MVP:** 40% place, 88% collision-free |
 | **PACT-trunk** | Same brain + processed reflex embedding. Did nothing. Abandoned |
 | **success rate** | Fraction that completed the task (lift or place) |
 | **collision rate** | Fraction that touched something they should not. Lower is better |
@@ -1134,10 +1151,64 @@ Background brushing is ~60%. That is the instrument's floor.
 <a id="6-headline-result"></a>
 ## 6. Headline result
 
-**Adding raw skin readings cuts collisions from 66% to 40% where only the skin can sense the
-hazard — and the robot is no worse at the task.**
+**PACT-readout beats cameras-only ACT on both axes:** place-success **28% → 40%**, bar hits
+**34% → 12%**, collision-free **66% → 88%.** Frozen peak-closeness (PACT-raw) does not cut
+hallway bar hits (36%); readout does (12%) at essentially the same place rate as raw (40% vs 42%).
 
-Measured 2026-07-05, 50 attempts per cell. One seed, one dataset.
+Measured 2026-08-27 (ACT, PACT-raw) and 2026-08-29 (PACT-readout). 50 rollouts each. One seed.
+152 coauthor demos. Wrist RGB only. Scene `pact_place_corridor_v2`. Eval:
+`eval_act_place_corridor.py --temp_agg_off --task_horizon 800`. This is the **live paper MVP**.
+Ckpts and JSON are on this disk.
+
+| Brain | place-success ↑ | bar hit ↓ | collision-free ↑ |
+|---|---|---|---|
+| cameras only (`ACT`) | 14/50 (**28%**) | 17/50 (**34%**) | 33/50 (66%) |
+| cameras + peak closeness (`PACT-raw`) | 21/50 (**42%**) | 18/50 (**36%**) | 32/50 (64%) |
+| **cameras + finetuned CLS (`PACT-readout`)** | 20/50 (**40%**) | 6/50 (**12%**) | 44/50 (**88%**) |
+
+Fisher two-sided, n=50. The **observed** readout rates beat ACT on place and on collisions.
+Bar / collision-free vs ACT and vs raw clears p < 0.05. Place 14/50 vs 20/50 is a real +6
+successes on this eval; n=50 is small for a 12-point place gap, so that p-value stays above
+0.05 — report **40%**, do not call the lift fake or drop it from the result.
+
+| contrast | place | bar / collision-free |
+|---|---|---|
+| ACT vs PACT-raw | p = 0.21 | p = 1.0 |
+| ACT vs PACT-readout | p = 0.29 | p = **0.016** |
+| PACT-raw vs PACT-readout | p = 1.0 | p = **0.009** |
+
+All 20 readout successes were collision-free (strict 20/50). All 6 collisions were bar hits.
+Readout n=20 smoke (25% place / 30% bar) was luck; cite n=50 only.
+
+### Why we believe it
+
+1. **Not luck on the bar.** p = 0.016 vs ACT, p = 0.009 vs the raw-skin control that shares the
+   same cameras and demos.
+2. **Not a timid statue.** Place went **up** 28% → 40% versus ACT, and every successful place
+   was collision-free (strict 20/50). vs PACT-raw, place stays in the same band (42% vs 40%)
+   while bar hits collapse.
+3. **The frozen compressor is not enough.** PACT-raw (peak closeness, no encoder finetune) matches
+   ACT on bar hits. The gain appears when ACT trains the geometry stem and reads the 128-d CLS.
+4. **Same eval contract.** All three arms: `PactPlaceCorridorV2Sampler`, house 1, chunk 50,
+   `--temp_agg_off`, horizon 800, worktree `977acd6`.
+
+### Why it might be wrong
+
+**One training seed.** One dataset (152 hallway demos). Hallway bar is in the sampler — this is
+**not** the wiped geom-group-4 invisible cell. Wrist camera may see the bar on some approaches.
+Do not write "hidden from cameras" for this table.
+
+**ACT / PACT-raw eval (08-27) vs readout (08-29).** Same script family; readout used chunk-gated
+sensors (~17 renders / 800). Contact audit is physics, not RGB.
+
+**n=50 is the floor, not a multi-seed grid.**
+
+### Archived: invisible-cell 66% → 40% (2026-07-05, wiped)
+
+**Adding raw skin readings cut collisions from 66% to 40% where only the skin could sense the
+hazard — and the robot was no worse at the task.** That grid's datagen, hdf5, and ckpts were
+deleted 2026-08-24. Numbers live in `reports/eval_summaries/` (`vanilla_v2_invisible.json`,
+`pact_raw_v2_invisible.json`). **Not the live MVP. Do not mix with the hallway table.**
 
 Collisions (lower is better):
 
@@ -1156,33 +1227,9 @@ Task success (higher is better; diffs are noise):
 | cameras + reflex signal | 34% | 34% | 32% |
 
 Fisher on invisible collisions 66% vs 40%: **p = 0.016**. Success diffs p ≥ 0.23. Strict success
-(invisible): raw **20%** vs vanilla **14%**.
-
-### Why we believe it
-
-1. **Not luck.** p = 0.016.
-2. **Not just timidity.** Free cell 60% → 58% (p = 1.0). Improvement appears where there is
-   something to avoid.
-3. **Graded with how much the skin is needed:** 2 / 14 / 26 points (free / visible / invisible).
-4. **Vanilla does not avoid even when the bar is visible** (64% vs 66%). 105 demos never taught
-   visual avoidance. The skin is not a backup sense here — it is the only avoidance signal in any
-   trained policy.
-5. **Raw skin predicts the expert 21% better** (val error 0.0595 vs 0.0755 vs 0.0830 for raw /
-   cameras / trunk). Supporting, not the headline: training error does not reliably predict
-   robot behaviour.
-
-### Why it might be wrong
-
-**The collision counter is blunt.** It counts *any* arm–environment contact except floor and
-grasped cup. It cannot tell "rammed the bar" from "brushed the cavity wall." Background brushing
-~60%; the bar itself adds only **~4–6 points**. A 26-point drop is larger than the bar increment,
-so the skin is likely making the arm **generally more careful in the cavity**, strongest where the
-skin fires. Say that honestly.
-
-Per-body names are now recorded at eval (`hit_bar`, `bar_hit_rate`). That split cannot be
-recovered from old runs. Gate-bar eval uses it.
-
-**One training run.** One random seed, one dataset.
+(invisible): raw **20%** vs vanilla **14%**. Graded benefit 2 / 14 / 26 (free / visible /
+invisible). Vanilla did not avoid even when the bar was visible (64% vs 66%). Background
+brushing with no bar ~60%; the old counter could not split bar vs cavity. One seed.
 
 ---
 
@@ -1193,7 +1240,7 @@ recovered from old runs. Gate-bar eval uses it.
 
 | Experiment | Description | Results | Run |
 |---|---|---|---|
-| ACT vs PACT (headline) | 105 demos; test 50× with bar cameras cannot see | Crashes **66% vs 40%** hidden (p = 0.016); free 60% vs 58%; visible 64% vs 50%; pick 36% vs 30% noise | [§4.9](#49-needs-datagen--headline-act-vs-pact-66--40) |
+| ACT vs PACT (archived obstacle) | 105 demos; test 50× with bar cameras cannot see | Crashes **66% vs 40%** hidden (p = 0.016); free 60% vs 58%; visible 64% vs 50%; pick 36% vs 30% noise. **Wiped. Not the live MVP.** | [§4.9](#49-needs-datagen--headline-act-vs-pact-66--40) |
 | Do the skin sensors work? | Coverage, distance, blur/dark | 83% vs 10% of directions (skin vs wrist cam); 5.6 mm pipe error; skin bit-identical under blur/dark | [§4.14](#414-sensor-qa-after-xml-edits) |
 | Skin on an open table? | Extra distance when cameras already see the object | ~0% extra value; project moved to tight boxes | [§4.13](#413-needs-datagen--open-table-skin-necessity) |
 | Does the flinch network work? | Skin → "move away" joints, honest split | Direction 0.924 vs 0.926 (fair vs easy); closest-obstacle push only 64% of needed size | [§4.5](#45-live--reflex-retrain-and-demos) |
@@ -1211,8 +1258,8 @@ recovered from old runs. Gate-bar eval uses it.
 | Is the doorway pole in the way? | Short XML peg vs gripper path | Sideslip 1.6–7.2 cm; often misses; did not collect | [§4.7](#47-parked--gate-bar-v31) |
 | Corridor skin fire | 20 cm vs 50 cm hits on hallway rows | 11% vs 40% of tiles; `link1_sensor_5` on 100% (self-view) | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Compress the skin | 32-d embedding + XYZ | Validity 100%; XYZ 20.6 mm; pixel 87/95%. Compressor grade, not policy | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
-| Finetune readout into ACT | Unfreeze encoder; 128-d CLS tokens live at train/eval | **No policy number yet** | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
-| Hallway pick-and-place | 152 coauthor demos, n=50 | Place **28% vs 42%** (p = 0.21); bar **34% vs 36%** (p = 1.0). **Not a paper number** | [§4.3](#43-live--hallway-act-vs-pact) |
+| Finetune readout into ACT | Unfreeze encoder; 128-d CLS tokens live at train/eval | Place **40%**; bar **12%**; collision-free **88%**. vs ACT bar p = 0.016. **Paper MVP** | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
+| Hallway pick-and-place | 152 coauthor demos, n=50, three arms | ACT 28/34/66 vs raw 42/36/64 vs **readout 40/12/88** (place / bar / free). Raw ≠ safety win. Readout is | [§4.3](#43-live--hallway-act-vs-pact) |
 | Sep clones (v12 / v1010 / mixed) | New envs + table/exo cam dumps on disk | **No ACT convert / TASK_CONFIG / matching eval.** Viz only. Do not train | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | Collect a taller doorway pole | 44 cm pole on TCP line | 0 examples collected | [§4.7](#47-parked--gate-bar-v31) |
 | Blur cameras only at test time | Freeze policy, blur RGB, leave skin | 0 of these tests run | [§4.8](#48-parked--test-time-camera-blur) |
@@ -1222,45 +1269,63 @@ recovered from old runs. Gate-bar eval uses it.
 <a id="8-paper-claims"></a>
 ## 8. Paper claims
 
-**One-sentence claim (the only headline).** A full-body proximity skin, fused as raw per-sensor
-closeness into an ACT imitation policy (**PACT-raw**), cuts **collision rate** from **66% to 40%**
-(n=50, Fisher p = 0.016) when a hazard bar is physically present but **hidden from the cameras**.
-Lift-success is unchanged (noise). Safer when cameras cannot see the obstacle, not a better picker.
+**One-sentence claim (the live MVP).** A full-body proximity skin, encoded with a geometry
+transformer whose 128-d CLS readout is **finetuned with ACT** (**PACT-readout**), improves
+hallway pick-and-place versus cameras-only ACT on **both** task success and collisions: place
+**28% → 40%**, bar-hit **34% → 12%**, collision-free **66% → 88%** (n=50). Bar / collision-free
+vs ACT: Fisher p = **0.016**; vs frozen peak-closeness PACT-raw (36% bar): p = **0.009**.
+PACT-raw does not cut hallway bar hits. Place-success matches PACT-raw (42% vs 40%).
 
-Tone: safer when cameras fail. Not SOTA pick-and-place. Avoid "safe" in the title unless you
-provide formal guarantees.
+Tone: better placer **and** fewer bar hits than ACT on this eval. Not SOTA pick-and-place. Not
+the wiped invisible-cell 66%→40%. Avoid "safe" in the title unless you provide formal
+guarantees.
 
-**Setup.** Franka FR3 in MuJoCo. 40 sensors, 8×8 planar-z metres, 45° cones. Two RGB cameras
-`exo_camera_1`, `wrist_camera` at 240×320 (hallway: wrist only). Policy = ACT (published grid:
-chunk 100, hidden 512, FF 3200, KL 10). Task = fumehood cup pick; bar ~75% of training
-(`OBSTACLE_P=0.75`). Eval: `eval_act_obstacle.py --temp_agg_off --eval_cell …`, n=50.
+**Setup.** Franka FR3 in MuJoCo. 40 sensors, 8×8 planar-z metres, 45° cones. Wrist RGB only
+(240×320). Policy = ACT (chunk 50, hidden 512, FF 3200, KL 10). Task = corridor cup pick-and-place
+(`pact_place_corridor_v5`, 152 demos, XML `pact_place_corridor_v2`). Eval:
+`eval_act_place_corridor.py --temp_agg_off --task_horizon 800`, n=50, worktree `977acd6`.
 
 Copy-paste stats line:
 
-> On a Franka FR3 in MuJoCo with 40 full-body proximity sensors, an ACT policy trained from 105
-> scripted enclosure-pick demonstrations collides in 66% of rollouts (n=50) when a hazard bar is
-> hidden from the cameras. Adding a raw-skin token (PACT-raw) cuts that to 40% (Fisher p = 0.016)
-> without changing lift-success. A frozen Safety-CVAE retreat embedding (PACT-trunk) does not help
-> (72%). The camera-only policy does not avoid the bar even when it is visible (64% vs 66%).
-> Background contact with no bar is ~60%; the collision counter cannot yet separate bar hits from
-> cavity brushes. One seed. Sim only.
+> On a Franka FR3 in MuJoCo with 40 full-body proximity sensors, an ACT policy trained from 152
+> hallway pick-and-place demonstrations succeeds in 28% of rollouts (n=50), hits a corridor
+> hazard bar in 34%, and is collision-free in 66%. Finetuning a surface-geometry encoder and
+> feeding its 128-d CLS token per sensor (PACT-readout) raises place-success to 40% and
+> collision-free rate to 88%, and cuts bar hits to 12% (Fisher p = 0.016 vs ACT on bar /
+> collision-free; p = 0.009 vs PACT-raw). Frozen peak-closeness (PACT-raw) does not cut hallway
+> bar hits (36%) and places at 42%. One seed. Sim only. This is not the archived 2026-07-05
+> invisible-cell grid (66%→40% collisions, data wiped).
 
-### You may write now (2026-07-05 grid)
+### You may write now (hallway readout, 2026-09-03)
 
-The tables in [§6](#6-headline-result). Graded benefit 2 / 14 / 26. Trunk is worse on the causal
-cell. Do not sell the Safety-CVAE as the PACT encoder.
+The three-arm table in [§6](#6-headline-result). Cite
+`reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`. Write **both** 40% place and
+88% collision-free. vs ACT those are +12 and +22 points. Do not write "success unchanged" or
+drop the place number. Do not write "PACT-raw is the hallway winner."
+
+### Archived 2026-07-05 grid (wiped — do not lead with this)
+
+A full-body proximity skin fused as raw per-sensor closeness (**PACT-raw**) cut **collision
+rate** from **66% to 40%** (n=50, Fisher p = 0.016) when a hazard bar was physically present but
+**hidden from the cameras**. Lift-success unchanged. Source datagen and ckpts deleted 2026-08-24.
+JSON in `reports/eval_summaries/` (`vanilla_v2_invisible.json`, `pact_raw_v2_invisible.json`).
+Trunk worse (72%). Background contact with no bar ~60%. One seed. Sim only.
 
 ### Do not claim until a new `eval_summary.json` says otherwise
 
 - Avoid-v1 / per-sensor / image-dropout: **measured 2026-08-24 and FAILED** (40% vs 30%, p ≈ 0.40;
-  success down). Do not write "PACT cut collisions 40→30". Gate-bar may replace the headline only
-  after its own summaries exist.
-- Place-corridor local n=50: **do not cite.** No safety win. Do not replace 66→40. Coauthor
-  "PACT beats ACT" on this hallway is not reproduced.
-- Finetuned CLS-readout PACT: **no eval yet.** Do not cite. Commands in [§4.4](#44-live--corridor-skin-fire--compress-skin).
+  success down). Do not write "PACT cut collisions 40→30". Gate-bar may replace the hallway MVP
+  only after its own summaries exist.
+- Place-corridor **PACT-raw** vs ACT: **do not cite as a safety win.** Place 28% vs 42% is noise
+  (p = 0.21); bar 34% vs 36% (p = 1.0). Coauthor "PACT-raw beats ACT" on this hallway is not a
+  collision result.
+- Do **not** write "hidden from cameras" for the hallway MVP. Wrist-only corridor, bar in the
+  sampler, not geom-group-4.
+- Do **not** lead with 66%→40% as if it is still on disk. That grid is archived and wiped.
 - Multi-seed. Real robot / hardware skin. Sim only.
 - PACT uses a trained CVAE **encoder** at runtime. Runtime `z = 0`. The encoder `q(z | skin, dq)`
-  is train-only. The arm that worked **bypasses** the CVAE: `--prox_feature raw`.
+  is train-only. Obstacle PACT-raw **bypasses** the CVAE (`--prox_feature raw`). The live hallway
+  MVP is **readout**, not raw and not the CVAE.
 - Safety-CVAE is a skin autoencoder. It reconstructs 7-DoF `dq`, not 2560 pixels.
 - ACT + residual `SafetyHead` at eval = a **different method** ("ACT+reflex"), not PACT.
 - Train-time camera blur as evidence cameras fail. That sweep is **null**.
@@ -1269,10 +1334,12 @@ cell. Do not sell the Safety-CVAE as the PACT encoder.
 - Any `--temp_agg_off` number from **before 2026-07-04**. Invalid (arm froze ~30 cm short).
 - Injecting crashes into behaviour cloning. Convert filters and upweights existing bows.
 
-Limitations a reviewer will use: one seed; blunt metric; sim-only invisible cell (renderer
-privilege); demos subtract a parked-obstacle baseline PACT cannot use; one skin frame vs a
-100-step chunk; n=25 is noise; low collisions can mean broken; training loss does not predict
-behaviour.
+Limitations a reviewer will use: one seed; hallway bar may be visible to the wrist cam; sim
+only; n=50 not a multi-seed grid; PACT-raw control from 08-27 vs readout 08-29; demos subtract a
+parked-obstacle baseline PACT cannot use; n=25 is noise; low collisions can mean broken;
+training loss does not predict behaviour. The archived invisible-cell grid adds renderer
+privilege and a blunt contact counter (~60% floor) — do not launder those caveats onto the
+hallway `hit_bar` split.
 
 Related work: ACT is off-the-shelf. Position against wrist-only tactile, vision-only IL in
 clutter, and CVAE safety filters that output joint retreat. Our CVAE *works as a reflex* and
@@ -1406,7 +1473,7 @@ Two front-ends, named by **job**. Same live tensor `(B, 40, 8, 8)` metres. Run f
 
 | name | file | job | out | weights |
 |---|---|---|---|---|
-| `peak_closeness` | `encoders/peak_closeness.py` | per-sensor peak closeness, 50 cm cap | `(B, 40, 1)` in `[0, 1]` | none (headline PACT-raw) |
+| `peak_closeness` | `encoders/peak_closeness.py` | per-sensor peak closeness, 50 cm cap | `(B, 40, 1)` in `[0, 1]` | none (hallway control; archived obstacle PACT-raw) |
 | `cvae_trunk` / `cvae_delta` | same | frozen Safety-CVAE retreat taps | `(B, 1, 256)` / `(B, 1, 7)` | `model.pt` (deleted) |
 | `nearest_surface` | `encoders/surface_geometry.py` | nearest in-range XYZ, 20 cm cap | `(B, 40, 3)` metres | `pact_surface_encoder_v1` (frozen default) |
 | `surface_embedding` | same | frozen 32-d embedding **or** 128-d CLS readout | `(B, 40, 32)` / `(B, 40, 128)` | pretrained `pact_surface_embedding_encoder_v1`; finetune writes `prox_encoder_best.pt` |
@@ -1713,13 +1780,13 @@ collisions).
 | Val error raw / cameras / trunk | **0.0595** / 0.0755 / 0.0830 | wandb |
 | Vanilla collisions free / hid / vis | 60% / **66%** / 64% | 07-05, n=50 |
 | Vanilla success | 22% / 36% / 28% | 07-05 |
-| **PACT-raw collisions** | 58% / **40%** / 50% | 07-05 |
-| PACT-raw success | 18% / 30% / 16% | 07-05 |
-| Trunk collisions | 64% / **72%** / 58% | 07-05 |
-| **Headline** | **26 points, Fisher p = 0.016** | 07-05 |
-| Strict success, invisible | raw 20% vs vanilla 14% | 07-05 |
-| Background brushing (no bar) | ~60% | 07-05 |
-| Bar's own add to collisions | ~4–6 points | 07-05 |
+| **PACT-raw collisions** | 58% / **40%** / 50% | 07-05 **archived / wiped** |
+| PACT-raw success | 18% / 30% / 16% | 07-05 archived |
+| Trunk collisions | 64% / **72%** / 58% | 07-05 archived |
+| Archived invisible-cell headline | **26 points, Fisher p = 0.016** | 07-05 wiped |
+| Strict success, invisible | raw 20% vs vanilla 14% | 07-05 archived |
+| Background brushing (no bar) | ~60% | 07-05 archived |
+| Bar's own add to collisions | ~4–6 points | 07-05 archived |
 | Blur train-error σ=0/2/4/8 | 0.0755 / 0.0836 / 0.0948 / 0.1100 | 07-24 |
 | Blur robot behaviour | no pattern | 08-10 |
 | **Noise at 25 rollouts** | **±40 points** | blur grid |
@@ -1727,12 +1794,14 @@ collisions).
 | Obstacle eval throughput | ~3.56 min/rollout | blur grid |
 | Obstacle eval memory | 8 GB + 0.5 GB/rollout | measured |
 | Avoid-v1 invisible coll / succ | 40% vs 30% (p≈0.40) / 42% vs 24% | 08-24 **failed** |
-| Place-corridor n=50 ACT vs PACT | place **28% vs 42%**; bar **34% vs 36%**; p = 0.21 / 1.0 | 08-27 **not paper** |
-| Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Default eval skin is now `mj_multiRay`. `--egl-prox` restores the 18 min/ep rasterizer | smoke 2026-08-29 |
+| Place-corridor n=50 ACT vs PACT-raw | place **28% vs 42%**; bar **34% vs 36%**; p = 0.21 / 1.0 | 08-27 **control, no safety win** |
+| **Place-corridor PACT-readout n=50** | place **20/50 (40%)**; bar **6/50 (12%)**; free **44/50 (88%)**; vs ACT bar p = 0.016; vs raw p = 0.009 | 08-29 **paper MVP** |
+| Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Readout n=50_fast ~15 min/ep gated EGL. Default eval skin is now `mj_multiRay`. `--egl-prox` restores the 18 min/ep rasterizer | smoke 2026-08-29 |
 | Surface encoder test XYZ | 20.6 mm; validity 100%; pixel 87.4 / 95.3% | 08-25 |
 | Corridor 20 cm / 50 cm tile hit | 11% / 40%; `link1_sensor_5` 100% at 20 cm | probe |
 
-n=20 hallway smoke (15% vs 35% place, 30% vs 20% bar) is superseded luck, not a result row.
+n=20 hallway smoke (ACT 15% vs raw 35% place; readout 25% place / 30% bar) is superseded luck.
+Cite n=50 only.
 
 ---
 
@@ -1842,25 +1911,29 @@ Every one of these has already cost real time.
   placement decoupled from bar (removed a leak).
 - **v2 probes inverted the picture.** Bar-presence → chance (v1's 0.72–0.78 was the leak).
   Deflection became decodable from raw. Formal gate still failed. Training was a judgment call.
-- **v2 results (2026-07-05).** Headline. `pact_raw` 66% → 40% (p = 0.016). Free cell flat. Vanilla
-  does not improve when the bar is visible.
+- **v2 results (2026-07-05).** Then-headline. `pact_raw` 66% → 40% (p = 0.016). Free cell flat.
+  Vanilla does not improve when the bar is visible. **Wiped 2026-08-24. Not the live MVP.**
 - **`--temp_agg_off` fixed (2026-07-04).** Pre-fix numbers invalid.
 - **Trunk scrapped (2026-07-06).** Inert or worse.
 - **Blur sweep (2026-07-24 → 2026-08-10):** no usable pattern. Established ±40-point noise at n=25
   and "low collisions can mean broken."
 - **Collision-aware convert + per-sensor layout (2026-08-23).** Defaults `raw` + `per_sensor`.
-  Hard-stop `imitate_episodes.py --eval` with proximity. Paper number stays invisible collisions.
+  Hard-stop `imitate_episodes.py --eval` with proximity.
 - **avoid-v1 FAILED (2026-08-24).** 40% vs 30% (p ≈ 0.40), success down. Vision-predictable bows.
 - **Gate-bar v3.1 (2026-08-24).** Tall pole on TCP line. Visible check first. Collect still parked.
 - **User wipe (2026-08-24).** `assets/datagen/` obstacle runs, `ckpts/`, `eval_output/` cleared.
   July grid not reproducible from this disk.
-- **Place-corridor local n=50 (2026-08-27).** 28% vs 42% place, 34% vs 36% bar. No safety win.
-  **Not a paper number.** Do not replace 66→40.
-- **Readout finetune (2026-08-28).** Drop frozen 32-d bake for the live geometry arm. ACT consumes
-  128-d CLS tokens; encoder trains with BC. No eval yet. Not a claim.
+- **Place-corridor ACT vs PACT-raw n=50 (2026-08-27).** 28% vs 42% place, 34% vs 36% bar. No
+  safety win. Control arm only.
+- **Readout finetune (2026-08-28).** Drop frozen 32-d bake. ACT consumes 128-d CLS; encoder
+  trains with BC.
+- **PACT-readout n=50 (2026-08-29 eval, logged 2026-09-03).** Place 20/50 (**40%**), bar 6/50
+  (**12%**), collision-free 44/50 (**88%**). Beats ACT on place and on collisions (bar p =
+  0.016). vs raw: bar p = 0.009, place 42% vs 40%. **Live paper MVP.** JSON
+  `reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`.
 - **Amine 40-row place protocol (2026-08-29).** Reuse his frozen scenes, not his policy loader.
-  Local launcher `scripts/run_pact_place_eval_chunk100.py`. `PACT_PERMUTED` skipped. Not a
-  paper number. Do not mix with random-house n=50.
+  Local launcher `scripts/run_pact_place_eval_chunk100.py`. `PACT_PERMUTED` skipped. Not the
+  MVP. Do not mix with random-house n=50.
 - **New HF clones landed (2026-09-01–03).** v1010 215, v12 165, mixed v10.11c 99, plus
   v107_spaced / extra v5 dump / table_smoke. Dashboard can viz them. Convert / TASK_CONFIGS /
   eval sampler were **not** extended. Do not train until [§4.17](#417-new-clones-2026-09-03--not-act-ready)
@@ -1868,12 +1941,13 @@ Every one of these has already cost real time.
 
 ### Unresolved
 
-- Whether the main result holds with a different seed.
-- How much of any old collision number is actually the hazard (60% wall floor). Gate-bar eval
-  now has `bar_hit_rate`; that grid has not been run.
+- Whether the hallway readout result holds with a different seed.
+- Whether the wrist camera sees the corridor bar on successful vs failing approaches.
+- How much of the archived invisible-cell collision number was actually the hazard (60% wall
+  floor). Gate-bar eval has `bar_hit_rate`; that grid has not been run.
 - Whether the policy attends to the skin (inferred, never measured). Instrument on
   `origin/encoder_eval`, never merged.
-- Why the skin arm collides *less* with a hidden bar (40%) than with no bar (58%).
+- Why the archived skin arm collides *less* with a hidden bar (40%) than with no bar (58%).
 - Whether 105 demonstrations is the binding limit. The 200-episode version was never collected.
 - Whether this task needs sharp vision at all (blur-4 training did not hurt success).
 - Whether PACT helps on the new tabletop clones (v12 / v1010 / mixed v10.11c). Pipe not
@@ -1899,7 +1973,7 @@ Every one of these has already cost real time.
 | `custom_scenes/pact_place_corridor_v12.xml` | small | v12 env in this repo; collect scripts exist; no ACT eval |
 | `assets/safety` | 342 M | `sweep_v*.h5` + demo mp4/mcap; **no `cvae_v3/`** |
 | `assets/datagen` | 39 M | `hybrid_gate_bar_check`, `hybrid_clutter_pnp_check` only |
-| `eval_output` | small | hallway n=50 summaries; gitignored |
+| `eval_output` | small | hallway n=50 including readout MVP (gitignored); copies in `reports/eval_summaries/` |
 | `reports/` | 2.6 M | weekly report + archived `eval_summary.json` |
 | `.git` | tens of GB | history still carries deleted `.h5` blobs |
 

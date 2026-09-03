@@ -1,0 +1,1231 @@
+{
+  "ckpt_dir": "/home/jaydv/code/prox_learning/submodules/act/ckpts/pact_place_corridor_v5/20260825_161821_act_place_corridor_s0",
+  "ckpt_name": "policy_best.ckpt",
+  "task": "pact_place_corridor_v5",
+  "molmospaces_root": "/home/jaydv/code/molmospaces-pact-place",
+  "task_sampler_class": "PactPlaceCorridorV2Sampler",
+  "scene_xml": "/home/jaydv/code/molmospaces-pact-place/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml",
+  "camera_names": [
+    "wrist_camera"
+  ],
+  "num_rollouts": 50,
+  "task_horizon": 800,
+  "chunk_size": 50,
+  "temp_agg_off": true,
+  "use_proximity": false,
+  "success": 14,
+  "total": 50,
+  "success_rate": 0.28,
+  "collision": {
+    "episodes": 50,
+    "success": 14,
+    "success_rate": 0.28,
+    "bar_hits": 17,
+    "bar_hit_rate": 0.34,
+    "collision_free": 33,
+    "collision_free_rate": 0.66,
+    "collision_rate": 0.33999999999999997,
+    "episodes_detail": [
+      {
+        "episode_idx": 0,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 455,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 88,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 1,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 184903,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 114,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 2,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 5149,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 5378,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 40,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 3,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 21062,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 73,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 4,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 15630,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 109,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 5,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 2825,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 646,
+          "hazard_bar": 3138,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 74,
+          "hazard_bar": 409,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 6,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 11184,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 14115,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 47,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 7,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 108509,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 95,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 8,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 21918,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 25096,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 22,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 9,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 50496,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 129,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 10,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 186422,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 73,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 11,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 1832,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 104,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 12,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 123149,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 85,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 13,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 568,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 75,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 14,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 271,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 91,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 15,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 12904,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 93,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 16,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 508,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 62,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 17,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 3880,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 112,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 18,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 17488,
+        "other_environment_frames": 3816,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 819,
+          "hazard_bar": 22186,
+          "other_environment": 4444,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 114,
+          "hazard_bar": 33,
+          "other_environment": 278,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 19,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 51,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 3006,
+          "hazard_bar": 55,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 114,
+          "hazard_bar": 54,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 20,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 475,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 85,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 21,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 175120,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 145,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 22,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 39145,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 89,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 23,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 3822,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 19257,
+          "hazard_bar": 4406,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 175,
+          "hazard_bar": 33,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 24,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 12926,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 15682,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 28,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 25,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 1399,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 4350,
+          "hazard_bar": 1783,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 107,
+          "hazard_bar": 24,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 26,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 2421,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 606,
+          "hazard_bar": 3121,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 91,
+          "hazard_bar": 446,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 27,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 7073,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 89,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 28,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 50293,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 136,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 29,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 11167,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 12595,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 25,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 30,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 12481,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 106,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 31,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 12703,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 17207,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 27,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 32,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 3227,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 113,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 33,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 66478,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 113,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 34,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 1319,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 98,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 35,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 478,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 95,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 36,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 48098,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 119,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 37,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 135019,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 95,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 38,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 4366,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 74,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 39,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 114757,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 127,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 40,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 477,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 93,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 41,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 2545,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 3050,
+          "hazard_bar": 3117,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 121,
+          "hazard_bar": 20,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 42,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 1914,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 6184,
+          "hazard_bar": 2131,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 187,
+          "hazard_bar": 36,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 43,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 3390,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 0,
+          "hazard_bar": 4857,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": null,
+          "hazard_bar": 23,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 44,
+        "success": 0,
+        "hit_bar": 1,
+        "bar_contact_frames": 15838,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 1825,
+          "hazard_bar": 20153,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 137,
+          "hazard_bar": 261,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 45,
+        "success": 1,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 164148,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 108,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 46,
+        "success": 1,
+        "hit_bar": 1,
+        "bar_contact_frames": 2096,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 93157,
+          "hazard_bar": 2185,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 169,
+          "hazard_bar": 13,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 47,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 7683,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 78,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 48,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "right",
+        "contact_class_totals": {
+          "grasp_target": 2705,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 92,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      },
+      {
+        "episode_idx": 49,
+        "success": 0,
+        "hit_bar": 0,
+        "bar_contact_frames": 0,
+        "other_environment_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "intrusion_side": "left",
+        "contact_class_totals": {
+          "grasp_target": 833,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0,
+          "clutter": 0
+        },
+        "first_contact_step": {
+          "grasp_target": 94,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null,
+          "clutter": null
+        }
+      }
+    ]
+  }
+}

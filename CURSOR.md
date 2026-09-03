@@ -22,6 +22,33 @@ Newest session at the top.
 
 ---
 
+## 2026-09-03 — do not dismiss readout place-success
+
+- **When:** 2026-09-03. User: calling 40% place "noise" is wrong; the new model beat ACT on
+  success **and** collision avoidance.
+- **Why:** 20/50 vs 14/50 is a real +12 point place gain on the eval they ran. Fisher p = 0.29
+  only says n=50 is underpowered for a 0.05 star on place — it does not make 40% fake.
+- **What:** README lede, §1, §4.3, §4.4, §6, §8. Report both axes. Drop "safer, not a better
+  placer" / "success is not a significant improvement."
+- **Not done:** second seed. User writes the paper.
+
+---
+
+## 2026-09-03 — hallway readout n=50 is the paper MVP
+
+- **When:** 2026-09-03 America/Denver. User: `eval_output/place_corridor_readout_s0_n50_fast`
+  shows 88% collision-free and 40% success; make that the paper MVP in README.
+- **Why:** Live checkout can reproduce hallway readout. The 2026-07-05 66%→40% grid is wiped.
+  Hallway PACT-raw still has no safety win; the gain is finetuned CLS readout.
+- **What:** `README.md` lede, §1, §4.3 table, §4.4, §5–§8, §13, decision log. Archived JSON
+  copies: `reports/eval_summaries/place_corridor_{vanilla,raw,readout_s0_n50_fast}.json`.
+  Numbers: place 20/50 (40%), bar 6/50 (12%), free 44/50 (88%). Fisher bar vs ACT p = 0.016,
+  vs raw p = 0.009. Place vs ACT p = 0.29 (noise).
+- **How:** Read `eval_summary.json`. Did not re-run eval. Do not mix with invisible-cell 66→40.
+- **Not done:** multi-seed. User writes the paper. Do not overwrite the `n50_fast` eval dir.
+
+---
+
 ## 2026-09-03 — README: new clones + train/eval walkthrough
 
 - **When:** 2026-09-03 ~00:40 America/Denver. User: dump the chat brief into README so
