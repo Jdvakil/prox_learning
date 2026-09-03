@@ -34,7 +34,6 @@ that mirrors the dataset path with the <repo>/data prefix removed:
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
       --each --no-mcap --stride 2
   python scripts/dataset_viz.py --dashboard
-  python scripts/dataset_viz.py --serve
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
   python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
 """
@@ -50,7 +49,6 @@ import sys
 from collections import OrderedDict, Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import cv2
@@ -767,7 +765,6 @@ video { width:100%; background:#000; max-height: 480px; }
   <input id="q" placeholder="filter slug / group / path" size="28"/>
   <select id="kind"><option value="all">all kinds</option></select>
   <label class="chk"><input type="checkbox" id="gaps"/> gaps only</label>
-  <span class="kpis" id="poll"></span>
 </header>
 <div id="app">
   <div id="list"></div>
@@ -775,7 +772,6 @@ video { width:100%; background:#000; max-height: 480px; }
 </div>
 <script type="application/json" id="bootstrap">%%BOOTSTRAP%%</script>
 <script>
-const POLL_MS = 4000;
 let cat = {rows:[]};
 let sel = null, tl = null, cur = null, cache = {};
 const $ = id => document.getElementById(id);
@@ -978,7 +974,20 @@ function zoom(e) {
   ["pq","pv","ps"].forEach(id => { if ($(id)) Plotly.relayout(id, r); });
 }
 
-async function select(r) {
+function loadTimelineJs(slug) {
+  return new Promise((resolve, reject) => {
+    const prev = document.getElementById("tl-script");
+    if (prev) prev.remove();
+    const s = document.createElement("script");
+    s.id = "tl-script";
+    s.src = slug + "/timeline.js";
+    s.onload = () => resolve(window.DATASET_TIMELINE || null);
+    s.onerror = () => reject(new Error("timeline.js"));
+    document.head.appendChild(s);
+  });
+}
+
+function select(r) {
   if (!r) return;
   sel = r;
   try { history.replaceState(null, "", "#" + encodeURIComponent(r.slug)); } catch (e) {}
@@ -986,17 +995,15 @@ async function select(r) {
   tl = cache[r.slug] || null;
   renderMain();
   if (cache[r.slug]) return;
-  try {
-    const resp = await fetch(r.slug + "/timeline.json");
-    if (!resp.ok) throw new Error(resp.status);
-    tl = await resp.json();
-    cache[r.slug] = tl;
-    if (sel && sel.slug === r.slug) renderMain();
-  } catch (e) {
-    tl = cache[r.slug] || null;
+  loadTimelineJs(r.slug).then(data => {
+    if (!sel || sel.slug !== r.slug) return;
+    tl = data;
+    if (data) cache[r.slug] = data;
+    renderMain();
+  }).catch(() => {
     const hud = $("hud");
-    if (hud && !tl) hud.textContent = "plots need --serve (file:// cannot fetch timeline.json)";
-  }
+    if (hud && !tl) hud.textContent = "no timeline.js — python scripts/dataset_viz.py --dashboard";
+  });
 }
 
 function pickInitial() {
@@ -1005,32 +1012,6 @@ function pickInitial() {
   const fromHash = hash && rows.find(x => x.slug === hash);
   const shown = filtered();
   select(fromHash || shown[0] || rows[0] || null);
-}
-
-async function loadCat() {
-  try {
-    const r = await fetch("audit.json?t=" + Date.now());
-    if (!r.ok) throw new Error(r.status);
-    const next = await r.json();
-    cat = next;
-    renderHeader();
-    renderList();
-    $("poll").textContent = "live " + new Date().toLocaleTimeString();
-    if (sel) {
-      const still = (cat.rows||[]).find(x => x.slug === sel.slug);
-      if (still && still.n_videos !== sel.n_videos) {
-        sel = still;
-        delete cache[sel.slug];
-        select(sel);
-      } else if (still) {
-        sel = still;
-      }
-    } else {
-      pickInitial();
-    }
-  } catch (e) {
-    $("poll").textContent = "file:// snapshot — python scripts/dataset_viz.py --serve  for live + plots";
-  }
 }
 
 $("q").oninput = $("kind").onchange = $("gaps").onchange = renderList;
@@ -1056,8 +1037,6 @@ document.addEventListener("keydown", e => {
 try { cat = JSON.parse($("bootstrap").textContent); } catch (e) { cat = {rows:[]}; }
 renderHeader();
 pickInitial();
-loadCat();
-setInterval(loadCat, POLL_MS);
 </script>
 </body>
 </html>
@@ -1090,15 +1069,34 @@ def _collect_audit_rows(out_base: Path) -> list[dict]:
     return rows
 
 
+def write_timeline_js(out_dir: Path, timeline: dict | None = None) -> None:
+    """timeline.js is a script tag payload so VS Code / file preview can plot without fetch."""
+    if timeline is None:
+        src = out_dir / "timeline.json"
+        if not src.is_file():
+            return
+        raw = src.read_text().strip()
+        dst = out_dir / "timeline.js"
+        if dst.is_file() and dst.stat().st_mtime >= src.stat().st_mtime:
+            return
+    else:
+        raw = json.dumps(timeline)
+        (out_dir / "timeline.json").write_text(raw)
+    (out_dir / "timeline.js").write_text("window.DATASET_TIMELINE = " + raw + ";\n")
+
+
 def write_audit_index(
     out_base: Path,
     n_skipped_dups: int = 0,
     quiet: bool = False,
-    html: bool = True,
 ) -> None:
-    """Write the dashboard catalog. Cheap. No encode. html=False skips index.html."""
+    """Write the dashboard catalog. Cheap. No encode."""
     out_base.mkdir(parents=True, exist_ok=True)
     rows = _collect_audit_rows(out_base)
+    for rec in rows:
+        slug = rec.get("slug")
+        if slug:
+            write_timeline_js(out_base / slug)
     kinds = Counter(r.get("kind") or "?" for r in rows)
     catalog = {
         "n": len(rows),
@@ -1111,47 +1109,10 @@ def write_audit_index(
         "rows": rows,
     }
     (out_base / "audit.json").write_text(json.dumps(catalog) + "\n")
-    if html:
-        boot = json.dumps(catalog).replace("</", "<\\/")
-        (out_base / "index.html").write_text(_AUDIT_HTML.replace("%%BOOTSTRAP%%", boot))
+    boot = json.dumps(catalog).replace("</", "<\\/")
+    (out_base / "index.html").write_text(_AUDIT_HTML.replace("%%BOOTSTRAP%%", boot))
     if not quiet:
         print(f"audit index  {out_base / 'index.html'}  n={len(rows)}")
-
-
-def serve_dashboard(out_base: Path, port: int) -> None:
-    write_audit_index(out_base)
-    directory = str(out_base)
-
-    class Handler(SimpleHTTPRequestHandler):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, directory=directory, **kwargs)
-
-        def log_message(self, fmt, *args):
-            sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))
-
-        def end_headers(self):
-            self.send_header("Cache-Control", "no-store")
-            super().end_headers()
-
-        def do_GET(self):
-            path = self.path.split("?", 1)[0]
-            if path in ("/", "/index.html"):
-                write_audit_index(out_base, quiet=True)
-            elif path == "/audit.json":
-                write_audit_index(out_base, quiet=True, html=False)
-            super().do_GET()
-
-    class Server(ThreadingHTTPServer):
-        allow_reuse_address = True
-
-    httpd = Server(("127.0.0.1", port), Handler)
-    print(f"dashboard  http://127.0.0.1:{port}/")
-    print("new --each audits show up on refresh / 4s poll.  Ctrl-C stop.")
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\nstop")
-        httpd.server_close()
 
 
 def discover(root: Path) -> tuple[str, list[EpisodeRef]]:
@@ -1691,8 +1652,8 @@ _HTML = r"""<!DOCTYPE html>
     <div id="ps" class="plot"></div>
   </div>
 </main>
+<script src="timeline.js"></script>
 <script>
-fetch("timeline.json").then(r => r.json()).then(init);
 function init(tl) {
   document.getElementById("title").textContent = tl.title + "  (" + tl.n_episodes + " eps, " +
     (tl.duration_s).toFixed(1) + "s)";
@@ -1772,6 +1733,7 @@ function init(tl) {
   };
   if (tl.episodes.length) select(tl.episodes[0], false);
 }
+if (window.DATASET_TIMELINE) init(window.DATASET_TIMELINE);
 </script>
 </body>
 </html>
@@ -1780,7 +1742,7 @@ function init(tl) {
 
 def write_html(out_dir: Path, timeline: dict) -> None:
     (out_dir / "index.html").write_text(_HTML)
-    (out_dir / "timeline.json").write_text(json.dumps(timeline))
+    write_timeline_js(out_dir, timeline)
 
 
 def downsample_series(t: list, series: dict, max_pts: int = 8000) -> tuple[list, dict]:
@@ -2490,16 +2452,10 @@ def main() -> None:
     ap.add_argument("--include-depth", action="store_true")
     ap.add_argument("--dashboard", action="store_true",
                     help="rebuild root index.html + audit.json only (no encode)")
-    ap.add_argument("--serve", nargs="?", const=8765, type=int, default=None,
-                    metavar="PORT",
-                    help="rebuild dashboard and serve it (default port 8765)")
     args = ap.parse_args()
 
-    if args.dashboard or args.serve is not None:
-        if args.serve is not None:
-            serve_dashboard(_OUT_BASE, args.serve)
-        else:
-            write_audit_index(_OUT_BASE)
+    if args.dashboard:
+        write_audit_index(_OUT_BASE)
         return
 
     if args.reencode is not None:
@@ -2513,7 +2469,7 @@ def main() -> None:
         return
 
     if args.data is None:
-        raise SystemExit("pass --data PATH  or  --dashboard  or  --serve  or  --reencode DIR")
+        raise SystemExit("pass --data PATH  or  --dashboard  or  --reencode DIR")
 
     src = args.data.expanduser().resolve()
     catalog = [] if src.is_file() else scan_dataset_roots(src, include_eval=args.include_eval)

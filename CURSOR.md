@@ -22,6 +22,36 @@ Newest session at the top.
 
 ---
 
+## 2026-09-01 — dashboard: no HTTP server
+
+- **When:** 2026-09-01. User on SSH, previews HTML from VS Code. Kill `--serve`.
+- **Why:** `--serve` is a local `http.server`. Useless over SSH. `fetch` of
+  JSON also dies in VS Code Simple Browser / `file://`.
+- **What:** Drop `--serve` / `serve_dashboard`. Catalog stays baked in
+  `index.html`. Plots load via `timeline.js` (`window.DATASET_TIMELINE = …`).
+  `--dashboard` writes those js files from existing `timeline.json`. README
+  §4.2.1 + trap 27.
+- **How:** `<script src="slug/timeline.js">` works without an HTTP server.
+- **Not done:** User `--dashboard` then Simple-Browser the root `index.html`.
+
+---
+
+## 2026-09-01 — dataset viz dashboard
+
+- **When:** 2026-09-01. User: root
+  `experiments_output/default/dataset_viz/index.html` is a crude table; make a
+  real dashboard (stats, plots, clips) that stays cheap as data arrives fast.
+- **Why:** Old audit HTML baked one `<video>` per dataset. Browser preloaded
+  every clip. No filter, no Plotly, no live catalog.
+- **What:** `scripts/dataset_viz.py` writes a SPA dashboard. `--dashboard`
+  rebuilds catalog only. `--each` rewrites the catalog after every dataset.
+  New audits get `skin_min_min` / `skin_min_mean`. README §4.2.1 + trap 27.
+- **How:** Catalog is metadata only. One player (`preload=none`). Bootstrap
+  JSON inside `index.html`.
+- **Not done:** superseded by the no-server block above.
+
+---
+
 ## 2026-09-01 — dataset viz dashboard
 
 - **When:** 2026-09-01. User: root

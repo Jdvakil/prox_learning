@@ -249,7 +249,7 @@ row per dataset (`DUP` = nested copy of openfront 52 / raw_h5). `--each` writes 
 dir per **unique** row and rebuilds the root dashboard (`index.html` + `audit.json`).
 `results/` eval rollouts stay out unless `--include-eval`. `--keep-dups` keeps the
 copies. Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
-finishes. Browse with `--serve`, not a Cursor preview of every mp4.
+finishes. Open the root `index.html` in VS Code (Simple Browser). No local HTTP server.
 
 **The output location is fixed — there is no `--out` flag (removed 2026-08-31).** Every run
 writes under `experiments_output/default/dataset_viz/`, in a folder that mirrors the dataset
@@ -263,22 +263,16 @@ path with the `data/` prefix removed:
 | `/mnt/scratch/ds` (outside the checkout) | `…/dataset_viz/mnt/scratch/ds/` |
 
 A single `.h5` file maps to `<parent>/<stem>/`. The root
-`experiments_output/default/dataset_viz/index.html` is a **dashboard**, not a
-table of preloaded videos. It reads `audit.json` (one row of metadata per dataset)
-and loads **one** clip plus `timeline.json` plots when you click a row. Opening
-the HTML as `file://` shows the baked catalog and plays clips; Plotly plots and
-live refresh need a tiny HTTP server because browsers block `fetch` on
-`file://`:
+`experiments_output/default/dataset_viz/index.html` is a **dashboard**: catalog
+baked into the page (one metadata row per dataset), **one** clip at a time,
+plots from `timeline.js` (a `<script>` payload — VS Code / file preview cannot
+`fetch` JSON). Open that HTML in VS Code Simple Browser. After new encodes:
 
 ```bash
-python scripts/dataset_viz.py --dashboard   # rewrite catalog only, no encode
-python scripts/dataset_viz.py --serve       # http://127.0.0.1:8765/
+python scripts/dataset_viz.py --dashboard   # rewrite catalog + timeline.js, no encode
 ```
 
-`--serve` re-scans nested `audit.json` files on each catalog request, so a
-parallel `--each` run shows new datasets within a few seconds. `--each` also
-rewrites the catalog after every dataset. Do not open the root `index.html` in
-Cursor's simple preview if you want plots — use `--serve`. Folders written
+`--each` also rewrites the catalog after every dataset. Folders written
 before 2026-08-31 use the old flat `a_b_c` slug; they still show in the index —
 delete them or re-run to get the nested layout. `--force` redoes a dataset that
 already has an audit plus at least one video.
@@ -339,11 +333,9 @@ cd /home/jaydv/code/prox_learning
 # catalog everything under data/ (no write)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
 
-# rewrite the dashboard catalog after encodes (cheap)
+# rewrite the dashboard catalog after encodes (cheap). then open
+# experiments_output/default/dataset_viz/index.html in VS Code Simple Browser
 python scripts/dataset_viz.py --dashboard
-
-# browse stats + one clip + plots (plots need this, not file://)
-python scripts/dataset_viz.py --serve
 
 # smoke one viz per dataset (2 eps each)
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
@@ -377,7 +369,7 @@ python scripts/dataset_viz.py \
     --max-episodes 2
 ```
 
-Open `http://127.0.0.1:8765/` after `--serve`, or any `episodes/<type>/*.mp4` in Cursor / VS Code (H.264
+Open `experiments_output/default/dataset_viz/index.html` in VS Code Simple Browser, or any `episodes/<type>/*.mp4` in the editor (H.264
 `yuv420p` — MPEG-4 `mp4v` will not play in the IDE). Foxglove: open `dataset.mcap` in
 [Foxglove](https://app.foxglove.dev) and import `foxglove_layout.json` from the same out dir.
 `--no-mcap` / `--no-video` skip one side. `--stride 2` halves cost and keeps real-time
@@ -1582,10 +1574,10 @@ Every one of these has already cost real time.
     dump still has wrist only — `--cam3d` projects onto wrist, not table.
 27. **Root `dataset_viz/index.html` is not a video wall.** The old audit page
     put a `<video preload>` in every row and the browser fetched every clip.
-    The dashboard fetches `audit.json` plus one `timeline.json` and one mp4.
-    `file://` cannot `fetch` those JSON files — use
-    `python scripts/dataset_viz.py --serve`. `--dashboard` is the no-encode
-    catalog rebuild when you are not serving.
+    The dashboard bakes the catalog into the HTML and loads one mp4 plus
+    `timeline.js` (script tag, not `fetch`, so VS Code Simple Browser works
+    over SSH). `--dashboard` rebuilds that catalog without encode. There is
+    no `--serve` — this box is used over SSH.
 
 ---
 

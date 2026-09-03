@@ -77,12 +77,19 @@ def test_write_audit_index_dashboard(tmp_path):
         "groups": ["free"],
         "video": "episodes/free/0000_house_1_traj_0.mp4",
     }))
+    (ds / "timeline.json").write_text(json.dumps({
+        "title": "pick", "t": [0.0], "qpos": {}, "qvel": {}, "skin_min": [],
+        "episodes": [], "n_episodes": 2, "duration_s": 1.0,
+    }))
     write_audit_index(tmp_path, quiet=True)
     html = (tmp_path / "index.html").read_text()
     cat = json.loads((tmp_path / "audit.json").read_text())
+    js = (ds / "timeline.js").read_text()
     assert "%%BOOTSTRAP%%" not in html
     assert "dataset viz" in html
     assert "molmo/pick" in html
+    assert "fetch(" not in html
+    assert js.startswith("window.DATASET_TIMELINE")
     assert cat["n"] == 1
     assert cat["n_videos"] == 2
     assert cat["rows"][0]["slug"] == "molmo/pick"
