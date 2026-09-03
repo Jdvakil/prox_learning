@@ -22,6 +22,28 @@ Newest session at the top.
 
 ---
 
+## 2026-09-03 — README: new clones + train/eval walkthrough
+
+- **When:** 2026-09-03 ~00:40 America/Denver. User: dump the chat brief into README so
+  the other desktop has it in the morning without this chat.
+- **Why:** Sep HF clones (v1010, v12, mixed v10.11c, …) landed; README disk truth was
+  still 2026-08-27. Train/eval is v5-only. User asked how to train the new envs; answer
+  was "do not copy-paste; wire first." That has to live in the cookbook.
+- **What:** `README.md` only (no new markdown).
+  - §1 disk truth → 2026-09-03. New-clone row. Live train set still v5 only.
+  - §2 routing: train new clones / skeptic walkthrough → §4.17; leftover readout → §4.4.
+  - §4 intro: viz-only warning.
+  - **§4.17** inventory, fork A vs B, wiring list, convert→train→eval skeptic
+    walkthrough, v5 leftover eval cmd, morning next.
+  - §7 one-line row. §10 token-budget lie (320 vs “40”). `TASK_CONFIGS` table. Scripts
+    map. Traps 29–30. Decision log + unresolved. §16 disk table + pipeline diagram.
+- **How:** Disk counts from `data/` + `convert_meta.json` + `constants.py` + live
+  `prox_config.json`. No convert/train/eval code change.
+- **Not done:** Wire v12 (recommended) convert + TASK_CONFIGS + eval sampler. User picks
+  the set in the morning. Do not start 2000-epoch jobs on the new clones.
+
+---
+
 ## 2026-09-02 — dashboard collected time
 
 - **When:** 2026-09-02. User wants collection date/time on the viz dashboard if saved.
