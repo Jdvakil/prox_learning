@@ -276,7 +276,11 @@ plots from `timeline.js` (a `<script>` payload — VS Code / file preview cannot
 python scripts/dataset_viz.py --dashboard   # rewrite catalog + timeline.js, no encode
 ```
 
-`--each` also rewrites the catalog after every dataset. Folders written
+`--each` also rewrites the catalog after every dataset. The dashboard shows
+**collected** date/time when the dump saved it (`started_utc` in a sidecar JSON)
+or when the path carries a datagen stamp (`…/20260824_231030/…` or `…_20260622`).
+H5 files in this repo usually have no time attr — then the card is omitted (file
+mtime is clone time, not collection). Folders written
 before 2026-08-31 use the old flat `a_b_c` slug; they still show in the index —
 delete them or re-run to get the nested layout. `--force` redoes a dataset that
 already has an audit plus at least one video (layout flag changes, glob fixes).

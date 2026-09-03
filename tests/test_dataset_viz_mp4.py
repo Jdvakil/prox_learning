@@ -10,6 +10,7 @@ sys.path.insert(0, str(_REPO / "scripts"))
 from dataset_viz import (  # noqa: E402
     RGB_STEMS,
     glob_mp4,
+    infer_collected_at,
     wanted_n,
     viz_action,
     write_audit_index,
@@ -84,6 +85,7 @@ def test_write_audit_index_dashboard(tmp_path):
         "has_table": True,
         "groups": ["free"],
         "video": "episodes/free/0000_house_1_traj_0.mp4",
+        "src": "/data/FrankaSkinX/20260824_231030/house_1",
     }))
     (ds / "timeline.json").write_text(json.dumps({
         "title": "pick", "t": [0.0], "qpos": {}, "qvel": {}, "skin_min": [],
@@ -101,6 +103,7 @@ def test_write_audit_index_dashboard(tmp_path):
     assert cat["n"] == 1
     assert cat["n_videos"] == 2
     assert cat["rows"][0]["slug"] == "molmo/pick"
+    assert cat["rows"][0]["collected_at"] == "2026-08-24 23:10:30"
 
 
 def test_wanted_n_respects_max_and_start():
@@ -148,3 +151,30 @@ def test_usable_done_drops_missing_clip(tmp_path):
 def test_cat_series_dicts_and_lists():
     assert _cat_series([1], [2]) == [1, 2]
     assert _cat_series({"q1": [1]}, {"q1": [2], "q2": [3]}) == {"q1": [1, 2], "q2": [3]}
+
+
+def test_infer_collected_at_from_datagen_folder():
+    p = Path("/data/hybrid_gate_bar_check/FrankaSkinHybridGateBarCheckConfig/20260824_231030/house_1")
+    assert infer_collected_at(p) == "2026-08-24 23:10:30"
+
+
+def test_infer_collected_at_from_date_suffix():
+    p = Path("/data/openfrontcluttered/pact_20260622/openfrontcluttered_small_20260622")
+    assert infer_collected_at(p) == "2026-06-22"
+
+
+def test_infer_collected_at_ignores_sha_and_uses_json(tmp_path):
+    sha = tmp_path / "00ad0da55639dbb3c35b29f99c4ed45aeec7c9b70eb803892e8a9e11b95e40d1"
+    sha.mkdir()
+    assert infer_collected_at(sha) is None
+    (tmp_path / "closeout.json").write_text(
+        '{"started_utc": "2026-09-02T04:04:55Z"}'
+    )
+    assert infer_collected_at(tmp_path) == "2026-09-02 04:04:55 UTC"
+
+
+def test_infer_collected_at_from_attrs():
+    p = Path("/no/stamp/here")
+    assert infer_collected_at(p, attrs={"started_utc": "2026-07-03T12:00:00Z"}) == (
+        "2026-07-03 12:00:00 UTC"
+    )

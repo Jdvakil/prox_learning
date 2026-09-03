@@ -221,6 +221,144 @@ def _decode_obs_scene(grp) -> dict:
         return {}
 
 
+_COLLECT_KEYS = (
+    "collected_at", "collected_utc", "collection_time", "collection_utc",
+    "started_utc", "finished_utc", "created_at", "created_utc",
+    "run_started_utc", "run_timestamp",
+)
+_STAMP_FULL = re.compile(r"(?<!\d)(\d{8})_(\d{6})(?!\d)")
+_STAMP_DAY = re.compile(r"(?:^|_)(20\d{6})(?:_|$)")
+
+
+def _fmt_dt(dt: datetime) -> str:
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+        return dt.strftime("%Y-%m-%d %H:%M:%S UTC")
+    if dt.hour or dt.minute or dt.second:
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+    return dt.strftime("%Y-%m-%d")
+
+
+def _parse_ymd_hms(ymd: str, hms: str | None = None) -> str | None:
+    try:
+        if hms:
+            dt = datetime.strptime(ymd + hms, "%Y%m%d%H%M%S")
+        else:
+            dt = datetime.strptime(ymd, "%Y%m%d")
+    except ValueError:
+        return None
+    if not (2020 <= dt.year <= 2035):
+        return None
+    return _fmt_dt(dt)
+
+
+def _fmt_collected(val) -> str | None:
+    if val is None or val is False:
+        return None
+    if isinstance(val, datetime):
+        return _fmt_dt(val)
+    if isinstance(val, (int, float)) and val > 1e9:
+        try:
+            return _fmt_dt(datetime.fromtimestamp(float(val), timezone.utc))
+        except (OSError, OverflowError, ValueError):
+            return None
+    s = str(val).strip()
+    if not s or s.lower() in ("none", "null", "false"):
+        return None
+    iso = s[:-1] + "+00:00" if s.endswith("Z") else s
+    try:
+        return _fmt_dt(datetime.fromisoformat(iso))
+    except ValueError:
+        pass
+    m = _STAMP_FULL.search(s)
+    if m:
+        got = _parse_ymd_hms(m.group(1), m.group(2))
+        if got:
+            return got
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+        try:
+            return _fmt_dt(datetime.strptime(s, fmt))
+        except ValueError:
+            continue
+    return None
+
+
+def _time_from_mapping(d: dict | None) -> str | None:
+    if not isinstance(d, dict):
+        return None
+    for k in _COLLECT_KEYS:
+        if k in d:
+            got = _fmt_collected(d[k])
+            if got:
+                return got
+    return None
+
+
+def _time_from_path(path: Path) -> str | None:
+    day = None
+    for part in reversed(Path(path).parts):
+        m = _STAMP_FULL.search(part)
+        if m:
+            got = _parse_ymd_hms(m.group(1), m.group(2))
+            if got:
+                return got
+        if day is None:
+            m = _STAMP_DAY.search(part)
+            if m:
+                day = _parse_ymd_hms(m.group(1))
+    return day
+
+
+def _time_from_sidecars(root: Path) -> str | None:
+    folder = root if root.is_dir() else root.parent
+    for name in ("closeout.json", "collection.json", "run_manifest.json"):
+        for base in (folder, folder.parent):
+            got = _time_from_mapping(_read_json_dict(base / name))
+            if got:
+                return got
+    for pat in ("result.json", "rows/*/result.json", "*/result.json"):
+        hits = sorted(folder.glob(pat))[:1]
+        for p in hits:
+            got = _time_from_mapping(_read_json_dict(p))
+            if got:
+                return got
+    return None
+
+
+def _read_json_dict(path: Path) -> dict | None:
+    if not path.is_file():
+        return None
+    try:
+        rec = json.loads(path.read_text())
+    except Exception:
+        return None
+    return rec if isinstance(rec, dict) else None
+
+
+def infer_collected_at(
+    path: Path,
+    scene: dict | None = None,
+    attrs: dict | None = None,
+) -> str | None:
+    """Collection time if the dump saved one. Path stamps count. File mtime does not."""
+    for blob in (attrs, scene):
+        got = _time_from_mapping(blob)
+        if got:
+            return got
+    got = _time_from_sidecars(path)
+    if got:
+        return got
+    return _time_from_path(path)
+
+
+def _collected_span(times: list[str], fallback: str | None = None) -> str | None:
+    vals = [t for t in times if t]
+    if not vals:
+        return fallback
+    lo, hi = min(vals), max(vals)
+    return lo if lo == hi else f"{lo} – {hi}"
+
+
 def _as_rgb(arr: np.ndarray) -> np.ndarray:
     a = np.asarray(arr)
     if a.ndim == 2:
@@ -815,7 +953,7 @@ function filtered() {
     if (kind !== "all" && r.kind !== kind) return false;
     if (gapOnly && !(r.gaps||[]).length) return false;
     if (!q) return true;
-    const hay = [r.slug, r.src, r.kind, ...(r.groups||[]), ...(r.cams||[])].join(" ").toLowerCase();
+    const hay = [r.slug, r.src, r.kind, r.collected_at, ...(r.groups||[]), ...(r.cams||[])].join(" ").toLowerCase();
     return hay.includes(q);
   });
 }
@@ -829,6 +967,7 @@ function renderList() {
     return `<div class="row${on}" data-slug="${esc(r.slug)}">
       <div class="slug">${esc(r.slug)}</div>
       <div class="meta">${r.kind||"?"} · ${r.n_eps_exported||0}/${r.n_eps_total||"?"} eps · ${r.n_videos||0} clips
+        ${r.collected_at ? "· " + esc(r.collected_at) : ""}
         ${r.has_prox ? "· prox" : ""} ${r.has_wrist?"· wrist":""} ${r.has_table?"· table":""}</div>
       <div>${gr}${gaps || (r.has_prox && r.has_wrist ? '<span class="chip ok">ok</span>' : "")}</div>
     </div>`;
@@ -839,7 +978,9 @@ function renderList() {
 }
 
 function cards(r, tlo) {
-  const items = [
+  const items = [];
+  if (r.collected_at) items.push(["collected", r.collected_at]);
+  items.push(
     ["kind", r.kind],
     ["exported", `${r.n_eps_exported||0} / ${r.n_eps_total||"?"}`],
     ["skipped", r.n_eps_skipped||0],
@@ -850,7 +991,7 @@ function cards(r, tlo) {
     ["wrist", r.has_wrist ? "yes" : "no"],
     ["table", r.has_table ? "yes" : "no"],
     ["FK", r.has_fk ? "yes" : "no"],
-  ];
+  );
   if (tlo) {
     items.push(["frames", tlo.n_frames], ["dt", fmt(tlo.dt,3)+" s"]);
   }
@@ -906,7 +1047,8 @@ function fillEpisodes() {
     box.appendChild(h);
     list.forEach(e => {
       const b = document.createElement("button");
-      b.textContent = e.label + "  T=" + e.T;
+      b.textContent = e.label + "  T=" + e.T
+        + (e.collected_at ? "  " + e.collected_at : "");
       b.onclick = () => playEp(e, true);
       box.appendChild(b);
       e._btn = b;
@@ -1064,6 +1206,8 @@ def _collect_audit_rows(out_base: Path) -> list[dict]:
         except Exception:
             continue
         rec["slug"] = slug
+        if not rec.get("collected_at") and rec.get("src"):
+            rec["collected_at"] = infer_collected_at(Path(rec["src"]))
         rows.append(rec)
     rows.sort(key=lambda r: r.get("slug") or "")
     return rows
@@ -1656,7 +1800,8 @@ _HTML = r"""<!DOCTYPE html>
 <script>
 function init(tl) {
   document.getElementById("title").textContent = tl.title + "  (" + tl.n_episodes + " eps, " +
-    (tl.duration_s).toFixed(1) + "s)";
+    (tl.duration_s).toFixed(1) + "s)" +
+    (tl.collected_at ? "  collected " + tl.collected_at : "");
   const v = document.getElementById("v");
   const box = document.getElementById("ep");
   const per = !!tl.per_episode;
@@ -1686,7 +1831,8 @@ function init(tl) {
     box.appendChild(h);
     eps.forEach(e => {
       const b = document.createElement("button");
-      b.textContent = e.label + "  T=" + e.T;
+      b.textContent = e.label + "  T=" + e.T
+        + (e.collected_at ? "  " + e.collected_at : "");
       b.onclick = () => select(e, true);
       box.appendChild(b);
       e._btn = b;
@@ -2363,6 +2509,12 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     offset_ns = 0
     all_t, all_q, all_v, all_skin = [], [], [], []
     episodes_meta = list(done_by_label.values())
+    for e in episodes_meta:
+        if e.get("collected_at"):
+            continue
+        src_file = (e.get("attrs") or {}).get("file")
+        if src_file:
+            e["collected_at"] = infer_collected_at(Path(src_file))
     if episodes_meta:
         last = episodes_meta[-1]
         offset_ns = int(
@@ -2420,6 +2572,9 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
             "dur_s": dur_ns / 1e9,
             "group": group,
             "video": str(ep_video.relative_to(out_dir)) if ep_video is not None else None,
+            "collected_at": infer_collected_at(
+                ref.path, scene=ep.scene, attrs=ep.attrs,
+            ),
             "attrs": {k: ep.attrs[k] for k in ep.attrs
                       if k not in ("file",) and not str(k).startswith("pact_")},
         })
@@ -2462,6 +2617,10 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "skin_min": packed["skin_min"],
         "episodes": episodes_meta,
         "mcap": str(mcap_path.name) if not args.no_mcap else None,
+        "collected_at": _collected_span(
+            [e.get("collected_at") for e in episodes_meta],
+            infer_collected_at(src, scene=first.scene, attrs=first.attrs),
+        ),
     }
     write_html(out_dir, timeline)
 
@@ -2495,6 +2654,8 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "has_cam_params": sorted(first.cam_params),
         "no_mcap": bool(args.no_mcap),
     }
+    if timeline.get("collected_at"):
+        audit["collected_at"] = timeline["collected_at"]
     skin_vals = [float(x) for x in (packed.get("skin_min") or [])
                  if x is not None and np.isfinite(x)]
     if skin_vals:

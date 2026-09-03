@@ -22,6 +22,19 @@ Newest session at the top.
 
 ---
 
+## 2026-09-02 — dashboard collected time
+
+- **When:** 2026-09-02. User wants collection date/time on the viz dashboard if saved.
+- **Why:** Most h5 dumps store no time attr. Datagen folders are `YYYYMMDD_HHMMSS`.
+  Some sidecars have `started_utc`. File mtime is clone time, not collection.
+- **What:** `infer_collected_at` reads attrs/scene keys, closeout/result JSON,
+  then path stamps. Dashboard card + list + episode buttons. `--dashboard`
+  backfills old audits from `src`. README §4.2.1. Tests.
+- **How:** No h5 scan. No mtime as "collected".
+- **Not done:** user `--dashboard` (or next `--each`) to refresh HTML.
+
+---
+
 ## 2026-09-02 — viz.sh skips conda activate
 
 - **When:** 2026-09-02. User: `conda activate mlspaces` fails inside `viz.sh`.
