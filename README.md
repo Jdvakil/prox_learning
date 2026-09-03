@@ -247,8 +247,12 @@ All live clones sit under `data/`. Do **not** pass that parent without `--list` 
 it is a mixed tree (hallway rows + the `molmo-pi0-eval-videos` dump). `--list` prints one
 row per dataset (`DUP` = nested copy of openfront 52 / raw_h5). `--each` writes one viz
 dir per **unique** row and rebuilds the root dashboard (`index.html` + `audit.json`).
-`results/` eval rollouts stay out unless `--include-eval`. `--keep-dups` keeps the
-copies. Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
+**Incremental by default:** datasets already on the dashboard are skipped. A new
+clone `e` next to `a,b,c,d` encodes **only** `e`. Extra episodes after a `git pull`
+into an existing clone are appended (old clips stay). `--force` is the full
+redo of every dataset — do not pass it for a dashboard update. `results/` eval
+rollouts stay out unless `--include-eval`. `--keep-dups` keeps the copies.
+Full-folder audit skips Foxglove (`--no-mcap`) and uses `--stride 2` so encode
 finishes. Open the root `index.html` in VS Code (Simple Browser). No local HTTP server.
 
 **The output location is fixed — there is no `--out` flag (removed 2026-08-31).** Every run
@@ -275,7 +279,7 @@ python scripts/dataset_viz.py --dashboard   # rewrite catalog + timeline.js, no 
 `--each` also rewrites the catalog after every dataset. Folders written
 before 2026-08-31 use the old flat `a_b_c` slug; they still show in the index —
 delete them or re-run to get the nested layout. `--force` redoes a dataset that
-already has an audit plus at least one video.
+already has an audit plus at least one video (layout flag changes, glob fixes).
 
 **Video is one clip per episode, filed by trajectory type (changed 2026-08-31).** The old
 single hour-long `dataset.mp4` is gone by default. Each dataset folder now holds:
@@ -341,9 +345,16 @@ python scripts/dataset_viz.py --dashboard
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
     --each --max-episodes 2
 
-# audit: every unique dataset, all episodes, H.264 + 3D panel (no Foxglove)
+# incremental dashboard update after git pull / clone into data/
+# skip a,b,c,d already encoded; encode new folder e; append new episodes
 python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
-    --each --no-mcap --stride 2
+    --each --cam3d --no-mcap --stride 2
+
+# same, from a bash script (do not `conda activate` in .sh — use viz.sh)
+./viz.sh
+
+# redo everything (slow). only for a glob/layout fix
+# python scripts/dataset_viz.py --data data/ --each --cam3d --no-mcap --stride 2 --force
 
 # hallway HF rows (152)   -> .../dataset_viz/pact_place_corridor_v5/
 python scripts/dataset_viz.py --data data/pact_place_corridor_v5 \
@@ -1578,6 +1589,11 @@ Every one of these has already cost real time.
     `timeline.js` (script tag, not `fetch`, so VS Code Simple Browser works
     over SSH). `--dashboard` rebuilds that catalog without encode. There is
     no `--serve` — this box is used over SSH.
+28. **`--force` re-encodes a,b,c,d plus e.** Daily path after `git pull` / a new
+    clone under `data/` is `--each --cam3d --no-mcap --stride 2` with **no**
+    `--force`. Finished datasets skip; only missing folders and new episodes
+    encode; the dashboard catalog updates. `--force` is for a layout change
+    (`--cam3d`, `--stride`) or a bad clip.
 
 ---
 

@@ -32,7 +32,7 @@ that mirrors the dataset path with the <repo>/data prefix removed:
   python scripts/dataset_viz.py --reencode experiments_output/default/dataset_viz
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data --list
   python scripts/dataset_viz.py --data /home/jaydv/code/prox_learning/data \
-      --each --no-mcap --stride 2
+      --each --cam3d --no-mcap --stride 2
   python scripts/dataset_viz.py --dashboard
   python scripts/dataset_viz.py --data data/pact_place_corridor_v5 --max-episodes 2
   python scripts/dataset_viz.py --data data/molmo-pi0-eval-videos/data/fumehood/pick --list
@@ -2172,8 +2172,79 @@ def _has_output(dest: Path) -> bool:
     """True when dest holds a finished run: an audit plus at least one video."""
     if not (dest / "audit.json").is_file():
         return False
-    return ((dest / "dataset.mp4").is_file()
-            or any((dest / "episodes").rglob("*.mp4")))
+    if (dest / "dataset.mp4").is_file():
+        return True
+    if any((dest / "episodes").rglob("*.mp4")):
+        return True
+    audit = _read_audit(dest)
+    return bool(audit and int(audit.get("n_videos") or 0) == 0
+                and (dest / "timeline.json").is_file())
+
+
+def wanted_n(n_eps: int, args) -> int:
+    n = max(0, int(n_eps) - int(getattr(args, "start_episode", 0) or 0))
+    cap = getattr(args, "max_episodes", None)
+    if cap is not None:
+        n = min(n, int(cap))
+    return n
+
+
+def _read_audit(dest: Path) -> dict | None:
+    p = dest / "audit.json"
+    if not p.is_file():
+        return None
+    try:
+        rec = json.loads(p.read_text())
+    except Exception:
+        return None
+    return rec if isinstance(rec, dict) else None
+
+
+def dest_exported(dest: Path) -> tuple[int, dict | None]:
+    if not _has_output(dest):
+        return 0, None
+    audit = _read_audit(dest)
+    if not audit:
+        return 0, None
+    return int(audit.get("n_eps_exported") or 0), audit
+
+
+def viz_action(dest: Path, n_eps: int, args) -> str:
+    """skip = already on dashboard; grow = more episodes than last audit; run = encode."""
+    if getattr(args, "force", False):
+        return "run"
+    exported, audit = dest_exported(dest)
+    want = wanted_n(n_eps, args)
+    if exported <= 0 or audit is None:
+        return "run"
+    if exported >= want:
+        return "skip"
+    if getattr(args, "one_video", False):
+        return "run"
+    return "grow"
+
+
+def _usable_done(out_dir: Path, old_tl: dict) -> dict[str, dict]:
+    """Episode metas we can keep (label + clip still on disk)."""
+    out: dict[str, dict] = {}
+    for e in old_tl.get("episodes") or []:
+        lab = e.get("label")
+        if not lab:
+            continue
+        vid = e.get("video")
+        if vid and not (out_dir / vid).is_file():
+            continue
+        out[str(lab)] = e
+    return out
+
+
+def _cat_series(old, new):
+    if isinstance(old, dict) or isinstance(new, dict):
+        old = old or {}
+        new = new or {}
+        keys = list(dict.fromkeys([*old, *new]))
+        return {k: list(old.get(k) or []) + list(new.get(k) or []) for k in keys}
+    return list(old or []) + list(new or [])
 
 
 def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
@@ -2201,18 +2272,34 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
               include_sensor_rgb=args.include_sensor_rgb,
               include_depth=args.include_depth)
 
+    old_tl = None
+    done_by_label: dict[str, dict] = {}
+    if not args.force and not args.one_video:
+        tl_path = out_dir / "timeline.json"
+        if tl_path.is_file():
+            try:
+                old_tl = json.loads(tl_path.read_text())
+            except Exception:
+                old_tl = None
+        if isinstance(old_tl, dict):
+            done_by_label = _usable_done(out_dir, old_tl)
+
     first = None
-    skip_n = 0
-    for i, ref in enumerate(refs):
+    first_ref = None
+    for ref in refs:
+        if ref.label in done_by_label:
+            continue
         try:
             first = load_episode(ref, **kw)
-            skip_n = i
+            first_ref = ref
             break
         except Exception as e:
             print(f"SKIP {ref.label}: {e}")
     if first is None:
+        if done_by_label:
+            print(f"no new episodes to encode under {src}  (kept {len(done_by_label)})")
+            return
         raise SystemExit(f"every episode failed to load under {src}")
-    refs = refs[skip_n:]
     image_topics = ["/camera/wrist", "/camera/table", "/sensors/heatmap"]
     if args.include_sensor_rgb:
         image_topics.append("/sensors/rgb256")
@@ -2254,10 +2341,14 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         writer = _open_writer(video_path, first.dt, args.stride)
 
     ctx = ch = mcap_writer = None
+    append_mode = bool(done_by_label) and not args.force
     if not args.no_mcap:
-        ctx = foxglove.Context()
-        mcap_writer = foxglove.open_mcap(str(mcap_path), allow_overwrite=True, context=ctx)
-        ch = Channels(ctx, image_topics)
+        if append_mode:
+            print("append: skip mcap rewrite (--force for a full Foxglove file)")
+        else:
+            ctx = foxglove.Context()
+            mcap_writer = foxglove.open_mcap(str(mcap_path), allow_overwrite=True, context=ctx)
+            ch = Channels(ctx, image_topics)
 
     has_table = any(
         k in cam_names for k in ("exo_camera_1", "table", "table_camera", "top")
@@ -2271,13 +2362,22 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
 
     offset_ns = 0
     all_t, all_q, all_v, all_skin = [], [], [], []
-    episodes_meta = []
-    n_ok = 0
+    episodes_meta = list(done_by_label.values())
+    if episodes_meta:
+        last = episodes_meta[-1]
+        offset_ns = int(
+            (float(last.get("start_s") or 0) + float(last.get("dur_s") or 0) + EP_GAP_S) * 1e9
+        )
+        print(f"keep {len(episodes_meta)} already-exported episode(s)")
+    n_keep = len(episodes_meta)
+    n_ok = n_keep
     n_total = len(refs)
     n_skip = 0
     for i, ref in enumerate(refs):
+        if ref.label in done_by_label:
+            continue
         try:
-            ep = first if i == 0 else load_episode(ref, **kw)
+            ep = first if ref is first_ref else load_episode(ref, **kw)
         except Exception as e:
             print(f"  SKIP {ref.label}: {e}")
             n_skip += 1
@@ -2337,14 +2437,23 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
     qvel = {f"v{j+1}": [row[j] if j < len(row) else None for row in all_v]
             for j in range(7)}
     t_ds, packed = downsample_series(all_t, {"qpos": qpos, "qvel": qvel, "skin_min": all_skin})
+    n_frames = len(all_t)
+    if append_mode and old_tl:
+        t_ds = _cat_series(old_tl.get("t"), t_ds)
+        packed = {
+            "qpos": _cat_series(old_tl.get("qpos"), packed["qpos"]),
+            "qvel": _cat_series(old_tl.get("qvel"), packed["qvel"]),
+            "skin_min": _cat_series(old_tl.get("skin_min"), packed["skin_min"]),
+        }
+        n_frames = int(old_tl.get("n_frames") or 0) + len(all_t)
     ep_videos = [e["video"] for e in episodes_meta if e.get("video")]
-    ep_groups = sorted({e["group"] for e in episodes_meta})
+    ep_groups = sorted({e["group"] for e in episodes_meta if e.get("group")})
     timeline = {
         "title": src.name,
         "per_episode": not one_video,
         "video": "dataset.mp4" if one_video and not args.no_video else None,
         "n_episodes": n_ok,
-        "n_frames": len(all_t),
+        "n_frames": n_frames,
         "duration_s": (offset_ns / 1e9) if n_ok else 0.0,
         "dt": first.dt,
         "t": t_ds,
@@ -2386,13 +2495,15 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         "has_cam_params": sorted(first.cam_params),
         "no_mcap": bool(args.no_mcap),
     }
-    skin_vals = [float(x) for x in all_skin if x is not None and np.isfinite(x)]
+    skin_vals = [float(x) for x in (packed.get("skin_min") or [])
+                 if x is not None and np.isfinite(x)]
     if skin_vals:
         audit["skin_min_min"] = min(skin_vals)
         audit["skin_min_mean"] = float(sum(skin_vals) / len(skin_vals))
     (out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
 
-    print(f"\n{n_ok} episode(s), {n_skip} skipped, {offset_ns/1e9:.1f}s timeline")
+    print(f"\n{n_ok} episode(s) ({n_keep} keep, {n_ok - n_keep} new), "
+          f"{n_skip} skipped, {offset_ns/1e9:.1f}s timeline")
     print(f"  html    {out_dir / 'index.html'}")
     if not args.no_video and one_video:
         print(f"  video   {video_path}")
@@ -2406,6 +2517,59 @@ def run_one(src: Path, out_dir: Path, mcap_path: Path, args) -> None:
         print("Or open index.html in a browser for the tiled dataset video + plots.")
 
 
+def _run_each(catalog: list[DatasetRoot], args, n_skipped_dups: int = 0) -> None:
+    n_skip = n_run = n_grow = 0
+    mismatches: list[str] = []
+    for ds in catalog:
+        dest = out_dir_for(ds.path)
+        try:
+            slug = str(dest.relative_to(_OUT_BASE))
+        except ValueError:
+            slug = dest.name
+        action = viz_action(dest, ds.n_eps, args)
+        if action == "skip":
+            n_skip += 1
+            audit = _read_audit(dest)
+            if audit is not None:
+                same_cam = bool(audit.get("cam3d")) == bool(args.cam3d)
+                same_stride = int(audit.get("stride") or 1) == int(args.stride)
+                if not (same_cam and same_stride):
+                    mismatches.append(slug)
+            continue
+        if action == "grow":
+            n_grow += 1
+            print(f"\n======== {slug} grow ({ds.kind}, {ds.n_eps} eps) ========")
+        else:
+            n_run += 1
+            print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
+        run_one(ds.path, dest, dest / "dataset.mcap", args)
+        write_audit_index(_OUT_BASE, n_skipped_dups=n_skipped_dups, quiet=True)
+    print(f"\nincremental  skip={n_skip}  new={n_run}  grow={n_grow}")
+    if mismatches:
+        print(f"  {len(mismatches)} skipped use other --cam3d/--stride; --force to redo")
+    write_audit_index(_OUT_BASE, n_skipped_dups=n_skipped_dups)
+
+
+def _maybe_run_one(src: Path, n_eps: int, args) -> None:
+    dest, mcap_path = _out_paths(src)
+    if getattr(args, "list", False):
+        run_one(src, dest, mcap_path, args)
+        return
+    action = viz_action(dest, n_eps, args)
+    try:
+        slug = str(dest.relative_to(_OUT_BASE))
+    except ValueError:
+        slug = dest.name
+    if action == "skip":
+        print(f"{slug} already on dashboard ({n_eps} eps). --force to redo")
+        write_audit_index(_OUT_BASE)
+        return
+    if action == "grow":
+        print(f"{slug} grow — encode new episodes only")
+    run_one(src, dest, mcap_path, args)
+    write_audit_index(_OUT_BASE)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -2417,7 +2581,8 @@ def main() -> None:
     ap.add_argument("--list", action="store_true",
                     help="print catalog (mixed tree) or episode list (one dataset)")
     ap.add_argument("--each", action="store_true",
-                    help="one visualizer per dataset under --data")
+                    help="one visualizer per dataset under --data "
+                         "(skip finished; encode new datasets / new episodes)")
     ap.add_argument("--include-eval", action="store_true",
                     help="also catalog results/ eval rollouts")
     ap.add_argument("--max-episodes", type=int, default=None)
@@ -2446,7 +2611,8 @@ def main() -> None:
     ap.add_argument("--keep-dups", action="store_true",
                     help="include nested copies (pact_20260622 copies of act_style_52)")
     ap.add_argument("--force", action="store_true",
-                    help="redo datasets that already have audit.json")
+                    help="redo datasets already on the dashboard (without this, "
+                         "only new folders and new episodes encode)")
     ap.add_argument("--include-sensor-rgb", action="store_true",
                     help="also ingest sensors_rgb256 sidecar (huge)")
     ap.add_argument("--include-depth", action="store_true")
@@ -2488,30 +2654,21 @@ def main() -> None:
         catalog, skipped_dups = unique_catalog(catalog, args.keep_dups)
         if skipped_dups:
             print(f"skip {len(skipped_dups)} DUP cop(y/ies); --keep-dups to include")
-        for ds in catalog:
-            dest = out_dir_for(ds.path)
-            slug = dest.relative_to(_OUT_BASE)
-            if not args.force and _has_output(dest):
-                print(f"\n======== {slug} already done ========")
-                continue
-            print(f"\n======== {slug} ({ds.kind}, {ds.n_eps} eps) ========")
-            run_one(ds.path, dest, dest / "dataset.mcap", args)
-            write_audit_index(_OUT_BASE, n_skipped_dups=len(skipped_dups), quiet=True)
-        write_audit_index(_OUT_BASE, n_skipped_dups=len(skipped_dups))
+        _run_each(catalog, args, n_skipped_dups=len(skipped_dups))
         return
 
     if len(catalog) == 1 and src != catalog[0].path and src.is_dir():
         src = catalog[0].path
 
     if args.each and catalog:
-        dest = out_dir_for(catalog[0].path)
-        run_one(catalog[0].path, dest, dest / "dataset.mcap", args)
-        write_audit_index(_OUT_BASE)
+        _run_each(catalog, args)
         return
 
-    out_dir, mcap_path = _out_paths(src)
-    run_one(src, out_dir, mcap_path, args)
-    write_audit_index(_OUT_BASE)
+    n_eps = catalog[0].n_eps if catalog else None
+    if n_eps is None:
+        _, refs = discover(src)
+        n_eps = len(refs)
+    _maybe_run_one(src, n_eps, args)
 
 
 if __name__ == "__main__":

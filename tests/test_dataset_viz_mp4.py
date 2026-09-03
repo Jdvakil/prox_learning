@@ -7,7 +7,15 @@ from pathlib import Path
 _REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_REPO / "scripts"))
 
-from dataset_viz import RGB_STEMS, glob_mp4, write_audit_index  # noqa: E402
+from dataset_viz import (  # noqa: E402
+    RGB_STEMS,
+    glob_mp4,
+    wanted_n,
+    viz_action,
+    write_audit_index,
+    _usable_done,
+    _cat_series,
+)
 
 
 def _touch(path: Path) -> Path:
@@ -93,3 +101,50 @@ def test_write_audit_index_dashboard(tmp_path):
     assert cat["n"] == 1
     assert cat["n_videos"] == 2
     assert cat["rows"][0]["slug"] == "molmo/pick"
+
+
+def test_wanted_n_respects_max_and_start():
+    from argparse import Namespace
+    assert wanted_n(10, Namespace(max_episodes=None, start_episode=0)) == 10
+    assert wanted_n(10, Namespace(max_episodes=2, start_episode=0)) == 2
+    assert wanted_n(10, Namespace(max_episodes=None, start_episode=8)) == 2
+    assert wanted_n(10, Namespace(max_episodes=5, start_episode=8)) == 2
+
+
+def test_viz_action_skip_new_grow(tmp_path):
+    from argparse import Namespace
+    dest = tmp_path / "out"
+    dest.mkdir()
+    (dest / "audit.json").write_text(
+        '{"n_eps_exported": 4, "cam3d": true, "stride": 2}'
+    )
+    clip = dest / "episodes" / "free" / "0000_x.mp4"
+    clip.parent.mkdir(parents=True)
+    clip.write_bytes(b"")
+    skip_args = Namespace(force=False, max_episodes=None, start_episode=0, one_video=False)
+    assert viz_action(dest, 4, skip_args) == "skip"
+    assert viz_action(dest, 6, skip_args) == "grow"
+    assert viz_action(dest, 4, Namespace(force=True, max_episodes=None,
+                                         start_episode=0, one_video=False)) == "run"
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    assert viz_action(empty, 3, skip_args) == "run"
+
+
+def test_usable_done_drops_missing_clip(tmp_path):
+    (tmp_path / "episodes" / "free").mkdir(parents=True)
+    keep = tmp_path / "episodes" / "free" / "0000_a.mp4"
+    keep.write_bytes(b"")
+    tl = {
+        "episodes": [
+            {"label": "a", "video": "episodes/free/0000_a.mp4"},
+            {"label": "b", "video": "episodes/free/0001_b.mp4"},
+        ]
+    }
+    done = _usable_done(tmp_path, tl)
+    assert set(done) == {"a"}
+
+
+def test_cat_series_dicts_and_lists():
+    assert _cat_series([1], [2]) == [1, 2]
+    assert _cat_series({"q1": [1]}, {"q1": [2], "q2": [3]}) == {"q1": [1, 2], "q2": [3]}

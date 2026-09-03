@@ -22,6 +22,36 @@ Newest session at the top.
 
 ---
 
+## 2026-09-02 — viz.sh skips conda activate
+
+- **When:** 2026-09-02. User: `conda activate mlspaces` fails inside `viz.sh`.
+- **Why:** `conda activate` is a bash function from `conda.sh`. Non-interactive
+  scripts do not load it.
+- **What:** `viz.sh` calls `/opt/conda/envs/mlspaces/bin/python` and `cd`s to
+  the repo. Extra flags pass through `"$@"`. README §4.2.1.
+- **How:** `exec` env python. No conda hook.
+- **Not done:** user `chmod +x viz.sh` if the bit is off, then `./viz.sh`.
+
+---
+
+## 2026-09-02 — viz incremental (no --force)
+
+- **When:** 2026-09-02. User: `--each --force` on `data/` re-encodes a,b,c,d when
+  they only added e. Git pull / clone into `data/` should update the dashboard
+  with the new set only.
+- **Why:** `--force` means redo every dataset that already has output. Daily
+  command must omit it. Also needed grow-path when an existing clone gains
+  episodes.
+- **What:** `viz_action` skip / grow / run. `--each` skips finished datasets,
+  encodes new folders, appends new episode clips (keep old mp4 + timeline).
+  `--force` still full redo. README §4.2.1 + trap 28. Tests in
+  `tests/test_dataset_viz_mp4.py`.
+- **How:** Compare `audit.n_eps_exported` to catalog `n_eps`. Append matches
+  episode labels and skips clips that still exist.
+- **Not done:** User drops `--force` on the daily command.
+
+---
+
 ## 2026-09-01 — dashboard: no HTTP server
 
 - **When:** 2026-09-01. User on SSH, previews HTML from VS Code. Kill `--serve`.
