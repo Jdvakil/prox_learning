@@ -1,0 +1,163 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "composition": {
+    "active_slots": [
+      "01",
+      "03",
+      "04",
+      "06",
+      "08",
+      "09"
+    ],
+    "identity_sha256": "8df1150e315eaba592c2db47db78d3f6e384ae039512e2808966ac861ef45015",
+    "mesh_slots": [
+      "03",
+      "04",
+      "06"
+    ],
+    "primitive_slots": [
+      "01",
+      "08",
+      "09"
+    ]
+  },
+  "eligible_for_human_review": false,
+  "environment_version": "pact_place_corridor_v10_11d_randomized_clutter",
+  "human_approval_present": false,
+  "parent": {
+    "contract_payload_sha256": "4ab0b7d230fe819fe5bfac4a9af1199df867bfd86be79847baf7b1b49c583fc8",
+    "contract_version": "pact_place_v1011c_33pct_taller_primitive_validation_v1",
+    "environment_version": "pact_place_corridor_v10_11c_33pct_taller_primitives"
+  },
+  "payload_sha256": "db8969fef7e081cda0540021bd1727fae52aff3bc85eb500e48d8b01baedbca7",
+  "phase0_passed": false,
+  "plan": "docs/PACT_PLACE_V1011D_RANDOMIZED_CLUTTER_VALIDATION_PLAN.md",
+  "position_only_amendment": {
+    "admissibility": "per-candidate: bench shell containment, target clearance, mutual separation, and for slot 01 both route_blocker_metrics and panel_corridor_metrics must admit the detour",
+    "clutter_identity_unchanged": true,
+    "cup_and_target_dimensions_unchanged": true,
+    "max_candidates_per_slot": 96,
+    "measured_placement_success_rate": 1.0,
+    "mesh_objects_unchanged": true,
+    "near_target_slots_unchanged": [
+      "08",
+      "09"
+    ],
+    "primitive_heights_unchanged_m": {
+      "01": 0.32585000000000003,
+      "08": 0.2394,
+      "09": 0.2394
+    },
+    "proposal_boxes_m": {
+      "01": {
+        "x": [
+          0.65,
+          0.74
+        ],
+        "y": [
+          -0.055,
+          0.055
+        ]
+      },
+      "03": {
+        "x": [
+          0.92,
+          1.24
+        ],
+        "y": [
+          -0.32,
+          0.32
+        ]
+      },
+      "04": {
+        "x": [
+          0.92,
+          1.24
+        ],
+        "y": [
+          -0.32,
+          0.32
+        ]
+      },
+      "06": {
+        "x": [
+          0.545,
+          0.6
+        ],
+        "y": [
+          -0.05,
+          0.05
+        ]
+      }
+    },
+    "randomized_slots": [
+      "01",
+      "06",
+      "03",
+      "04"
+    ],
+    "target_clearance": "delegated to the runtime settle and initial-contact check. A measured V10.11c row has the cup AABB overlapping slot 01's in all three axes with zero forbidden contact, so any conservative planar separation rule would reject V10.11c's own working layout.",
+    "v1011c_static_centers_xy_m": {
+      "03": [
+        0.98,
+        -0.22
+      ],
+      "04": [
+        1.09,
+        0.3
+      ]
+    },
+    "v1011c_vessel_jitter_m": {
+      "01": {
+        "x": 0.02,
+        "y": 0.005
+      },
+      "06": {
+        "x": 0.005,
+        "y": 0.01
+      }
+    }
+  },
+  "preflight": {
+    "cells": 24,
+    "replicates": 4,
+    "requires_all": true,
+    "rows": 96
+  },
+  "review": {
+    "clean_successes": 3,
+    "failures": 3,
+    "selection": "first three of each in frozen cell/attempt order"
+  },
+  "sampler_class": "PactPlaceCorridorV1011DRandomizedLayoutSampler",
+  "schema_version": "pact_place_v1011d_randomized_clutter_validation_v1",
+  "scope": "position_only_successor_through_owner_review",
+  "streams": {
+    "disjoint": true,
+    "historical_master_seeds": [
+      2026082101,
+      2026082901,
+      2026082902,
+      2026083001,
+      2026101001,
+      2026101002,
+      2026101003,
+      2026101101,
+      2026101102,
+      2026101111,
+      2026101112,
+      2026101121,
+      2026101122
+    ],
+    "new_master_seeds": [
+      2026101141,
+      2026101142
+    ],
+    "overlap": []
+  }
+}
