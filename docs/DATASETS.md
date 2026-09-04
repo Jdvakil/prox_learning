@@ -13,6 +13,11 @@ pointing an evaluation at any of these checkpoints.
 
 Everything above is read off the collect code that produced each dump.
 
+Each row of that table is one directory under `environments/`, holding a single
+`SPEC` that declares the split. They are discovered at call time rather than
+listed in a shared table, so adding the next environment is a new directory and
+nothing else — `environments/README.md` walks through it.
+
 ## Two traps
 
 **Hub `v12` is not `pact_place_corridor_v12`.** The 165 episodes came from the

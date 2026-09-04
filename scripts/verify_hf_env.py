@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """Check this checkout can reproduce a published Hugging Face split.
 
-    python scripts/verify_hf_env.py                 # every split, offline
-    python scripts/verify_hf_env.py --split v1011d  # one split
+    python scripts/verify_hf_env.py                 # every environment, offline
+    python scripts/verify_hf_env.py --split v1011d  # one environment
     python scripts/verify_hf_env.py --online        # also read the hub manifest
 
 Offline it confirms the submodule pin, that the sampler and policy classes
-import, and that the scene files are present. ``--online`` additionally reads
-the published manifest so a mismatch between the repo and the data is caught
-before anyone spends GPU time on an evaluation.
+import, and that the scenes and gate artifacts are present. ``--online``
+additionally reads the published manifest so a mismatch between the repo and
+the data is caught before anyone spends GPU time on an evaluation.
+
+Environments are discovered from ``environments/``; this script needs no edit
+when one is added.
 """
 
 from __future__ import annotations
@@ -24,12 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from environments.registry import (  # noqa: E402
-    HF_DATASET,
-    HF_SPLITS,
-    MOLMOSPACES_COMMIT,
-    EnvSpec,
-)
+from environments import HF_DATASET, EnvSpec, all_specs  # noqa: E402
 
 MANIFEST_URL = "https://huggingface.co/datasets/{ds}/resolve/main/{path}/manifest.json"
 
@@ -43,6 +41,9 @@ class Report:
         if not ok:
             self.failures.append(label)
 
+    def skip(self, label: str, detail: str) -> None:
+        print(f"  [skip] {label} — {detail}")
+
 
 def submodule_pin() -> str | None:
     out = subprocess.run(
@@ -52,16 +53,47 @@ def submodule_pin() -> str | None:
     return out[2] if len(out) >= 3 else None
 
 
-def check_pin(report: Report) -> None:
+def check_pin(report: Report, specs: dict[str, EnvSpec]) -> None:
+    """The repo has one pin; every environment must agree with it."""
+    wanted = {spec.molmospaces_commit for spec in specs.values()}
+    if len(wanted) > 1:
+        report.check(
+            False,
+            "molmospaces pin",
+            "environments disagree: "
+            + ", ".join(f"{s.hub_split}={s.molmospaces_commit[:12]}" for s in specs.values()),
+        )
+        return
+
+    expected = next(iter(wanted))
     pin = submodule_pin()
     if pin is None:
-        print("  [skip] molmospaces pin — not a git checkout")
+        report.skip("molmospaces pin", "not a git checkout")
         return
     report.check(
-        pin == MOLMOSPACES_COMMIT,
+        pin == expected,
         "molmospaces pin",
-        f"{pin} (expected {MOLMOSPACES_COMMIT})" if pin != MOLMOSPACES_COMMIT else pin[:12],
+        pin[:12] if pin == expected else f"{pin[:12]} (expected {expected[:12]})",
     )
+
+
+def check_entrypoint(report: Report, spec: EnvSpec) -> None:
+    report.check(
+        (ROOT / spec.collect_entrypoint).is_file(), f"entrypoint {spec.collect_entrypoint}"
+    )
+
+
+def check_scenes(report: Report, spec: EnvSpec) -> None:
+    for rel, path in zip(spec.scene_relative, spec.scene_paths):
+        if not path.is_file():
+            report.check(False, f"scene {rel}", "missing")
+            continue
+        report.check(True, f"scene {rel}", hashlib.sha256(path.read_bytes()).hexdigest()[:12])
+
+
+def check_artifacts(report: Report, spec: EnvSpec) -> None:
+    for rel, path in zip(spec.required_artifacts, spec.artifact_paths):
+        report.check(path.is_file(), f"artifact {rel}")
 
 
 def check_classes(report: Report, spec: EnvSpec) -> None:
@@ -73,24 +105,6 @@ def check_classes(report: Report, spec: EnvSpec) -> None:
         return
     for name in (spec.sampler_class, spec.policy_class):
         report.check(hasattr(enclosure_reach, name), f"class {name}")
-
-
-def check_scenes(report: Report, spec: EnvSpec) -> None:
-    for rel, path in zip(spec.scene_relative, spec.scene_paths):
-        if not path.is_file():
-            report.check(False, f"scene {rel}", "missing")
-            continue
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        report.check(True, f"scene {rel}", digest[:12])
-
-
-def check_entrypoint(report: Report, spec: EnvSpec) -> None:
-    report.check((ROOT / spec.collect_entrypoint).is_file(), f"entrypoint {spec.collect_entrypoint}")
-
-
-def check_artifacts(report: Report, spec: EnvSpec) -> None:
-    for rel in spec.required_artifacts:
-        report.check((ROOT / rel).is_file(), f"artifact {rel}")
 
 
 def check_hub(report: Report, spec: EnvSpec) -> None:
@@ -107,11 +121,7 @@ def check_hub(report: Report, spec: EnvSpec) -> None:
         f"{manifest.get('schema_version')} vs {spec.schema_version}",
     )
     rows = manifest.get("rows", [])
-    report.check(
-        len(rows) == spec.n_episodes,
-        "hub episode count",
-        f"{len(rows)} vs {spec.n_episodes}",
-    )
+    report.check(len(rows) == spec.n_episodes, "hub episode count", f"{len(rows)} vs {spec.n_episodes}")
     hub_env = manifest.get("environment_version")
     if hub_env and hub_env != spec.environment_version:
         print(
@@ -121,17 +131,18 @@ def check_hub(report: Report, spec: EnvSpec) -> None:
 
 
 def main() -> int:
+    specs = all_specs()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--split", choices=sorted(HF_SPLITS), action="append")
+    parser.add_argument("--split", choices=sorted(specs), action="append")
     parser.add_argument("--online", action="store_true", help="also read the published manifest")
     args = parser.parse_args()
 
     report = Report()
     print(f"repo: {ROOT}")
-    check_pin(report)
+    check_pin(report, specs)
 
-    for name in args.split or sorted(HF_SPLITS):
-        spec = HF_SPLITS[name]
+    for name in args.split or sorted(specs):
+        spec = specs[name]
         print(f"\n{spec.hub_path}  ->  {spec.environment_version}")
         check_entrypoint(report, spec)
         check_scenes(report, spec)

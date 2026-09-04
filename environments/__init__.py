@@ -3,27 +3,43 @@
 
 Each subpackage is named for the hub folder it reproduces, so
 ``environments/hf_v12`` is the environment for ``data/v12`` on
-Ekshan267/pact_pick_n_place_v2. The environment version strings themselves stay
-as they were recorded at collect time; see :mod:`environments.registry`.
+Ekshan267/pact_pick_n_place_v2, and declares a single ``SPEC``. Subpackages are
+discovered at call time, so adding an environment means adding a directory —
+see ``environments/README.md``.
 """
 
 from __future__ import annotations
 
+import importlib
+import pkgutil
 import runpy
 import sys
-from pathlib import Path
 
-from .registry import HF_SPLITS, MOLMOSPACES_BRANCH, MOLMOSPACES_COMMIT, ROOT, EnvSpec, get
+from .spec import HF_DATASET, ROOT, EnvSpec
 
-__all__ = [
-    "EnvSpec",
-    "HF_SPLITS",
-    "MOLMOSPACES_BRANCH",
-    "MOLMOSPACES_COMMIT",
-    "ROOT",
-    "get",
-    "run_entrypoint",
-]
+__all__ = ["EnvSpec", "HF_DATASET", "ROOT", "all_specs", "get", "run_entrypoint"]
+
+
+def all_specs() -> dict[str, EnvSpec]:
+    """Every environment in this package, keyed by hub split."""
+    specs: dict[str, EnvSpec] = {}
+    for module in pkgutil.iter_modules(__path__):
+        if not module.ispkg:
+            continue
+        spec = getattr(importlib.import_module(f"{__name__}.{module.name}"), "SPEC", None)
+        if isinstance(spec, EnvSpec):
+            specs[spec.hub_split] = spec
+    return dict(sorted(specs.items()))
+
+
+def get(hub_split: str) -> EnvSpec:
+    specs = all_specs()
+    try:
+        return specs[hub_split]
+    except KeyError:
+        raise KeyError(
+            f"unknown hub split {hub_split!r}; known splits: {', '.join(specs)}"
+        ) from None
 
 
 def run_entrypoint(spec: EnvSpec, argv: list[str] | None = None) -> None:
