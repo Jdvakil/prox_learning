@@ -16,10 +16,15 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-for path in (
-    ROOT / "scripts",
-    ROOT / "submodules" / "molmospaces",
-):
+_MOLMO_WORKTREE = Path(
+    os.environ.get("MOLMOSPACES_PACT_V1010", "/home/jaydv/code/molmospaces-pact-v1010")
+)
+_MOLMO = (
+    _MOLMO_WORKTREE
+    if (_MOLMO_WORKTREE / "molmo_spaces").is_dir()
+    else ROOT / "submodules" / "molmospaces"
+)
+for path in (ROOT / "scripts", _MOLMO):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 

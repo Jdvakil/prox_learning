@@ -1,0 +1,162 @@
+<mujoco model="pact_place_corridor_v3">
+  <compiler angle="radian" autolimits="true" boundmass="0" balanceinertia="true"/>
+  <option impratio="10" gravity="0 0 -9.8" integrator="implicitfast" cone="elliptic" jacobian="sparse" noslip_iterations="4">
+    <flag multiccd="enable" contact="enable" warmstart="enable"/>
+  </option>
+  <size njmax="6000" nconmax="6000"/>
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+    <map znear="0.001"/>
+    <headlight ambient="0.5 0.5 0.5" diffuse="0.65 0.65 0.65"/>
+  </visual>
+  <asset>
+    <texture name="benchtex" type="2d" builtin="flat" rgb1="0.85 0.86 0.88" width="32" height="32"/>
+    <material name="bench" texture="benchtex" reflectance="0.1"/>
+    <texture name="floortex" type="2d" builtin="checker" rgb1="0.46 0.46 0.48" rgb2="0.40 0.40 0.42" width="300" height="300"/>
+    <material name="floormat" texture="floortex" texrepeat="10 10" reflectance="0.05"/>
+    <material name="traymat" rgba="0.25 0.48 0.68 1" reflectance="0.08"/>
+  </asset>
+  <default>
+    <default class="hood">
+      <geom contype="8" conaffinity="15" group="0" friction="0.9 0.9 0.001"
+            solref="0.02 1" solimp="0.998 0.998 0.001" density="700"
+            rgba="0.88 0.89 0.90 1"/>
+    </default>
+  </default>
+  <worldbody>
+    <light name="l_key" pos="0.4 0.5 2.6" dir="0 0 -1" diffuse="0.95 0.95 0.95"/>
+    <light name="l_fill" pos="-0.6 -0.7 2.1" dir="0.3 0.3 -1" diffuse="0.5 0.5 0.5"/>
+    <light name="l_hood" pos="0.85 0 1.55" dir="0 0 -1" diffuse="0.6 0.6 0.6"/>
+    <geom name="floor" type="plane" size="5 5 0.1" pos="0 0 0" material="floormat"
+          contype="8" conaffinity="15"/>
+
+    <geom name="room_wall_back" class="hood" type="box" pos="-2.0 0 1.4"
+          size="0.05 2.05 1.4" rgba="0.82 0.83 0.85 1"/>
+    <geom name="room_wall_front" class="hood" type="box" pos="2.4 0 1.4"
+          size="0.05 2.05 1.4" rgba="0.82 0.83 0.85 1"/>
+    <geom name="room_wall_left" class="hood" type="box" pos="0.2 2.0 1.4"
+          size="2.25 0.05 1.4" rgba="0.80 0.81 0.84 1"/>
+    <geom name="room_wall_right" class="hood" type="box" pos="0.2 -2.0 1.4"
+          size="2.25 0.05 1.4" rgba="0.80 0.81 0.84 1"/>
+    <geom name="room_ceiling" class="hood" type="box" pos="0.2 0 2.82"
+          size="2.25 2.05 0.04" rgba="0.90 0.90 0.92 1"/>
+
+    <geom name="bench_top" class="hood" type="box" pos="0.95 0 0.70"
+          size="0.45 0.60 0.02" material="bench"/>
+    <geom name="bench_body" class="hood" type="box" pos="0.95 0 0.35"
+          size="0.42 0.57 0.33" rgba="0.80 0.81 0.83 1"/>
+    <geom name="hood_side_l" class="hood" type="box" pos="0.95 0.45 1.12"
+          size="0.40 0.012 0.40"/>
+    <geom name="hood_side_r" class="hood" type="box" pos="0.95 -0.45 1.12"
+          size="0.40 0.012 0.40"/>
+    <geom name="hood_back" class="hood" type="box" pos="1.36 0 1.12"
+          size="0.012 0.46 0.40"/>
+    <geom name="hood_top" class="hood" type="box" pos="0.95 0 1.53"
+          size="0.42 0.46 0.015"/>
+    <geom name="hood_frame_l" class="hood" type="box" pos="0.58 0.45 1.12"
+          size="0.02 0.02 0.40"/>
+    <geom name="hood_frame_r" class="hood" type="box" pos="0.58 -0.45 1.12"
+          size="0.02 0.02 0.40"/>
+
+    <body name="sash" mocap="true" pos="0.58 0 1.30">
+      <geom name="sash_g" class="hood" type="box" size="0.015 0.44 0.025"
+            rgba="0.62 0.64 0.66 1"/>
+    </body>
+    <body name="jamb_l" mocap="true" pos="0.58 0.35 0.92">
+      <geom name="jamb_l_g" class="hood" type="box" size="0.012 0.18 0.20"/>
+    </body>
+    <body name="jamb_r" mocap="true" pos="0.58 -0.35 0.92">
+      <geom name="jamb_r_g" class="hood" type="box" size="0.012 0.18 0.20"/>
+    </body>
+
+    <!-- Legacy bars remain available because the inherited fumehood sampler parks
+         them explicitly. They are never activated by the PACT corridor sampler. -->
+    <body name="protr_s" mocap="true" pos="0 0.8 -2.0">
+      <geom name="protr_s_g" class="hood" type="box" size="0.0175 0.0175 0.10"/>
+    </body>
+    <body name="protr_m" mocap="true" pos="0 1.2 -2.0">
+      <geom name="protr_m_g" class="hood" type="box" size="0.025 0.025 0.11"/>
+    </body>
+    <body name="protr_l" mocap="true" pos="0 1.6 -2.0">
+      <geom name="protr_l_g" class="hood" type="box" size="0.035 0.035 0.12"/>
+    </body>
+
+    <!-- Exactly one matte, wall-coloured lateral intrusion is activated per
+         episode. It enters from the left or right outside the wrist camera's
+         useful view and intersects the nominal wrist/link-6 passage. The opposite-side
+         waypoint is physically open, so the scripted expert can solve either
+         side without contact. -->
+    <body name="pact_intrusion_left" mocap="true" pos="0 1.8 -2.0">
+      <geom name="pact_intrusion_left_g" class="hood" type="box"
+            size="0.055 0.240 0.090" rgba="0.88 0.89 0.90 1"/>
+    </body>
+    <body name="pact_intrusion_right" mocap="true" pos="0 -1.8 -2.0">
+      <geom name="pact_intrusion_right_g" class="hood" type="box"
+            size="0.055 0.240 0.090" rgba="0.88 0.89 0.90 1"/>
+    </body>
+
+    <!-- V9.4 mounted-clutter preview pool. Older samplers leave every body
+         parked; the V9.4 sampler sizes and attaches one wall beam and one
+         ceiling drop per episode. -->
+    <body name="pact_clutter_mount_wall_left" mocap="true" pos="0 2.2 -2.0">
+      <geom name="pact_clutter_mount_wall_left_g" class="hood" type="box"
+            size="0.05 0.12 0.04" rgba="0.58 0.59 0.61 1"/>
+    </body>
+    <body name="pact_clutter_mount_wall_right" mocap="true" pos="0 -2.2 -2.0">
+      <geom name="pact_clutter_mount_wall_right_g" class="hood" type="box"
+            size="0.05 0.12 0.04" rgba="0.58 0.59 0.61 1"/>
+    </body>
+    <body name="pact_clutter_mount_ceiling" mocap="true" pos="0 0 -2.0">
+      <geom name="pact_clutter_mount_ceiling_g" class="hood" type="box"
+            size="0.055 0.07 0.16" rgba="0.43 0.44 0.47 1"/>
+    </body>
+
+    <!-- Static pedestal and shallow tray outside the aperture. The support
+         surface is its own body so PickAndPlaceTask sees the floor top rather
+         than the raised lip when computing the placement height. -->
+    <body name="place_pedestal" pos="0.35 0.32 0">
+      <geom name="place_pedestal_base_g" class="hood" type="box" pos="0 0 0.05"
+            size="0.10 0.10 0.05" rgba="0.34 0.36 0.40 1"/>
+      <geom name="place_pedestal_stem_g" class="hood" type="box" pos="0 0 0.39"
+            size="0.07 0.07 0.29" rgba="0.40 0.42 0.46 1"/>
+    </body>
+    <body name="place_receptacle" pos="0.35 0.32 0">
+      <!-- PickAndPlacePlannerPolicy queries the visual-only body AABB when it
+           computes place height, so retain a non-colliding visual twin. -->
+      <geom name="place_receptacle_floor_visual_g" type="box" pos="0 0 0.70"
+            size="0.10 0.10 0.02" material="traymat" contype="0" conaffinity="0"
+            group="1"/>
+      <geom name="place_receptacle_floor_g" type="box" pos="0 0 0.70"
+            size="0.10 0.10 0.02" material="traymat" contype="8" conaffinity="15"
+            friction="1.1 0.9 0.002" solref="0.02 1" solimp="0.998 0.998 0.001"/>
+    </body>
+    <!-- Raised side rails retain lateral placement error. Both x edges stay
+         open so neither the home arm nor link 2 obstructs the passage. -->
+    <body name="place_receptacle_lips" pos="0.35 0.32 0">
+      <geom name="place_receptacle_lip_left_g" type="box" pos="0 0.085 0.745"
+            size="0.07 0.015 0.025" material="traymat" contype="8" conaffinity="15"/>
+      <geom name="place_receptacle_lip_right_g" type="box" pos="0 -0.085 0.745"
+            size="0.07 0.015 0.025" material="traymat" contype="8" conaffinity="15"/>
+    </body>
+
+    <!-- Immovable shelf clutter. Mocap-posed per episode. Names must stay
+         pact_clutter_* so scoring cannot collapse them into cavity_obj_ /
+         grasp_target. Sampler overwrites these rest poses. -->
+    <body name="pact_clutter_l0" mocap="true" pos="0.70 0.34 0.77">
+      <geom name="pact_clutter_l0_g" class="hood" type="box"
+            size="0.025 0.05 0.05" rgba="0.62 0.42 0.28 1"/>
+    </body>
+    <body name="pact_clutter_l1" mocap="true" pos="0.75 0.34 0.77">
+      <geom name="pact_clutter_l1_g" class="hood" type="box"
+            size="0.025 0.05 0.05" rgba="0.62 0.42 0.28 1"/>
+    </body>
+    <body name="pact_clutter_r0" mocap="true" pos="0.70 -0.34 0.77">
+      <geom name="pact_clutter_r0_g" class="hood" type="box"
+            size="0.025 0.05 0.05" rgba="0.62 0.42 0.28 1"/>
+    </body>
+    <body name="pact_clutter_r1" mocap="true" pos="0.75 -0.34 0.77">
+      <geom name="pact_clutter_r1_g" class="hood" type="box"
+            size="0.025 0.05 0.05" rgba="0.62 0.42 0.28 1"/>
+    </body>
+  </worldbody>
+</mujoco>

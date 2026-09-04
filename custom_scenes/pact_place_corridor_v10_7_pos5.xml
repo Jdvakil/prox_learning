@@ -1,0 +1,30 @@
+<mujoco model="pact_place_corridor_v10_6_v106_x800_rn330_rp300_d+5">
+  <!-- The frozen V5 shell is included verbatim and never edited. V10.6
+       adds one connected asymmetric two-lobe pendant compiled at its
+       final poses and sizes. The body has no joint, freejoint, mocap
+       flag, or actuator, so nothing moves or resizes it at runtime and
+       its broad-phase bounds cannot go stale. The crossbar spans the
+       actual asymmetric stem endpoints. Visible geometry IS the
+       collision geometry. -->
+  <!-- pose_id=pos5 x=0.8 r_neg=0.33 r_pos=0.3 d=0.005 -->
+  <include file="pact_place_corridor_v5.xml"/>
+  <worldbody>
+    <body name="pact_clutter_mount_v106" pos="0 0 0">
+      <geom name="pact_clutter_mount_v106_lobe_0_g" class="hood" type="box"
+            pos="0.8 -0.325 1.01" size="0.01 0.01 0.03"
+            rgba="0.55 0.56 0.58 1"/>
+      <geom name="pact_clutter_mount_v106_lobe_1_g" class="hood" type="box"
+            pos="0.8 0.305 1.01" size="0.01 0.01 0.03"
+            rgba="0.55 0.56 0.58 1"/>
+      <geom name="pact_clutter_mount_v106_stem_0_g" class="hood" type="box"
+            pos="0.8 -0.335 1.2725" size="0.006 0.006 0.2325"
+            rgba="0.55 0.56 0.58 1"/>
+      <geom name="pact_clutter_mount_v106_stem_1_g" class="hood" type="box"
+            pos="0.8 0.315 1.2725" size="0.006 0.006 0.2325"
+            rgba="0.55 0.56 0.58 1"/>
+      <geom name="pact_clutter_mount_v106_crossbar_g" class="hood" type="box"
+            pos="0.8 -0.01 1.51" size="0.006 0.331 0.005"
+            rgba="0.55 0.56 0.58 1"/>
+    </body>
+  </worldbody>
+</mujoco>

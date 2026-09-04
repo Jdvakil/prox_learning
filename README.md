@@ -35,7 +35,7 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 1. [Now — disk truth, 2026-09-03](#1-now--disk-truth-2026-09-03)
 2. [Routing table — "I want to…"](#2-routing-table--i-want-to)
 3. [Setup](#3-setup)
-4. [How to run](#4-how-to-run) — new clones + train/eval walkthrough: [§4.17](#417-new-clones-2026-09-03--not-act-ready)
+4. [How to run](#4-how-to-run) — v1011d train/eval walkthrough: [§4.17](#417-new-clones-2026-09-03--not-act-ready)
 5. [What this is](#5-what-this-is)
 6. [Headline result](#6-headline-result)
 7. [Every experiment, one line](#7-every-experiment-one-line)
@@ -60,12 +60,12 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 | **Hallway PACT-readout n=50** (place 40%, collision-free 88%, bar 12%) | **The live paper MVP.** Reproducible from this checkout. Ckpt `20260828_003136_pact_place_corridor_readout_s0`. Eval `eval_output/place_corridor_readout_s0_n50_fast/` (gitignored) and `reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`. vs ACT: place **28%→40%**, bar **34%→12%** (p = 0.016), collision-free **66%→88%**. vs PACT-raw: place 42% vs 40%, bar **36%→12%** (p = 0.009). Report both axes. [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) |
 | Hallway ACT vs PACT-raw n=50 | **Done. Control, not the MVP.** Place 28% vs 42% (p = 0.21); bar 34% vs 36% (p = 1.0). Raw closeness does not cut hallway bar hits. n=20 smoke was luck. |
 | Archived 66% → 40% (invisible-cell, 2026-07-05) | **Wiped.** Source datagen + `obstacle_prox_v2` + July ckpts gone 2026-08-24. Metrics only in `reports/eval_summaries/`. Not retrainable here. Do not mix with the hallway MVP. |
-| **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **On disk for viz. Not ACT-ready.** Do **not** pass them to `imitate_episodes.py`. Inventory, gaps, and the train/eval walkthrough: [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
+| **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **Viz except v1011d.** v1011d: convert + train **done**. Smoke n=2 eval **done** (0/2 place; not a result). Next: `--spread_cells` n=48. Do **not** throw raw clones at `imitate_episodes.py`. [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
 | Gate-bar v3.1 collect | **Parked.** Only `assets/datagen/hybrid_gate_bar_check` (and clutter check). Do not collect 200 until the Visible check shows a tall pole in the doorway and an ~18 cm veer. |
 | Surface-embedding bake into ACT | **Parked** as an ablation. Compressor gate passed (20.6 mm XYZ). Do not bake 32-d HDF5 tokens. |
 | Surface readout finetune | **Done. This is the paper arm.** Unfreeze the pretrained geometry net. ACT sees 128-d CLS readout tokens at train and eval. `--finetune_prox_encoder`. n=50 numbers above. |
 | Safety-CVAE `cvae_v3/model.pt` | **Deleted 2026-08-24.** PACT-raw never needed it. Retrain from `assets/safety/sweep_v3.h5` if you want the reflex demos. `--prox_feature trunk` / `delta` need those weights and are negative controls. |
-| Live training set | **Only** `act_style_data/pact_place_corridor_v5` (152 eps). Not `obstacle_prox_v2`. Not the Sep clones under `data/`. |
+| Live training set | **Paper:** `act_style_data/pact_place_corridor_v5` (152 eps, wrist). **v1011d:** `act_style_data/pact_pick_n_place_v2/data/v1011d` (200 eps, exo+wrist). Train done `20260903_171108_pact_pick_n_place_v2_v1011d_s0`. Smoke n=2 in `eval_output/pact_pick_n_place_v2_v1011d_raw_s0_n2/`. Real eval still missing: `--spread_cells` n=48 ([§4.17](#417-new-clones-2026-09-03--not-act-ready)). |
 
 Proximity is redundant when vision already explains the demonstration. On this hallway, frozen
 peak-closeness (**PACT-raw**) is not enough. Finetuning the surface encoder and feeding live
@@ -80,7 +80,8 @@ tabletop clones (cluttered place, table cam) are not yet on the train/eval pipe.
 | I want to… | jump |
 |---|---|
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
-| train / eval the **new** Sep clones | [§4.17](#417-new-clones-2026-09-03--not-act-ready) — **not copy-paste ready** |
+| train v1011d PACT (exo+wrist hdf5) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
+| eval v1011d ckpt (what it means + commands) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | walk convert → train → eval (skeptic) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | cite the hallway paper MVP (readout n=50) | [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) [§8](#8-paper-claims) |
 | reproduce hallway ACT vs PACT | [§4.3](#43-live--hallway-act-vs-pact) |
@@ -131,12 +132,13 @@ Sanity:
 conda activate mlspaces
 cd /home/jaydv/code/prox_learning
 python -m encoders                                          # names + dummy-tensor shapes
-python -m pytest tests/test_encoders.py tests/test_prox_raw.py
+python -m pytest tests/test_encoders.py tests/test_prox_raw.py tests/test_convert_pact_place.py tests/test_eval_pact_pick_n_place.py
 ```
 
 Never `python imitate_episodes.py --eval` on a PACT checkpoint. That path calls
 `policy(qpos, image)` with no skin and now `SystemExit`s if `--use_proximity` is set. Real eval is
-`eval_act_obstacle.py` or `eval_act_place_corridor.py`.
+`eval_act_obstacle.py`, `eval_act_place_corridor.py` (hallway v5), or
+`eval_act_pact_pick_n_place.py` (v1011d).
 
 ---
 
@@ -146,7 +148,7 @@ Never `python imitate_episodes.py --eval` on a PACT checkpoint. That path calls
 Shared flags first. Then copy-paste per experiment. Each block is marked **live** (data on this
 disk), **parked** (commands ready; do not skip preflight), or **needs datagen** (source wiped;
 collect or restore first). New HF clones under `data/` (v12, v1010, mixed v10.11c, …) are
-**viz-only** until [§4.17](#417-new-clones-2026-09-03--not-act-ready) is wired. Do not start
+**viz-only** except v1011d, which is convert + train + eval ([§4.17](#417-new-clones-2026-09-03--not-act-ready)). Do not start
 from [§4.3](#43-live--hallway-act-vs-pact) and swap the folder.
 
 ### 4.0 Shared ACT train / eval / stats
@@ -206,34 +208,67 @@ mean "broken" (barely moves), not "careful."
 ```bash
 conda activate mlspaces
 cd /home/jaydv/code/prox_learning
-python -m pytest tests/test_encoders.py tests/test_prox_raw.py
+python -m pytest tests/test_encoders.py tests/test_prox_raw.py tests/test_convert_pact_place.py tests/test_eval_pact_pick_n_place.py
 ```
 
 <a id="42-live--inspect-scenes"></a>
 ### 4.2 Live — inspect scenes
 
-Visualizer lives in the submodule, not `scripts/`. It samples the same config as collection, then
-forces the 40-sensor hybrid skin. `--show-hidden` reveals geom group 4 (invisible bars).
+Place-corridor XML for v1011d / v12 lives in **this repo**: `custom_scenes/`.
+Include chain: `v12.xml` → `v10_7_center.xml` → `v5.xml` → `v3.xml`. Eval and viz
+both resolve that folder first. Hallway v5 / fumehood / cabinet XML stay in
+molmospaces `custom_scenes/` (submodule or the `977acd6` worktree). Sampler
+**code** for V10.10 still needs `/home/jaydv/code/molmospaces-pact-v1010`.
+
+| File | What |
+|---|---|
+| `custom_scenes/pact_place_corridor_v12.xml` | 7d1ea35 wrapper. Include of local center. Not a sampler path (hash). |
+| `custom_scenes/pact_place_corridor_v10_7_{neg5,center,pos5}.xml` | Frozen hashed pendant poses. **Eval scene files.** |
+| `custom_scenes/pact_place_corridor_v5.xml` | Include of v3. Do not edit. |
+| `custom_scenes/pact_place_corridor_v3.xml` | Hood / bench / tray shell. Do not edit. |
+| `submodules/molmospaces/.../custom_scenes/fumehood*.xml` | Obstacle / gate-bar family. Viz `--scope project` from submodule. |
+| `molmospaces-pact-place/.../pact_place_corridor_v2.xml` | Hallway v5 eval XML (`977acd6`). |
+
+Visualizer: repo wrapper `scripts/visualize_environment.py` (rewrites scene paths to
+`custom_scenes/`, then calls the molmospaces renderer). No policy. 40-sensor hybrid
+skin. `--show-hidden` reveals geom group 4. Each XML needs a sibling
+`*_metadata.json` (`{"objects": {}}`) or sampling dies with `NoneType` subscript.
 
 ```bash
 conda activate mlspaces
-cd /home/jaydv/code/prox_learning/submodules/molmospaces
+cd /home/jaydv/code/prox_learning
+export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
 
-python scripts/datagen/visualize_environment.py --list --scope project
+python scripts/visualize_environment.py --list --scope project
 
-OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-    python scripts/datagen/visualize_environment.py \
-    FrankaSkinHybridClutterPnPCheckConfig \
+# v1011d / V10.10 four-object place (house 1 = F0 left center). Default if no config.
+python scripts/visualize_environment.py --show-hidden
+
+# Same renderer, other datagen configs (fumehood, cabinet, …)
+python scripts/visualize_environment.py FrankaSkinHybridClutterPnPCheckConfig \
     --format both --show-hidden
-
-OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-    python scripts/datagen/visualize_environment.py --all \
-    --format both --show-hidden --attempts 10
 ```
 
 Outputs: `experiments_output/default/environment_viz/<Config>/<scene>_house_<id>/sample_00/`.
-Open `gallery.html` after `--all`. Useful switches: `--format png|mp4|both`,
-`--keep-scene-lighting`, `--keep-config-robot`, `--show-sensors`, `--dry-run --all`.
+Open `01_robot_scene.png`. Useful switches: `--format png|mp4|both`, `--keep-scene-lighting`,
+`--keep-config-robot`, `--show-sensors`.
+
+v12 kitchen overlay (not in the v1011d dump; preview only):
+
+```bash
+python scripts/render_pact_place_v12_clutter.py
+```
+
+PNG under `diagnostics_output/pact_place_v12/`.
+
+Submodule entry still works for old obstacle configs:
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/molmospaces
+python scripts/datagen/visualize_environment.py --list --scope project
+```
+
+That path does **not** see `custom_scenes/` v10_7 files unless you use the repo wrapper.
 
 <a id="421-live--visualize-a-dataset-folder"></a>
 ### 4.2.1 Live — visualize a dataset folder
@@ -903,31 +938,62 @@ June camera-only chunk-size sweep, PACT v1 skin-blanking (~0.005 action change),
 grid. Numbers in [§13](#13-every-number-in-one-place). JSON in `reports/eval_summaries/`.
 
 <a id="417-new-clones-2026-09-03--not-act-ready"></a>
-### 4.17 New clones (2026-09-03) — not ACT-ready
+### 4.17 New clones (2026-09-03) — v1011d train + eval
 
 Written so a later session / other desktop can act without the chat that produced it.
 
-**Do not throw the new clones at `imitate_episodes.py`.** That path is wired for **one**
-converted set: hallway v5. New data is on disk for **viz** ([§4.2.1](#421-live--visualize-a-dataset-folder)).
-Train/eval glue was never extended. `TASK_CONFIGS` has no v12 / v1010 / mixed row.
+**Do not throw a raw HF clone at `imitate_episodes.py`.** Hallway v5 is still the paper set.
+v1011d is the first Sep clone with convert + `TASK_CONFIGS` + in-env eval. hdf5 must have
+`exo_camera_1` **and** `wrist_camera`. Do **not** run this ckpt through
+`eval_act_place_corridor.py` (v2 hallway sampler / worktree `977acd6`).
 
 This file is the cookbook. Ignore `submodules/molmospaces/docs/evaluation_guide.md` — that is
 MolmoSpaces Pi / MS-bench, not this ACT/PACT pipe.
+
+#### What v1011d eval means
+
+Train fitted actions on 200 demos. Eval asks: on **new** sampled tasks from the same
+sampler family, does the policy **place** the cup, and does it **hit the hazard bar**?
+Val loss (0.093 on this run) is not that. A statue that never closes the gripper can look
+"safe." Report all five:
+
+| metric | meaning |
+|---|---|
+| **place-success** | task judge says the object is in the tray |
+| **bar_hit** | contact audit saw the hazard bar |
+| **collision_free** | audit saw no disallowed robot–env contact |
+| **strict** | place-success **and** collision-free |
+| **gripper_close_commanded** | policy actually issued a close (not a frozen arm) |
+
+Same protocol as hallway random-house ([§4.3](#43-live--hallway-act-vs-pact)), different
+XML/sampler/cameras. n=2 = smoke (does it boot). `--spread_cells --num_rollouts 48` = 2
+rollouts on each of 24 cells (4 families × 2 sides × 3 pendant poses). Pin house 1 without
+spread = **only** F0 / left / center. v1011d train is balanced left/right 100/100 across
+those cells — pin is not a paper number. n=25 is ±40-point noise. Always `--temp_agg_off`.
+Never `imitate_episodes.py --eval`.
+
+Domain caveat (write it next to any number): collect dump is
+`pact_place_corridor_v10_11d`. Eval XML is frozen `pact_place_corridor_v10_7_{neg5,center,pos5}`
+in repo `custom_scenes/` (include chain v5→v3). Hashes match molmospaces `origin/main`
+(`4bba4cb`). Sampler class is the same (`PactPlaceCorridorV1010FourObjectSampler`).
+`custom_scenes/pact_place_corridor_v12.xml` includes the local center file. The sampler
+hashes scene **file bytes**, so the v12 wrapper cannot be the scene path. v12
+standing-kitchen overlay is **off** (not in the v1011d dump). No vanilla ACT control
+ckpt for this task yet — this is PACT-raw only.
 
 #### Verdict
 
 | Fork | What it is | Do it? |
 |---|---|---|
 | **A. GPU jobs on the pipe that already works** | v5 hallway. Convert + 3 ckpts + readout n=50 **done** ([§4.4](#44-live--corridor-skin-fire--compress-skin)). Optional: Amine 40-row ([§4.3.1](#431-live--amine-40-row-place-protocol)). | Retrain v5 = wasted GPU. Paper MVP is readout 40% place / 88% collision-free. Do not overwrite that eval dir. |
-| **B. Train the new envs** | Pick **one** clone. Wire convert + `TASK_CONFIGS` + eval sampler/XML. Smoke. Then train. | This is the real ask. **Code first.** Not copy-paste from [§4.3](#43-live--hallway-act-vs-pact). |
+| **B. v1011d PACT-raw** | Convert + train **done**. Smoke n=2 **done** (pin house 1: 0/2 place, 1/2 bar, 1/2 collision-free, 2/2 grip-close). | `--spread_cells` n=48 into a **new** dir. Do not mix with hallway JSON. Do not cite 0/2. |
 
-Best first set for **B**: `data/pact_pick_n_place_v2/data/v12` (**165**). Latest XML lives in-repo
-(`custom_scenes/pact_place_corridor_v12.xml`). Wrist mp4 names match convert. Collect contract:
-`scripts/run_pact_place_v12_*.py`. Skip `table_smoke`. Skip `failed/`. Skip v1010 until convert
-learns hash names.
+Best first set for **B**: `data/pact_pick_n_place_v2/data/v1011d` (**200**). Convert writes
+exo+wrist. `TASK_CONFIGS['pact_pick_n_place_v2']` points at that hdf5. v12 reconvert also keeps
+exo (padded names). Skip `table_smoke`. Skip `failed/`. Hash-named v1010 mp4s now glob; still
+no `TASK_CONFIGS` row for them.
 
-One GPU. Serial. Vanilla then PACT-raw. Smoke: n=2 convert → n=2 epoch train → n=2 eval
-**before** 2000 epochs / n=50.
+One GPU. Serial. Smoke eval n=2 **before** n=48.
 
 #### Inventory (disk, 2026-09-03)
 
@@ -937,11 +1003,12 @@ exported). Approximate sizes; `data/` is ~262 G.
 | Clone | Eps | Env / cameras | ACT-ready? |
 |---|---|---|---|
 | `data/pact_place_corridor_v5` | **152** | corridor v2, **wrist only** | **Yes.** Converted `act_style_data/pact_place_corridor_v5`. Three ckpts under `submodules/act/ckpts/pact_place_corridor_v5/`. Recipe [§4.3](#43-live--hallway-act-vs-pact). |
-| `data/pact_place_corridor/data/v1010/accepted` | **215** | four-object; **table + wrist**; hash mp4 names | **No.** Convert looks for `episode_00000000_wrist_camera.mp4` and would skip every row. |
-| `data/pact_place_corridor/data/v107_spaced/accepted` | **210** | v10.6 pendant; hash names | **No.** Same hash-name skip. |
+| `data/pact_place_corridor/data/v1010/accepted` | **215** | four-object; **table + wrist**; hash mp4 names | Convert now globs hash names. No `TASK_CONFIGS`. Table stem is `table_camera`. |
+| `data/pact_place_corridor/data/v107_spaced/accepted` | **210** | v10.6 pendant; hash names | Same as v1010. |
 | `data/pact_place_corridor/data/v107/pick_and_place/accepted` | **48** | asymmetric pendant | **No.** |
 | `data/pact_place_corridor/data/v5/pick_and_place/accepted` | **193** | IDs do **not** overlap Lundii 152 | **No.** Different dump than the converted 152. |
-| `data/pact_pick_n_place_v2/data/v12/rows` | **165** | `pact_place_corridor_v12`; exo + wrist; padded `episode_00000000_*` names | **No.** Wrist name matches convert, but convert **drops exo**, no `TASK_CONFIGS`, eval still v2 sampler. `result.json` uses `v108_clean_success` / `task_success`, not `clean_success`. |
+| `data/pact_pick_n_place_v2/data/v1011d/rows` | **200** | `pact_place_corridor_v10_11d`; **exo + wrist**; padded names | **Train + eval.** hdf5 `act_style_data/pact_pick_n_place_v2/data/v1011d`. `TASK_CONFIGS['pact_pick_n_place_v2']`. Eval `eval_act_pact_pick_n_place.py`. |
+| `data/pact_pick_n_place_v2/data/v12/rows` | **165** | `pact_place_corridor_v12`; exo + wrist; padded `episode_00000000_*` names | Convert keeps exo if you reconvert. No `TASK_CONFIGS` row. Do not eval the v1011d ckpt as if it were v12 kitchen overlay. |
 | `data/pact_pick_n_place_v2/data/v12.1/rows` | **5** | table-cam preview | Smoke, not a train set. |
 | `data/mixed_v1011_clutter_geometry/pact_place_corridor_v10_11c_100/rows` | **99** | v10.11c taller primitives; exo + wrist | **No.** Same glue gaps. Different science question (clutter geometry). |
 | `data/table_smoke/...` | **10** | table-cam schema check | **Do not train.** |
@@ -950,33 +1017,38 @@ exported). Approximate sizes; `data/` is ~262 G.
 `assets/datagen/`: still check-only (`hybrid_gate_bar_check`, failed clutter check). No full
 gate-bar 200.
 
-`TASK_CONFIGS` (`submodules/act/constants.py`): only live row is `pact_place_corridor_v5`
-(152 / 636). Obstacle rows point at wiped hdf5. `obstacle_gate_v1` still 0 / 0.
+`TASK_CONFIGS` (`submodules/act/constants.py`): live rows are `pact_place_corridor_v5`
+(152 / 636, wrist) and `pact_pick_n_place_v2` (200 / 561, exo+wrist). Obstacle rows point
+at wiped hdf5. `obstacle_gate_v1` still 0 / 0.
 
-Ckpts on disk: vanilla `20260825_161821_act_place_corridor_s0`, PACT-raw
+Ckpts on disk: hallway vanilla `20260825_161821_act_place_corridor_s0`, PACT-raw
 `20260825_215846_pact_place_corridor_raw_s0`, readout
-`20260828_003136_pact_place_corridor_readout_s0`. **All v5.**
+`20260828_003136_pact_place_corridor_readout_s0`. **v1011d PACT-raw**
+`ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0`
+(`policy_best.ckpt` epoch 1974, val 0.093). Earlier `20260903_16*` dirs are aborted
+shape-mismatch runs. No vanilla ACT ckpt for this task yet.
 
-#### Wiring still missing (do this before any 2000-epoch job)
+#### Eval wiring (2026-09-03)
 
-1. Convert must take **exo/table + wrist**. New dumps have both. `scripts/convert_pact_place_to_act.py`
-   hardcodes `CAM = "wrist_camera"` and `episode_00000000_wrist_camera.mp4`.
-2. Clean flag must read `v108_clean_success` / `task_success`, not only `clean_success`. Missing
-   key currently defaults to **keep** (`res.get("clean_success", True)`).
-3. Hash-named mp4s (v1010, v107_spaced): glob like viz already does (trap 26). Else convert
-   writes 0 episodes and looks “done.”
-4. New `TASK_CONFIGS` row. Paste `num_episodes` / `episode_len` from `convert_meta.json`.
-   `camera_names` must match hdf5 keys (wrist-only vs exo+wrist).
-5. **Eval must use the same sampler/XML as collect.** Today `eval_act_place_corridor.py` is
-   nailed to `FrankaSkinPACTCollisionCorridorConfig` + `PactPlaceCorridorV2Sampler` + worktree
-   `977acd6` + scene `pact_place_corridor_v2`. Train v12, eval v2 = junk science.
-6. Molmospaces pin: v5 eval needs `/home/jaydv/code/molmospaces-pact-place` @
-   `977acd6719a8c05b688d3e70da356d61dd32d259` **first** on `PYTHONPATH`. v12 / v1010 need
-   `PactPlaceCorridorV1010FourObjectSampler` (and friends). Local `submodules/molmospaces`
-   `main` lags `origin/main`. `977acd6` is **not** an ancestor of current submodule `main`.
+Done for **v1011d train**: convert writes every present RGB stem (`wrist_camera`
+required; `exo_camera_1` / `table_camera` if the mp4 sits next to the h5). Hash names glob.
+Clean flag reads `clean_success` / `v108_clean_success` / `task_success` / `accepted`.
+`TASK_CONFIGS['pact_pick_n_place_v2']` is 200 / 561 / `['exo_camera_1', 'wrist_camera']`.
+Pass `--task_name pact_pick_n_place_v2` so convert prints that key. Do **not** overwrite
+`act_style_data/pact_place_corridor_v5`.
 
-Print in convert still says “paste into `pact_place_corridor_v5`” even if `--dst` is a new
-folder. Do not overwrite the live 152 counts.
+Done for **v1011d eval**: `submodules/act/eval_act_pact_pick_n_place.py`. Pins molmospaces
+`origin/main` (`4bba4cbcea49ca8dbaee44fb9a376568b1b3cc82`) at
+`/home/jaydv/code/molmospaces-pact-v1010`. Sampler
+`PactPlaceCorridorV1010FourObjectSampler`. Cameras `FrankaSkinHybridCameraSystem`
+(exo + wrist). Scene files `pact_place_corridor_v10_7_*.xml` (hash-checked). 7d1ea35
+`pact_place_corridor_v12.xml` is the named include of center; **not** the sampler path.
+Do **not** import `eval_act_place_corridor.py` from this script (that file pins `977acd6`
+at import).
+
+Hallway v5 eval is unchanged: `/home/jaydv/code/molmospaces-pact-place` @ `977acd6`.
+Local `submodules/molmospaces` `main` still lags `origin/main`. `977acd6` is **not** an
+ancestor of current submodule `main`. Two worktrees. Two scripts. Do not swap them.
 
 #### Convert → train → eval (skeptic walkthrough)
 
@@ -991,7 +1063,7 @@ act_style_data/<name>/episode_*.hdf5  + convert_meta.json
 imitate_episodes.py   →  ckpts/<task>/<dated>_<run>/
         │  prox_config.json if PACT
         ▼
-eval_act_place_corridor.py   OR   eval_act_obstacle.py
+eval_act_pact_pick_n_place.py   OR   eval_act_place_corridor.py   OR   eval_act_obstacle.py
         │  NEVER imitate_episodes.py --eval
         ▼
 eval_output/.../eval_summary.json
@@ -1001,27 +1073,39 @@ compare_pact.py   (you type counts; it reads no files)
 
 **Convert.** `scripts/convert_pact_place_to_act.py` walks `rows/*/trajectory.h5` (or a flat
 folder of those dirs), stacks skin in `HYBRID_SKIN_SENSOR_ORDER` (`link5_back` before `front`),
-min-pools 4 substeps (`--prox_pool min`), resizes RGB to 240×320. Vanilla ACT ignores
+min-pools 4 substeps (`--prox_pool min`), resizes RGB to 240×320. Writes every RGB stem that
+has a sibling mp4 (`wrist_camera` required; `exo_camera_1` / `table_camera` optional). Depth
+and heatmap mp4s stay out — ACT does not load them. Vanilla ACT ignores
 `/observations/proximity`, so one `--with_proximity` convert serves both arms.
+
+v1011d reconvert (overwrites the wrist-only hdf5 already on disk):
+
+```bash
+python -m scripts.convert_pact_place_to_act \
+    --src data/pact_pick_n_place_v2/data/v1011d \
+    --dst act_style_data/pact_pick_n_place_v2/data/v1011d \
+    --with_proximity --prox_pool min --image_h 240 --image_w 320 \
+    --task_name pact_pick_n_place_v2
+```
 
 Silent wrong:
 
-- Wrist file name hardcoded. v1010 / v107_spaced → **0 episodes**.
-- `CAM = "wrist_camera"` only. v12 exo sits next to the h5 and is thrown away. Policy never
-  sees the table cam the new env was built around.
-- `clean_success` missing → treated as clean.
+- Wrist-only hdf5 from the old convert. Train then `KeyError: exo_camera_1` (or
+  `table_camera` — that stem is **not** the v1011d file name). Reconvert. ACT key is
+  `exo_camera_1`.
 - Obstacle convert (`scripts/convert_obstacle_to_act.py`) default pool is **mean**; gate-bar
-  recipe wants **min**. Wrong pool is baked into hdf5 forever.
+  recipe wants **min**. Wrong pool is baked into hdf5 forever. Place convert default is **min**.
 
 **`TASK_CONFIGS`.** Train opens `episode_0 .. N-1` from `num_episodes`. N too small = silent
 under-train. N too big = crash. `camera_names` must match hdf5 keys. Hallway v5 = wrist only.
-Obstacle / a honest v12 convert = both cams. Wrong list → missing image or a net that never
+v1011d = `['exo_camera_1', 'wrist_camera']`. Wrong list → missing image or a net that never
 saw that camera. `episode_len` is mostly cosmetic for train (padding is `chunk_size`); still
 paste it.
 
 **Train.** `submodules/act/imitate_episodes.py`. Vanilla = cameras + qpos. PACT = add
 `--use_proximity --prox_feature raw --prox_layout per_sensor`. Writes `prox_config.json`.
-Eval later **rebuilds** from that file.
+Eval later **rebuilds** from that file. First log line after load: `[dims] ... action_dim=8`.
+If that says 14, stop (trap 31).
 
 Live hallway flags ([§4.3](#43-live--hallway-act-vs-pact)): `--chunk_size 50`, **no**
 `--image_dropout_p`, 2000 epochs, seed 0, one GPU. `--prox_feature trunk` / `delta` need
@@ -1036,33 +1120,44 @@ PACT-raw `prox_config.json` still has `"prox_tokens_per_sensor": 8` and
 `"n_proximity_sensors": 40`. Weights: **320 prox tokens**. Train and eval match each other.
 The doc did not. Do not write “40 tokens” from §10 until someone actually clamps K.
 
-**Eval.** Hallway: `eval_act_place_corridor.py`. Obstacle: `eval_act_obstacle.py`. Always
-`--temp_agg_off`. Without it, newest skin chunk is ~1.6% of the executed action. Pre-2026-07-04
-`--temp_agg_off` was a different bug (arm froze ~30 cm short). Trap 1. Place eval only
-**warns** if omitted.
+**Eval.** Always `--temp_agg_off`. Without it, newest skin chunk is ~1.6% of the executed
+action. Pre-2026-07-04 `--temp_agg_off` was a different bug (arm froze ~30 cm short). Trap 1.
+Place eval only **warns** if omitted.
 
-Hallway eval **requires** the `977acd6` worktree first on `PYTHONPATH` (script default
-`/home/jaydv/code/molmospaces-pact-place`). No pin → missing/wrong scene. Horizon 800
-(Amine frozen rows: 900). Metrics-only default (no MP4; trap 23). Place-success +
-`bar_hit_rate`. **No** `--eval_cell` loop — bar lives in the sampler.
+| ckpt family | script | molmospaces worktree | horizon |
+|---|---|---|---|
+| hallway v5 | `eval_act_place_corridor.py` | `/home/jaydv/code/molmospaces-pact-place` @ `977acd6` | 800 |
+| **v1011d** | **`eval_act_pact_pick_n_place.py`** | **`/home/jaydv/code/molmospaces-pact-v1010` @ `origin/main` (`4bba4cb`)** | **1050** |
+| obstacle / gate-bar | `eval_act_obstacle.py` | submodule / whatever collected that hdf5 | — |
+
+Hallway: wrist only, `PactPlaceCorridorV2Sampler`, XML `pact_place_corridor_v2`. Metrics-only
+default (no MP4; trap 23). Place-success + `bar_hit_rate`. **No** `--eval_cell` loop — bar
+lives in the sampler. Amine frozen rows: horizon 900.
+
+v1011d: exo + wrist, `PactPlaceCorridorV1010FourObjectSampler`, XML family
+`pact_place_corridor_v10_7_*`. Env var `MOLMOSPACES_PACT_V1010` if you move the worktree.
+Do **not** set `MOLMOSPACES_PACT_PLACE` for this script (that is the hallway pin).
 
 Obstacle eval pins cells: `visible` / `invisible` / `free`. Invisible = geom group 4
 (cameras skip, skin sees). Gate-bar ckpts need `--eval_sampler gate`. Source + ckpts for
 that line were **wiped**. Archived 66%→40% lives only in `reports/eval_summaries/`. The live
 paper MVP is hallway readout n=50 ([§4.4](#44-live--corridor-skin-fire--compress-skin)).
+v1011d numbers are a **different env** — do not paste them into the hallway table.
 
 Default PACT skin at eval is `mj_multiRay`, not the EGL rasterizer used in datagen. Not
 bit-identical. `--egl-prox` is the old ~18 min/ep path (traps 25).
 
 `scripts/run_pact_place_eval_chunk100.py` **name lies**: default chunk is **50**. Amine’s
 worker `amine/act/eval_pact_place_chunk100_row.py` will not `strict=True` load local ckpts
-(trap 24).
+(trap 24). That 40-row manifest is **hallway v2 scenes**. Do not run it on the v1011d ckpt.
 
-n=50 floor. n=25 sits in a ±40-point noise band. Report **strict success** next to
-collisions. Low collisions can mean a statue (traps 5, 11).
+n=50 floor for a hallway-style claim. v1011d 24-cell protocol is n=48 (2/cell) or n=72
+(3/cell). n=25 sits in a ±40-point noise band. Report **strict success** next to collisions.
+Low collisions can mean a statue (traps 5, 11).
 
 `scripts/compare_pact.py` does not read JSON. You type `vanilla=14/50,17/50`. Easy to swap
-success and crash counts.
+success and crash counts. No vanilla v1011d arm yet — you cannot compare PACT vs ACT on this
+env until that ckpt exists.
 
 **Sensor order.** Law: `hybrid_skin_sensors.HYBRID_SKIN_SENSOR_ORDER`. Env tuple
 `_HYBRID_SKIN_SENSOR_NAMES` puts **front before back**. Convert + live stack use the law.
@@ -1091,14 +1186,67 @@ MUJOCO_GL=egl PYOPENGL_PLATFORM=egl python eval_act_place_corridor.py \
 ```
 
 Do **not** overwrite `eval_output/place_corridor_readout_s0_n50_fast/` — that dir is the MVP
-JSON. That command does **not** test v12 / v1010 / mixed.
+JSON. That command does **not** test v12 / v1010 / mixed / v1011d.
+
+#### v1011d eval commands
+
+Worktree once (origin/main, not 977acd6):
+
+```bash
+git -C /home/jaydv/code/prox_learning/submodules/molmospaces worktree add \
+    /home/jaydv/code/molmospaces-pact-v1010 \
+    4bba4cbcea49ca8dbaee44fb9a376568b1b3cc82
+```
+
+Smoke n=2 (house 1 = F0 left center). **Done 2026-09-03.** `eval_output/pact_pick_n_place_v2_v1011d_raw_s0_n2/eval_summary.json`. Place 0/2, bar 1/2, collision-free 1/2, grip-close 2/2. ~21 min/ep. Confirms cameras, skin, ckpt load. **Not a result.** Pin is only F0 / left / center. Ep 0 never grasped; ep 1 hit bar + clutter. Gripper closed on both — not a statue.
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning/submodules/act
+export PYTHONPATH="/home/jaydv/code/molmospaces-pact-v1010:$PWD:$PYTHONPATH"
+export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+
+python eval_act_pact_pick_n_place.py \
+    --ckpt_dir ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/pact_pick_n_place_v2_v1011d_raw_s0_n2 \
+    --num_rollouts 2 --chunk_size 50 --temp_agg_off --task_horizon 1050
+```
+
+Real eval: 24 cells × 2 = 48. New output dir. `episodes.jsonl` is kill-safe.
+
+```bash
+python eval_act_pact_pick_n_place.py \
+    --ckpt_dir ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \
+    --output_dir /home/jaydv/code/prox_learning/eval_output/pact_pick_n_place_v2_v1011d_raw_s0_n48 \
+    --spread_cells --num_rollouts 48 --chunk_size 50 --temp_agg_off --task_horizon 1050
+```
+
+`--num_rollouts 50 --spread_cells` still runs **48** (2/cell). `--spread_cells` with n=2
+runs **24** (1/cell) — do not use that for smoke. Read `eval_summary.json` + the printed
+bar_hit / collision_free / strict / grip_close line. Train command that produced this ckpt
+(already finished; do not rerun unless you want a new seed):
+
+```bash
+cd /home/jaydv/code/prox_learning/submodules/act
+export PYTHONPATH="$PWD:$PYTHONPATH"
+python imitate_episodes.py --task_name pact_pick_n_place_v2 --policy_class ACT --ckpt_dir ckpts \
+  --kl_weight 10 --chunk_size 50 --hidden_dim 512 --dim_feedforward 3200 \
+  --batch_size 8 --lr 1e-5 --seed 0 --num_epochs 2000 \
+  --use_proximity --prox_feature raw --prox_layout per_sensor \
+  --wandb_run_name pact_pick_n_place_v2_v1011d_s0
+```
 
 #### Morning next (other desktop)
 
-1. Read this section + traps 26, 29, 30.
-2. Pick **one** set: v12 (recommended), v1010 (needs hash glob), or mixed v10.11c.
-3. Wire convert + `TASK_CONFIGS` + eval to **that** sampler/XML. Do not train all dumps.
-4. Smoke 2 eps before overnight.
+1. Worktree `molmospaces-pact-v1010` and smoke n=2 **already exist**.
+2. Run `--spread_cells` n=48 into `eval_output/pact_pick_n_place_v2_v1011d_raw_s0_n48/`.
+   ~21 min/ep × 48 ≈ **17 h**. One GPU. Do not run viz/train on the same GPU.
+3. When `eval_summary.json` lands, report place / bar / collision-free / strict / grip-close.
+   Copy JSON under `reports/eval_summaries/` if you want it git-tracked. Do not paste into
+   the hallway n=50 table.
+4. Optional later: train vanilla ACT on the same hdf5 so you can vs-ACT. No control ckpt yet.
+5. Do not point this ckpt at `eval_act_place_corridor.py`. Do not overwrite v5 hdf5 or
+   `eval_output/place_corridor_readout_s0_n50_fast/`.
 
 ---
 
@@ -1260,7 +1408,7 @@ brushing with no bar ~60%; the old counter could not split bar vs cavity. One se
 | Compress the skin | 32-d embedding + XYZ | Validity 100%; XYZ 20.6 mm; pixel 87/95%. Compressor grade, not policy | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Finetune readout into ACT | Unfreeze encoder; 128-d CLS tokens live at train/eval | Place **40%**; bar **12%**; collision-free **88%**. vs ACT bar p = 0.016. **Paper MVP** | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Hallway pick-and-place | 152 coauthor demos, n=50, three arms | ACT 28/34/66 vs raw 42/36/64 vs **readout 40/12/88** (place / bar / free). Raw ≠ safety win. Readout is | [§4.3](#43-live--hallway-act-vs-pact) |
-| Sep clones (v12 / v1010 / mixed) | New envs + table/exo cam dumps on disk | **No ACT convert / TASK_CONFIG / matching eval.** Viz only. Do not train | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
+| Sep clones (v12 / v1010 / mixed / v1011d) | New envs + table/exo cam dumps | v1011d: convert + train **done**. Eval `eval_act_pact_pick_n_place.py` (smoke n=2 then `--spread_cells` n=48). Others viz / no task row | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | Collect a taller doorway pole | 44 cm pole on TCP line | 0 examples collected | [§4.7](#47-parked--gate-bar-v31) |
 | Blur cameras only at test time | Freeze policy, blur RGB, leave skin | 0 of these tests run | [§4.8](#48-parked--test-time-camera-blur) |
 
@@ -1574,6 +1722,7 @@ scripts/             analysis / training / figures / housekeeping.sh
 encoders/            peak closeness + surface geometry
 tests/               encoder + PACT-raw unit tests
 configs/             frozen eval manifests (Amine 40-row place protocol)
+custom_scenes/       v1011d / v12 place XML (v10_7 hashed + v5/v3 chain + v12 wrapper)
 submodules/act/      ACT fork — train and eval
 submodules/molmospaces/  simulator + demonstration collection
 submodules/MolmoBot/ unused
@@ -1585,9 +1734,10 @@ assets/              MolmoSpaces asset root AND this project's artifacts
 franka_assets/       mesh store via symlinks — DO NOT DELETE
 data/pact_place_corridor_v5/   coauthor hallway rows (live, converted)
 data/pact_place_corridor/      Ekshan multi-version (v1010, v107, …) — viz only
-data/pact_pick_n_place_v2/     v12 rows — viz only
+data/pact_pick_n_place_v2/     v1011d live (converted); v12 rows viz
 data/mixed_v1011_clutter_geometry/  v10.11c — viz only
-act_style_data/pact_place_corridor_v5/   converted ACT hdf5 (live; only train set)
+act_style_data/pact_place_corridor_v5/   converted ACT hdf5 (hallway; live)
+act_style_data/pact_pick_n_place_v2/     converted v1011d hdf5 (exo+wrist; live)
 eval_output/         gitignored rollouts
 experiments_output/  encoder trains, viz, figures
 diagnostics_output/  committed legacy renders
@@ -1614,7 +1764,7 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `safety_{flinch,react,moving,orbit,sphere}_demo.py` | reflex videos |
 | `figures.py` | 29 paper figures (`--list`) |
 | `convert_obstacle_to_act.py` | datagen → ACT hdf5 |
-| `convert_pact_place_to_act.py` | hallway rows → ACT hdf5 |
+| `convert_pact_place_to_act.py` | hallway / v1011d rows → ACT hdf5 (wrist + exo/table RGB when present) |
 | `probe_prox_decodability.py` | swerve linear probe |
 | `compare_pact.py` | Wilson CI + Fisher |
 | `analyze_obstacle_dataset.py` | bar / deflect / scrape stats |
@@ -1623,14 +1773,16 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `build_hybrid_on_franka_skin.py` | builds `model_hybrid.xml` |
 | `housekeeping.sh` | tiered disk cleanup, dry-run default |
 | `dataset_viz.py` | folder of h5 → one MCAP + tiled MP4 + HTML (ACT / HF / datagen) |
+| `visualize_environment.py` | sample + render place/obstacle XML. Uses `custom_scenes/` for v10_7 |
 | `foxglove_viz.py` | datagen h5 → `.mcap` (older; prefer `dataset_viz.py`) |
 | `hybrid_viz_lib.py` | shared MuJoCo/EGL helpers |
 | `run_pact_place_eval_chunk100.py` | Amine 40-row place protocol on local ACT/PACT ckpts |
 | `pact_place_eval_chunk100_contract.py` | frozen 40-row scene hashes (vendored) |
-| `run_pact_place_v12_*.py` / `pact_place_v12_contract.py` | v12 collect / cameras / publish. **Not** ACT train. Eval of v12 policy still missing ([§4.17](#417-new-clones-2026-09-03--not-act-ready)) |
+| `run_pact_place_v12_*.py` / `pact_place_v12_contract.py` | v12 collect / cameras / publish. Env files used as the named include of v10_7_center. v1011d ACT eval is `eval_act_pact_pick_n_place.py` ([§4.17](#417-new-clones-2026-09-03--not-act-ready)) |
 
 Visualizer: `scripts/dataset_viz.py` for a folder of h5 (MCAP + HTML). Scene inspect:
-`submodules/molmospaces/scripts/datagen/visualize_environment.py`.
+Visualizer: `scripts/visualize_environment.py` (repo wrapper → `custom_scenes/`).
+Submodule: `submodules/molmospaces/scripts/datagen/visualize_environment.py`.
 
 ARCHIVE (era over, still imported or historic): `test_and_reconstruct_hybrid.py` (library for
 `figures.py` — do not delete), `analyze_dataset.py` / `dataset_probes.py` (29-sensor),
@@ -1639,7 +1791,8 @@ ARCHIVE (era over, still imported or historic): `test_and_reconstruct_hybrid.py`
 ### ACT fork
 
 Upstream ends at `742c753`. This project adds proximity fusion, in-env eval, blur / dropout.
-`imitate_episodes.py` trains. `eval_act_obstacle.py` and `eval_act_place_corridor.py` evaluate.
+`imitate_episodes.py` trains. `eval_act_obstacle.py`, `eval_act_place_corridor.py`, and
+`eval_act_pact_pick_n_place.py` evaluate.
 `--manifest` on the place eval runs Amine's frozen 40-row protocol ([§4.3.1](#431-live--amine-40-row-place-protocol)).
 `constants.py` `TASK_CONFIGS`:
 
@@ -1648,7 +1801,8 @@ Upstream ends at `742c753`. This project adds proximity fusion, in-env eval, blu
 | `obstacle_pact_v2` | `obstacle_prox_v2` | 105 / 185 | **no** (wiped) |
 | `obstacle_pact_avoid_v1` | `obstacle_prox_avoid_v1` | 151 / 140 | **no** |
 | `obstacle_gate_v1` | `obstacle_gate_v1` | 0 / 0 until convert | **no** |
-| `pact_place_corridor_v5` | `pact_place_corridor_v5` | 152 / 636 | **yes** |
+| `pact_place_corridor_v5` | `pact_place_corridor_v5` | 152 / 636 | **yes** (wrist) |
+| `pact_pick_n_place_v2` | `pact_pick_n_place_v2/data/v1011d` | 200 / 561 | **yes** (exo+wrist). Eval `eval_act_pact_pick_n_place.py`. [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | v12 / v1010 / mixed v10.11c | — | — | **no TASK_CONFIG** — clones under `data/` only; [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 
 `SIM_TASK_CONFIGS` (ALOHA) is dead, kept because three upstream files import the name.
@@ -1828,8 +1982,8 @@ Every one of these has already cost real time.
    behavioural claim from wandb alone.
 7. **`scene_params["cell"]` is not a label** on obstacle runs (always `"bar"`).
 8. **Datagen resume is silent.** Existing h5 → skip. Re-running a complete dir does nothing.
-9. **`imitate_episodes.py --eval` cannot evaluate this project.** Use `eval_act_obstacle.py` or
-   `eval_act_place_corridor.py`.
+9. **`imitate_episodes.py --eval` cannot evaluate this project.** Use `eval_act_obstacle.py`,
+   `eval_act_place_corridor.py` (hallway v5), or `eval_act_pact_pick_n_place.py` (v1011d).
 10. **`franka_assets/` looks dead to grep and is not.**
 11. **n = 25 is inside the noise band.** ±40 points. 50 is the floor. Match sample sizes.
 12. **Any new waypoint vs 0.855 m reach.** `‖p − (0.08, 0, 0.35)‖` before trusting a pose.
@@ -1882,15 +2036,19 @@ Every one of these has already cost real time.
     `--force`. Finished datasets skip; only missing folders and new episodes
     encode; the dashboard catalog updates. `--force` is for a layout change
     (`--cam3d`, `--stride`) or a bad clip.
-29. **Sep clones are viz-only.** `convert_pact_place_to_act.py` hardcodes
-    `episode_00000000_wrist_camera.mp4` and wrist-only `CAM`. v1010 / v107_spaced
-    hash names → 0 hdf5. v12 exo is dropped. `clean_success` missing defaults to
-    keep. No `TASK_CONFIGS`. `eval_act_place_corridor.py` still samples
-    `PactPlaceCorridorV2Sampler` on worktree `977acd6`. Train v12 / eval v2 is
-    wrong. Full inventory: [§4.17](#417-new-clones-2026-09-03--not-act-ready).
+29. **v1011d wrist-only hdf5 is stale.** Old convert dropped `exo_camera_1`. Train
+    `KeyError`s that key (or `table_camera`, which this dump never writes). Reconvert.
+    ACT key is `exo_camera_1`. Eval is `eval_act_pact_pick_n_place.py` on worktree
+    `molmospaces-pact-v1010` @ `origin/main`. `eval_act_place_corridor.py` is hallway v2
+    (`977acd6`). Train v1011d / eval v2 is wrong. Full inventory:
+    [§4.17](#417-new-clones-2026-09-03--not-act-ready).
 30. **`run_pact_place_eval_chunk100.py` default chunk is 50.** The name is Amine’s
     protocol, not this box’s policy contract. Do not compare that table to his
     chunk-100 / 32-d numbers.
+31. **Unknown `TASK_CONFIGS` name used to build ALOHA 14.** hdf5 action is Franka **8**.
+    Net `Linear(14, 512)`. Crash: `400x8 and 14x512` (batch 8 × chunk 50).
+    `imitate_episodes.py` now uses qpos 9 / action 8 for every non-`sim_` task.
+    Look for `[dims] ... action_dim=8` before epoch 0.
 
 ---
 
@@ -1934,14 +2092,20 @@ Every one of these has already cost real time.
 - **Amine 40-row place protocol (2026-08-29).** Reuse his frozen scenes, not his policy loader.
   Local launcher `scripts/run_pact_place_eval_chunk100.py`. `PACT_PERMUTED` skipped. Not the
   MVP. Do not mix with random-house n=50.
-- **New HF clones landed (2026-09-01–03).** v1010 215, v12 165, mixed v10.11c 99, plus
-  v107_spaced / extra v5 dump / table_smoke. Dashboard can viz them. Convert / TASK_CONFIGS /
-  eval sampler were **not** extended. Do not train until [§4.17](#417-new-clones-2026-09-03--not-act-ready)
-  wiring exists. Recommended first set: v12.
+- **New HF clones landed (2026-09-01–03).** v1010 215, v12 165, mixed v10.11c 99, v1011d 200,
+  plus v107_spaced / extra v5 dump / table_smoke. Convert now writes exo/table RGB when present.
+  `TASK_CONFIGS['pact_pick_n_place_v2']` is v1011d. Eval is `eval_act_pact_pick_n_place.py`
+  (V1010 sampler, v10_7 XML, origin/main worktree). Not hallway v2.
+  [§4.17](#417-new-clones-2026-09-03--not-act-ready).
+- **v1011d eval wired (2026-09-03).** `eval_act_pact_pick_n_place.py`. 7d1ea35 v12.xml is
+  the named include of v10_7_center; sampler loads hashed v10_7 files from origin/main.
+  Kitchen overlay off. Smoke n=2 **done** (0/2 place, pin house 1). Next: `--spread_cells` n=48.
 
 ### Unresolved
 
 - Whether the hallway readout result holds with a different seed.
+- Whether v1011d PACT-raw place/bar numbers beat a vanilla ACT control (no vanilla ckpt yet).
+  Smoke n=2: 0/2 place on pin house 1. Real number is `--spread_cells` n=48, not yet run.
 - Whether the wrist camera sees the corridor bar on successful vs failing approaches.
 - How much of the archived invisible-cell collision number was actually the hazard (60% wall
   floor). Gate-bar eval has `bar_hit_rate`; that grid has not been run.
@@ -1970,7 +2134,7 @@ Every one of these has already cost real time.
 | `data/table_smoke/` | 0.9 G | 10-row schema smoke — **do not train** |
 | `submodules/act/ckpts` | ~22 G | v5 vanilla + PACT-raw + readout only |
 | `act_style_data/pact_place_corridor_v5` | 4.4 G | converted ACT hdf5 — **keep**; still the only row |
-| `custom_scenes/pact_place_corridor_v12.xml` | small | v12 env in this repo; collect scripts exist; no ACT eval |
+| `custom_scenes/` | small | v10_7 hashed + v5/v3 chain + v12 wrapper. Eval + viz. |
 | `assets/safety` | 342 M | `sweep_v*.h5` + demo mp4/mcap; **no `cvae_v3/`** |
 | `assets/datagen` | 39 M | `hybrid_gate_bar_check`, `hybrid_clutter_pnp_check` only |
 | `eval_output` | small | hallway n=50 including readout MVP (gitignored); copies in `reports/eval_summaries/` |
@@ -2028,12 +2192,14 @@ MJCF arm → <Config> datagen → assets/datagen/<run>/*.h5
 
 HF clone → data/<name>/rows/*/trajectory.h5 + mp4
                 └─ convert_pact_place_to_act.py → act_style_data/<ds>/
-                       LIVE: pact_place_corridor_v5 only
+                       LIVE: pact_place_corridor_v5 + pact_pick_n_place_v2 (v1011d)
                        BLOCKED: v12 / v1010 / mixed  (§4.17)
                                               ↓
                                     imitate_episodes.py → ckpts/<task>/<run>/
                                               ↓
-                         eval_act_obstacle.py / eval_act_place_corridor.py
+                         eval_act_pact_pick_n_place.py   (v1011d; origin/main worktree)
+                         eval_act_place_corridor.py      (hallway v5; 977acd6 worktree)
+                         eval_act_obstacle.py
                          scripts/run_pact_place_eval_chunk100.py  (40 frozen v2 rows)
                                               ↓
                                     eval_output/.../eval_summary.json
