@@ -54,6 +54,9 @@ def submodule_pin() -> str | None:
 
 def check_pin(report: Report) -> None:
     pin = submodule_pin()
+    if pin is None:
+        print("  [skip] molmospaces pin — not a git checkout")
+        return
     report.check(
         pin == MOLMOSPACES_COMMIT,
         "molmospaces pin",
