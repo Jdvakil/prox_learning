@@ -43,9 +43,14 @@ Prefix with the usual `OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl`.
 
 ## Why the submodule pin moved
 
-Both dumps were collected against molmospaces
-`experiment/pact-vs-act-remediation-v2` (`70dedc07`), and the pin now points
-there. molmospaces `main` cannot replay either one: it has no
+The v1011d dump was collected against molmospaces
+`experiment/pact-vs-act-remediation-v2` (`70dedc07`) and the v12 dump against
+its ancestor `ed045d7`, and the pin now points at the former. One pin is
+correct for both because the planner did not change between them:
+`PactPlaceCorridorPolicy` (3655 lines), `PactPlaceCorridorPolicyConfig`,
+`PactPlaceCorridorV106Sampler`, and the body of
+`PactPlaceCorridorV1010FourObjectSampler` are byte-identical at the two
+commits. The later commit only adds the V10.11 sampler chain on top. molmospaces `main` cannot replay either one: it has no
 `PactPlaceCorridorV1011DRandomizedLayoutSampler`, it dropped
 `data_generation/runtime_compat.py` that the v12 scripts import, and its
 corridor policy is a trimmed rewrite. The previous pin (`89696ed`) predates the
