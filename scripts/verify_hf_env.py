@@ -85,6 +85,11 @@ def check_entrypoint(report: Report, spec: EnvSpec) -> None:
     report.check((ROOT / spec.collect_entrypoint).is_file(), f"entrypoint {spec.collect_entrypoint}")
 
 
+def check_artifacts(report: Report, spec: EnvSpec) -> None:
+    for rel in spec.required_artifacts:
+        report.check((ROOT / rel).is_file(), f"artifact {rel}")
+
+
 def check_hub(report: Report, spec: EnvSpec) -> None:
     url = MANIFEST_URL.format(ds=HF_DATASET, path=spec.hub_path)
     try:
@@ -127,6 +132,7 @@ def main() -> int:
         print(f"\n{spec.hub_path}  ->  {spec.environment_version}")
         check_entrypoint(report, spec)
         check_scenes(report, spec)
+        check_artifacts(report, spec)
         check_classes(report, spec)
         if args.online:
             check_hub(report, spec)

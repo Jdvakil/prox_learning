@@ -39,6 +39,10 @@ class EnvSpec:
     scene_relative: tuple[str, ...]
     collect_entrypoint: str
     contract_module: str
+    # Gate artifacts the collect binds before it will roll out. Missing ones
+    # surface as a bare FileNotFoundError deep inside preflight, so they are
+    # listed here and checked up front.
+    required_artifacts: tuple[str, ...] = ()
     notes: str = ""
 
     @property
@@ -57,6 +61,7 @@ HF_V12 = EnvSpec(
     scene_relative=("custom_scenes/pact_place_corridor_v10_11_center_preview.xml",),
     collect_entrypoint="scripts/run_pact_place_v1011_preview_collect.py",
     contract_module="pact_place_v1010_contract",
+    required_artifacts=("diagnostics_output/pact_place_v9_v0b/palette_v9_1.json",),
     notes=(
         "Four-object household plus standing kitchen extras attached by the "
         "preview renderer. Not pact_place_corridor_v12, which has no published "
@@ -80,6 +85,12 @@ HF_V1011D = EnvSpec(
     ),
     collect_entrypoint="scripts/run_pact_place_v1011d_n200_collect.py",
     contract_module="pact_place_v1011d_contract",
+    required_artifacts=(
+        "diagnostics_output/pact_place_v9_v0b/palette_v9_1.json",
+        "diagnostics_output/pact_place_v1011d_contract/contract.json",
+        "diagnostics_output/pact_place_v1011d_preflight/preflight.json",
+        "diagnostics_output/pact_place_v1011d_review/review_manifest.json",
+    ),
     notes=(
         "200 accepted of 777 attempts. The published manifest shortens the "
         "environment to pact_place_corridor_v10_11d and its folder README "
