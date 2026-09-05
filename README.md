@@ -82,6 +82,7 @@ tabletop clones (cluttered place, table cam) are not yet on a **fair** train/eva
 |---|---|
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
 | train v1011d PACT (exo+wrist hdf5) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
+| start a new v12 checkpoint | [§4.21](#421-v12-training-and-evaluation) |
 | shared dataset train/eval workflow and protocol checks | [§4.20](#420-dataset-bound-training-and-evaluation) |
 | diagnose zero success / choose splits / iterate quickly | [§4.18](#418-zero-success-diagnostics-and-dataset-splits) |
 | eval v1011d ckpt (what it means + commands) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
@@ -1637,6 +1638,100 @@ alone cannot establish that `judge_success` is correct. Geometry/readout PACT is
 explicitly rejected by this initial adapter: its per-step history must be validated
 before enabling observation gating. New task families require a matching adapter
 and validation, not just a renamed dataset path.
+
+---
+
+<a id="421-v12-training-and-evaluation"></a>
+### 4.21 Start a new v12 checkpoint
+
+**2026-09-05:** `v12` is now a dataset profile in `scripts/pact.py`. Use the raw
+source `data/pact_pick_n_place_v2/data/v12`, not its v12.1 or v1011d siblings.
+Conversion is still required; it writes to a separate `act_style_data/.../v12`.
+
+**The v12 label conceals a post-sampler scene modification.** All 165 raw episode
+`scene_params` retain `pact_place_corridor_v10_10_four_object`. However, the dataset
+manifest declares `pact_place_corridor_v10_11_preview_onebottle`, standing kitchen
+extras, and hover-then-drop expert motion. The collection code parks
+`Soap_Bottle_30` and the candles, moves `Soap_Bottle_11` toward the robot relative
+to the cup, and attaches/places the kitchen extras. The new `pact_v12_adapter.py`
+uses those collection geometry helpers and the same extra-object contact taxonomy.
+The expert's hover/drop action correction is demonstration behavior, not a
+correction applied to the learned policy's actions.
+
+The raw scene hash is `cb6be07e346bba2ea504858664d213c694c51c5889134a6253e7c2c7871e91ec`.
+It identifies the historical `pact_place_corridor_v10_11_center_preview.xml`,
+recovered from molmospaces git blob `1067d4cc0441d9abb312f037f75c506c7d320a1b`.
+It is not the current `custom_scenes/pact_place_corridor_v12.xml`. Setup exports
+this exact wrapper beside the pinned include chain and uses the compatible
+V1010 sampler implementation in `70dedc0`. This is a selected runtime pin, not
+proof of the exact unrecorded commit used to collect every episode. The prepared
+contract also fingerprints the overlay helpers and nominal clutter config.
+
+Raw inventory: 165 episodes, 163 distinct selected seeds, all center pose, eight
+family/side categories. Grouping repeated seeds and trajectories gives an expected
+**132 train / 33 validation** split if conversion retains all rows. Both partitions
+cover every category. `F3_aperture_side_stagger|left|center` has only two examples,
+so each partition gets one. The final split comes from converted clean episodes.
+Static clutter families are shared; this measures new episode seeds within known
+families, not generalization to unseen clutter layouts. Do not group all examples
+with a shared static four-object hash into one partition: that would remove whole
+families and make the stated within-family split impossible.
+
+Run from the repository root with the existing training Python:
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+python scripts/pact.py convert v12
+python scripts/pact.py prepare v12
+python scripts/pact.py train v12 --run v12_raw_s0 --arm raw --seed 0 --epochs 2000
+```
+
+`convert` includes proximity for both ACT and PACT, uses min pooling and both RGB
+cameras, and refuses to overwrite a nonempty converted directory. `train` saves
+its own grouped split, training-only normalization and experiment/architecture
+metadata. Add `--dry-run` to conversion or training to inspect the command.
+For an ACT comparison later, use the same prepared profile with `--arm act` and a
+new run name, e.g. `v12_act_s0`.
+
+After training, use the small checks before a large suite:
+
+```bash
+python scripts/pact.py offline --run v12_raw_s0 --split train
+python scripts/pact.py offline --run v12_raw_s0 --split val
+python scripts/pact.py setup v12 --env
+python scripts/pact.py check --run v12_raw_s0
+python scripts/pact.py verify --run v12_raw_s0
+python scripts/pact.py eval --run v12_raw_s0 --suite smoke
+# Only after the smoke behavior makes sense:
+python scripts/pact.py eval --run v12_raw_s0 --suite dev
+# Reserve for final comparisons:
+python scripts/pact.py eval --run v12_raw_s0 --suite test
+```
+
+V12 uses **2 smoke / 8 dev / 48 test** episodes (six test seeds per observed
+family/side category), all center pose, horizon 1050. `setup v12` has already
+exported code/XML here; `--env` installation is still a user-run step. No v12
+conversion, training, package installation, learned-policy rollout or live overlay
+parity was run during this edit. Unit tests and raw metadata/nominal-layout checks
+are not a substitute for full-horizon smoke and a known-successful judge control.
+The initial workflow supports ACT and raw PACT; geometry/readout remains excluded.
+Validation: 39 focused tests pass. All eight v12 categories passed configuration
+construction, exact preview-XML hash checks, comparison of the sampler's pre-overlay
+object poses with recorded poses, and import of the overlay from the intended runtime.
+These checks did not compile a scene or run physics.
+
+**Interpret the new V1011d speed run correctly.**
+`eval_output/v1011d_speedcheck_n50/eval_summary.json` records 0/50 success,
+28/50 collision-free, 0/50 target-contact episodes, and 21,064.06 seconds elapsed
+(5.85 hours, about 7 minutes per episode). It explicitly records `eval_is_ood=true`,
+V10.10 FourObject evaluation, ray proximity, no kitchen overlay, and 50 trials
+of F0/left/center. It is neither a matched V1011d evaluation nor the actual v12
+scene variant. The runtime is lower than the earlier long run, but changed scene
+coverage/backend prevent treating the ratio as an isolated speed benchmark.
+Randomized training alone does not establish the cause of zero success. Start
+v12 as a separate experiment, and use offline diagnostics and two complete
+smoke episodes before committing to another 50-rollout run.
 
 ---
 

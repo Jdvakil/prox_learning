@@ -48,6 +48,9 @@ def load_contract(path):
     if expected != digest(payload):
         raise ValueError("experiment contract hash mismatch; prepare a new contract")
     validate_split(contract["episodes"], contract["split"])
+    for relative, expected in contract.get('adapter_files', {}).items():
+        if file_digest(resolve(relative)) != expected:
+            raise ValueError(f'Adapter input changed since prepare: {relative}; use a new dataset profile')
     return contract
 
 
@@ -136,6 +139,12 @@ def inventory(profile):
         raise ValueError("this adapter requires converted min-pooled proximity")
     episodes, templates = [], {}
     raw_root = resolve(profile["raw_dir"]) / "rows"
+    if profile.get('dataset_environment_version'):
+        manifest = json.loads((raw_root.parent / 'manifest.json').read_text())
+        if manifest['environment_version'] != profile['dataset_environment_version']:
+            raise ValueError('Raw dataset variant differs from profile')
+        if profile['adapter'] == 'v12' and not manifest.get('standing_kitchen_extras'):
+            raise ValueError('v12 requires the recorded kitchen overlay')
     for i in range(int(meta["num_episodes"])):
         converted = resolve(profile["data_dir"]) / f"episode_{i}.hdf5"
         with h5py.File(converted) as f:
@@ -161,6 +170,10 @@ def inventory(profile):
         side = result.get("intrusion_side") or params.get("pact_intrusion_side")
         family = result.get("family_id", "hallway")
         pose = result.get("pose_id", "center")
+        if profile.get('supported_poses') and pose not in profile['supported_poses']:
+            raise ValueError(f'Unregistered pose {pose} in {row_dir}')
+        if profile.get('scene_sha256') and params.get('pact_v106_scene_sha256') != profile['scene_sha256']:
+            raise ValueError(f'Collection scene hash differs from profile: {row_dir}')
         cell = "|".join((family, side, pose))
         selected = result.get("selected_seed") or {}
         if isinstance(selected, dict):
@@ -205,6 +218,9 @@ def evaluation_row(profile, template, role, index, forbidden_seeds):
                     "clutter_y_jitter_m": layout.get("applied_clutter_y_jitter_m", {})})
         for key in ("pact_v106_scene_sha256", "pact_v106_x_m", "pact_v106_r_neg_m", "pact_v106_r_pos_m"):
             row[key] = params[key]
+    elif profile['adapter'] == 'v12':
+        from pact_v12_adapter import row_payload
+        row.update(row_payload(profile, template))
     else:
         # Same hallway jitter support as the established frozen evaluation protocol.
         import random
@@ -226,7 +242,7 @@ def prepare_contract(dataset, profile):
         dev_cells = [cells[i] for i in (0, 4, 7, 11, 14, 15, 19, 23)]
     forbidden = {e[k] for e in episodes for k in ("selected_seed", "requested_seed") if e.get(k) is not None}
     dev = [evaluation_row(profile, templates[c], "dev", i, forbidden) for i, c in enumerate(dev_cells)]
-    test_cells = cells * (2 if len(cells) > 2 else 24)
+    test_cells = cells * profile.get('test_repeats_per_cell', 2 if len(cells) > 2 else 24)
     final = [evaluation_row(profile, templates[c], "test", i, forbidden) for i, c in enumerate(test_cells)]
     contract = {"schema_version": SCHEMA, "dataset": dataset, "profile": profile,
                 "image_h": meta["image_h"], "image_w": meta["image_w"],
@@ -234,6 +250,11 @@ def prepare_contract(dataset, profile):
                 "evaluation": {"dev": dev, "test": final},
                 "success_definition": "ever_success", "collision_window": "full_horizon",
                 "validation_status": "runtime_verification_required"}
+    if profile['adapter'] == 'v12':
+        contract['adapter_files'] = {name: file_digest(resolve(name)) for name in (
+            profile['clutter_config'], 'scripts/pact_v12_adapter.py',
+            'scripts/render_pact_place_v12_clutter.py', 'scripts/pact_place_v12_contract.py')}
+        contract['generalization_scope'] = 'new episode seeds within observed center-pose layout families; static layouts shared'
     contract["sha256"] = digest(contract)
     return contract
 

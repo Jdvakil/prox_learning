@@ -53,6 +53,12 @@ def runtime_setup(profile):
         helper = subprocess.check_output(['git', '-C', str(ROOT), 'show',
                                           '7d1e25ee:scripts/pact_place_v9_contract.py'])
         (dest / 'pact_place_v9_contract.py').write_bytes(helper)
+    if profile.get('scene_blob'):
+        scene = dest / 'molmo_spaces/data_generation/custom_scenes' / profile['scene_filename']
+        scene.write_bytes(subprocess.check_output([
+            'git', '-C', str(ROOT / 'submodules/molmospaces'), 'cat-file', 'blob', profile['scene_blob']]))
+        if file_digest(scene) != profile['scene_sha256']:
+            raise ValueError('Archived scene differs from recorded collection hash')
     hashes = {str(p.relative_to(dest)): file_digest(p) for p in dest.rglob('*') if p.is_file()}
     write_json(marker, {'revision': revision, 'files': hashes})
     return dest
@@ -133,10 +139,20 @@ def train_command(args, contract):
     return command
 
 
+def convert_command(dataset, profile):
+    return [sys.executable, '-m', 'scripts.convert_pact_place_to_act',
+            '--src', str(resolve(profile['raw_dir'])), '--dst', str(resolve(profile['data_dir'])),
+            '--with_proximity', '--prox_pool', 'min', '--image_h', '240', '--image_w', '320',
+            '--task_name', dataset]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('list')
+    conversion = sub.add_parser('convert', help='Convert clean demonstrations for both ACT and PACT')
+    conversion.add_argument('dataset', choices=profiles())
+    conversion.add_argument('--dry-run', action='store_true')
     for verb in ('prepare', 'setup'):
         p = sub.add_parser(verb)
         p.add_argument('dataset', choices=profiles())
@@ -171,9 +187,20 @@ def main():
             p.add_argument('--suite', choices=('smoke', 'dev', 'test'), default='smoke')
             p.add_argument('--reference', action='store_true', help='Render every step for a diagnostic comparison')
     args = parser.parse_args()
+    if args.command == 'convert':
+        profile = profiles()[args.dataset]
+        destination = resolve(profile['data_dir'])
+        if destination.exists() and any(destination.iterdir()):
+            raise ValueError(f'Refusing to overwrite converted data: {destination}')
+        command = convert_command(args.dataset, profile)
+        print(shlex.join(command), flush=True)
+        if not args.dry_run:
+            subprocess.run(command, cwd=ROOT, check=True)
+        return
     if args.command == 'list':
         for name, p in profiles().items():
-            print(f"{name}: {p['environment_version']} | {p['data_dir']} | cameras={p['camera_names']}")
+            variant = p.get('dataset_environment_version', p['environment_version'])
+            print(f"{name}: {variant} | {p['data_dir']} | cameras={p['camera_names']}")
         return
     if args.command == 'setup':
         print(runtime_setup(profiles()[args.dataset]))

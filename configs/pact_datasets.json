@@ -8,7 +8,10 @@
       "sampler_class": "PactPlaceCorridorV1011DRandomizedLayoutSampler",
       "molmospaces_revision": "70dedc0",
       "runtime_dir": "assets/pact_runtime/v1011d",
-      "camera_names": ["exo_camera_1", "wrist_camera"],
+      "camera_names": [
+        "exo_camera_1",
+        "wrist_camera"
+      ],
       "horizon": 1050,
       "policy_dt_ms": 66,
       "chunk_size": 50,
@@ -21,11 +24,39 @@
       "sampler_class": "PactPlaceCorridorV2Sampler",
       "molmospaces_revision": "977acd6719a8c05b688d3e70da356d61dd32d259",
       "runtime_dir": "assets/pact_runtime/hallway",
-      "camera_names": ["wrist_camera"],
+      "camera_names": [
+        "wrist_camera"
+      ],
       "horizon": 800,
       "policy_dt_ms": 66,
       "chunk_size": 50,
       "adapter": "hallway"
+    },
+    "v12": {
+      "raw_dir": "data/pact_pick_n_place_v2/data/v12",
+      "data_dir": "act_style_data/pact_pick_n_place_v2/data/v12",
+      "environment_version": "pact_place_corridor_v10_10_four_object",
+      "dataset_environment_version": "pact_place_corridor_v10_11_preview_onebottle",
+      "sampler_class": "PactPlaceCorridorV1010FourObjectSampler",
+      "molmospaces_revision": "70dedc0",
+      "runtime_dir": "assets/pact_runtime/v12",
+      "camera_names": [
+        "exo_camera_1",
+        "wrist_camera"
+      ],
+      "horizon": 1050,
+      "policy_dt_ms": 66,
+      "chunk_size": 50,
+      "adapter": "v12",
+      "clutter_config": "configs/pact_place_v12_clutter.json",
+      "scene_filename": "pact_place_corridor_v10_11_center_preview.xml",
+      "scene_blob": "1067d4cc0441d9abb312f037f75c506c7d320a1b",
+      "scene_sha256": "cb6be07e346bba2ea504858664d213c694c51c5889134a6253e7c2c7871e91ec",
+      "test_repeats_per_cell": 6,
+      "overlay": "v12_preview_household",
+      "supported_poses": [
+        "center"
+      ]
     }
   }
 }

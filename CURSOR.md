@@ -22,6 +22,27 @@ Newest session at the top.
 
 ---
 
+## 2026-09-05 — separate v12 training and the actual collection scene variant
+
+- **Why:** User switches to v12 after an OOD V1011d speed run scored 0/50 in
+  5.85 hours. The new result still used FourObject/F0-left-center and no overlay.
+- **What:** Added v12 registry profile, guarded `pact.py convert`, exact historical
+  preview XML export, `pact_v12_adapter.py`, and evaluator overlay/camera/scene
+  binding. Prepared contracts fingerprint overlay files; v12 test suite has 48
+  center-pose rows, not 16 or a 24-category pose sweep. README §4.21 has commands.
+- **Evidence:** Dataset manifest says onebottle + standing kitchen extras while
+  raw scene_params retain FourObject. Located the exact cb6be07e... XML in git
+  history. Verified nominal layout/jitter inputs against all 165 raw rows.
+  Expected split 132/33 with both repeated selected-seed pairs kept together;
+  rare F3-left category has only two examples.
+- **Validation:** 39 focused tests pass. All eight v12 sampler configurations,
+  preview XML hashes, pre-overlay object poses and pinned overlay imports checked.
+- **Not done:** No dataset conversion, training, package installation or live
+  policy evaluation. User runs those commands. The selected runtime and geometry
+  integration still require live validation; no higher-success-rate promise.
+
+---
+
 ## 2026-09-04 — dataset-bound training and evaluation workflow
 
 - **Why:** User needs multiple dataset/environment pairs, rapid checkpoint iteration,
