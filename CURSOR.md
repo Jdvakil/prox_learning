@@ -22,6 +22,35 @@ Newest session at the top.
 
 ---
 
+## 2026-09-05 — enable the actual finetuned PACT-readout architecture
+
+- **Why:** User wants v12 numbers from the full model used in the existing readout
+  experiment, rather than the peak-closeness baseline.
+- **What:** `pact.py train --arm readout` is now the default. It uses the existing
+  hallway pretrained surface encoder, 40 × 128-d CLS features, one token per sensor,
+  live causal inputs and joint encoder/ACT finetuning. Added encoder checkpoint/LR
+  options; W&B display names now match local run names. Baselines remain explicit.
+- **Evaluation fix:** Shared inference previously accumulated geometry history only
+  at chunk queries. It now records consecutive control frames before returning a
+  cached action. Contract gating retains skin every step while caching unused RGB;
+  legacy gates retain fresh observations for history encoders. Readout is accepted
+  only with the expected configuration and matching finetuned weights. Verification
+  hashes every consumed skin frame using saved sensor names.
+- **Checkpoints:** Added `pact_checkpoint.py`, paired best/last/periodic encoder
+  saves and pair hashes. Simulation and offline loaders select the corresponding
+  encoder and reject missing/mismatched pairs; evaluation identity includes encoder
+  weights. Historical best pairs without a hash index remain loadable.
+- **Docs:** Updated README §4.20–4.22 and batch examples for readout; marked old
+  hallway numbers/timings as belonging to the historical query-history protocol.
+- **Validation:** 69 focused tests passed. Loaded the actual pretrained checkpoint
+  on CPU, verified `(1, 40, 128)` features and nonzero encoder gradients. The v12
+  dry-run passed against the existing 132/33 manifest. Checked Python/Bash syntax
+  and whitespace. Preserved prior edits; no training, package install or physics
+  evaluation launched. Full-horizon smoke, live trace parity and judge controls
+  remain necessary before reporting new simulation results.
+
+---
+
 ## 2026-09-05 — full wrapper reference and batch-training recipes
 
 - **Why:** User wants to understand what the wrapper does, why it exists and how

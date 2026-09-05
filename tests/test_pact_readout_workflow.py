@@ -73,6 +73,25 @@ def test_adapter_requires_live_128d_readout_and_selected_pair(tmp_path):
         configure_proximity(pc, tmp_path, 'policy_best.ckpt', {'prox_pool': 'min'})
 
 
+def test_evaluation_identity_includes_finetuned_encoder(tmp_path):
+    from eval_pact import identity
+    runtime = tmp_path / 'runtime'
+    runtime.mkdir()
+    (runtime / 'runtime.json').write_text('{}')
+    (tmp_path / 'prox_config.json').write_text(json.dumps(readout_config()))
+    (tmp_path / 'dataset_stats.pkl').write_bytes(b'stats')
+    (tmp_path / 'policy_best.ckpt').write_bytes(b'policy')
+    encoder = tmp_path / 'prox_encoder_best.pt'
+    encoder.write_bytes(b'encoder 1')
+    args = SimpleNamespace(checkpoint_dir=tmp_path, checkpoint_name='policy_best.ckpt')
+    contract = {'sha256': 'contract', 'profile': {'runtime_dir': str(runtime)}}
+    first = identity(args, contract)
+    encoder.write_bytes(b'encoder 2')
+    second = identity(args, contract)
+    assert first['sha256'] != second['sha256']
+    assert first['checkpoint_files']['prox_encoder_best.pt'] != second['checkpoint_files']['prox_encoder_best.pt']
+
+
 def policy_methods():
     """Exercise real policy methods without importing simulator/GPU dependencies."""
     from encoders.pact import is_geometry_feature
