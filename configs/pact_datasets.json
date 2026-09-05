@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "datasets": {
+    "v1011d": {
+      "raw_dir": "data/pact_pick_n_place_v2/data/v1011d",
+      "data_dir": "act_style_data/pact_pick_n_place_v2/data/v1011d",
+      "environment_version": "pact_place_corridor_v10_11d_randomized_clutter",
+      "sampler_class": "PactPlaceCorridorV1011DRandomizedLayoutSampler",
+      "molmospaces_revision": "70dedc0",
+      "runtime_dir": "assets/pact_runtime/v1011d",
+      "camera_names": ["exo_camera_1", "wrist_camera"],
+      "horizon": 1050,
+      "policy_dt_ms": 66,
+      "chunk_size": 50,
+      "adapter": "v1011d"
+    },
+    "hallway": {
+      "raw_dir": "data/pact_place_corridor_v5",
+      "data_dir": "act_style_data/pact_place_corridor_v5",
+      "environment_version": "pact_place_corridor_v2",
+      "sampler_class": "PactPlaceCorridorV2Sampler",
+      "molmospaces_revision": "977acd6719a8c05b688d3e70da356d61dd32d259",
+      "runtime_dir": "assets/pact_runtime/hallway",
+      "camera_names": ["wrist_camera"],
+      "horizon": 800,
+      "policy_dt_ms": 66,
+      "chunk_size": 50,
+      "adapter": "hallway"
+    }
+  }
+}

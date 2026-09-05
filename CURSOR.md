@@ -22,6 +22,84 @@ Newest session at the top.
 
 ---
 
+## 2026-09-04 — dataset-bound training and evaluation workflow
+
+- **Why:** User needs multiple dataset/environment pairs, rapid checkpoint iteration,
+  and an evaluation protocol checked against robot-learning references.
+- **What:** `configs/pact_datasets.json`, `scripts/pact.py`, `pact_workflow.py`,
+  `pact_eval_protocol.py`, ACT `eval_pact.py`; manifest-aware training arguments and
+  grouped split / train-only normalization; native-depth chunk gating and tests.
+  README §4.20 documents exact commands, ACT/robomimic comparisons and limitations.
+- **Behavior:** Fixed smoke/dev/test suites, pinned code exports, isolated runtime
+  setup option, saved run contracts, legacy checkpoint pointers, trace parity checks,
+  success-ever plus terminal success, full-horizon contact audit, incomplete/error
+  handling and identity-bound resume. Initial adapter accepts ACT and raw PACT only.
+- **Validation:** 28 focused tests; configuration construction and parameter draws
+  for V1011D (56) and hallway (50). Prepared both contracts/code exports. Bound the
+  existing V10.11d checkpoint as `v1011d_existing_s0`. Runtime preflight correctly
+  rejects installed MuJoCo 3.6 / Warp 1.13 for the collection's 3.5 / 1.11 pin.
+- **Not done:** No package installation, training, policy inference, physics rollout,
+  live parity benchmark or expert/judge calibration. User runs setup/verification
+  commands; no fault-free or measured speedup claim. Existing weights/stats preserved.
+
+---
+
+## 2026-09-04 — remove dataset-only segmentation from metrics-only evaluation
+
+- **Why:** User asks why evaluation is slow and how to speed it up. Actual V10.11d
+  logs show 40,338.65 s sensor polling, 19,500.19 s physics/control/audit, and 41.21 s
+  policy action calls across 48 rollouts. Previous camera-only attribution was incomplete.
+- **What:** Shared `eval_place_fast_hooks.py` filters `ObjectImagePointsSensor` and
+  `EnvStateSensor` from metrics-only suites. Segmentation annotations had bypassed
+  the RGB/proximity chunk gate on every step. Save-trajectories mode keeps them.
+  V10.11d evaluator records backend, filter mode, and elapsed/sensor-query timing.
+  `tests/test_eval_place_fast_hooks.py`; README §4.19 has evidence and a one-episode command.
+- **Validation:** Eight focused tests passed; syntax and whitespace checks passed.
+- **Not done:** User runs the benchmark. No measured speedup or rollout-equivalence
+  claim. Physics/control/audit remains a separate cost. V1011D matching-sampler adapter
+  is still pending. Removed annotations consumed RNG; use controlled scene seeds.
+
+---
+
+## 2026-09-04 — zero-success audit and simulator-free checkpoint diagnostic
+
+- **Why:** User confirms V10.11d is the failing checkpoint, wants usable dataset
+  splits and faster iteration, and plans more checkpoints later.
+- **What:** `submodules/act/attn_heatmap.py` infers chunk length from the selected
+  checkpoint and accepts camera order. `eval_train_set.py` reads conversion camera
+  metadata, selects legacy train/val or explicit IDs, caps episodes after splitting,
+  and saves masked deployed action/arm/gripper metrics plus provenance as JSON.
+  `tests/test_eval_train_set.py`; root README §4.18 contains commands and split advice.
+- **Findings:** Existing evaluator remains V1010/OOD. Only 1/48 target contacts at
+  horizon 1050, not a measured successful grasp. Raw V1011D metadata shows four
+  duplicated selected-seed/layout pairs; converted IDs 2/22 cross legacy train/val.
+  Statistics use all episodes; validation misses four cells. Gating is already
+  active, and existing summaries cannot identify the proximity backend or bottleneck.
+- **Validation:** Focused unit tests; no training, simulation, or model inference.
+- **Not done:** Matching V1011D sampler adapter, grouped training split and train-only
+  statistics, conversion provenance retention, runtime benchmarking. Existing checkpoint
+  statistics and data were preserved. User runs diagnostic commands from README.
+
+---
+
+## 2026-09-04 — v1011d 0/48 is OOD eval, not a broken judge
+
+- **When:** 2026-09-04. User: 1050 JSON place 0%; thinks eval script is the bug.
+- **Why:** Success counter is `PickAndPlaceTask.judge_success` (cup on tray and released).
+  47/48 never touch the cup. 1/48 grasps and holds. Horizon 800 already 0/48. Train dump
+  is V10.11d randomized clutter (6 bodies + primitives). Script binds V10.10 four-object
+  from `origin/main`. V1011D sampler is `70dedc0` only.
+- **What:** README §1 / §4.17 / trap 32 / decision log. Eval script docstring + OOD print +
+  grasp/tray tallies in summary. Archived
+  `reports/eval_summaries/pact_pick_n_place_v2_v1011d_raw_s0_n48_horizon1050.json`.
+- **How:** Read train `obs_scene` vs eval JSON `eval_env`. Did not re-run eval. Did not
+  rewrite the script onto `70dedc0` (needs hallway-style import rewrite; `70dedc0` has no
+  `pact_place_datagen_configs.py`).
+- **Not done:** Wire `PactPlaceCorridorV1011DRandomizedLayoutSampler`. User runs worktree
+  add + smoke after that lands. Do not cite 0/48.
+
+---
+
 ## 2026-09-03 — do not dismiss readout place-success
 
 - **When:** 2026-09-03. User: calling 40% place "noise" is wrong; the new model beat ACT on
