@@ -2,6 +2,7 @@
 import sys
 from pathlib import Path
 from types import ModuleType
+import pytest
 
 ACT = Path(__file__).resolve().parents[1] / "submodules" / "act"
 sys.path.insert(0, str(ACT))
@@ -62,7 +63,8 @@ def test_install_filters_new_suites_once_without_mutating_factory_output(monkeyp
     assert len(original_sensors) == 2
 
 
-def test_contract_gate_retains_substep_pool_at_query_boundaries(monkeypatch):
+@pytest.mark.parametrize('readout', [False, True])
+def test_contract_gate_retains_substep_pool_at_query_boundaries(monkeypatch, readout):
     """A chunk of three actions consumes reset, then step-three depths [31, 32]."""
     from types import SimpleNamespace
     from eval_place_fast_hooks import _install_contract_sensor_gate
@@ -99,6 +101,7 @@ def test_contract_gate_retains_substep_pool_at_query_boundaries(monkeypatch):
             self._proximity_camera_names = ['skin']
             self.env = SimpleNamespace(step=0, buffer=[1, 2])
             self._registered_policy = SimpleNamespace(needs_fresh_policy_observation=lambda: self.env.step % 3 == 0)
+            self._registered_policy.needs_fresh_proximity_observation = lambda: readout or self.env.step % 3 == 0
             self.suite = Suite()
         def step(self):
             if self._proximity_camera_names:
@@ -112,6 +115,8 @@ def test_contract_gate_retains_substep_pool_at_query_boundaries(monkeypatch):
         task.env.step = i  # Mirrors policy advancing before task.step.
         observation = task.step()
         assert observation['state'] == i
+        if readout:
+            assert observation['prox'] == [10 * i + 1, 10 * i + 2]
         assert task._proximity_camera_names == ['skin']
     assert observation['prox'] == [31, 32]  # No replacement with a single current depth.
-    assert calls == {'depth': 2, 'rgb': 2, 'state': 4}
+    assert calls == {'depth': 4 if readout else 2, 'rgb': 2, 'state': 4}

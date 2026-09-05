@@ -108,25 +108,18 @@ def resolve_act_encoder_load(
     ckpt_dir: str | Path,
     pcfg: dict[str, Any],
     cli_ckpt: str = "",
+    *,
+    policy_name: str = "policy_best.ckpt",
 ) -> dict[str, Any]:
     """Kwargs for ``build_pact_encoder`` at eval. Finetuned run-dir weights win."""
     finetune = bool(pcfg.get("finetune_prox_encoder"))
     tap = pcfg.get("prox_policy_tap") or None
     if not tap:
         tap = "readout" if finetune else None
-    run_dir = Path(ckpt_dir)
-    finetuned_name = pcfg.get("prox_encoder_finetuned") or "prox_encoder_best.pt"
-    candidates = [
-        run_dir / finetuned_name,
-        run_dir / "prox_encoder_best.pt",
-        run_dir / "prox_encoder.pt",
-    ]
     checkpoint = None
     if finetune:
-        for path in candidates:
-            if path.is_file():
-                checkpoint = str(path)
-                break
+        from scripts.pact_checkpoint import paired_encoder_checkpoint
+        checkpoint = str(paired_encoder_checkpoint(ckpt_dir, pcfg, policy_name))
     if checkpoint is None:
         checkpoint = cli_ckpt or pcfg.get("prox_encoder_ckpt") or None
         if checkpoint == "":

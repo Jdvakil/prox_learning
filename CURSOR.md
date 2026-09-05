@@ -22,6 +22,36 @@ Newest session at the top.
 
 ---
 
+## 2026-09-05 — full wrapper reference and batch-training recipes
+
+- **Why:** User wants to understand what the wrapper does, why it exists and how
+  to use it for multiple training jobs.
+- **What:** Added README §4.22 and a routing-table link: all commands, settings
+  sources/defaults, manifest lifecycle, trainer handoff, artifacts, checkpoint
+  selection, staged evaluation, serial batches and explicit two-GPU jobs.
+- **How:** Matched the reference to current wrapper/trainer/evaluator code. Called
+  out blocking execution, absent training resume/scheduling, W&B names differing
+  from local run names, shared-setup concurrency limits and evaluation identity.
+- **Validation:** Bash syntax checked for all new command blocks; CLI help/list
+  checked without launching training, conversion, package installation or rollouts.
+- **Not changed:** Preserved the existing wrapper edit and training behavior.
+
+---
+
+## 2026-09-05 — document the training wrapper and direct-training differences
+
+- **Why:** User asks whether README and CURSOR include the workflow explanation.
+- **What:** Added the explicit `pact.py train` versus `imitate_episodes.py`
+  comparison to README §4.20: shared trainer/model/loss/optimizer implementation,
+  dataset selection, grouped splits, training-only normalization, saved metadata,
+  output directories, defaults, dry-run command and legacy direct invocation.
+- **Correction:** Current `pact.py` no longer passes `--no_wandb`; documentation
+  reflects the trainer's default logging behavior. Preserved that existing code edit.
+- **Validation:** Checked documentation against the current wrapper and trainer;
+  documentation-only changes, no training or evaluation launched.
+
+---
+
 ## 2026-09-05 — separate v12 training and the actual collection scene variant
 
 - **Why:** User switches to v12 after an OOD V1011d speed run scored 0/50 in

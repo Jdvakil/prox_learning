@@ -12,6 +12,9 @@ import sys
 import tarfile
 
 from pact_workflow import ROOT, check_dataset_files, file_digest, load_contract, prepare_contract, resolve, write_json
+from pact_checkpoint import paired_encoder_checkpoint
+
+DEFAULT_ENCODER = 'experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt'
 
 
 def profiles():
@@ -127,15 +130,30 @@ def launch(command, dry_run=False, env=None):
 
 
 def train_command(args, contract):
+    encoder = getattr(args, 'encoder_checkpoint', None)
+    encoder_lr = getattr(args, 'encoder_lr', None)
+    if args.arm != 'readout' and (encoder or encoder_lr is not None):
+        raise ValueError('Encoder options require --arm readout')
     command = [sys.executable, str(ROOT / 'submodules/act/imitate_episodes.py'),
                '--experiment_manifest', str(manifest_path(args.dataset)),
                '--run_dir', str(run_directory(args.run)), '--ckpt_dir', str(ROOT / 'runs/pact'),
                '--task_name', args.dataset, '--policy_class', 'ACT', '--batch_size', str(args.batch_size),
                '--seed', str(args.seed), '--num_epochs', str(args.epochs), '--lr', str(args.lr),
                '--chunk_size', str(contract['profile']['chunk_size']), '--kl_weight', '10',
-               '--hidden_dim', '512', '--dim_feedforward', '3200', '--no_wandb']
+               '--hidden_dim', '512', '--dim_feedforward', '3200', '--wandb_run_name', args.run]
     if args.arm == 'raw':
         command += ['--use_proximity', '--prox_feature', 'raw', '--prox_layout', 'per_sensor', '--prox_pool', 'min']
+    elif args.arm == 'readout':
+        encoder = resolve(encoder or DEFAULT_ENCODER)
+        if not encoder.is_file():
+            raise ValueError(f'Missing pretrained surface encoder: {encoder}; pass --encoder-checkpoint PATH')
+        command += ['--use_proximity', '--prox_feature', 'surface_embedding',
+                    '--prox_layout', 'per_sensor', '--prox_pool', 'min', '--prox_tokens_per_sensor', '1',
+                    '--prox_encoder_ckpt', str(encoder), '--finetune_prox_encoder', '--prox_policy_tap', 'readout']
+        if encoder_lr is not None:
+            if not 0 < encoder_lr < float('inf'):
+                raise ValueError('encoder-lr must be finite and positive')
+            command += ['--prox_encoder_lr', str(encoder_lr)]
     return command
 
 
@@ -161,7 +179,10 @@ def main():
     train = sub.add_parser('train')
     train.add_argument('dataset', choices=profiles())
     train.add_argument('--run', required=True)
-    train.add_argument('--arm', choices=('raw', 'act'), default='raw')
+    train.add_argument('--arm', choices=('readout', 'raw', 'act'), default='readout',
+                       help='readout (default): jointly finetune the surface encoder with ACT; raw/act are baselines')
+    train.add_argument('--encoder-checkpoint', help=f'Readout initialization; default: {DEFAULT_ENCODER}')
+    train.add_argument('--encoder-lr', type=float, help='Readout encoder learning rate; defaults to --lr')
     train.add_argument('--epochs', type=int, default=2000)
     train.add_argument('--batch-size', type=int, default=8)
     train.add_argument('--seed', type=int, default=0)
@@ -247,6 +268,9 @@ def main():
         for filename in ('policy_best.ckpt', 'dataset_stats.pkl'):
             if not (checkpoint / filename).is_file():
                 raise ValueError(f'Missing {checkpoint / filename}')
+        prox = checkpoint / 'prox_config.json'
+        if prox.exists():
+            paired_encoder_checkpoint(checkpoint, json.loads(prox.read_text()))
         print('Run data and checkpoint files verified. Live judge/rollout verification remains separate.')
         return
     if args.command == 'offline':

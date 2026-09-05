@@ -83,6 +83,7 @@ tabletop clones (cluttered place, table cam) are not yet on a **fair** train/eva
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
 | train v1011d PACT (exo+wrist hdf5) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | start a new v12 checkpoint | [§4.21](#421-v12-training-and-evaluation) |
+| understand the wrapper / batch multiple training jobs | [§4.22](#422-wrapper-reference-and-batch-training) |
 | shared dataset train/eval workflow and protocol checks | [§4.20](#420-dataset-bound-training-and-evaluation) |
 | diagnose zero success / choose splits / iterate quickly | [§4.18](#418-zero-success-diagnostics-and-dataset-splits) |
 | eval v1011d ckpt (what it means + commands) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
@@ -1514,6 +1515,38 @@ syntax and whitespace checks. No simulator benchmark was run.
 explicitly OOD diagnostic. No end-to-end rollout or speedup is claimed for the
 new runner until the live checks below pass.
 
+**How `pact.py train` differs from calling `imitate_episodes.py` directly.**
+It is a command wrapper: it checks the prepared dataset configuration and launches
+the existing `submodules/act/imitate_episodes.py`. The ACT/PACT model, loss and
+optimizer implementations remain the same. It does not automatically run simulator
+evaluation or accelerate the training loop.
+
+| Direct training without an experiment manifest | `pact.py train` |
+|---|---|
+| Dataset, episode count and cameras from `TASK_CONFIGS` | Loaded from the prepared dataset configuration |
+| Random 80/20 episode split | Saved split groups repeated episodes/scenes and covers dataset categories |
+| Normalization computed from all episodes | Normalization computed from training episodes only |
+| Evaluation configuration assembled separately | Dataset/environment and architecture metadata saved with the checkpoint |
+| Timestamped checkpoint directory | Named `runs/pact/NAME` directory; refuses overwrites |
+
+Defaults are 2,000 epochs, batch size 8, learning rate `1e-5`, seed 0, KL weight
+10, hidden dimension 512 and feedforward dimension 3200. Chunk size comes from the
+dataset profile (currently 50). `--arm raw` enables raw proximity fusion with
+per-sensor tokens and min pooling; `--arm act` uses vanilla ACT. The current wrapper
+does not pass `--no_wandb`, so logging follows the trainer's default W&B settings.
+This supersedes the earlier chat description that the wrapper disabled W&B.
+The split and normalization changes can change the learned checkpoint; these runs
+are not identical reproductions of the old training runs.
+
+After `prepare`, inspect the exact underlying command with:
+
+```bash
+python scripts/pact.py train v12 --run v12_raw_s0 --arm raw --seed 0 --dry-run
+```
+
+Direct `imitate_episodes.py` invocation remains supported. Without
+`--experiment_manifest`, it retains the legacy dataset/split/normalization path.
+
 `configs/pact_datasets.json` maps a dataset name to converted data, raw provenance,
 cameras, sampler class, exact simulator revision, horizon and control period.
 `prepare` reconstructs provenance from raw `result.json` / `obs_scene`, checks the
@@ -1732,6 +1765,224 @@ coverage/backend prevent treating the ratio as an isolated speed benchmark.
 Randomized training alone does not establish the cause of zero success. Start
 v12 as a separate experiment, and use offline diagnostics and two complete
 smoke episodes before committing to another 50-rollout run.
+
+---
+
+<a id="422-wrapper-reference-and-batch-training"></a>
+### 4.22 Wrapper reference and batch training
+
+`scripts/pact.py` gives the existing trainer and evaluator a shared experiment
+configuration. A **dataset profile** describes data and its matching environment;
+a **prepared manifest** freezes the split and evaluation scenes; a **run** is one
+training job with its own name, parameters, normalization and checkpoints.
+Many runs can share one prepared dataset. Each run trains on one dataset; listing
+several datasets in a shell loop does not combine their demonstrations.
+
+The wrapper prevents recurring manual mistakes: choosing cameras from another
+task, splitting repeated demonstrations across train/validation, normalizing with
+validation data, or evaluating a checkpoint in an unrelated environment. These
+checks establish configuration consistency; live controls are still needed to
+validate the environment and success judge (§4.20–4.21).
+
+**What every command does.** Run commands from the repository root with your
+training Python active. Dataset choices currently are `v12`, `v1011d`, `hallway`.
+
+| Command | Purpose and prerequisites | Writes / launches |
+|---|---|---|
+| `list` | Show registered datasets, environment labels and cameras | Prints only |
+| `convert DATASET` | Convert raw clean demonstrations; destination must be empty or absent | ACT HDF5 episodes and conversion metadata under the profile's `data_dir`; includes proximity so both arms share the conversion |
+| `prepare DATASET` | Inspect converted data and raw provenance; validate shapes, cameras, pooling and environment metadata | `assets/pact_experiments/DATASET/experiment.json`: grouped train/validation IDs, fixed dev/test scenes, profile snapshot and fingerprints |
+| `setup DATASET` | Export the pinned simulator code and any required historical scene assets from local git objects | Profile's `assets/pact_runtime/...`, with a file-hash inventory; does not switch submodule checkouts |
+| `setup DATASET --env` | Also create the evaluation Python environment, install pinned simulator packages and run compatibility checks | `assets/pact_env/<adapter>`; inherits other packages from the invoking Python, including the training stack |
+| `train DATASET --run NAME` | Require prepared manifest, unchanged data inventory and unused run directory | Calls the existing `submodules/act/imitate_episodes.py`, waits for completion; artifacts in `runs/pact/NAME` |
+| `adopt DATASET --checkpoint PATH --run NAME` | Associate an existing checkpoint directory with a prepared dataset | Manifest plus a pointer; original weights/stats stay in place. Binding is user-declared and cannot repair an old split or normalization leakage |
+| `offline --run NAME` | Diagnose action prediction on saved demonstrations, without physics | Calls `eval_train_set.py`; defaults to validation and at most 8 episodes; writes `offline_val.json` |
+| `check --run NAME` | Check dataset inventory, runtime file hashes, dependency compatibility and required checkpoint/stat files | Prints checks; does not load and execute the policy or validate task success |
+| `verify --run NAME` | Compare reference and optimized simulator traces for the selected checkpoint | Short parity runs and `verification.json`; not a full-horizon solvability test |
+| `eval --run NAME` | Run the saved environment/suite with the checkpoint's model and normalization | Calls `eval_pact.py`; defaults to smoke; saves episode JSON/logs and suite summary |
+
+`--dry-run` is supported by **convert, train, offline, verify and eval**. It prints
+the child command without launching it, but still requires the relevant profile,
+manifest or run metadata and applies command-specific guards. It is not a promise
+that training or physics will succeed. `prepare`, `setup`, `adopt` and `check` have
+no dry-run flag. No command automatically executes the whole pipeline.
+
+**What happens inside `train`.** The wrapper loads and validates the prepared
+manifest, checks converted files against their recorded sizes/mtimes, rejects a
+nonempty run directory, builds an argument list and starts the trainer using the
+same Python executable. The trainer reads dataset/camera information and explicit
+split IDs from that manifest, computes normalization from training episodes only,
+builds the existing ACT or raw-PACT model, and runs its existing loss/optimizer loop.
+The wrapper itself does not load batches, update weights or accelerate training.
+
+| Setting | Source / current default | How to vary it |
+|---|---|---|
+| Dataset | Required positional profile name | `train v12`, `train hallway`, etc. |
+| Output name | Required `--run`; simple name, no path | Use a unique name per dataset/arm/seed/hyperparameter combination |
+| Model arm | `--arm raw` | `raw` = cameras/joints plus raw proximity fusion; `act` = cameras/joints |
+| Epochs | `--epochs 2000` | CLI; positive integer |
+| Batch size | `--batch-size 8` | CLI; positive integer; distinct from the number of jobs in a batch |
+| Training seed | `--seed 0` | CLI; changes training randomness, not the prepared partition or evaluation scenes |
+| Learning rate | `--lr 1e-5` | CLI |
+| Chunk size | Prepared profile; all current profiles use 50 | A new profile/manifest for a different value |
+| KL / hidden / feedforward dimensions | Wrapper fixes 10 / 512 / 3200 | Not exposed by wrapper CLI |
+| Raw proximity | `raw`, `per_sensor`, `min` | Selected automatically for `--arm raw` |
+| Cameras, horizon, environment, scene assets | Prepared profile copied into each run | Configure and validate a new profile for a changed experiment |
+| GPU | Inherited process environment | `CUDA_VISIBLE_DEVICES=0`, for example |
+| W&B | Existing trainer defaults | Wrapper currently exposes no W&B options |
+
+The prepared manifest is the source for training settings supplied by the profile.
+Editing the registry later does not update it or existing runs. Re-preparing with
+different content refuses to replace it; use a new profile name to preserve
+comparisons. Preparation saves a fixed grouped partition, whereas the old direct
+path without a manifest uses its legacy episode split and all-episode statistics.
+Reusing a partition across seeds supports comparisons, but does not guarantee
+bit-for-bit training: minibatches/crops and model initialization still vary.
+
+The wrapper has no arbitrary trainer-argument passthrough. Encoder finetuning,
+geometry/readout, blur/dropout sweeps and model-dimension overrides are not exposed.
+Those require deliberate wrapper changes or a direct trainer invocation; simulator
+support must also be checked before evaluating additional model variants.
+
+W&B currently uses project `act-obstacle-baseline` and the trainer's display name
+`<task>_<epochs>_<chunk>_<lr>_<seed>`. `--run` names the local folder, **not** the W&B
+run. ACT and raw-PACT jobs with otherwise identical settings can therefore have
+the same W&B display name. Configure working W&B access before an unattended batch
+if logging is enabled; the wrapper does not handle authentication or rename runs.
+
+**What a completed run contains.**
+
+```text
+runs/pact/NAME/
+  experiment.json                 # dataset/profile, split and evaluation scenes
+  training_config.json            # training arguments and policy configuration
+  dataset_stats.pkl               # normalization fitted on training episodes
+  prox_config.json                # raw-PACT only
+  policy_epoch_<epoch>_seed_<s>.ckpt
+  policy_last.ckpt
+  policy_best.ckpt
+  offline_train.json              # after offline --split train
+  offline_val.json                # after offline --split val
+  evaluation/<identity>/          # after verify/eval; JSON, logs and traces
+```
+
+The trainer saves periodic policy weights every 100 epochs (including epoch 0).
+It retains the best validation-loss state in memory and writes `policy_best.ckpt`
+after training finishes. “Best” means lowest validation loss, not highest simulator
+success. There is no wrapper training-resume flag or optimizer-state recovery:
+an interrupted run may have periodic weights but no final best file, and repeating
+its name is refused. Use a new run name for a fresh attempt. Offline checks default
+to the best checkpoint and overwrite the same split's diagnostic JSON on repetition.
+
+**One-time work before a batch.** For v12, convert and prepare once (§4.21); skip
+conversion when the intended converted dataset is already complete. Run simulator
+setup once before evaluation. None of these should be repeated inside the per-seed
+training loop. A second dataset needs its own preparation and matching setup.
+
+```bash
+python scripts/pact.py list
+python scripts/pact.py convert v12
+python scripts/pact.py prepare v12
+python scripts/pact.py setup v12 --env
+python scripts/pact.py train v12 --run cmp01_v12_raw_s0 --arm raw --dry-run
+```
+
+**Serial batch on one GPU.** Run this Bash block from the repository root with
+your training environment active. It launches six jobs: two arms × three seeds.
+Each command blocks, so the next job starts only after the previous one finishes.
+Change `cmp01` for a new batch. This is a shell queue, not a built-in scheduler.
+
+```bash
+(
+  set -euo pipefail
+  mkdir -p runs/pact_batch_logs
+  pact_batch=cmp01
+  for pact_dataset in v12; do
+    for pact_arm in act raw; do
+      for pact_seed in 0 1 2; do
+        pact_run="${pact_batch}_${pact_dataset}_${pact_arm}_s${pact_seed}"
+        CUDA_VISIBLE_DEVICES=0 PYTHONUNBUFFERED=1 python scripts/pact.py train "$pact_dataset" \
+          --run "$pact_run" --arm "$pact_arm" --seed "$pact_seed" \
+          --epochs 2000 --batch-size 8 --lr 1e-5 \
+          > "runs/pact_batch_logs/${pact_run}.log" 2>&1
+      done
+    done
+  done
+)
+```
+
+This batch stops on a failed job and returns a nonzero status. Logs are outside
+the run folders so redirection cannot make a run directory nonempty before the
+trainer checks it. To inspect all six commands first, add `--dry-run` to the train
+invocation; prepared data is still required. To include more datasets, change the
+outer list to `v12 hallway v1011d` after preparing each. If sweeping learning rates
+or batch sizes too, include their values in `pact_run` to avoid name collisions.
+
+**Two independent jobs on two GPUs.** If two GPUs are available, assign one visible
+device per process. Each trainer still uses one GPU; the wrapper does not perform
+distributed training, automatic GPU allocation or memory-based scheduling.
+
+```bash
+(
+  set -euo pipefail
+  mkdir -p runs/pact_batch_logs
+  CUDA_VISIBLE_DEVICES=0 PYTHONUNBUFFERED=1 python scripts/pact.py train v12 \
+    --run cmp02_v12_act_s0 --arm act --seed 0 \
+    > runs/pact_batch_logs/cmp02_v12_act_s0.log 2>&1 &
+  pact_pid_act=$!
+  CUDA_VISIBLE_DEVICES=1 PYTHONUNBUFFERED=1 python scripts/pact.py train v12 \
+    --run cmp02_v12_raw_s0 --arm raw --seed 0 \
+    > runs/pact_batch_logs/cmp02_v12_raw_s0.log 2>&1 &
+  pact_pid_raw=$!
+  pact_status=0
+  wait "$pact_pid_act" || pact_status=1
+  wait "$pact_pid_raw" || pact_status=1
+  exit "$pact_status"
+)
+```
+
+The block waits for both jobs and reports failure if either fails. Keep run names
+unique across concurrent batches. Complete conversion, preparation and shared
+runtime installation before launching concurrent consumers; there is no shared
+setup lock or protection against two processes targeting the same run name.
+
+**Evaluate each completed run in stages.** These commands inherit GPU selection
+just like training. Training and offline diagnostics use the invoking Python;
+simulation uses the local evaluation Python when installed, otherwise the invoking
+Python, with runtime compatibility checks before launch.
+
+```bash
+python scripts/pact.py offline --run cmp01_v12_raw_s0 --split train --limit 8
+python scripts/pact.py offline --run cmp01_v12_raw_s0 --split val --limit 8
+python scripts/pact.py check --run cmp01_v12_raw_s0
+python scripts/pact.py verify --run cmp01_v12_raw_s0
+python scripts/pact.py eval --run cmp01_v12_raw_s0 --suite smoke
+python scripts/pact.py eval --run cmp01_v12_raw_s0 --suite dev
+# Reserve the test suite for selected final comparisons:
+python scripts/pact.py eval --run cmp01_v12_raw_s0 --suite test
+```
+
+Offline error measures demonstrated-action prediction, not task completion. V12
+smoke/dev/test contain 2/8/48 full-horizon episodes. Use smoke for plumbing and
+obvious behavior failures, dev for iteration, test for final comparisons. Optimized
+test requires a passing verification for the same evaluation identity. `verify`
+compares two short reference/optimized traces (101 steps at chunk size 50); it
+does not prove the success judge or full-horizon behavior correct.
+
+For a periodic checkpoint, `eval` and `verify` accept, for example,
+`--checkpoint-name policy_epoch_100_seed_0.ckpt`. The `check` command still requires
+`policy_best.ckpt`; it is intended for completed runs. Evaluation identity includes
+weights, normalization, configuration, relevant code, scenes and runtime details.
+Repeating an unchanged evaluation reuses completed rows within the same suite;
+changing the checkpoint or relevant code produces a different result directory.
+Do not launch two evaluations of the same run/suite simultaneously: there is no
+worker coordination lock. Incomplete suites retain error records and null success
+rates rather than dropping failed episodes from the denominator.
+
+The evaluation speed changes preserve native sensing at policy queries and skip
+unused rendering between open-loop chunk queries (§4.20). The small suites reduce
+the number of episodes needed for iteration. Neither feature establishes a measured
+v12 speedup or a validated success rate without live runs.
 
 ---
 
