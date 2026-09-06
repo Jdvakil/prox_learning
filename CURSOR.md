@@ -22,6 +22,78 @@ Newest session at the top.
 
 ---
 
+## 2026-09-06 — operator cookbook in README start-here
+
+- **Why:** User will convert/train/eval without asking chat. Live verify+test
+  already running; docs only.
+- **What:** README start-here is a skip-table + copy-paste convert/train/eval
+  guide. Parallel GPU (train while eval) is §8. Routing table and §4.22/4.23
+  point at it. No collection. No jobs launched or interrupted.
+- **Not done:** Hallway wrapper `setup --env` still absent on disk.
+
+---
+
+## 2026-09-06 — user launched v12 verify+test beside hallway eval
+
+- **When:** User asked to keep the 24 GB GPU busy; hallway video eval was already
+  using ~1 GB.
+- **What:** Did not kill hallway. User already started `verify` then `eval --suite
+  test` for `v12_readout_s0` in tmux `0:1`. New identity `c36c30dcdefe5650`.
+  Verify reference row 0 passed policy load (no settle-overlap abort at start).
+  Test will follow verify in that same pane. Hallway remains tmux `0:0`.
+- **Not done:** Agent did not start a second copy. No train job added.
+
+---
+
+## 2026-09-06 — park v12 outbound bottle before settle overlap check
+
+- **Why:** User already has converted v12 data and `v12_readout_s0`. They want
+  evaluation, not collection. The 48-row test died at row 3 because inherited
+  V1010 settle still saw `Soap_Bottle_30` on the table.
+- **What:** `eval_place_fast_hooks._install_v12_preview_settle_park` parks that
+  household and drops it from `_pact_active_clutter_names` for settle only.
+  `eval_pact.py` installs it for the v12 adapter. Kitchen overlay is unchanged.
+  Adapter files / prepared contract hashes are unchanged so `load_contract` still
+  accepts the existing run.
+- **How:** Collection parks the bottle in expert `reset` after sampling. ACT has
+  no expert reset. Parking before settle matches the deployed one-bottle scene
+  without retrying or dropping the row.
+- **Not done:** User stops the hallway GPU job, runs `verify` then
+  `eval --suite test` on `v12_readout_s0`. New identity; old 2/48 records stay
+  under `3c1c6b3e…`.
+
+---
+
+## 2026-09-06 — diagnose tmux test evaluation interruption
+
+- **Evidence:** Read tmux session `0:0.0` and saved test records. Two episodes
+  succeeded; the third failed in the inherited sampler's clutter/target overlap
+  check before policy execution. The offending Soap_Bottle_30 is parked only by
+  the later v12 overlay, revealing an intermediate-scene construction blocker.
+- **What:** README records the partial results, exact failure, restart limitation
+  and need to correct/validate scene construction without dropping failed rows.
+- **Not done:** No runtime, model, suite, evaluator or tmux process was changed.
+  No restart was launched. Scene repair remains outstanding; saved rates correctly
+  remain null for the incomplete 48-episode suite.
+
+---
+
+## 2026-09-05 — record completed smoke and deadline evaluation instructions
+
+- **Why:** Documentation still called smoke the next step after the user had
+  completed it and requested full results by the next day.
+- **What:** README records 0/2 success, 1/2 collision-free, 26.7-minute smoke time,
+  contact observations and their limits; directs the deadline run to the 48-row
+  test suite with a 10–11-hour estimate and completed-row reuse. Adds suite/profile
+  customization guidance and the compatible-profile adoption example.
+- **Validation:** Checked saved smoke/episode JSON, current suite generation and
+  existing report filenames; whitespace check passed. No completed test summary
+  was present at this check. No evaluation or training was launched or interrupted.
+- **Remaining:** Full test results and expert validation of the task judge are not
+  established by the smoke or the earlier passing parity verification.
+
+---
+
 ## 2026-09-05 — wrapper-first repository runbook and command migration guide
 
 - **Why:** Readers reached historical direct-trainer/evaluator commands before the

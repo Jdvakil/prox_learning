@@ -159,3 +159,34 @@ def test_single_sample_rgb_context_restores_model_for_native_proximity(monkeypat
     env_module.HAS_FILAMENT = True
     with pytest.raises(ValueError, match='classic OpenGL'):
         _install_deterministic_rgb_renderer()
+
+
+def test_v12_settle_park_drops_parked_bottle_before_overlap_check(monkeypatch):
+    from types import SimpleNamespace
+    from eval_place_fast_hooks import _install_v12_preview_settle_park
+
+    calls = []
+    monkeypatch.setitem(sys.modules, 'mujoco', SimpleNamespace(
+        mj_forward=lambda model, data: calls.append(('forward', model, data))))
+    env = SimpleNamespace(current_model='model', current_data='data')
+    parked = 'pact_clutter_01/Soap_Bottle_30'
+    kept = 'pact_clutter_06/Soap_Bottle_11'
+
+    def original_settle(received):
+        calls.append(('settle', list(sampler._pact_active_clutter_names)))
+        assert received is env
+        raise ValueError('settled clutter overlaps target')
+
+    sampler = SimpleNamespace(
+        _pact_active_clutter_names=[parked, kept],
+        _settle_injected_object=original_settle,
+    )
+    overlay = SimpleNamespace(
+        _park_household=lambda model, data: calls.append(('park', model, data)),
+        _is_parked_household=lambda name: name.split('/')[-1] == 'Soap_Bottle_30',
+    )
+    _install_v12_preview_settle_park(sampler, overlay)
+    with pytest.raises(ValueError, match='overlaps target'):
+        sampler._settle_injected_object(env)
+    assert calls == [('park', 'model', 'data'), ('forward', 'model', 'data'), ('settle', [kept])]
+    assert sampler._pact_active_clutter_names == [parked, kept]
