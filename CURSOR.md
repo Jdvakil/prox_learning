@@ -22,6 +22,48 @@ Newest session at the top.
 
 ---
 
+## 2026-09-05 — diagnose failed v12 reference/optimized parity
+
+- **Evidence:** User's offline validation and runtime/check commands passed. Both
+  101-step pairs in `4c5fd12983d9c514` completed, but saved input hashes differ at
+  reset and subsequent actions diverge (max arm difference 0.000487/0.002596 rad).
+  Success flags and contact summaries agree. The subprocess traceback merely
+  propagates the failed verification status; training did not fail.
+- **What:** Added per-input-field hashes and detailed comparison reports, including
+  first differing sensor/state field and numeric deltas. Verification stops after
+  the first failed pair while requiring all planned pairs for a pass. Preserved
+  exact hash and 1e-6 numeric comparisons. Wrapper now reports child failures without
+  a redundant traceback and preserves their exit codes. README records evidence,
+  diagnostic fields, remaining uncertainty and the rerun command.
+- **Validation:** Focused tests cover sensor mismatch localization, legacy trace
+  diagnostics and fail-fast/all-pairs verification behavior. Existing saved traces
+  inspected without modifying their results. No training or GPU rollout launched.
+- **Unresolved:** Original records lack per-component hashes; CUDA is unavailable
+  in the agent execution environment. The next user-run verification is required
+  to identify the differing input source. No root-cause fix or parity pass claimed.
+
+---
+
+## 2026-09-05 — comprehensive current-workflow README audit
+
+- **Why:** User asks for a thorough README containing the complete workflow without
+  relying on the chat history.
+- **What:** Expanded §4.21 with full readout tensor flow, pretrained initialization,
+  gradient behavior and an explicit GPU training command; expanded §4.22 with the
+  arm comparison. Added §4.23 for complete CLI syntax, checkpoint pair semantics,
+  metric/artifact definitions, result inspection, batch evaluation, failure recovery,
+  new dataset onboarding, provenance and the focused validation command.
+- **Consistency:** Added a current-workflow notice and routing links, included v12
+  in the profile table, updated the repo map, separated direct/legacy CLI defaults
+  from wrapper defaults, and qualified old results and timings with their historical
+  query-history protocol. Kept dated historical measurements and prior log entries.
+- **Validation:** Checked command flags against current parsers, shell/Python example
+  syntax, current-workflow anchors and whitespace. No training/evaluation launched;
+  the 69-test result is identified as the prior implementation check, not a new run.
+- **Scope:** Documentation only; implementation and existing staged edits preserved.
+
+---
+
 ## 2026-09-05 — enable the actual finetuned PACT-readout architecture
 
 - **Why:** User wants v12 numbers from the full model used in the existing readout

@@ -125,3 +125,75 @@ def test_trace_parity_requires_inputs_actions_judges_and_contacts():
         assert not compare(record, other)
     other = deepcopy(record); other['trace'][0]['arm'][0] = .01
     assert not compare(record, other)
+
+
+def test_input_diagnostics_locate_sensor_without_weakening_hash_comparison():
+    from eval_pact import observation_hashes, comparison_report
+    from copy import deepcopy
+    obs = {'qpos': {'arm': [0.] * 7, 'gripper': [0., 0.]},
+           'wrist_camera': np.zeros((2, 2, 3), np.uint8),
+           'link1_sensor_0': np.zeros((8, 8), np.float32)}
+    combined, components = observation_hashes(obs, list(obs))
+    record = {'status': 'complete', 'policy_input_hashes': [combined],
+              'policy_input_components': [{'step': 0, 'hashes': components}],
+              'trace': [{'step': 0, 'arm': [0.] * 7, 'gripper': [0.], 'qpos': [0.] * 9, 'success': False}],
+              'success': False, 'terminal_success': False, 'contact_audit': {}}
+    other = deepcopy(record)
+    obs['link1_sensor_0'][0, 0] = .01
+    changed, changed_components = observation_hashes(obs, list(obs))
+    other['policy_input_hashes'] = [changed]
+    other['policy_input_components'][0]['hashes'] = changed_components
+    report = comparison_report(record, other)
+    assert not report['passed']
+    assert report['first_component_mismatch']['fields'] == ['link1_sensor_0']
+    assert report['success_flags_equal'] and report['contact_audit_equal']
+    assert report['numeric_differences']['arm']['max_absolute_difference'] == 0
+    del other['policy_input_components']
+    assert not comparison_report(record, other)['component_diagnostics_available']
+
+
+@pytest.mark.parametrize('mismatch', [True, False])
+def test_verification_stops_at_failed_pair_and_requires_all_planned_pairs(tmp_path, monkeypatch, mismatch):
+    import eval_pact
+    import torch
+    from types import SimpleNamespace
+    args = SimpleNamespace(run_dir=tmp_path, checkpoint_dir=tmp_path,
+                           checkpoint_name='policy_best.ckpt', suite='smoke',
+                           reference=False, verify=True, worker=None)
+    monkeypatch.setattr(eval_pact, 'parse_args', lambda: args)
+    monkeypatch.setattr(eval_pact, 'load_contract', lambda path: {
+        'profile': {'horizon': 1050}, 'evaluation': {'dev': [{'sha256': 'a'}, {'sha256': 'b'}]}})
+    monkeypatch.setattr(eval_pact, 'identity', lambda args, contract: {'sha256': 'identity'})
+    monkeypatch.setattr(torch, 'load', lambda *a, **k: {'model.query_embed.weight': np.zeros((50, 512))})
+    calls = []
+    def worker(command, **kwargs):
+        calls.append(command)
+        index = int(command[command.index('--worker') + 1])
+        path = Path(command[command.index('--result') + 1])
+        record = {'status': 'complete', 'identity': 'identity', 'row_sha256': 'ab'[index],
+                  'policy_input_hashes': ['different' if mismatch and '--reference' not in command else 'same'],
+                  'trace': [{'step': 0, 'arm': [0.] * 7, 'gripper': [0.], 'qpos': [0.] * 9, 'success': False}],
+                  'success': False, 'terminal_success': False, 'contact_audit': {}}
+        path.write_text(json.dumps(record))
+        return SimpleNamespace(returncode=0)
+    monkeypatch.setattr(eval_pact.subprocess, 'run', worker)
+    assert eval_pact.main() == (1 if mismatch else 0)
+    report = json.loads((tmp_path / 'evaluation/identity/verification.json').read_text())
+    assert report['planned_pairs'] == 2
+    assert report['checked_pairs'] == (1 if mismatch else 2)
+    assert report['passed'] is (not mismatch)
+    assert len(calls) == (2 if mismatch else 4)
+
+
+def test_wrapper_preserves_child_exit_code_without_traceback(monkeypatch, capsys):
+    import runpy
+    import subprocess
+    monkeypatch.setattr(sys, 'argv', ['pact.py', 'setup', 'v12'])
+    def failure(*args, **kwargs):
+        raise subprocess.CalledProcessError(7, ['git'])
+    monkeypatch.setattr(subprocess, 'check_output', failure)
+    with pytest.raises(SystemExit) as result:
+        runpy.run_path(str(ROOT / 'scripts/pact.py'), run_name='__main__')
+    assert result.value.code == 7
+    stderr = capsys.readouterr().err
+    assert 'exit 7' in stderr and 'Traceback' not in stderr

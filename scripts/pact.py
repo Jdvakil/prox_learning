@@ -306,5 +306,8 @@ def main():
 if __name__ == '__main__':
     try:
         main()
+    except subprocess.CalledProcessError as error:
+        print(f'PACT command failed (exit {error.returncode}); see the child output and report above.', file=sys.stderr)
+        raise SystemExit(error.returncode) from None
     except (ValueError, FileNotFoundError) as error:
         raise SystemExit(str(error)) from error

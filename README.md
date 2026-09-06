@@ -3,6 +3,19 @@
 A Franka FR3 wearing **40 proximity sensors** in MuJoCo, plus the policies and analysis that
 answer one question: *does a proximity skin make a robot arm safer than cameras alone?*
 
+**Current training workflow (2026-09-05):** use [§4.21](#421-v12-training-and-evaluation)
+for v12 **PACT-readout**, [§4.22](#422-wrapper-reference-and-batch-training) for wrapper
+commands and batch jobs, and [§4.23](#423-results-troubleshooting-and-experiment-handoff)
+for results and troubleshooting. `pact.py train` defaults to the finetuned readout
+architecture; `raw` and `act` are explicit baselines. V12 conversion and its 132/33
+split are prepared. New policy training and live evaluation validation remain user-run work.
+
+**Historical results:** the hallway numbers below were measured with the earlier
+query-sampled proximity history. The corrected evaluator uses consecutive control
+frames to match readout training. Those saved measurements are not validation or
+speed benchmarks for the current protocol. Earlier dated recipes remain as provenance;
+§4.20–4.23 describe the current dataset-bound workflow.
+
 <p align="center">
   <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png">
     <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png"
@@ -55,12 +68,16 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 <a id="1-now--disk-truth-2026-08-27"></a>
 ## 1. Now — disk truth, 2026-09-03
 
+This table preserves the September 3 snapshot. September 5 update: v12 is converted
+and prepared, and the wrapper supports matched ACT/raw/readout configurations.
+Use §4.20–4.23 for new runs; the earlier OOD results remain historical diagnostics.
+
 | Item | Status |
 |---|---|
 | **Hallway PACT-readout n=50** (place 40%, collision-free 88%, bar 12%) | **The live paper MVP.** Reproducible from this checkout. Ckpt `20260828_003136_pact_place_corridor_readout_s0`. Eval `eval_output/place_corridor_readout_s0_n50_fast/` (gitignored) and `reports/eval_summaries/place_corridor_readout_s0_n50_fast.json`. vs ACT: place **28%→40%**, bar **34%→12%** (p = 0.016), collision-free **66%→88%**. vs PACT-raw: place 42% vs 40%, bar **36%→12%** (p = 0.009). Report both axes. [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) |
 | Hallway ACT vs PACT-raw n=50 | **Done. Control, not the MVP.** Place 28% vs 42% (p = 0.21); bar 34% vs 36% (p = 1.0). Raw closeness does not cut hallway bar hits. n=20 smoke was luck. |
 | Archived 66% → 40% (invisible-cell, 2026-07-05) | **Wiped.** Source datagen + `obstacle_prox_v2` + July ckpts gone 2026-08-24. Metrics only in `reports/eval_summaries/`. Not retrainable here. Do not mix with the hallway MVP. |
-| **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **Viz except v1011d.** v1011d: convert + train **done**. Eval on V10.10 four-object sampler is **OOD**. Spread n=48 horizon 800 **and** 1050 **done**: place **0/48** both. Grasp 2/48 (800) and 1/48 (1050). Do **not** cite as a policy number. Fair eval needs `PactPlaceCorridorV1011DRandomizedLayoutSampler` @ `70dedc0`. [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
+| **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **September 3 snapshot (v12 is now prepared; §4.21).** v1011d: convert + train **done**. Eval on V10.10 four-object sampler is **OOD**. Spread n=48 horizon 800 **and** 1050 **done**: place **0/48** both. Grasp 2/48 (800) and 1/48 (1050). Do **not** cite as a policy number. Fair eval needs `PactPlaceCorridorV1011DRandomizedLayoutSampler` @ `70dedc0`. [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
 | Gate-bar v3.1 collect | **Parked.** Only `assets/datagen/hybrid_gate_bar_check` (and clutter check). Do not collect 200 until the Visible check shows a tall pole in the doorway and an ~18 cm veer. |
 | Surface-embedding bake into ACT | **Parked** as an ablation. Compressor gate passed (20.6 mm XYZ). Do not bake 32-d HDF5 tokens. |
 | Surface readout finetune | **Done. This is the paper arm.** Unfreeze the pretrained geometry net. ACT sees 128-d CLS readout tokens at train and eval. `--finetune_prox_encoder`. n=50 numbers above. |
@@ -70,8 +87,8 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 Proximity is redundant when vision already explains the demonstration. On this hallway, frozen
 peak-closeness (**PACT-raw**) is not enough. Finetuning the surface encoder and feeding live
 CLS tokens (**PACT-readout**) is. The wiped invisible-cell grid was a different task. New
-tabletop clones (cluttered place, table cam) are not yet on a **fair** train/eval pin
-(v1011d eval currently scores the wrong clutter family; trap 32).
+tabletop historical evaluations used mismatched environments (trap 32). The current
+wrapper binds v1011d/v12 to their intended scenes; live validation remains pending.
 
 ---
 
@@ -81,17 +98,18 @@ tabletop clones (cluttered place, table cam) are not yet on a **fair** train/eva
 | I want to… | jump |
 |---|---|
 | run anything | [§3 Setup](#3-setup) then [§4 How to run](#4-how-to-run) |
-| train v1011d PACT (exo+wrist hdf5) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
+| train v1011d PACT (exo+wrist hdf5) | [§4.20](#420-dataset-bound-training-and-evaluation) |
 | start a new v12 checkpoint | [§4.21](#421-v12-training-and-evaluation) |
 | understand the wrapper / batch multiple training jobs | [§4.22](#422-wrapper-reference-and-batch-training) |
+| read results / fix workflow errors / add another dataset | [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
 | shared dataset train/eval workflow and protocol checks | [§4.20](#420-dataset-bound-training-and-evaluation) |
 | diagnose zero success / choose splits / iterate quickly | [§4.18](#418-zero-success-diagnostics-and-dataset-splits) |
 | eval v1011d ckpt (what it means + commands) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
-| walk convert → train → eval (skeptic) | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
+| walk convert → train → eval (skeptic) | [§4.21](#421-v12-training-and-evaluation) |
 | cite the hallway paper MVP (readout n=50) | [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) [§8](#8-paper-claims) |
 | reproduce hallway ACT vs PACT | [§4.3](#43-live--hallway-act-vs-pact) |
 | run Amine's 40-row place protocol on local ckpts | [§4.3.1](#431-live--amine-40-row-place-protocol) |
-| finetune the skin encoder into ACT | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
+| finetune the skin encoder into ACT | [§4.21](#421-v12-training-and-evaluation) (current); [§4.4](#44-live--corridor-skin-fire--compress-skin) (historical) |
 | collect the next obstacle set (gate-bar) | [§4.7](#47-parked--gate-bar-v31) |
 | understand the live MVP / archived 66% → 40% | [§6](#6-headline-result) |
 | see every test in one line | [§7](#7-every-experiment-one-line) |
@@ -588,7 +606,7 @@ protocol.
 **Why PACT is 12–15 h/model.** Measured 2026-08-29 smoke: ACT 119.5 s / 2 eps.
 PACT-raw **2121 s / 2 eps (~18 min/ep)** with `renders=19 skip=883`. Chunk-gate
 worked. The leftover tax is 19 × 40 EGL `update_scene` (~1.4 s/camera on this
-house). Default eval skin is now `mj_multiRay` (center pixel, geom group 2
+house). This legacy evaluator defaults to `mj_multiRay` (center pixel, geom group 2
 hidden). `--egl-prox` is the old rasterizer; do not use it on the inner loop.
 `--fast-prox-rays` is already the default.
 
@@ -1565,6 +1583,7 @@ and test seeds, excluding all recorded training request/selected seeds.
 |---|---|---:|---:|---:|
 | `v1011d` | V10.11d randomized six-object clutter, `70dedc0` | 160 / 40, all 24 categories in each | 2 / 8 / 48 | 1050 |
 | `hallway` | V2 hallway, `977acd6`, pinned V2 XML | 122 / 30, both sides | 2 / 2 / 48 | 800 |
+| `v12` | Preview one-bottle + standing kitchen overlay, `70dedc0` + historical XML | 132 / 33, eight center-pose family/side categories | 2 / 8 / 48 | 1050 |
 
 Smoke is a prefix of dev; test seeds are separate. Compare models on the same
 suite and preserve the test suite for final comparisons. Eight V10.11d dev
@@ -1581,14 +1600,14 @@ python scripts/pact.py prepare v1011d
 python scripts/pact.py setup v1011d --env
 ```
 
-`prepare` and code-only `setup` have already been run here for both profiles.
+`prepare` and code-only `setup` have been run here for these profiles.
 `setup --env` still needs to run. It exports pinned code from local git objects,
 without switching submodules, then overlays MuJoCo 3.5.0, mujoco-warp/mjx 3.5.0
 and Warp 1.11.1 in `assets/pact_env/<adapter>`. The environment inherits the
 training environment's other packages, including PyTorch. Eval automatically
 selects this Python; training keeps the invoking Python. The dependency choices
 come from the pinned collection's `pyproject.toml` / `runtime_compat.py`.
-The currently installed `mlspaces` has MuJoCo 3.6.0, mujoco-warp 3.7.0.1 and
+The September 4 audit found `mlspaces` with MuJoCo 3.6.0, mujoco-warp 3.7.0.1 and
 Warp 1.13.0, which fail that V10.11d compatibility check. No packages were
 installed or downgraded during this audit. The isolated setup requires network
 access to install its wheels; it is not a fully independent lock of every package.
@@ -1626,6 +1645,7 @@ Train the next checkpoint with the same entry point:
 
 ```bash
 python scripts/pact.py train v1011d --run v1011d_raw_s1 --arm raw --seed 1 --epochs 2000
+python scripts/pact.py train v1011d --run v1011d_readout_s1 --arm readout --seed 1 --epochs 2000
 python scripts/pact.py train v1011d --run v1011d_act_s1 --arm act --seed 1 --epochs 2000
 python scripts/pact.py eval --run v1011d_raw_s1 --suite smoke
 ```
@@ -1666,7 +1686,8 @@ Results and logs live under `runs/pact/NAME/evaluation/<identity>/`; dataset
 assets still need to remain consistent with the collection. Timing includes setup,
 policy calls and task steps separately.
 
-**Validation limits.** 28 focused unit tests pass. Both pinned configuration
+**Validation limits.** The initial September 4 audit passed 28 focused unit tests;
+the readout update passed 69 (§4.21). Both pinned configuration
 constructors and all 56 V10.11d / 50 hallway parameter draws were checked without
 creating a simulator world. The V10.11d include chain also matches the pinned
 runtime. No checkpoint inference, physics rollout, live trace parity, expert
@@ -1727,7 +1748,9 @@ cd /home/jaydv/code/prox_learning
 # One-time commands only if conversion/preparation are not already complete:
 # python scripts/pact.py convert v12
 # python scripts/pact.py prepare v12
-python scripts/pact.py train v12 --run v12_readout_s0 --arm readout --seed 0 --epochs 2000
+CUDA_VISIBLE_DEVICES=0 python scripts/pact.py train v12 \
+  --run v12_readout_s0 --arm readout --seed 0 \
+  --epochs 2000 --batch-size 8 --lr 1e-5
 ```
 
 `convert` includes proximity for both ACT and PACT, uses min pooling and both RGB
@@ -1748,6 +1771,32 @@ as training. V12 adds its own exo+wrist camera configuration and grouped data sp
 `--encoder-lr VALUE` overrides the encoder learning rate (otherwise it equals
 `--lr`). The saved proximity config includes the starting checkpoint's SHA-256.
 ACT and peak-closeness remain explicit `--arm act` / `--arm raw` baselines.
+
+The encoder initialization above is the **pretrained surface checkpoint**, not the
+finetuned hallway policy's `prox_encoder_best.pt`. V12 starts a new ACT policy and
+finetunes the pretrained sensor representation on v12 demonstrations. Changing the
+starting encoder changes the experiment and should be reflected in the run name.
+
+```text
+Skin: (B, 8 control frames, 40 sensors, 8, 8) metres
+  -> left-pad short histories; repeat each pooled frame into 4 subframes
+  -> per-sensor sequence of 32 frames, transformed to closeness (20 cm cap)
+  -> shared convolution stem + 4-layer temporal transformer
+  -> (B, 40, 128) CLS readout features -> trainable ACT proximity projection
+                                                        |
+RGB: exo + wrist, 240 x 320 -> visual backbone -----------+-> ACT -> (B, 50, 8) actions
+Joints: 7 arm + 2 finger positions ---------------------+
+```
+
+The four repeated subframes per pooled control frame reproduce the encoder's
+existing input format; they are not four independently recovered measurements.
+The temporal encoder has width 128, four attention heads and feedforward width 256.
+The policy consumes its CLS output, bypassing the frozen 32-d embedding and
+auxiliary reconstruction/geometry heads. Imitation gradients update the active
+encoder path and the ACT policy; no separate geometry loss is added by the wrapper.
+Evaluation switches both networks to evaluation mode and disables gradients while
+using the saved finetuned weights. Evaluation mode does not revert to the frozen
+32-d feature architecture.
 
 The old shared evaluator appended geometry history only at network queries, so
 chunk size 50 made those frames 50 control steps apart. The corrected evaluator
@@ -1821,6 +1870,21 @@ training job with its own name, parameters, normalization and checkpoints.
 Many runs can share one prepared dataset. Each run trains on one dataset; listing
 several datasets in a shell loop does not combine their demonstrations.
 
+`--arm` means **experimental variant**, not a physical robot arm:
+
+| Variant | Skin feature reaching the policy | Learning behavior |
+|---|---|---|
+| `readout` (default) | 40 learned 128-d CLS features from consecutive skin history | Surface encoder and ACT train jointly |
+| `raw` | 40 peak-closeness scalars from the current pooled depth snapshot | Fixed feature arithmetic; ACT and its proximity projection train |
+| `act` | No skin input | Camera/joint ACT baseline |
+| Frozen surface embedding | 40 learned 32-d features from a fixed encoder | An existing direct-trainer ablation; not a wrapper arm |
+
+For `raw`, each valid depth pixel becomes `clip(1 - distance / 0.5 m, 0, 1)`;
+the maximum over the sensor's 8×8 pixels becomes its scalar feature. Dead pixels
+contribute zero closeness. Thus “raw” is a fixed summary, not an uncompressed depth
+image and not a frozen version of the learned readout encoder. Its 50 cm range
+also differs from the surface encoder's 20 cm range.
+
 The wrapper prevents recurring manual mistakes: choosing cameras from another
 task, splitting repeated demonstrations across train/validation, normalizing with
 validation data, or evaluating a checkpoint in an unrelated environment. These
@@ -1833,14 +1897,14 @@ training Python active. Dataset choices currently are `v12`, `v1011d`, `hallway`
 | Command | Purpose and prerequisites | Writes / launches |
 |---|---|---|
 | `list` | Show registered datasets, environment labels and cameras | Prints only |
-| `convert DATASET` | Convert raw clean demonstrations; destination must be empty or absent | ACT HDF5 episodes and conversion metadata under the profile's `data_dir`; includes proximity so both arms share the conversion |
+| `convert DATASET` | Convert raw clean demonstrations; destination must be empty or absent | ACT HDF5 episodes and conversion metadata under the profile's `data_dir`; all three arms share the conversion |
 | `prepare DATASET` | Inspect converted data and raw provenance; validate shapes, cameras, pooling and environment metadata | `assets/pact_experiments/DATASET/experiment.json`: grouped train/validation IDs, fixed dev/test scenes, profile snapshot and fingerprints |
 | `setup DATASET` | Export the pinned simulator code and any required historical scene assets from local git objects | Profile's `assets/pact_runtime/...`, with a file-hash inventory; does not switch submodule checkouts |
 | `setup DATASET --env` | Also create the evaluation Python environment, install pinned simulator packages and run compatibility checks | `assets/pact_env/<adapter>`; inherits other packages from the invoking Python, including the training stack |
 | `train DATASET --run NAME` | Require prepared manifest, unchanged data inventory and unused run directory | Calls the existing `submodules/act/imitate_episodes.py`, waits for completion; artifacts in `runs/pact/NAME` |
 | `adopt DATASET --checkpoint PATH --run NAME` | Associate an existing checkpoint directory with a prepared dataset | Manifest plus a pointer; original weights/stats stay in place. Binding is user-declared and cannot repair an old split or normalization leakage |
 | `offline --run NAME` | Diagnose action prediction on saved demonstrations, without physics | Calls `eval_train_set.py`; defaults to validation and at most 8 episodes; writes `offline_val.json` |
-| `check --run NAME` | Check dataset inventory, runtime file hashes, dependency compatibility and required checkpoint/stat files | Prints checks; does not load and execute the policy or validate task success |
+| `check --run NAME` | Check dataset inventory, runtime file hashes, dependency compatibility, best checkpoint/stats and the readout encoder pair | Prints checks; does not load and execute the policy or validate task success |
 | `verify --run NAME` | Compare reference and optimized simulator traces for the selected checkpoint | Short parity runs and `verification.json`; not a full-horizon solvability test |
 | `eval --run NAME` | Run the saved environment/suite with the checkpoint's model and normalization | Calls `eval_pact.py`; defaults to smoke; saves episode JSON/logs and suite summary |
 
@@ -2035,6 +2099,265 @@ v12 speedup or a validated success rate without live runs.
 
 ---
 
+<a id="423-results-troubleshooting-and-experiment-handoff"></a>
+### 4.23 Results, troubleshooting and experiment handoff
+
+This section completes the current workflow in §4.20–4.22. All commands below use
+`scripts/pact.py` from the repository root. Long training and simulation jobs are
+run by the user; the documentation audit does not launch them.
+
+**Complete wrapper command syntax.** Brackets denote optional arguments; this is
+a reference, not a shell block to paste verbatim. Dataset names come from
+`configs/pact_datasets.json`. Run names are simple directory names, not paths.
+
+```text
+list
+convert DATASET [--dry-run]
+prepare DATASET
+setup DATASET [--env]
+train DATASET --run NAME [--arm readout|raw|act]
+    [--encoder-checkpoint PATH] [--encoder-lr FLOAT]
+    [--epochs INT] [--batch-size INT] [--seed INT] [--lr FLOAT] [--dry-run]
+adopt DATASET --checkpoint CHECKPOINT_DIRECTORY --run NAME
+offline --run NAME [--split train|val] [--limit INT] [--dry-run]
+check --run NAME
+verify --run NAME [--checkpoint-name FILENAME] [--dry-run]
+eval --run NAME [--checkpoint-name FILENAME] [--suite smoke|dev|test]
+    [--reference] [--dry-run]
+```
+
+Use `python scripts/pact.py COMMAND --help` for the installed parser. Encoder
+options require `--arm readout`. The wrapper uses hyphenated `--batch-size` and
+`--encoder-checkpoint` and translates them to the trainer's underscore flags.
+It does not accept `--num_rollouts`, `--task_horizon`, `--temp_agg_off`, `--resume`,
+`--no_wandb` or a list of dataset paths. Suite rows/horizon belong to the prepared
+experiment; open-loop chunk execution is selected by the evaluator itself.
+
+**Which checkpoint gets evaluated.** `offline`, `check`, `verify` and `eval` default
+to the final `policy_best.ckpt`. Only `verify` and `eval` expose checkpoint selection
+through this wrapper. A policy is selected by lowest validation loss, not by
+simulator success. The best encoder is captured at that same validation state.
+
+| Policy file | Required readout encoder file |
+|---|---|
+| `policy_best.ckpt` | `prox_encoder_best.pt` |
+| `policy_last.ckpt` | `prox_encoder.pt` |
+| `policy_epoch_100_seed_0.ckpt` | `prox_encoder_epoch_100_seed_0.pt` |
+
+Each new readout pair is recorded in `checkpoint_pairs.json` with a policy hash,
+encoder filename and encoder hash. A best encoder can appear during training
+before the final best policy has been written. A lone encoder file is not a
+completed training run. The trainer may overwrite the best epoch's numbered policy
+and encoder with their best validation state at the end; rely on the saved pair,
+not the filename alone to infer which optimizer update it contains.
+
+To evaluate a numbered pair, keep the same filename in both commands:
+
+```bash
+python scripts/pact.py verify --run v12_readout_s0 \
+  --checkpoint-name policy_epoch_100_seed_0.ckpt
+python scripts/pact.py eval --run v12_readout_s0 \
+  --checkpoint-name policy_epoch_100_seed_0.ckpt --suite smoke
+```
+
+Old readout runs without a pair index can load an existing best/last encoder under
+the conventional filename. That proves file availability, not same-update provenance.
+Old numbered policy snapshots often lack matching encoder snapshots and are refused.
+Do not rename a best encoder to make a numbered checkpoint load. `adopt` only binds
+an existing directory to a dataset; it does not produce missing weights or prove
+the old model used the new split. Keep weights, stats, proximity configuration,
+pair index and run metadata together when archiving a new run. Dataset/runtime
+assets and compatible packages are still required to reproduce evaluation.
+
+**Where to find results and what the fields mean.** New evaluations live in
+`runs/pact/NAME/evaluation/<identity>/`, not the older top-level `eval_output` folder.
+The identity is a 16-character directory prefix of the full hash in `identity.json`.
+It incorporates the selected policy and encoder, stats/configuration, experiment,
+relevant code, scenes and runtime details. Multiple identities in one run directory
+can be different checkpoints or code versions; they are not additional random seeds.
+
+| Artifact / field | Meaning |
+|---|---|
+| `offline_train.json`, `offline_val.json` | Action prediction on the named demonstration partition; default at most 8 episodes and 5 sampled starts per episode |
+| `normalized_action_l1` | Mean absolute error in normalized action units, excluding padded steps; lower is better |
+| `arm_joint_mae_rad` | Arm action error after undoing normalization, in radians |
+| `gripper_normalized_l1` | Separate normalized gripper action error |
+| `verification.json` | Whether two short reference/optimized trace comparisons passed for this identity |
+| `smoke.json`, `dev.json`, `test.json` | Optimized suite summary; reference runs use the `_reference.json` suffix |
+| `complete`, `planned_episodes`, `completed_episodes` | Whether every planned trial completed; infrastructure failures are distinct from policy failures |
+| `successes`, `success_rate` | Number/fraction of trials that achieved native task success at least once |
+| `collision_free_rate` | Fraction with no forbidden contact over the full declared horizon |
+| `strict_success_rate` | Fraction that both succeeded and remained collision-free throughout the horizon |
+| `<suite>/000.json` and `.log` | Individual episode outcome, contact audit, timings, scene provenance or error, plus its worker log |
+| Episode `terminal_success` | Native success at the final step; stored per episode, not currently a separate aggregate rate |
+| Episode `first_success_step` | First successful step, or null if the task never succeeded |
+| Episode `policy_seconds`, `task_seconds`, `wall_seconds` | Network/action handling, task stepping, and worker timing; wall time also includes setup |
+| Summary `session_wall_seconds` | Time for the current invocation; resumed sessions may reuse earlier rows, so this is not necessarily the total cost of all trials |
+
+An episode can succeed and later lose the object: `success=true` and
+`terminal_success=false`. A stationary policy may be collision-free and never
+succeed. Neither low training loss nor a high collision-free rate establishes task
+completion. Conversely, `complete=false` with a null success rate is an unfinished
+suite, not a measured 0% success rate. The runner stops at the first erroneous row;
+remaining planned rows stay in the denominator and no final rate is reported.
+
+This read-only command lists all optimized test summaries, including incomplete
+ones, without silently choosing an identity or combining different experiments:
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+paths = sorted(Path('runs/pact').glob('*/evaluation/*/test.json'))
+if not paths:
+    print('No test summaries yet.')
+for path in paths:
+    result = json.loads(path.read_text())
+    print(json.dumps({
+        'run': path.parents[2].name,
+        'identity': path.parent.name,
+        'dataset': result.get('dataset'),
+        'complete': result['complete'],
+        'completed': result['completed_episodes'],
+        'planned': result['planned_episodes'],
+        'success_rate': result['success_rate'],
+        'collision_free_rate': result['collision_free_rate'],
+        'strict_success_rate': result['strict_success_rate'],
+    }))
+PY
+```
+
+Report each training seed with its dataset, arm, checkpoint, suite, planned/completed
+counts and all three rates. Compare arms using the same prepared suite and protocol.
+Smoke overlaps dev and must not be added to dev as independent trials. Preserve
+test for final comparisons; use dev to select among checkpoints. Reusing the
+pretrained hallway surface encoder for hallway policy comparisons also needs its
+pretraining exposure disclosed—the grouped policy split alone does not establish
+that encoder pretraining was held out from those scenes. V12's stated evaluation
+scope is new episode seeds within its observed center-pose families (§4.21).
+
+**Batch evaluation after training.** The serial and two-GPU training examples are
+in §4.22. Once simulator setup is complete, this explicit list checks two completed
+runs. It stops on command failure. Inspect behavior before separately launching dev
+or test; neither is automatically triggered by the batch.
+
+```bash
+(
+  set -euo pipefail
+  for pact_run in cmp01_v12_act_s0 cmp01_v12_readout_s0; do
+    CUDA_VISIBLE_DEVICES=0 python scripts/pact.py offline --run "$pact_run" --split val
+    python scripts/pact.py check --run "$pact_run"
+    CUDA_VISIBLE_DEVICES=0 python scripts/pact.py verify --run "$pact_run"
+    CUDA_VISIBLE_DEVICES=0 python scripts/pact.py eval --run "$pact_run" --suite smoke
+  done
+)
+```
+
+Evaluation can reuse completed rows when run again under the same identity and
+suite. Training has no equivalent resume support. Smoke and dev have separate row
+directories even though smoke is a prefix of dev, so moving to dev reruns its rows.
+Do not run simultaneous writers for the same run/suite or install shared simulator
+packages while workers are running. One process per selected GPU is the explicit
+batch recipe; this wrapper does not schedule memory, distribute a model or queue
+work on a cluster.
+
+**Troubleshooting.**
+
+**V12 readout parity check, September 5:** user-run offline validation completed
+with normalized action L1 0.1293, arm MAE 0.0390 rad and normalized gripper L1 0.0378
+on eight validation episodes. Simulator installation and `check` passed. These are
+action diagnostics/configuration checks, not rollout success measurements.
+The saved verification under identity `4c5fd12983d9c514` completed both reference
+and optimized pairs but failed strict parity. Inputs differed at reset; maximum
+arm-command differences were approximately 0.000487 and 0.002596 rad across the
+two 101-step pairs. Success flags and contact summaries agreed. Their shared
+`success=false` does not cause parity failure and a short trace is not a full task
+success evaluation. The exact input source remains unresolved from the old combined
+hashes; do not retrain or loosen tolerances on that evidence alone.
+
+Verification now saves `policy_input_components` in each trace record, with hashes
+for individual cameras, skin sensors and nested state fields. `verification.json`
+includes per-pair `comparisons`: first input mismatch, first differing fields/step,
+maximum numeric differences, and success/contact agreement. It stops after the
+first failed pair; a pass still requires all planned pairs. This diagnostic change
+does not relax the hash or numeric checks. Because code participates in identity,
+rerunning `verify` creates a fresh result directory and keeps the old evidence.
+The wrapper preserves the failing exit status without a redundant subprocess
+traceback. A failed verification continues to block optimized test evaluation.
+
+```bash
+python scripts/pact.py verify --run v12_readout_s0
+```
+
+Inspect the new report's `comparisons[0].first_component_mismatch` if the first
+pair fails. The next live run is needed to locate the cause; the diagnostic change
+is not a demonstrated parity fix. No GPU rollout was rerun during this diagnostic
+edit because CUDA was unavailable in the agent's execution environment.
+
+| Symptom | Meaning / next action |
+|---|---|
+| `Refusing to overwrite converted data` | A conversion directory already exists. Reuse it if complete; inspect a partial conversion before choosing a fresh destination/profile. Do not reconvert on every seed |
+| Missing `experiment.json` | Run `prepare DATASET` after conversion; `--dry-run` still needs the manifest |
+| `Run name already in use` | Training or adoption found a nonempty run directory. Choose a new name; repeating the name does not resume training |
+| `converted dataset changed since prepare` | File size/mtime changed. Investigate drift; an intentional dataset change needs a new prepared profile rather than editing saved hashes |
+| `Prepared contract differs` / adapter input changed | The existing experiment is immutable. Use a new profile name with the intended data/configuration and prepare it |
+| Missing pretrained surface encoder | Pass `--encoder-checkpoint` pointing to a valid pretrained surface-embedding checkpoint; the default path is in §4.21 |
+| Encoder options rejected on `raw`/`act` | Use `--arm readout` for encoder finetuning or remove the encoder options for a baseline |
+| Missing matching encoder / pair hash mismatch | Restore the exact policy/encoder pair and index from that run. Do not substitute initialization weights, rename another epoch or edit hashes |
+| Runtime/dependency preflight failure | Run `setup DATASET --env` using the intended training Python, then retry `check`; code-only setup does not install packages |
+| `Incomplete runtime already exists` | Inspect the incomplete export and use a fresh `runtime_dir`; setup intentionally refuses to merge into an unknown export |
+| Optimized test requires verification | Run `verify` with the same run and checkpoint; changed code/weights/runtime invalidate earlier evidence |
+| `complete=false`, null rates or worker error | Inspect that row's JSON and `.log`, fix the cause and rerun the same suite; do not discard the trial or reinterpret it as policy failure |
+| Good offline error, zero rollout success | Inspect full-horizon smoke behavior and task/judge controls. Offline imitation accuracy does not establish closed-loop task completion |
+| Readout remains slow | Native skin is required every control step for its consecutive history. RGB and network calls are chunked; the raw baseline's proximity skip or legacy ray substitution changes this evaluation |
+| Training runs out of GPU memory | Reduce `--batch-size`, keep encoder/history architecture unchanged and use a new run name. Avoid concurrent jobs on the same visible GPU while diagnosing |
+
+**Adding another dataset/environment.** For a dataset collected under an already
+supported adapter, add a uniquely named profile to `configs/pact_datasets.json`
+with the correct raw/converted paths, ordered cameras, environment marker, sampler,
+runtime revision/directory, control period, horizon and chunk size. Include its
+required scene/overlay fields. Convert and prepare it, inspect partition/category
+coverage, export its runtime and run the same checks. Arbitrary new task families
+require adapter implementation: observation/action semantics, reset, task sampling,
+success judge, contacts and scene assets cannot be inferred from a folder name.
+
+For a reviewable experiment handoff, retain the manifest, training/proximity config,
+pretrained encoder provenance, paired weights/index, stats, chosen evaluation
+identity and all episode/summary files. Include failures and state which live
+checks ran. The current prepared manifests retain
+`validation_status=runtime_verification_required`; this field is not automatically
+rewritten by `verify`. Its separate verification report establishes bounded trace
+parity, while full-horizon smoke and expert positive/negative judge controls remain
+separate evidence. There is no `pact.py` command that automatically certifies the
+success judge.
+
+**Source and validation reference.**
+
+| File | Responsibility |
+|---|---|
+| `scripts/pact.py` | CLI, named runs, process launch and runtime setup |
+| `configs/pact_datasets.json`, `scripts/pact_workflow.py` | Dataset profiles, provenance, grouped splits and saved suites |
+| `encoders/pact.py`, `encoders/surface_geometry.py` | Live causal features, readout architecture and encoder loading |
+| `scripts/pact_checkpoint.py`, ACT `imitate_episodes.py` | Pair selection/hashes and training checkpoint writes |
+| ACT `eval_pact.py`, `eval_act_obstacle.py`, `eval_place_fast_hooks.py` | Matched scenes/model, consecutive inference history, rendering and trace comparison |
+| `scripts/pact_eval_protocol.py` | Full-horizon episode scoring and complete-suite aggregation |
+| ACT `eval_train_set.py`, `attn_heatmap.py` | Offline action diagnostics and selected checkpoint/encoder reconstruction |
+| `scripts/pact_v12_adapter.py` | V12 collection overlay and contact classification integration |
+
+The readout implementation passed this focused suite (69 tests at the September 5
+implementation check), plus the actual pretrained encoder's CPU load/output/gradient
+check. These are not simulator benchmarks or a measured v12 success rate:
+
+```bash
+OMP_NUM_THREADS=2 python -m pytest -q \
+  tests/test_pact_readout_workflow.py tests/test_eval_place_fast_hooks.py \
+  tests/test_pact_workflow.py tests/test_eval_train_set.py \
+  tests/test_encoders.py tests/test_pact_v12_adapter.py
+```
+
+---
+
 <a id="5-what-this-is"></a>
 ## 5. What this is
 
@@ -2081,6 +2404,10 @@ Background brushing is ~60%. That is the instrument's floor.
 
 <a id="6-headline-result"></a>
 ## 6. Headline result
+
+The following table records the historical hallway evaluation. Its readout history
+was sampled at policy queries. The consecutive-history correction in §4.21 changes
+the evaluation protocol; current v12 results must come from new validated runs.
 
 **PACT-readout beats cameras-only ACT on both axes:** place-success **28% → 40%**, bar hits
 **34% → 12%**, collision-free **66% → 88%.** Frozen peak-closeness (PACT-raw) does not cut
@@ -2200,6 +2527,12 @@ brushing with no bar ~60%; the old counter could not split bar vs cavity. One se
 <a id="8-paper-claims"></a>
 ## 8. Paper claims
 
+**September 5 qualification:** the wording below describes historical measurements,
+including the earlier query-history readout evaluator. Any claim based on them must
+identify that protocol. The corrected consecutive-history evaluator and v12 adapter
+require their own live validation and measurements; the 69 unit tests are not
+evidence for a new success rate. See §4.23 for result provenance and reporting.
+
 **One-sentence claim (the live MVP).** A full-body proximity skin, encoded with a geometry
 transformer whose 128-d CLS readout is **finetuned with ACT** (**PACT-readout**), improves
 hallway pick-and-place versus cameras-only ACT on **both** task success and collisions: place
@@ -2317,7 +2650,8 @@ easy. Do not collect that. v3.1 is the fix.
 **Published win** (use unless a later eval beats it): `--prox_feature raw`, **global** mash
 (40 sensors → one 40-d vector → 8 anonymous tokens), `n_proximity_sensors = 1`, chunk 100.
 
-**Current defaults** (not the published win): `--prox_feature raw --prox_layout per_sensor`.
+**Direct-trainer defaults** (not the wrapper): `--prox_feature raw --prox_layout per_sensor`.
+The dataset-bound wrapper defaults to `--arm readout`; see §4.21–4.23.
 The encoder metadata talks about K clamped 8→1; the **hallway PACT-raw ckpt on disk does
 not**. `prox_config.json` has `n_proximity_sensors=40`, `prox_tokens_per_sensor=8` →
 **320 prox tokens**. Train/eval match those weights. Do not cite “40 tokens” from an older
@@ -2463,7 +2797,12 @@ the bows.
 
 Published PACT train set: **105** demos (47 visible / 49 hidden / 29 none).
 
-### Training / eval flags
+### Direct-trainer and legacy-evaluator flags
+
+These flags belong to `imitate_episodes.py` and the older evaluation scripts. They
+are not interchangeable with `pact.py` arguments. The complete wrapper syntax and
+its readout default are in §4.22–4.23; its suites replace `--num_rollouts`, and its
+evaluator chooses open-loop chunks without a user-supplied `--temp_agg_off`.
 
 | flag | default | what |
 |---|---|---|
@@ -2503,8 +2842,8 @@ pyproject.toml       not installed; see §3
 
 scripts/             analysis / training / figures / housekeeping.sh
 encoders/            peak closeness + surface geometry
-tests/               encoder + PACT-raw unit tests
-configs/             frozen eval manifests (Amine 40-row place protocol)
+tests/               encoders, readout history/pairs, datasets, evaluation protocol
+configs/             dataset registry, scene configs and frozen legacy eval manifests
 custom_scenes/       v1011d / v12 place XML (v10_7 hashed + v5/v3 chain + v12 wrapper)
 submodules/act/      ACT fork — train and eval
 submodules/molmospaces/  simulator + demonstration collection
@@ -2514,13 +2853,18 @@ assets/              MolmoSpaces asset root AND this project's artifacts
   robots/franka_skin/model_hybrid.xml    40-sensor arm — canonical model
   safety/            sweep_v*.h5 + leftover demo mp4/mcap (weights deleted)
   datagen/           check runs only (obstacle sources wiped 2026-08-24)
+  pact_experiments/  prepared dataset manifests and fixed suites
+  pact_runtime/      pinned simulator source and scene exports
+  pact_env/          local evaluation Python environments after setup --env
 franka_assets/       mesh store via symlinks — DO NOT DELETE
 data/pact_place_corridor_v5/   coauthor hallway rows (live, converted)
 data/pact_place_corridor/      Ekshan multi-version (v1010, v107, …) — viz only
-data/pact_pick_n_place_v2/     v1011d live (converted); v12 rows viz
+data/pact_pick_n_place_v2/     raw v1011d and v12 rows (both converted/prepared)
 data/mixed_v1011_clutter_geometry/  v10.11c — viz only
 act_style_data/pact_place_corridor_v5/   converted ACT hdf5 (hallway; live)
-act_style_data/pact_pick_n_place_v2/     converted v1011d hdf5 (exo+wrist; live)
+act_style_data/pact_pick_n_place_v2/     converted v1011d/v12 HDF5 (exo+wrist)
+runs/pact/           named training runs, paired checkpoints, offline/simulation results
+runs/pact_batch_logs/  shell batch logs outside protected run directories
 eval_output/         gitignored rollouts
 experiments_output/  encoder trains, viz, figures
 diagnostics_output/  committed legacy renders
@@ -2542,6 +2886,11 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 
 | file | job |
 |---|---|
+| `pact.py` | current dataset-bound train/eval CLI; readout by default |
+| `pact_workflow.py` | provenance inventory, grouped splits, immutable manifests |
+| `pact_checkpoint.py` | matching policy/encoder filenames and pair hash checks |
+| `pact_eval_protocol.py` | success-ever, full-horizon safety and complete-suite rates |
+| `pact_v12_adapter.py` | collection-matched v12 overlay and contact integration |
 | `safety_sweep.py` | 40 SPAD depths + potential-field labels → `sweep.h5` |
 | `train_safety_cvae.py` | skin → 7-DoF retreat CVAE |
 | `safety_{flinch,react,moving,orbit,sphere}_demo.py` | reflex videos |
@@ -2733,7 +3082,7 @@ collisions).
 | Avoid-v1 invisible coll / succ | 40% vs 30% (p≈0.40) / 42% vs 24% | 08-24 **failed** |
 | Place-corridor n=50 ACT vs PACT-raw | place **28% vs 42%**; bar **34% vs 36%**; p = 0.21 / 1.0 | 08-27 **control, no safety win** |
 | **Place-corridor PACT-readout n=50** | place **20/50 (40%)**; bar **6/50 (12%)**; free **44/50 (88%)**; vs ACT bar p = 0.016; vs raw p = 0.009 | 08-29 **paper MVP** |
-| Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Readout n=50_fast ~15 min/ep gated EGL. Default eval skin is now `mj_multiRay`. `--egl-prox` restores the 18 min/ep rasterizer | smoke 2026-08-29 |
+| Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Readout n=50_fast ~15 min/ep gated EGL. Legacy evaluator defaults to `mj_multiRay`; `--egl-prox` selects EGL. Current `pact.py` uses native EGL and corrected readout history; timings are not transferable | smoke 2026-08-29 |
 | Surface encoder test XYZ | 20.6 mm; validity 100%; pixel 87.4 / 95.3% | 08-25 |
 | Corridor 20 cm / 50 cm tile hit | 11% / 40%; `link1_sensor_5` 100% at 20 cm | probe |
 
