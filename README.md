@@ -230,6 +230,29 @@ means the suite stopped on an error, not 0%. Repeating an unchanged suite
 v12 test is about 10–11 hours at recent smoke throughput. Readout still
 queries native skin every control step.
 
+**v12 construction crash (fixed 2026-09-06).** Wrapper eval does **not** run the
+collection expert. It pins molmospaces `70dedc0`, samples with
+`PactPlaceCorridorV1010FourObjectSampler`, then applies the kitchen overlay in
+`scripts/pact_v12_adapter.py` *after* `sample_task`. Collection parks
+`Soap_Bottle_30` in the expert `reset()` after sampling; that bottle is still on
+the table during the inherited settle check. The check then raises
+`settled clutter overlaps target` (`Cup_10` vs `pact_clutter_01/Soap_Bottle_30`)
+and the suite dies **before any policy action**. That is a scene-construction
+order bug, not a policy failure, not missing data, and not a reason to collect
+again.
+
+First 48-row test under identity `3c1c6b3e…` stopped at row 3 (2/48 complete,
+both successes, rates null). Do not drop that row or swap its seed.
+
+Fix lives in `submodules/act/eval_place_fast_hooks.py`
+(`_install_v12_preview_settle_park`): park the outbound household and drop it from
+the settle overlap list, then still apply the kitchen overlay. `eval_pact.py`
+installs the hook. **Do not edit** `scripts/pact_v12_adapter.py` on a frozen run;
+`load_contract` hashes those adapter files. Changing them refuses the existing
+checkpoint. After this hook, identity changes: run `verify` then `eval` again.
+Live retry for `v12_readout_s0` is identity `c36c30dcdefe5650`. Detail:
+[§4.23](#423-results-troubleshooting-and-experiment-handoff).
+
 ### 8. Keep the GPU busy: more trains while evals run
 
 One 24 GB GPU can hold a trainer (~2–4 GB) plus one or two evals (~1–2 GB
@@ -305,6 +328,7 @@ Field definitions: [§4.23](#423-results-troubleshooting-and-experiment-handoff)
 - Eval a v1011d checkpoint in the old V10.10 four-object script (OOD; see §4.17).
 - Drop a failed eval row or swap its seed to chase a rate.
 - Change eval code mid-suite and keep the old identity.
+- Edit `scripts/pact_v12_adapter.py` to “fix” v12 settle on a frozen run (contract hash refuse). The park-before-settle hook is in `eval_place_fast_hooks.py`.
 
 ### 12. Outside the wrapper
 
@@ -387,6 +411,7 @@ wrapper binds v1011d/v12 to their intended scenes; live validation remains pendi
 | I want to… | jump |
 |---|---|
 | convert / train / eval without chat | [Start here](#start-here-dataset-to-results-with-the-wrapper) |
+| understand why v12 eval died with `settled clutter overlaps target` | [Start here §7](#7-evaluate-a-completed-run); [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
 | run anything | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§3 Setup](#3-setup) |
 | train another v12 seed or arm while eval runs | [Start here §8](#8-keep-the-gpu-busy-more-trains-while-evals-run) |
 | train v1011d PACT (exo+wrist hdf5) | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§4.20](#420-dataset-bound-training-and-evaluation) |
@@ -2020,6 +2045,13 @@ uses those collection geometry helpers and the same extra-object contact taxonom
 The expert's hover/drop action correction is demonstration behavior, not a
 correction applied to the learned policy's actions.
 
+**Eval crash from that same split (2026-09-06).** ACT evaluation has no expert
+`reset()`, so the V1010 settle overlap check still saw `Soap_Bottle_30` on the
+table and aborted construction (`settled clutter overlaps target`). The fix parks
+that household before settle in `eval_place_fast_hooks.py`; it does not change
+adapter files hashed into the frozen `v12_readout_s0` contract. See Start here §7
+and the interruption note in §4.23.
+
 The raw scene hash is `cb6be07e346bba2ea504858664d213c694c51c5889134a6253e7c2c7871e91ec`.
 It identifies the historical `pact_place_corridor_v10_11_center_preview.xml`,
 recovered from molmospaces git blob `1067d4cc0441d9abb312f037f75c506c7d320a1b`.
@@ -2732,6 +2764,7 @@ scene distributions or horizons define a different protocol: label results separ
 | Runtime/dependency preflight failure | Run `setup DATASET --env` using the intended training Python, then retry `check`; code-only setup does not install packages |
 | `Incomplete runtime already exists` | Inspect the incomplete export and use a fresh `runtime_dir`; setup intentionally refuses to merge into an unknown export |
 | Optimized test requires verification | Run `verify` with the same run and checkpoint; changed code/weights/runtime invalidate earlier evidence |
+| `settled clutter overlaps target` on v12, often `Cup_10` vs `Soap_Bottle_30` | Scene-construction order, not policy. Collection parks that bottle in expert `reset()` after sampling; wrapper eval samples with the V1010 four-object sampler then overlays kitchen later. Current checkout parks before settle in `eval_place_fast_hooks._install_v12_preview_settle_park`. Do not drop the row, swap the seed, collect again, or edit `pact_v12_adapter.py` on a frozen run. After the hook, identity changes: `verify` then `eval`. Old incomplete `3c1c6b3e…` test is 2/48, not a rate. |
 | `complete=false`, null rates or worker error | Inspect that row's JSON and `.log`, fix the cause and rerun the same suite; do not discard the trial or reinterpret it as policy failure |
 | Good offline error, zero rollout success | Inspect full-horizon smoke behavior and task/judge controls. Offline imitation accuracy does not establish closed-loop task completion |
 | Readout remains slow | Native skin is required every control step for its consecutive history. RGB and network calls are chunked; the raw baseline's proximity skip or legacy ray substitution changes this evaluation |

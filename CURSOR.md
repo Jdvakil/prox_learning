@@ -22,6 +22,19 @@ Newest session at the top.
 
 ---
 
+## 2026-09-06 — document v12 eval construction crash in the cookbook
+
+- **Why:** User asked whether last night's eval failure was written down. It
+  lived in this log and a buried §4.23 note, not in the start-here cookbook.
+- **What:** README start-here §7 now states the bug: V1010 settle still saw
+  `Soap_Bottle_30` on the table because ACT has no expert `reset()`; overlay
+  ran after `sample_task`. Fix is `_install_v12_preview_settle_park` in
+  `eval_place_fast_hooks.py`, not adapter-file edits. Routing table, §4.21,
+  troubleshooting row, and do-not list point at it. No jobs launched.
+- **Not done:** Live identity `c36c30dcdefe5650` still running.
+
+---
+
 ## 2026-09-06 — operator cookbook in README start-here
 
 - **Why:** User will convert/train/eval without asking chat. Live verify+test
