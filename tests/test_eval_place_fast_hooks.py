@@ -120,3 +120,42 @@ def test_contract_gate_retains_substep_pool_at_query_boundaries(monkeypatch, rea
         assert task._proximity_camera_names == ['skin']
     assert observation['prox'] == [31, 32]  # No replacement with a single current depth.
     assert calls == {'depth': 4 if readout else 2, 'rgb': 2, 'state': 4}
+
+
+def test_single_sample_rgb_context_restores_model_for_native_proximity(monkeypatch):
+    from types import SimpleNamespace
+    from eval_place_fast_hooks import _install_deterministic_rgb_renderer
+    root = ModuleType('molmo_spaces')
+    env_package = ModuleType('molmo_spaces.env')
+    env_module = ModuleType('molmo_spaces.env.env')
+    renderer_package = ModuleType('molmo_spaces.renderer')
+    renderer_module = ModuleType('molmo_spaces.renderer.opengl_rendering')
+    root.env, root.renderer = env_package, renderer_package
+    env_package.env = env_module
+    renderer_package.opengl_rendering = renderer_module
+    env_module.HAS_FILAMENT = False
+    for module in (root, env_package, env_module, renderer_package, renderer_module):
+        monkeypatch.setitem(sys.modules, module.__name__, module)
+    samples_seen = []
+    class Renderer:
+        def __init__(self, model=None, model_bindings=None, fail=False):
+            model = model if model is not None else model_bindings.model
+            samples_seen.append(model.vis.quality.offsamples)
+            if fail:
+                raise RuntimeError('context failure')
+    renderer_module.MjOpenGLRenderer = Renderer
+    model = SimpleNamespace(vis=SimpleNamespace(quality=SimpleNamespace(offsamples=4)))
+    _install_deterministic_rgb_renderer()
+    installed = Renderer.__init__
+    _install_deterministic_rgb_renderer()
+    assert Renderer.__init__ is installed
+    Renderer(model=model)
+    assert model.vis.quality.offsamples == 4  # Native proximity still sees collection setting.
+    Renderer(model_bindings=SimpleNamespace(model=model))
+    with pytest.raises(RuntimeError, match='context failure'):
+        Renderer(model=model, fail=True)
+    assert model.vis.quality.offsamples == 4
+    assert samples_seen == [0, 0, 0]
+    env_module.HAS_FILAMENT = True
+    with pytest.raises(ValueError, match='classic OpenGL'):
+        _install_deterministic_rgb_renderer()

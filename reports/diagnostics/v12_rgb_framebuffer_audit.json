@@ -1,0 +1,88 @@
+{
+  "run": "v12_readout_s0",
+  "failed_identity": "8805064945e4c5e2",
+  "diagnostic_scope": "frozen-state RGB repeatability and 51-step camera snapshot comparison",
+  "exo_step_50_differing_pixels": 2,
+  "exo_step_50_max_uint8_difference": 1,
+  "repeated_frames_per_configuration": 20,
+  "unique_frame_counts": {
+    "True": 7,
+    "False": 6,
+    "no_msaa_exo_camera_1": 1,
+    "no_msaa_wrist_camera": 1
+  },
+  "conclusion": "Single-sample RGB framebuffer removed observed repeat-render variability; dithering alone did not.",
+  "native_proximity": "Separate renderer; retain original model multisample configuration",
+  "live_verification_identity": "3c1c6b3eab4d2d2b",
+  "live_verification_report": "runs/pact/v12_readout_s0/evaluation/3c1c6b3eab4d2d2b/verification.json",
+  "temporary_diagnostic_artifacts": "/tmp/pact_rgb_debug",
+  "live_verification_passed": true,
+  "live_verification_checked_pairs": 2,
+  "live_verification_horizon": 101,
+  "live_comparisons": [
+    {
+      "component_diagnostics_available": true,
+      "contact_audit_equal": true,
+      "first_component_mismatch": null,
+      "first_input_mismatch_index": null,
+      "input_counts": [
+        101,
+        101
+      ],
+      "numeric_differences": {
+        "arm": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        },
+        "gripper": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        },
+        "qpos": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        }
+      },
+      "optimized_status": "complete",
+      "passed": true,
+      "reference_status": "complete",
+      "success_flags_equal": true,
+      "trace_counts": [
+        101,
+        101
+      ]
+    },
+    {
+      "component_diagnostics_available": true,
+      "contact_audit_equal": true,
+      "first_component_mismatch": null,
+      "first_input_mismatch_index": null,
+      "input_counts": [
+        101,
+        101
+      ],
+      "numeric_differences": {
+        "arm": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        },
+        "gripper": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        },
+        "qpos": {
+          "first_step_above_1e_6": null,
+          "max_absolute_difference": 0.0
+        }
+      },
+      "optimized_status": "complete",
+      "passed": true,
+      "reference_status": "complete",
+      "success_flags_equal": true,
+      "trace_counts": [
+        101,
+        101
+      ]
+    }
+  ]
+}

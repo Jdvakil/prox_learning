@@ -22,6 +22,56 @@ Newest session at the top.
 
 ---
 
+## 2026-09-05 — wrapper-first repository runbook and command migration guide
+
+- **Why:** Readers reached historical direct-trainer/evaluator commands before the
+  current workflow, including stale claims that v12 was not prepared and advice to
+  train raw by default.
+- **What:** README now opens with a ten-step dataset-to-results guide. Each step
+  explains its purpose and pairs original/direct usage with the wrapper equivalent,
+  explicitly identifying steps and repository tools with no equivalent. Includes
+  environment prerequisites, dataset bindings, full readout training, baselines,
+  split/runtime preparation, offline/check, parity, staged suites, results, batches,
+  legacy adoption and links to the detailed existing references.
+- **How:** Checked examples against `scripts/pact.py`, the registry and child CLI
+  implementations. Fixed conflicting setup/routing text; historical protocols remain
+  labeled provenance. CLAUDE.md now directs future instructions to the wrapper-first
+  README and requires explicit differences when comparing old commands.
+- **Validation:** Parsed the new guide's Bash blocks without executing them; checked
+  its internal links and documented flags against source, plus whitespace checks.
+- **Not done:** No training, evaluation, package installation or runtime/code changes
+  were performed for this documentation update; the user's evaluation is left running.
+
+---
+
+## 2026-09-05 — remove multisample RGB variability from contract evaluation
+
+- **Why:** New verification isolated `exo_camera_1` at step 50 while native skin
+  and robot state matched beforehand. The previous diagnostic did not fix parity.
+- **Evidence:** Approved GPU access outside the sandbox allowed direct reproduction.
+  The 51-step pair differed in two exo pixels by one uint8 level. Twenty frozen-scene
+  exo renders yielded seven unique frames with dithering, six without it; disabling
+  dithering alone was insufficient. Single-sample rendering yielded one unique frame
+  across twenty repetitions for each RGB camera. Numerical evidence is saved in
+  `reports/diagnostics/v12_rgb_framebuffer_audit.json`; temporary snapshots are in
+  `/tmp/pact_rgb_debug`.
+- **Change:** Added a contract-only classic RGB renderer construction hook with
+  `offsamples=0`, applied equally to reference and optimized workers. Restores the
+  model setting immediately so native proximity keeps its original configuration.
+  Actual RGB sample count is checked and recorded. Identity/summaries declare
+  `classic_opengl_single_sample_v1`; pinned runtime files, XML, weights, physics,
+  camera geometry and parity tolerances are unchanged. RGB anti-aliasing is explicitly
+  a new rendering protocol, documented in README §4.20/4.23.
+- **Validation:** 22 focused tests pass, including model-setting restoration on
+  successful/failed context construction and idempotent installation. Live two-pair
+  verification **passed both 101-step pairs**, identity `3c1c6b3eab4d2d2b`, exit 0.
+  All 101 input hashes per pair matched, all reported arm/gripper/qpos deltas were
+  zero, and success/contact records matched. The second optimized row was precomputed
+  independently and reused by the verifier under the same identity. No training or
+  full-horizon success-rate evaluation is part of this fix; smoke is the next step.
+
+---
+
 ## 2026-09-05 — diagnose failed v12 reference/optimized parity
 
 - **Evidence:** User's offline validation and runtime/check commands passed. Both
