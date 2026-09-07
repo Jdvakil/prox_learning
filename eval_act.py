@@ -1,13 +1,17 @@
-"""Frozen ACT / PACT eval for hallway and v1011d.
+"""Frozen ACT / PACT eval. Experiment eval for data/ dumps that are wired.
 
 Protocol source: ``old_eval_act_place_corridor.py`` (commit 1bfe693). That
 snapshot is the reference. Do not run it: it imports live
 ``ACTInferencePolicy`` and defaults to mj_multiRay. Do not import
 ``eval_act_obstacle.ACTInferencePolicy``. Do not edit the live corridor
 evaluator, ``eval_pact.py``, or ``eval_place_fast_hooks.py``.
+``scripts/pact.py eval`` / ``verify`` is parked. Convert/train still use
+``pact.py``.
 
-v1 scope: ``--task hallway`` and ``--task v1011d`` only. v12 needs overlay
-plus settle-park; use the wrapper.
+Wired ``--task`` today: hallway (``data/pact_place_corridor_v5``) and
+v1011d (``data/pact_pick_n_place_v2/data/v1011d``). Other ``data/`` dumps
+are not a ``--task`` yet (v12 overlay, v12.1, v107, mixed, table_smoke,
+molmo-pi0 videos).
 
 Headline protocol (defaults):
   open-loop chunk, no temporal aggregation
@@ -56,14 +60,45 @@ def _argv_value(*names: str, default: str | None = None) -> str | None:
     return default
 
 
-_TASK = _argv_value("--task", default="hallway")
-if _TASK == "v12":
-    raise SystemExit(
-        "[eval_act] v1 is hallway + v1011d only. v12 needs overlay + settle-park "
-        "(python scripts/pact.py eval)."
-    )
-if _TASK not in ("hallway", "v1011d"):
-    raise SystemExit("[eval_act] --task must be hallway or v1011d")
+_WIRED_TASKS = ("hallway", "v1011d")
+_TASK_ALIASES = {
+    "pact_place_corridor_v5": "hallway",
+    "pact_pick_n_place_v2": "v1011d",
+}
+_UNWIRED_TASKS = {
+    "v12": (
+        "data/pact_pick_n_place_v2/data/v12 needs kitchen overlay, settle-park, "
+        "and a pre-policy contact fix. Not wired in this file. "
+        "scripts/pact.py eval is parked; do not use it."
+    ),
+    "v12.1": "data/pact_pick_n_place_v2/data/v12.1 is a 5-ep table-cam preview, not a suite.",
+    "v107": "data/pact_place_corridor v107 dumps are not a --task yet.",
+    "v107_spaced": "data/pact_place_corridor/data/v107_spaced is not a --task yet.",
+    "v1010": "data/pact_place_corridor/data/v1010 is not a --task yet.",
+    "mixed": "data/mixed_v1011_clutter_geometry is viz / clutter-geometry, not this eval.",
+    "table_smoke": "data/table_smoke is a 10-ep schema check. Do not eval as a suite.",
+    "pi0": "data/molmo-pi0-eval-videos is videos, not MuJoCo policy eval.",
+}
+
+
+def _canonical_task(raw: str | None) -> str:
+    name = (raw or "hallway").strip()
+    if name in _TASK_ALIASES:
+        return _TASK_ALIASES[name]
+    if name in _UNWIRED_TASKS:
+        raise SystemExit(f"[eval_act] --task {name} not wired. {_UNWIRED_TASKS[name]}")
+    if name not in _WIRED_TASKS:
+        raise SystemExit(
+            "[eval_act] --task must be hallway or v1011d "
+            "(aliases: pact_place_corridor_v5, pact_pick_n_place_v2).\n"
+            "  wired: data/pact_place_corridor_v5, data/pact_pick_n_place_v2/data/v1011d\n"
+            "  not wired: v12, v12.1, v107*, mixed, table_smoke, molmo-pi0-eval-videos\n"
+            "  scripts/pact.py eval is parked. Convert/train still use pact.py."
+        )
+    return name
+
+
+_TASK = _canonical_task(_argv_value("--task", default="hallway"))
 
 _DEFAULT_MOLMO = _HALLWAY_MOLMO if _TASK == "hallway" else _V1011D_MOLMO
 _MOLMO_ROOT = Path(
@@ -1059,7 +1094,11 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--ckpt_dir", "--checkpoint-dir", dest="ckpt_dir", required=True)
     p.add_argument("--ckpt_name", default="policy_best.ckpt")
-    p.add_argument("--task", required=True, choices=("hallway", "v1011d"))
+    p.add_argument(
+        "--task",
+        required=True,
+        choices=(*_WIRED_TASKS, *tuple(_TASK_ALIASES), *tuple(_UNWIRED_TASKS)),
+    )
     p.add_argument("--cameras", nargs="+", default=None)
     p.add_argument("--molmo", "--molmospaces_root", dest="molmo", default=None)
     p.add_argument("--num_rollouts", type=int, default=2)
@@ -1078,6 +1117,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    args.task = _canonical_task(args.task)
     if args.task != _TASK:
         raise SystemExit("[eval_act] --task must match the value used at import")
     if args.molmo is not None and Path(args.molmo).resolve() != _MOLMO_ROOT:
