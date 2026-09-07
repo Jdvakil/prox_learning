@@ -22,6 +22,51 @@ Newest session at the top.
 
 ---
 
+## 2026-09-06 — hallway eval_act.py smoke running
+
+- **When:** User launched smoke in tmux (~19:37). Docs only after that. Did not
+  start a second copy. Did not kill the job.
+- **Why:** Record live protocol so the next session does not re-paste or treat
+  n=2 as a paper number.
+- **What:** README skip-table, disk-truth row, start-here frozen-eval block,
+  GPU-busy rule, do-not list. CURSOR this block. `eval_act.py` itself unchanged.
+- **How:** Startup log: molmospaces `977acd6`, V2 sampler, `pact_place_corridor_v2.xml`,
+  wrist, horizon 800, `skin=egl`, `history=query_steps_train_mismatch`,
+  `surface_embedding`, query #1 40 cams 0.940 s, then `fresh=1 skip=9`. Out
+  `eval_output/simple_hallway_smoke/`.
+- **Not done:** Smoke not finished. No `eval_summary.json` rates yet. No n=50.
+  No v1011d smoke. No v12 on this script.
+
+---
+
+## 2026-09-06 — frozen eval_act.py (hallway + v1011d)
+
+- **Why:** Eval protocol kept moving (rays vs EGL, consecutive vs query history,
+  ever-success vs terminal). User wants one frozen script for paper numbers.
+- **What:** Repo-root `eval_act.py`. Protocol copied from
+  `old_eval_act_place_corridor.py` @ `1bfe693` (gate, cameras, hallway V2
+  config, bar metrics). Local query-chunk policy. `sample_task` loop. Default
+  `--skin egl`, `--history query`. v1 = hallway + v1011d. Not v12. README
+  start-here §12 + routing + §4.3 pointer. Did not edit live corridor eval,
+  `eval_pact.py`, or hook file.
+- **How:** Chunk from `query_embed`. Encoder via `resolve_act_encoder_load`.
+  JSON `history_mode: query_steps_train_mismatch`. Resume jsonl by episode+seed.
+- **Not done:** User runs smoke n=2 EGL (~15 min/ep). No n=50 rerun. No v12.
+
+---
+
+## 2026-09-06 — path-only pact.py convert
+
+- **Why:** User asked to convert a folder of HDF5s without registry names or
+  contracts.
+- **What:** `python scripts/pact.py convert PATH` and `--convert PATH`. Dest
+  defaults to `act_style_data/` mirroring `data/`. No `pact_datasets.json` on
+  convert. `--dst` / `--dry-run` optional. Live convert still refuses a nonempty
+  dest. Obstacle dumps stay on `convert_obstacle_to_act`.
+- **Not done:** Prepare/train/eval still use registered profiles.
+
+---
+
 ## 2026-09-06 — document v12 eval construction crash in the cookbook
 
 - **Why:** User asked whether last night's eval failure was written down. It
