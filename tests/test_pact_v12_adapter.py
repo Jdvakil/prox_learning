@@ -83,12 +83,15 @@ def test_overlay_parks_bottle_refreshes_settle_and_reports_lane_error(monkeypatc
 
 
 def test_converter_command_targets_v12_without_reusing_v1011d():
-    profile, _ = fixture()
-    command = convert_command('v12', profile)
-    assert command[1:3] == ['-m','scripts.convert_pact_place_to_act']
-    assert command[command.index('--dst')+1].endswith('/data/v12')
+    src = ROOT / 'data/pact_pick_n_place_v2/data/v12'
+    command = convert_command(src)
+    assert command[1:3] == ['-m', 'scripts.convert_pact_place_to_act']
+    assert command[command.index('--src') + 1] == str(src)
+    dest = command[command.index('--dst') + 1]
+    assert dest.endswith('/data/v12')
+    assert '/data/v1011d' not in dest
     assert '--with_proximity' in command
-    assert command[command.index('--prox_pool')+1] == 'min'
+    assert command[command.index('--prox_pool') + 1] == 'min'
 
 
 def test_v12_suite_has_eight_dev_and_48_test_rows_with_no_unseen_poses(monkeypatch):

@@ -157,19 +157,52 @@ def train_command(args, contract):
     return command
 
 
-def convert_command(dataset, profile):
+def converted_destination(src):
+    """Map a raw dump path to act_style_data/ without a registry profile."""
+    src = resolve(src).resolve()
+    if src.name == 'rows':
+        src = src.parent
+    data_root = (ROOT / 'data').resolve()
+    try:
+        relative = src.relative_to(data_root)
+    except ValueError:
+        return ROOT / 'act_style_data' / src.name
+    return ROOT / 'act_style_data' / relative
+
+
+def require_place_rows(src):
+    src = resolve(src)
+    if not src.is_dir():
+        raise ValueError(f'Convert source is not a directory: {src}')
+    rows = src / 'rows' if (src / 'rows').is_dir() else src
+    found = [p for p in rows.iterdir() if p.is_dir() and (p / 'trajectory.h5').is_file()]
+    if not found:
+        raise ValueError(
+            f'no rows/*/trajectory.h5 under {src}; '
+            'obstacle house_*/trajectories*.h5 dumps use python -m scripts.convert_obstacle_to_act'
+        )
+    return src
+
+
+def convert_command(src, dst=None):
+    src = resolve(src)
+    dst = resolve(dst) if dst is not None else converted_destination(src)
     return [sys.executable, '-m', 'scripts.convert_pact_place_to_act',
-            '--src', str(resolve(profile['raw_dir'])), '--dst', str(resolve(profile['data_dir'])),
+            '--src', str(src), '--dst', str(dst),
             '--with_proximity', '--prox_pool', 'min', '--image_h', '240', '--image_w', '320',
-            '--task_name', dataset]
+            '--task_name', dst.name]
 
 
-def main():
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else list(argv)
+    if argv and argv[0] == '--convert':
+        argv[0] = 'convert'
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     sub.add_parser('list')
-    conversion = sub.add_parser('convert', help='Convert clean demonstrations for both ACT and PACT')
-    conversion.add_argument('dataset', choices=profiles())
+    conversion = sub.add_parser('convert', help='Convert a folder of demonstration HDF5s to ACT episodes')
+    conversion.add_argument('src', type=Path, help='Raw dump with rows/*/trajectory.h5')
+    conversion.add_argument('--dst', type=Path, help='Output directory; default act_style_data/ mirroring data/')
     conversion.add_argument('--dry-run', action='store_true')
     for verb in ('prepare', 'setup'):
         p = sub.add_parser(verb)
@@ -207,13 +240,13 @@ def main():
         if verb == 'eval':
             p.add_argument('--suite', choices=('smoke', 'dev', 'test'), default='smoke')
             p.add_argument('--reference', action='store_true', help='Render every step for a diagnostic comparison')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.command == 'convert':
-        profile = profiles()[args.dataset]
-        destination = resolve(profile['data_dir'])
-        if destination.exists() and any(destination.iterdir()):
+        src = require_place_rows(args.src)
+        destination = resolve(args.dst) if args.dst is not None else converted_destination(src)
+        if not args.dry_run and destination.exists() and any(destination.iterdir()):
             raise ValueError(f'Refusing to overwrite converted data: {destination}')
-        command = convert_command(args.dataset, profile)
+        command = convert_command(src, destination)
         print(shlex.join(command), flush=True)
         if not args.dry_run:
             subprocess.run(command, cwd=ROOT, check=True)

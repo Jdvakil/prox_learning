@@ -857,7 +857,7 @@ _AUDIT_HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8"/>
 <title>dataset viz</title>
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
 :root { color-scheme: dark; --bg:#111; --panel:#181818; --line:#2a2a2a; --txt:#ddd; --mut:#888; --acc:#8ab4ff; --ok:#7dce9a; --bad:#f6a; }
 * { box-sizing: border-box; }
@@ -1755,7 +1755,7 @@ _HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8"/>
 <title>dataset viz</title>
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
   :root { color-scheme: dark; }
   body { margin: 0; background: #111; color: #ddd; font: 14px/1.4 ui-sans-serif, system-ui, sans-serif; }
@@ -1796,8 +1796,9 @@ _HTML = r"""<!DOCTYPE html>
     <div id="ps" class="plot"></div>
   </div>
 </main>
-<script src="timeline.js"></script>
+<script id="timeline-data" type="application/json">%%TIMELINE%%</script>
 <script>
+let plotlyReady = typeof Plotly !== "undefined";
 function init(tl) {
   document.getElementById("title").textContent = tl.title + "  (" + tl.n_episodes + " eps, " +
     (tl.duration_s).toFixed(1) + "s)" +
@@ -1814,7 +1815,7 @@ function init(tl) {
     } else {
       v.currentTime = e.start_s;
     }
-    if (play) v.play();
+    if (play) v.play().catch(() => {});
     tl.episodes.forEach(x => x._btn.classList.toggle("active", x === e));
     zoom(e);
   }
@@ -1847,7 +1848,11 @@ function init(tl) {
       x: tl.t, y: tl[group][n], name: n, type: "scattergl", mode: "lines", line:{width:1}
     }));
   }
-  Plotly.newPlot("pq", traces("qpos", ["q1","q2","q3","q4","q5","q6","q7"]),
+    if (!plotlyReady) {
+        document.getElementById("hud").textContent = "Plotly CDN unavailable; video and episode list remain usable.";
+        return;
+    }
+    Plotly.newPlot("pq", traces("qpos", ["q1","q2","q3","q4","q5","q6","q7"]),
                  Object.assign({}, layout, {title:"qpos (rad)"}));
   Plotly.newPlot("pv", traces("qvel", ["v1","v2","v3","v4","v5","v6","v7"]),
                  Object.assign({}, layout, {title:"qvel (rad/s)"}));
@@ -1879,7 +1884,12 @@ function init(tl) {
   };
   if (tl.episodes.length) select(tl.episodes[0], false);
 }
-if (window.DATASET_TIMELINE) init(window.DATASET_TIMELINE);
+try {
+    const data = JSON.parse(document.getElementById("timeline-data").textContent);
+    init(data);
+} catch (e) {
+    document.getElementById("hud").textContent = "Could not load timeline data: " + e.message;
+}
 </script>
 </body>
 </html>
@@ -1887,7 +1897,8 @@ if (window.DATASET_TIMELINE) init(window.DATASET_TIMELINE);
 
 
 def write_html(out_dir: Path, timeline: dict) -> None:
-    (out_dir / "index.html").write_text(_HTML)
+    raw = json.dumps(timeline).replace("</", "<\\/")
+    (out_dir / "index.html").write_text(_HTML.replace("%%TIMELINE%%", raw))
     write_timeline_js(out_dir, timeline)
 
 
