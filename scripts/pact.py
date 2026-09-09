@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""One entry point for dataset-bound PACT training and simulation evaluation."""
+"""One entry point for dataset-bound PACT convert / prepare / train.
+
+Closed-loop eval is repo-root eval_act.py. ``eval`` / ``verify`` here are parked.
+"""
 from __future__ import annotations
 import argparse
 import io
@@ -233,7 +236,10 @@ def main(argv=None):
     check = sub.add_parser('check', help='Verify run data, runtime pin and dependency versions without launching a rollout')
     check.add_argument('--run', required=True)
     for verb in ('eval', 'verify'):
-        p = sub.add_parser(verb)
+        p = sub.add_parser(
+            verb,
+            help='Parked. Use repo-root eval_act.py for closed-loop eval.',
+        )
         p.add_argument('--run', required=True)
         p.add_argument('--checkpoint-name', default='policy_best.ckpt')
         p.add_argument('--dry-run', action='store_true')
@@ -241,6 +247,17 @@ def main(argv=None):
             p.add_argument('--suite', choices=('smoke', 'dev', 'test'), default='smoke')
             p.add_argument('--reference', action='store_true', help='Render every step for a diagnostic comparison')
     args = parser.parse_args(argv)
+    if args.command in ('eval', 'verify'):
+        raise SystemExit(
+            "scripts/pact.py eval / verify is parked. Closed-loop eval is repo-root eval_act.py.\n"
+            "  hallway: python eval_act.py --task hallway --cameras wrist_camera "
+            "--ckpt_dir ... --num_rollouts 2 --output_dir eval_output/NAME\n"
+            "  v1011d:  python eval_act.py --task v1011d --cameras exo_camera_1 wrist_camera "
+            "--molmo /home/jaydv/code/prox_learning/submodules/molmospaces "
+            "--ckpt_dir ... --num_rollouts 2 --output_dir eval_output/NAME\n"
+            "  v12 overlay and other data/ dumps are not a --task yet.\n"
+            "Convert / prepare / train / offline / check still use this wrapper."
+        )
     if args.command == 'convert':
         src = require_place_rows(args.src)
         destination = resolve(args.dst) if args.dst is not None else converted_destination(src)

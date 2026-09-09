@@ -22,6 +22,209 @@ Newest session at the top.
 
 ---
 
+## 2026-09-08 — v1011d full-randomize + easy 0.25 n=50 done
+
+- **When:** User: two of three tmux 5 runs done. w0 `simple_v1011d_smoke_video/` and w1 `simple_v1011d_easy025_n50/` both `completed: 50`. w2 wrist n=50 still live (4/50).
+- **Why:** Log in-dist PACT-raw rates. Keep them off the hallway MVP table. Easy 0.25 is optimistic vs the 200 demos.
+- **What:** Full randomize exo+wrist: place 7/50, ever 10/50, bar 10/50, free 20/50, grasp 25/50, gate 22/1030. Easy 0.25: place 14/50, ever 14/50, bar 3/50, free 22/50, grasp 25/50. Copies `reports/eval_summaries/simple_v1011d_{smoke_video,easy025_n50}.json`. README start-here / frozen-eval / disk truth / §4.17 / §13 / don'ts. Did not edit `eval_act.py`. Did not touch w2.
+- **How:** Docs + JSON copies only.
+- **Not done:** Wrist-only n=50. Do not cite 4/50. No vanilla ACT v1011d ckpt.
+
+---
+
+## 2026-09-07 — v1011d construction retry catch-all ValueError
+
+- **When:** tmux 5 w0 (`simple_v1011d_smoke_video/`) died after ep 23 on `ValueError: V10.11 could not place target-relative clutter in 64 deterministic candidates`. EGL `__del__` after that is shutdown noise.
+- **Why:** Live process started before the near-target markers existed (four settle strings only). Zero retry logs. Disk file already listed that substring, but Python does not reload. Next molmo string would miss again.
+- **What:** `eval_act_v1011d.py` retries **any** `sample_task` ValueError, max 64 draws. Marker list is a log tag only. README start-here / frozen-eval / traps. Did not edit `eval_act.py` / `pact_place.py`. Did not touch w1 easy 0.25 n=50 or w2 wrist n=50.
+- **How:** Resume same `--output_dir`; skips ep 0–23. Incomplete 24/50 (place 4, ever 6, bar 5, free 11) is not a rate.
+- **Not done:** User later finished this n=50 (see 2026-09-08 block). Wrist-only n=50 still running.
+
+---
+
+## 2026-09-07 — v1011d wrist-only n=50 running
+
+- **When:** User started n=50 into `eval_output/simple_v1011d_wrist_only_n50/` (tmux 5 w2). Did not reuse the n=2 smoke dir.
+- **Why:** n=2 0/2 is not a rate. Same wrist-only ablation, full clutter scale 1, snapshot, `--save_video`.
+- **What:** README start-here / frozen-eval / disk truth / don'ts. Command matches: `--cameras wrist_camera --num_rollouts 50`. Protocol will refuse a mix with exo+wrist JSON. Three evals now share the GPU (full randomize n=50, easy 0.25 n=50, this).
+- **How:** Docs only. Did not attach/kill. Did not edit `eval_act.py`.
+- **Not done:** Wait `completed: 50`. Do not cite 0/2 or a partial JSON. Do not mix with hallway wrist or exo+wrist v1011d.
+
+---
+
+## 2026-09-07 — v1011d wrist-only n=2 smoke done
+
+- **When:** User finished `eval_act_v1011d.py --cameras wrist_camera --num_rollouts 2 --save_video --output_dir eval_output/simple_v1011d_wrist_only` in tmux 5 window 2.
+- **Why:** Hallway-style ablation: drop exo from the policy. Train hdf5 is exo+wrist. Diagnostic, not paper protocol.
+- **What:** `completed: 2`. Terminal 0/2, ever 0/2, bar 2/2, free 0/2. Never `grasp_target`. Both hit the bar (steps 20, 39). Grip close 2/2. Gate 22/1030. Videos `ep000` / `ep001` exo H.264. EGL `__del__` after JSON is shutdown noise. README start-here / frozen-eval / disk truth / don'ts. Dir name is `simple_v1011d_wrist_only`, not `simple_v1011d_wrist`.
+- **How:** Docs only. Did not touch live n=50 jobs (`simple_v1011d_smoke_video/`, `simple_v1011d_easy025_n50/`). Did not edit `eval_act.py`.
+- **Not done:** Wrist n=50 later started in `simple_v1011d_wrist_only_n50/` (see block above). Do not cite 0/2 as a rate.
+
+---
+
+## 2026-09-07 — v1011d --cameras wrist_camera ablation
+
+- **When:** User: hallway does well with wrist only; try that on v1011d.
+- **Why:** Hallway hdf5 is wrist-only. v1011d train is exo+wrist
+  (`TASK_CONFIGS['pact_pick_n_place_v2']`). DETRVAE shares 1 backbone and
+  cats cams along width, so wrist-only still loads. OOD vs the 200 demos.
+- **What:** Drop the hard exo+wrist require. `--cameras wrist_camera`
+  allowed. Env still hybrid (exo for `--save_video`). Protocol `cameras`;
+  missing old JSON = exo+wrist. README. Did not edit `eval_act.py`.
+- **How:** Warn when policy cams != train pair. User dir
+  `eval_output/simple_v1011d_wrist_only`.
+- **Not done:** n=2 smoke later finished in that dir (see block above).
+
+---
+
+## 2026-09-07 — v1011d --clutter_xy_scale easy eval
+
+- **When:** User: not enough data for super-randomized clutter; make eval
+  easier. Picked shrink-XY (not freeze to v1011c, not replay hdf5).
+- **Why:** V10.11d redraws slots 01/03/04/06 in large boxes (plates ±32 cm Y)
+  and 08/09 in a 22 cm / ±65° ring. 200 demos cannot cover that. Full
+  randomize stays the default protocol.
+- **What:** `eval_act_v1011d.py --clutter_xy_scale` in (0, 1]. Default 1.
+  0.25 shrinks those four boxes toward the v1011c seats already in
+  `by_slot`. **08/09 stay 22 cm / ±65°** — shrinking `NEAR_RADIUS_MAX_M`
+  to ~11 cm emptied the annulus (`ValueError: V10.11 target-relative
+  annulus is empty`) and killed tmux 5 window 1. Construction retry now
+  also catches that string. README frozen-eval. Did not edit
+  `eval_act.py` / `pact_place.py`.
+- **How:** Instance `SLOT_RANDOMIZATION_BOXES_M` for the draw, then delete.
+  New dir `eval_output/simple_v1011d_easy025`.
+- **Not done:** User re-runs easy smoke after this fix. Do not mix with
+  `simple_v1011d_smoke_video/`. Leave tmux 5 window 0 python if still live.
+
+---
+
+## 2026-09-07 — hallway n=50 done; v1011d H.264 + settle retry
+
+- **When:** Hallway `eval_act.py` n=50 finished. v1011d `--save_video` n=50
+  wrote ep0/ep1 then died on house=2 settle: clutter cylinder vs `Cup_10`,
+  `distance_m=-3.5e-5`. User also could not play `mp4v` in VS Code.
+- **Why:** OpenCV `mp4v` is MPEG-4 Part 2. Chromium wants H.264 + yuv420p +
+  faststart. Datagen retries settle failures; eval did not, so n=50 died.
+- **What:** Hallway: 18/50 (36%) place, 19/50 ever, 7/50 (14%) bar, 43/50
+  (86%) free, house=1, `eval_output/simple_hallway_n50/`. Copy
+  `reports/eval_summaries/simple_hallway_n50.json`. Do not overwrite Aug 29
+  random-house 20/50 / 6/50 / 44/50. `eval_act_v1011d.py`: remux exo MP4 to
+  H.264 after write; retry settle/construction ValueErrors up to 32 draws
+  (attempt 0 keeps the episode seed). README frozen-eval / disk truth / §8 /
+  numbers table. Did not edit `eval_act.py`.
+- **How:** `encode_h264_ide` same flags as `scripts/dataset_viz.py`. Resume
+  `simple_v1011d_smoke_video/` skips ep 0–1.
+- **Not done:** User resume v1011d n=50 into `simple_v1011d_smoke_video/`.
+  Wrist MP4. Re-open the two remuxed exo MP4s in the editor.
+
+---
+
+## 2026-09-07 — eval_act_v1011d.py --save_video exo_camera_1
+
+- **When:** User wanted `--save_video` after the n=2 smoke (0/2, both bar
+  hits) so they can watch `exo_camera_1`.
+- **Why:** Script had no video flag. Molmospaces `save_videos` stays False
+  because the loop wipes `observation_cache`. Chunk gate reuses stale RGB on
+  skip steps, so a gated exo dump would be ~22 frozen frames.
+- **What:** `--save_video` / `--save_videos` on `eval_act_v1011d.py`. Streams
+  current-world `exo_camera_1` RGB every control step to
+  `output_dir/videos/epXXX_houseYY_seedZ_exo_camera_1.mp4`. Skin gate
+  unchanged. Not a protocol field. README §7 / frozen-eval. Did not edit
+  `eval_act.py`.
+- **How:** `env.render_rgb_frame` after reset and each `task.step`. cv2
+  `mp4v` writer. fps = `1000/policy_dt_ms`.
+- **Not done:** User-run video smoke. Wrist MP4. Hallway `eval_act.py`
+  video flag.
+
+---
+
+## 2026-09-06 — eval_act_v1011d.py dedicated v1011d eval
+
+- **When:** User asked how to eval the v1011d PACT-raw ckpt with the randomized
+  clutter config/sampler; later asked not to touch `eval_act.py` and to add
+  snapshot/train skin, exec_horizon, env asserts, resume guard.
+- **Why:** Hallway n=50 lives in `eval_act.py`. v1011d is a different world
+  (24-cell v10_7 XMLs + randomized slots). Copying the hallway gate as-is would
+  wipe train substep frames.
+- **What:** New repo-root `eval_act_v1011d.py`. Pins
+  `FrankaSkinPactPlaceV1011DRandomizedClutterConfig` +
+  `PactPlaceCorridorV1011DRandomizedLayoutSampler` + three `v10_7_*` XMLs.
+  Hybrid exo+wrist cameras. Default house `i % 24`. `--skin_substeps
+  snapshot|train`, `--exec_horizon K`, per-ep scene_params asserts, resume
+  protocol refuse. Copied gate skips reset+record when substep buffer is ready.
+  README §7 / frozen-eval. Did not edit `eval_act.py`.
+- **How:** Disarm `_proximity_camera_names` after `sample_task`. Buffer reset
+  uses `task._env`. Counts `snapshot_renders` / `substep_queries`.
+- **Not done:** User-run smoke n=2. Train-mode squeeze. exec_horizon 25/10
+  sweep. v12 `--task`.
+
+---
+
+## 2026-09-06 — park wrapper eval; eval_act.py is the eval
+
+- **When:** User said they will not use wrapper eval anymore; stick with
+  `eval_act.py` for `data/` dumps.
+- **Why:** v12 wrapper test dies on construction (row 34 pre-policy contact).
+  Different success/history protocol vs paper `eval_act.py`. Paper path is the
+  frozen script.
+- **What:** `scripts/pact.py eval` / `verify` now SystemExit to `eval_act.py`.
+  Convert / prepare / train / offline / check unchanged. `eval_act.py` error
+  for unwired `--task` (v12, v12.1, v107, mixed, table_smoke, pi0) no longer
+  points at `pact.py eval`. README start-here §7 + routing + §4.20/4.22 +
+  CLAUDE.md eval instructions. CURSOR this block.
+- **How:** Did not delete `eval_pact.py` or wrapper code. Did not wire v12
+  overlay into `eval_act.py`. Did not touch tmux 3 hallway n=50.
+- **Not done:** v12 / v12.1 / v107 / mixed as `--task`. Pre-policy contact
+  construction fix. Other `data/` dumps still refuse.
+
+---
+
+## 2026-09-06 — do not drop v12 wrapper test row 34
+
+- **When:** User re-ran `pact.py eval --run v12_readout_s0 --suite test` after
+  row 34 died. Asked whether to remove the wrapper eval.
+- **Why:** Same identity reuses 33 rows then hits the same construction error
+  (`forbidden robot/environment contact before the policy starts`). Dropping
+  the row or deleting wrapper eval would fake a rate.
+- **What:** README §7 + do-not. 33/48 complete, 21 successes on completed rows,
+  rates null. Overlay already parked `Soap_Bottle_30`. Different bug from
+  settle-overlap at row 3.
+- **How:** Did not kill hallway n=50 (tmux 3). Did not delete rows or wrapper.
+  User should Ctrl-C the tmux 0 re-run; it cannot finish this identity.
+- **Not done:** Construction fix for pre-policy contact. New identity after
+  that. No v12 paper number.
+
+---
+
+## 2026-09-06 — eval_act hallway n=50 running
+
+- **When:** User launched n=50 in tmux 3 (~20:19) after smoke. Docs only. Did
+  not start a second copy. Did not kill the job.
+- **Why:** Record the live n=50 so nobody re-pastes or writes into the smoke
+  dir or the Aug 29 `n50_fast` folder.
+- **What:** README skip-table, frozen-eval block, disk-truth, do-not. Command:
+  `eval_act.py --task hallway --num_rollouts 50 --output_dir eval_output/simple_hallway_n50`
+  same readout ckpt. Log already said `skin=egl history=query`.
+- **How:** ~15 min/ep → ~12 h. Watch `renders=17 skip=785`. Fixed `seed_base+i`.
+  Not a replay of `place_corridor_readout_s0_n50_fast`.
+- **Not done:** Job still running. No n=50 rates yet. No v1011d smoke.
+
+---
+
+## 2026-09-06 — eval_act smoke done; EGL __del__ is noise
+
+- **When:** tmux 3 finished. Prompt back. User asked about the EGL traceback.
+- **Why:** `Exception ignored in Renderer.__del__` / `EGL_NOT_INITIALIZED` looks
+  like a crash. It is not. JSON already written.
+- **What:** README skip-table, frozen-eval block, disk-truth, do-not. Smoke:
+  both eps `renders=17 skip=785`; terminal 1/2, ever 1/2, bar 0/2, free 2/2.
+- **How:** After `main()` returns, Python GC calls MuJoCo EGL `eglDestroyContext`
+  on a display already torn down. `Exception ignored` = destructor, process
+  already succeeded.
+- **Not done:** n=50 hallway. New `--output_dir`. Do not reuse the smoke folder.
+
+---
+
 ## 2026-09-06 — hallway eval_act.py smoke running
 
 - **When:** User launched smoke in tmux (~19:37). Docs only after that. Did not
