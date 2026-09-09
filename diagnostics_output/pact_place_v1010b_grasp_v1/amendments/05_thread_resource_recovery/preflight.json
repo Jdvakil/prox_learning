@@ -1,0 +1,127 @@
+{
+  "code_unchanged": true,
+  "committed_prefix_matches_paired_ACT": true,
+  "committed_prefix_samples": {
+    "end_epoch": 2050,
+    "full_rows_sha256": "94406513e83011e122c885e0dae8cc80a354a0afa99c0af145fcc8a98474c485",
+    "sample_count": 12000,
+    "sample_stream_sha256": "5ea3e3309f0445d09d95af7b1410dbf90c7f829929b9ac88a1497f74ca353273",
+    "start_epoch": 2000
+  },
+  "protected_hashes_unchanged": true,
+  "remaining_time_at10": {
+    "available_seconds": 152002.95562934875,
+    "conservative_rollout_seconds": 1371.065418150276,
+    "exposed_outcomes_used_for_selection": false,
+    "passed": true,
+    "remaining_batches": 100,
+    "remaining_seconds": 138006.5418150276,
+    "stage": "thread_recovery02",
+    "training_remaining_branches": 1,
+    "utc": "2026-09-08T08:51:23.258609+00:00",
+    "workers": 10
+  },
+  "resume_sha256": "eef9c4ec65f7fa52586f580c346285f690c9da9aa307a18da9a92229f60e2d38",
+  "settled_resource_samples": [
+    {
+      "cgroup": {
+        "memory.current": 104375705600,
+        "memory.max": 183497654272,
+        "pids.current": 403,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 46342828032,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5859172352,
+      "memory_file_bytes": 96658382848,
+      "oom_kill": 3,
+      "pid_fraction": 0.10494791666666667,
+      "pids_events_max": 143710,
+      "ram_fraction": 0.5688122064235387,
+      "utc": "2026-09-08T08:51:23.316944+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1.0
+    },
+    {
+      "cgroup": {
+        "memory.current": 104378392576,
+        "memory.max": 183497654272,
+        "pids.current": 407,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 46343454720,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5852213248,
+      "memory_file_bytes": 96658808832,
+      "oom_kill": 3,
+      "pid_fraction": 0.10598958333333333,
+      "pids_events_max": 143710,
+      "ram_fraction": 0.5688268495317063,
+      "utc": "2026-09-08T08:52:23.345561+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1.0
+    },
+    {
+      "cgroup": {
+        "memory.current": 104380116992,
+        "memory.max": 183497654272,
+        "pids.current": 406,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 46341222400,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5852389376,
+      "memory_file_bytes": 96659513344,
+      "oom_kill": 3,
+      "pid_fraction": 0.10572916666666667,
+      "pids_events_max": 143710,
+      "ram_fraction": 0.5688362470142345,
+      "utc": "2026-09-08T08:53:23.374532+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1.0
+    }
+  ],
+  "storage": {
+    "free_bytes": 46342832128,
+    "observed_max_bytes": 35068884,
+    "observed_mean_bytes": 33949495.53333333,
+    "observed_n": 60,
+    "passed": true,
+    "phase_checks": {
+      "future_rollout_margin_bytes": 851067329.0533371,
+      "passed": true,
+      "training_peak_margin_bytes": 33257022490.333336
+    },
+    "remaining_instrument_bytes": 0,
+    "remaining_model_bytes": 447392426.6666667,
+    "remaining_required_artifacts": 36074573059.94666,
+    "remaining_rollouts": 996,
+    "reserve_bytes": 10737418240,
+    "stage": "thread_recovery02",
+    "standard_per_rollout_bytes": 35770261.68,
+    "temporary_peak_training_note": "Serial training: at most2 atomic generation files, each<1.5GiB, before final rollout accumulation.",
+    "utc": "2026-09-08T08:51:23.288508+00:00",
+    "working_resume_credit_bytes": 1320226501,
+    "working_resume_paths": [
+      "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/checkpoints/pact_seed3105_acquisition63000/resume_bundle.ckpt"
+    ]
+  },
+  "utc": "2026-09-08T08:51:23.256154+00:00",
+  "validation": {
+    "epoch": 2049,
+    "global_step": 61500,
+    "model_tensors_exact": 418,
+    "optimizer_steps": [
+      61500
+    ],
+    "rng_keys": [
+      "numpy",
+      "python",
+      "torch_cpu",
+      "torch_cuda"
+    ]
+  }
+}

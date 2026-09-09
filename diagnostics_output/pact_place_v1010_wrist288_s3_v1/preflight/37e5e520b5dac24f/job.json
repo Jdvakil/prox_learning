@@ -1,0 +1,755 @@
+{
+  "command": [
+    "/root/act_retrain_venv/bin/python",
+    "/root/prox_learning_pact_remediation/scripts/pact_wrist288_collect.py",
+    "--job",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/preflight/37e5e520b5dac24f/job.json"
+  ],
+  "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/preflight/37e5e520b5dac24f",
+  "kind": "preflight",
+  "row": {
+    "attempt_id": "37e5e520b5dac24f70d48b023a51b447e7cf50ebd632df9cff43322b79af5f7f",
+    "attempt_index": 0,
+    "candidate_index": 0,
+    "cell": "F0_target_side_stagger|right|pos5",
+    "clutter_x_jitter_m": {
+      "01": -0.015,
+      "06": -0.004
+    },
+    "clutter_y_jitter_m": {
+      "01": -0.004,
+      "06": 0.009
+    },
+    "contract_version": "pact_place_v1010_four_object_v1",
+    "environment_version": "pact_place_corridor_v10_10_four_object",
+    "episode_id": "37e5e520b5dac24f70d48b023a51b447e7cf50ebd632df9cff43322b79af5f7f",
+    "experiment_namespace": "pact_place_v1010_wrist288_s3_v1",
+    "family": "F0_target_side_stagger",
+    "family_attempt": 0,
+    "family_id": "F0_target_side_stagger",
+    "intrusion_side": "right",
+    "layout_family_id": "F0_target_side_stagger",
+    "layout_id": "v9_5_raw_right_F0_target_side_stagger",
+    "max_sampling_retries": 12,
+    "pact_clutter_layout": {
+      "expected_bow_direction": "+y",
+      "inbound_vessel_center_xy_m": [
+        0.57,
+        -0.005
+      ],
+      "inbound_vessel_slot": "06",
+      "intrusion_side": "right",
+      "layout_contract_version": "pact_place_v9_5_raw_remediation_v1",
+      "layout_family_id": "F0_target_side_stagger",
+      "layout_id": "v9_5_raw_right_F0_target_side_stagger",
+      "legacy_panel_active": true,
+      "nominal_route_metrics": {
+        "bow_direction": "+y",
+        "crossing_fraction": 0.22580645161290308,
+        "crossing_y_m": 0.08322580645161286,
+        "detour_admitted": true,
+        "direct_route_blocked": true,
+        "lateral_limit_m": 0.255,
+        "nominal_end_xy_m": [
+          0.44,
+          0.3
+        ],
+        "nominal_start_xy_m": [
+          0.75,
+          0.02
+        ],
+        "planned_waypoint_y_m": 0.2446756570640689,
+        "required_bow_m": 0.16144985061245606,
+        "straight_envelope_clearance_m": -0.12144985061245606
+      },
+      "objects": [
+        {
+          "category": "candle",
+          "center_m": [
+            0.82,
+            -0.35,
+            0.8039284818127154
+          ],
+          "half_m": [
+            0.00785345424167494,
+            0.007827183931636925,
+            0.0839284818127154
+          ],
+          "palette_slot": "00",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "medium",
+          "support": "bench_standing",
+          "uid": "Candle_2"
+        },
+        {
+          "category": "soapbottle",
+          "center_m": [
+            0.68,
+            0.01,
+            0.8432718254783429
+          ],
+          "half_m": [
+            0.04467513313665217,
+            0.044675657064068924,
+            0.12327182547834287
+          ],
+          "palette_slot": "01",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "outbound_vessel",
+          "size_class": "large",
+          "support": "bench_standing",
+          "uid": "Soap_Bottle_30"
+        },
+        {
+          "category": "mug",
+          "center_m": [
+            0.84,
+            0.31,
+            0.7718181114523276
+          ],
+          "half_m": [
+            0.05457642570283072,
+            0.04292746280511213,
+            0.05181811145232762
+          ],
+          "palette_slot": "02",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "medium",
+          "support": "bench_standing",
+          "uid": "Mug_2"
+        },
+        {
+          "category": "plate",
+          "center_m": [
+            0.98,
+            -0.22,
+            0.7313359088331846
+          ],
+          "half_m": [
+            0.09389991575951051,
+            0.09390035186519052,
+            0.011335908833184527
+          ],
+          "palette_slot": "03",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "large",
+          "support": "bench_standing",
+          "uid": "Plate_10"
+        },
+        {
+          "category": "plate",
+          "center_m": [
+            1.09,
+            0.3,
+            0.7320451748858234
+          ],
+          "half_m": [
+            0.09520587823707233,
+            0.09447387878525898,
+            0.012045174885823462
+          ],
+          "palette_slot": "04",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "large",
+          "support": "bench_standing",
+          "uid": "Plate_22"
+        },
+        {
+          "category": "can",
+          "center_m": [
+            1.21,
+            -0.28,
+            0.777722185337493
+          ],
+          "half_m": [
+            0.03764438807589465,
+            0.03764133892037848,
+            0.05772218533749307
+          ],
+          "palette_slot": "05",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "medium",
+          "support": "bench_standing",
+          "uid": "663b5edc92a543668c1b602981e724a4"
+        },
+        {
+          "category": "soapbottle",
+          "center_m": [
+            0.57,
+            -0.005,
+            0.8149175430643014
+          ],
+          "half_m": [
+            0.04313490038237544,
+            0.043840373681624974,
+            0.09491754306430139
+          ],
+          "palette_slot": "06",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "inbound_vessel",
+          "size_class": "large",
+          "support": "bench_standing",
+          "uid": "Soap_Bottle_11"
+        },
+        {
+          "category": "candle",
+          "center_m": [
+            1.06,
+            0.02,
+            0.7607964519528724
+          ],
+          "half_m": [
+            0.024957235836999214,
+            0.02481823354296688,
+            0.0407964519528724
+          ],
+          "palette_slot": "07",
+          "quat_wxyz": [
+            0.7071067811865476,
+            0.7071067811865476,
+            0.0,
+            0.0
+          ],
+          "role": "decor",
+          "size_class": "small",
+          "support": "bench_standing",
+          "uid": "Candle_1"
+        }
+      ],
+      "outbound_vessel_slot": "01",
+      "panel_corridor_metrics": {
+        "blocker_center_xy_m": [
+          0.68,
+          0.01
+        ],
+        "blocker_x_range_m": [
+          0.6353248668633479,
+          0.7246751331366522
+        ],
+        "corridor_margin_m": 0.010324342935931069,
+        "detour_admitted": true,
+        "expected_bow_direction": "+y",
+        "intrusion_side": "right",
+        "lateral_limit_m": 0.255,
+        "panel_active": true,
+        "panel_blocker_surface_gap_m": 0.06032434293593108,
+        "panel_blocker_x_overlap_m": 0.04967513313665217,
+        "panel_inner_face_worst_case_m": 0.095,
+        "panel_x_range_with_jitter_m": [
+          0.5449999999999999,
+          0.685
+        ],
+        "required_lane_center_offset_m": 0.24467565706406894
+      },
+      "route_blocker_center_xy_m": [
+        0.68,
+        0.01
+      ],
+      "route_blocker_slot": "01",
+      "shelf_top_z_m": 0.72,
+      "support": "bench_standing",
+      "workspace_bounds_m": [
+        [
+          0.5,
+          -0.43,
+          0.72
+        ],
+        [
+          1.34,
+          0.43,
+          1.5
+        ]
+      ]
+    },
+    "pact_clutter_palette": [
+      {
+        "annotation_dimensions_m": [
+          0.015648622065782547,
+          0.015648603439331055,
+          0.16785091161727905
+        ],
+        "body_prefix": "pact_clutter_00/",
+        "category": "candle",
+        "dimensions_m": [
+          0.01570690848334988,
+          0.01565436786327385,
+          0.1678569636254308
+        ],
+        "half_m": [
+          0.00785345424167494,
+          0.007827183931636925,
+          0.0839284818127154
+        ],
+        "max_dimension_m": 0.1678569636254308,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "00",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Candle_2"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.08935021609067917,
+          0.08935032784938812,
+          0.2465430200099945
+        ],
+        "body_prefix": "pact_clutter_01/",
+        "category": "soapbottle",
+        "dimensions_m": [
+          0.08935026627330434,
+          0.08935131412813785,
+          0.24654365095668573
+        ],
+        "half_m": [
+          0.04467513313665217,
+          0.044675657064068924,
+          0.12327182547834287
+        ],
+        "max_dimension_m": 0.24654365095668573,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "outbound_vessel",
+        "slot": "01",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Soap_Bottle_30"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.10915298014879227,
+          0.08585579693317413,
+          0.10363608598709106
+        ],
+        "body_prefix": "pact_clutter_02/",
+        "category": "mug",
+        "dimensions_m": [
+          0.10915285140566144,
+          0.08585492561022426,
+          0.10363622290465524
+        ],
+        "half_m": [
+          0.05457642570283072,
+          0.04292746280511213,
+          0.05181811145232762
+        ],
+        "max_dimension_m": 0.10915285140566144,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "02",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Mug_2"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.18779978156089783,
+          0.1878005564212799,
+          0.02267085760831833
+        ],
+        "body_prefix": "pact_clutter_03/",
+        "category": "plate",
+        "dimensions_m": [
+          0.18779983151902102,
+          0.18780070373038105,
+          0.022671817666369054
+        ],
+        "half_m": [
+          0.09389991575951051,
+          0.09390035186519052,
+          0.011335908833184527
+        ],
+        "max_dimension_m": 0.18780070373038105,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "03",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Plate_10"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.1922750174999237,
+          0.19227252900600433,
+          0.019691703841090202
+        ],
+        "body_prefix": "pact_clutter_04/",
+        "category": "plate",
+        "dimensions_m": [
+          0.19041175647414466,
+          0.18894775757051796,
+          0.024090349771646924
+        ],
+        "half_m": [
+          0.09520587823707233,
+          0.09447387878525898,
+          0.012045174885823462
+        ],
+        "max_dimension_m": 0.19041175647414466,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "04",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Plate_22"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.07517790794372559,
+          0.07517790794372559,
+          0.1153358593583107
+        ],
+        "body_prefix": "pact_clutter_05/",
+        "category": "can",
+        "dimensions_m": [
+          0.0752887761517893,
+          0.07528267784075696,
+          0.11544437067498614
+        ],
+        "half_m": [
+          0.03764438807589465,
+          0.03764133892037848,
+          0.05772218533749307
+        ],
+        "max_dimension_m": 0.11544437067498614,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "05",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "663b5edc92a543668c1b602981e724a4"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.0862697884440422,
+          0.0876799076795578,
+          0.1898353099822998
+        ],
+        "body_prefix": "pact_clutter_06/",
+        "category": "soapbottle",
+        "dimensions_m": [
+          0.08626980076475088,
+          0.08768074736324995,
+          0.18983508612860278
+        ],
+        "half_m": [
+          0.04313490038237544,
+          0.043840373681624974,
+          0.09491754306430139
+        ],
+        "max_dimension_m": 0.18983508612860278,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "inbound_vessel",
+        "slot": "06",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Soap_Bottle_11"
+      },
+      {
+        "annotation_dimensions_m": [
+          0.04991291090846062,
+          0.04963681846857071,
+          0.08159381151199341
+        ],
+        "body_prefix": "pact_clutter_07/",
+        "category": "candle",
+        "dimensions_m": [
+          0.04991447167399843,
+          0.04963646708593376,
+          0.0815929039057448
+        ],
+        "half_m": [
+          0.024957235836999214,
+          0.02481823354296688,
+          0.0407964519528724
+        ],
+        "max_dimension_m": 0.0815929039057448,
+        "quat_wxyz": [
+          0.7071067811865476,
+          0.7071067811865476,
+          0.0,
+          0.0
+        ],
+        "role": "decor",
+        "slot": "07",
+        "slot_class": "prop",
+        "support": "shelf_standing",
+        "uid": "Candle_1"
+      }
+    ],
+    "pact_v1010_active_clutter_count": 4,
+    "pact_v1010_active_clutter_slots": [
+      "01",
+      "03",
+      "04",
+      "06"
+    ],
+    "pact_v1010_active_clutter_uids": {
+      "01": "Soap_Bottle_30",
+      "03": "Plate_10",
+      "04": "Plate_22",
+      "06": "Soap_Bottle_11"
+    },
+    "pact_v1010_identity_sha256": "70f5cab5f76a58b82a616ba5e34251a3db950e18497b92e61539d3e18c5505a6",
+    "pact_v1010_inactive_clutter_slots": [
+      "00",
+      "02",
+      "05",
+      "07"
+    ],
+    "pact_v1010_scene_relative": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_pos5.xml",
+    "pact_v106_r_neg_m": 0.33,
+    "pact_v106_r_pos_m": 0.3,
+    "pact_v106_scene_sha256": "762a5a4662a8fc0d31a3a0ee1135b347d6dd2c882daf4e65c2f706ab2d6fe565",
+    "pact_v106_x_m": 0.8,
+    "panel_face_jitter_m": 0.0,
+    "panel_x_jitter_m": 0.0,
+    "pose_id": "pos5",
+    "pose_offset_m": 0.005,
+    "role": "preflight",
+    "role_index": 0,
+    "row_sha256": "6aeaab1918ad78f7d2b4d6e5c9e01de3123addd371b26b20888bc5a9d874eb0d",
+    "sampler_class": "PactPlaceCorridorV1010FourObjectSampler",
+    "sampling_seeds": [
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          0,
+          0
+        ],
+        "seed_u32": 1161483782,
+        "seed_u64": 14307686660106278406
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          1,
+          0
+        ],
+        "seed_u32": 3632097337,
+        "seed_u64": 4354481046545066041
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          2,
+          0
+        ],
+        "seed_u32": 41863415,
+        "seed_u64": 17117012479398824183
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          3,
+          0
+        ],
+        "seed_u32": 3005026860,
+        "seed_u64": 10068947523010892332
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          4,
+          0
+        ],
+        "seed_u32": 2379395227,
+        "seed_u64": 11089250942381633691
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          5,
+          0
+        ],
+        "seed_u32": 834128787,
+        "seed_u64": 4750593568080907155
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          6,
+          0
+        ],
+        "seed_u32": 2511930994,
+        "seed_u64": 6319987723662329458
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          7,
+          0
+        ],
+        "seed_u32": 4219153344,
+        "seed_u64": 3839947199181695936
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          8,
+          0
+        ],
+        "seed_u32": 1808908891,
+        "seed_u64": 11789676325861704283
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          9,
+          0
+        ],
+        "seed_u32": 2498886584,
+        "seed_u64": 15860069253046729656
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          10,
+          0
+        ],
+        "seed_u32": 2696045932,
+        "seed_u64": 12826102409729303916
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          11,
+          0
+        ],
+        "seed_u32": 2460093594,
+        "seed_u64": 4857096187278396570
+      },
+      {
+        "derivation": [
+          "pact_place_v1010_wrist288_s3_v1",
+          "retry/preflight",
+          "F0_target_side_stagger|right|pos5",
+          0,
+          12,
+          0
+        ],
+        "seed_u32": 2760717676,
+        "seed_u64": 3044514800622974316
+      }
+    ],
+    "scene_template_house_index": 1,
+    "schema_version": "pact_wrist288_instance_v1",
+    "seed_stream": "pact_place_v1010_wrist288_s3_v1/preflight",
+    "stream_role": "preflight",
+    "target_x_jitter_m": 0.0,
+    "target_y_jitter_m": 0.0,
+    "task_sampler_class": "PactPlaceCorridorV1010FourObjectSampler",
+    "task_seed_u32": 1161483782,
+    "task_seed_u64": 14307686660106278406
+  }
+}

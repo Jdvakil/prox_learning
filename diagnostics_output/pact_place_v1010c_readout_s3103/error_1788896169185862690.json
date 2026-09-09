@@ -1,0 +1,5 @@
+{
+  "error": "AssertionError('frozen replay action mismatch requires diagnosis')",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/pact_v1010c_run.py\", line 281, in supervise\n    replay_check(scenes[0])\n  File \"/root/prox_learning_pact_remediation/scripts/pact_v1010c_run.py\", line 233, in replay_check\n    assert all(comparison[k]['exact'] for k in ('model_output','arm','gripper')), 'frozen replay action mismatch requires diagnosis'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: frozen replay action mismatch requires diagnosis\n",
+  "utc": "2026-09-08T19:36:09.185881+00:00"
+}

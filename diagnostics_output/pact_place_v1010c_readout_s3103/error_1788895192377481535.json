@@ -1,0 +1,5 @@
+{
+  "error": "NVMLError_FunctionNotFound(13)",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/pact_v1010c_run.py\", line 280, in supervise\n    run_jobs([eval_job(scenes[0],'frozen60000')],1,'frozen_replay')\n  File \"/root/prox_learning_pact_remediation/scripts/pact_v1010c_run.py\", line 131, in run_jobs\n    baseline=resource_sample();append(C/'resources.jsonl',dict(baseline,stage=stage))\n             ^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_v1010c_train.py\", line 24, in resource_sample\n    memory = pynvml.nvmlDeviceGetMemoryInfo(device, version=2)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/act_retrain_venv/lib/python3.11/site-packages/pynvml.py\", line 3831, in nvmlDeviceGetMemoryInfo\n    _nvmlCheckReturn(ret)\n  File \"/root/act_retrain_venv/lib/python3.11/site-packages/pynvml.py\", line 1098, in _nvmlCheckReturn\n    raise NVMLError(ret)\npynvml.NVMLError_FunctionNotFound: Function Not Found\n",
+  "utc": "2026-09-08T19:19:52.377499+00:00"
+}

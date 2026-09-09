@@ -1,0 +1,168 @@
+{
+  "completed_B_new": 42,
+  "no_pending_child_attempt_started": true,
+  "nvml_version": "12.570.86.10",
+  "passed": true,
+  "pending_B_new": 138,
+  "prior_hashes": {
+    "EVAL.md": "895bd40cd9f7b6064ae976196701e04b057f1fbf63712ff4073c5116cc3bd3f0",
+    "final_verification.json": "f2acc41cd03adde5012bbca37bd4018236673dbd721304c6b8d1c04c7a87442d",
+    "parent_closure.json": "edb813bbc06473efe54d24022333eda7276ec8d2f1a5eabd264fa1c9409c3e76",
+    "parent_root_recovery05.log": "f68b7add23ba3a2168bff488a041de109117a7cc4f072556760773da1019aae7",
+    "progress.json": "e1d692d0abef37e70e11094a51b9f06c1a81e5c6226b969a536d251aeef1f2fb",
+    "run_status.json": "b8cc0d4380eb9c0075b965ebff0a230bb7629d375ff2ab7d3b8be7c176277929"
+  },
+  "pynvml_source_sha256": "d3233c78cd3f17bda97850346eba30fa88f1d6b295cee90fa7ec1c6cbf291e5b",
+  "raw_verification": {
+    "historical_protected_hashes_unchanged": true,
+    "partial_stage_checks": [
+      {
+        "all_included_pairings_passed": true,
+        "completed_new_rows": 15,
+        "expected_scheduled_rows": 18,
+        "included_raw_rows": 15,
+        "pairing_checked": true,
+        "scene_id": "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8",
+        "stage": "B"
+      },
+      {
+        "all_included_pairings_passed": true,
+        "completed_new_rows": 15,
+        "expected_scheduled_rows": 18,
+        "included_raw_rows": 15,
+        "pairing_checked": true,
+        "scene_id": "457f3bce6855a0cd60ea9e428e34649df102adb18a4cf4ff4935e2c362685914",
+        "stage": "B"
+      },
+      {
+        "all_included_pairings_passed": true,
+        "completed_new_rows": 12,
+        "expected_scheduled_rows": 18,
+        "included_raw_rows": 12,
+        "pairing_checked": true,
+        "scene_id": "2ece7101c50d1c9b6dd015a86b010abd1b6a930710b660c7e2529a0e09d63afe",
+        "stage": "B"
+      }
+    ],
+    "raw_recomputation_passed": true,
+    "records_with_observed_zero_exit": 114,
+    "schema": "pact_v1010b_grasp_v1",
+    "user_eval_preserved": true,
+    "utc": "2026-09-08T13:08:39.533088+00:00",
+    "valid_rollouts": 102,
+    "valid_training_branches": 12
+  },
+  "raw_verification_sha256": "b69cd446bbb148b84c5c0a52d656d6778de3211c5df6c84322cc37f39c58eb37",
+  "remaining_time": {
+    "available_seconds": 136446.60804533958,
+    "conservative_rollout_seconds": 1395.9383390061557,
+    "exposed_outcomes_used_for_selection": false,
+    "passed": true,
+    "remaining_batches": 96,
+    "remaining_seconds": 134010.08054459095,
+    "stage": "monitor_recovery_preflight",
+    "training_remaining_branches": 0,
+    "utc": "2026-09-08T13:10:39.606191+00:00",
+    "workers": 10
+  },
+  "resource_samples": [
+    {
+      "cgroup": {
+        "memory.current": 104692269056,
+        "memory.max": 183497654272,
+        "pids.current": 377,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 45762510848,
+      "gpu_query": "NVML memory v2, in process; used rounded upward to MiB",
+      "gpu_reserved_bytes": 450232320,
+      "gpu_used_bytes": 196608,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5648420864,
+      "memory_file_bytes": 97137426432,
+      "oom_kill": 3,
+      "pid_fraction": 0.09817708333333333,
+      "pids_events_max": 196905,
+      "ram_fraction": 0.5705373699263416,
+      "utc": "2026-09-08T13:08:39.560181+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1
+    },
+    {
+      "cgroup": {
+        "memory.current": 104691965952,
+        "memory.max": 183497654272,
+        "pids.current": 377,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 45762510848,
+      "gpu_query": "NVML memory v2, in process; used rounded upward to MiB",
+      "gpu_reserved_bytes": 450232320,
+      "gpu_used_bytes": 196608,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5647495168,
+      "memory_file_bytes": 97137623040,
+      "oom_kill": 3,
+      "pid_fraction": 0.09817708333333333,
+      "pids_events_max": 196905,
+      "ram_fraction": 0.5705357181123105,
+      "utc": "2026-09-08T13:09:39.561018+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1
+    },
+    {
+      "cgroup": {
+        "memory.current": 104665939968,
+        "memory.max": 183497654272,
+        "pids.current": 376,
+        "pids.max": 3840
+      },
+      "disk_free_bytes": 45766115328,
+      "gpu_query": "NVML memory v2, in process; used rounded upward to MiB",
+      "gpu_reserved_bytes": 450232320,
+      "gpu_used_bytes": 196608,
+      "gpu_utilization": 0.0,
+      "memory_anon_bytes": 5623005184,
+      "memory_file_bytes": 97137745920,
+      "oom_kill": 3,
+      "pid_fraction": 0.09791666666666667,
+      "pids_events_max": 196905,
+      "ram_fraction": 0.5703938853237485,
+      "utc": "2026-09-08T13:10:39.561762+00:00",
+      "vram_fraction": 4.342539517109606e-05,
+      "vram_total_mib": 23028.0,
+      "vram_used_mib": 1
+    }
+  ],
+  "storage": {
+    "free_bytes": 45766115328,
+    "observed_max_bytes": 35209215,
+    "observed_mean_bytes": 34024932.696078435,
+    "observed_n": 102,
+    "passed": true,
+    "phase_checks": {
+      "future_rollout_margin_bytes": 767314155.800003,
+      "passed": true,
+      "training_peak_margin_bytes": 35028697088.0
+    },
+    "remaining_instrument_bytes": 0,
+    "remaining_model_bytes": 0.0,
+    "remaining_required_artifacts": 34261382932.199997,
+    "remaining_rollouts": 954,
+    "reserve_bytes": 10737418240,
+    "stage": "monitor_recovery_preflight",
+    "standard_per_rollout_bytes": 35913399.3,
+    "temporary_peak_training_note": "Serial training: at most2 atomic generation files, each<1.5GiB, before final rollout accumulation.",
+    "utc": "2026-09-08T13:10:39.601970+00:00",
+    "working_resume_credit_bytes": 0,
+    "working_resume_paths": []
+  },
+  "tests": {
+    "exit_code_observed": 0,
+    "log_sha256": "2132f781fd09c4d032290bbe2ac096ba7335a9eb5ac19ffde8bd10a3ae2045f5",
+    "passed": 4
+  },
+  "utc": "2026-09-08T13:10:39.606662+00:00"
+}

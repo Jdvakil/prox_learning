@@ -1,0 +1,1495 @@
+{
+  "act_commit": "f4f59d7975e7d1d52403df92ee8a789fbc3e14c3",
+  "action_dim": 8,
+  "batch_size": 8,
+  "camera_names": [
+    "wrist_camera",
+    "exo_camera_1"
+  ],
+  "canonical_manifest_sha256": "959da7ceee5e6df6e032b8d3777211f15b8c7167a08403edc917b63459f8f93f",
+  "chunk_size": 100,
+  "ckpt_dir": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/checkpoints/pact_seed3103",
+  "command": [
+    "python",
+    "/root/prox_learning_pact_remediation/scripts/resume_pact_place_v1011c_dualcam_worker.py",
+    "--task_name",
+    "obstacle_baseline",
+    "--ckpt_dir",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/checkpoints/pact_seed3103",
+    "--exact_ckpt_dir",
+    "--policy_class",
+    "ACT",
+    "--batch_size",
+    "8",
+    "--seed",
+    "3103",
+    "--num_epochs",
+    "3000",
+    "--lr",
+    "1e-5",
+    "--kl_weight",
+    "10",
+    "--chunk_size",
+    "100",
+    "--hidden_dim",
+    "512",
+    "--dim_feedforward",
+    "3200",
+    "--enc_layers",
+    "7",
+    "--dec_layers",
+    "7",
+    "--camera_names",
+    "wrist_camera",
+    "exo_camera_1",
+    "--dataset_dir",
+    "/root/prox_learning_pact_remediation/assets/act_style_data/pact_place_v1011c_dualcam_aligned_99",
+    "--split_manifest",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/split_manifest.json",
+    "--dataset_manifest",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/conversion_manifest_encoded.json",
+    "--expect_split_sha256",
+    "bd1037be52b8dc2709cd0ff87df96a44c3154afad8e27fa442a5d9622a316fc1",
+    "--expect_dataset_tree_sha256",
+    "cbacc6d00cbac25068defafd84ceb30541b10296dd1ace3ca3fcf0b3f197ece9",
+    "--episode_horizon",
+    "635",
+    "--state_dim",
+    "9",
+    "--action_dim",
+    "8",
+    "--num_workers",
+    "4",
+    "--ckpt_every",
+    "100",
+    "--no_wandb",
+    "--use_proximity",
+    "--n_proximity_sensors",
+    "40",
+    "--prox_tokens_per_sensor",
+    "1",
+    "--proximity_feature_dim",
+    "32",
+    "--proximity_encoder_sha256",
+    "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+    "--resume",
+    "--max_steps",
+    "20000"
+  ],
+  "dataset_dir": "/root/prox_learning_pact_remediation/assets/act_style_data/pact_place_v1011c_dualcam_aligned_99",
+  "dataset_report": {
+    "canonical_manifest_sha256": "959da7ceee5e6df6e032b8d3777211f15b8c7167a08403edc917b63459f8f93f",
+    "converter_module_sha256": "f537db5f1bc785e213970360bb74ee3c473d2a5e736e78ec9da7c03ce6644d8f",
+    "dataset_dir": "/root/prox_learning_pact_remediation/assets/act_style_data/pact_place_v1011c_dualcam_aligned_99",
+    "dataset_manifest": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/conversion_manifest_encoded.json",
+    "episodes_required": 99,
+    "per_file_hashes_verified": true,
+    "tree_sha256": "cbacc6d00cbac25068defafd84ceb30541b10296dd1ace3ca3fcf0b3f197ece9"
+  },
+  "dataset_stats_pkl": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/checkpoints/pact_seed3103/dataset_stats.pkl",
+  "dataset_stats_pkl_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+  "dim_feedforward": 3200,
+  "episode_horizon": 635,
+  "hidden_dim": 512,
+  "kl_weight": 10,
+  "lr": 1e-05,
+  "n_proximity_sensors": 40,
+  "num_epochs": 3000,
+  "policy_class": "ACT",
+  "policy_config": {
+    "action_dim": 8,
+    "backbone": "resnet18",
+    "camera_names": [
+      "wrist_camera",
+      "exo_camera_1"
+    ],
+    "dec_layers": 7,
+    "dim_feedforward": 3200,
+    "enc_layers": 7,
+    "hidden_dim": 512,
+    "kl_weight": 10,
+    "lr": 1e-05,
+    "lr_backbone": 1e-05,
+    "n_proximity_sensors": 40,
+    "nheads": 8,
+    "num_queries": 100,
+    "prox_tokens_per_sensor": 1,
+    "proximity_feature_dim": 32,
+    "state_dim": 9
+  },
+  "proximity_consumed": true,
+  "proximity_feature_dim": 32,
+  "root_commit": "7d1e25eed176590b178280eaf2f0679084f7a98f",
+  "run_manifest_sha256": "362534d345c29f1bd0dd74cc7ded74eef75ece3653b4aa4360c9ed1f9f09c124",
+  "runtime": {
+    "cuda": "12.6",
+    "gpu": "NVIDIA A10",
+    "platform": "Linux-6.8.0-101-generic-x86_64-with-glibc2.39",
+    "python": "3.11.15",
+    "torch": "2.7.1+cu126"
+  },
+  "safety_cvae_loaded": false,
+  "schema": "hybrid_obstacle_act_baseline_run_manifest",
+  "schema_report": {
+    "T_max": 546,
+    "T_min": 176,
+    "action_dim": 8,
+    "camera_names": [
+      "wrist_camera",
+      "exo_camera_1"
+    ],
+    "episode_horizon": 635,
+    "episodes_checked": 99,
+    "n_proximity_sensors": 40,
+    "proximity_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+    "proximity_feature_dim": 32,
+    "state_dim": 9,
+    "use_proximity": true
+  },
+  "seed": 3103,
+  "source_collection_tree_sha256": "cbacc6d00cbac25068defafd84ceb30541b10296dd1ace3ca3fcf0b3f197ece9",
+  "split_counts": {
+    "train": {
+      "hazard_absent": 0,
+      "hazard_present": 75,
+      "total": 75
+    },
+    "validation": {
+      "hazard_absent": 0,
+      "hazard_present": 24,
+      "total": 24
+    }
+  },
+  "split_manifest_sha256": "bd1037be52b8dc2709cd0ff87df96a44c3154afad8e27fa442a5d9622a316fc1",
+  "state_dim": 9,
+  "statistics": {
+    "action_mean": [
+      0.045434143394231796,
+      -0.3541082441806793,
+      0.13259704411029816,
+      -1.7123936414718628,
+      0.06971678137779236,
+      1.393087387084961,
+      0.20266351103782654,
+      147.48826599121094
+    ],
+    "action_std": [
+      0.11894110590219498,
+      0.33465877175331116,
+      0.3563559651374817,
+      0.3462628424167633,
+      0.14577750861644745,
+      0.13199928402900696,
+      0.4567650258541107,
+      125.92566680908203
+    ],
+    "contributing_timesteps": 28564,
+    "contributing_trajectories": 75,
+    "padding_included": false,
+    "per_episode_timesteps": [
+      {
+        "act_episode_index": 0,
+        "timesteps": 463
+      },
+      {
+        "act_episode_index": 1,
+        "timesteps": 500
+      },
+      {
+        "act_episode_index": 3,
+        "timesteps": 510
+      },
+      {
+        "act_episode_index": 4,
+        "timesteps": 499
+      },
+      {
+        "act_episode_index": 6,
+        "timesteps": 540
+      },
+      {
+        "act_episode_index": 7,
+        "timesteps": 546
+      },
+      {
+        "act_episode_index": 8,
+        "timesteps": 476
+      },
+      {
+        "act_episode_index": 9,
+        "timesteps": 484
+      },
+      {
+        "act_episode_index": 10,
+        "timesteps": 515
+      },
+      {
+        "act_episode_index": 11,
+        "timesteps": 506
+      },
+      {
+        "act_episode_index": 13,
+        "timesteps": 242
+      },
+      {
+        "act_episode_index": 14,
+        "timesteps": 239
+      },
+      {
+        "act_episode_index": 15,
+        "timesteps": 296
+      },
+      {
+        "act_episode_index": 17,
+        "timesteps": 241
+      },
+      {
+        "act_episode_index": 18,
+        "timesteps": 233
+      },
+      {
+        "act_episode_index": 20,
+        "timesteps": 239
+      },
+      {
+        "act_episode_index": 21,
+        "timesteps": 237
+      },
+      {
+        "act_episode_index": 22,
+        "timesteps": 235
+      },
+      {
+        "act_episode_index": 23,
+        "timesteps": 232
+      },
+      {
+        "act_episode_index": 26,
+        "timesteps": 447
+      },
+      {
+        "act_episode_index": 27,
+        "timesteps": 476
+      },
+      {
+        "act_episode_index": 28,
+        "timesteps": 505
+      },
+      {
+        "act_episode_index": 29,
+        "timesteps": 519
+      },
+      {
+        "act_episode_index": 30,
+        "timesteps": 508
+      },
+      {
+        "act_episode_index": 31,
+        "timesteps": 487
+      },
+      {
+        "act_episode_index": 33,
+        "timesteps": 471
+      },
+      {
+        "act_episode_index": 34,
+        "timesteps": 546
+      },
+      {
+        "act_episode_index": 36,
+        "timesteps": 520
+      },
+      {
+        "act_episode_index": 38,
+        "timesteps": 302
+      },
+      {
+        "act_episode_index": 39,
+        "timesteps": 301
+      },
+      {
+        "act_episode_index": 40,
+        "timesteps": 282
+      },
+      {
+        "act_episode_index": 42,
+        "timesteps": 176
+      },
+      {
+        "act_episode_index": 43,
+        "timesteps": 320
+      },
+      {
+        "act_episode_index": 44,
+        "timesteps": 251
+      },
+      {
+        "act_episode_index": 45,
+        "timesteps": 276
+      },
+      {
+        "act_episode_index": 46,
+        "timesteps": 289
+      },
+      {
+        "act_episode_index": 47,
+        "timesteps": 230
+      },
+      {
+        "act_episode_index": 49,
+        "timesteps": 240
+      },
+      {
+        "act_episode_index": 50,
+        "timesteps": 510
+      },
+      {
+        "act_episode_index": 51,
+        "timesteps": 516
+      },
+      {
+        "act_episode_index": 53,
+        "timesteps": 461
+      },
+      {
+        "act_episode_index": 54,
+        "timesteps": 477
+      },
+      {
+        "act_episode_index": 55,
+        "timesteps": 379
+      },
+      {
+        "act_episode_index": 56,
+        "timesteps": 531
+      },
+      {
+        "act_episode_index": 59,
+        "timesteps": 540
+      },
+      {
+        "act_episode_index": 60,
+        "timesteps": 479
+      },
+      {
+        "act_episode_index": 61,
+        "timesteps": 474
+      },
+      {
+        "act_episode_index": 63,
+        "timesteps": 267
+      },
+      {
+        "act_episode_index": 64,
+        "timesteps": 306
+      },
+      {
+        "act_episode_index": 65,
+        "timesteps": 310
+      },
+      {
+        "act_episode_index": 66,
+        "timesteps": 240
+      },
+      {
+        "act_episode_index": 67,
+        "timesteps": 298
+      },
+      {
+        "act_episode_index": 69,
+        "timesteps": 305
+      },
+      {
+        "act_episode_index": 70,
+        "timesteps": 261
+      },
+      {
+        "act_episode_index": 71,
+        "timesteps": 297
+      },
+      {
+        "act_episode_index": 73,
+        "timesteps": 262
+      },
+      {
+        "act_episode_index": 75,
+        "timesteps": 484
+      },
+      {
+        "act_episode_index": 76,
+        "timesteps": 467
+      },
+      {
+        "act_episode_index": 77,
+        "timesteps": 527
+      },
+      {
+        "act_episode_index": 78,
+        "timesteps": 511
+      },
+      {
+        "act_episode_index": 79,
+        "timesteps": 488
+      },
+      {
+        "act_episode_index": 81,
+        "timesteps": 534
+      },
+      {
+        "act_episode_index": 82,
+        "timesteps": 496
+      },
+      {
+        "act_episode_index": 83,
+        "timesteps": 513
+      },
+      {
+        "act_episode_index": 85,
+        "timesteps": 504
+      },
+      {
+        "act_episode_index": 86,
+        "timesteps": 252
+      },
+      {
+        "act_episode_index": 88,
+        "timesteps": 329
+      },
+      {
+        "act_episode_index": 89,
+        "timesteps": 263
+      },
+      {
+        "act_episode_index": 91,
+        "timesteps": 258
+      },
+      {
+        "act_episode_index": 92,
+        "timesteps": 255
+      },
+      {
+        "act_episode_index": 93,
+        "timesteps": 250
+      },
+      {
+        "act_episode_index": 94,
+        "timesteps": 266
+      },
+      {
+        "act_episode_index": 96,
+        "timesteps": 259
+      },
+      {
+        "act_episode_index": 97,
+        "timesteps": 256
+      },
+      {
+        "act_episode_index": 98,
+        "timesteps": 360
+      }
+    ],
+    "qpos_mean": [
+      0.04431525990366936,
+      -0.3545214831829071,
+      0.129837766289711,
+      -1.7161037921905518,
+      0.06764786690473557,
+      1.3938343524932861,
+      0.198746457695961,
+      0.4226793348789215,
+      0.4226738214492798
+    ],
+    "qpos_std": [
+      0.11816451698541641,
+      0.3354398310184479,
+      0.3552340269088745,
+      0.34821730852127075,
+      0.14454159140586853,
+      0.13269062340259552,
+      0.4550015926361084,
+      0.356831431388855,
+      0.3568271994590759
+    ],
+    "statistics_sha256": "a5032f261f54bc7278326343b32146200f51a842cb1fb716dcc3457b060d049f",
+    "std_clip_min": 0.01,
+    "train_episode_indices": [
+      0,
+      1,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      15,
+      17,
+      18,
+      20,
+      21,
+      22,
+      23,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      33,
+      34,
+      36,
+      38,
+      39,
+      40,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      49,
+      50,
+      51,
+      53,
+      54,
+      55,
+      56,
+      59,
+      60,
+      61,
+      63,
+      64,
+      65,
+      66,
+      67,
+      69,
+      70,
+      71,
+      73,
+      75,
+      76,
+      77,
+      78,
+      79,
+      81,
+      82,
+      83,
+      85,
+      86,
+      88,
+      89,
+      91,
+      92,
+      93,
+      94,
+      96,
+      97,
+      98
+    ],
+    "validation_included": false
+  },
+  "surface_encoder_sha256": "6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206",
+  "task_name": "obstacle_baseline",
+  "train_act_indices": [
+    0,
+    1,
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    17,
+    18,
+    20,
+    21,
+    22,
+    23,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    33,
+    34,
+    36,
+    38,
+    39,
+    40,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    49,
+    50,
+    51,
+    53,
+    54,
+    55,
+    56,
+    59,
+    60,
+    61,
+    63,
+    64,
+    65,
+    66,
+    67,
+    69,
+    70,
+    71,
+    73,
+    75,
+    76,
+    77,
+    78,
+    79,
+    81,
+    82,
+    83,
+    85,
+    86,
+    88,
+    89,
+    91,
+    92,
+    93,
+    94,
+    96,
+    97,
+    98
+  ],
+  "train_episodes": [
+    {
+      "act_episode_index": 0,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "b3569c3ba462f27b260820dbf156e33c3a8de598e2504edd58b2b2be9d292a29",
+      "source_h5_sha256": "f0cdfab2ac4e9bdc9dd25aca97cc8b1a5001d31d80f2fddc4027cb49977b1b5c",
+      "split_rank": 0
+    },
+    {
+      "act_episode_index": 1,
+      "candidate_index": 16,
+      "hazard_present": true,
+      "source_episode_id": "24d13ee7e5954e80e70071e9f388d37d27d61cb2dbe1efff48c5211ecf67fb2d",
+      "source_h5_sha256": "7a51079ff4d6e6fad5e9aacb808d006637cea7ff19572cfb81fa18bf5a675834",
+      "split_rank": 1
+    },
+    {
+      "act_episode_index": 3,
+      "candidate_index": 23,
+      "hazard_present": true,
+      "source_episode_id": "7db049140e504397b086eeada3c5198bc2964b23484acf052c03c74df66759be",
+      "source_h5_sha256": "6e3d7344ded3587cfc4d8d0f691df91c3896272a2e3eac72ba1ae488d38be76e",
+      "split_rank": 2
+    },
+    {
+      "act_episode_index": 4,
+      "candidate_index": 38,
+      "hazard_present": true,
+      "source_episode_id": "f4e03d1d38a38d91f0d81154dc44de95defba6bb6673af7b34291fbfd7b1304f",
+      "source_h5_sha256": "e2c23e7cf71052d2aec8d203ea76de9a483b884672aa6b7671d85689c0f1bceb",
+      "split_rank": 3
+    },
+    {
+      "act_episode_index": 6,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "0974e10be979fd686de77a08bc9591eb3358599bf134dda5c6fa4d3faf4101c8",
+      "source_h5_sha256": "f9e5a6f24d9e682d1048aaa337826446a6419619ec149848efd130363e64ebb5",
+      "split_rank": 4
+    },
+    {
+      "act_episode_index": 7,
+      "candidate_index": 15,
+      "hazard_present": true,
+      "source_episode_id": "70f7fffaedcb19753b088120593f593f4f570189a2a84d6f77139c330610429b",
+      "source_h5_sha256": "fc82bae5024f3dba88c82963fa55e77dc5c22922f43141756a418d9fa43ee4a4",
+      "split_rank": 5
+    },
+    {
+      "act_episode_index": 8,
+      "candidate_index": 21,
+      "hazard_present": true,
+      "source_episode_id": "67b13ee4fd177c9d9d25c138e26753dff8742155284c17ada1d183f523af45e2",
+      "source_h5_sha256": "d347b83654a31b9339af1312f7368e4db803ebc91a5302f452cda5c164c47a11",
+      "split_rank": 6
+    },
+    {
+      "act_episode_index": 9,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "a8914760f2731175b510205fcb7a0a7dd748614101a94f476ff91cd4f40674ef",
+      "source_h5_sha256": "d06fe9cb73d9f3cb22612d2915b6b390ba43b89353006eb6839725a0e343386c",
+      "split_rank": 7
+    },
+    {
+      "act_episode_index": 10,
+      "candidate_index": 4,
+      "hazard_present": true,
+      "source_episode_id": "a32ec459f2e900f489f8e55a32cae4f8d2e3c4950b0661cb0b4403afb576f9c4",
+      "source_h5_sha256": "3f1ac113891716dbc33a7afc567562985cb2cb6f05daa0ad00deff4c424f0833",
+      "split_rank": 8
+    },
+    {
+      "act_episode_index": 11,
+      "candidate_index": 8,
+      "hazard_present": true,
+      "source_episode_id": "39092d8f94386ef5d821c84a0733cfc4d804b3232561f1ba8c79a7668727b9ae",
+      "source_h5_sha256": "62f5b6a4e75c5916bf2c5f27f4301febf730c2e3844ec8a9e45730df2fe5f3e2",
+      "split_rank": 9
+    },
+    {
+      "act_episode_index": 13,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "01a90396b16ed52c0131de484fde26b3289a2bf6473022b0c3f8cb022321424a",
+      "source_h5_sha256": "2fdfaaf45fac4ab6f1a9417aed232234520b3dd8d136cf9f717ac1ab5aea4ef5",
+      "split_rank": 10
+    },
+    {
+      "act_episode_index": 14,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "93471f038e9e650302086637b348de7b742288609db13c154bb32c91aab30d19",
+      "source_h5_sha256": "2910ca7a7d157fd0ed889c23885af81c805675fa312d858969891cc2e16e0fa8",
+      "split_rank": 11
+    },
+    {
+      "act_episode_index": 15,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "93ecfec4082a05efd4b5e4080333258832cefb2bc95edf88d9f4445752b0f6f8",
+      "source_h5_sha256": "239d897679e3d9a3203928c1dd535c823479f9053a96e55a8014c57c00477148",
+      "split_rank": 12
+    },
+    {
+      "act_episode_index": 17,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "d938a13c20634c8653345351c71393fbaeba757d772eca5f2ecceb2daabefcd3",
+      "source_h5_sha256": "dd2e5a54e39d6a50cc48c63cc9cb66c7fac73a302edb1e86d029b6a8e263dae7",
+      "split_rank": 13
+    },
+    {
+      "act_episode_index": 18,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "a528af3ae6bd88753ab090dc72565a0299bd9b965a7b318f2d9e6a3e2f34fb43",
+      "source_h5_sha256": "a42cbaf259aaacec277474ba0e7a3f83fbebd4cb2b4c97ca9bea8df7744887f0",
+      "split_rank": 14
+    },
+    {
+      "act_episode_index": 20,
+      "candidate_index": 20,
+      "hazard_present": true,
+      "source_episode_id": "3c58d56017646fd884c0d32b5126984974920cbff95cf0c2a0c69508a211bf1f",
+      "source_h5_sha256": "04bfc84de1e11061cc4d5e6793bc9e9b25cde51d7aed3fa9a3cb986df1f68e63",
+      "split_rank": 15
+    },
+    {
+      "act_episode_index": 21,
+      "candidate_index": 0,
+      "hazard_present": true,
+      "source_episode_id": "1d99327dc6a3d7e3513f2b8aa347f495059efc46d8d24e9c941be43bb2d96bb8",
+      "source_h5_sha256": "4da68852b75784bb555e4943ef20439f7a808578fef92fdbb4953db1fc55ce99",
+      "split_rank": 16
+    },
+    {
+      "act_episode_index": 22,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "4a469ed762057a394bbbd413af8aad063d42e6bf5090a577056a7e0ad9aac6eb",
+      "source_h5_sha256": "7c6ea1a28efd752106fd714ab461445355b18f2b573fe2983f4e458027b274e7",
+      "split_rank": 17
+    },
+    {
+      "act_episode_index": 23,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "53c65483b5f8a1e83f690ed7834623b2af5b400bb2e7fcad5b64639bfedc058b",
+      "source_h5_sha256": "724108951e04f34d483e6d08b1664b1dcfab9e2e608a2ed78f9bc1770709e9c1",
+      "split_rank": 18
+    },
+    {
+      "act_episode_index": 26,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "fdc7aaabbc9b2269b144cab5f0e72ae66b0fcd578a9315d29adfd39d17eb24da",
+      "source_h5_sha256": "50de5abfd7326e55ab5a6a7dc9d1f9c3e716c9c0d382105582284a0794b4997f",
+      "split_rank": 19
+    },
+    {
+      "act_episode_index": 27,
+      "candidate_index": 8,
+      "hazard_present": true,
+      "source_episode_id": "124d548bdab10edc7f6604bea39274c27b6defb833be9e46c056af9202980a3f",
+      "source_h5_sha256": "8cc132d59d7e4e11ee0ca0680c93298c3f62dbe53443646be286bfaf0cb4d149",
+      "split_rank": 20
+    },
+    {
+      "act_episode_index": 28,
+      "candidate_index": 13,
+      "hazard_present": true,
+      "source_episode_id": "aa198b332bdd8840ea502f48103d0a5ebdd1f32d6dcc2322f497bad18bdc7ffb",
+      "source_h5_sha256": "530883e8041b693245c7d833bf1d7668e7d6277d8db476fb145aa20c21b8f3d5",
+      "split_rank": 21
+    },
+    {
+      "act_episode_index": 29,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "e473bb280d53b4e5b05e4845ae9755955bb515ef5d2bd1baa6477846e06268a0",
+      "source_h5_sha256": "38d7627d4faab4ef0f8edddd17e2bffe08cb0857702ce98492c36f9b9c95d826",
+      "split_rank": 22
+    },
+    {
+      "act_episode_index": 30,
+      "candidate_index": 11,
+      "hazard_present": true,
+      "source_episode_id": "c732aa975349c5ddd3e5099680b05fa58dc885bcb3e62132dcc566f76db7fec5",
+      "source_h5_sha256": "82f44cd4d17a95cd15f6f29b297ade8ea3819324655a081b2808cf829f3c7bad",
+      "split_rank": 23
+    },
+    {
+      "act_episode_index": 31,
+      "candidate_index": 12,
+      "hazard_present": true,
+      "source_episode_id": "a15a8a3a776a2a3814318298a9887dd614fdde1224958a28b82c3a1e03de9bef",
+      "source_h5_sha256": "367d45c56ae538a329a20d778e94fb9db64109c7adbb73b440a3472d521c1921",
+      "split_rank": 24
+    },
+    {
+      "act_episode_index": 33,
+      "candidate_index": 8,
+      "hazard_present": true,
+      "source_episode_id": "6050ae6c0c690bd18f9da393230d4f543b6a843d463e33b4facf7df3d633da71",
+      "source_h5_sha256": "40dbc9c1910eb08ed700e38ec6bb05706340a5a8166d0ad065b500077d2b1311",
+      "split_rank": 25
+    },
+    {
+      "act_episode_index": 34,
+      "candidate_index": 12,
+      "hazard_present": true,
+      "source_episode_id": "9a0bc42380b217dc5a915afb2230426d16b53a16e4fa28949a637904b893e69c",
+      "source_h5_sha256": "bf63d60e5677571ba9a3461a5e00ab5bdc7f677f6a68ca3a47a14bac7e632ac3",
+      "split_rank": 26
+    },
+    {
+      "act_episode_index": 36,
+      "candidate_index": 25,
+      "hazard_present": true,
+      "source_episode_id": "1a4b2793a9e5332557b492a1e8e1cd4e9bc036910d64381dd427fe2dd3f79549",
+      "source_h5_sha256": "c071391e10d6b614b147ccbbae7f50e1f3773117ab1ab42acaec41e92f6ef113",
+      "split_rank": 27
+    },
+    {
+      "act_episode_index": 38,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "ebb9ee98eac68f4307472ab7ff7c5fb1fd0cd68d07f583b8cdccd028da0c6eee",
+      "source_h5_sha256": "dec7ed5cb4b42bde26778d90ef239ee494d1df4f0bf6bb20936873cee632cd49",
+      "split_rank": 28
+    },
+    {
+      "act_episode_index": 39,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "a12b09b5eb40f46740da8e551141d08d19b9f4bedaee7fb1002944b9bc3da900",
+      "source_h5_sha256": "3de5ef7129ff6ce293fee5aa1ab30ca1b1f59110800471dae5c25462ad667c2d",
+      "split_rank": 29
+    },
+    {
+      "act_episode_index": 40,
+      "candidate_index": 8,
+      "hazard_present": true,
+      "source_episode_id": "351159b4fb4ad33ccab5857d44651fa7f0dc0bbe9ccc882a142a6ef5879b845c",
+      "source_h5_sha256": "f27d0cb06d3d0db10d447090ab79e833c86d348a84ca868d50b8636ead2820d8",
+      "split_rank": 30
+    },
+    {
+      "act_episode_index": 42,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "ad3e1c11e13c570653d133266c80484d618db20e787fb42d84121d0392566a0a",
+      "source_h5_sha256": "b22db832b53d7d0d9825b4c63f730f28a1de8216c3de143f1ec37bc81e4b3715",
+      "split_rank": 31
+    },
+    {
+      "act_episode_index": 43,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "e95027f49ffb9edfd8d01c6b713f2e5365520fe5c579693d704e4619e738f5cf",
+      "source_h5_sha256": "5058f5356eec1f2e1f32915794da016e36a79b467ffe15d2b6183192efffb83b",
+      "split_rank": 32
+    },
+    {
+      "act_episode_index": 44,
+      "candidate_index": 20,
+      "hazard_present": true,
+      "source_episode_id": "6de1d948d93e0dd53a33333649faa4737dda2692b92751012f9f0878ec3646f5",
+      "source_h5_sha256": "04e2467013a3b67ae2334e194084abfa6c2c13a7240e1cfd55a4a2543a7c5872",
+      "split_rank": 33
+    },
+    {
+      "act_episode_index": 45,
+      "candidate_index": 21,
+      "hazard_present": true,
+      "source_episode_id": "bc81e5726e8b90df33c2735379eae2040612a85b3fd302118506afa66e4d4851",
+      "source_h5_sha256": "b5b75ca0ec67c4a16473d728c9e16acc215a1db1dd35cf3ac520a5d3bbfb44a0",
+      "split_rank": 34
+    },
+    {
+      "act_episode_index": 46,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "a35db03be174ac82ad09ec44fd3139782d7d7f0994b6db03667c1b80a276305c",
+      "source_h5_sha256": "eb5dd6b6540002046e3c7938fd0dd729296c85e2bc3aab007c9a5eeed82eb2f0",
+      "split_rank": 35
+    },
+    {
+      "act_episode_index": 47,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "965a1ef1b111b4f9d79e1b66d3e658d4bd1c8b7a55d7ee3fea9f3361df570d95",
+      "source_h5_sha256": "a46ed43ee95ab0c04dd6c41635b4441a8f12f7d8e2bee3388d4f615ec629dffa",
+      "split_rank": 36
+    },
+    {
+      "act_episode_index": 49,
+      "candidate_index": 16,
+      "hazard_present": true,
+      "source_episode_id": "64925384dd784e16cbbf9712b6e18e5445afefea56f96d39e2b836ec359da3d1",
+      "source_h5_sha256": "4b7265fb302219ee286ae8b95561e7f40f86f32f501ed0f576c36789dd7b1bea",
+      "split_rank": 37
+    },
+    {
+      "act_episode_index": 50,
+      "candidate_index": 10,
+      "hazard_present": true,
+      "source_episode_id": "b99c53fc543c2ee0874d68839c0f97a76d1d2f8d31148eec1100c48926fa9296",
+      "source_h5_sha256": "b9fa557809b2dccc4fb99a2fdc687e3dba741f073135044dc444a909eb56e160",
+      "split_rank": 38
+    },
+    {
+      "act_episode_index": 51,
+      "candidate_index": 24,
+      "hazard_present": true,
+      "source_episode_id": "18f7e8fb94a5932026f96cc1c1c7fe77e47950ec618212cf240cb00bad8288b0",
+      "source_h5_sha256": "0944c41e143537ac895b416fa6493b8ffc1c8549abe944cc9ea868be8332fbdf",
+      "split_rank": 39
+    },
+    {
+      "act_episode_index": 53,
+      "candidate_index": 33,
+      "hazard_present": true,
+      "source_episode_id": "99cb9ce733a1a46712d1a2dac158846a9c8813af3f9d17b3c6b55745b3783d93",
+      "source_h5_sha256": "17742cc7c536ea55610251848db9109f1643aa8463cda563b449dff0a4f548c6",
+      "split_rank": 40
+    },
+    {
+      "act_episode_index": 54,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "b870b47fb58dd158465d9fc9ad17089e32ba7b6a63b66ae3c630d0f71795c2be",
+      "source_h5_sha256": "1ac080b4089b52b2bf4b52c0afff3018969e86c87421aa13955ebf8dfc962e3b",
+      "split_rank": 41
+    },
+    {
+      "act_episode_index": 55,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "0e9a2bbee3eb3fbe3e4efebd588f265572ecc64efe8516e09d9bb6f6ba6c8a04",
+      "source_h5_sha256": "35999a4723fdf67a1b11bb438335ee417f830a74d66ace372c8ebf409d049528",
+      "split_rank": 42
+    },
+    {
+      "act_episode_index": 56,
+      "candidate_index": 12,
+      "hazard_present": true,
+      "source_episode_id": "3e60d2319b306d8aed9f8c1c31e0d9792397ff9ab4f80d3582caaaafbecdf61b",
+      "source_h5_sha256": "a92e23752d77a00d242f35cd55909fc11d06313c2bacbf928343739ee43bf9d9",
+      "split_rank": 43
+    },
+    {
+      "act_episode_index": 59,
+      "candidate_index": 10,
+      "hazard_present": true,
+      "source_episode_id": "906833533260a0d90e3fbd1e874d581857aa5113980f10b0ffb8686b04e09b52",
+      "source_h5_sha256": "5619c002e75c26e0b3e819e5443180f26c02ba678aab918fe437007378e8e205",
+      "split_rank": 44
+    },
+    {
+      "act_episode_index": 60,
+      "candidate_index": 15,
+      "hazard_present": true,
+      "source_episode_id": "dbc9b7ceb20915044627cfbd85bdbd575f46ba9f4ec95cec9a5d0a78cc6e3aea",
+      "source_h5_sha256": "fb1ee2438f0b817798a3adc3ad37df25e7161028a3ec388456c18f243fa14fae",
+      "split_rank": 45
+    },
+    {
+      "act_episode_index": 61,
+      "candidate_index": 21,
+      "hazard_present": true,
+      "source_episode_id": "c7a9609a3d72d8fd5e1d675ab744c66be602e53c1de94275672a2570ab29704a",
+      "source_h5_sha256": "cee155e263cbef4f3d99dba0fb5010d07ac8f1d8f27030e895ce5ddc1c6e1fa9",
+      "split_rank": 46
+    },
+    {
+      "act_episode_index": 63,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "7a3e0e0a50df737ed53994ba5d09958957e30282c80e354450725b254dedc6ff",
+      "source_h5_sha256": "c85a358f91490fbbf4f09649ee331dbc5b42fd6a96cab2916bfef089f3f8331e",
+      "split_rank": 47
+    },
+    {
+      "act_episode_index": 64,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "d92ea1cc67e857542127c88d33a8abe6a1ce0a5f6f88d04e20e6e9eccf32e28f",
+      "source_h5_sha256": "fb61fc2ec2a9a2fdbf3540fa47d697433b93e0d4ccce5c3c1cc4bcb04ee8839d",
+      "split_rank": 48
+    },
+    {
+      "act_episode_index": 65,
+      "candidate_index": 15,
+      "hazard_present": true,
+      "source_episode_id": "439adb5fe080f137fa91ca562e45bf33e87cf71dd3649a9cf33b584127011f2c",
+      "source_h5_sha256": "08f6133928133c4b8eb61ade92e3a97db6858f670891a29a9c48dc2f60f36633",
+      "split_rank": 49
+    },
+    {
+      "act_episode_index": 66,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "b547bf289e1407956cce642e6cf59e39a93fa0a174025eb5b3d22992c6f9dcfd",
+      "source_h5_sha256": "25f49c206b6510e982de67cf927a315686f3512961d65e32b2768d78887f11c3",
+      "split_rank": 50
+    },
+    {
+      "act_episode_index": 67,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "93315bf66da86de2c3d2008d442efa3e34e99c91b5bfb44ce2582817f613a076",
+      "source_h5_sha256": "0d328463c6f32701b80a1aef983cc170ad2d9ee841f86d1a5eac2e54898b24da",
+      "split_rank": 51
+    },
+    {
+      "act_episode_index": 69,
+      "candidate_index": 20,
+      "hazard_present": true,
+      "source_episode_id": "c7bac2b435471bb5d18dff35fa2f86b9d44632be8078e4f40e8b81d784d79b00",
+      "source_h5_sha256": "0461c8c211b017b4ff25300479bd07823e2b469058c9b2e7e1b05f176d3b711d",
+      "split_rank": 52
+    },
+    {
+      "act_episode_index": 70,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "2aff7a1f5fdb7265f0ce0b63ad6a59a589e2e5580edc02e8795685748166fc64",
+      "source_h5_sha256": "bd0d28dcfe9c6862eeacc829c54b04476a1426b4011d4a4ccb755c5597254320",
+      "split_rank": 53
+    },
+    {
+      "act_episode_index": 71,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "023eba602c49d916b5ac0509f3994e0061557c4191dd7b6606813ddb6ca21cdd",
+      "source_h5_sha256": "314a6b51d9809d535091a947ef02769e7fad7d9d8b70038178bdcfca8b7fe5bd",
+      "split_rank": 54
+    },
+    {
+      "act_episode_index": 73,
+      "candidate_index": 12,
+      "hazard_present": true,
+      "source_episode_id": "99d734c46d8751f5d03c917121985aaee7594084c59bc041a9fc6fedc4766ad4",
+      "source_h5_sha256": "78b43d77ca46e75fb83ba502371569cfd1811eeff7f15aaddd8c845f1f5eedf9",
+      "split_rank": 55
+    },
+    {
+      "act_episode_index": 75,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "757a8a48fd926c325c237f52ce1084e3b315cf6b23da883e1c307123c6cb0748",
+      "source_h5_sha256": "b1f84699217dde34106f8f701884ad8eec15a3b455557fe28bd56f9a635c814d",
+      "split_rank": 56
+    },
+    {
+      "act_episode_index": 76,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "f64090b096f239b76aadd0a87c73922cbc17c34d8a6f6cc587f5632d15faa626",
+      "source_h5_sha256": "ddd9bfdea72fbaeb309cf4eada8dd7934652d80ba5a6e40fc1c6bea24f8b21d3",
+      "split_rank": 57
+    },
+    {
+      "act_episode_index": 77,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "80c0f928dbc61c6ff98ab3164b023efd468d43e8136bde9888bfe59634ce7050",
+      "source_h5_sha256": "0117c80730b2e48d745492491ae3b9f4f215979c747c470079d8a5ecde877b37",
+      "split_rank": 58
+    },
+    {
+      "act_episode_index": 78,
+      "candidate_index": 5,
+      "hazard_present": true,
+      "source_episode_id": "89fb97e5ed213554a973fc89e02ada02de59875c9100e112828fc6202c135f15",
+      "source_h5_sha256": "7967312f4845bd432988d1604834e0a3c4356acab2d040b3af6595ecff1ef3c5",
+      "split_rank": 59
+    },
+    {
+      "act_episode_index": 79,
+      "candidate_index": 10,
+      "hazard_present": true,
+      "source_episode_id": "6c6ff6834b37b5542f1f04e29ca96070b1b0837e31fc03e742f321a42e2853e9",
+      "source_h5_sha256": "d2d6ab0db20e69820fadafd39abf1c39fd85ffc6bf32453772bfd1e0fa68d177",
+      "split_rank": 60
+    },
+    {
+      "act_episode_index": 81,
+      "candidate_index": 16,
+      "hazard_present": true,
+      "source_episode_id": "3ea2fc5d3f15b0b3d9c4c25f2e678c4bcf2c8e162f0ffcea5a55796d42dc80e9",
+      "source_h5_sha256": "19869ad376234fc855d169cb631f872d514702fd0246dcdbc205bdf36b7251d6",
+      "split_rank": 61
+    },
+    {
+      "act_episode_index": 82,
+      "candidate_index": 4,
+      "hazard_present": true,
+      "source_episode_id": "6d59f80353a67a3cb2062ae30b95e0ba0f959ce2442a412b3cdc39b803f74142",
+      "source_h5_sha256": "4dae5483b0e07279ce2b9b3df3802a8c03ec2382cd7b68ec47d4654ca825fba7",
+      "split_rank": 62
+    },
+    {
+      "act_episode_index": 83,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "45dd23fe465d59159f194429e36f56b2ca76001918e91180392a70ce9c3e0d1a",
+      "source_h5_sha256": "8902fd50a842cddd286641576582505dd449b397afeb84dd0fbfe949953538c7",
+      "split_rank": 63
+    },
+    {
+      "act_episode_index": 85,
+      "candidate_index": 19,
+      "hazard_present": true,
+      "source_episode_id": "9c57f3a0196a7ee98ba061b81ac273c2c318cb8eeb77f0cd6874768a117793d1",
+      "source_h5_sha256": "4f0d5fe5de2e39914ef11a883f508c1e89e631b5cba092cc3b755203b7e479fa",
+      "split_rank": 64
+    },
+    {
+      "act_episode_index": 86,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "04a2999d29c1384581c886a3263b9a3883ffd99cb104afb92653b93d9bdb699c",
+      "source_h5_sha256": "46529bec542e84a4f90590c6f417044e9f1148c50fffe7fb99900dd78310f6fd",
+      "split_rank": 65
+    },
+    {
+      "act_episode_index": 88,
+      "candidate_index": 19,
+      "hazard_present": true,
+      "source_episode_id": "13020bd62171d12961832b3a694005285860f797cb7daec21740bcc858608d18",
+      "source_h5_sha256": "d6d056b490a1339f362e66496398947e7d32fe4b5eaaa05d45a19f1fcac1b5ed",
+      "split_rank": 66
+    },
+    {
+      "act_episode_index": 89,
+      "candidate_index": 20,
+      "hazard_present": true,
+      "source_episode_id": "3f6554d0fb0860c68d334a4970b52a4d92eeb983920ed86b538ec1bfdbf019ab",
+      "source_h5_sha256": "aa2deda65e1953582c4435469c73fa219c11c7c61642ef1bcb2f38ffe97f3c1b",
+      "split_rank": 67
+    },
+    {
+      "act_episode_index": 91,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "416c20aeba9b4af2b5ffcae210b42d02c09f91da7ea625ee5daf7c300fabcac4",
+      "source_h5_sha256": "fd1fbf489d4fa6b19c7ac5b29f39789ca123ddc735a139b5d2702a3397cde0d3",
+      "split_rank": 68
+    },
+    {
+      "act_episode_index": 92,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "2c3d96facd16fb793dff3d90db533bd7817d0c46b315efabaf31c9b89c2381be",
+      "source_h5_sha256": "e53477b15bf5ffdc6ce4c015262c6144483a9fb24c37a10d1ecb08309ecb4db7",
+      "split_rank": 69
+    },
+    {
+      "act_episode_index": 93,
+      "candidate_index": 17,
+      "hazard_present": true,
+      "source_episode_id": "bf0ddaa4a72818e9206ccba77edc444993054802b62fdb590f908b8b539ff4c6",
+      "source_h5_sha256": "cbfcd4608a6640839b1a0d26467ff24684b5651b0b406b48236d1849bd0b96f4",
+      "split_rank": 70
+    },
+    {
+      "act_episode_index": 94,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "ddde515207477689552db9d74bb3006cbbd37b77fbd1b7d73410b9e22b0460b7",
+      "source_h5_sha256": "ae9d5716920c8ed5fa635f9366818bee06662ef8c66b544aa4a737a605ee2863",
+      "split_rank": 71
+    },
+    {
+      "act_episode_index": 96,
+      "candidate_index": 14,
+      "hazard_present": true,
+      "source_episode_id": "2731cd076b4c47b54649f6edebd5bc217be7b4c9bcbb9d6af10c61e6eb18d0e5",
+      "source_h5_sha256": "35a5d6b21bcbb2abdc17988507addadfd5718fef1219143e33ac6a2f4f05c671",
+      "split_rank": 72
+    },
+    {
+      "act_episode_index": 97,
+      "candidate_index": 15,
+      "hazard_present": true,
+      "source_episode_id": "53e626238bb9c896c7c5d7309faeb801fc3d108fb760a36f211fd4e9765dbb98",
+      "source_h5_sha256": "32911a48ada254e54234916b8b9aed857d87b43572d94024b3104109598d0d64",
+      "split_rank": 73
+    },
+    {
+      "act_episode_index": 98,
+      "candidate_index": 18,
+      "hazard_present": true,
+      "source_episode_id": "914f99944a6090de1bff71b3df5837161166d9e3cae680b53fc5c81dace71ec0",
+      "source_h5_sha256": "d0adbac2d7bc41bb306f9dd92a438dc4f70ca7ced8712deb2ee7cf74aa7b53a9",
+      "split_rank": 74
+    }
+  ],
+  "val_act_indices": [
+    2,
+    5,
+    12,
+    16,
+    19,
+    24,
+    25,
+    32,
+    35,
+    37,
+    41,
+    48,
+    52,
+    57,
+    58,
+    62,
+    68,
+    72,
+    74,
+    80,
+    84,
+    87,
+    90,
+    95
+  ],
+  "val_episodes": [
+    {
+      "act_episode_index": 2,
+      "candidate_index": 17,
+      "hazard_present": true,
+      "source_episode_id": "be2ebd9b8e81fee25990b3669348b5980848aeb8a678b0b85e79bf1005fc657f",
+      "source_h5_sha256": "13f7919136cc9caa0d8e1ba7586afdf1e02bb98baff948c3ae3c569e4f5cc572",
+      "split_rank": 0
+    },
+    {
+      "act_episode_index": 5,
+      "candidate_index": 4,
+      "hazard_present": true,
+      "source_episode_id": "75c22d4d1d52e9945b1607b1e4f7af0df9cf9661471884fc4606c6b02dcc699e",
+      "source_h5_sha256": "3417dc3a8ad281142e59b354b04c9c3643f00e715fc57b054f41f5d3f5e88bb1",
+      "split_rank": 1
+    },
+    {
+      "act_episode_index": 12,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "6a27bf05e4118feba84758675a31b3ff21f760cda8866ab043c2a4efa06c10e3",
+      "source_h5_sha256": "da386a3e5432589f1009de5ecccfa79d350e824ebb108efa17c4381852d8a7f3",
+      "split_rank": 2
+    },
+    {
+      "act_episode_index": 16,
+      "candidate_index": 18,
+      "hazard_present": true,
+      "source_episode_id": "dc88065e2c37382e3c3bd2935be9d4dcff79c6dd46976b648b7d3b7916c104ed",
+      "source_h5_sha256": "42529c0c8eacb0edcbefbae82030252d48ab1e38cc1973ec7e7dbc6818a0c7ad",
+      "split_rank": 3
+    },
+    {
+      "act_episode_index": 19,
+      "candidate_index": 16,
+      "hazard_present": true,
+      "source_episode_id": "658dc401e0c16a9305b6912b0c150a21c9d0cee5854002151db18b73fb81ab48",
+      "source_h5_sha256": "2939af29ce659fa9624b6388f61d14b1c89b07ddfcf1505d41c0768026bb628d",
+      "split_rank": 4
+    },
+    {
+      "act_episode_index": 24,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "d510f04e82d34a125d124cca663e35c58d7d733f1ff15b261e45a220a7aaf3ee",
+      "source_h5_sha256": "64098f8914ef212b854f564999f3f9b1a8e0ed9784864a4763169be196887816",
+      "split_rank": 5
+    },
+    {
+      "act_episode_index": 25,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "b0a4db410211b15ad32e8b107ecc6aedb8f05816da3ac7d4f45b24bf0f319721",
+      "source_h5_sha256": "f67e6c1283741938e3c5b007b4d08917e9291b081990f9cfce867532c81d24cb",
+      "split_rank": 6
+    },
+    {
+      "act_episode_index": 32,
+      "candidate_index": 20,
+      "hazard_present": true,
+      "source_episode_id": "58a61486c8a5d2a9ed79144c561a08b7026182c14513b8b98f28d0f08a9466d3",
+      "source_h5_sha256": "22038d0a8ac5af9ff977df6d85998442ef35bf1bfe0232a77dec35f9c176bea4",
+      "split_rank": 7
+    },
+    {
+      "act_episode_index": 35,
+      "candidate_index": 24,
+      "hazard_present": true,
+      "source_episode_id": "190b4b7404834b69deace5a40f09e9ebb3930454efc2564ebb72a8d13f6cc6bb",
+      "source_h5_sha256": "2e9258880c13b2fd56bb4849e7dba56afa64a56d453f0f06a9d1ed75af957318",
+      "split_rank": 8
+    },
+    {
+      "act_episode_index": 37,
+      "candidate_index": 0,
+      "hazard_present": true,
+      "source_episode_id": "3f42d1d078e1941f50be88ecc53b4186488827b08ade1d02872ef10a9ea1a9c1",
+      "source_h5_sha256": "9ff438bec374a1dff20d67cedf76ca5054b8def3a7ecea529e59e0d1208a6c9f",
+      "split_rank": 9
+    },
+    {
+      "act_episode_index": 41,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "d005793678970709383de600aabb33357ca2f1bd763308fa4e208d044c6f4f65",
+      "source_h5_sha256": "e7f9cedd50b453108287f7b4e454e5f8ceb2383d32db88b2954e1b99c46a68e4",
+      "split_rank": 10
+    },
+    {
+      "act_episode_index": 48,
+      "candidate_index": 7,
+      "hazard_present": true,
+      "source_episode_id": "a1312173d480e538ed33af7a19c245b3b367ef6d8bfd13b43d5f78f2ead85337",
+      "source_h5_sha256": "2661f3ad672aa1d3c54f048b480c284173dca0a023642ea4e821dd8a53e101ad",
+      "split_rank": 11
+    },
+    {
+      "act_episode_index": 52,
+      "candidate_index": 26,
+      "hazard_present": true,
+      "source_episode_id": "990248c9551da97fcac8e5309eb7b8318ba236b88fff413b6ccbc3c1b357f7b9",
+      "source_h5_sha256": "399aedb82ec5d05723d4891fda13838dfcd5293618779d397c1b5161ebd095c1",
+      "split_rank": 12
+    },
+    {
+      "act_episode_index": 57,
+      "candidate_index": 30,
+      "hazard_present": true,
+      "source_episode_id": "150fc57f8071c026e26f92749980d7b9319d4026ca74f8981befa318f7bdaebc",
+      "source_h5_sha256": "f9091ce7bcdec08f8fc897b7369731f72e6a7e45fd3fd4ad0f59acf013ccedf1",
+      "split_rank": 13
+    },
+    {
+      "act_episode_index": 58,
+      "candidate_index": 6,
+      "hazard_present": true,
+      "source_episode_id": "3622a797bd4198d34fc0886c5134b9027848350c5c1eea90f450c972f7fa90cc",
+      "source_h5_sha256": "a01eb16608ed64f1f2899651dee7a955a8b686699922f2dff0cf419eab7dcbe4",
+      "split_rank": 14
+    },
+    {
+      "act_episode_index": 62,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "5e84a95a4c025fd5097864f19d2005c56840987005fee6b72fe3a53a3300b431",
+      "source_h5_sha256": "81bf33ad4507448190281b28d33ee9eda82fba2f8de64d9cb125ec921b38e53c",
+      "split_rank": 15
+    },
+    {
+      "act_episode_index": 68,
+      "candidate_index": 15,
+      "hazard_present": true,
+      "source_episode_id": "10b3629190438d5561b5e1d43acadaca3aeab2d29fdd238286cfc2a57da0f23f",
+      "source_h5_sha256": "ecfa35d945d51f62af762c4b2bfdb33bfcf03e223feb4ac1437dc2f8e5246c4e",
+      "split_rank": 16
+    },
+    {
+      "act_episode_index": 72,
+      "candidate_index": 9,
+      "hazard_present": true,
+      "source_episode_id": "0d25c6931008daa0453823f477be74572fa564f1d37561472c03ea079c828e6e",
+      "source_h5_sha256": "610d3f758e25953800468e88610b9cc9b776b640ad13e6f3a13d003ee33282bd",
+      "split_rank": 17
+    },
+    {
+      "act_episode_index": 74,
+      "candidate_index": 2,
+      "hazard_present": true,
+      "source_episode_id": "06bc80d2d2af5b36af534d09b68978450a64c2072f3eafcc03f5f308daf9d3cf",
+      "source_h5_sha256": "786699cd005566ba91e30b2a7492bb3b08a7d1accb5f29e8c126d288c856fb30",
+      "split_rank": 18
+    },
+    {
+      "act_episode_index": 80,
+      "candidate_index": 14,
+      "hazard_present": true,
+      "source_episode_id": "00c0e60ff6993c6f6d5798e37afd3a9e78cc70904c2e9d9d82489629d2540b64",
+      "source_h5_sha256": "b6a657239b118b30857940a8c3fadb20b5a7bc71447737a7c7ee42222ec98ad5",
+      "split_rank": 19
+    },
+    {
+      "act_episode_index": 84,
+      "candidate_index": 17,
+      "hazard_present": true,
+      "source_episode_id": "ced983a6f23b619b65e3d90ebfc654bda99f08669807eac5493d385987aff8c1",
+      "source_h5_sha256": "117d9b3d3cec31d5f896f1d7e8fd5bee8cde558211331a1ab113fa4c87dbf632",
+      "split_rank": 20
+    },
+    {
+      "act_episode_index": 87,
+      "candidate_index": 12,
+      "hazard_present": true,
+      "source_episode_id": "f60ae7e1448baac8ebe81b63adf08277c847f6dd804b9501827eb65f47ff2fc9",
+      "source_h5_sha256": "fd1a813689be7ec2001c3e9702e0bd672313010a06124f09c5c47cb79beae07e",
+      "split_rank": 21
+    },
+    {
+      "act_episode_index": 90,
+      "candidate_index": 3,
+      "hazard_present": true,
+      "source_episode_id": "ec7226b41e8994a587a796a7450bdfaf6503adaa261e792311bc83932deb09be",
+      "source_h5_sha256": "298100d8887b51883ef139b57d989e82434f34a2e8e3fd5a31c883c0ee5dd7eb",
+      "split_rank": 22
+    },
+    {
+      "act_episode_index": 95,
+      "candidate_index": 11,
+      "hazard_present": true,
+      "source_episode_id": "c28d932c5baf2e2a38f4ac9ebfc8be89a8115391bf3744de145a831c7db2960e",
+      "source_h5_sha256": "f7a6722cf29e235c749b59820928839506df25fa685adf342160604649943504",
+      "split_rank": 23
+    }
+  ]
+}

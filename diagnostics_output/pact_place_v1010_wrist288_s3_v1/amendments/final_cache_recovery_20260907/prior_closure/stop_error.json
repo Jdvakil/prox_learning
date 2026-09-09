@@ -1,0 +1,5 @@
+{
+  "error": "Paused: three consecutive resource pressure samples",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist280_final50.py\", line 153, in supervise\n    outcomes += run.run_eval(f'final_{seed}', seed, 100)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist280_resource_recovery.py\", line 66, in resume_eval\n    return prior_eval(role, seed, history)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist288_run.py\", line 299, in run_eval\n    if pool.pause_reason and not pool.active:raise Paused(pool.pause_reason)\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\npact_wrist288_run.Paused: three consecutive resource pressure samples\n",
+  "utc": "2026-09-07T15:51:42.477638+00:00"
+}

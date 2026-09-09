@@ -1,0 +1,49 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "checkpoint_updates": 60000,
+  "eligible_for_human_review": false,
+  "file_hashes": {
+    "scripts/pact_wrist280_seed3105_full50.py": "1e9be6dd22785bb011a542acff0d7f87ad2ab63ea8c7c478f25936cbe87f2762",
+    "tests/test_pact_wrist280_seed3105_full50.py": "c5e666d96e0b7bceba7182e31607848c21e9102adae891a062328ad6b5e74ed6"
+  },
+  "history": 100,
+  "human_approval_present": false,
+  "new_rollouts": 68,
+  "original_deadline_and_resource_thresholds_unchanged": true,
+  "pairs_added": 34,
+  "pairs_adopted": 16,
+  "pairs_total": 50,
+  "phase0_passed": false,
+  "protected_artifacts": {
+    "EVAL.md": "4f12dec983f10308358bedd05f86f089c63d22e7de9b4531caedf3990a9abd62",
+    "analysis.json": "55a99ef03ae062050bf7e3707fffd511729d1feaea6ee9004b94b7f883bf2fdc",
+    "checkpoints/act_seed3105/dataset_stats.pkl": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+    "checkpoints/act_seed3105/policy_update_60000.ckpt": "1b440f76c4c0c5a3b834419dbd7779e77e3a1d8467647c517746122e0e6f1184",
+    "checkpoints/act_seed3105/run_manifest.json": "5bc357d37bcc9fdda1642dcc02567f244acab0f5d9d74894a7a04c205a33f53c",
+    "checkpoints/pact_seed3105/dataset_stats.pkl": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+    "checkpoints/pact_seed3105/policy_update_60000.ckpt": "d6a11633ec813e15baa231f18a05fba6e98d8e6f930e2b9b657cd5c9714d7ffe",
+    "checkpoints/pact_seed3105/run_manifest.json": "caac1d9f0b5cb692c53b515a2f1fea3598540b7830367d5ad1611164bfe0633e",
+    "evaluation/final_3105_h100_complete.json": "630d9658ee58fa157b85fe93367d13a552f6dec817c5ed3338eb86a7f89cc727",
+    "evaluation/final_3105_h100_ledger.jsonl": "6440a803febdbcf258adaf94c2544f31ec1097306d537aaef7f2ba08b456f3ca",
+    "evaluation/final_3105_h100_schedule.json": "a9b4057f60530fda5ae62bb95e8a0c51502e86465977817457991dab515f4a2d",
+    "manifests/final_3105.json": "87be695ae2f893220c439f52e06daacd77f9507c008972e31fc1f0597cb7b8d3"
+  },
+  "receipt_recovery_contract_file_sha256": "d8f84cde13109a3d2ae77967f3fc84b1bdaa09d569ed9ab223d8b6597c21cce8",
+  "request_sha256": "6160508535212cb029d6ce23e1c5560f4c042990ef31b524a01b2e3ea573f2a7",
+  "scope": "single selected seed 3105 extended to its full original 50-pair manifest",
+  "seed": 3105,
+  "seed_selected_after_initial_results": true,
+  "sha256": "f10cdae37213cd9f7a4d9f84205bdf23e52081a957213283ad3a37ae3ee7e9ed",
+  "tests": {
+    "command": "/root/act_retrain_venv/bin/python -m pytest -q tests/test_pact_wrist280_seed3105_full50.py",
+    "exit_code": 0,
+    "result": "2 passed in 0.14s"
+  },
+  "utc": "2026-09-07T19:00:04.842872+00:00",
+  "workers": 12
+}

@@ -1,0 +1,93 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "checks": {
+    "act_step20000": {
+      "actual_training_updates": 30000,
+      "checkpoint_sha256": "d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac",
+      "deterministic": true,
+      "finite": true,
+      "max_action_delta_camera_zeroed": {
+        "exo_camera_1": 2.1122283935546875,
+        "wrist_camera": 1.5069321393966675
+      },
+      "max_action_delta_proximity_zeroed": null,
+      "output_shape": [
+        4,
+        100,
+        8
+      ],
+      "strict_reload": true,
+      "train_only_stats_recomputed_equal": true
+    },
+    "act_step30000": {
+      "actual_training_updates": 30000,
+      "checkpoint_sha256": "5bcff4accc916e98800b497aa01379dcfa8da7e2d6a7ed60f57f97d27558e788",
+      "deterministic": true,
+      "finite": true,
+      "max_action_delta_camera_zeroed": {
+        "exo_camera_1": 2.20981502532959,
+        "wrist_camera": 1.6200965642929077
+      },
+      "max_action_delta_proximity_zeroed": null,
+      "output_shape": [
+        4,
+        100,
+        8
+      ],
+      "strict_reload": true,
+      "train_only_stats_recomputed_equal": true
+    },
+    "pact_step20000": {
+      "actual_training_updates": 30000,
+      "checkpoint_sha256": "24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3",
+      "deterministic": true,
+      "finite": true,
+      "max_action_delta_camera_zeroed": {
+        "exo_camera_1": 2.041037082672119,
+        "wrist_camera": 1.9973504543304443
+      },
+      "max_action_delta_proximity_zeroed": 1.3433163166046143,
+      "output_shape": [
+        4,
+        100,
+        8
+      ],
+      "strict_reload": true,
+      "train_only_stats_recomputed_equal": true
+    },
+    "pact_step30000": {
+      "actual_training_updates": 30000,
+      "checkpoint_sha256": "efb89280f50cb20eb028c8a5c94c3fe99f36fc461e032518c6a85c911255a6e5",
+      "deterministic": true,
+      "finite": true,
+      "max_action_delta_camera_zeroed": {
+        "exo_camera_1": 2.1023974418640137,
+        "wrist_camera": 1.3939151763916016
+      },
+      "max_action_delta_proximity_zeroed": 0.9006860852241516,
+      "output_shape": [
+        4,
+        100,
+        8
+      ],
+      "strict_reload": true,
+      "train_only_stats_recomputed_equal": true
+    }
+  },
+  "eligible_for_human_review": false,
+  "fixed_validation_episode_indices": [
+    2,
+    5,
+    12,
+    16
+  ],
+  "human_approval_present": false,
+  "limitation": "Input sensitivity verifies wiring, not useful sensing or task performance.",
+  "phase0_passed": false,
+  "verified": true
+}

@@ -1,0 +1,93 @@
+{
+  "comparison_eligible": true,
+  "comparisons": [
+    {
+      "actions": {
+        "arm": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 0.022661924362182617
+        },
+        "gripper": {
+          "exact": false,
+          "first_different_step": 407,
+          "max_abs": 255.0
+        },
+        "model_output": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 32.06278991699219
+        }
+      },
+      "arm": "ACT",
+      "comparison_eligible": true,
+      "diagnosis_checks": {
+        "both_first_queries_exact": true,
+        "continuous_action_difference_starts_at_zero": true,
+        "delta_exactly_reproduced": true,
+        "different_rgb": true,
+        "exclusive_stage_unchanged": true,
+        "initial_pairing": true,
+        "outcome_unchanged": true,
+        "repeated_inference_exact": true,
+        "same_proximity": true,
+        "same_qpos": true
+      },
+      "failure_stage_exact": true,
+      "initial_pairing_passed": true,
+      "original_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_ACT_98c64a358f22edda",
+      "outcome_exact": true,
+      "reconstruction_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/replay_query_reconstruction_v2/ACT_98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f.json",
+      "reconstruction_sha256": "d33bae96193ecb094caaebab017035d26d0c5897083c0a83fcc3250b95e27ea1",
+      "replay_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "resolution": "First-action divergence reproduced exactly from tolerated raster differences. New chronology is eligible only if all diagnosis checks pass; later closed-loop differences are not individually attributed because historical later images are unavailable.",
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+    },
+    {
+      "actions": {
+        "arm": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 0.005877137184143066
+        },
+        "gripper": {
+          "exact": true,
+          "first_different_step": null,
+          "max_abs": 0.0
+        },
+        "model_output": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 2.2701034545898438
+        }
+      },
+      "arm": "PACT",
+      "comparison_eligible": true,
+      "diagnosis_checks": {
+        "both_first_queries_exact": true,
+        "continuous_action_difference_starts_at_zero": true,
+        "delta_exactly_reproduced": true,
+        "different_rgb": true,
+        "exclusive_stage_unchanged": true,
+        "initial_pairing": true,
+        "outcome_unchanged": true,
+        "repeated_inference_exact": true,
+        "same_proximity": true,
+        "same_qpos": true
+      },
+      "failure_stage_exact": true,
+      "initial_pairing_passed": true,
+      "original_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_PACT_98c64a358f22edda",
+      "outcome_exact": true,
+      "reconstruction_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/replay_query_reconstruction_v2/PACT_98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f.json",
+      "reconstruction_sha256": "c6bbc8518cb0d99dcf86b4fec66ecbac1f08e3b3d3226c1f3f2da2f73b3a84d7",
+      "replay_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "resolution": "First-action divergence reproduced exactly from tolerated raster differences. New chronology is eligible only if all diagnosis checks pass; later closed-loop differences are not individually attributed because historical later images are unavailable.",
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+    }
+  ],
+  "count": 2,
+  "no_demonstrated_defect": true,
+  "resolution": "Exact trace or explicitly checked raster-onset diagnosis; originals remain separate. No full-trajectory identity or aggregation-causality claim.",
+  "schema": "pact_v1010b_grasp_v1"
+}

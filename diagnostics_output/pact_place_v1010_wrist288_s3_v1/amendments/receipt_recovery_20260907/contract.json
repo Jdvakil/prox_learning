@@ -1,0 +1,33 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "cache_recovery_contract_file_sha256": "b56ef49054b6b3736e8ef0e762fcdc070d988678c50b1206254c05e79bda0388",
+  "confirmed_final_rollouts_before_retry": 80,
+  "eligible_for_human_review": false,
+  "file_hashes": {
+    "scripts/pact_wrist280_receipt_recovery.py": "8db0638b7c4e41e06e0b689d50db037edf22d2168f615a1f35eb0beb691f0df4",
+    "tests/test_pact_wrist280_receipt_recovery.py": "dd2fc8f0bd92a3379904aa7036170717d944fd9547665faaac8e0ae8662235e4"
+  },
+  "final_scientific_pairs": 50,
+  "human_approval_present": false,
+  "nvml_validation_sha256": "fe28e5e3feeaca27e8671ac1fe5fdc218934f795e1a0e173574172a3f4ef9b1f",
+  "phase0_passed": false,
+  "pynvml_sha256": "d3233c78cd3f17bda97850346eba30fa88f1d6b295cee90fa7ec1c6cbf291e5b",
+  "quarantine_sha256": "68a613eb7db8cbdf4cb76f75d684fc15d68cb4b5cb09bb3ae918a8d237a6bc8e",
+  "quarantined_unverified_rollouts": 12,
+  "resource_thresholds_unchanged": true,
+  "same_instance_retries": 12,
+  "scope": "uniform infrastructure retry for lost exit receipts and resource monitoring without subprocesses",
+  "sha256": "8eaaecc542d6bf46db9a77a30ac4aec416165f024b85eef45d252d17faa71090",
+  "tests": {
+    "command": "/root/act_retrain_venv/bin/python -m pytest -q tests/test_pact_wrist280_receipt_recovery.py",
+    "exit_code": 0,
+    "result": "2 passed in 0.10s"
+  },
+  "unstarted_rollouts": 8,
+  "utc": "2026-09-07T18:08:22.862873+00:00"
+}

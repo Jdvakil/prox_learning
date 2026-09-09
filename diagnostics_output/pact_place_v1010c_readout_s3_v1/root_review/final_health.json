@@ -1,0 +1,148 @@
+{
+  "utc": "2026-09-09T13:07:33.703869+00:00",
+  "reviewer": "root_agent_manual_invocation",
+  "pipeline_status": {
+    "active_parent": false,
+    "parent_pid": 2603023,
+    "reason": null,
+    "status": "COMPLETED_TRAINING_AND_EVALUATIONS",
+    "utc": "2026-09-09T13:06:36.954407+00:00"
+  },
+  "pipeline_progress": {
+    "child_pid": 2744691,
+    "proc_start_ticks": "1379947294",
+    "seed": 3105,
+    "stage": "supervise",
+    "utc": "2026-09-09T07:32:21.306018+00:00"
+  },
+  "seeds": {
+    "3104": {
+      "status": {
+        "active_parent": false,
+        "parent_pid": 2603215,
+        "reason": null,
+        "status": "COMPLETED_COMPARISON",
+        "utc": "2026-09-09T07:31:23.153614+00:00",
+        "valid_records": 52
+      },
+      "progress": {
+        "active_jobs": [],
+        "active_parent": false,
+        "parent_pid": 2603215,
+        "reason": null,
+        "stage": "closed",
+        "status": "COMPLETED_COMPARISON",
+        "utc": "2026-09-09T07:31:23.153614+00:00",
+        "valid_records": 52
+      },
+      "training": {
+        "elapsed_s": 10563.43974220194,
+        "epoch": 1999,
+        "global_step": 60000,
+        "train": {
+          "kl": 0.00015552144031971693,
+          "l1": 0.05505960062146187,
+          "loss": 0.05661482363939285
+        },
+        "utc": "2026-09-09T04:58:53.143696+00:00",
+        "validation": {
+          "kl": 4.9566478992346674e-05,
+          "l1": 0.06532803922891617,
+          "loss": 0.06582370400428772
+        }
+      },
+      "checkpoint": {
+        "global_step": 60000,
+        "optimizer_states": 390,
+        "resume_sha256": "51dbbca2b8665c55c6c2e533566f92daf3d04570518dab76bc796422fb130a10",
+        "utc": "2026-09-09T04:58:56.980993+00:00"
+      },
+      "latest_training_resources": {
+        "disk_free_bytes": 31603138560,
+        "oom_kill": 3,
+        "pid_fraction": 0.10520833333333333,
+        "ram_fraction": 0.5995817071149792,
+        "utc": "2026-09-09T04:57:55.855215+00:00",
+        "vram_fraction": 0.17293620809449367
+      },
+      "workers": [],
+      "valid_exits": 52,
+      "invalid_exits": 0,
+      "code_hashes_passed": true,
+      "failed_hashes": []
+    },
+    "3105": {
+      "status": {
+        "active_parent": false,
+        "parent_pid": 2744691,
+        "reason": null,
+        "status": "COMPLETED_COMPARISON",
+        "utc": "2026-09-09T13:06:36.224241+00:00",
+        "valid_records": 52
+      },
+      "progress": {
+        "active_jobs": [],
+        "active_parent": false,
+        "parent_pid": 2744691,
+        "reason": null,
+        "stage": "closed",
+        "status": "COMPLETED_COMPARISON",
+        "utc": "2026-09-09T13:06:36.224241+00:00",
+        "valid_records": 52
+      },
+      "training": {
+        "elapsed_s": 10605.262824468315,
+        "epoch": 1999,
+        "global_step": 60000,
+        "train": {
+          "kl": 0.0001394964783685282,
+          "l1": 0.0567985363304615,
+          "loss": 0.058193501085042953
+        },
+        "utc": "2026-09-09T10:30:19.170504+00:00",
+        "validation": {
+          "kl": 5.389526631915942e-05,
+          "l1": 0.07526586204767227,
+          "loss": 0.07580482214689255
+        }
+      },
+      "checkpoint": {
+        "global_step": 60000,
+        "optimizer_states": 390,
+        "resume_sha256": "18bd808fdfc87bc113086395c6883933e832c8b67ce53e85b9c325f8b9981c8a",
+        "utc": "2026-09-09T10:30:23.000308+00:00"
+      },
+      "latest_training_resources": {
+        "disk_free_bytes": 28095074304,
+        "oom_kill": 3,
+        "pid_fraction": 0.10546875,
+        "ram_fraction": 0.6192413075295576,
+        "utc": "2026-09-09T10:29:20.908306+00:00",
+        "vram_fraction": 0.17293620809449367
+      },
+      "workers": [],
+      "valid_exits": 52,
+      "invalid_exits": 0,
+      "code_hashes_passed": true,
+      "failed_hashes": []
+    }
+  },
+  "resources": {
+    "memory.current": 102920110080,
+    "memory.max": 183497654272,
+    "pids.current": 508,
+    "pids.max": 3840,
+    "disk_free_bytes": 26374557696,
+    "memory_events": {
+      "low": "0",
+      "high": "0",
+      "max": "13770827",
+      "oom": "10",
+      "oom_kill": "3",
+      "oom_group_kill": "0"
+    },
+    "vram_used_bytes": 196608,
+    "vram_total_bytes": 24146608128
+  },
+  "original_eval_sha256": "2ba4e01429e4b56e742bbdb7d3e9e006fc4853c08722130a487d2211588d4966"
+}

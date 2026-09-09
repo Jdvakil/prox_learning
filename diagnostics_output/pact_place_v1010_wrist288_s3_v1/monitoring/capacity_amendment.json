@@ -1,0 +1,67 @@
+{
+  "amendment_sha256": "201cec0ea5df94ad143dddde2de0303795bac60cbe6606568640493a911893bd",
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "config_sha256": "c3a2a2440ee04e9d924e98d738ea833bbd3b51121f077ddc3f3f9fdb1c0307e0",
+  "disk_reserve_gib": 10,
+  "eligible_for_human_review": false,
+  "fallback_ladder": [
+    18,
+    16,
+    14,
+    12,
+    10
+  ],
+  "file_hashes": {
+    "scripts/pact_wrist288_capacity.py": "6209d9270eec7a810661f3e89ee32b22f9932a0cadd46606a04cc15cb3347af0",
+    "tests/test_pact_wrist288_capacity.py": "eecf30d0be605dcfc0ddb230e0173ecfe327eb3348763326b033e14746716dd3"
+  },
+  "handoff": "after 11:00 only if 16 fits: pause launches, finish healthy attempts, verify parent-observed exits, archive closure, resume same ledger; recheck idle memory before selecting 16 or 14",
+  "hold_until_epoch": 1788692400.0,
+  "hold_until_utc": "2026-09-06T11:00:00+00:00",
+  "human_approval_present": false,
+  "initial_target": 14,
+  "max_collection_workers": 18,
+  "memory_projection": "peak full-pool cgroup RAM plus two largest worker-tree PSS values padded by 10%; at least 5 GiB per added worker",
+  "minimum_disk_gib_to_promote": 12,
+  "minimum_full_pool_samples": 10,
+  "minimum_full_pool_span_seconds": 540,
+  "observation_window_seconds": 900,
+  "phase0_passed": false,
+  "pressure_thresholds": {
+    "consecutive_minute_samples": 3,
+    "pid_fraction": 0.75,
+    "ram_fraction": 0.8,
+    "vram_fraction": 0.85
+  },
+  "promotion_pid_fraction_max": 0.73,
+  "promotion_ram_fraction_max": 0.79,
+  "promotion_vram_fraction_max": 0.83,
+  "schema": "pact_wrist288_collection_capacity_amendment_v1",
+  "scope": "collection concurrency only",
+  "step": 2,
+  "unchanged": [
+    "scientific configuration",
+    "seed registry",
+    "per-cell quota",
+    "strict-clean acceptance",
+    "dataset split",
+    "training/evaluation parameters",
+    "evaluation worker target"
+  ],
+  "user_instruction": "keep the collection running at 14 workers for the rest of the hour and if we have space for more, bump it up to 16 or 18 workers",
+  "utc": "2026-09-06T10:19:59.978353+00:00",
+  "validation": {
+    "combined_command": "PYTHONPATH=scripts python -m pytest -q tests/test_pact_wrist288.py tests/test_pact_wrist288_capacity.py",
+    "combined_exit_code": 0,
+    "combined_log_sha256": "7f90647a063e0c3fa9eace4d1ed692827195e2ccec2bb127b8ce3e7c79b1db2b",
+    "combined_result": "27 passed, 6 warnings in 38.73s",
+    "runtime_exit_code": 0,
+    "runtime_log_sha256": "9fc0ffbd15caeeeb6e4680bc61e4d2455e5b94ba7ff480ea350ee0532e1f74a9",
+    "runtime_result": ".............                                                            [100%]\n13 passed in 0.31s"
+  }
+}

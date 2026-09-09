@@ -1,0 +1,23 @@
+{
+  "adaptations": [
+    {
+      "source": "scripts/pact_v1010c_core.py",
+      "source_sha256": "e67f5da277a9405a667b46506f607157557ee933fefe4693df137aa74d68bbd1",
+      "adapted": "scripts/pact_v1010c_multi_core.py",
+      "adapted_sha256": "bba2762ccea5b3816dcf7a4850dd855ca01a4183bd6c2e5b8fcdecc709f0732f"
+    },
+    {
+      "source": "scripts/pact_v1010c_train.py",
+      "source_sha256": "268c63fb81ec98e94d8171e3cdd1e9d559cbfc2284a208d0685a6ad15dc22f1e",
+      "adapted": "scripts/pact_v1010c_multi_train.py",
+      "adapted_sha256": "2219549e399edb8cdfedbc6dcbc3873584aed47a1bbb88dfecdbee13bcc0db05"
+    },
+    {
+      "source": "scripts/pact_v1010c_eval.py",
+      "source_sha256": "ea709a9a750b3643104ab25d5ba21c4ba1ee7839fee2ec41ff20ad1d54a7b90f",
+      "adapted": "scripts/pact_v1010c_multi_eval.py",
+      "adapted_sha256": "518e6d140cdf095da63040d296b208a0105f0299e7fb3188f4c797ade470b4f4"
+    }
+  ],
+  "changes": "Seed and output parameters; shared verified upstream/data views; previously tested PID-capacity loader. Training math and evaluation controller remain unchanged."
+}

@@ -1,0 +1,1701 @@
+{
+  "artifact_sha256": "9ccf531ee004a603bd5dd0842eb0d754573a9473b0e882ce9162e977fa40ce8b",
+  "authorizes_collection": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "bindings": {
+    "contract_version_v2": "pact_place_v104_review_packet_v2",
+    "control_certificates_sha256": "0f04dfc70f630b8c0ea57c8b5cc449fe3ba9e20d9fd7426501a126a107d2bdae",
+    "executed_v1_contract_sha256": "eb8f1174142976561495827b4cd3a8609569465fbce23c7a46b4a53885fe875e",
+    "executed_v1_implementation_sha256": "bd135e68303618ceefbe57f1ad8a6e6a5d81ae2d29930f641f04648d4847ec90",
+    "gate_v2_implementation_sha256": "d270329f99fda8e8e75c2152fcbc435a9bb98d4c9193d882e6a20fe75efface0",
+    "production_scene_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+    "provenance_bridge_sha256": "d06b73b1102c6556a67cc2d81fc6a781787d5b3d92833178dd3b9cad9d999433",
+    "review_preflight_sha256": "520d955ea061aebe1d9873a5781154f8c8f87e688ca1e943d89a8844f11d04f6",
+    "review_v2_implementation_sha256": "c926c5a9d11d0b92f9b5da18aced88cbaa33a5128c25891ccdc8163ac24f63db",
+    "scene_metadata_sha256": "7df36c5e26364f9b5bd6da98e59108d7745c2dbd1270cc3ca73d307a656b809c",
+    "scoped_production_sha256": "92a9eae33370a020be200fb44af27b18741949d4219a9a89128bc927f7665ece"
+  },
+  "contract_version": "pact_place_v104_review_packet_v2",
+  "control_certificates": [
+    {
+      "anchor": {
+        "expected_limiting_robot_body": "fr3_link7",
+        "expected_max_frame": 88,
+        "expected_penetration_m": 0.005044,
+        "expected_shift_m": 0.175,
+        "limiting_body_matches": true,
+        "max_frame_matches": true,
+        "observed_limiting_robot_body": "fr3_link7",
+        "observed_max_frame": 88,
+        "observed_penetration_m": 0.005044087491262388,
+        "observed_shift_m": 0.175,
+        "passed": true,
+        "penetration_within_tolerance": true,
+        "shift_matches": true,
+        "tolerance_m": 0.0001
+      },
+      "assembly": {
+        "assembly_id": "v104_first_shot_symmetric_two_lobe",
+        "body": "pact_clutter_mount_v104",
+        "collision_and_visible_identical": true,
+        "components": [
+          {
+            "aabb_hi_m": [
+              0.79,
+              -0.33,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              -0.35,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.165,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_0_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_0",
+            "role": "lobe",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.79,
+              0.35,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              0.33,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.515,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_1_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_1",
+            "role": "lobe",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              -0.344,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.175,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_0_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_0",
+            "role": "stem",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              0.344,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.525,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_1_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_1",
+            "role": "stem",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.515
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.505
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.175,
+              1.51
+            ],
+            "geom": "pact_clutter_mount_v104_crossbar_g",
+            "half_m": [
+              0.006,
+              0.356,
+              0.005
+            ],
+            "name": "crossbar",
+            "role": "crossbar",
+            "static": true,
+            "volume_m3": 8.544e-05
+          }
+        ],
+        "contract_version": "pact_place_v104_first_shot_static_pendant_v1",
+        "crossbar_height_m": 0.01,
+        "crossbar_square_x_m": 0.012,
+        "crossbar_top_z_m": 1.515,
+        "environment_version": "pact_place_corridor_v10_4_first_shot_static_pendant",
+        "has_freejoint": false,
+        "has_joint": false,
+        "identical_on_both_panel_sides": true,
+        "is_mocap": false,
+        "lobe_bottom_z_m": 0.98,
+        "lobe_top_z_m": 1.04,
+        "runtime_bound_refresh": false,
+        "runtime_repositioned": false,
+        "shelf_to_lobe_gap_m": 0.26,
+        "shelf_top_z_m": 0.72,
+        "static": true,
+        "stem_square_m": 0.012,
+        "support": "ceiling",
+        "symmetric_in_y": true,
+        "visual_only_sleeve": false,
+        "volume_m3": 0.00026736
+      },
+      "band_m": [
+        0.005,
+        0.03
+      ],
+      "candidate_list_capped": false,
+      "certified": true,
+      "compiled_bounds": [
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.165,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.515,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.175,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.525,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.175,
+            1.51
+          ],
+          "geom": "pact_clutter_mount_v104_crossbar_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.356,
+            0.005
+          ],
+          "geom_rbound_m": 0.35608566385070883,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        }
+      ],
+      "compiled_bounds_ok": true,
+      "component": "lobe_0",
+      "component_geom": "pact_clutter_mount_v104_lobe_0_g",
+      "control": "left_lobe_contact",
+      "diagnostic_scene_sha256": "20f4728af4f73156809dbd696fd1f43cd3cd0f5182faf1c5a635c6472e4af20f",
+      "diagnostic_scene_stem": "pact_place_v104_diagnostic_control",
+      "first_contact_frame": 85,
+      "grid_m": {
+        "first": 0.0,
+        "increment_m": 0.001,
+        "last": 0.2,
+        "n_points": 201
+      },
+      "inward_sign": 1.0,
+      "max_frame": 88,
+      "n_retained_frames": 543,
+      "n_secondary_contacts": 49,
+      "n_shifts_tested": 176,
+      "parity": {
+        "all_four_agree": true,
+        "classified_mounted_fixture": true,
+        "contact_classes": [
+          "mounted_fixture"
+        ],
+        "frame": 88,
+        "gjk_reports_intersection": true,
+        "gjk_unsigned_distance_m": 0.0,
+        "limiting_robot_body": "fr3_link7",
+        "live_contact_pairs": [
+          {
+            "body1": "pact_clutter_mount_v104",
+            "body2": "robot_0/fr3_link7",
+            "distance_m": -0.005044087491262388,
+            "geom1": "pact_clutter_mount_v104_lobe_0_g",
+            "geom2": "robot_0/fr3_link7_collision"
+          }
+        ],
+        "live_reports_contact": true,
+        "n_live_contact_pairs": 1,
+        "signed_distance_m": -0.005044087491262388,
+        "signed_reports_penetration": true
+      },
+      "penetration_in_band": true,
+      "penetration_m": 0.005044087491262388,
+      "production_scene_after": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_before": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_byte_identical": true,
+      "reloaded_through_task_sampler": true,
+      "sampler_class": "PactPlaceCorridorV104Sampler",
+      "secondary_components": [
+        "stem_0"
+      ],
+      "secondary_contacts": [
+        {
+          "component": "stem_0",
+          "frame": 90,
+          "penetration_m": 0.00010269673263092229
+        },
+        {
+          "component": "stem_0",
+          "frame": 91,
+          "penetration_m": 0.002268203310395703
+        },
+        {
+          "component": "stem_0",
+          "frame": 92,
+          "penetration_m": 0.0044335615389121865
+        },
+        {
+          "component": "stem_0",
+          "frame": 93,
+          "penetration_m": 0.006598903152836325
+        },
+        {
+          "component": "stem_0",
+          "frame": 94,
+          "penetration_m": 0.00876426202619487
+        },
+        {
+          "component": "stem_0",
+          "frame": 95,
+          "penetration_m": 0.010865001591918194
+        },
+        {
+          "component": "stem_0",
+          "frame": 96,
+          "penetration_m": 0.01284911241618107
+        },
+        {
+          "component": "stem_0",
+          "frame": 97,
+          "penetration_m": 0.014219786626773529
+        },
+        {
+          "component": "stem_0",
+          "frame": 98,
+          "penetration_m": 0.013532677088087787
+        },
+        {
+          "component": "stem_0",
+          "frame": 99,
+          "penetration_m": 0.011653176595546912
+        },
+        {
+          "component": "stem_0",
+          "frame": 100,
+          "penetration_m": 0.009240242117023855
+        },
+        {
+          "component": "stem_0",
+          "frame": 101,
+          "penetration_m": 0.006540671955556015
+        },
+        {
+          "component": "stem_0",
+          "frame": 102,
+          "penetration_m": 0.003185598541547185
+        },
+        {
+          "component": "stem_0",
+          "frame": 177,
+          "penetration_m": 0.0005428285211379059
+        },
+        {
+          "component": "stem_0",
+          "frame": 178,
+          "penetration_m": 0.003725769467412293
+        },
+        {
+          "component": "stem_0",
+          "frame": 179,
+          "penetration_m": 0.0067862036573452245
+        },
+        {
+          "component": "stem_0",
+          "frame": 180,
+          "penetration_m": 0.009789053806704086
+        },
+        {
+          "component": "stem_0",
+          "frame": 181,
+          "penetration_m": 0.01276504945239665
+        },
+        {
+          "component": "stem_0",
+          "frame": 182,
+          "penetration_m": 0.015728526610730764
+        },
+        {
+          "component": "stem_0",
+          "frame": 183,
+          "penetration_m": 0.0186861708350978
+        },
+        {
+          "component": "stem_0",
+          "frame": 184,
+          "penetration_m": 0.021415018208505728
+        },
+        {
+          "component": "stem_0",
+          "frame": 185,
+          "penetration_m": 0.023357433032720563
+        },
+        {
+          "component": "stem_0",
+          "frame": 186,
+          "penetration_m": 0.02529945106377102
+        },
+        {
+          "component": "stem_0",
+          "frame": 187,
+          "penetration_m": 0.027241294584262908
+        },
+        {
+          "component": "stem_0",
+          "frame": 188,
+          "penetration_m": 0.029418832981542253
+        },
+        {
+          "component": "stem_0",
+          "frame": 189,
+          "penetration_m": 0.03141478327062213
+        },
+        {
+          "component": "stem_0",
+          "frame": 190,
+          "penetration_m": 0.03323466156106856
+        },
+        {
+          "component": "stem_0",
+          "frame": 191,
+          "penetration_m": 0.03488819279097155
+        },
+        {
+          "component": "stem_0",
+          "frame": 192,
+          "penetration_m": 0.036527004560468854
+        },
+        {
+          "component": "stem_0",
+          "frame": 193,
+          "penetration_m": 0.03815030932527785
+        },
+        {
+          "component": "stem_0",
+          "frame": 194,
+          "penetration_m": 0.03773253907667598
+        },
+        {
+          "component": "stem_0",
+          "frame": 195,
+          "penetration_m": 0.03560234863135403
+        },
+        {
+          "component": "stem_0",
+          "frame": 196,
+          "penetration_m": 0.03347300657949381
+        },
+        {
+          "component": "stem_0",
+          "frame": 197,
+          "penetration_m": 0.03134405546424449
+        },
+        {
+          "component": "stem_0",
+          "frame": 198,
+          "penetration_m": 0.029215289223921578
+        },
+        {
+          "component": "stem_0",
+          "frame": 199,
+          "penetration_m": 0.02708661381849052
+        },
+        {
+          "component": "stem_0",
+          "frame": 200,
+          "penetration_m": 0.025660810735913118
+        },
+        {
+          "component": "stem_0",
+          "frame": 201,
+          "penetration_m": 0.023994363999898058
+        },
+        {
+          "component": "stem_0",
+          "frame": 202,
+          "penetration_m": 0.02207928442912885
+        },
+        {
+          "component": "stem_0",
+          "frame": 203,
+          "penetration_m": 0.020048643429191507
+        },
+        {
+          "component": "stem_0",
+          "frame": 204,
+          "penetration_m": 0.01796491662666039
+        },
+        {
+          "component": "stem_0",
+          "frame": 205,
+          "penetration_m": 0.015856855462382777
+        },
+        {
+          "component": "stem_0",
+          "frame": 206,
+          "penetration_m": 0.01373766206923511
+        },
+        {
+          "component": "stem_0",
+          "frame": 207,
+          "penetration_m": 0.011613388011784315
+        },
+        {
+          "component": "stem_0",
+          "frame": 208,
+          "penetration_m": 0.009486802688927421
+        },
+        {
+          "component": "stem_0",
+          "frame": 209,
+          "penetration_m": 0.0073591710790361625
+        },
+        {
+          "component": "stem_0",
+          "frame": 210,
+          "penetration_m": 0.005231069723097709
+        },
+        {
+          "component": "stem_0",
+          "frame": 211,
+          "penetration_m": 0.002844831712333162
+        },
+        {
+          "component": "stem_0",
+          "frame": 212,
+          "penetration_m": 0.0004363539612843509
+        }
+      ],
+      "secondary_summary": {
+        "any": true,
+        "first_component": "stem_0",
+        "first_frame": 90,
+        "first_penetration_m": 0.00010269673263092229,
+        "last_frame": 212,
+        "max_penetration_component": "stem_0",
+        "max_penetration_frame": 193,
+        "max_penetration_m": 0.03815030932527785
+      },
+      "shift_m": 0.175,
+      "source_episode_id": "b5f9d837a47e9145d473c2edeb779642bc7074439c30d809c0c7eef9bd4c4ff9",
+      "source_intrusion_side": "left",
+      "source_role_index": 0,
+      "static": {
+        "body": "pact_clutter_mount_v104",
+        "body_dofnum": 0,
+        "body_jntnum": 0,
+        "body_mocapid": -1,
+        "compiled_static": true,
+        "no_joint_freejoint_or_mocap": true,
+        "runtime_bound_repair_applied": false
+      },
+      "whole_assembly_translated": true,
+      "window": {
+        "excluded_secondary_frames": [
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          177,
+          178,
+          179,
+          180,
+          181,
+          182,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          194,
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212
+        ],
+        "first_contact_frame": 85,
+        "first_frame": 40,
+        "includes_max_penetration_frame": true,
+        "last_frame": 89,
+        "lead_frames": 45,
+        "max_penetration_frame": 88,
+        "n_frames": 50,
+        "trail_frames": 15,
+        "truncated_by_secondary_contact_at_frame": 90,
+        "valid": true
+      }
+    },
+    {
+      "anchor": {
+        "expected_limiting_robot_body": "gripper/base",
+        "expected_max_frame": 245,
+        "expected_penetration_m": 0.005239,
+        "expected_shift_m": 0.132,
+        "limiting_body_matches": true,
+        "max_frame_matches": true,
+        "observed_limiting_robot_body": "gripper/base",
+        "observed_max_frame": 245,
+        "observed_penetration_m": 0.005238958179169702,
+        "observed_shift_m": 0.132,
+        "passed": true,
+        "penetration_within_tolerance": true,
+        "shift_matches": true,
+        "tolerance_m": 0.0001
+      },
+      "assembly": {
+        "assembly_id": "v104_first_shot_symmetric_two_lobe",
+        "body": "pact_clutter_mount_v104",
+        "collision_and_visible_identical": true,
+        "components": [
+          {
+            "aabb_hi_m": [
+              0.79,
+              -0.33,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              -0.35,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.472,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_0_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_0",
+            "role": "lobe",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.79,
+              0.35,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              0.33,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.208,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_1_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_1",
+            "role": "lobe",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              -0.344,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.482,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_0_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_0",
+            "role": "stem",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              0.344,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.218,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_1_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_1",
+            "role": "stem",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.515
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.505
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.132,
+              1.51
+            ],
+            "geom": "pact_clutter_mount_v104_crossbar_g",
+            "half_m": [
+              0.006,
+              0.356,
+              0.005
+            ],
+            "name": "crossbar",
+            "role": "crossbar",
+            "static": true,
+            "volume_m3": 8.544e-05
+          }
+        ],
+        "contract_version": "pact_place_v104_first_shot_static_pendant_v1",
+        "crossbar_height_m": 0.01,
+        "crossbar_square_x_m": 0.012,
+        "crossbar_top_z_m": 1.515,
+        "environment_version": "pact_place_corridor_v10_4_first_shot_static_pendant",
+        "has_freejoint": false,
+        "has_joint": false,
+        "identical_on_both_panel_sides": true,
+        "is_mocap": false,
+        "lobe_bottom_z_m": 0.98,
+        "lobe_top_z_m": 1.04,
+        "runtime_bound_refresh": false,
+        "runtime_repositioned": false,
+        "shelf_to_lobe_gap_m": 0.26,
+        "shelf_top_z_m": 0.72,
+        "static": true,
+        "stem_square_m": 0.012,
+        "support": "ceiling",
+        "symmetric_in_y": true,
+        "visual_only_sleeve": false,
+        "volume_m3": 0.00026736
+      },
+      "band_m": [
+        0.005,
+        0.03
+      ],
+      "candidate_list_capped": false,
+      "certified": true,
+      "compiled_bounds": [
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.472,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.208,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.482,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.218,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.132,
+            1.51
+          ],
+          "geom": "pact_clutter_mount_v104_crossbar_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.356,
+            0.005
+          ],
+          "geom_rbound_m": 0.35608566385070883,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        }
+      ],
+      "compiled_bounds_ok": true,
+      "component": "lobe_1",
+      "component_geom": "pact_clutter_mount_v104_lobe_1_g",
+      "control": "right_lobe_contact",
+      "diagnostic_scene_sha256": "d47c623445424a6772bd9618b8c2d10dc91635225725cb4c2bec0a9fe1fc150d",
+      "diagnostic_scene_stem": "pact_place_v104_diagnostic_control",
+      "first_contact_frame": 242,
+      "grid_m": {
+        "first": 0.0,
+        "increment_m": 0.001,
+        "last": 0.2,
+        "n_points": 201
+      },
+      "inward_sign": -1.0,
+      "max_frame": 245,
+      "n_retained_frames": 456,
+      "n_secondary_contacts": 0,
+      "n_shifts_tested": 133,
+      "parity": {
+        "all_four_agree": true,
+        "classified_mounted_fixture": true,
+        "contact_classes": [
+          "mounted_fixture"
+        ],
+        "frame": 245,
+        "gjk_reports_intersection": true,
+        "gjk_unsigned_distance_m": 0.0,
+        "limiting_robot_body": "gripper/base",
+        "live_contact_pairs": [
+          {
+            "body1": "pact_clutter_mount_v104",
+            "body2": "robot_0/gripper/base",
+            "distance_m": -0.005238958179169702,
+            "geom1": "pact_clutter_mount_v104_lobe_1_g",
+            "geom2": "geom_80"
+          }
+        ],
+        "live_reports_contact": true,
+        "n_live_contact_pairs": 1,
+        "signed_distance_m": -0.005238958179169702,
+        "signed_reports_penetration": true
+      },
+      "penetration_in_band": true,
+      "penetration_m": 0.005238958179169702,
+      "production_scene_after": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_before": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_byte_identical": true,
+      "reloaded_through_task_sampler": true,
+      "sampler_class": "PactPlaceCorridorV104Sampler",
+      "secondary_components": [],
+      "secondary_contacts": [],
+      "secondary_summary": {
+        "any": false
+      },
+      "shift_m": 0.132,
+      "source_episode_id": "d31926e123c78ca94469cb0ee53b8ff9c6323aae94b4de4dc647dc4a0ddd2a6c",
+      "source_intrusion_side": "right",
+      "source_role_index": 3,
+      "static": {
+        "body": "pact_clutter_mount_v104",
+        "body_dofnum": 0,
+        "body_jntnum": 0,
+        "body_mocapid": -1,
+        "compiled_static": true,
+        "no_joint_freejoint_or_mocap": true,
+        "runtime_bound_repair_applied": false
+      },
+      "whole_assembly_translated": true,
+      "window": {
+        "excluded_secondary_frames": [],
+        "first_contact_frame": 242,
+        "first_frame": 197,
+        "includes_max_penetration_frame": true,
+        "last_frame": 260,
+        "lead_frames": 45,
+        "max_penetration_frame": 245,
+        "n_frames": 64,
+        "trail_frames": 15,
+        "truncated_by_secondary_contact_at_frame": null,
+        "valid": true
+      }
+    },
+    {
+      "anchor": {
+        "expected_limiting_robot_body": "fr3_link7",
+        "expected_max_frame": 212,
+        "expected_penetration_m": 0.005455,
+        "expected_shift_m": 0.083,
+        "limiting_body_matches": true,
+        "max_frame_matches": true,
+        "observed_limiting_robot_body": "fr3_link7",
+        "observed_max_frame": 212,
+        "observed_penetration_m": 0.005455104259859889,
+        "observed_shift_m": 0.083,
+        "passed": true,
+        "penetration_within_tolerance": true,
+        "shift_matches": true,
+        "tolerance_m": 0.0001
+      },
+      "assembly": {
+        "assembly_id": "v104_first_shot_symmetric_two_lobe",
+        "body": "pact_clutter_mount_v104",
+        "collision_and_visible_identical": true,
+        "components": [
+          {
+            "aabb_hi_m": [
+              0.79,
+              -0.33,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              -0.35,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.257,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_0_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_0",
+            "role": "lobe",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.79,
+              0.35,
+              1.04
+            ],
+            "aabb_lo_m": [
+              0.77,
+              0.33,
+              0.98
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.423,
+              1.01
+            ],
+            "geom": "pact_clutter_mount_v104_lobe_1_g",
+            "half_m": [
+              0.01,
+              0.01,
+              0.03
+            ],
+            "name": "lobe_1",
+            "role": "lobe",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 2.4e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              -0.344,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              -0.267,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_0_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_0",
+            "role": "stem",
+            "side": "negative",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.505
+            ],
+            "aabb_lo_m": [
+              0.774,
+              0.344,
+              1.04
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.433,
+              1.2725
+            ],
+            "geom": "pact_clutter_mount_v104_stem_1_g",
+            "half_m": [
+              0.006,
+              0.006,
+              0.2325
+            ],
+            "name": "stem_1",
+            "role": "stem",
+            "side": "positive",
+            "static": true,
+            "volume_m3": 6.696000000000001e-05
+          },
+          {
+            "aabb_hi_m": [
+              0.786,
+              0.356,
+              1.515
+            ],
+            "aabb_lo_m": [
+              0.774,
+              -0.356,
+              1.505
+            ],
+            "active": true,
+            "center_m": [
+              0.78,
+              0.083,
+              1.51
+            ],
+            "geom": "pact_clutter_mount_v104_crossbar_g",
+            "half_m": [
+              0.006,
+              0.356,
+              0.005
+            ],
+            "name": "crossbar",
+            "role": "crossbar",
+            "static": true,
+            "volume_m3": 8.544e-05
+          }
+        ],
+        "contract_version": "pact_place_v104_first_shot_static_pendant_v1",
+        "crossbar_height_m": 0.01,
+        "crossbar_square_x_m": 0.012,
+        "crossbar_top_z_m": 1.515,
+        "environment_version": "pact_place_corridor_v10_4_first_shot_static_pendant",
+        "has_freejoint": false,
+        "has_joint": false,
+        "identical_on_both_panel_sides": true,
+        "is_mocap": false,
+        "lobe_bottom_z_m": 0.98,
+        "lobe_top_z_m": 1.04,
+        "runtime_bound_refresh": false,
+        "runtime_repositioned": false,
+        "shelf_to_lobe_gap_m": 0.26,
+        "shelf_top_z_m": 0.72,
+        "static": true,
+        "stem_square_m": 0.012,
+        "support": "ceiling",
+        "symmetric_in_y": true,
+        "visual_only_sleeve": false,
+        "volume_m3": 0.00026736
+      },
+      "band_m": [
+        0.005,
+        0.03
+      ],
+      "candidate_list_capped": false,
+      "certified": true,
+      "compiled_bounds": [
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.257,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.423,
+            1.01
+          ],
+          "geom": "pact_clutter_mount_v104_lobe_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.01,
+            0.01,
+            0.03
+          ],
+          "geom_rbound_m": 0.033166247903554,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            -0.267,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_0_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.433,
+            1.2725
+          ],
+          "geom": "pact_clutter_mount_v104_stem_1_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.006,
+            0.2325
+          ],
+          "geom_rbound_m": 0.23265478718479018,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        },
+        {
+          "compiled_pos_m": [
+            0.78,
+            0.083,
+            1.51
+          ],
+          "geom": "pact_clutter_mount_v104_crossbar_g",
+          "geom_aabb_encloses": true,
+          "geom_aabb_half": [
+            0.006,
+            0.356,
+            0.005
+          ],
+          "geom_rbound_m": 0.35608566385070883,
+          "pos_matches_shifted_assembly": true,
+          "rbound_encloses": true,
+          "size_matches": true
+        }
+      ],
+      "compiled_bounds_ok": true,
+      "component": "stem_0",
+      "component_geom": "pact_clutter_mount_v104_stem_0_g",
+      "control": "stem_contact",
+      "diagnostic_scene_sha256": "a867fc322c14b390369b1ca2caedfa5a5829d8473749cd6f03319f27cd83a8c9",
+      "diagnostic_scene_stem": "pact_place_v104_diagnostic_control",
+      "first_contact_frame": 209,
+      "grid_m": {
+        "first": 0.0,
+        "increment_m": 0.001,
+        "last": 0.2,
+        "n_points": 201
+      },
+      "inward_sign": 1.0,
+      "max_frame": 212,
+      "n_retained_frames": 543,
+      "n_secondary_contacts": 0,
+      "n_shifts_tested": 84,
+      "parity": {
+        "all_four_agree": true,
+        "classified_mounted_fixture": true,
+        "contact_classes": [
+          "mounted_fixture"
+        ],
+        "frame": 212,
+        "gjk_reports_intersection": true,
+        "gjk_unsigned_distance_m": 0.0,
+        "limiting_robot_body": "fr3_link7",
+        "live_contact_pairs": [
+          {
+            "body1": "pact_clutter_mount_v104",
+            "body2": "robot_0/fr3_link7",
+            "distance_m": -0.005455104259859891,
+            "geom1": "pact_clutter_mount_v104_stem_0_g",
+            "geom2": "robot_0/fr3_link7_collision"
+          }
+        ],
+        "live_reports_contact": true,
+        "n_live_contact_pairs": 1,
+        "signed_distance_m": -0.005455104259859889,
+        "signed_reports_penetration": true
+      },
+      "penetration_in_band": true,
+      "penetration_m": 0.005455104259859889,
+      "production_scene_after": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_before": {
+        "byte_identical": true,
+        "expected_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "observed_sha256": "01d8adf34808a9f419cb3a9d07668ec1069d3a5acfa8cb01885c622ea09876f7",
+        "path": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml"
+      },
+      "production_scene_byte_identical": true,
+      "reloaded_through_task_sampler": true,
+      "sampler_class": "PactPlaceCorridorV104Sampler",
+      "secondary_components": [],
+      "secondary_contacts": [],
+      "secondary_summary": {
+        "any": false
+      },
+      "shift_m": 0.083,
+      "source_episode_id": "b5f9d837a47e9145d473c2edeb779642bc7074439c30d809c0c7eef9bd4c4ff9",
+      "source_intrusion_side": "left",
+      "source_role_index": 0,
+      "static": {
+        "body": "pact_clutter_mount_v104",
+        "body_dofnum": 0,
+        "body_jntnum": 0,
+        "body_mocapid": -1,
+        "compiled_static": true,
+        "no_joint_freejoint_or_mocap": true,
+        "runtime_bound_repair_applied": false
+      },
+      "whole_assembly_translated": true,
+      "window": {
+        "excluded_secondary_frames": [],
+        "first_contact_frame": 209,
+        "first_frame": 164,
+        "includes_max_penetration_frame": true,
+        "last_frame": 227,
+        "lead_frames": 45,
+        "max_penetration_frame": 212,
+        "n_frames": 64,
+        "trail_frames": 15,
+        "truncated_by_secondary_contact_at_frame": null,
+        "valid": true
+      }
+    }
+  ],
+  "eligible_for_human_review": true,
+  "human_approval_present": false,
+  "left_lobe_secondary_stem": {
+    "excluded_from_left_lobe_clip": true,
+    "first_contact_frame": 90,
+    "max_penetration_frame": 193,
+    "max_penetration_m": 0.03815,
+    "note": "The stem first touches at frame 90 and only reaches 38.15 mm at frame 193. The clip is trimmed at 89, so neither is shown."
+  },
+  "n_diagnostic_controls": 3,
+  "n_production_successes": 3,
+  "n_videos": 6,
+  "phase0_passed": false,
+  "phase0_v2_root": "diagnostics_output/pact_place_v104_phase0_v2",
+  "production_min_clearance_m": 0.06157867081055806,
+  "production_pendant_contact_rows": 0,
+  "review_min_clearance_m": 0.02,
+  "schema_version": "pact_place_v104_review_v2_review_manifest_v1",
+  "successes": [
+    {
+      "episode_steps": 542,
+      "intrusion_side": "left",
+      "min_clearance_m": 0.06157867081055806,
+      "result_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/00_b5f9d837a47e9145/result.json",
+      "role_index": 0,
+      "seed_u32": 3053049911,
+      "trajectory_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/00_b5f9d837a47e9145/trajectory.json"
+    },
+    {
+      "episode_steps": 455,
+      "intrusion_side": "right",
+      "min_clearance_m": 0.079547888800772,
+      "result_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/03_d31926e123c78ca9/result.json",
+      "role_index": 3,
+      "seed_u32": 3541640929,
+      "trajectory_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/03_d31926e123c78ca9/trajectory.json"
+    },
+    {
+      "episode_steps": 628,
+      "intrusion_side": "left",
+      "min_clearance_m": 0.07069781556273715,
+      "result_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/04_a53f2841cf2a978b/result.json",
+      "role_index": 4,
+      "seed_u32": 2772379713,
+      "trajectory_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v104_review_production/expert_screen_rows/04_a53f2841cf2a978b/trajectory.json"
+    }
+  ],
+  "video_sha256": {
+    "control_left_lobe_contact.mp4": "436939683646474bdc56af675c0c0f23a72a2f72dd3d02e23f3e8913ae93e915",
+    "control_right_lobe_contact.mp4": "5b66b968133768e28f6e5bcafac794f9ed35b29a3c6edc3457eefd65e040da6d",
+    "control_stem_contact.mp4": "07e0339475add320b1d42bce6f45b1a4fb13ba6c75346b98a135efbbe9e0e5ea",
+    "success_00_left.mp4": "92082aa35bb4f71979faad67a9b3cdef8db40db2635d5d537f5040af50c709ee",
+    "success_03_right.mp4": "c3694793ff9dd5c96258c6c8e38b21637243d2f9dca3a7775f20b2cd40525629",
+    "success_04_left.mp4": "b0fedad52d7320ea325238432c8ab0b62493a408df2cba133d93dcbbb8d63d16"
+  },
+  "videos": [
+    {
+      "contact_frames": [],
+      "control_banner_lines": null,
+      "duration_s": 35.838,
+      "first_frame": 0,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "left",
+      "is_diagnostic_negative_control": false,
+      "kind": "production_clean_success",
+      "label": "row00-left-clean",
+      "last_frame": 542,
+      "n_contact_frames": 0,
+      "n_frames": 543,
+      "role_index": 0,
+      "scene_xml": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml",
+      "size_bytes": 8004654,
+      "trimmed_contact_window": false,
+      "true_time": true,
+      "video_name": "success_00_left.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/success_00_left.mp4",
+      "video_sha256": "92082aa35bb4f71979faad67a9b3cdef8db40db2635d5d537f5040af50c709ee",
+      "wrist_pane_untinted": true
+    },
+    {
+      "contact_frames": [],
+      "control_banner_lines": null,
+      "duration_s": 30.096,
+      "first_frame": 0,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "right",
+      "is_diagnostic_negative_control": false,
+      "kind": "production_clean_success",
+      "label": "row03-right-clean",
+      "last_frame": 455,
+      "n_contact_frames": 0,
+      "n_frames": 456,
+      "role_index": 3,
+      "scene_xml": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml",
+      "size_bytes": 6815831,
+      "trimmed_contact_window": false,
+      "true_time": true,
+      "video_name": "success_03_right.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/success_03_right.mp4",
+      "video_sha256": "c3694793ff9dd5c96258c6c8e38b21637243d2f9dca3a7775f20b2cd40525629",
+      "wrist_pane_untinted": true
+    },
+    {
+      "contact_frames": [],
+      "control_banner_lines": null,
+      "duration_s": 41.513999999999996,
+      "first_frame": 0,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "left",
+      "is_diagnostic_negative_control": false,
+      "kind": "production_clean_success",
+      "label": "row04-left-clean",
+      "last_frame": 628,
+      "n_contact_frames": 0,
+      "n_frames": 629,
+      "role_index": 4,
+      "scene_xml": "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_4.xml",
+      "size_bytes": 9515612,
+      "trimmed_contact_window": false,
+      "true_time": true,
+      "video_name": "success_04_left.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/success_04_left.mp4",
+      "video_sha256": "b0fedad52d7320ea325238432c8ab0b62493a408df2cba133d93dcbbb8d63d16",
+      "wrist_pane_untinted": true
+    },
+    {
+      "contact_frames": [
+        85,
+        86,
+        87,
+        88,
+        89
+      ],
+      "control_banner_lines": [
+        "DIAGNOSTIC NEGATIVE CONTROL",
+        "TRIMMED CONTACT WINDOW",
+        "NOT PRODUCTION GEOMETRY - NOT AN EPISODE"
+      ],
+      "duration_s": 3.3,
+      "first_frame": 40,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "left",
+      "is_diagnostic_negative_control": true,
+      "kind": "diagnostic_negative_control",
+      "label": "left_lobe_contact-role00",
+      "last_frame": 89,
+      "n_contact_frames": 5,
+      "n_frames": 50,
+      "role_index": 0,
+      "scene_xml": "/tmp/v104_render_v2_mb8syshf/scene/pact_place_v104_diagnostic_control.xml",
+      "size_bytes": 868541,
+      "trimmed_contact_window": true,
+      "true_time": true,
+      "video_name": "control_left_lobe_contact.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/control_left_lobe_contact.mp4",
+      "video_sha256": "436939683646474bdc56af675c0c0f23a72a2f72dd3d02e23f3e8913ae93e915",
+      "wrist_pane_untinted": true
+    },
+    {
+      "contact_frames": [
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248
+      ],
+      "control_banner_lines": [
+        "DIAGNOSTIC NEGATIVE CONTROL",
+        "TRIMMED CONTACT WINDOW",
+        "NOT PRODUCTION GEOMETRY - NOT AN EPISODE"
+      ],
+      "duration_s": 4.224,
+      "first_frame": 197,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "right",
+      "is_diagnostic_negative_control": true,
+      "kind": "diagnostic_negative_control",
+      "label": "right_lobe_contact-role03",
+      "last_frame": 260,
+      "n_contact_frames": 7,
+      "n_frames": 64,
+      "role_index": 3,
+      "scene_xml": "/tmp/v104_render_v2_wgkgx1s7/scene/pact_place_v104_diagnostic_control.xml",
+      "size_bytes": 956568,
+      "trimmed_contact_window": true,
+      "true_time": true,
+      "video_name": "control_right_lobe_contact.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/control_right_lobe_contact.mp4",
+      "video_sha256": "5b66b968133768e28f6e5bcafac794f9ed35b29a3c6edc3457eefd65e040da6d",
+      "wrist_pane_untinted": true
+    },
+    {
+      "contact_frames": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215
+      ],
+      "control_banner_lines": [
+        "DIAGNOSTIC NEGATIVE CONTROL",
+        "TRIMMED CONTACT WINDOW",
+        "NOT PRODUCTION GEOMETRY - NOT AN EPISODE"
+      ],
+      "duration_s": 4.224,
+      "first_frame": 164,
+      "fps": 15.151515151515152,
+      "frame_stride": 1,
+      "intrusion_side": "left",
+      "is_diagnostic_negative_control": true,
+      "kind": "diagnostic_negative_control",
+      "label": "stem_contact-role00",
+      "last_frame": 227,
+      "n_contact_frames": 7,
+      "n_frames": 64,
+      "role_index": 0,
+      "scene_xml": "/tmp/v104_render_v2_7w632460/scene/pact_place_v104_diagnostic_control.xml",
+      "size_bytes": 974293,
+      "trimmed_contact_window": true,
+      "true_time": true,
+      "video_name": "control_stem_contact.mp4",
+      "video_path": "diagnostics_output/pact_place_v104_review_v2/videos/control_stem_contact.mp4",
+      "video_sha256": "07e0339475add320b1d42bce6f45b1a4fb13ba6c75346b98a135efbbe9e0e5ea",
+      "wrist_pane_untinted": true
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "error": "Paused: disk/deadline/manual guard",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist288_run.py\", line 327, in main\n    development=run_eval('development',3103,100)+run_eval('development',3103,10)\n                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist280_resource_recovery.py\", line 66, in resume_eval\n    return prior_eval(role, seed, history)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_wrist288_run.py\", line 299, in run_eval\n    if pool.pause_reason and not pool.active:raise Paused(pool.pause_reason)\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\npact_wrist288_run.Paused: disk/deadline/manual guard\n",
+  "utc": "2026-09-07T04:37:42.367678+00:00"
+}

@@ -1,0 +1,86 @@
+{
+  "actions": {
+    "arm": {
+      "different_steps": 900,
+      "exact": false,
+      "first_different_step": 0,
+      "max_abs": 0.022661924362182617
+    },
+    "gripper": {
+      "different_steps": 1,
+      "exact": false,
+      "first_different_step": 407,
+      "max_abs": 255.0
+    },
+    "model_output": {
+      "different_steps": 900,
+      "exact": false,
+      "first_different_step": 0,
+      "max_abs": 32.06278991699219
+    }
+  },
+  "arm": "ACT",
+  "instrumentation": {
+    "bytes": 11495455,
+    "chunk_queries": 900,
+    "control_samples": 901,
+    "hook_tensor_equality_checks": 900,
+    "new_replay_clips": [
+      "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00/new_replay_wrist.mp4"
+    ],
+    "path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00/grasp_diagnostics.h5",
+    "physics_samples": 6865,
+    "rgb_frames": 91,
+    "sha256": "c6c8e5a39bc998774f5005831d66e3e59cb50a9698d670549153b2f390412eb1"
+  },
+  "new_metrics": {
+    "bilateral_longest_s": 6.004000000000672,
+    "chunk_dispersion": {
+      "close_contributors": 100,
+      "close_fk_spread_max_m": 0.033099130859080124,
+      "close_fk_spread_median_m": 0.012762770870441389,
+      "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+    },
+    "close_command_index": 148,
+    "close_tracking_gap_z_m": 0.005942323593427057,
+    "dynamic_rim": {
+      "close_achieved_depth_m": -0.006750981632537401,
+      "close_requested_depth_m": -0.012693305225964457,
+      "closing_axis_to_wall_normal_deg": {
+        "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 65.50645080130644,
+        "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 24.64710040222659,
+        "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 65.34123369861885,
+        "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 25.004591597200314
+      },
+      "max_reference_shift_m": 0.004318613675762473,
+      "minimum_early_achieved_depth_m": -0.015113151791102286,
+      "minimum_early_initial_reference_depth_m": -0.013307331882748352,
+      "pad_center_opening_at_close_m": 0.1771366062600238
+    },
+    "first_held_observation": 159,
+    "first_lift_observation": 162,
+    "first_touch_observation": 150,
+    "translation_only_rim": {
+      "close_achieved_depth_m": -0.0067509816325371785,
+      "close_requested_depth_m": -0.012693305225964235,
+      "minimum_early_achieved_depth_m": -0.013307331882748352,
+      "top_above_origin_m": 0.07198355028052605
+    }
+  },
+  "outcome_original": true,
+  "outcome_replay": true,
+  "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+  "schema": "pact_v1010b_grasp_v1",
+  "storage": {
+    "all_attributes_exact": true,
+    "codec": "gzip4+shuffle on nonempty numeric arrays; strings/scalars unchanged",
+    "datasets_exact": 437,
+    "final_bytes": 31313070,
+    "final_sha256": "0edfb38c75419ffb7eda340b2f7ad67e279dc5e6058072d38d68494739f67234",
+    "new_run_only": true,
+    "original_bytes": 48037306,
+    "original_sha256": "f6664954e54a68ff1380bf317f16e6450f6908023296062e54294dd51909aa55",
+    "source_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00/trajectory.h5",
+    "source_replaced_only_after_exact_verification": true
+  }
+}

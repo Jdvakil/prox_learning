@@ -1,0 +1,101 @@
+{
+  "utc": "2026-09-09T13:12:49.689650+00:00",
+  "analyzer_session_id": 17163,
+  "analyzer_exit_code_observed_by_root": 0,
+  "all_450_raw_trajectories_verified": true,
+  "all_150_three_way_pairings_verified": true,
+  "new_training_updates": 120000,
+  "new_evaluations": 100,
+  "new_worker_failures": 0,
+  "contact_union_reduction_vs_frozen_percent": 36.76608019308741,
+  "hazard_bar_increase_vs_frozen_percent": 22.29758467083025,
+  "pooled": {
+    "ACT": {
+      "n": 150,
+      "success": 64,
+      "cfts": 46,
+      "pickup": 35,
+      "union_frames": 371293,
+      "physics_samples": 4455150,
+      "avoidance_percent": 91.66598206569925,
+      "raw_touched_never_held": 37,
+      "target_lifted_1cm": 74,
+      "sustained_lift_15_observations": 69,
+      "ever_held": 71,
+      "failure_stages": {
+        "success": 64,
+        "no_target_interaction": 40,
+        "held_without_lift": 1,
+        "touched_without_hold": 35,
+        "supported_without_final_success": 2,
+        "lifted_without_placement": 8
+      },
+      "contact_frames": {
+        "grasp_target": 807383,
+        "hazard_bar": 232733,
+        "other_environment": 2667,
+        "place_receptacle": 0,
+        "clutter": 160802,
+        "mounted_fixture": 2596
+      }
+    },
+    "PACT-Finetune": {
+      "n": 150,
+      "success": 83,
+      "cfts": 63,
+      "pickup": 26,
+      "union_frames": 85933,
+      "physics_samples": 4455150,
+      "avoidance_percent": 98.07115360874494,
+      "raw_touched_never_held": 27,
+      "target_lifted_1cm": 98,
+      "sustained_lift_15_observations": 91,
+      "ever_held": 103,
+      "failure_stages": {
+        "lifted_without_placement": 14,
+        "success": 83,
+        "no_target_interaction": 20,
+        "held_without_lift": 6,
+        "touched_without_hold": 26,
+        "supported_without_final_success": 1
+      },
+      "contact_frames": {
+        "grasp_target": 1014190,
+        "hazard_bar": 54634,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 32207,
+        "mounted_fixture": 0
+      }
+    },
+    "PACT-Frozen": {
+      "n": 150,
+      "success": 74,
+      "cfts": 51,
+      "pickup": 42,
+      "union_frames": 135897,
+      "physics_samples": 4455150,
+      "avoidance_percent": 96.94966499444463,
+      "raw_touched_never_held": 47,
+      "target_lifted_1cm": 87,
+      "sustained_lift_15_observations": 79,
+      "ever_held": 86,
+      "failure_stages": {
+        "touched_without_hold": 42,
+        "no_target_interaction": 17,
+        "lifted_without_placement": 12,
+        "success": 74,
+        "held_without_lift": 4,
+        "supported_without_final_success": 1
+      },
+      "contact_frames": {
+        "grasp_target": 954989,
+        "hazard_bar": 44673,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 92866,
+        "mounted_fixture": 0
+      }
+    }
+  }
+}

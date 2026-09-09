@@ -1,0 +1,20 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "command": [
+    "/root/act_retrain_venv/bin/python",
+    "/root/prox_learning_pact_remediation/scripts/verify_pact_place_v1011c_dualcam_models.py"
+  ],
+  "elapsed_seconds": 9.13406229019165,
+  "eligible_for_human_review": false,
+  "human_approval_present": false,
+  "log": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/logs/04_model_verification.log",
+  "output_tail": "/root/act_retrain_venv/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.\n  warnings.warn(\n/root/act_retrain_venv/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet18_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet18_Weights.DEFAULT` to get the most up-to-date weights.\n  warnings.warn(msg)\nnumber of parameters: 109.91M\nKL Weight 10\nact 20000 {\"strict_reload\": true, \"output_shape\": [4, 100, 8], \"finite\": true, \"deterministic\": true, \"max_action_delta_camera_zeroed\": {\"wrist_camera\": 1.5069321393966675, \"exo_camera_1\": 2.1122283935546875}, \"max_action_delta_proximity_zeroed\": null, \"checkpoint_sha256\": \"d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac\", \"train_only_stats_recomputed_equal\": true, \"actual_training_updates\": 30000}\nact 30000 {\"strict_reload\": true, \"output_shape\": [4, 100, 8], \"finite\": true, \"deterministic\": true, \"max_action_delta_camera_zeroed\": {\"wrist_camera\": 1.6200965642929077, \"exo_camera_1\": 2.20981502532959}, \"max_action_delta_proximity_zeroed\": null, \"checkpoint_sha256\": \"5bcff4accc916e98800b497aa01379dcfa8da7e2d6a7ed60f57f97d27558e788\", \"train_only_stats_recomputed_equal\": true, \"actual_training_updates\": 30000}\nnumber of parameters: 109.95M\nKL Weight 10\npact 20000 {\"strict_reload\": true, \"output_shape\": [4, 100, 8], \"finite\": true, \"deterministic\": true, \"max_action_delta_camera_zeroed\": {\"wrist_camera\": 1.9973504543304443, \"exo_camera_1\": 2.041037082672119}, \"max_action_delta_proximity_zeroed\": 1.3433163166046143, \"checkpoint_sha256\": \"24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3\", \"train_only_stats_recomputed_equal\": true, \"actual_training_updates\": 30000}\npact 30000 {\"strict_reload\": true, \"output_shape\": [4, 100, 8], \"finite\": true, \"deterministic\": true, \"max_action_delta_camera_zeroed\": {\"wrist_camera\": 1.3939151763916016, \"exo_camera_1\": 2.1023974418640137}, \"max_action_delta_proximity_zeroed\": 0.9006860852241516, \"checkpoint_sha256\": \"efb89280f50cb20eb028c8a5c94c3fe99f36fc461e032518c6a85c911255a6e5\", \"train_only_stats_recomputed_equal\": true, \"actual_training_updates\": 30000}\n",
+  "phase0_passed": false,
+  "returncode": 0,
+  "stage": "04_model_verification"
+}

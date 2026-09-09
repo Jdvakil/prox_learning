@@ -1,0 +1,1215 @@
+{
+  "active_clutter_slots": [
+    "01",
+    "03",
+    "04",
+    "06"
+  ],
+  "active_clutter_uids": {
+    "01": "Soap_Bottle_30",
+    "03": "Plate_10",
+    "04": "Plate_22",
+    "06": "Soap_Bottle_11"
+  },
+  "aim_point_m": [
+    0.664,
+    0.006,
+    0.82
+  ],
+  "camera_selection": "segmentation sweep over azimuth, elevation and distance counting distinct visible table entities (target cup plus the four active clutter bodies); only azimuths 195, 210 and 225 reach 5/5, so all shipped views come from those",
+  "clips_written": 48,
+  "episodes": [
+    {
+      "attempt_id": "98e125c915734a7d5a5f990f65672d3c6dcef0136d873e7010a1c1bc0e988bf6",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    },
+    {
+      "attempt_id": "cf3c4e0b65e1a649be4120bb6e46cbc89b91d44239edb8f3862de70c15a3a386",
+      "error": "ValueError: settled clutter overlaps target: {'geom1': 'cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1', 'geom2': 'pact_clutter_01/Soap_Bottle_30_soap_bottle_30_PrimitiveCollider_0', 'active1': None, 'active2': 'pact_clutter_01/Soap_Bottle_30', 'distance_m': -0.0046425108826713335}",
+      "ok": false
+    },
+    {
+      "attempt_id": "8c2758ade09ff197330712f06e47332fb437450b5ced8949301e50e7f80d8fb5",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    },
+    {
+      "attempt_id": "18d63cee2ef1f45ce7a612db307a362ff962a166b0edbbd567e5b6a59f769b54",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "99490b576888c13ffe8f6cff6a6563951c355a41c8936b672d02db90aa5eb90f",
+      "attempt_index": 0,
+      "cell": "F0_target_side_stagger|left|center",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 4637795,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.5,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "7147efa73893b324f152bc4ab96d7fdd3f1d5d80e6930011fc5bd53be28d7d4b",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 4609615,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 3.91,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "77726b491bcc6b3f2f035d859690351930b859d6235d7e45893a06808f98e108",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5045533,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 4.91,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "5d81378a76c150ee10c8fa3a46b098c64e93bdc49e403224b2ad9de14d2e5605",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 5104082,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.82,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "541463018862adbafe90476a6c1665b31f14af4c3d357e1dcaae407ea5653890",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5236426,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.68,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "26a0169cdb75d1b9e4623ce8d1d37df4d783ac3485585178c5a19f826bfadc04",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3202872,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 3.59,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_center__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 22,
+          "sha256": "32ac2acd95bc44cb6db6a847163a692879f4274d1c12f7e366fd5b7ef1ac550d",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 34.85,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F0_target_side_stagger",
+      "frames": 528,
+      "intrusion_side": "left",
+      "ok": true,
+      "pose_id": "center",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 140382,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 528,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 140382,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 528,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "6965e498d26fc37e23e5eb4d7a06014568223ca04273cb1c5da0750f4d8cf66f",
+      "task_seed_u32": 3147613422
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "4bf693fc681bf422caae37545528ec79467f5952c014cf5e724ec70bbd607162",
+      "attempt_index": 0,
+      "cell": "F0_target_side_stagger|left|pos5",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 5268332,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.67,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "5242225af8d99d534330d1a4836075e93f8896aae91483cb7cb8e6a4547d6a60",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 5305722,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.25,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "4103fa0a0b47fbe67d2749674c36522e19603ca97637fab36024de6ff80c7d26",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5560415,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 4.88,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "97443750def8aeb59454a07ffcebca3cfc6fbeebdc2d127fffbecdd4d18911b4",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 5874673,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.75,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "f2b81c9300deaad8d3af938e14237549e7655793d95d2afc291fd79bda9d92de",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5854998,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.75,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "7612f450f44823c3b0061ec6a0a6c567c6a5ab51c01faacb5d6c1105738d447b",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3644666,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 3.58,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_left_pos5__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "e4b58d32f0579f3f5709b92d9af9ca68eac02ad74ef43306fee4425a396fa750",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 39.53,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F0_target_side_stagger",
+      "frames": 599,
+      "intrusion_side": "left",
+      "ok": true,
+      "pose_id": "pos5",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 172485,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 599,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 172485,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 599,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "5a429302e4cf6cfb4fb66fac9a6663db940cefb50cc42a99aa92a7f6e438166f",
+      "task_seed_u32": 624325079
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "b3523b65af6f517473f00a330d323908b5409718a7a153b154e95fedd1476b02",
+      "attempt_index": 5,
+      "cell": "F0_target_side_stagger|right|neg5",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 3074161,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.4,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "0c0d1d26fb088fcbba51cfd7767e2325196e25d8ce3e30bf8d806d6325d953c4",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3138901,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.93,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "9f65196090f9f7af0ec8deb8f62755bea85f99e2391c77b4d6523874647c2bda",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3084997,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 2.53,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "d308035e9e67fcc73209655d98673458bbd11abfe5152305344e1593d56c60eb",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 3387611,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.93,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "d8f0661eb0df283b2142c75afe6d613aa08ca2c6fbe1568710eef9256e4571a0",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3283427,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.93,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "f37be9b0b15e8e9b979a77aca32dcf00d34ebc812d6c4a9f8fc1b1a96be50f6f",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 2070377,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.13,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F0_target_side_stagger_right_neg5__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 15,
+          "sha256": "1bb036b95bcb9b4afd724611b40b89874dcdf8f294d3ef6ea4af8bc9074fa75f",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 23.36,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F0_target_side_stagger",
+      "frames": 354,
+      "intrusion_side": "right",
+      "ok": true,
+      "pose_id": "neg5",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 76865,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 354,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 76865,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 354,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "2018ac73e6f8b37823f62fb4f2db366e86be8b7ad7621820f96f3436b70dea50",
+      "task_seed_u32": 2360877186
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "57a8c554d4c6421e70b9c61ec05b7317ba48e9a77900acad2aed0efb0c1c08a2",
+      "attempt_index": 0,
+      "cell": "F1_inner_panel_stagger|left|neg5",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 5434461,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.38,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "417a19ca70d108a39432018083764f8c7d3e74f0097d9efa57f00c3f74404069",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 5381211,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.42,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "edaccb7569d95f4fcee88ce697fb3547e2265fad3a0f06e24db5b39ebefda9ec",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5549318,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 4.88,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "d07ff4408b78d07666c0986ff17879e37047768dccb1ac0075c3aa26a1989108",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 5980935,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.75,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "0bbdfb484737049a93344a1af56745d9d989a3b4ce2a253385cd48728d7a574c",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5871527,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.75,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "486ddd7756ca4f28be1764daa5d4e1b021839e2d10a26eb791a184340a80cdb2",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3654912,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.25,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_left_neg5__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 24,
+          "sha256": "f628b56ea7a0d38aefcee96525b6ca202056daf14df2d8bbf382c0ac752f8a09",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 39.34,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F1_inner_panel_stagger",
+      "frames": 596,
+      "intrusion_side": "left",
+      "ok": true,
+      "pose_id": "neg5",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 181153,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 596,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 181153,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 596,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "a9f7cf46c988f39e663aa431c467d1448a2c777004052496bd8f3d23e7d2f6f6",
+      "task_seed_u32": 391508724
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "2f77fef1863bdeb31dd56f884802cde7b31569b0896949895d68ce235e753d04",
+      "attempt_index": 0,
+      "cell": "F1_inner_panel_stagger|right|center",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 3940855,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.53,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "da8ec0db860892fdfbbf5f18a836d1f149c698c2ed87936e497d13df794a55d7",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 4028426,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.68,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "df2bdd4cb901dca6a52394d9ee765dee3096f1ffda52034a188d3e8e310d9939",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 4050201,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 2.53,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "f0b74c8862a07f5e553a013baba244b5963b7f5800e1468546b80899bbcb5c28",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 4430273,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.68,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "a7b81e6309600583c75fb4f745d9d3dd922e161bc45fdc4f6607033798cfe3df",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 4322481,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.53,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "d95f00102494ab9f3846d70384218e1842d187ca204f87285b39ca830c1ede55",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 2714237,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.37,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F1_inner_panel_stagger_right_center__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 19,
+          "sha256": "cfe5821d66619e2158e192877f6cb613b4b1b5e14e3c15663b479dec3f1bf133",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 30.43,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F1_inner_panel_stagger",
+      "frames": 461,
+      "intrusion_side": "right",
+      "ok": true,
+      "pose_id": "center",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 81046,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 461,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 81046,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 461,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "f152f47eb6f259d0eaec24cf1ddc9fc7cea0f545b609b569be6dd338f4a5bcb0",
+      "task_seed_u32": 2028740157
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "c7a89ecdd8a3ebff40be20df9dfd75da38b8a5d8003b183ab275e1338c6cc685",
+      "attempt_index": 4,
+      "cell": "F2_outer_panel_stagger|left|center",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 4444520,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.38,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "4c199f882a7c77d64b138daecda6e63858689043555e341c66d744604075d3b2",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 4484214,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 3.86,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "0823d027fa5aba04518f2cfba74301304844bef4e7021ec8d78966d944506829",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 4793527,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 5.0,
+          "entities_seen_min": 5,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "6303f708558e8dc435c3696c05e881559849806cf59300933b4da4321f812943",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 4937480,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.62,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "e7aaf08aed9a772cea214cba5ddece54006a7cd4030be00785a3a14c15876f7d",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 5026333,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.81,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "4f6da6ab7981995afc6d8799367da920bad4ed49b161b54f0761c1fbcf9c68af",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3086009,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 3.38,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_left_center__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 21,
+          "sha256": "be979ea200fbc8bd73dd1a1b94c4ae5a7f28dbff20cbb7477dd3f2bcbef3afcd",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 33.86,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F2_outer_panel_stagger",
+      "frames": 513,
+      "intrusion_side": "left",
+      "ok": true,
+      "pose_id": "center",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 153300,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 513,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 153300,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 513,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "aa854fccf992ad3f38a710547cbceb651279cf54a08a229f52dec734ce6d3f37",
+      "task_seed_u32": 2167489203
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "132c0d63fd95a37845e55a872553e3d945bedbde1235bc072729d20d1b25199d",
+      "attempt_index": 0,
+      "cell": "F2_outer_panel_stagger|right|neg5",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 3402804,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.12,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "b7ac7abf2395c7713d81625b20e6b809020890590c738e4bae7de0e5b760d8d3",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3491855,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.71,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "6f5dd7c0cebb9ea0348a8dc62a6a7c4b4645773a2af9e816e8f637ffe1571cdb",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3689369,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 2.53,
+          "entities_seen_min": 2,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "0354c728a63d57906df833b047e736e6e02a428adb0d1c2d24a3298f733cb29d",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 3893545,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.88,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "4258fab91e60fcc27939985b9cde02cb1745ec2a0d1aa38a2b10015a028f9bd2",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3915996,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.65,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "28b724813d2ef8a0a649d827ad4a5b9effbb54e0795d2aec18a49125fd9451d1",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 2376281,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.24,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F2_outer_panel_stagger_right_neg5__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "49b7a4fd1fb4546b0856d2a66a19a2052e3d75c85c1ead446c6453edd0b87822",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 27.92,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F2_outer_panel_stagger",
+      "frames": 423,
+      "intrusion_side": "right",
+      "ok": true,
+      "pose_id": "neg5",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 103863,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 423,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 103863,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 423,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "c8d3363899768225f4b4d74124e7a8500bf5329adbc0015128c237ff6cbf4149",
+      "task_seed_u32": 3240688614
+    },
+    {
+      "active_clutter_uids": {
+        "01": "Soap_Bottle_30",
+        "03": "Plate_10",
+        "04": "Plate_22",
+        "06": "Soap_Bottle_11"
+      },
+      "attempt_id": "7f27d1596054240f1f2d6f4dac11a4f6370ceb9181079fe95b84845e9bd78803",
+      "attempt_index": 1,
+      "cell": "F3_aperture_side_stagger|right|pos5",
+      "clips": [
+        {
+          "azimuth_deg": 195,
+          "bytes": 3505061,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 3.47,
+          "entities_seen_min": 3,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_front.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "f301a68dfe4f64eb0d10b3260263b90a8ff6bde5da2bfd7038130745352b161f",
+          "view": "table_front"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 3603603,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.88,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_front_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "9219b48d648447b4df1875e61bb071221b9e23567ad4fad4fde5d1f68ff2f4a9",
+          "view": "table_front_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3681129,
+          "distance_m": 1.35,
+          "elevation_deg": 25,
+          "entities_seen_mean": 1.59,
+          "entities_seen_min": 1,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_left.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "183ece5c99e23852c6b2ffb386022ce8ab1ceadd222f576b92cf12327914e5d6",
+          "view": "table_left"
+        },
+        {
+          "azimuth_deg": 210,
+          "bytes": 3940462,
+          "distance_m": 1.35,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.82,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_left_high.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "8802dc17e3ce23951959dfde95fce5b0ba84e09ab552b7961dcd5fb23e16002b",
+          "view": "table_left_high"
+        },
+        {
+          "azimuth_deg": 225,
+          "bytes": 3925158,
+          "distance_m": 1.35,
+          "elevation_deg": 35,
+          "entities_seen_mean": 4.88,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_left_mid.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "3df82a6a67ff287c975a52a9acce46ade598f526ab07559395bcb2da77fb1976",
+          "view": "table_left_mid"
+        },
+        {
+          "azimuth_deg": 195,
+          "bytes": 2391452,
+          "distance_m": 2.1,
+          "elevation_deg": 45,
+          "entities_seen_mean": 4.71,
+          "entities_seen_min": 4,
+          "entities_total": 5,
+          "file": "F3_aperture_side_stagger_right_pos5__table_wide.mp4",
+          "fov_deg": 46.0,
+          "segmentation_samples": 17,
+          "sha256": "ff065554bc9d40e0d6e6b887ab42acd52123fde606224566208a17e9039f6891",
+          "view": "table_wide"
+        }
+      ],
+      "duration_s": 27.06,
+      "entities_tracked": [
+        "cavity_obj_0/Cup_10",
+        "pact_clutter_01/Soap_Bottle_30",
+        "pact_clutter_03/Plate_10",
+        "pact_clutter_04/Plate_22",
+        "pact_clutter_06/Soap_Bottle_11"
+      ],
+      "family_id": "F3_aperture_side_stagger",
+      "frames": 410,
+      "intrusion_side": "right",
+      "ok": true,
+      "pose_id": "pos5",
+      "reproduction": {
+        "faithful": true,
+        "recorded_contacts": {
+          "clutter": 0,
+          "grasp_target": 64302,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "recorded_episode_steps": 410,
+        "recorded_task_success": true,
+        "rerun_contacts": {
+          "clutter": 0,
+          "grasp_target": 64302,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "rerun_frames": 410,
+        "rerun_task_success": true,
+        "steps_match": true,
+        "success_match": true
+      },
+      "row_sha256": "d62463a01f7d76311bfcd745d2fdfcb015e4c2c55a1892296f69620815905538",
+      "task_seed_u32": 2912672777
+    }
+  ],
+  "episodes_rendered": 8,
+  "failures": [
+    {
+      "attempt_id": "98e125c915734a7d5a5f990f65672d3c6dcef0136d873e7010a1c1bc0e988bf6",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    },
+    {
+      "attempt_id": "cf3c4e0b65e1a649be4120bb6e46cbc89b91d44239edb8f3862de70c15a3a386",
+      "error": "ValueError: settled clutter overlaps target: {'geom1': 'cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1', 'geom2': 'pact_clutter_01/Soap_Bottle_30_soap_bottle_30_PrimitiveCollider_0', 'active1': None, 'active2': 'pact_clutter_01/Soap_Bottle_30', 'distance_m': -0.0046425108826713335}",
+      "ok": false
+    },
+    {
+      "attempt_id": "8c2758ade09ff197330712f06e47332fb437450b5ced8949301e50e7f80d8fb5",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    },
+    {
+      "attempt_id": "18d63cee2ef1f45ce7a612db307a362ff962a166b0edbbd567e5b6a59f769b54",
+      "error": "ValueError: IK failed for pregrasp pose",
+      "ok": false
+    }
+  ],
+  "fps": 15.151515151515152,
+  "frame_wh": [
+    960,
+    540
+  ],
+  "object_labels": {
+    "01": "bottle_soap_30",
+    "03": "plate_10",
+    "04": "plate_22",
+    "06": "bottle_soap_11"
+  },
+  "resimulation_not_replay": "the V10.10 collector emitted no full-state trajectory (its trajectory.h5 stores only the panda articulation and env_states/actors is empty), so each episode is re-run from its frozen seed with the same state-based expert planner; every clip records the re-run against the collection ledger",
+  "role": "table-visible multi-POV clips of twelve V10.10 four-object episodes",
+  "schema_version": "pact_place_v1010_paper_views_v1",
+  "unfaithful_reruns": [],
+  "views": {
+    "table_front": {
+      "azimuth_deg": 195,
+      "distance_m": 1.35,
+      "elevation_deg": 35,
+      "fov_deg": 46.0
+    },
+    "table_front_high": {
+      "azimuth_deg": 195,
+      "distance_m": 1.35,
+      "elevation_deg": 45,
+      "fov_deg": 46.0
+    },
+    "table_left": {
+      "azimuth_deg": 225,
+      "distance_m": 1.35,
+      "elevation_deg": 25,
+      "fov_deg": 46.0
+    },
+    "table_left_high": {
+      "azimuth_deg": 210,
+      "distance_m": 1.35,
+      "elevation_deg": 45,
+      "fov_deg": 46.0
+    },
+    "table_left_mid": {
+      "azimuth_deg": 225,
+      "distance_m": 1.35,
+      "elevation_deg": 35,
+      "fov_deg": 46.0
+    },
+    "table_wide": {
+      "azimuth_deg": 195,
+      "distance_m": 2.1,
+      "elevation_deg": 45,
+      "fov_deg": 46.0
+    }
+  }
+}

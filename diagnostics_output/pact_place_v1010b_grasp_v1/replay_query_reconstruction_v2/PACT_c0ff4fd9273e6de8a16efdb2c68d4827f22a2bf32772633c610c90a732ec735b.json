@@ -1,0 +1,99 @@
+{
+  "analysis_code_sha256": "817e99651b9dc29c9d91a82e2bf02e30fd5d50fc49eeb97fece03399749f17b0",
+  "arm": "PACT",
+  "checkpoint_sha256": "d6a11633ec813e15baa231f18a05fba6e98d8e6f930e2b9b657cd5c9714d7ffe",
+  "comparisons": {
+    "new": {
+      "first_vector_exact": true,
+      "first_vector_max_abs": 0.0,
+      "reconstructed_first_vector": [
+        0.032735515385866165,
+        -0.8019245862960815,
+        0.0352989137172699,
+        -2.458003520965576,
+        0.05514483526349068,
+        1.6448709964752197,
+        0.0804060846567154,
+        -4.612152099609375
+      ],
+      "retained_first_vector": [
+        0.032735515385866165,
+        -0.8019245862960815,
+        0.0352989137172699,
+        -2.458003520965576,
+        0.05514483526349068,
+        1.6448709964752197,
+        0.0804060846567154,
+        -4.612152099609375
+      ]
+    },
+    "original": {
+      "first_vector_exact": true,
+      "first_vector_max_abs": 0.0,
+      "reconstructed_first_vector": [
+        0.03273286670446396,
+        -0.8019263744354248,
+        0.035316430032253265,
+        -2.4579925537109375,
+        0.05515914037823677,
+        1.6448625326156616,
+        0.08041981607675552,
+        -4.6121368408203125
+      ],
+      "retained_first_vector": [
+        0.03273286670446396,
+        -0.8019263744354248,
+        0.035316430032253265,
+        -2.4579925537109375,
+        0.05515914037823677,
+        1.6448625326156616,
+        0.08041981607675552,
+        -4.6121368408203125
+      ]
+    }
+  },
+  "inputs": {
+    "new": {
+      "image_tensor_sha256": "6002f0685324bdb2d91191b862208299328a00dc94971bd4c3adff1713247a0e",
+      "proximity_sha256": "ffe56626b10d87a1b6b29d286083b05c11e3e6092e9489eab9b176936830dee1",
+      "qpos_sha256": "708506486cb41014b62ceed0b9dd5fa5e3bfc11677de33faa703341ff967aed0"
+    },
+    "original": {
+      "image_tensor_sha256": "160cac3266719bef370c5facd9f3415214d155f2eab78c90ab01110c7a7fbbf0",
+      "proximity_sha256": "ffe56626b10d87a1b6b29d286083b05c11e3e6092e9489eab9b176936830dee1",
+      "qpos_sha256": "708506486cb41014b62ceed0b9dd5fa5e3bfc11677de33faa703341ff967aed0"
+    }
+  },
+  "predicted_delta": [
+    2.648681402206421e-06,
+    1.7881393432617188e-06,
+    -1.751631498336792e-05,
+    -1.0967254638671875e-05,
+    -1.430511474609375e-05,
+    8.463859558105469e-06,
+    -1.3731420040130615e-05,
+    -1.52587890625e-05
+  ],
+  "preprocessed_rgb_changed_channels": 9,
+  "preprocessed_rgb_max_delta": 1,
+  "repeated_inference_exact": true,
+  "retained_delta": [
+    2.648681402206421e-06,
+    1.7881393432617188e-06,
+    -1.751631498336792e-05,
+    -1.0967254638671875e-05,
+    -1.430511474609375e-05,
+    8.463859558105469e-06,
+    -1.3731420040130615e-05,
+    -1.52587890625e-05
+  ],
+  "scene_id": "c0ff4fd9273e6de8a16efdb2c68d4827f22a2bf32772633c610c90a732ec735b",
+  "schema": "pact_v1010b_grasp_v1",
+  "source_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_c0ff4fd9273e6de8/actions.npz": "a17d205303845519dd6dae622f00feb2a2075c18ca7e076d4f30c7fc53aa4f36",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_c0ff4fd9273e6de8/initial_observation.h5": "9385237cb53071973a20d3ce284083cf3944d4db6fa0979241f838fb22fb48d5",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_c0ff4fd9273e6de8/attempt_00/actions.npz": "fcc2337d168fc9dcabf96300defe41b3227ec1824c1a1bcfbfa219236dad4193",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_c0ff4fd9273e6de8/attempt_00/initial_observation.h5": "aab7d93969b01ff483b5417910a49b131af62488d3ef18b508a4890d778c650a"
+  },
+  "training_seed": 3105
+}

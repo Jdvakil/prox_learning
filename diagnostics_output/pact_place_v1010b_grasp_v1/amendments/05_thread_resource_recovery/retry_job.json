@@ -1,0 +1,26 @@
+{
+  "arm": "PACT",
+  "attempt": 1,
+  "command": [
+    "/root/act_retrain_venv/bin/python",
+    "/root/prox_learning_pact_remediation/scripts/pact_v1010b_train.py",
+    "--arm",
+    "PACT",
+    "--training-seed",
+    "3105",
+    "--variant",
+    "acquisition63000",
+    "--max-updates",
+    "63000",
+    "--output-dir",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/checkpoints/pact_seed3105_acquisition63000"
+  ],
+  "contract_sha256": "57c20f3b374c57e2fb2eb6bc46b6cc4e4087e4d4155f3f71cbfa5cb1801bfaa0",
+  "job_id": "train_PACT_3105_acquisition63000",
+  "job_sha256": "775b8a9fbe4a7637770c65f8e5b0a6c8eecf54033b8ca6ea9d04a98b9fc4398a",
+  "output_dir": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/checkpoints/pact_seed3105_acquisition63000",
+  "prior_exit_receipt_sha256": "019183467ad0ceb35688f5598f315a86fd7ed12e2216b5a1cca6eac6c32483c9",
+  "recovery_manifest_sha256": "fb1e0857d9a74b56c1ffcdf6874b667800dde646078229629920e121cd24bcc8",
+  "training_seed": 3105,
+  "variant": "acquisition63000"
+}

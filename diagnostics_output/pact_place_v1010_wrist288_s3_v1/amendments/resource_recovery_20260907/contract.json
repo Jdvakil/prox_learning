@@ -1,0 +1,45 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "checkpoint_hashes": {
+    "checkpoints/act_seed3103/dataset_stats.pkl": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+    "checkpoints/act_seed3103/policy_update_30000.ckpt": "bcfc2d53c12f61de8851366ea8bfee86959f640eb84f9625d2c17a77ccef2033",
+    "checkpoints/act_seed3103/policy_update_60000.ckpt": "9abe289b329b78ec622f1c22984dd995fdd471aecebcd6ca6fdfa64de7fddf81",
+    "checkpoints/pact_seed3103/dataset_stats.pkl": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+    "checkpoints/pact_seed3103/policy_update_30000.ckpt": "055bf58f830926117b3162411ead15f6c14d4193dc1945750101fd60ed06ef8d",
+    "checkpoints/pact_seed3103/policy_update_60000.ckpt": "3dcdf673013f355cffaec491f8a8fc83d77c3a19368daba17b0a4a35271c5572"
+  },
+  "development_ledger_before_resume_sha256": "7188c7d387134b7d92b15cfebbd77e3b9804c8180fdf3099972ad998b3b58fb7",
+  "effective_config_sha256": "da3388ab016166721679bb2f5b66d5c218ecfff24d348b3b3634aba9dc89cdcc",
+  "eligible_for_human_review": false,
+  "excess_inflight_jobs_finish_before_further_pressure_reduction": true,
+  "file_hashes": {
+    "scripts/pact_wrist280_resource_recovery.py": "52caab34158bafed7db606a745c950e23f271a0148015a65e33a4ca9f340621e",
+    "tests/test_pact_wrist280_resource_recovery.py": "6b8d9095340e823b357bcd328c919b03ea44643ed034344a6348d6d591c89cee"
+  },
+  "human_approval_present": false,
+  "initial_evaluation_workers": 10,
+  "minimum_workers": 10,
+  "observed_peak": {
+    "pid_fraction": 0.146875,
+    "ram_fraction": 0.9276856130033657,
+    "vram_fraction": 0.9520149383359389
+  },
+  "phase0_passed": false,
+  "preserved_development_completions": 14,
+  "pressure_thresholds_unchanged": true,
+  "reason": "14-worker evaluation reached resource limits; old target reduced before any workers completed, so later samples did not measure a 10-worker pool. Resume at authorized 10-worker fallback and fix this accounting. Adopt immutable benchmark instead of recomputing peak from empty resumed pools.",
+  "scope": "operational resource fallback and completed-stage adoption only",
+  "sha256": "2da1a9f6a525b02b9f92864dac9c0830fbc88529a2bb34db46ae6025970f6c3e",
+  "tests": {
+    "command": "/root/act_retrain_venv/bin/python -m pytest -q tests/test_pact_wrist280_resource_recovery.py",
+    "exit_code": 0,
+    "result": "3 passed in 0.11s"
+  },
+  "training_benchmark_sha256": "96dc79e3c0b19c810cb40874120930e099121ade47154f35d0eaaf8298892d7a",
+  "utc": "2026-09-07T02:51:45.243646+00:00"
+}

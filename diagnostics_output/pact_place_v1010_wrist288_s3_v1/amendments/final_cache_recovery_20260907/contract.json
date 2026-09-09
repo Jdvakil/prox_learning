@@ -1,0 +1,31 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "cache_probe_sha256": "a6d58acfc2b4127d3c4b140e540aa8e990519d5c6fbf3f295ba4b989c2a8daba",
+  "eligible_for_human_review": false,
+  "file_hashes": {
+    "scripts/pact_wrist280_final_cache_recovery.py": "e89d5e36b82da4c9c32e98e3f9c4c4b48c290ea3c6cf8bd81db3f8dc47cd110c",
+    "tests/test_pact_wrist280_final_cache_recovery.py": "0831d312a268471d292225470951e560288b1d55b4a3eedc9be964f56da09ab2"
+  },
+  "followup_contract_file_sha256": "32f6d7c54ce349baf2ad7450f9df36bccb0483ab7ace27aaaa69a6b91b11f226",
+  "human_approval_present": false,
+  "inference_checkpoint_cache_retained": true,
+  "memory_thresholds_unchanged": true,
+  "phase0_passed": false,
+  "preserved_final_3103_ledger_sha256": "9fb63b3abfe7154d68ffc0ebba7262640f8be7b117503aa66c8456a7b2d2fadc",
+  "preserved_final_3103_rollouts": 32,
+  "reason": "Converted dataset uses .hdf5, which was omitted by the prior .h5-only cache glob. Completed training also left unused checkpoint file cache resident. Release this cache without changing files, workers, scoring or identities.",
+  "scope": "fix closed-artifact cache coverage; resume unchanged remaining final instances at 12 workers",
+  "sha256": "a9ec49070004fb1f8c768df0a63032c470dac5ecb2d37e33cca95db8d1af5142",
+  "tests": {
+    "command": "/root/act_retrain_venv/bin/python -m pytest -q tests/test_pact_wrist280_final_cache_recovery.py tests/test_pact_wrist280_final50.py tests/test_pact_wrist280_eval_capacity.py",
+    "exit_code": 0,
+    "result": "8 passed in 0.14s"
+  },
+  "training_completed_models": 6,
+  "utc": "2026-09-07T16:00:08.740235+00:00"
+}

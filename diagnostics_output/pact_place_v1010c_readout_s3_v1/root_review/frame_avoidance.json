@@ -1,0 +1,148 @@
+{
+  "utc": "2026-09-09T15:43:07.677670+00:00",
+  "source": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010c_readout_s3_v1/comparison.json",
+  "source_sha256": "c68a025fc73b83b4e39432e540282bb37a60b806716b5ee03abff6f68155c0b3",
+  "raw_trajectories_checked": 450,
+  "forbidden_classes": [
+    "hazard_bar",
+    "other_environment",
+    "clutter",
+    "mounted_fixture"
+  ],
+  "definitions": {
+    "collision_free": "No contact in any forbidden class; target/receptacle contacts excluded.",
+    "hazard_free": "No hazard_bar contact; other classes may be present.",
+    "hazard_clutter_free": "No hazard_bar or clutter contact; previous frame avoidance metric.",
+    "frame": "Audited physics contact sample, nominal 2 ms; not a video frame."
+  },
+  "summaries": {
+    "3103": {
+      "ACT": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1343216,
+        "hazard_free_frames": 1418655,
+        "hazard_clutter_free_frames": 1345883,
+        "collision_free_percent": 90.44921046429413,
+        "hazard_free_percent": 95.52910676408202,
+        "hazard_clutter_free_percent": 90.62880037709168
+      },
+      "PACT-Frozen": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1425964,
+        "hazard_free_frames": 1466867,
+        "hazard_clutter_free_frames": 1425964,
+        "collision_free_percent": 96.0212787448234,
+        "hazard_free_percent": 98.77559678125316,
+        "hazard_clutter_free_percent": 96.0212787448234
+      },
+      "PACT-Finetune": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1456050,
+        "hazard_free_frames": 1464902,
+        "hazard_clutter_free_frames": 1456050,
+        "collision_free_percent": 98.04720379785192,
+        "hazard_free_percent": 98.6432780041076,
+        "hazard_clutter_free_percent": 98.04720379785192
+      }
+    },
+    "pooled": {
+      "ACT": {
+        "rollouts": 150,
+        "physics_samples": 4455150,
+        "collision_free_frames": 4078594,
+        "hazard_free_frames": 4222417,
+        "hazard_clutter_free_frames": 4083857,
+        "collision_free_percent": 91.54784911843596,
+        "hazard_free_percent": 94.77609059178704,
+        "hazard_clutter_free_percent": 91.66598206569925
+      },
+      "PACT-Frozen": {
+        "rollouts": 150,
+        "physics_samples": 4455150,
+        "collision_free_frames": 4319253,
+        "hazard_free_frames": 4410477,
+        "hazard_clutter_free_frames": 4319253,
+        "collision_free_percent": 96.94966499444463,
+        "hazard_free_percent": 98.997272819097,
+        "hazard_clutter_free_percent": 96.94966499444463
+      },
+      "PACT-Finetune": {
+        "rollouts": 150,
+        "physics_samples": 4455150,
+        "collision_free_frames": 4369217,
+        "hazard_free_frames": 4400516,
+        "hazard_clutter_free_frames": 4369217,
+        "collision_free_percent": 98.07115360874494,
+        "hazard_free_percent": 98.77368887691773,
+        "hazard_clutter_free_percent": 98.07115360874494
+      }
+    },
+    "3104": {
+      "ACT": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1305914,
+        "hazard_free_frames": 1344449,
+        "hazard_clutter_free_frames": 1305914,
+        "collision_free_percent": 87.93737584593111,
+        "hazard_free_percent": 90.53223797178546,
+        "hazard_clutter_free_percent": 87.93737584593111
+      },
+      "PACT-Frozen": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1432846,
+        "hazard_free_frames": 1470779,
+        "hazard_clutter_free_frames": 1432846,
+        "collision_free_percent": 96.48469748493316,
+        "hazard_free_percent": 99.03902225514292,
+        "hazard_clutter_free_percent": 96.48469748493316
+      },
+      "PACT-Finetune": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1452721,
+        "hazard_free_frames": 1465444,
+        "hazard_clutter_free_frames": 1452721,
+        "collision_free_percent": 97.82303626140533,
+        "hazard_free_percent": 98.67977509174776,
+        "hazard_clutter_free_percent": 97.82303626140533
+      }
+    },
+    "3105": {
+      "ACT": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1429464,
+        "hazard_free_frames": 1459313,
+        "hazard_clutter_free_frames": 1432060,
+        "collision_free_percent": 96.25696104508266,
+        "hazard_free_percent": 98.26692703949362,
+        "hazard_clutter_free_percent": 96.43176997407495
+      },
+      "PACT-Frozen": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1460443,
+        "hazard_free_frames": 1472831,
+        "hazard_clutter_free_frames": 1460443,
+        "collision_free_percent": 98.34301875357733,
+        "hazard_free_percent": 99.17719942089492,
+        "hazard_clutter_free_percent": 98.34301875357733
+      },
+      "PACT-Finetune": {
+        "rollouts": 50,
+        "physics_samples": 1485050,
+        "collision_free_frames": 1460446,
+        "hazard_free_frames": 1470170,
+        "hazard_clutter_free_frames": 1460446,
+        "collision_free_percent": 98.34322076697754,
+        "hazard_free_percent": 98.99801353489781,
+        "hazard_clutter_free_percent": 98.34322076697754
+      }
+    }
+  }
+}

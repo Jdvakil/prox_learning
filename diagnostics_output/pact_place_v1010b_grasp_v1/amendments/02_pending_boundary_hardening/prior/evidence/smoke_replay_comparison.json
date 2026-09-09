@@ -1,0 +1,61 @@
+{
+  "comparison_eligible": false,
+  "comparisons": [
+    {
+      "actions": {
+        "arm": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 0.022661924362182617
+        },
+        "gripper": {
+          "exact": false,
+          "first_different_step": 407,
+          "max_abs": 255.0
+        },
+        "model_output": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 32.06278991699219
+        }
+      },
+      "arm": "ACT",
+      "failure_stage_exact": true,
+      "initial_pairing_passed": true,
+      "original_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_ACT_98c64a358f22edda",
+      "outcome_exact": true,
+      "replay_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+    },
+    {
+      "actions": {
+        "arm": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 0.005877137184143066
+        },
+        "gripper": {
+          "exact": true,
+          "first_different_step": null,
+          "max_abs": 0.0
+        },
+        "model_output": {
+          "exact": false,
+          "first_different_step": 0,
+          "max_abs": 2.2701034545898438
+        }
+      },
+      "arm": "PACT",
+      "failure_stage_exact": true,
+      "initial_pairing_passed": true,
+      "original_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_PACT_98c64a358f22edda",
+      "outcome_exact": true,
+      "replay_directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+    }
+  ],
+  "count": 2,
+  "no_demonstrated_defect": false,
+  "resolution": "Action/outcome mismatch requires explicit diagnosis; no causal eligibility inferred.",
+  "schema": "pact_v1010b_grasp_v1"
+}

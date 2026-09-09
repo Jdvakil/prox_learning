@@ -1,0 +1,83 @@
+{
+  "codec": "gzip4+shuffle numeric arrays; strings/scalars unchanged; all attributes preserved",
+  "max_standard_MiB": 32.598809242248535,
+  "mean_standard_MiB": 32.315697034200035,
+  "rows": [
+    {
+      "arm": "ACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.206329822540283,
+      "episode_id": "b68abe700e6bca8eb5ebbb3732eccb15bf5d7e91a2a1023ea3b10cf7369824fd",
+      "repacked_bytes": 31561432,
+      "seed": 3103,
+      "source_bytes": 48079343,
+      "source_sha256": "68ad1a7a17a6a14605e3a468fff236ac2996f1d74d66e03d13804ff5983cb549",
+      "total_standard_artifact_bytes": 34182329
+    },
+    {
+      "arm": "PACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.2264509201049805,
+      "episode_id": "b68abe700e6bca8eb5ebbb3732eccb15bf5d7e91a2a1023ea3b10cf7369824fd",
+      "repacked_bytes": 31380022,
+      "seed": 3103,
+      "source_bytes": 48008093,
+      "source_sha256": "a0d99ec701c65c6d265bd859c28b06573ba2d1f42cac3244cb8af16067edb0c3",
+      "total_standard_artifact_bytes": 33962436
+    },
+    {
+      "arm": "ACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.161741018295288,
+      "episode_id": "9c88f1ca628e69818819819ea663bf955594e0a6c3c9729e1e8cfd13a4aa7ebd",
+      "repacked_bytes": 31148818,
+      "seed": 3104,
+      "source_bytes": 47902525,
+      "source_sha256": "83a86126d0062074ae54ea2125e26a994b7e0aa99f7f7f8cff1071a0e0bb46fe",
+      "total_standard_artifact_bytes": 33754569
+    },
+    {
+      "arm": "PACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.1862640380859375,
+      "episode_id": "9c88f1ca628e69818819819ea663bf955594e0a6c3c9729e1e8cfd13a4aa7ebd",
+      "repacked_bytes": 31190681,
+      "seed": 3104,
+      "source_bytes": 47976305,
+      "source_sha256": "8c0ef0c81f659813b46852c9266c54f18ddba0c5e45fb644ddc462bbcb246518",
+      "total_standard_artifact_bytes": 33798540
+    },
+    {
+      "arm": "ACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.3260388374328613,
+      "episode_id": "a5b67ccfd9e4083c9d9bd1c39ad084d98e032b1819d1725860e6767fe53011d3",
+      "repacked_bytes": 31171487,
+      "seed": 3105,
+      "source_bytes": 47948418,
+      "source_sha256": "eeb1e94b06b4e4a91a1d0e16eb82e440522e3989259faa98378da8173c71bc2a",
+      "total_standard_artifact_bytes": 33674522
+    },
+    {
+      "arm": "PACT",
+      "datasets_exact": 437,
+      "elapsed_s": 2.1350584030151367,
+      "episode_id": "a5b67ccfd9e4083c9d9bd1c39ad084d98e032b1819d1725860e6767fe53011d3",
+      "repacked_bytes": 31439231,
+      "seed": 3105,
+      "source_bytes": 47996193,
+      "source_sha256": "8e56ed04bcdf8a4e2651276248665a9c9669dc83afac3be1eb293f9c5d1032d3",
+      "total_standard_artifact_bytes": 33940390
+    }
+  ],
+  "rule": "min sha256(v1010b/storage/+episode_id) per arm/seed; outcomes unused",
+  "source_hashes": {
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3103_h100/final_3103_h100_ACT_b68abe700e6bca8e/trajectory.h5": "68ad1a7a17a6a14605e3a468fff236ac2996f1d74d66e03d13804ff5983cb549",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3103_h100/final_3103_h100_PACT_b68abe700e6bca8e/trajectory.h5": "a0d99ec701c65c6d265bd859c28b06573ba2d1f42cac3244cb8af16067edb0c3",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_ACT_9c88f1ca628e6981/trajectory.h5": "83a86126d0062074ae54ea2125e26a994b7e0aa99f7f7f8cff1071a0e0bb46fe",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3104_h100/final_3104_h100_PACT_9c88f1ca628e6981/trajectory.h5": "8c0ef0c81f659813b46852c9266c54f18ddba0c5e45fb644ddc462bbcb246518",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_ACT_a5b67ccfd9e4083c/trajectory.h5": "eeb1e94b06b4e4a91a1d0e16eb82e440522e3989259faa98378da8173c71bc2a",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_a5b67ccfd9e4083c/trajectory.h5": "8e56ed04bcdf8a4e2651276248665a9c9669dc83afac3be1eb293f9c5d1032d3",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_audit/rollout_audit.json": "59f68140cd881851b05a4949d67a36af84be64757d7c9ad87d78952a085fa61f"
+  }
+}

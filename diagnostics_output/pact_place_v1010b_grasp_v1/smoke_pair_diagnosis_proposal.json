@@ -1,0 +1,23 @@
+{
+  "schema": "pact_v1010b_grasp_v1",
+  "state": "PROPOSED_EXPLICIT_ELIGIBILITY_RESOLUTION",
+  "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+  "original_outcomes_and_categories_unchanged": true,
+  "first_query_onset_explanation": "Saved initial qpos and PACT proximity embeddings are exact. Tolerated rendered RGB differences reproduce both actual first-query actions exactly under each frozen checkpoint. Repeated inference is exact.",
+  "remaining_trace_interpretation": "Later divergence is consistent with closed-loop propagation; later historical policy images are unavailable, so this does not independently attribute every subsequent difference.",
+  "mechanism_scope": "New instrumented replay chronology only; original outcomes remain separately retained. No exact trajectory identity claim.",
+  "proposed_requirement_for_remaining_replays": [
+    "Original/non-RGB state pairing and original RGB tolerance pass.",
+    "All900 post-hook tensors and reconstructed applied actions pass.",
+    "Independent original/new first-query outputs reconstruct exactly and repeated inference is exact.",
+    "Qpos and PACT proximity inputs are identical; differing first actions are attributable exactly to tolerated differing RGB.",
+    "Task success and exclusive failure category remain unchanged. Any mismatch outside these conditions stops for separate diagnosis."
+  ],
+  "scientific_intervention_or_threshold_change": false,
+  "references": [
+    "first_query_reconstruction.json",
+    "replay_query_reconstruction/PACT_98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f.json",
+    "physics_recording_passivity_fixture.json",
+    "smoke_replay_comparison.json"
+  ]
+}

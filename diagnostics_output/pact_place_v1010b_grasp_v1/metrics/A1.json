@@ -1,0 +1,2586 @@
+{
+  "expected": 12,
+  "rows": [
+    {
+      "achieved_close_z_m": 0.8589834570884705,
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 6.004000000000672,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 6.004000000000672,
+          "end_control_step": 258,
+          "start_control_step": 167
+        },
+        {
+          "duration_s": 1.9800000000002216,
+          "end_control_step": 328,
+          "start_control_step": 298
+        },
+        {
+          "duration_s": 2.306000000000258,
+          "end_control_step": 369,
+          "start_control_step": 334
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.033099130859080124,
+        "close_fk_spread_median_m": 0.012762770870441389,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 148,
+      "close_fk_error_max_m": 0.00014279580077035823,
+      "close_tracking_gap_z_m": 0.005942323593427057,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8530411334950434,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 17.038000000001908,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 17.037999999996,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 107488,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 8519,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": -0.006750981632537401,
+        "close_requested_depth_m": -0.012693305225964457,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 65.50645080130644,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 24.64710040222659,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 65.34123369861885,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 25.004591597200314
+        },
+        "max_reference_shift_m": 0.004318613675762473,
+        "minimum_early_achieved_depth_m": -0.015113151791102286,
+        "minimum_early_initial_reference_depth_m": -0.013307331882748352,
+        "pad_body_origin_separation_at_close_m": 0.1771366062600238,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.09169842239145919,
+              0.09570045977040734
+            ],
+            [
+              0.18233743719563014,
+              0.18634095891981592
+            ]
+          ],
+          "signed_gap_m": 0.0866369774252228
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+      "failure_stage": "success",
+      "first_held_observation": 159,
+      "first_lift_observation": 162,
+      "first_touch_observation": 150,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 6.004000000000672,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.00030849288473828665,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.09837128671342399,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.0030402330439580627,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6507685433277346e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.9575586669421963e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "d449e584928afab6bdf5b1adf05f2acbb3824e779132a13cd60b036a89325e9e",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3104,
+        "checkpoint_sha256": "41b4a2fe9eaa3304c5f5466169a2a3e428610778004d2ee9280146c0afa6cd1d",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 17.037999999996,
+          "first_control_step": 150,
+          "frames": 8519
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "d3000cb68c08f4ee8a020587d966a03b0d87a61743690ffbc251cb2156e55d1b",
+      "row_sha256": "adaee9818179a11a98a987adcdc740bae4d92ec021874ffe81a5df3932ec0380",
+      "same_wall_longest_s": 6.004000000000672,
+      "scene_block": 3104,
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+      "seed": 3104,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 1252672317,
+        "seed_u64": 12968892508756656957
+      },
+      "task_success": true,
+      "training_seed": 3104,
+      "translation_only_rim": {
+        "close_achieved_depth_m": -0.0067509816325371785,
+        "close_requested_depth_m": -0.012693305225964235,
+        "minimum_early_achieved_depth_m": -0.013307331882748352,
+        "top_above_origin_m": 0.07198355028052605
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8709489703178406,
+      "acquisition_discrepancy_supported": true,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 0.5820000000000651,
+      "bilateral_runs_1s": [],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.036877487417636794,
+        "close_fk_spread_median_m": 0.013284873091456262,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 148,
+      "close_fk_error_max_m": 0.0004558775162695502,
+      "close_tracking_gap_z_m": 0.01804841939864854,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": false,
+      "command_close_z_m": 0.852900550919192,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 1.5080000000001688,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 1.508000000001001,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 1961,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 754,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": false,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3104_frozen60000_98c64a358f22edda/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.004672180386829705,
+        "close_requested_depth_m": -0.013376239011818836,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 64.45273852398263,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 25.750450490950097,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 64.46395086882637,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 25.726818256871912
+        },
+        "max_reference_shift_m": 0.0048066119175521616,
+        "minimum_early_achieved_depth_m": 0.004672180386829705,
+        "minimum_early_initial_reference_depth_m": 0.005009460568355939,
+        "pad_body_origin_separation_at_close_m": 0.1779457887033211,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.0419825688289635,
+              0.045984506880482015
+            ],
+            [
+              0.1328173291551685,
+              0.13696996067762804
+            ]
+          ],
+          "signed_gap_m": 0.08683282227468649
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": true,
+      "episode_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+      "failure_stage": "touched_without_hold",
+      "first_held_observation": null,
+      "first_lift_observation": null,
+      "first_touch_observation": 144,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.5820000000000651
+      },
+      "fk_error_max_m": 0.0004558775162695502,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.004209895592921287,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.030219985885007183,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6507685433277346e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.9575586669421963e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "d449e584928afab6bdf5b1adf05f2acbb3824e779132a13cd60b036a89325e9e",
+      "physics_samples": 29701,
+      "pickup_failure": true,
+      "placement_support": false,
+      "provenance": {
+        "checkpoint_seed": 3104,
+        "checkpoint_sha256": "d9dde0b628765ec6f48930eb8cf2ebfd6ac8acff1d9a2e6547ad7ed85939d811",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 1.508000000001001,
+          "first_control_step": 144,
+          "frames": 754
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": true,
+      "result_sha256": "6c736ba9f0b8dfbd3f2b00d188d9dd280b830d2e37e7ce2605f5b5f86b45b7fa",
+      "row_sha256": "adaee9818179a11a98a987adcdc740bae4d92ec021874ffe81a5df3932ec0380",
+      "same_wall_longest_s": 0.5820000000000651,
+      "scene_block": 3104,
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+      "seed": 3104,
+      "sustained_lift_15_observations": false,
+      "target_held": false,
+      "target_lifted_1cm": false,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 1252672317,
+        "seed_u64": 12968892508756656957
+      },
+      "task_success": false,
+      "training_seed": 3104,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.005009460568355939,
+        "close_requested_depth_m": -0.013038958830292602,
+        "minimum_early_achieved_depth_m": 0.005009460568355939,
+        "top_above_origin_m": 0.07198355028052605
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8681120872497556,
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 99.91582774990742,
+      "bilateral_longest_s": 6.794000000000761,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 5.54000000000062,
+          "end_control_step": 230,
+          "start_control_step": 146
+        },
+        {
+          "duration_s": 6.794000000000761,
+          "end_control_step": 334,
+          "start_control_step": 231
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.03922777023513074,
+        "close_fk_spread_median_m": 0.010720822334215974,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 126,
+      "close_fk_error_max_m": 0.0004435267092375735,
+      "close_tracking_gap_z_m": 0.021126014902307144,
+      "clutter_contact_episode": true,
+      "clutter_stability_events": 1,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "command_close_z_m": 0.8469860723474485,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.050000000000005596,
+        "grasp_target": 16.28000000000182,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.04999999999999993,
+        "grasp_target": 16.279999999996996,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 38,
+        "grasp_target": 106206,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 25,
+        "grasp_target": 8140,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3103_frozen60000_621d8bd12acc6e72/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.0017222437697747006,
+        "close_requested_depth_m": -0.019403771132532444,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 84.04130341595076,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 6.178723814006419,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 83.673564747238,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 8.953646015177489
+        },
+        "max_reference_shift_m": 0.006320223566246952,
+        "minimum_early_achieved_depth_m": -0.021036581037480517,
+        "minimum_early_initial_reference_depth_m": -0.019453197462163563,
+        "pad_body_origin_separation_at_close_m": 0.1779933646065485,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.32418166688314765,
+              0.3281836810813742
+            ],
+            [
+              0.4150224770621446,
+              0.4191857067933144
+            ]
+          ],
+          "signed_gap_m": 0.08683879598077043
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "621d8bd12acc6e7256e2a671b85f49c0168e469e53ac02193dc8e0ba09be2d11",
+      "failure_stage": "success",
+      "first_held_observation": 132,
+      "first_lift_observation": 138,
+      "first_touch_observation": 121,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 6.794000000000761,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0006332080128605155,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.08769395822180093,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.027686876966668716,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 0.00028750691453614195,
+          "max_rotation_deg": 0.15812060860400146,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 38,
+          "contact_episode": true,
+          "contact_frames": 25,
+          "max_displacement_m": 0.03420984769447923,
+          "max_rotation_deg": 17.170577047357074,
+          "stability_event": true,
+          "stable": false
+        }
+      },
+      "physical_row_digest": "d4f06ee9970277221f8b5efd52b4c07645b083b1e99459b6214499a3da84aa69",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3103,
+        "checkpoint_sha256": "9abe289b329b78ec622f1c22984dd995fdd471aecebcd6ca6fdfa64de7fddf81",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.04999999999999993,
+          "first_control_step": 0,
+          "frames": 25
+        },
+        "robot_cup": {
+          "duration_s": 16.279999999996996,
+          "first_control_step": 121,
+          "frames": 8140
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "af7e63bf8ef243a04603ad0f9a61eff15fb022042f7bf87a64968ee36be0e624",
+      "row_sha256": "4b1ccb0b03d02612a9fa4f57f75b847121fe84b57b9340d15da2fb54da16de1a",
+      "same_wall_longest_s": 6.794000000000761,
+      "scene_block": 3103,
+      "scene_id": "621d8bd12acc6e7256e2a671b85f49c0168e469e53ac02193dc8e0ba09be2d11",
+      "seed": 3103,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 3572679681,
+        "seed_u64": 14784280680635483137
+      },
+      "task_success": true,
+      "training_seed": 3103,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.002141763305357869,
+        "close_requested_depth_m": -0.018984251596949275,
+        "minimum_early_achieved_depth_m": -0.019453197462163674,
+        "top_above_origin_m": 0.07198355021762648
+      },
+      "union_duration_descriptor_s": 0.050000000000005596,
+      "union_duration_integrated_s": 0.04999999999999993,
+      "union_frames": 25,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8705483078956602,
+      "acquisition_discrepancy_supported": true,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 99.93266219992593,
+      "bilateral_longest_s": 0.004000000000000448,
+      "bilateral_runs_1s": [],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.06427716074883391,
+        "close_fk_spread_median_m": 0.03240224013402856,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 139,
+      "close_fk_error_max_m": 0.0003385865321398351,
+      "close_tracking_gap_z_m": 0.015047529689754646,
+      "clutter_contact_episode": true,
+      "clutter_stability_events": 1,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "command_close_z_m": 0.8555007782059055,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.040000000000004476,
+        "grasp_target": 1.9440000000002176,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.039999999999999925,
+        "grasp_target": 1.9440000000000026,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 34,
+        "grasp_target": 1311,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 20,
+        "grasp_target": 972,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": false,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3103_frozen60000_621d8bd12acc6e72/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.0023723886871830357,
+        "close_requested_depth_m": -0.01267514100257161,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 85.45933029701425,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 4.696704111821491,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 85.16161897828326,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 7.489576169566691
+        },
+        "max_reference_shift_m": 0.0045546825245247335,
+        "minimum_early_achieved_depth_m": 0.0023723886871830357,
+        "minimum_early_initial_reference_depth_m": 0.0037143435028511584,
+        "pad_body_origin_separation_at_close_m": 0.17799895960924353,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.24958226451689838,
+              0.25358419196642296
+            ],
+            [
+              0.3403426905887123,
+              0.3445276136885692
+            ]
+          ],
+          "signed_gap_m": 0.08675849862228935
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": true,
+      "episode_id": "621d8bd12acc6e7256e2a671b85f49c0168e469e53ac02193dc8e0ba09be2d11",
+      "failure_stage": "touched_without_hold",
+      "first_held_observation": null,
+      "first_lift_observation": null,
+      "first_touch_observation": 131,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0007378268153874774,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.003842893821836335,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.026654222957576912,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 8.493594677270449e-05,
+          "max_rotation_deg": 0.03624632077709604,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.641553642490635e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 34,
+          "contact_episode": true,
+          "contact_frames": 20,
+          "max_displacement_m": 0.033820735102098515,
+          "max_rotation_deg": 16.555228958248033,
+          "stability_event": true,
+          "stable": false
+        }
+      },
+      "physical_row_digest": "d4f06ee9970277221f8b5efd52b4c07645b083b1e99459b6214499a3da84aa69",
+      "physics_samples": 29701,
+      "pickup_failure": true,
+      "placement_support": false,
+      "provenance": {
+        "checkpoint_seed": 3103,
+        "checkpoint_sha256": "3dcdf673013f355cffaec491f8a8fc83d77c3a19368daba17b0a4a35271c5572",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.039999999999999925,
+          "first_control_step": 0,
+          "frames": 20
+        },
+        "robot_cup": {
+          "duration_s": 1.9440000000000026,
+          "first_control_step": 131,
+          "frames": 972
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": true,
+      "result_sha256": "36a039bc775a1890682e9a909a90a95a3df636f613b1313680959e036e115b65",
+      "row_sha256": "4b1ccb0b03d02612a9fa4f57f75b847121fe84b57b9340d15da2fb54da16de1a",
+      "same_wall_longest_s": 0.0,
+      "scene_block": 3103,
+      "scene_id": "621d8bd12acc6e7256e2a671b85f49c0168e469e53ac02193dc8e0ba09be2d11",
+      "seed": 3103,
+      "sustained_lift_15_observations": false,
+      "target_held": false,
+      "target_lifted_1cm": false,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 3572679681,
+        "seed_u64": 14784280680635483137
+      },
+      "task_success": false,
+      "training_seed": 3103,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.0037143435028510474,
+        "close_requested_depth_m": -0.011333186186903599,
+        "minimum_early_achieved_depth_m": 0.0037143435028510474,
+        "top_above_origin_m": 0.07198355021762648
+      },
+      "union_duration_descriptor_s": 0.040000000000004476,
+      "union_duration_integrated_s": 0.039999999999999925,
+      "union_frames": 20,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8441246747970583,
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 6.662000000000745,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 6.662000000000745,
+          "end_control_step": 259,
+          "start_control_step": 158
+        },
+        {
+          "duration_s": 6.332000000000709,
+          "end_control_step": 360,
+          "start_control_step": 264
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.01689391817448681,
+        "close_fk_spread_median_m": 0.005141700318800001,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 139,
+      "close_fk_error_max_m": 0.0001527969168779551,
+      "close_tracking_gap_z_m": 0.005459298450881445,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8386653763461769,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 16.834000000001883,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 16.833999999996003,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 113579,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 8417,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3105_frozen60000_c0ff4fd9273e6de8/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": -0.021609763923949643,
+        "close_requested_depth_m": -0.027069062374831088,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 11.588273818252523,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 78.38032582925649,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 12.501410841088965,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 78.57439074351338
+        },
+        "max_reference_shift_m": 0.005411503242559124,
+        "minimum_early_achieved_depth_m": -0.030469992193552398,
+        "minimum_early_initial_reference_depth_m": -0.028111343530748623,
+        "pad_body_origin_separation_at_close_m": 0.17713650714444393,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.07038238662566512,
+              0.07438442021452969
+            ],
+            [
+              0.16102127573801614,
+              0.16502479345066884
+            ]
+          ],
+          "signed_gap_m": 0.08663685552348645
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "c0ff4fd9273e6de8a16efdb2c68d4827f22a2bf32772633c610c90a732ec735b",
+      "failure_stage": "success",
+      "first_held_observation": 147,
+      "first_lift_observation": 153,
+      "first_touch_observation": 141,
+      "fixed_wall_longest_s": {
+        "0": 6.662000000000745,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0002413494824311637,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.08940260947654055,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.0027569430660547845,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6507685421585766e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 3.4150945850063763e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "547d75adf4675478a5f7e21a595806c3e84a233ef7791ccff77ab4816e1d9415",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3105,
+        "checkpoint_sha256": "1b440f76c4c0c5a3b834419dbd7779e77e3a1d8467647c517746122e0e6f1184",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 16.833999999996003,
+          "first_control_step": 141,
+          "frames": 8417
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "1cd1331e37e63532448877ae3c683ad2aa4106ccf0ecd504c1bc68798c71f050",
+      "row_sha256": "8cd3a3c8ec6b8bf158e2e76c267e090360c9cdb646947b7434ec75f4538cff37",
+      "same_wall_longest_s": 6.662000000000745,
+      "scene_block": 3105,
+      "scene_id": "c0ff4fd9273e6de8a16efdb2c68d4827f22a2bf32772633c610c90a732ec735b",
+      "seed": 3105,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 4072496994,
+        "seed_u64": 11684691070959837026
+      },
+      "task_success": true,
+      "training_seed": 3105,
+      "translation_only_rim": {
+        "close_achieved_depth_m": -0.02160976392394942,
+        "close_requested_depth_m": -0.027069062374830866,
+        "minimum_early_achieved_depth_m": -0.028111343530748623,
+        "top_above_origin_m": 0.07198355028052605
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8501434922218325,
+      "acquisition_discrepancy_supported": false,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 6.464000000000723,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 6.444000000000721,
+          "end_control_step": 267,
+          "start_control_step": 169
+        },
+        {
+          "duration_s": 6.464000000000723,
+          "end_control_step": 377,
+          "start_control_step": 279
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.013788401031823007,
+        "close_fk_spread_median_m": 0.007090706674823792,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 150,
+      "close_fk_error_max_m": 0.00013301289232521,
+      "close_tracking_gap_z_m": 0.005648925841450936,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8444945663803816,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 17.31000000000194,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 17.309999999995,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 118034,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 8655,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_c0ff4fd9273e6de8/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": -0.015590946499175473,
+        "close_requested_depth_m": -0.02123987234062641,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 18.31569426353681,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 71.72364841190122,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 18.700505708919763,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 71.85180022672914
+        },
+        "max_reference_shift_m": 0.003789857213061576,
+        "minimum_early_achieved_depth_m": -0.023458479517225794,
+        "minimum_early_initial_reference_depth_m": -0.021734815071560498,
+        "pad_body_origin_separation_at_close_m": 0.17713642810101432,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              -0.0032244870993639436,
+              0.00077757386870126
+            ],
+            [
+              0.08741458379929659,
+              0.09141815341318252
+            ]
+          ],
+          "signed_gap_m": 0.08663700993059534
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "c0ff4fd9273e6de8a16efdb2c68d4827f22a2bf32772633c610c90a732ec735b",
+      "failure_stage": "success",
+      "first_held_observation": 162,
+      "first_lift_observation": 165,
+      "first_touch_observation": 153,
+      "fixed_wall_longest_s": {
+        "0": 6.464000000000723,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.00027480189499848556,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.09498452943419677,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.002891257346272713,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6507685421585766e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 3.4150945850063763e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "547d75adf4675478a5f7e21a595806c3e84a233ef7791ccff77ab4816e1d9415",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3105,
+        "checkpoint_sha256": "d6a11633ec813e15baa231f18a05fba6e98d8e6f930e2b9b657cd5c9714d7ffe",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 17.309999999995,
+          "first_control_step": 152,
+          "frames": 8655
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "35e7abbc74ca35a157274bd0327bea6e03b0fdcaeaa1f66d50dd9c25b6560506",
+      "row_sha256": "8cd3a3c8ec6b8bf158e2e76c267e090360c9cdb646947b7434ec75f4538cff37",
+      "same_wall_longest_s": 6.464000000000723,
+      "scene_block": 3105,
+      "scene_id": "c0ff4fd9273e6de8a16efdb2c68d4827f22a2bf32772633c610c90a732ec735b",
+      "seed": 3105,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 4072496994,
+        "seed_u64": 11684691070959837026
+      },
+      "task_success": true,
+      "training_seed": 3105,
+      "translation_only_rim": {
+        "close_achieved_depth_m": -0.015590946499175251,
+        "close_requested_depth_m": -0.021239872340626187,
+        "minimum_early_achieved_depth_m": -0.021734815071560498,
+        "top_above_origin_m": 0.07198355028052605
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8490373492240906,
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 4.738000000000531,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 4.738000000000531,
+          "end_control_step": 219,
+          "start_control_step": 147
+        },
+        {
+          "duration_s": 2.904000000000325,
+          "end_control_step": 275,
+          "start_control_step": 231
+        },
+        {
+          "duration_s": 4.214000000000471,
+          "end_control_step": 340,
+          "start_control_step": 276
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.017915623696536834,
+        "close_fk_spread_median_m": 0.008229134420638329,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 130,
+      "close_fk_error_max_m": 0.0001374741495830098,
+      "close_tracking_gap_z_m": 0.005607694031257937,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8434296551928326,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 16.156000000001807,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 16.155999999996997,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 108642,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 8078,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3103_frozen60000_fecc06a7e3f15eec/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": -0.016697089496917283,
+        "close_requested_depth_m": -0.02230478352817522,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 73.56748106091847,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 16.39288613447761,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 73.76201531083574,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 17.040491905625238
+        },
+        "max_reference_shift_m": 0.002040966202611627,
+        "minimum_early_achieved_depth_m": -0.025545403138814038,
+        "minimum_early_initial_reference_depth_m": -0.02350443693620241,
+        "pad_body_origin_separation_at_close_m": 0.17713639321510696,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.0767781377775655,
+              0.08078020449462812
+            ],
+            [
+              0.16741718796551944,
+              0.17142075451954195
+            ]
+          ],
+          "signed_gap_m": 0.08663698347089131
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "fecc06a7e3f15eecc7f68a0d5344cfa1806f17d55033aa9198bfcae6a8994729",
+      "failure_stage": "success",
+      "first_held_observation": 138,
+      "first_lift_observation": 142,
+      "first_touch_observation": 132,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 4.738000000000531,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.00033085684343155786,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.08945881518939935,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.002884119392891238,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.650768543159861e-12,
+          "max_rotation_deg": 4.182619578303747e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "9f318fb9967d851d22ad94285eb9a01c732c2464269753415265036e84cbccca",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3103,
+        "checkpoint_sha256": "9abe289b329b78ec622f1c22984dd995fdd471aecebcd6ca6fdfa64de7fddf81",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 16.155999999996997,
+          "first_control_step": 132,
+          "frames": 8078
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "537e5d117333e8b79463955dc480c7256c0d381ec2d9a592b305a88da5a67097",
+      "row_sha256": "015d2a3d0af9dcd12e1767b75f81ec0703143771ca8ee4cad108acce66ddc056",
+      "same_wall_longest_s": 4.738000000000531,
+      "scene_block": 3103,
+      "scene_id": "fecc06a7e3f15eecc7f68a0d5344cfa1806f17d55033aa9198bfcae6a8994729",
+      "seed": 3103,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 96220398,
+        "seed_u64": 16412362591340082414
+      },
+      "task_success": true,
+      "training_seed": 3103,
+      "translation_only_rim": {
+        "close_achieved_depth_m": -0.016697089496917172,
+        "close_requested_depth_m": -0.02230478352817511,
+        "minimum_early_achieved_depth_m": -0.02350443693620241,
+        "top_above_origin_m": 0.07198355028052617
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8522910475730896,
+      "acquisition_discrepancy_supported": false,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 4.748000000000531,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 4.748000000000531,
+          "end_control_step": 219,
+          "start_control_step": 147
+        },
+        {
+          "duration_s": 3.020000000000338,
+          "end_control_step": 296,
+          "start_control_step": 250
+        },
+        {
+          "duration_s": 4.346000000000487,
+          "end_control_step": 373,
+          "start_control_step": 307
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.02766662517570677,
+        "close_fk_spread_median_m": 0.009325728964914029,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 129,
+      "close_fk_error_max_m": 0.000138809414078549,
+      "close_tracking_gap_z_m": 0.006849480295598398,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8454415672774912,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 18.50800000000207,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 18.507999999994993,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 127383,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 9254,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3103_frozen60000_fecc06a7e3f15eec/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": -0.01344339114791826,
+        "close_requested_depth_m": -0.020292871443516658,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 71.399083374325,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 18.529216543508618,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 71.62545096941469,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 19.19205035869812
+        },
+        "max_reference_shift_m": 0.004308742623553075,
+        "minimum_early_achieved_depth_m": -0.025979785825155588,
+        "minimum_early_initial_reference_depth_m": -0.022140102022936148,
+        "pad_body_origin_separation_at_close_m": 0.17713648378497496,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.11514964362734936,
+              0.1191516926445445
+            ],
+            [
+              0.20578866600593632,
+              0.2097922164546549
+            ]
+          ],
+          "signed_gap_m": 0.08663697336139181
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "fecc06a7e3f15eecc7f68a0d5344cfa1806f17d55033aa9198bfcae6a8994729",
+      "failure_stage": "success",
+      "first_held_observation": 140,
+      "first_lift_observation": 143,
+      "first_touch_observation": 132,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 4.748000000000531,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.000289010112880549,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.10710670266966038,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.003508699560582529,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.650768543159861e-12,
+          "max_rotation_deg": 4.182619578303747e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "9f318fb9967d851d22ad94285eb9a01c732c2464269753415265036e84cbccca",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3103,
+        "checkpoint_sha256": "3dcdf673013f355cffaec491f8a8fc83d77c3a19368daba17b0a4a35271c5572",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 18.507999999994993,
+          "first_control_step": 132,
+          "frames": 9254
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "c6471c31ddccea0c08e89f52c78cad1504c459f94dbf2b9ca8d15e3c330a6a76",
+      "row_sha256": "015d2a3d0af9dcd12e1767b75f81ec0703143771ca8ee4cad108acce66ddc056",
+      "same_wall_longest_s": 4.748000000000531,
+      "scene_block": 3103,
+      "scene_id": "fecc06a7e3f15eecc7f68a0d5344cfa1806f17d55033aa9198bfcae6a8994729",
+      "seed": 3103,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 96220398,
+        "seed_u64": 16412362591340082414
+      },
+      "task_success": true,
+      "training_seed": 3103,
+      "translation_only_rim": {
+        "close_achieved_depth_m": -0.013443391147918149,
+        "close_requested_depth_m": -0.020292871443516547,
+        "minimum_early_achieved_depth_m": -0.022140102022936148,
+        "top_above_origin_m": 0.07198355028052617
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.9104459285736081,
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 86.99707080569678,
+      "bilateral_longest_s": 0.0,
+      "bilateral_runs_1s": [],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.1747051383230605,
+        "close_fk_spread_median_m": 0.11942500640666606,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 106,
+      "close_fk_error_max_m": 0.0012525397200179936,
+      "close_tracking_gap_z_m": 0.023980713191499303,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "command_close_z_m": 0.8864652153821088,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 0.0,
+        "hazard_bar": 7.724000000000864,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 0.0,
+        "hazard_bar": 7.72400000000001,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 3946,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 3862,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": false,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3104_frozen60000_93cb60c3de7743f9/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.04471149048718459,
+        "close_requested_depth_m": 0.020730777295685288,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 45.038833846423174,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 47.04646031130507,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 46.565043046292544,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 45.53274024433487
+        },
+        "max_reference_shift_m": 5.3636761698783175e-11,
+        "minimum_early_achieved_depth_m": null,
+        "minimum_early_initial_reference_depth_m": null,
+        "pad_body_origin_separation_at_close_m": 0.1771379871787573,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              0.1737784456799544,
+              0.17778020837075503
+            ],
+            [
+              0.26441690214128916,
+              0.2684201343871025
+            ]
+          ],
+          "signed_gap_m": 0.08663669377053412
+        }
+      },
+      "early_depth_eligible": false,
+      "empty_hand_transport": true,
+      "episode_id": "93cb60c3de7743f97c670dd14629678476f6c54c459c1db3ac1e92565699c41d",
+      "failure_stage": "no_target_interaction",
+      "first_held_observation": null,
+      "first_lift_observation": null,
+      "first_touch_observation": null,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0012525397200179936,
+      "hazard_contact_episode": true,
+      "hazard_entries": 3946,
+      "hazard_frames": 3862,
+      "instrumented_chronology": false,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 4.933482511404463e-10,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.024549639525880407,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 5.392325496168533e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.688605625290709e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950668884e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "f73082bcffa71216259e9c7923b69d70e07e7f6da212016e51c7679a6f5176ed",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": false,
+      "provenance": {
+        "checkpoint_seed": 3104,
+        "checkpoint_sha256": "41b4a2fe9eaa3304c5f5466169a2a3e428610778004d2ee9280146c0afa6cd1d",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_hazard": {
+          "duration_s": 7.72400000000001,
+          "first_control_step": 24,
+          "frames": 3862
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "2d46a0c84458edee201742c4f7d2cd3dcfcdca8fba4e51ce19e291f297c91232",
+      "row_sha256": "9f0bf6b0440590f184a0d5330a9aa44e7f04bc46c64178f513d14f2614b0867e",
+      "same_wall_longest_s": 0.0,
+      "scene_block": 3104,
+      "scene_id": "93cb60c3de7743f97c670dd14629678476f6c54c459c1db3ac1e92565699c41d",
+      "seed": 3104,
+      "sustained_lift_15_observations": false,
+      "target_held": false,
+      "target_lifted_1cm": false,
+      "target_touch": false,
+      "task_seed": {
+        "seed_u32": 2047912681,
+        "seed_u64": 9505444097671867113
+      },
+      "task_success": false,
+      "training_seed": 3104,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.04471149043354783,
+        "close_requested_depth_m": 0.020730777242048526,
+        "minimum_early_achieved_depth_m": null,
+        "top_above_origin_m": 0.07198355053708894
+      },
+      "union_duration_descriptor_s": 7.724000000000864,
+      "union_duration_integrated_s": 7.72400000000001,
+      "union_frames": 3862,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8705067634582516,
+      "acquisition_discrepancy_supported": false,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 11.6140000000013,
+      "bilateral_runs_1s": [
+        {
+          "duration_s": 11.6140000000013,
+          "end_control_step": 320,
+          "start_control_step": 144
+        }
+      ],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.02924203018371096,
+        "close_fk_spread_median_m": 0.009073132911567142,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 132,
+      "close_fk_error_max_m": 0.00034472564861620945,
+      "close_tracking_gap_z_m": 0.013845530214980917,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "command_close_z_m": 0.8566612332432707,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 14.842000000001661,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 14.841999999998004,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 85860,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 7421,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": true,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3104_frozen60000_93cb60c3de7743f9/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.00459203177056311,
+        "close_requested_depth_m": -0.009253498444417807,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 66.61868476914186,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 23.547921184093866,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 66.52834177369931,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 23.7541549905171
+        },
+        "max_reference_shift_m": 0.004539335778273257,
+        "minimum_early_achieved_depth_m": -0.017171612649823587,
+        "minimum_early_initial_reference_depth_m": -0.012786318775843686,
+        "pad_body_origin_separation_at_close_m": 0.1779766379964763,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              -0.01882623072693616,
+              -0.014649473436637325
+            ],
+            [
+              0.07212355819004229,
+              0.07612705335102873
+            ]
+          ],
+          "signed_gap_m": 0.08677303162667961
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": false,
+      "episode_id": "93cb60c3de7743f97c670dd14629678476f6c54c459c1db3ac1e92565699c41d",
+      "failure_stage": "success",
+      "first_held_observation": 144,
+      "first_lift_observation": 146,
+      "first_touch_observation": 129,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 11.6140000000013,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0004833671901696051,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.08886913138355068,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.0199314028651274,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 5.392325496168533e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.688605625290709e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950668884e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "f73082bcffa71216259e9c7923b69d70e07e7f6da212016e51c7679a6f5176ed",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": true,
+      "provenance": {
+        "checkpoint_seed": 3104,
+        "checkpoint_sha256": "d9dde0b628765ec6f48930eb8cf2ebfd6ac8acff1d9a2e6547ad7ed85939d811",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 14.841999999998004,
+          "first_control_step": 129,
+          "frames": 7421
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "2106de5ef033b184936e45fee77eaeda07142650c17ee86fb1c67532dd72d9e9",
+      "row_sha256": "9f0bf6b0440590f184a0d5330a9aa44e7f04bc46c64178f513d14f2614b0867e",
+      "same_wall_longest_s": 11.6140000000013,
+      "scene_block": 3104,
+      "scene_id": "93cb60c3de7743f97c670dd14629678476f6c54c459c1db3ac1e92565699c41d",
+      "seed": 3104,
+      "sustained_lift_15_observations": true,
+      "target_held": true,
+      "target_lifted_1cm": true,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 2047912681,
+        "seed_u64": 9505444097671867113
+      },
+      "task_success": true,
+      "training_seed": 3104,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.004725087417938201,
+        "close_requested_depth_m": -0.009120442797042716,
+        "minimum_early_achieved_depth_m": -0.012786318775843686,
+        "top_above_origin_m": 0.07198355053708894
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    },
+    {
+      "acquisition_discrepancy_supported": false,
+      "arm": "ACT",
+      "averaging_history": 100,
+      "avoidance_percent": 92.63997845190397,
+      "bilateral_longest_s": 0.0,
+      "bilateral_runs_1s": [],
+      "chunk_dispersion": null,
+      "close_command_index": null,
+      "close_fk_error_max_m": null,
+      "close_tracking_gap_z_m": null,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 0.0,
+        "hazard_bar": 4.372000000000489,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 0.0,
+        "hazard_bar": 4.371999999999995,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 2609,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 2186,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": false,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_ACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": null,
+        "close_requested_depth_m": null,
+        "max_reference_shift_m": 5.502265310042276e-13,
+        "minimum_early_achieved_depth_m": null,
+        "minimum_early_initial_reference_depth_m": null,
+        "pad_body_origin_separation_at_close_m": null
+      },
+      "early_depth_eligible": false,
+      "empty_hand_transport": true,
+      "episode_id": "0f25bb0b1a72d962671d75fd44b7551c352e8528bcae9acf9ba8588d483c18f3",
+      "failure_stage": "no_target_interaction",
+      "first_held_observation": null,
+      "first_lift_observation": null,
+      "first_touch_observation": null,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 0.0,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0009632262641018377,
+      "hazard_contact_episode": true,
+      "hazard_entries": 2609,
+      "hazard_frames": 2186,
+      "instrumented_chronology": false,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 2.347130267921216e-10,
+      "median_physics_dt_s": 0.002000000000000224,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.7030650647115486e-12,
+          "max_rotation_deg": 5.122641877509565e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.632671872742309e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "9ebe99435e79be80b240b90fd13a6cb718f635e1634ab607cbf1ab865811dd8c",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": false,
+      "provenance": {
+        "checkpoint_seed": 3105,
+        "checkpoint_sha256": "1b440f76c4c0c5a3b834419dbd7779e77e3a1d8467647c517746122e0e6f1184",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_hazard": {
+          "duration_s": 4.371999999999995,
+          "first_control_step": 23,
+          "frames": 2186
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "3004826257b0ba5d6590b66932139ed9925d64b86d06e07d46aa9ee459769bb4",
+      "row_sha256": "e679153bd45c5b16243b5ab65f04968e0c33f7482b791b63e9f09ce7d80adfff",
+      "same_wall_longest_s": 0.0,
+      "scene_block": 3105,
+      "scene_id": "0f25bb0b1a72d962671d75fd44b7551c352e8528bcae9acf9ba8588d483c18f3",
+      "seed": 3105,
+      "sustained_lift_15_observations": false,
+      "target_held": false,
+      "target_lifted_1cm": false,
+      "target_touch": false,
+      "task_seed": {
+        "seed_u32": 1522084588,
+        "seed_u64": 15336040983774702316
+      },
+      "task_success": false,
+      "training_seed": 3105,
+      "translation_only_rim": {
+        "close_achieved_depth_m": null,
+        "close_requested_depth_m": null,
+        "minimum_early_achieved_depth_m": null,
+        "top_above_origin_m": 0.07198355027789705
+      },
+      "union_duration_descriptor_s": 4.372000000000489,
+      "union_duration_integrated_s": 4.371999999999995,
+      "union_frames": 2186,
+      "variant": "frozen60000"
+    },
+    {
+      "achieved_close_z_m": 0.8743509650230408,
+      "acquisition_discrepancy_supported": true,
+      "arm": "PACT",
+      "averaging_history": 100,
+      "avoidance_percent": 100.0,
+      "bilateral_longest_s": 0.9800000000001097,
+      "bilateral_runs_1s": [],
+      "chunk_dispersion": {
+        "close_contributors": 100,
+        "close_fk_spread_max_m": 0.026086200729347715,
+        "close_fk_spread_median_m": 0.01917948145244951,
+        "interpretation": "Dispersion alone does not prove incompatible approaches or establish aggregation causality."
+      },
+      "close_command_index": 152,
+      "close_fk_error_max_m": 0.0003162517717169011,
+      "close_tracking_gap_z_m": 0.02413790175525421,
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": false,
+      "command_close_z_m": 0.8502130632677866,
+      "contact_duration_descriptor_s": {
+        "clutter": 0.0,
+        "grasp_target": 2.662000000000298,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_duration_integrated_s": {
+        "clutter": 0.0,
+        "grasp_target": 2.662000000001001,
+        "hazard_bar": 0.0,
+        "mounted_fixture": 0.0,
+        "other_environment": 0.0,
+        "place_receptacle": 0.0
+      },
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 3823,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 1331,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "continuous_bilateral_1s": false,
+      "directory": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00",
+      "dynamic_rim": {
+        "close_achieved_depth_m": 0.0020149289533049064,
+        "close_requested_depth_m": -0.022122972801949303,
+        "closing_axis_to_wall_normal_deg": {
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_0": 87.19165561293245,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_1": 8.248028330041926,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_3": 86.11037807164888,
+          "cavity_obj_0/Cup_10_cup_10_PrimitiveCollider_4": 13.874771658022507
+        },
+        "max_reference_shift_m": 0.006354574127342194,
+        "minimum_early_achieved_depth_m": 0.006066319148865906,
+        "minimum_early_initial_reference_depth_m": 0.0124208932762081,
+        "pad_body_origin_separation_at_close_m": 0.17867875615103346,
+        "pad_collider_opening_at_close": {
+          "definition": "Signed interval separation of the four pad box colliders along world-transformed TCP local+Y; body origins are not pad centers.",
+          "projected_intervals_m": [
+            [
+              -0.3300871212894909,
+              -0.3256670564250734
+            ],
+            [
+              -0.239152058249617,
+              -0.2351486814689262
+            ]
+          ],
+          "signed_gap_m": 0.08651499817545638
+        }
+      },
+      "early_depth_eligible": true,
+      "empty_hand_transport": true,
+      "episode_id": "0f25bb0b1a72d962671d75fd44b7551c352e8528bcae9acf9ba8588d483c18f3",
+      "failure_stage": "held_without_lift",
+      "first_held_observation": 153,
+      "first_lift_observation": null,
+      "first_touch_observation": 139,
+      "fixed_wall_longest_s": {
+        "0": 0.0,
+        "1": 0.9760000000001092,
+        "3": 0.0,
+        "4": 0.0
+      },
+      "fk_error_max_m": 0.0003162517717169011,
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "instrumented_chronology": true,
+      "integration_convention": "left-closed/right-open intervals; terminal sample contributes zero",
+      "max_target_lift_m": 0.005492348429921856,
+      "median_physics_dt_s": 0.002000000000000224,
+      "next_observation_tracking_gap_z_m": 0.030924665423314512,
+      "overlap_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.7030650647115486e-12,
+          "max_rotation_deg": 5.122641877509565e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.632671872742309e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "physical_row_digest": "9ebe99435e79be80b240b90fd13a6cb718f635e1634ab607cbf1ab865811dd8c",
+      "physics_samples": 29701,
+      "pickup_failure": false,
+      "placement_support": false,
+      "provenance": {
+        "checkpoint_seed": 3105,
+        "checkpoint_sha256": "d6a11633ec813e15baa231f18a05fba6e98d8e6f930e2b9b657cd5c9714d7ffe",
+        "stats_sha256": "c15e9673e5c619ba1c86d54ab45d8a90843ec296ed768dfeb4e588808aaae107",
+        "variant": "frozen60000"
+      },
+      "raw_contact_kinds": {
+        "cup_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_clutter": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_cup": {
+          "duration_s": 2.662000000001001,
+          "first_control_step": 139,
+          "frames": 1331
+        },
+        "robot_hazard": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        },
+        "robot_other": {
+          "duration_s": 0.0,
+          "first_control_step": null,
+          "frames": 0
+        }
+      },
+      "raw_touched_never_held": false,
+      "result_sha256": "92f3ef4bc11c9612f6d82fd1f67a20c7a0da8f4f2637d97451c0e4152cf0ce43",
+      "row_sha256": "e679153bd45c5b16243b5ab65f04968e0c33f7482b791b63e9f09ce7d80adfff",
+      "same_wall_longest_s": 0.9760000000001092,
+      "scene_block": 3105,
+      "scene_id": "0f25bb0b1a72d962671d75fd44b7551c352e8528bcae9acf9ba8588d483c18f3",
+      "seed": 3105,
+      "sustained_lift_15_observations": false,
+      "target_held": true,
+      "target_lifted_1cm": false,
+      "target_touch": true,
+      "task_seed": {
+        "seed_u32": 1522084588,
+        "seed_u64": 15336040983774702316
+      },
+      "task_success": false,
+      "training_seed": 3105,
+      "translation_only_rim": {
+        "close_achieved_depth_m": 0.005572701845708128,
+        "close_requested_depth_m": -0.018565199909546082,
+        "minimum_early_achieved_depth_m": 0.01242089327620799,
+        "top_above_origin_m": 0.07198355027789705
+      },
+      "union_duration_descriptor_s": 0.0,
+      "union_duration_integrated_s": 0.0,
+      "union_frames": 0,
+      "variant": "frozen60000"
+    }
+  ],
+  "schema": "pact_v1010b_grasp_v1",
+  "stage": "A1"
+}

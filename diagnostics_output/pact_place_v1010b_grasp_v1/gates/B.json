@@ -1,0 +1,1402 @@
+{
+  "checks": {
+    "complete_denominator": true,
+    "frozen60000/ACT/3103/avoidance": false,
+    "frozen60000/ACT/3103/cfts": true,
+    "frozen60000/ACT/3103/success": true,
+    "frozen60000/ACT/3104/avoidance": true,
+    "frozen60000/ACT/3104/cfts": true,
+    "frozen60000/ACT/3104/success": true,
+    "frozen60000/ACT/3105/avoidance": true,
+    "frozen60000/ACT/3105/cfts": false,
+    "frozen60000/ACT/3105/success": true,
+    "frozen60000/ACT/pooled_cfts": false,
+    "frozen60000/ACT/pooled_success": true,
+    "frozen60000/ACT/union_frames": false,
+    "frozen60000/PACT/3103/avoidance": true,
+    "frozen60000/PACT/3103/cfts": true,
+    "frozen60000/PACT/3103/postlift": true,
+    "frozen60000/PACT/3103/success": true,
+    "frozen60000/PACT/3104/avoidance": false,
+    "frozen60000/PACT/3104/cfts": true,
+    "frozen60000/PACT/3104/success": true,
+    "frozen60000/PACT/3105/avoidance": false,
+    "frozen60000/PACT/3105/cfts": true,
+    "frozen60000/PACT/3105/success": true,
+    "frozen60000/PACT/measured_repairs": true,
+    "frozen60000/PACT/pickup_reduction": false,
+    "frozen60000/PACT/pooled_cfts": true,
+    "frozen60000/PACT/pooled_success": true,
+    "frozen60000/PACT/union_frames": false,
+    "uniform63000/ACT/3103/avoidance": false,
+    "uniform63000/ACT/3103/cfts": true,
+    "uniform63000/ACT/3103/success": true,
+    "uniform63000/ACT/3104/avoidance": true,
+    "uniform63000/ACT/3104/cfts": true,
+    "uniform63000/ACT/3104/success": true,
+    "uniform63000/ACT/3105/avoidance": true,
+    "uniform63000/ACT/3105/cfts": true,
+    "uniform63000/ACT/3105/success": true,
+    "uniform63000/ACT/pooled_cfts": false,
+    "uniform63000/ACT/pooled_success": true,
+    "uniform63000/ACT/union_frames": false,
+    "uniform63000/PACT/3103/avoidance": true,
+    "uniform63000/PACT/3103/cfts": false,
+    "uniform63000/PACT/3103/postlift": true,
+    "uniform63000/PACT/3103/success": false,
+    "uniform63000/PACT/3104/avoidance": true,
+    "uniform63000/PACT/3104/cfts": true,
+    "uniform63000/PACT/3104/success": true,
+    "uniform63000/PACT/3105/avoidance": false,
+    "uniform63000/PACT/3105/cfts": true,
+    "uniform63000/PACT/3105/success": false,
+    "uniform63000/PACT/measured_repairs": false,
+    "uniform63000/PACT/pickup_reduction": false,
+    "uniform63000/PACT/pooled_cfts": false,
+    "uniform63000/PACT/pooled_success": false,
+    "uniform63000/PACT/union_frames": false
+  },
+  "details": {
+    "frozen60000": {
+      "ACT": {
+        "3103": {
+          "acquisition_repairs": 0,
+          "candidate": {
+            "avoidance_percent": 89.80281247544976,
+            "cfts": 3,
+            "failure_stages": {
+              "lifted_without_placement": 2,
+              "no_target_interaction": 3,
+              "success": 6,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 2,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 6,
+            "union_frames": 36344
+          },
+          "control": {
+            "avoidance_percent": 95.57506481263258,
+            "cfts": 4,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 6,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 6,
+            "union_frames": 15771
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 1
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 2
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 1
+            }
+          },
+          "repair_chronology": [],
+          "repair_ids": [],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3104": {
+          "acquisition_repairs": 0,
+          "candidate": {
+            "avoidance_percent": 97.12804282684084,
+            "cfts": 5,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 7,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 7,
+            "union_frames": 10236
+          },
+          "control": {
+            "avoidance_percent": 94.4252718763678,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 4,
+              "success": 6,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 6,
+            "union_frames": 19869
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 1,
+              "control_only": 0
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 0
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 0
+            }
+          },
+          "repair_chronology": [],
+          "repair_ids": [],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3105": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 95.62332356935232,
+            "cfts": 3,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 1,
+              "no_target_interaction": 5,
+              "success": 5
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 0,
+            "success": 5,
+            "union_frames": 15599
+          },
+          "control": {
+            "avoidance_percent": 95.03636241203999,
+            "cfts": 5,
+            "failure_stages": {
+              "no_target_interaction": 3,
+              "success": 6,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 0,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 3,
+            "success": 6,
+            "union_frames": 17691
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 2
+            },
+            "pickup_failure": {
+              "candidate_only": 0,
+              "control_only": 3
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 2
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 16.942000000001897,
+                  "end_control_step": 413,
+                  "start_control_step": 156
+                }
+              ],
+              "first_lift": 159,
+              "scene_id": "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "pooled": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 94.18472629054764,
+            "cfts": 11,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 4,
+              "no_target_interaction": 10,
+              "success": 18,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 4,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 3,
+            "success": 18,
+            "union_frames": 62179
+          },
+          "control": {
+            "avoidance_percent": 95.01223303368013,
+            "cfts": 13,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 2,
+              "no_target_interaction": 9,
+              "success": 18,
+              "touched_without_hold": 6
+            },
+            "lifted_without_placement": 2,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 6,
+            "success": 18,
+            "union_frames": 53331
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 1,
+              "control_only": 3
+            },
+            "pickup_failure": {
+              "candidate_only": 2,
+              "control_only": 5
+            },
+            "task_success": {
+              "candidate_only": 3,
+              "control_only": 3
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 16.942000000001897,
+                  "end_control_step": 413,
+                  "start_control_step": 156
+                }
+              ],
+              "first_lift": 159,
+              "scene_id": "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        }
+      },
+      "PACT": {
+        "3103": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 99.28593874504786,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 5,
+              "touched_without_hold": 5
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 5,
+            "success": 5,
+            "union_frames": 2545
+          },
+          "control": {
+            "avoidance_percent": 97.90607499186335,
+            "cfts": 2,
+            "failure_stages": {
+              "lifted_without_placement": 5,
+              "no_target_interaction": 1,
+              "success": 3,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 5,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 3,
+            "success": 3,
+            "union_frames": 7463
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 2,
+              "control_only": 0
+            },
+            "pickup_failure": {
+              "candidate_only": 3,
+              "control_only": 1
+            },
+            "task_success": {
+              "candidate_only": 3,
+              "control_only": 1
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.662000000000745,
+                  "end_control_step": 267,
+                  "start_control_step": 166
+                },
+                {
+                  "duration_s": 3.6300000000004062,
+                  "end_control_step": 343,
+                  "start_control_step": 288
+                },
+                {
+                  "duration_s": 2.4360000000002726,
+                  "end_control_step": 382,
+                  "start_control_step": 345
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299",
+              "training_seed": 3103
+            }
+          ],
+          "repair_ids": [
+            [
+              3103,
+              "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3104": {
+          "acquisition_repairs": 3,
+          "candidate": {
+            "avoidance_percent": 98.10219633457908,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 8,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 8,
+            "union_frames": 6764
+          },
+          "control": {
+            "avoidance_percent": 98.83196974288182,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 6,
+              "touched_without_hold": 4
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 4,
+            "success": 6,
+            "union_frames": 4163
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 2,
+              "control_only": 2
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 3
+            },
+            "task_success": {
+              "candidate_only": 3,
+              "control_only": 1
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 5.670000000000634,
+                  "end_control_step": 245,
+                  "start_control_step": 159
+                },
+                {
+                  "duration_s": 11.152000000001248,
+                  "end_control_step": 439,
+                  "start_control_step": 270
+                },
+                {
+                  "duration_s": 1.5140000000001694,
+                  "end_control_step": 469,
+                  "start_control_step": 446
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8",
+              "training_seed": 3104
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 7.188000000000804,
+                  "end_control_step": 269,
+                  "start_control_step": 160
+                },
+                {
+                  "duration_s": 3.9620000000004434,
+                  "end_control_step": 330,
+                  "start_control_step": 270
+                },
+                {
+                  "duration_s": 2.636000000000295,
+                  "end_control_step": 372,
+                  "start_control_step": 332
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74",
+              "training_seed": 3104
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.136000000000687,
+                  "end_control_step": 250,
+                  "start_control_step": 157
+                },
+                {
+                  "duration_s": 6.1880000000006925,
+                  "end_control_step": 347,
+                  "start_control_step": 253
+                }
+              ],
+              "first_lift": 153,
+              "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+              "training_seed": 3104
+            }
+          ],
+          "repair_ids": [
+            [
+              3104,
+              "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8"
+            ],
+            [
+              3104,
+              "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74"
+            ],
+            [
+              3104,
+              "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3105": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 93.53192372871845,
+            "cfts": 5,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 2,
+              "no_target_interaction": 1,
+              "success": 7,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 2,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 7,
+            "union_frames": 23053
+          },
+          "control": {
+            "avoidance_percent": 96.44512530442297,
+            "cfts": 5,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 7,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 7,
+            "union_frames": 12670
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 1,
+              "control_only": 1
+            },
+            "pickup_failure": {
+              "candidate_only": 0,
+              "control_only": 1
+            },
+            "task_success": {
+              "candidate_only": 2,
+              "control_only": 2
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 16.0720000000018,
+                  "end_control_step": 390,
+                  "start_control_step": 146
+                }
+              ],
+              "first_lift": 158,
+              "scene_id": "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "pooled": {
+          "acquisition_repairs": 5,
+          "candidate": {
+            "avoidance_percent": 96.97335293611513,
+            "cfts": 13,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 4,
+              "no_target_interaction": 3,
+              "success": 20,
+              "touched_without_hold": 8
+            },
+            "lifted_without_placement": 4,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 8,
+            "success": 20,
+            "union_frames": 32362
+          },
+          "control": {
+            "avoidance_percent": 97.72772334638938,
+            "cfts": 11,
+            "failure_stages": {
+              "lifted_without_placement": 7,
+              "no_target_interaction": 4,
+              "success": 16,
+              "touched_without_hold": 9
+            },
+            "lifted_without_placement": 7,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 9,
+            "success": 16,
+            "union_frames": 24296
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 5,
+              "control_only": 3
+            },
+            "pickup_failure": {
+              "candidate_only": 4,
+              "control_only": 5
+            },
+            "task_success": {
+              "candidate_only": 8,
+              "control_only": 4
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 5.670000000000634,
+                  "end_control_step": 245,
+                  "start_control_step": 159
+                },
+                {
+                  "duration_s": 11.152000000001248,
+                  "end_control_step": 439,
+                  "start_control_step": 270
+                },
+                {
+                  "duration_s": 1.5140000000001694,
+                  "end_control_step": 469,
+                  "start_control_step": 446
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8",
+              "training_seed": 3104
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 7.188000000000804,
+                  "end_control_step": 269,
+                  "start_control_step": 160
+                },
+                {
+                  "duration_s": 3.9620000000004434,
+                  "end_control_step": 330,
+                  "start_control_step": 270
+                },
+                {
+                  "duration_s": 2.636000000000295,
+                  "end_control_step": 372,
+                  "start_control_step": 332
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74",
+              "training_seed": 3104
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.662000000000745,
+                  "end_control_step": 267,
+                  "start_control_step": 166
+                },
+                {
+                  "duration_s": 3.6300000000004062,
+                  "end_control_step": 343,
+                  "start_control_step": 288
+                },
+                {
+                  "duration_s": 2.4360000000002726,
+                  "end_control_step": 382,
+                  "start_control_step": 345
+                }
+              ],
+              "first_lift": 161,
+              "scene_id": "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299",
+              "training_seed": 3103
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 16.0720000000018,
+                  "end_control_step": 390,
+                  "start_control_step": 146
+                }
+              ],
+              "first_lift": 158,
+              "scene_id": "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299",
+              "training_seed": 3105
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.136000000000687,
+                  "end_control_step": 250,
+                  "start_control_step": 157
+                },
+                {
+                  "duration_s": 6.1880000000006925,
+                  "end_control_step": 347,
+                  "start_control_step": 253
+                }
+              ],
+              "first_lift": 153,
+              "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+              "training_seed": 3104
+            }
+          ],
+          "repair_ids": [
+            [
+              3104,
+              "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8"
+            ],
+            [
+              3104,
+              "018fa741fcfb4e08480be5079c183a596fd44c73e98f29354ad151439eee8f74"
+            ],
+            [
+              3103,
+              "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299"
+            ],
+            [
+              3105,
+              "6cddf5fef14baa4a4f294ae404e9c32464657c75c4b207fc8cd0bdf31c4a5299"
+            ],
+            [
+              3104,
+              "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        }
+      }
+    },
+    "uniform63000": {
+      "ACT": {
+        "3103": {
+          "acquisition_repairs": 2,
+          "candidate": {
+            "avoidance_percent": 89.80281247544976,
+            "cfts": 3,
+            "failure_stages": {
+              "lifted_without_placement": 2,
+              "no_target_interaction": 3,
+              "success": 6,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 2,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 6,
+            "union_frames": 36344
+          },
+          "control": {
+            "avoidance_percent": 96.00771017810848,
+            "cfts": 4,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 5,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 3,
+            "success": 5,
+            "union_frames": 14229
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 1,
+              "control_only": 2
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 3
+            },
+            "task_success": {
+              "candidate_only": 2,
+              "control_only": 1
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.2680000000007015,
+                  "end_control_step": 219,
+                  "start_control_step": 124
+                },
+                {
+                  "duration_s": 2.7640000000003093,
+                  "end_control_step": 263,
+                  "start_control_step": 221
+                },
+                {
+                  "duration_s": 11.146000000001248,
+                  "end_control_step": 447,
+                  "start_control_step": 278
+                }
+              ],
+              "first_lift": 130,
+              "scene_id": "3da6f20aa5942a4dd803b50bc324e767c3f99b8d56a69b0b0aba6ab68ddf7655",
+              "training_seed": 3103
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 10.560000000001182,
+                  "end_control_step": 315,
+                  "start_control_step": 155
+                },
+                {
+                  "duration_s": 3.0880000000003456,
+                  "end_control_step": 364,
+                  "start_control_step": 317
+                }
+              ],
+              "first_lift": 146,
+              "scene_id": "c3523463d0cbe3f0bdba635ff7f1d25458c357694d5747eef1aa5b4770300427",
+              "training_seed": 3103
+            }
+          ],
+          "repair_ids": [
+            [
+              3103,
+              "3da6f20aa5942a4dd803b50bc324e767c3f99b8d56a69b0b0aba6ab68ddf7655"
+            ],
+            [
+              3103,
+              "c3523463d0cbe3f0bdba635ff7f1d25458c357694d5747eef1aa5b4770300427"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3104": {
+          "acquisition_repairs": 0,
+          "candidate": {
+            "avoidance_percent": 97.12804282684084,
+            "cfts": 5,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 7,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 7,
+            "union_frames": 10236
+          },
+          "control": {
+            "avoidance_percent": 96.46336262527636,
+            "cfts": 5,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 7,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 7,
+            "union_frames": 12605
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 0
+            },
+            "pickup_failure": {
+              "candidate_only": 0,
+              "control_only": 0
+            },
+            "task_success": {
+              "candidate_only": 0,
+              "control_only": 0
+            }
+          },
+          "repair_chronology": [],
+          "repair_ids": [],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3105": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 95.62332356935232,
+            "cfts": 3,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 1,
+              "no_target_interaction": 5,
+              "success": 5
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 0,
+            "success": 5,
+            "union_frames": 15599
+          },
+          "control": {
+            "avoidance_percent": 93.4210969327632,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 3,
+              "no_target_interaction": 1,
+              "success": 6,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 3,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 6,
+            "union_frames": 23448
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 1
+            },
+            "pickup_failure": {
+              "candidate_only": 0,
+              "control_only": 2
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 2
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 5.082000000000569,
+                  "end_control_step": 250,
+                  "start_control_step": 173
+                },
+                {
+                  "duration_s": 3.1660000000003543,
+                  "end_control_step": 303,
+                  "start_control_step": 255
+                },
+                {
+                  "duration_s": 13.284000000001488,
+                  "end_control_step": 516,
+                  "start_control_step": 315
+                }
+              ],
+              "first_lift": 168,
+              "scene_id": "3e0486b142e7abfe31573d8bc245f5c3d33ce018167ee222f38898b6dbe4d30a",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "3e0486b142e7abfe31573d8bc245f5c3d33ce018167ee222f38898b6dbe4d30a"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "pooled": {
+          "acquisition_repairs": 3,
+          "candidate": {
+            "avoidance_percent": 94.18472629054764,
+            "cfts": 11,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 4,
+              "no_target_interaction": 10,
+              "success": 18,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 4,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 3,
+            "success": 18,
+            "union_frames": 62179
+          },
+          "control": {
+            "avoidance_percent": 95.29738991204934,
+            "cfts": 13,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 5,
+              "no_target_interaction": 5,
+              "success": 18,
+              "touched_without_hold": 7
+            },
+            "lifted_without_placement": 5,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 7,
+            "success": 18,
+            "union_frames": 50282
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 1,
+              "control_only": 3
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 5
+            },
+            "task_success": {
+              "candidate_only": 3,
+              "control_only": 3
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 5.082000000000569,
+                  "end_control_step": 250,
+                  "start_control_step": 173
+                },
+                {
+                  "duration_s": 3.1660000000003543,
+                  "end_control_step": 303,
+                  "start_control_step": 255
+                },
+                {
+                  "duration_s": 13.284000000001488,
+                  "end_control_step": 516,
+                  "start_control_step": 315
+                }
+              ],
+              "first_lift": 168,
+              "scene_id": "3e0486b142e7abfe31573d8bc245f5c3d33ce018167ee222f38898b6dbe4d30a",
+              "training_seed": 3105
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 6.2680000000007015,
+                  "end_control_step": 219,
+                  "start_control_step": 124
+                },
+                {
+                  "duration_s": 2.7640000000003093,
+                  "end_control_step": 263,
+                  "start_control_step": 221
+                },
+                {
+                  "duration_s": 11.146000000001248,
+                  "end_control_step": 447,
+                  "start_control_step": 278
+                }
+              ],
+              "first_lift": 130,
+              "scene_id": "3da6f20aa5942a4dd803b50bc324e767c3f99b8d56a69b0b0aba6ab68ddf7655",
+              "training_seed": 3103
+            },
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 10.560000000001182,
+                  "end_control_step": 315,
+                  "start_control_step": 155
+                },
+                {
+                  "duration_s": 3.0880000000003456,
+                  "end_control_step": 364,
+                  "start_control_step": 317
+                }
+              ],
+              "first_lift": 146,
+              "scene_id": "c3523463d0cbe3f0bdba635ff7f1d25458c357694d5747eef1aa5b4770300427",
+              "training_seed": 3103
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "3e0486b142e7abfe31573d8bc245f5c3d33ce018167ee222f38898b6dbe4d30a"
+            ],
+            [
+              3103,
+              "3da6f20aa5942a4dd803b50bc324e767c3f99b8d56a69b0b0aba6ab68ddf7655"
+            ],
+            [
+              3103,
+              "c3523463d0cbe3f0bdba635ff7f1d25458c357694d5747eef1aa5b4770300427"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        }
+      },
+      "PACT": {
+        "3103": {
+          "acquisition_repairs": 0,
+          "candidate": {
+            "avoidance_percent": 99.28593874504786,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 5,
+              "touched_without_hold": 5
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 5,
+            "success": 5,
+            "union_frames": 2545
+          },
+          "control": {
+            "avoidance_percent": 99.09430658900374,
+            "cfts": 6,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 7,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 3,
+            "success": 7,
+            "union_frames": 3228
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 2
+            },
+            "pickup_failure": {
+              "candidate_only": 2,
+              "control_only": 0
+            },
+            "task_success": {
+              "candidate_only": 0,
+              "control_only": 2
+            }
+          },
+          "repair_chronology": [],
+          "repair_ids": [],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3104": {
+          "acquisition_repairs": 0,
+          "candidate": {
+            "avoidance_percent": 98.10219633457908,
+            "cfts": 4,
+            "failure_stages": {
+              "lifted_without_placement": 1,
+              "no_target_interaction": 1,
+              "success": 8,
+              "touched_without_hold": 2
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 2,
+            "success": 8,
+            "union_frames": 6764
+          },
+          "control": {
+            "avoidance_percent": 97.89934121185594,
+            "cfts": 4,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 1,
+              "no_target_interaction": 2,
+              "success": 7,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 1,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 7,
+            "union_frames": 7487
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 0,
+              "control_only": 0
+            },
+            "pickup_failure": {
+              "candidate_only": 1,
+              "control_only": 0
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 0
+            }
+          },
+          "repair_chronology": [],
+          "repair_ids": [],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "3105": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 93.53192372871845,
+            "cfts": 5,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 2,
+              "no_target_interaction": 1,
+              "success": 7,
+              "touched_without_hold": 1
+            },
+            "lifted_without_placement": 2,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 1,
+            "success": 7,
+            "union_frames": 23053
+          },
+          "control": {
+            "avoidance_percent": 98.13249834461242,
+            "cfts": 4,
+            "failure_stages": {
+              "no_target_interaction": 1,
+              "success": 8,
+              "touched_without_hold": 3
+            },
+            "lifted_without_placement": 0,
+            "n": 12,
+            "physics_samples": 356412,
+            "pickup": 3,
+            "success": 8,
+            "union_frames": 6656
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 2,
+              "control_only": 1
+            },
+            "pickup_failure": {
+              "candidate_only": 0,
+              "control_only": 2
+            },
+            "task_success": {
+              "candidate_only": 0,
+              "control_only": 1
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 51.12400000000572,
+                  "end_control_step": 900,
+                  "start_control_step": 126
+                }
+              ],
+              "first_lift": 141,
+              "scene_id": "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        },
+        "pooled": {
+          "acquisition_repairs": 1,
+          "candidate": {
+            "avoidance_percent": 96.97335293611513,
+            "cfts": 13,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 4,
+              "no_target_interaction": 3,
+              "success": 20,
+              "touched_without_hold": 8
+            },
+            "lifted_without_placement": 4,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 8,
+            "success": 20,
+            "union_frames": 32362
+          },
+          "control": {
+            "avoidance_percent": 98.3753820484907,
+            "cfts": 14,
+            "failure_stages": {
+              "held_without_lift": 1,
+              "lifted_without_placement": 2,
+              "no_target_interaction": 4,
+              "success": 22,
+              "touched_without_hold": 7
+            },
+            "lifted_without_placement": 2,
+            "n": 36,
+            "physics_samples": 1069236,
+            "pickup": 7,
+            "success": 22,
+            "union_frames": 17371
+          },
+          "paired": {
+            "collision_free_task_success": {
+              "candidate_only": 2,
+              "control_only": 3
+            },
+            "pickup_failure": {
+              "candidate_only": 3,
+              "control_only": 2
+            },
+            "task_success": {
+              "candidate_only": 1,
+              "control_only": 3
+            }
+          },
+          "repair_chronology": [
+            {
+              "bilateral_runs_1s": [
+                {
+                  "duration_s": 51.12400000000572,
+                  "end_control_step": 900,
+                  "start_control_step": 126
+                }
+              ],
+              "first_lift": 141,
+              "scene_id": "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8",
+              "training_seed": 3105
+            }
+          ],
+          "repair_ids": [
+            [
+              3105,
+              "a05dc0de4ac2bc8144b012f2547e3bba70066cff1ea7ed16c213865de30ea5d8"
+            ]
+          ],
+          "repair_limitation": "Counts require actual lift and a continuous bilateral episode; chronology is retained to assess whether engagement supported acquisition."
+        }
+      }
+    }
+  },
+  "failed_checks": [
+    "frozen60000/ACT/pooled_cfts",
+    "frozen60000/ACT/union_frames",
+    "frozen60000/ACT/3103/avoidance",
+    "frozen60000/ACT/3105/cfts",
+    "frozen60000/PACT/union_frames",
+    "frozen60000/PACT/pickup_reduction",
+    "frozen60000/PACT/3104/avoidance",
+    "frozen60000/PACT/3105/avoidance",
+    "uniform63000/ACT/pooled_cfts",
+    "uniform63000/ACT/union_frames",
+    "uniform63000/ACT/3103/avoidance",
+    "uniform63000/PACT/pooled_success",
+    "uniform63000/PACT/pooled_cfts",
+    "uniform63000/PACT/union_frames",
+    "uniform63000/PACT/pickup_reduction",
+    "uniform63000/PACT/measured_repairs",
+    "uniform63000/PACT/3103/success",
+    "uniform63000/PACT/3103/cfts",
+    "uniform63000/PACT/3105/success",
+    "uniform63000/PACT/3105/avoidance"
+  ],
+  "passed": false,
+  "schema": "pact_v1010b_grasp_v1",
+  "stage": "B"
+}

@@ -1,0 +1,11 @@
+# Generated experiment payloads stay on disk. Avoid background binary diffs of
+# checkpoints, datasets, trajectories, logs, and per-episode machine records.
+# Already tracked files continue to be tracked regardless of these rules.
+*
+!*/
+!.gitignore
+!*.py
+!*.md
+
+# Small top-level records for the main-encoder comparison remain reviewable.
+!pact_place_v1010c_readout_s3103/*.json

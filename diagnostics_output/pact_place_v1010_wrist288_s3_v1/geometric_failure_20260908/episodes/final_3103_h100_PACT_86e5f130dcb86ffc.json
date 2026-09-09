@@ -1,0 +1,130 @@
+{
+  "extractor_sha256": "d5114bd5100188279f9350e69340d7ac070b31f81d3a1bd62f8d38cbc843cdba",
+  "result_sha256": "73de4d442798abc11c85f7d68296f960e495d4770352821700de3a0f6993c6e2",
+  "directory": "diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3103_h100/final_3103_h100_PACT_86e5f130dcb86ffc",
+  "rollout_id": "final_3103_h100_PACT_86e5f130dcb86ffc",
+  "episode_id": "86e5f130dcb86ffc23287faea454a5dd887f22b59d422d8bfad045a4c3703677",
+  "seed": 3103,
+  "arm": "PACT",
+  "cell": "F0_target_side_stagger|left|pos5",
+  "family": "F0_target_side_stagger",
+  "side": "left",
+  "pose_id": "pos5",
+  "success": false,
+  "touch": true,
+  "held": false,
+  "lift": false,
+  "support": false,
+  "failure_stage": "touched_without_hold",
+  "collision_free_success": false,
+  "initial_target_xyz": [
+    0.7481953144155932,
+    0.017018437255911477,
+    0.7937508881799693
+  ],
+  "initial_tcp_world_xyz": [
+    0.43315478561175974,
+    -0.048049852101269955,
+    0.807210087776184
+  ],
+  "initial_base_pose": [
+    0.14548292756080627,
+    -0.036202218383550644,
+    0.0,
+    0.9986128807067871,
+    0.0,
+    0.0,
+    -0.05265318602323532
+  ],
+  "first_close_command_step": 150,
+  "first_touch_observation_step": 153,
+  "first_held_observation_step": null,
+  "first_lift_observation_step": null,
+  "first_seen_observation_step": 22,
+  "first_bilateral_pad_step": 177,
+  "bilateral_pad_contact": true,
+  "bilateral_pad_contact_total_s": 0.0060000000000006715,
+  "longest_bilateral_pad_contact_s": 0.004000000000000448,
+  "bilateral_before_lift": true,
+  "touch_to_held_steps": null,
+  "first_touch_minus_first_close_steps": 3,
+  "ever_seen": true,
+  "seen_fraction": 0.29189789123196447,
+  "seen_before_close": true,
+  "seen_at_first_close": true,
+  "seen_before_touch": true,
+  "first_close_xy_error_m": 0.058666621789268944,
+  "first_close_world_delta_xyz_m": [
+    0.05579274005924628,
+    -0.018136776693958072,
+    0.050146931078561274
+  ],
+  "first_close_target_in_tcp_m": [
+    -0.06432213572347074,
+    -0.013500972482810864,
+    0.040458297131155806
+  ],
+  "first_close_distance_m": 0.07717828197597495,
+  "first_close_before_ever_within_3cm_xy": true,
+  "min_xy_error_before_close_m": 0.058666621789268944,
+  "closest_distance_before_lift_m": 0.07485545107749673,
+  "closest_xy_before_lift_m": 0.04854441006021525,
+  "closest_tcp_local_target_m": [
+    -0.0617512352618302,
+    -0.015950781015835292,
+    0.039187958413758606
+  ],
+  "max_target_lift_m": 0.002120830226263859,
+  "collision_before_close": {
+    "hazard_bar": false,
+    "clutter": false,
+    "other_environment": false,
+    "mounted_fixture": false
+  },
+  "hazard_contact": false,
+  "clutter_contact": true,
+  "pre_hold_hazard": false,
+  "pre_hold_clutter": true,
+  "close_switches": 2,
+  "tracking_l2_median_before_close_rad": 0.015696248685988262,
+  "raw_gripper_at_first_close": 139.07936096191406,
+  "target_push_xy_before_lift_m": 0.005020113742307781,
+  "final100_tcp_extent_m": 0.0236165648024483,
+  "empty_hand_tray_motion": false,
+  "held_runs": [],
+  "touch_runs": [
+    [
+      153,
+      154
+    ],
+    [
+      155,
+      163
+    ],
+    [
+      164,
+      165
+    ],
+    [
+      169,
+      172
+    ],
+    [
+      173,
+      174
+    ],
+    [
+      177,
+      178
+    ]
+  ],
+  "close_command_runs": [
+    [
+      150,
+      558
+    ]
+  ],
+  "video_retained": false,
+  "pose_frame_note": "TCP is transformed from robot-base coordinates into world coordinates; dynamic target telemetry is already world-frame.",
+  "gripper_note": "Joint-state values are retained without interpreting them as physical jaw widths."
+}

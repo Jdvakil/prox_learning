@@ -1,0 +1,26 @@
+{
+  "arm": "ACT",
+  "attempt": 1,
+  "command": [
+    "/root/act_retrain_venv/bin/python",
+    "/root/prox_learning_pact_remediation/scripts/pact_v1010b_train.py",
+    "--arm",
+    "ACT",
+    "--training-seed",
+    "3103",
+    "--variant",
+    "uniform63000",
+    "--max-updates",
+    "63000",
+    "--output-dir",
+    "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/checkpoints/act_seed3103_uniform63000"
+  ],
+  "contract_sha256": "57c20f3b374c57e2fb2eb6bc46b6cc4e4087e4d4155f3f71cbfa5cb1801bfaa0",
+  "job_id": "train_ACT_3103_uniform63000",
+  "job_sha256": "1d5ebc766e9c72980024c7865abbff96746300746c2f1784eac4f799e0f64a8d",
+  "output_dir": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/checkpoints/act_seed3103_uniform63000",
+  "prior_exit_receipt_sha256": "e81847cc710b04d347babe664e6d8ff5c31ebcea1d78589c5005eb233c5f501d",
+  "recovery_manifest_sha256": "1bd2801cfcbb5f9bf34f6cd2da5cd9c67677547dfb0ec6ad6c8fddfebb7e59c5",
+  "training_seed": 3103,
+  "variant": "uniform63000"
+}

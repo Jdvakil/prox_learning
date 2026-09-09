@@ -1,0 +1,342 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "eligible_for_human_review": false,
+  "human_approval_present": false,
+  "phase0_passed": false,
+  "scope": "Retained signals and original 127.5 gripper threshold; no inference or rollout.",
+  "action_timing": "Observation step k>0 has the command from actions.npz[k-1]; step zero is initial.",
+  "rows": [
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/act/024_4b25e4e9167cc579",
+      "title": "No target contact",
+      "gripper_command_transitions_observation_steps": [
+        {
+          "step": 192,
+          "close": true
+        },
+        {
+          "step": 612,
+          "close": false
+        }
+      ],
+      "first_tray_step": 570,
+      "held_runs": [],
+      "touch_runs": [],
+      "final_task_info": {
+        "carry_forward_pos_diff": null,
+        "carry_forward_rot_diff": null,
+        "episode_step": 900,
+        "position_error": 0.5533823131851681,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": false,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    },
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/pact/002_6a09b31ead300086",
+      "title": "No target contact",
+      "gripper_command_transitions_observation_steps": [],
+      "first_tray_step": 233,
+      "held_runs": [],
+      "touch_runs": [],
+      "final_task_info": {
+        "carry_forward_pos_diff": null,
+        "carry_forward_rot_diff": null,
+        "episode_step": 900,
+        "position_error": 0.4543570410869767,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": false,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    },
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/act/014_c89083f145f2ffd4",
+      "title": "Two isolated held samples",
+      "gripper_command_transitions_observation_steps": [
+        {
+          "step": 163,
+          "close": true
+        },
+        {
+          "step": 560,
+          "close": false
+        }
+      ],
+      "first_tray_step": 500,
+      "held_runs": [
+        [
+          174,
+          174
+        ],
+        [
+          177,
+          177
+        ]
+      ],
+      "touch_runs": [
+        [
+          163,
+          165
+        ],
+        [
+          167,
+          177
+        ],
+        [
+          179,
+          179
+        ],
+        [
+          181,
+          205
+        ]
+      ],
+      "final_task_info": {
+        "carry_forward_pos_diff": null,
+        "carry_forward_rot_diff": null,
+        "episode_step": 900,
+        "position_error": 0.48468513766034976,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": false,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    },
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/pact/005_efa01cb6941d3652",
+      "title": "Prolonged contact-only held",
+      "gripper_command_transitions_observation_steps": [
+        {
+          "step": 152,
+          "close": true
+        }
+      ],
+      "first_tray_step": null,
+      "held_runs": [
+        [
+          162,
+          315
+        ]
+      ],
+      "touch_runs": [
+        [
+          146,
+          146
+        ],
+        [
+          148,
+          148
+        ],
+        [
+          152,
+          900
+        ]
+      ],
+      "final_task_info": {
+        "carry_forward_pos_diff": null,
+        "carry_forward_rot_diff": null,
+        "episode_step": 900,
+        "position_error": 0.501984408423363,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": true,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    },
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/pact/030_eaf058117b2e80f0",
+      "title": "Near receptacle, never supported",
+      "gripper_command_transitions_observation_steps": [
+        {
+          "step": 157,
+          "close": true
+        },
+        {
+          "step": 406,
+          "close": false
+        }
+      ],
+      "first_tray_step": 367,
+      "held_runs": [
+        [
+          169,
+          186
+        ],
+        [
+          188,
+          188
+        ],
+        [
+          193,
+          193
+        ],
+        [
+          209,
+          209
+        ],
+        [
+          223,
+          239
+        ],
+        [
+          242,
+          242
+        ],
+        [
+          245,
+          245
+        ],
+        [
+          273,
+          273
+        ],
+        [
+          282,
+          283
+        ],
+        [
+          288,
+          288
+        ],
+        [
+          292,
+          292
+        ],
+        [
+          295,
+          369
+        ],
+        [
+          376,
+          382
+        ]
+      ],
+      "touch_runs": [
+        [
+          148,
+          156
+        ],
+        [
+          159,
+          414
+        ],
+        [
+          417,
+          417
+        ],
+        [
+          420,
+          423
+        ],
+        [
+          425,
+          426
+        ],
+        [
+          429,
+          431
+        ],
+        [
+          434,
+          900
+        ]
+      ],
+      "final_task_info": {
+        "carry_forward_pos_diff": null,
+        "carry_forward_rot_diff": null,
+        "episode_step": 900,
+        "position_error": 0.050316539606299227,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": true,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    },
+    {
+      "directory": "diagnostics_output/pact_place_v1010_eval_infra_repair_01/rollouts/pact/031_2b94845a70f4dcc2",
+      "title": "Transient success lost",
+      "gripper_command_transitions_observation_steps": [
+        {
+          "step": 144,
+          "close": true
+        },
+        {
+          "step": 400,
+          "close": false
+        }
+      ],
+      "first_tray_step": 350,
+      "held_runs": [
+        [
+          161,
+          343
+        ]
+      ],
+      "touch_runs": [
+        [
+          136,
+          347
+        ]
+      ],
+      "final_task_info": {
+        "carry_forward_pos_diff": 0.016644955442332843,
+        "carry_forward_rot_diff": 0.19516615034144805,
+        "episode_step": 900,
+        "position_error": 0.10088989198935665,
+        "receptacle_pos_displacement": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "receptacle_rot_displacement": 0.0,
+        "receptacle_tilt_displacement": 0.0,
+        "robot_contact": false,
+        "success": false,
+        "supported_by_carry_forward": false,
+        "supported_by_receptacle": false
+      }
+    }
+  ]
+}

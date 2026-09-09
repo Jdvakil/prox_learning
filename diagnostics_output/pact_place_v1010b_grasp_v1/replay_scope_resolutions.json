@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "allowed_failed_checks": [
+        "exclusive_stage_unchanged"
+      ],
+      "arm": "PACT",
+      "contact_reconstruction_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/category_shift_0f25bb_contact_reconstruction.json",
+      "diagnosis_path": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/category_shift_0f25bb_initial_diagnosis.json",
+      "evidence_hashes": {
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_0f25bb0b1a72d962/actions.npz": "152e0288a637532a541b96ae87b9bdfe667f14cdae7d2a54f306fac3af730bad",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_0f25bb0b1a72d962/result.json": "a3b2ae3f535bddc3ed3e99c13833e393e5d1927f3ea4e0259ebc04c50603edb6",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_0f25bb0b1a72d962/telemetry.h5": "2eb6049406b5965dc1c813e374cca1179a54ebb996fced7175c6697860ef87be",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010_wrist288_s3_v1/evaluation/final_3105_h100/final_3105_h100_PACT_0f25bb0b1a72d962/trajectory.h5": "17129c1fe5d3fd83355a15e95034f4c6a07c7dae40fc26af1465f09ecbb26aeb",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/category_shift_0f25bb_contact_reconstruction.json": "7f467c29c17d41498c93f441c049159f282f63a21a69742e236c31405d57d23e",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/category_shift_0f25bb_initial_diagnosis.json": "28c474edb9289a8a77971ef5f040975738e74d2eafecfbfe9968eff1de649fcc",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/diagnose_category_0f25bb.py": "fe96a6fd6da89513b5b4ae31ec190bd5a38042446b0cd2e9ee08b745316f8f19",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00/actions.npz": "72023f6b7f9000672187c4cc624caada48e381b809f5323ad80caa59c8f5059f",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00/result.json": "92f3ef4bc11c9612f6d82fd1f67a20c7a0da8f4f2637d97451c0e4152cf0ce43",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00/telemetry.h5": "e41c1e77518a5d220c1869c81a0ac895a5ff86fd705c701fd2eafa2f0bcc20b1",
+        "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010b_grasp_v1/rollouts/A1/A1_PACT_3105_frozen60000_0f25bb0b1a72d962/attempt_00/trajectory.h5": "32fa89cf636a9b26d7c7c032f89c27ccf5fd13d51b103fac87a5652f01c23f4a",
+        "/root/prox_learning_pact_remediation/submodules/molmospaces/molmo_spaces/env/sensors.py": "88075d6ce0939b71b1cfccd2bd6f52a23e831c7175cdd5dcc25bef287b9ee0f1"
+      },
+      "id": "PACT3105_0f25bb_single_instantaneous_held_observation",
+      "new_category": "held_without_lift",
+      "new_chronology_eligible": true,
+      "new_held_indices": [
+        153
+      ],
+      "original_category": "touched_without_hold",
+      "original_category_comparison_eligible": false,
+      "reason": "Exactly one instantaneous held flag is reproduced from one gripper contact and absent support-surface contact. Both trajectories fail without1cm lift. Preserve distinct categories and exclude this pair from the required Stage A support count; it is outside cross24.",
+      "scene_id": "0f25bb0b1a72d962671d75fd44b7551c352e8528bcae9acf9ba8588d483c18f3",
+      "use_for_stage_A_support": false
+    }
+  ],
+  "schema": "pact_v1010b_grasp_v1",
+  "utc": "2026-09-08T05:12:28.559965+00:00"
+}

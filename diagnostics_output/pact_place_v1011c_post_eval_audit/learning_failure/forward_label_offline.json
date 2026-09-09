@@ -1,0 +1,5058 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "eligible_for_human_review": false,
+  "human_approval_present": false,
+  "limitations": [
+    "Only the seven arm commands are scored.",
+    "Lower offline error is not established improvement in task success.",
+    "Query shift 1 is a diagnostic reinterpretation of existing outputs, not an installed evaluator change.",
+    "The shifted full-history diagnostic has at most 99 contributors because outputs have length 100."
+  ],
+  "models": {
+    "act_seed3103": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.028094040737465208,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.029747319329773852,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.0389316069028325,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.027793919974968995,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.028713468887675044,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.03778254364898448,
+          "frames": 2717
+        }
+      },
+      "arm": "ACT",
+      "checkpoint_sha256": "05857461ecc5cf6b6096424eeb13eabe84a75c38d70130d311bfd1c4bfb0d2e1",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02705581809322928,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02885168602186343,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.036141625997761134,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02749633979641133,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028552699358733676,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.033309448325183684,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024731542215582054,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.027284766989586595,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.030432484551186755,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02405419921990711,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025628280696093943,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0284740013898748,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.031610716319447625,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03035333234006895,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.037637430209126826,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.030369559031905923,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028375210312939558,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03525685512800448,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029921933286831483,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.032112551010188804,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0481360940311418,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03163657214119019,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.0341152287145273,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.051514020767563395,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024368934850508468,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03571515402368878,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.06908963954378933,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022730992726736416,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03347137017454649,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.06577815070959643,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029844934961921636,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.034094826232088524,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.06732035908987752,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028775291630843657,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03189943907736241,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.06326627164954336,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03401678851198537,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.0333714524152189,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02802466907712883,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.032531283592410996,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03090498025323328,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.026470336061395556,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022155052908528122,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.023923495119137144,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.027350272186191328,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023358139209964972,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02431734619852856,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02661558875061968,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.030722723535162623,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03750760823528684,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.07733166307287832,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.029947430081647634,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03582638117435469,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.07501538032167762,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.033083271552791955,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.04454176228803434,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.09665345008095991,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03445368799073289,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.04479621481424033,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.09471988872714475,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03364410911223325,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.04073204302655259,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.052391607760240676,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03448663753598729,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.04124706828781007,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04990273444934408,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03388264744989891,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03622324252557625,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05237769103435356,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03329719218067205,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03489593209717761,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0502011888490202,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027200350330491386,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02489497166066975,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.026224725485639425,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026287606514534555,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.023221239131470176,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02409231349224343,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02919914726717635,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029493310949384326,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02653860226666976,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02809176100227169,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.027506189548647825,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.025215148988022552,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024667969094052285,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021517589618315885,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02109557693144823,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024654676804201844,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02077115743714719,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.020396408193980784,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02365779890573132,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02319099799254768,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.027118808702232062,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024392520968437952,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.023614837613996926,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029656987035980548,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023927172794616747,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.023480898529252562,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029060426571742553,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02408038903482723,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.023918459121762905,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.030652888144291787,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03941253262324415,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.039672498927930226,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03549580550268414,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.038706407755570806,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.038428333712809765,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03431308349820833,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02605297773444753,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02456724253342275,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.027251612037581006,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025650842400669456,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02333889385376828,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02521490199287868,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02746844723304912,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02753626954486047,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.031088773733530303,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027016172484433963,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026170750507299716,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029600692955607428,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024284439341965974,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02351391966831929,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.030616300590693125,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02376559210537947,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.022092944777574543,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029621396797019552,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.021524215066863826,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.022740642425125572,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.020413073315203544,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021483949238292117,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.021590560801240645,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02308681022155293,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02994864892266776,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.031232633479513754,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04166489314785368,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02965733312689128,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.029503539175795086,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03993616404486777,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028076085585566676,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029921570298502953,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.030588098933363266,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026893211674830206,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028406178383635124,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029558117745175458,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3103
+    },
+    "act_seed3104": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.025925190289102527,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.028196378809105294,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.03857282159147579,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.02529755018082605,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.02707427765874039,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.03740478095428727,
+          "frames": 2717
+        }
+      },
+      "arm": "ACT",
+      "checkpoint_sha256": "a37fe632a981b8cc40ee4cc1352ff1a5f4e15f29ccc9832fbf6f508451ca0edc",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027789810045044,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.032659358430075,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.040555801125456016,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026664129959925207,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.029845710785229962,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03708744295337466,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.026421980307608884,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.031282007758702886,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04071941614273714,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026822604037172085,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.030053977355191896,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03822424164534593,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.025071513212693314,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.023879197166570318,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03257797778233986,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024270155305434946,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.022911967319154534,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03052590437610076,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024564825794168785,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.031639735464665565,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04580331027351753,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025447178014603975,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.033902143398022735,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04905425713779542,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022821601194261732,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029056872214594638,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05639131237943083,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020600199302546262,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02645042809178059,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0527555083799767,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02894259604321044,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03505311535864623,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.06509686486459888,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027372055437994352,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.031579599874231506,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.06044413830051189,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02925956882875787,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029098415007969305,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.025629341775272596,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027380837966878895,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026943621316373248,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02521944528509238,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02193453655230626,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021147820548107227,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.01994618575285777,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024227112262991412,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02197616151558189,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.018737704540618003,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02940413752453081,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.04061136359253797,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.08246243121240793,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02803712776966161,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03924133989970002,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.08014155367215094,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029498212849305542,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03792964116918029,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.08783592192721514,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02992699697173001,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.037587604442017884,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0854446999842488,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024200989931856598,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.032529861458836684,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04398417724217684,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025303530827876747,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03303425181073016,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04163905348084414,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.031072800667000737,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.036354957608154014,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05548163263357538,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02961190714550279,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.035097762796018526,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.05311181410955953,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.026291670073537256,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.026227774732647795,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.041120274419246594,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024513378580070945,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02500460965416232,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04143115585652757,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023917856632142947,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025867159906843955,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.028011372681735883,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02197538345566397,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02366357547523245,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.025524075234174947,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019823370524285407,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.019755909992145368,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.022342305750183502,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020266973737903125,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.018895811956719154,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.01968977116390627,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.018908895036760215,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.018914222727246157,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02666597883372306,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.018866822132853185,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.018391957584034366,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029698283920483574,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.021205489569795757,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.0211467805941129,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02857927554825648,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022121218729794667,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.022972060404381513,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0314449074367654,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.030651855643390128,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02781145544224041,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.021790187828518465,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.030074408434404114,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02692413984088872,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.021866100219555228,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02681284636914175,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02812123014879068,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029919870471814873,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025386246927999827,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026085390252611595,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02772968295434999,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028144931372539282,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025760065487932103,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.025311852901679522,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027979410790487876,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02441735802051505,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.024896665943035173,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.026508929374248466,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.026382513127727686,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03141195650567313,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025442289722485717,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024306632997264987,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.028827881432469,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020269063939419477,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02029026386271377,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.028228969422681095,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.019572621229880616,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.01915182137054594,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.030464520809585807,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03220614185179559,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03202760009082251,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03486900571990469,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.031208914458361527,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.030720346233497797,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0336558746075629,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027929233763994993,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.030894678121124074,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.036652269767064836,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02571558457052828,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028587628732137618,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03477599154261369,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3104
+    },
+    "act_seed3105": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.023696545291185294,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.026403185371680817,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.038214840811054786,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.024045081117339034,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.02588882187997978,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.037210294077213636,
+          "frames": 2717
+        }
+      },
+      "arm": "ACT",
+      "checkpoint_sha256": "59a05107b3ef32e15933838a5979bc4d9232adb19cfd8387b11e2694625cd31b",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.021132961490232357,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02948523322132062,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03680610466211635,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020607830350955123,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02712056410461745,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03349690068203277,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02154772901477591,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025534449830980972,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.038572893037503074,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02167173890413705,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024094241305028928,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03670162694464015,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022507839974748225,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02421133622042747,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03613276803734182,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022758970174334314,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.022555384460215218,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.033516977533455596,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023436647548194498,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.026700759626779237,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03570549259762053,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024399670331906174,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028148980893734653,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.039049563567417865,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.015524509300592588,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.023708200534906625,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05526032112597533,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.01593924878088168,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02265074401909763,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.051688469308921216,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.021363969571760663,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025399724379889913,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.055691642268643,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022117022058953505,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02553430439835842,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.051507383858937945,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028618506367308057,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029529881661864696,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029793549797044485,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028576298627034848,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028470384972201116,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029231928114798526,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.026174912336700135,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028072654088487466,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029879279464992154,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02719607304060751,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.0276039039816775,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.028480253497650435,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.026313026481363123,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03976219885174556,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0776420222038984,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026821211013945103,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03879928272887763,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.07494523736978419,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027069221067192433,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.035859858221963976,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.08253937245915365,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027707718234492598,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03668926867046814,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.08007356251763191,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024630581101897028,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03330510855742504,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.057591796089838394,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02569343480519654,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.032501647231985384,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.05527377577449856,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02657699062556717,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02950284456110365,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.046107474453805815,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026157127627535318,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028938751423878976,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0442407005760059,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024645978063211792,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.024117904573553388,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.031676425617732575,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025402808659423314,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02351002102528239,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03081304203123995,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023845378731961176,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028051828922025384,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.030223895914161164,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023795276937118276,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02606539519473611,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02795562145364807,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.01983319334582051,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.01934291557716735,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.023033712555431914,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020692099992559335,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.01839545248297478,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.021058549817093396,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020564170023961086,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.019539254326155258,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0346401058212684,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021488780804222153,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.021010031498815,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03792320431841895,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02127608222496238,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02072045029444445,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.023507077490996835,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022255014082316543,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.021884984187114292,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.025635866573263756,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02735074242389732,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02656580683614579,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.028853713739215928,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02743504744140357,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026876388644684692,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02944984775247897,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022612389857710826,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.027520109986058812,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04339578299355269,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022691996705816564,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02570963434431913,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04125986989103804,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029188766260686574,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02629827295991083,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02311583526742347,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.029846837051714214,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02646521289866039,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.022697083093975657,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024492224658104637,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02760928280241,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.031895633322984306,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024806936860567494,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026458442130795543,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029653343957059385,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019867783295717506,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.018250640393122596,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03649810691861859,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.019654799332426188,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.018411468171559302,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03915042675000641,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.025331550730035714,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.023691492340732652,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.028298797093853755,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.025004044258318578,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.0237492245044441,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029264604710174308,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02451971903075177,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.026182875501671074,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02384179984611082,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024303588057403173,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02578106428025334,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02270515270001317,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3105
+    },
+    "pact_seed3103": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.02440958607507663,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.0273640430799495,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.039799043714231416,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.02371837492549514,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.02617256961219122,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.038735662463751694,
+          "frames": 2717
+        }
+      },
+      "arm": "PACT",
+      "checkpoint_sha256": "63f552eafb0c8d5ec0b06f4b41ab3b0064a7a70351e23ab7ba365cd0fd75cb61",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019451090642824093,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025831784917522225,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03487101103985549,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.018459680176351898,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.023189318096119682,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03161178609167658,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.021112568174089217,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02873098842681933,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04322934080524418,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022814145643539372,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02754297612805938,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04099851417131883,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019562663164341923,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02001028472742381,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03253418106703329,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.01863412986596108,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.019010896136574952,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.031002579721503172,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02920980901407314,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03220867188235548,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.046306058680415194,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.030889857459511068,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.034623205462889516,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04980511928992833,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.01929613586133007,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.027175015548939037,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05266263011515691,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.018421625135093406,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024131328931518196,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04944363312183883,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024772216743308848,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025907323150432045,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.056262487221566654,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022480378751048198,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024025493063296034,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.05282779236610449,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.025176455223439077,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02744439336739332,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03366910946054536,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023482157911444958,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02533564006565772,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03178022591465008,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028026314273348712,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.030575176602137787,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02849535669954573,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.029803786788276034,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03232609270495623,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02885445884023198,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.030792743626308874,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03994584660735879,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0814856078749778,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028660301728794257,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.0378503353334662,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.07886821027292298,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027909275008215835,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03386392100436023,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.07906285549969008,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027902647687504733,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03400422589661666,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.07685204673952703,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029045444294657594,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03364030226462984,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05548890289605799,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02683643059704495,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03139559333734886,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.05319544021019522,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.025323454777192604,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028838969742455575,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.049062737419638465,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023766122179363428,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02758413397073363,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04735906956222575,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027408973771199416,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02888301052663521,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03270083807539553,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.029614855385811458,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028406815068374006,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03334340447910782,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024622809423952636,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029142468967813712,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04049566365985435,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023156570665412483,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026125276210531234,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.037463336154174506,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.01789071654130706,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021217096915941692,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029615945437756218,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.017514635039478796,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.020018128252339736,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02801054718884561,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020862103185587837,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021426971850848985,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.023603767457664293,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020584327710272673,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.021407497742539916,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.025743747633156074,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.018413756260750973,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.019267921208827896,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02392336983753211,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.018736222107047958,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02008330210286743,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.025255484324757643,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.034381207750955205,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03165804960013958,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02607372039983808,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.0342068298226387,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.031693433361195775,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.026658758889974633,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027751111874424948,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03444650768568989,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.050908028187898635,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02640541649641039,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03177929543287235,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04869901672270416,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.01924079251588589,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021313876972412736,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02830078529696109,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.01866063912186519,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.01983969063066389,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.028210219357013303,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023924765791794297,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028069618430059375,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03933544592874082,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021950590721581918,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025592700659139805,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.036786150872807837,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.017555669711347106,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.015054503331883715,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.018886076950050578,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.016292407036640637,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.01470376328924203,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.021268395381021335,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.0316277198876357,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.027509139216332867,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03565584972040716,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027424129052821968,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025122653824690998,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03379129820328841,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024553629950667843,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02802713280076449,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0324131825913576,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.023305810552370194,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025705807426666994,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03106087950323243,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3103
+    },
+    "pact_seed3104": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.02627090116618356,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.028029265891260764,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.03970464426082554,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.026596895120282675,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.027652555761606544,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.03953967450969799,
+          "frames": 2717
+        }
+      },
+      "arm": "PACT",
+      "checkpoint_sha256": "3e0357c9ee58ba2c465b13b225daefa4d907b08814fa85fb377ae04958aba153",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024834931458911663,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029594780492029536,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0341227119624985,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02378319848106207,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026804140458643457,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.030923057485904296,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02443421380799526,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029885536980945763,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04737263198932387,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02652534678253288,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.030265927399003672,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.046826318341783614,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.0223521020363979,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02024891485669291,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029990985520415164,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021787439798210507,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02041716183176539,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029828575862550187,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.030026568614961568,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03334292933050011,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04611578336606604,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.0317587948935214,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03515752791465372,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04956020878061171,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024866618944856363,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.031307888687286164,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05837004438204224,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02356545185032418,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02919011265755104,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.05547835032533977,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020338523494316103,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028487413888832903,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.059357470537339245,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020218054176911165,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02620750396360494,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0557737105402762,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023426133929386746,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02277220752227912,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02857024466996556,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02333437264581891,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.022193247456717743,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02930756794164837,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019695529213499027,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.022299148615511185,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02434926169801773,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021833928198278247,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02186454064037355,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.023686040657487306,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029251370018476136,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.036961464120562774,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.07233643954071127,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03129850292087285,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.038202751173236696,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.06963092151639533,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.037314709094436176,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.04727248562976791,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.1038784366391525,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.038197735910819444,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.04828767969368222,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.10244312326372478,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03132016261999477,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03341162583673772,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04716226475890977,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03248682242645066,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.034109542086220364,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04526951578373638,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03199621452568502,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03297107548767659,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.044526473871259034,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03085160805818748,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03203525511981657,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.042883467462464776,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02802432285273505,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028267414984244243,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03809728888961299,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02745997546813518,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02671239935252909,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.039976610636499356,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02268874802232688,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02461430734065461,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.030114193791217308,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02348743171631209,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024510932590348877,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02930166911721824,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.019829403243770978,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.018884040042782047,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.023776758447891448,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022751484589582874,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02002835375731812,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02373621226629317,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022215482803093933,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021751400256477454,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0350804741122491,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022819946413717974,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02273745174368413,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.038172734824146896,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02211375725604977,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02199316730248621,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.034709620296728735,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02275745182669638,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02376414470352106,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03764692143451007,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.0361890733238263,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03584233019197082,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.028989079201719184,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03662985960239015,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.035787546505859885,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029713995429544966,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02792956384623072,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028454679417303123,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04060753917590548,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026268200587180348,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.027017311512273462,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.039191255881024865,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023375209218241225,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.020137868650983163,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0337655630385997,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.022905886147179942,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.01988568298169909,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0349625284283042,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.024594766600483566,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.021879772085265904,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02980009644500998,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024346433319689203,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02158252985764801,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029458910499919697,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.025906981121755775,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025788449408164698,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02618783408354687,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02618747559411231,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024814192313884802,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.028828255417036264,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03596939736479839,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.036027554768378885,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.026396288110127234,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03617550246684084,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.033993364228138166,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.027051514606493188,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02604954438526979,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029107911820082263,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03296829759354916,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02535940484211947,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02731338147275568,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.030796835246517548,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3104
+    },
+    "pact_seed3105": {
+      "aggregate": {
+        "copy_current_arm": {
+          "arm_mae_rad": 0.011538721574124944,
+          "frames": 2717
+        },
+        "query_shift_0_history_1": {
+          "arm_mae_rad": 0.02852491677748216,
+          "frames": 2717
+        },
+        "query_shift_0_history_10": {
+          "arm_mae_rad": 0.03030661189155825,
+          "frames": 2717
+        },
+        "query_shift_0_history_100": {
+          "arm_mae_rad": 0.04046683923483596,
+          "frames": 2717
+        },
+        "query_shift_1_history_1": {
+          "arm_mae_rad": 0.02830656563613729,
+          "frames": 2717
+        },
+        "query_shift_1_history_10": {
+          "arm_mae_rad": 0.030110356640729526,
+          "frames": 2717
+        },
+        "query_shift_1_history_99": {
+          "arm_mae_rad": 0.039357034605015544,
+          "frames": 2717
+        }
+      },
+      "arm": "PACT",
+      "checkpoint_sha256": "08dee9cf61e4671300f51620422892003176ef15c205aeca4aaf5859aeb2189a",
+      "episodes": [
+        {
+          "episode_index": 2,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009292869533074934,
+              "frames": 101
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02569209551208164,
+              "frames": 101
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03106858673764084,
+              "frames": 101
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.045337772727557374,
+              "frames": 101
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02612081804323304,
+              "frames": 101
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03032348454860677,
+              "frames": 101
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04215029472699868,
+              "frames": 101
+            }
+          }
+        },
+        {
+          "episode_index": 5,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011590296479050804,
+              "frames": 137
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03495211844040932,
+              "frames": 137
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03916856231528259,
+              "frames": 137
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04388036170006369,
+              "frames": 137
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03553236817242578,
+              "frames": 137
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03895749215801464,
+              "frames": 137
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04136950570761721,
+              "frames": 137
+            }
+          }
+        },
+        {
+          "episode_index": 12,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012221026922389331,
+              "frames": 112
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.032328213003939725,
+              "frames": 112
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029531017674468998,
+              "frames": 112
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03507105535038791,
+              "frames": 112
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.029328215573300717,
+              "frames": 112
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02823255659397758,
+              "frames": 112
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03200078597754319,
+              "frames": 112
+            }
+          }
+        },
+        {
+          "episode_index": 16,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009787513086222065,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02985293431624448,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03402462346833724,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04257646590870898,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.032690736214920205,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03723419636757381,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.045668077430177006,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 19,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012788271687498331,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.022017865988271993,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02755317845436223,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.05578530261759088,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021890190660859607,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02748407887491707,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.0531961792878745,
+              "frames": 102
+            }
+          }
+        },
+        {
+          "episode_index": 24,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01368748949457224,
+              "frames": 98
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028706705832482096,
+              "frames": 98
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.0357212958958739,
+              "frames": 98
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.07305646647109519,
+              "frames": 98
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028897027715294094,
+              "frames": 98
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03582043909530716,
+              "frames": 98
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.06978924838021613,
+              "frames": 98
+            }
+          }
+        },
+        {
+          "episode_index": 25,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011158650327307841,
+              "frames": 123
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028581878810655326,
+              "frames": 123
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.028079990724802554,
+              "frames": 123
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.02628778909445981,
+              "frames": 123
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027119187917168233,
+              "frames": 123
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.026721475796541706,
+              "frames": 123
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.024115207538192403,
+              "frames": 123
+            }
+          }
+        },
+        {
+          "episode_index": 32,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.01109740318942419,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023453472018683308,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.025491782228024316,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.032849587892455796,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02412477361269353,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025606256676674866,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03146576819293126,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 35,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.015616720656618807,
+              "frames": 93
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03629106118480751,
+              "frames": 93
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.04612530271514326,
+              "frames": 93
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.09014058228655307,
+              "frames": 93
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03612929998713541,
+              "frames": 93
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.046715726736520094,
+              "frames": 93
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.08829405067648696,
+              "frames": 93
+            }
+          }
+        },
+        {
+          "episode_index": 37,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013609187956483635,
+              "frames": 100
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03299145805075698,
+              "frames": 100
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.046376074572981534,
+              "frames": 100
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.09637875086644085,
+              "frames": 100
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.034296679495018904,
+              "frames": 100
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.048045190295118737,
+              "frames": 100
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.09445972692522568,
+              "frames": 100
+            }
+          }
+        },
+        {
+          "episode_index": 41,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.013183823189574942,
+              "frames": 88
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.030736778258586412,
+              "frames": 88
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03705563266591973,
+              "frames": 88
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.04738068090075542,
+              "frames": 88
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03207827745933031,
+              "frames": 88
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.037497202122409416,
+              "frames": 88
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.04515745866795655,
+              "frames": 88
+            }
+          }
+        },
+        {
+          "episode_index": 48,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011700097415327713,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03174073532785791,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.036449552630954715,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.06376772671907069,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.030695254295462618,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.03621649986700058,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.062260722867234074,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 52,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011772305005928733,
+              "frames": 143
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02747883384372026,
+              "frames": 143
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02612888504181324,
+              "frames": 143
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0278249917259193,
+              "frames": 143
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027000223310102222,
+              "frames": 143
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025095449992745163,
+              "frames": 143
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.026560734225319474,
+              "frames": 143
+            }
+          }
+        },
+        {
+          "episode_index": 57,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012146155181217625,
+              "frames": 129
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.027566666944454716,
+              "frames": 129
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.029594167429029497,
+              "frames": 129
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03459579113734871,
+              "frames": 129
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026411183828313693,
+              "frames": 129
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.027959777292514344,
+              "frames": 129
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03250699290013392,
+              "frames": 129
+            }
+          }
+        },
+        {
+          "episode_index": 58,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011269396107425965,
+              "frames": 109
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.023900809304466468,
+              "frames": 109
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02469005657210443,
+              "frames": 109
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.024718044294366054,
+              "frames": 109
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.02458335602134808,
+              "frames": 109
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.024750089660480014,
+              "frames": 109
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.023657563570043293,
+              "frames": 109
+            }
+          }
+        },
+        {
+          "episode_index": 62,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.008516527501585209,
+              "frames": 107
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020352090411112012,
+              "frames": 107
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.018694487251647577,
+              "frames": 107
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.023728158577856946,
+              "frames": 107
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.021476162736178517,
+              "frames": 107
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.019385164725529713,
+              "frames": 107
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02627259911756384,
+              "frames": 107
+            }
+          }
+        },
+        {
+          "episode_index": 68,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010912167221795685,
+              "frames": 118
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02295925412267857,
+              "frames": 118
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.0250085799079286,
+              "frames": 118
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03492316193848884,
+              "frames": 118
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.024738519008132714,
+              "frames": 118
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028210766973853323,
+              "frames": 118
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03785913331922994,
+              "frames": 118
+            }
+          }
+        },
+        {
+          "episode_index": 72,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009996931055997565,
+              "frames": 97
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.036911459078508894,
+              "frames": 97
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03387840548686029,
+              "frames": 97
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.031423878057889244,
+              "frames": 97
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03560832837429885,
+              "frames": 97
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.032293928612174984,
+              "frames": 97
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.029687064994577957,
+              "frames": 97
+            }
+          }
+        },
+        {
+          "episode_index": 74,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011227879673567389,
+              "frames": 128
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.02819989271009555,
+              "frames": 128
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02718712422538317,
+              "frames": 128
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.037700414146013064,
+              "frames": 128
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.026202867555639386,
+              "frames": 128
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025218332165363514,
+              "frames": 128
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03570623544343536,
+              "frames": 128
+            }
+          }
+        },
+        {
+          "episode_index": 80,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011421729240435654,
+              "frames": 113
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.03310301726374245,
+              "frames": 113
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.03062022737542258,
+              "frames": 113
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.026911610995507,
+              "frames": 113
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.03164368045120632,
+              "frames": 113
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.028912586167206284,
+              "frames": 113
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.02526085537225774,
+              "frames": 113
+            }
+          }
+        },
+        {
+          "episode_index": 84,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.012138393163887994,
+              "frames": 131
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029775978131808326,
+              "frames": 131
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02660455169550074,
+              "frames": 131
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.029854133825740623,
+              "frames": 131
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.027808031085299233,
+              "frames": 131
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02478913560833307,
+              "frames": 131
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.028199950986993395,
+              "frames": 131
+            }
+          }
+        },
+        {
+          "episode_index": 87,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.010892871387569513,
+              "frames": 122
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.029368954309274876,
+              "frames": 122
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02650204650475677,
+              "frames": 122
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.0168598870205539,
+              "frames": 122
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028719887030471784,
+              "frames": 122
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.025855491881501283,
+              "frames": 122
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.01841280512176052,
+              "frames": 122
+            }
+          }
+        },
+        {
+          "episode_index": 90,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.011656385737108185,
+              "frames": 124
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.028279230142950938,
+              "frames": 124
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02647515612197316,
+              "frames": 124
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03022052303343252,
+              "frames": 124
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.028626893397603985,
+              "frames": 124
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.02788100061781951,
+              "frames": 124
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.030293315976995645,
+              "frames": 124
+            }
+          }
+        },
+        {
+          "episode_index": 95,
+          "errors": {
+            "copy_current_arm": {
+              "arm_mae_rad": 0.009990364917865707,
+              "frames": 102
+            },
+            "query_shift_0_history_1": {
+              "arm_mae_rad": 0.020741198414004687,
+              "frames": 102
+            },
+            "query_shift_0_history_10": {
+              "arm_mae_rad": 0.02374790223932629,
+              "frames": 102
+            },
+            "query_shift_0_history_100": {
+              "arm_mae_rad": 0.03136560220661443,
+              "frames": 102
+            },
+            "query_shift_1_history_1": {
+              "arm_mae_rad": 0.020273328491298127,
+              "frames": 102
+            },
+            "query_shift_1_history_10": {
+              "arm_mae_rad": 0.023206082932689515,
+              "frames": 102
+            },
+            "query_shift_1_history_99": {
+              "arm_mae_rad": 0.03144675297373297,
+              "frames": 102
+            }
+          }
+        }
+      ],
+      "seed": 3105
+    }
+  },
+  "phase0_passed": false,
+  "pooled": {
+    "ACT": {
+      "copy_current_arm": {
+        "arm_mae_rad": 0.011538721574124942,
+        "frames": 8151
+      },
+      "query_shift_0_history_1": {
+        "arm_mae_rad": 0.02590525877258435,
+        "frames": 8151
+      },
+      "query_shift_0_history_10": {
+        "arm_mae_rad": 0.028115627836853316,
+        "frames": 8151
+      },
+      "query_shift_0_history_100": {
+        "arm_mae_rad": 0.038573089768454354,
+        "frames": 8151
+      },
+      "query_shift_1_history_1": {
+        "arm_mae_rad": 0.02571218375771135,
+        "frames": 8151
+      },
+      "query_shift_1_history_10": {
+        "arm_mae_rad": 0.027225522808798395,
+        "frames": 8151
+      },
+      "query_shift_1_history_99": {
+        "arm_mae_rad": 0.03746587289349512,
+        "frames": 8151
+      }
+    },
+    "PACT": {
+      "copy_current_arm": {
+        "arm_mae_rad": 0.011538721574124942,
+        "frames": 8151
+      },
+      "query_shift_0_history_1": {
+        "arm_mae_rad": 0.026401801339580772,
+        "frames": 8151
+      },
+      "query_shift_0_history_10": {
+        "arm_mae_rad": 0.028566640287589498,
+        "frames": 8151
+      },
+      "query_shift_0_history_100": {
+        "arm_mae_rad": 0.03999017573663097,
+        "frames": 8151
+      },
+      "query_shift_1_history_1": {
+        "arm_mae_rad": 0.026207278560638373,
+        "frames": 8151
+      },
+      "query_shift_1_history_10": {
+        "arm_mae_rad": 0.02797849400484243,
+        "frames": 8151
+      },
+      "query_shift_1_history_99": {
+        "arm_mae_rad": 0.03921079052615509,
+        "frames": 8151
+      }
+    }
+  },
+  "scope": "Teacher-forced validation diagnostic; no training or counterfactual environment rollouts.",
+  "training_chunk": 100,
+  "truth": "arm from raw actions/commanded_action[t+1] for observation[t]"
+}

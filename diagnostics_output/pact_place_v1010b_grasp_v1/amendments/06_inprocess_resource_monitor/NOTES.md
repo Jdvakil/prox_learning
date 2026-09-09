@@ -1,0 +1,9 @@
+# Parent monitor recovery
+
+The primary agent found execution stopped on 2026-09-08 at10:33UTC. The traceback identifies `subprocess.Popen` inside the minute resource monitor's `nvidia-smi` query, with EAGAIN. The supervisor drained every active evaluation; all ten completed with observed exit0. Stage B therefore retains42 valid new results, and all12 trained models remain valid. No rollout failure or scientific gate failure occurred. The precise producer of shared process pressure is not established.
+
+This operational amendment reads the same GPU through installed NVML in the parent process. Memory v2 separates driver-reserved memory; used memory is rounded upward to MiB to preserve the prior guard's units. The original RAM, VRAM, PID, storage, timing and scientific gates remain unchanged. Evaluation capacity stays capped at10.
+
+Before a new child starts, current PID/RAM pressure can defer launch. If Popen reports EAGAIN without creating a child, its job/log files are preserved under `deferred_process_starts`; the same pending identity is retained and retried after60seconds while existing children continue to be polled. Three consecutive EAGAIN deferrals stop launching and drain the pool. Existing three-sample resource-pressure stopping and the original47h/48h boundaries also remain effective. Deferrals before any child exists are separately recorded scheduler events, not repeated scientific rollouts.
+
+No frozen worker, model, scene, data loader, metric, threshold or original experiment source is changed. The operational modules and preflight receipt are hash-bound in `amendment.json`. Pending B, C and D schedules resume under their existing gates. Prior closures, resource evidence, and the failing parent traceback remain preserved. The two previous training infrastructure retries and240 discarded optimizer calls remain disclosed; this recovery repeats no trained model or completed rollout.

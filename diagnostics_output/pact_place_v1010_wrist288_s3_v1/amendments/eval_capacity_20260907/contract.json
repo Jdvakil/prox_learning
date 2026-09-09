@@ -1,0 +1,33 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "cache_probe_sha256": "e3330430e8da002fb646f1fc594510bb42d61f51e0ef6e124683c03549dbc076",
+  "effective_config_sha256": "da3388ab016166721679bb2f5b66d5c218ecfff24d348b3b3634aba9dc89cdcc",
+  "eligible_for_human_review": false,
+  "fallback_workers": 10,
+  "file_hashes": {
+    "docs/PACT_PLACE_V1010_WRIST280_EVAL_CAPACITY_AMENDMENT.md": "c3d86e0799df6f37179009bd397031bd8a79d59be3aa5244aec2072b905764f2",
+    "scripts/pact_wrist280_eval_capacity.py": "f6846375ed20bce5ed38b997506f7a8eb664d8c9a9ce0979829cc2fcf95e9262",
+    "tests/test_pact_wrist280_eval_capacity.py": "14c747550921e2f75abfce1f5665bc0e2c4659fb4570d49c0b48bcceda44773d"
+  },
+  "fourteen_worker_vram_fraction": 0.9520149383359389,
+  "human_approval_present": false,
+  "original_resource_thresholds_unchanged": true,
+  "phase0_passed": false,
+  "recovery_contract_file_sha256": "393f3472a3b54d9c04b628f54398830c8f01dd629caa46f79cae70e7589d9279",
+  "request_sha256": "f919b27cf72fbb2ba4dfb27deca6d48bf70a9ecdc7c30b612bda27c246f935cd",
+  "scope": "user-requested evaluation concurrency increase and completed-artifact cache release only",
+  "sha256": "736fe60eb060f0adcc69f433811679b846dd1146241646fbeeb9e5b88d867e0e",
+  "target_workers": 12,
+  "tests": {
+    "command": "/root/act_retrain_venv/bin/python -m pytest -q tests/test_pact_wrist280_eval_capacity.py tests/test_pact_wrist280_resource_recovery.py",
+    "exit_code": 0,
+    "result": "6 passed in 0.14s"
+  },
+  "training_and_scientific_settings_unchanged": true,
+  "utc": "2026-09-07T04:24:27.760236+00:00"
+}

@@ -1,0 +1,106 @@
+{
+  "utc": "2026-09-09T01:33:11.626122+00:00",
+  "independently_read_raw_rows": 100,
+  "all_primary_and_pickup_lift_endpoints_exact": true,
+  "all_raw_action_decoders_and_horizons_passed": true,
+  "all_initial_pairings_passed": true,
+  "all_original_source_input_and_upstream_copy_hashes_match": true,
+  "all_used_operational_recovery_source_hashes_match": true,
+  "same_update_policy_encoder_pair_verified": 60000,
+  "upstream_byte_identical_files": 18,
+  "valid_observed_exit_records": 53,
+  "infrastructure_failures": [
+    {
+      "error": "AssertionError('worker exit 1: /root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010c_readout_s3103/attempts/training_to_60000/attempt_00/worker.log')",
+      "id": "training_to_60000",
+      "receipt": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010c_readout_s3103/attempts/training_to_60000/attempt_00/exit_receipt.json",
+      "returncode": 1,
+      "utc": "2026-09-08T20:29:10.826695+00:00"
+    },
+    {
+      "error": "AssertionError('worker exit 1: /root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010c_readout_s3103/attempts/training_to_60000_retry01/attempt_00/worker.log')",
+      "id": "training_to_60000_retry01",
+      "receipt": "/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1010c_readout_s3103/attempts/training_to_60000_retry01/attempt_00/exit_receipt.json",
+      "returncode": 1,
+      "utc": "2026-09-08T21:02:02.030008+00:00"
+    }
+  ],
+  "summaries": {
+    "frozen": {
+      "n": 50,
+      "success": 20,
+      "cfts": 16,
+      "pickup": 16,
+      "union_frames": 59086,
+      "physics_samples": 1485050,
+      "avoidance_percent": 96.0212787448234,
+      "raw_touched_never_held": 18,
+      "target_lifted_1cm": 26,
+      "sustained_lift_15_observations": 22,
+      "ever_held": 25,
+      "failure_stages": {
+        "touched_without_hold": 16,
+        "no_target_interaction": 7,
+        "lifted_without_placement": 6,
+        "success": 20,
+        "held_without_lift": 1
+      },
+      "contact_frames": {
+        "grasp_target": 308054,
+        "hazard_bar": 18183,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 41990,
+        "mounted_fixture": 0
+      }
+    },
+    "readout": {
+      "n": 50,
+      "success": 27,
+      "cfts": 24,
+      "pickup": 8,
+      "union_frames": 29000,
+      "physics_samples": 1485050,
+      "avoidance_percent": 98.04720379785192,
+      "raw_touched_never_held": 8,
+      "target_lifted_1cm": 33,
+      "sustained_lift_15_observations": 30,
+      "ever_held": 35,
+      "failure_stages": {
+        "lifted_without_placement": 6,
+        "success": 27,
+        "no_target_interaction": 7,
+        "held_without_lift": 2,
+        "touched_without_hold": 8
+      },
+      "contact_frames": {
+        "grasp_target": 366834,
+        "hazard_bar": 20148,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 9251,
+        "mounted_fixture": 0
+      }
+    }
+  },
+  "paired": {
+    "task_success": {
+      "candidate_only": 12,
+      "control_only": 5
+    },
+    "collision_free_task_success": {
+      "candidate_only": 11,
+      "control_only": 3
+    },
+    "pickup_failure": {
+      "candidate_only": 3,
+      "control_only": 11
+    }
+  },
+  "supervisor_exit_observed_by_root": {
+    "session_id": 60074,
+    "exit_code": 0
+  },
+  "source_sha256": "443e0f458eb300f5058370e8296131b3ab158634845f9fafeab15c143afc9f96",
+  "comparison_sha256": "956911bbfd4409bf46166d987944a1b454c4cb7dd1dd8a6bfa5afb862a27da9a"
+}

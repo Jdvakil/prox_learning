@@ -1,0 +1,501 @@
+"""Skin encoder package: peak closeness + surface geometry, same public API."""
+from __future__ import annotations
+
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+import pytest
+import torch
+
+_REPO = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(_REPO))
+sys.path.insert(0, str(_REPO / "submodules" / "act"))
+
+from encoders import (  # noqa: E402
+    CAUSAL_FRAMES,
+    D_MAX,
+    MAX_SURFACE_RANGE_M,
+    PeakClosenessEncoder,
+    ProxCVAEEncoder,
+    SurfaceGeometryEncoder,
+    causal_sensor_window,
+    feat_dim_for,
+    featurize_np,
+    list_encoders,
+    load_encoder,
+    nearest_surface_target,
+    nearest_surface_target_batch,
+    to_causal_closeness,
+)
+from hybrid_skin_sensors import DEAD_PIXEL_M, HYBRID_SKIN_SENSOR_ORDER  # noqa: E402
+
+
+def test_list_encoders_has_both_functions():
+    names = list_encoders()
+    assert "peak_closeness" in names
+    assert "nearest_surface" in names
+    assert "surface_embedding" in names
+
+
+def test_resolve_aliases():
+    raw = load_encoder("raw", device="cpu")
+    assert isinstance(raw, PeakClosenessEncoder)
+    assert raw.name == "peak_closeness"
+    geom = load_encoder("xyz", device="cpu")
+    assert isinstance(geom, SurfaceGeometryEncoder)
+    assert geom.kind == "xyz"
+
+
+def test_unknown_encoder_name():
+    with pytest.raises(ValueError, match="unknown encoder"):
+        load_encoder("not_a_real_encoder")
+
+
+def test_peak_closeness_matches_legacy_raw_math():
+    enc = load_encoder("peak_closeness", device="cpu")
+    assert enc.n_act_sensors == 40
+    assert enc.act_feat_dim == 1
+    prox = torch.full((3, 40, 8, 8), 0.1)
+    prox[:, 5, 2, 2] = 0.05
+    out = enc.policy_features(prox)
+    assert out.shape == (3, 40, 1)
+    assert float(out[0, 5, 0]) == pytest.approx(1.0 - 0.05 / D_MAX)
+    assert float(out[0, 0, 0]) == pytest.approx(1.0 - 0.1 / D_MAX)
+
+
+def test_peak_closeness_unbatched_numpy():
+    enc = load_encoder("peak_closeness", device="cpu")
+    prox = np.full((40, 8, 8), 0.2, dtype=np.float32)
+    out = enc.policy_features(prox)
+    assert out.shape == (40, 1)
+
+
+def test_prox_cvae_alias_is_same_class():
+    assert ProxCVAEEncoder is PeakClosenessEncoder
+
+
+def test_featurize_dead_pixel_and_range():
+    prox = np.full((2, 40, 8, 8), 0.25, dtype=np.float32)
+    prox[0, 0, 0, 0] = 0.001
+    prox[1, 1, 0, 0] = 10.0
+    x = featurize_np(prox)
+    assert x.shape == (2, 40 * 64)
+    assert x[0, 0] == 0.0
+    mid = 1.0 - 0.25 / D_MAX
+    assert x[0, 1] == pytest.approx(mid)
+    assert x[1, 64] == 0.0
+    assert DEAD_PIXEL_M == 0.005
+    assert D_MAX == 0.5
+
+
+def test_feat_dim_raw_no_ckpt():
+    assert feat_dim_for(None, "raw") == 40
+
+
+def test_cvae_trunk_without_weights_exits():
+    with pytest.raises(SystemExit):
+        load_encoder("cvae_trunk", device="cpu")
+
+
+def test_nearest_surface_target_picks_closest_in_range_pixel():
+    depth = np.full((8, 8), 10.0, dtype=np.float32)
+    depth[2, 5] = 0.10
+    xyz, valid = nearest_surface_target(depth)
+    assert valid is True
+    assert xyz[2] == pytest.approx(0.10)
+    fy = 0.5 * 8.0 / math.tan(math.radians(45.0) / 2.0)
+    expected_x = (5.0 + 0.5 - 4.0) * 0.10 / fy
+    expected_y = (2.0 + 0.5 - 4.0) * 0.10 / fy
+    assert xyz[0] == pytest.approx(expected_x)
+    assert xyz[1] == pytest.approx(expected_y)
+
+
+def test_nearest_surface_target_rejects_beyond_20cm():
+    depth = np.full((8, 8), 0.25, dtype=np.float32)
+    xyz, valid = nearest_surface_target(depth)
+    assert valid is False
+    assert np.array_equal(xyz, np.zeros(3, dtype=np.float32))
+
+
+def test_nearest_surface_target_batch_matches_scalar():
+    rng = np.random.default_rng(0)
+    depth = rng.uniform(0.05, 0.40, size=(3, 5, 8, 8)).astype(np.float32)
+    depth[0, 0] = 10.0
+    xyz, valid = nearest_surface_target_batch(depth)
+    for i in range(3):
+        for j in range(5):
+            xyz_i, valid_i = nearest_surface_target(depth[i, j])
+            assert bool(valid[i, j]) is valid_i
+            np.testing.assert_allclose(xyz[i, j], xyz_i, atol=1e-6)
+
+
+def test_causal_sensor_window_left_pads():
+    episode = np.zeros((3, 2, 4, 8, 8), dtype=np.float32)
+    episode[0, 1] = 0.10
+    episode[2, 1] = 0.05
+    window = causal_sensor_window(episode, timestep=0, sensor_index=1)
+    assert window.shape == (CAUSAL_FRAMES, 8, 8)
+    # t=0 pads with the first step; closeness of 0.10 m at 20 cm cap.
+    expected = 1.0 - 0.10 / MAX_SURFACE_RANGE_M
+    assert window[0, 0, 0] == pytest.approx(expected)
+    assert window[-1, 0, 0] == pytest.approx(expected)
+
+
+def test_to_causal_closeness_tiles_pact_snapshot():
+    skin = torch.full((2, 40, 8, 8), 0.10)
+    windows, squeeze_batch, squeeze_sensor = to_causal_closeness(skin, unit="metres")
+    assert windows.shape == (2, 40, CAUSAL_FRAMES, 8, 8)
+    assert squeeze_batch is False
+    assert squeeze_sensor is False
+    assert float(windows[0, 0, 0, 0, 0]) == pytest.approx(1.0 - 0.10 / MAX_SURFACE_RANGE_M)
+    assert torch.equal(windows[:, :, 0], windows[:, :, -1])
+
+
+def test_surface_xyz_policy_features_shape():
+    enc = load_encoder("nearest_surface", device="cpu")
+    prox = torch.full((1, 2, 8, 8), 0.10)
+    xyz = enc.policy_features(prox)
+    assert xyz.shape == (1, 2, 3)
+    assert enc.n_sensors == len(HYBRID_SKIN_SENSOR_ORDER)
+    assert enc.act_feat_dim == 3
+
+
+def test_surface_embedding_policy_features_shape():
+    enc = load_encoder("surface_embedding", device="cpu")
+    prox = torch.full((1, 2, 8, 8), 0.10)
+    z = enc.policy_features(prox)
+    assert z.shape == (1, 2, 32)
+
+
+def test_encode_episode_uses_causal_history_shape():
+    enc = SurfaceGeometryEncoder(kind="xyz", device="cpu")
+    episode = np.full((2, 3, 4, 8, 8), 0.12, dtype=np.float32)
+    out = enc.encode_episode(episode)
+    assert out.shape == (2, 3, 3)
+    pooled = np.full((2, 3, 8, 8), 0.12, dtype=np.float32)
+    out_pooled = enc.encode_episode(pooled)
+    assert out_pooled.shape == (2, 3, 3)
+
+
+def test_encode_episode_at_times_matches_full():
+    enc = SurfaceGeometryEncoder(kind="xyz", device="cpu")
+    episode = np.full((4, 2, 4, 8, 8), 0.12, dtype=np.float32)
+    episode[2, 1, -1, 3, 3] = 0.04
+    full = enc.encode_episode_full(episode, batch_size=8)
+    subset = enc.encode_episode_at_times(episode, np.array([1, 3]), batch_size=8)
+    np.testing.assert_allclose(
+        subset["xyz_m"].numpy(), full["xyz_m"].numpy()[[1, 3]], atol=1e-5
+    )
+    np.testing.assert_array_equal(
+        subset["valid"].numpy(), full["valid"].numpy()[[1, 3]]
+    )
+
+
+def test_as_subframe_repeats_pooled_act_tiles():
+    from encoders.surface_geometry import as_subframe_episode
+
+    pooled = np.ones((5, 40, 8, 8), dtype=np.float32)
+    sf = as_subframe_episode(pooled)
+    assert sf.shape == (5, 40, 4, 8, 8)
+    assert np.allclose(sf[:, :, 0], sf[:, :, 3])
+
+
+def test_encode_pooled_history_shape():
+    enc = load_encoder("surface_embedding", device="cpu")
+    hist = torch.full((8, 2, 8, 8), 0.10)
+    z = enc.encode_pooled_history(hist)
+    assert z.shape == (2, 32)
+    batched = torch.full((3, 4, 2, 8, 8), 0.10)
+    z_b = enc.encode_pooled_history(batched)
+    assert z_b.shape == (3, 2, 32)
+    assert not any(p.requires_grad for p in enc.parameters())
+
+
+def test_encode_for_act_passthrough_and_history():
+    from encoders.pact import encode_for_act
+
+    tokens = torch.randn(2, 40, 32)
+    assert encode_for_act(None, tokens).shape == (2, 40, 32)
+    enc = load_encoder("nearest_surface", device="cpu")
+    hist = torch.full((1, 8, 2, 8, 8), 0.11)
+    xyz = encode_for_act(enc, hist)
+    assert xyz.shape == (1, 2, 3)
+
+
+def test_encode_tokens_writes_hdf5_groups(tmp_path):
+    import h5py
+    from encoders.encode_tokens import encode_episode_file
+    from encoders.surface_geometry import SurfaceGeometryEncoder
+
+    path = tmp_path / "episode_0.hdf5"
+    with h5py.File(path, "w") as handle:
+        handle.attrs["sim"] = True
+        handle.create_dataset("action", data=np.zeros((2, 8), dtype=np.float32))
+        obs = handle.create_group("observations")
+        obs.create_dataset("qpos", data=np.zeros((2, 9), dtype=np.float32))
+        obs.create_dataset(
+            "proximity",
+            data=np.full((2, 2, 8, 8), 0.08, dtype=np.float32),
+        )
+    enc = SurfaceGeometryEncoder(kind="embedding", device="cpu")
+    result = encode_episode_file(
+        path, model=enc, batch_size=8, checkpoint_sha256="deadbeef", overwrite=False
+    )
+    assert result["feature_dim"] == 32
+    with h5py.File(path, "r") as handle:
+        assert handle["observations/proximity_embeddings"].shape == (2, 2, 32)
+        assert handle["observations/proximity_positions"].shape == (2, 2, 3)
+        assert handle.attrs["pact_frontend_schema"] == "pact_surface_embedding_encoder_v1"
+
+
+def test_dataset_reads_precomputed_embeddings(tmp_path):
+    import h5py
+
+    sys.path.insert(0, str(_REPO / "submodules" / "act"))
+    from utils import EpisodicDataset  # noqa: E402
+
+    path = tmp_path / "episode_0.hdf5"
+    with h5py.File(path, "w") as handle:
+        handle.attrs["sim"] = True
+        handle.attrs["pact_surface_encoder_sha256"] = "abc"
+        handle.create_dataset("action", data=np.zeros((4, 8), dtype=np.float32))
+        obs = handle.create_group("observations")
+        obs.create_dataset("qpos", data=np.zeros((4, 9), dtype=np.float32))
+        obs.create_dataset("qvel", data=np.zeros((4, 9), dtype=np.float32))
+        obs.create_dataset(
+            "proximity_embeddings",
+            data=np.ones((4, 40, 32), dtype=np.float32),
+        )
+        imgs = obs.create_group("images")
+        imgs.create_dataset(
+            "exo_camera_1", data=np.zeros((4, 8, 8, 3), dtype=np.uint8)
+        )
+        imgs.create_dataset(
+            "wrist_camera", data=np.zeros((4, 8, 8, 3), dtype=np.uint8)
+        )
+    stats = {
+        "action_mean": np.zeros(8, dtype=np.float32),
+        "action_std": np.ones(8, dtype=np.float32),
+        "qpos_mean": np.zeros(9, dtype=np.float32),
+        "qpos_std": np.ones(9, dtype=np.float32),
+    }
+    ds = EpisodicDataset(
+        [0],
+        str(tmp_path),
+        ["exo_camera_1", "wrist_camera"],
+        stats,
+        num_queries=2,
+        load_proximity=True,
+        proximity_layout="embeddings",
+        n_proximity_sensors=40,
+        proximity_feature_dim=32,
+        expected_proximity_encoder_sha256="abc",
+    )
+    *_, prox = ds[0]
+    assert prox.shape == (40, 32)
+
+
+def test_both_encoders_eat_the_same_pact_tensor():
+    prox = torch.full((1, 40, 8, 8), 0.08)
+    raw = load_encoder("peak_closeness", device="cpu").policy_features(prox)
+    xyz = load_encoder("nearest_surface", device="cpu").policy_features(prox)
+    assert raw.shape[:2] == xyz.shape[:2] == (1, 40)
+
+
+def test_trained_checkpoint_keeps_calibrated_validity_threshold(tmp_path):
+    from encoders.surface_geometry import (
+        SurfaceEmbeddingEncoder,
+        save_frozen_checkpoint,
+    )
+
+    path = tmp_path / "pact_surface_embedding_encoder_v1.pt"
+    save_frozen_checkpoint(
+        path,
+        SurfaceEmbeddingEncoder(),
+        "embedding",
+        {"validity_threshold": 0.37},
+    )
+    enc = SurfaceGeometryEncoder(
+        kind="embedding", checkpoint=path, device="cpu"
+    )
+    assert enc.validity_threshold == pytest.approx(0.37)
+    assert enc.payload["frozen"] is True
+    assert enc.payload["policy_feature_dim"] == 32
+    assert enc.payload["min_surface_range_m"] == pytest.approx(0.005)
+    assert enc.payload["max_surface_range_m"] == pytest.approx(0.20)
+    assert len(enc.payload["sensor_order"]) == 40
+    assert enc.frozen is True
+    assert enc.policy_tap == "embedding"
+    assert enc.act_feat_dim == 32
+
+
+def test_readout_tap_shape_and_grads():
+    frozen = load_encoder("surface_embedding", device="cpu")
+    live = load_encoder(
+        "surface_embedding", device="cpu", frozen=False, policy_tap="readout"
+    )
+    prox = torch.full((2, 3, 8, 8), 0.10)
+    z_frozen = frozen.policy_features(prox)
+    z_live = live.policy_features(prox)
+    assert z_frozen.shape == (2, 3, 32)
+    assert z_live.shape == (2, 3, 128)
+    assert not any(p.requires_grad for p in frozen.parameters())
+    assert any(p.requires_grad for p in live.parameters())
+    assert z_live.requires_grad
+    z_live.sum().backward()
+    assert any(
+        p.grad is not None and float(p.grad.abs().sum()) > 0
+        for p in live.parameters()
+    )
+
+
+def test_finetune_encode_pooled_history_keeps_grad():
+    from encoders.pact import encode_for_act
+
+    enc = load_encoder(
+        "surface_embedding", device="cpu", frozen=False, policy_tap="readout"
+    )
+    hist = torch.full((1, 8, 2, 8, 8), 0.11)
+    out = encode_for_act(enc, hist)
+    assert out.shape == (1, 2, 128)
+    assert out.requires_grad
+    out.mean().backward()
+    assert any(p.grad is not None for p in enc.parameters())
+
+
+def test_load_pretrained_then_unfreeze(tmp_path):
+    from encoders.surface_geometry import (
+        SURFACE_READOUT_DIM,
+        SurfaceEmbeddingEncoder,
+        save_encoder_checkpoint,
+        save_frozen_checkpoint,
+    )
+
+    path = tmp_path / "pact_surface_embedding_encoder_v1.pt"
+    save_frozen_checkpoint(path, SurfaceEmbeddingEncoder(), "embedding")
+    enc = SurfaceGeometryEncoder(
+        kind="embedding",
+        checkpoint=path,
+        device="cpu",
+        frozen=False,
+        policy_tap="readout",
+    )
+    assert enc.frozen is False
+    assert enc.policy_tap == "readout"
+    assert enc.act_feat_dim == SURFACE_READOUT_DIM
+    assert all(p.requires_grad for p in enc.parameters())
+    dest = tmp_path / "prox_encoder_best.pt"
+    save_encoder_checkpoint(
+        dest,
+        enc.inner,
+        "embedding",
+        extra={"policy_tap": "readout"},
+        frozen=False,
+    )
+    payload = torch.load(dest, map_location="cpu")
+    assert payload["frozen"] is False
+    assert payload["policy_tap"] == "readout"
+    assert payload["policy_feature_dim"] == SURFACE_READOUT_DIM
+
+
+def test_hdf5_layout_force_live_skips_baked_tokens(tmp_path):
+    import h5py
+    from encoders.pact import hdf5_proximity_layout
+
+    with h5py.File(tmp_path / "episode_0.hdf5", "w") as handle:
+        obs = handle.create_group("observations")
+        obs.create_dataset(
+            "proximity_embeddings", data=np.zeros((2, 40, 32), dtype=np.float32)
+        )
+        obs.create_dataset(
+            "proximity", data=np.zeros((2, 40, 8, 8), dtype=np.float32)
+        )
+    assert hdf5_proximity_layout(tmp_path, "surface_embedding") == "embeddings"
+    assert (
+        hdf5_proximity_layout(
+            tmp_path, "surface_embedding", force_live=True
+        )
+        == "raw_causal"
+    )
+
+
+def test_resolve_act_encoder_load_prefers_finetuned(tmp_path):
+    from encoders.pact import resolve_act_encoder_load
+    from encoders.surface_geometry import (
+        SurfaceEmbeddingEncoder,
+        save_encoder_checkpoint,
+        save_frozen_checkpoint,
+    )
+
+    pretrain = tmp_path / "pretrain.pt"
+    save_frozen_checkpoint(pretrain, SurfaceEmbeddingEncoder(), "embedding")
+    best = tmp_path / "prox_encoder_best.pt"
+    save_encoder_checkpoint(
+        best,
+        SurfaceEmbeddingEncoder(),
+        "embedding",
+        extra={"policy_tap": "readout"},
+        frozen=False,
+    )
+    kwargs = resolve_act_encoder_load(
+        tmp_path,
+        {
+            "finetune_prox_encoder": True,
+            "prox_encoder_ckpt": str(pretrain),
+            "prox_policy_tap": "readout",
+        },
+    )
+    assert kwargs["checkpoint"] == str(best)
+    assert kwargs["frozen"] is False
+    assert kwargs["policy_tap"] == "readout"
+
+
+def test_training_sampler_balances_classes_and_softens_sensor_imbalance():
+    from encoders.train import _sample_weights
+
+    valid = np.array([True, True, True, False, False, False, False])
+    sensors = np.array([0, 0, 1, 0, 0, 1, 1])
+    weights = _sample_weights(
+        valid,
+        sensors,
+        n_sensors=2,
+        balance_valid=True,
+        sensor_balance=True,
+    )
+    probabilities = weights / weights.sum()
+    assert probabilities[valid].sum() == pytest.approx(0.5)
+    rare_sensor_mass = probabilities[valid & (sensors == 1)].sum()
+    assert 1.0 / 6.0 < rare_sensor_mass < 0.25
+
+
+def test_surface_target_rejects_sub_5mm_dead_pixel():
+    depth = np.full((8, 8), 0.15, dtype=np.float32)
+    depth[0, 0] = 0.001
+    xyz, valid = nearest_surface_target(depth)
+    assert valid is True
+    assert xyz[2] == pytest.approx(0.15)
+
+
+def test_training_threshold_uses_balanced_accuracy():
+    from encoders.train import _best_validity_threshold
+
+    labels = np.array([False, False, False, True, True])
+    probabilities = np.array([0.05, 0.10, 0.20, 0.40, 0.80])
+    threshold, metrics = _best_validity_threshold(labels, probabilities)
+    assert 0.20 < threshold <= 0.40
+    assert metrics["balanced_acc"] == pytest.approx(1.0)
+
+
+def test_training_pooled_window_matches_act_adapter():
+    from encoders.surface_geometry import as_subframe_episode
+    from encoders.train import _pooled_causal_window
+
+    rng = np.random.default_rng(4)
+    episode = rng.uniform(0.01, 0.50, size=(10, 2, 4, 8, 8)).astype(np.float32)
+    pooled = episode.min(axis=2)
+    repeated = as_subframe_episode(pooled)
+    expected = causal_sensor_window(repeated, timestep=9, sensor_index=1)
+    actual = _pooled_causal_window(episode, timestep=9, sensor_index=1)
+    np.testing.assert_allclose(actual, expected)

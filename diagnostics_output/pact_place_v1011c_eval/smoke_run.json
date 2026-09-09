@@ -1,0 +1,884 @@
+{
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "elapsed_hours": 0.5779334441158507,
+  "eligible_for_human_review": false,
+  "h5_only": true,
+  "human_approval_present": false,
+  "infrastructure_healthy": false,
+  "ledger_sha256": "9c8ac71c6f0daac3c317252d3cdbcede5706d0f0fed24becf250b22dc31a9ef6",
+  "pair_checks": [
+    {
+      "episode_id": "5923e8aca8ace3e85049cc4f9e7fa480d81b4fc6709b729c840d7c9323421b58",
+      "initial_observation_datasets_equal": 450
+    }
+  ],
+  "pairing_errors": [
+    {
+      "episode_id": "b32ed9ea3370c36b09593a4b06caf31485ef182c5db69bad84fc66e5bc272afc",
+      "error": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/run_pact_place_v1011c_eval.py\", line 156, in main\n    pair_checks.append({'episode_id':identifier,'initial_observation_datasets_equal':check_pair(pair['ACT'],pair['PACT'])})\n                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_place_v1011c_metrics.py\", line 116, in check_pair\n    assert np.asarray(a[name][()]).tobytes() == np.asarray(b[name][()]).tobytes(), f'initial observation mismatch: {name}'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: initial observation mismatch: observation/wrist_camera\n"
+    },
+    {
+      "episode_id": "b0fb9060f8789e27d566404e2fd78e19106b17c6855cbd0d05f172def455053e",
+      "error": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/run_pact_place_v1011c_eval.py\", line 156, in main\n    pair_checks.append({'episode_id':identifier,'initial_observation_datasets_equal':check_pair(pair['ACT'],pair['PACT'])})\n                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_place_v1011c_metrics.py\", line 116, in check_pair\n    assert np.asarray(a[name][()]).tobytes() == np.asarray(b[name][()]).tobytes(), f'initial observation mismatch: {name}'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: initial observation mismatch: observation/wrist_camera\n"
+    },
+    {
+      "episode_id": "d5c707b5cc65e03e16e401bb88afe11a090203152ab7da50d9d5baa3099b48cd",
+      "error": "Traceback (most recent call last):\n  File \"/root/prox_learning_pact_remediation/scripts/run_pact_place_v1011c_eval.py\", line 156, in main\n    pair_checks.append({'episode_id':identifier,'initial_observation_datasets_equal':check_pair(pair['ACT'],pair['PACT'])})\n                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/prox_learning_pact_remediation/scripts/pact_place_v1011c_metrics.py\", line 116, in check_pair\n    assert np.asarray(a[name][()]).tobytes() == np.asarray(b[name][()]).tobytes(), f'initial observation mismatch: {name}'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: initial observation mismatch: observation/wrist_camera\n"
+    }
+  ],
+  "phase0_passed": false,
+  "results": [
+    {
+      "arm": "ACT",
+      "candidate_index": 1,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "05857461ecc5cf6b6096424eeb13eabe84a75c38d70130d311bfd1c4bfb0d2e1",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/001_5923e8aca8ace3e8",
+      "elapsed_s": 989.8737149238586,
+      "episode_id": "5923e8aca8ace3e85049cc4f9e7fa480d81b4fc6709b729c840d7c9323421b58",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 1410,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 655,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/001_5923e8aca8ace3e8",
+        "episode_id": "5923e8aca8ace3e85049cc4f9e7fa480d81b4fc6709b729c840d7c9323421b58",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6543956858366716e-07,
+            "max_rotation_deg": 9.305741096614904e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828949760916e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 4.73183910950882e-07,
+            "max_rotation_deg": 0.00021771060572187807,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "0de0395d86187449c28a308a66f3192920d9833b06bc0b204f07318283a4556f",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 2919623893,
+          "seed_u64": 12568777398692474069
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_act_seed3103_001_5923e8aca8ace3e8",
+      "row_sha256": "0de0395d86187449c28a308a66f3192920d9833b06bc0b204f07318283a4556f",
+      "schedule_row_sha256": "66d5b282a845de99a9dd47f2e24deb42cd63f1179ec824f0de0c598f7772b774",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 1,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "63f552eafb0c8d5ec0b06f4b41ab3b0064a7a70351e23ab7ba365cd0fd75cb61",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/001_5923e8aca8ace3e8",
+      "elapsed_s": 991.9480500221252,
+      "episode_id": "5923e8aca8ace3e85049cc4f9e7fa480d81b4fc6709b729c840d7c9323421b58",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 4440,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 3961,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/001_5923e8aca8ace3e8",
+        "episode_id": "5923e8aca8ace3e85049cc4f9e7fa480d81b4fc6709b729c840d7c9323421b58",
+        "hazard_contact_episode": true,
+        "hazard_entries": 4440,
+        "hazard_frames": 3961,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.654395685835412e-07,
+            "max_rotation_deg": 9.305741096614904e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828949760916e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 4.731839108886973e-07,
+            "max_rotation_deg": 0.00021771060572187807,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "0de0395d86187449c28a308a66f3192920d9833b06bc0b204f07318283a4556f",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 2919623893,
+          "seed_u64": 12568777398692474069
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_pact_seed3103_001_5923e8aca8ace3e8",
+      "row_sha256": "0de0395d86187449c28a308a66f3192920d9833b06bc0b204f07318283a4556f",
+      "schedule_row_sha256": "8e98ab8c3b6ffd068bf24af33d9f17cd6d88bffcf66746045d65607cdcaeae11",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 0,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "05857461ecc5cf6b6096424eeb13eabe84a75c38d70130d311bfd1c4bfb0d2e1",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/000_b32ed9ea3370c36b",
+      "elapsed_s": 995.3355982303619,
+      "episode_id": "b32ed9ea3370c36b09593a4b06caf31485ef182c5db69bad84fc66e5bc272afc",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 1856,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 869,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/000_b32ed9ea3370c36b",
+        "episode_id": "b32ed9ea3370c36b09593a4b06caf31485ef182c5db69bad84fc66e5bc272afc",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 5.550575681245574e-07,
+            "max_rotation_deg": 0.00019413919123843776,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828950441623e-12,
+            "max_rotation_deg": 3.6222548091772e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.2735618285566086e-06,
+            "max_rotation_deg": 0.00060208175646695,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "0a83a80ba850aa47cc9521370c67579eda5ccc66c2d915877a6a19b3537d0023",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 2243036042,
+          "seed_u64": 9911055453477012362
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_act_seed3103_000_b32ed9ea3370c36b",
+      "row_sha256": "0a83a80ba850aa47cc9521370c67579eda5ccc66c2d915877a6a19b3537d0023",
+      "schedule_row_sha256": "1bf7134c810e5650a61bb08264b32f104951fd19570b2eaa1df5746a25524e87",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 0,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "63f552eafb0c8d5ec0b06f4b41ab3b0064a7a70351e23ab7ba365cd0fd75cb61",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/000_b32ed9ea3370c36b",
+      "elapsed_s": 1089.084707736969,
+      "episode_id": "b32ed9ea3370c36b09593a4b06caf31485ef182c5db69bad84fc66e5bc272afc",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": true,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 111138,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 10379,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/000_b32ed9ea3370c36b",
+        "episode_id": "b32ed9ea3370c36b09593a4b06caf31485ef182c5db69bad84fc66e5bc272afc",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 5.550575173732462e-07,
+            "max_rotation_deg": 0.00019413919123843776,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828950441623e-12,
+            "max_rotation_deg": 3.6222548091772e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.2735618283126104e-06,
+            "max_rotation_deg": 0.0006021919184348412,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "0a83a80ba850aa47cc9521370c67579eda5ccc66c2d915877a6a19b3537d0023",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 2243036042,
+          "seed_u64": 9911055453477012362
+        },
+        "task_success": true
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_pact_seed3103_000_b32ed9ea3370c36b",
+      "row_sha256": "0a83a80ba850aa47cc9521370c67579eda5ccc66c2d915877a6a19b3537d0023",
+      "schedule_row_sha256": "e684852768b5f85d2fadefeb52d716548b2857b47b5d8e1025edb92b10be1d01",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 3,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "05857461ecc5cf6b6096424eeb13eabe84a75c38d70130d311bfd1c4bfb0d2e1",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/003_b0fb9060f8789e27",
+      "elapsed_s": 970.7042200565338,
+      "episode_id": "b0fb9060f8789e27d566404e2fd78e19106b17c6855cbd0d05f172def455053e",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": true,
+        "clutter_stability_events": 1,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 800,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 743,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/003_b0fb9060f8789e27",
+        "episode_id": "b0fb9060f8789e27d566404e2fd78e19106b17c6855cbd0d05f172def455053e",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.446474111448274e-07,
+            "max_rotation_deg": 8.537736462516729e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 800,
+            "contact_episode": true,
+            "contact_frames": 743,
+            "max_displacement_m": 0.044240368341785435,
+            "max_rotation_deg": 41.34598579257359,
+            "stability_event": true,
+            "stable": false
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.3949176539436622e-06,
+            "max_rotation_deg": 0.0006522204824702002,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "87e42b857580f756758df1e49fd8fce9b5b13ee2cd5dfb0a698fc8f86073bb0c",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 73532958,
+          "seed_u64": 1787318522538493470
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_act_seed3103_003_b0fb9060f8789e27",
+      "row_sha256": "87e42b857580f756758df1e49fd8fce9b5b13ee2cd5dfb0a698fc8f86073bb0c",
+      "schedule_row_sha256": "c0c0b22809d176430109df66ce636dff12b2edfb4ecf69f9535b2a5f165e6e9b",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 2,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "05857461ecc5cf6b6096424eeb13eabe84a75c38d70130d311bfd1c4bfb0d2e1",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/002_d5c707b5cc65e03e",
+      "elapsed_s": 989.3768765926361,
+      "episode_id": "d5c707b5cc65e03e16e401bb88afe11a090203152ab7da50d9d5baa3099b48cd",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": true,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 38,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 8,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/act_seed3103/002_d5c707b5cc65e03e",
+        "episode_id": "d5c707b5cc65e03e16e401bb88afe11a090203152ab7da50d9d5baa3099b48cd",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 8.686803411882149e-07,
+            "max_rotation_deg": 0.00030056227846910003,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.4148365394514667e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 38,
+            "contact_episode": true,
+            "contact_frames": 8,
+            "max_displacement_m": 0.0012679794028953042,
+            "max_rotation_deg": 1.0382985655528094,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.272311728112348e-06,
+            "max_rotation_deg": 0.0006016942135581309,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "c86bbaa546f8530a4914eb56963ec0b4117384c92f0fc37e1985f4248afded2d",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 3176253211,
+          "seed_u64": 18221908672153503515
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_act_seed3103_002_d5c707b5cc65e03e",
+      "row_sha256": "c86bbaa546f8530a4914eb56963ec0b4117384c92f0fc37e1985f4248afded2d",
+      "schedule_row_sha256": "6aa20dafcf46e9d516e344291b44b61a41e2ddecb3e7e855f3a44fe738a9274c",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 2,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "63f552eafb0c8d5ec0b06f4b41ab3b0064a7a70351e23ab7ba365cd0fd75cb61",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/002_d5c707b5cc65e03e",
+      "elapsed_s": 1004.1153395175934,
+      "episode_id": "d5c707b5cc65e03e16e401bb88afe11a090203152ab7da50d9d5baa3099b48cd",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": true,
+        "clutter_stability_events": 2,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 13928,
+          "grasp_target": 0,
+          "hazard_bar": 15645,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 9172,
+          "grasp_target": 0,
+          "hazard_bar": 14411,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/002_d5c707b5cc65e03e",
+        "episode_id": "d5c707b5cc65e03e16e401bb88afe11a090203152ab7da50d9d5baa3099b48cd",
+        "hazard_contact_episode": true,
+        "hazard_entries": 15645,
+        "hazard_frames": 14411,
+        "per_object": {
+          "01": {
+            "contact_entries": 1563,
+            "contact_episode": true,
+            "contact_frames": 610,
+            "max_displacement_m": 0.28894432877051324,
+            "max_rotation_deg": 179.98321616333612,
+            "stability_event": true,
+            "stable": false
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 0.00016885567779015685,
+            "max_rotation_deg": 0.12925609439394714,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.774426216106907e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 12365,
+            "contact_episode": true,
+            "contact_frames": 9023,
+            "max_displacement_m": 0.09367920571323252,
+            "max_rotation_deg": 36.279589915547504,
+            "stability_event": true,
+            "stable": false
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 0.00014902537733092652,
+            "max_rotation_deg": 0.06965236407537218,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.089573290068984e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "c86bbaa546f8530a4914eb56963ec0b4117384c92f0fc37e1985f4248afded2d",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 3176253211,
+          "seed_u64": 18221908672153503515
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_pact_seed3103_002_d5c707b5cc65e03e",
+      "row_sha256": "c86bbaa546f8530a4914eb56963ec0b4117384c92f0fc37e1985f4248afded2d",
+      "schedule_row_sha256": "aa0eaf1e65f3a27528a27f3d4c8ee3b136310361d4547cc4668aa25605fd689c",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 3,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "63f552eafb0c8d5ec0b06f4b41ab3b0064a7a70351e23ab7ba365cd0fd75cb61",
+      "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/003_b0fb9060f8789e27",
+      "elapsed_s": 988.7558329105377,
+      "episode_id": "b0fb9060f8789e27d566404e2fd78e19106b17c6855cbd0d05f172def455053e",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_eval/smoke/pact_seed3103/003_b0fb9060f8789e27",
+        "episode_id": "b0fb9060f8789e27d566404e2fd78e19106b17c6855cbd0d05f172def455053e",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.446474111448274e-07,
+            "max_rotation_deg": 8.537736462516729e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828949760916e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.3949113254111099e-06,
+            "max_rotation_deg": 0.000652224952902887,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "87e42b857580f756758df1e49fd8fce9b5b13ee2cd5dfb0a698fc8f86073bb0c",
+        "seed": 3103,
+        "task_seed": {
+          "seed_u32": 73532958,
+          "seed_u64": 1787318522538493470
+        },
+        "task_success": false
+      },
+      "returncode": 0,
+      "rollout_id": "v1011c_smoke_pact_seed3103_003_b0fb9060f8789e27",
+      "row_sha256": "87e42b857580f756758df1e49fd8fce9b5b13ee2cd5dfb0a698fc8f86073bb0c",
+      "schedule_row_sha256": "bc9cf75bb92b450ac5768e422c6e743e873fdfd661b08ebcb235152150aa739f",
+      "stats_sha256": "b2a340ac3afb272c23f5f25a29fbeacce23c1493acfd741ee099f9b0ba6d21e9",
+      "status": "complete"
+    }
+  ],
+  "rollouts_attempted": 8,
+  "rollouts_complete": 8,
+  "rollouts_expected": 8,
+  "smoke_gates_on_performance": false,
+  "stage": "smoke",
+  "unused_reserved_smoke_rows": 8,
+  "workers": 4
+}

@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "dynamic_achieved_depth_m": 0.004672180386829705,
+      "dynamic_requested_depth_m": -0.013376239011818836,
+      "fk_error_m": 0.0004558775162695502,
+      "gap_above_5mm_and_fk_error": true,
+      "gap_m": 0.01804841939864854,
+      "insufficient_continuous_bilateral": true,
+      "minimum_dynamic_early_depth_m": 0.004672180386829705,
+      "original_category_preserved": true,
+      "requested_below_dynamic_rim": true,
+      "scene_id": "98c64a358f22eddaba4754f97d40325e9f3e9151f6968d553123681be884a33f",
+      "still_above_dynamic_rim": true,
+      "training_seed": 3104
+    },
+    {
+      "dynamic_achieved_depth_m": 0.0023723886871830357,
+      "dynamic_requested_depth_m": -0.01267514100257161,
+      "fk_error_m": 0.0003385865321398351,
+      "gap_above_5mm_and_fk_error": true,
+      "gap_m": 0.015047529689754646,
+      "insufficient_continuous_bilateral": true,
+      "minimum_dynamic_early_depth_m": 0.0023723886871830357,
+      "original_category_preserved": true,
+      "requested_below_dynamic_rim": true,
+      "scene_id": "621d8bd12acc6e7256e2a671b85f49c0168e469e53ac02193dc8e0ba09be2d11",
+      "still_above_dynamic_rim": true,
+      "training_seed": 3103
+    }
+  ],
+  "interpretation": "Both required cases remain above the measured rotated rim while the requested TCP is below it. The supported discrepancy is not solely a translation-only rim classification artifact. No runtime gate is introduced.",
+  "passed": true,
+  "schema": "pact_v1010b_grasp_v1",
+  "source_metrics_sha256": "fe1a3cf7c7cccfc6b5e5881fba9217e09e36fe2020cc9f84cc96084bf64f2ee6",
+  "utc": "2026-09-08T05:53:42.958451+00:00"
+}

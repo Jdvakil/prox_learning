@@ -1,0 +1,2158 @@
+{
+  "aggregate": {
+    "20000": {
+      "ACT": {
+        "counts": {
+          "clutter_contact_episode": 0,
+          "collision_free": 2,
+          "collision_free_task_success": 1,
+          "hazard_contact_episode": 2,
+          "task_object_touched": 3,
+          "task_success": 2
+        },
+        "hazard_contact_frames_mean": 2214.0,
+        "hazard_contact_frames_total": 8856,
+        "n": 4,
+        "per_object": {
+          "01": {
+            "contact_episodes": 0,
+            "contact_frames_total": 0,
+            "max_displacement_m": 8.690810586643595e-07,
+            "max_rotation_deg": 0.00030071260447307063,
+            "stability_event_episodes": 0
+          },
+          "08": {
+            "contact_episodes": 0,
+            "contact_frames_total": 0,
+            "max_displacement_m": 7.355209242305528e-07,
+            "max_rotation_deg": 0.00035212548251853035,
+            "stability_event_episodes": 0
+          },
+          "09": {
+            "contact_episodes": 0,
+            "contact_frames_total": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event_episodes": 0
+          }
+        },
+        "rates": {
+          "clutter_contact_episode": 0.0,
+          "collision_free": 0.5,
+          "collision_free_task_success": 0.25,
+          "hazard_contact_episode": 0.5,
+          "task_object_touched": 0.75,
+          "task_success": 0.5
+        }
+      },
+      "PACT": {
+        "counts": {
+          "clutter_contact_episode": 2,
+          "collision_free": 1,
+          "collision_free_task_success": 1,
+          "hazard_contact_episode": 2,
+          "task_object_touched": 3,
+          "task_success": 1
+        },
+        "hazard_contact_frames_mean": 1532.5,
+        "hazard_contact_frames_total": 6130,
+        "n": 4,
+        "per_object": {
+          "01": {
+            "contact_episodes": 0,
+            "contact_frames_total": 0,
+            "max_displacement_m": 8.687011255214269e-07,
+            "max_rotation_deg": 0.0003005719791897594,
+            "stability_event_episodes": 0
+          },
+          "08": {
+            "contact_episodes": 0,
+            "contact_frames_total": 0,
+            "max_displacement_m": 7.355209258904538e-07,
+            "max_rotation_deg": 0.00035212548251853035,
+            "stability_event_episodes": 0
+          },
+          "09": {
+            "contact_episodes": 1,
+            "contact_frames_total": 145,
+            "max_displacement_m": 0.00247314122691495,
+            "max_rotation_deg": 2.2568016664311257,
+            "stability_event_episodes": 0
+          }
+        },
+        "rates": {
+          "clutter_contact_episode": 0.5,
+          "collision_free": 0.25,
+          "collision_free_task_success": 0.25,
+          "hazard_contact_episode": 0.5,
+          "task_object_touched": 0.75,
+          "task_success": 0.25
+        }
+      }
+    }
+  },
+  "authorizes_collection": false,
+  "authorizes_conversion": false,
+  "authorizes_evaluation": false,
+  "authorizes_gate": false,
+  "authorizes_phase0": false,
+  "authorizes_training": false,
+  "eligible_for_human_review": false,
+  "human_approval_present": false,
+  "infrastructure_healthy": true,
+  "ledger_sha256": "c29f82a298ce66a10c929fc3137db0df7217fe17289788f8218a7696c8981315",
+  "pair_checks": [
+    {
+      "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+      "exact_non_rgb_datasets": 459,
+      "global_step": 20000,
+      "rgb": {
+        "observation/exo_camera_1": {
+          "changed_channel_values": 0,
+          "changed_fraction": 0.0,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 0,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        },
+        "observation/wrist_camera": {
+          "changed_channel_values": 39,
+          "changed_fraction": 5.918560606060606e-05,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 1,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        }
+      },
+      "total_datasets": 461
+    },
+    {
+      "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+      "exact_non_rgb_datasets": 459,
+      "global_step": 20000,
+      "rgb": {
+        "observation/exo_camera_1": {
+          "changed_channel_values": 0,
+          "changed_fraction": 0.0,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 0,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        },
+        "observation/wrist_camera": {
+          "changed_channel_values": 81,
+          "changed_fraction": 0.00012292395104895106,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 1,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        }
+      },
+      "total_datasets": 461
+    },
+    {
+      "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+      "exact_non_rgb_datasets": 459,
+      "global_step": 20000,
+      "rgb": {
+        "observation/exo_camera_1": {
+          "changed_channel_values": 0,
+          "changed_fraction": 0.0,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 0,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        },
+        "observation/wrist_camera": {
+          "changed_channel_values": 21,
+          "changed_fraction": 3.186917249417249e-05,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 1,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        }
+      },
+      "total_datasets": 461
+    },
+    {
+      "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+      "exact_non_rgb_datasets": 459,
+      "global_step": 20000,
+      "rgb": {
+        "observation/exo_camera_1": {
+          "changed_channel_values": 0,
+          "changed_fraction": 0.0,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 0,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        },
+        "observation/wrist_camera": {
+          "changed_channel_values": 24,
+          "changed_fraction": 3.642191142191142e-05,
+          "channel_values": 658944,
+          "max_abs_delta_u8": 1,
+          "shape": [
+            352,
+            624,
+            3
+          ]
+        }
+      },
+      "total_datasets": 461
+    }
+  ],
+  "pairing_errors": [],
+  "phase0_passed": false,
+  "raw_metrics": [
+    {
+      "arm": "ACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 3775,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 0,
+        "hazard_bar": 3629,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/000_857d651406f1212b",
+      "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+      "hazard_contact_episode": true,
+      "hazard_entries": 3775,
+      "hazard_frames": 3629,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 5.550576972467711e-07,
+          "max_rotation_deg": 0.00019413919123843776,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 3.818191820832846e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 7.355209242305528e-07,
+          "max_rotation_deg": 0.00035212548251853035,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+      "seed": 3103,
+      "task_object_touched": false,
+      "task_object_visible": {
+        "exo_camera_1": false,
+        "wrist_camera": false
+      },
+      "task_seed": {
+        "seed_u32": 2633040365,
+        "seed_u64": 636455319143252461
+      },
+      "task_success": false,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "clutter_contact_episode": true,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 82,
+        "grasp_target": 0,
+        "hazard_bar": 3375,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 66,
+        "grasp_target": 0,
+        "hazard_bar": 3289,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/000_857d651406f1212b",
+      "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+      "hazard_contact_episode": true,
+      "hazard_entries": 3375,
+      "hazard_frames": 3289,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 5.550575683571758e-07,
+          "max_rotation_deg": 0.00019413919123843776,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 3.818191820832846e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 82,
+          "contact_episode": true,
+          "contact_frames": 66,
+          "max_displacement_m": 0.0017548336369323295,
+          "max_rotation_deg": 1.323861968490101,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 7.355209258904538e-07,
+          "max_rotation_deg": 0.00035212548251853035,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+      "seed": 3103,
+      "task_object_touched": false,
+      "task_object_visible": {
+        "exo_camera_1": false,
+        "wrist_camera": false
+      },
+      "task_seed": {
+        "seed_u32": 2633040365,
+        "seed_u64": 636455319143252461
+      },
+      "task_success": false,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 2953,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 1197,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/001_5eaa206efc07d605",
+      "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.654395685837931e-07,
+          "max_rotation_deg": 9.305741096614904e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828951351736e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 1.9655740156109072e-07,
+          "max_rotation_deg": 9.211264120822169e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 929475138,
+        "seed_u64": 5671386689028139586
+      },
+      "task_success": false,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "clutter_contact_episode": true,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 145,
+        "grasp_target": 688,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 145,
+        "grasp_target": 543,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/001_5eaa206efc07d605",
+      "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.654395685837931e-07,
+          "max_rotation_deg": 9.305741096614904e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.632782895112394e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 1.9655740156109072e-07,
+          "max_rotation_deg": 9.211264120822169e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 145,
+          "contact_episode": true,
+          "contact_frames": 145,
+          "max_displacement_m": 0.00247314122691495,
+          "max_rotation_deg": 2.2568016664311257,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 929475138,
+        "seed_u64": 5671386689028139586
+      },
+      "task_success": false,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 1211,
+        "hazard_bar": 3052,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 591,
+        "hazard_bar": 2841,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/002_878b1c32b5074562",
+      "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+      "hazard_contact_episode": true,
+      "hazard_entries": 3052,
+      "hazard_frames": 2841,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 8.687011255214269e-07,
+          "max_rotation_deg": 0.0003005719791897594,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 5.533085616490783e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 4.630923726169521e-07,
+          "max_rotation_deg": 0.00021811201459148364,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 174049012,
+        "seed_u64": 18129188567272900340
+      },
+      "task_success": false,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": false,
+      "collision_free_task_success": false,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 76440,
+        "hazard_bar": 5388,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 8677,
+        "hazard_bar": 5227,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/002_878b1c32b5074562",
+      "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+      "hazard_contact_episode": true,
+      "hazard_entries": 5388,
+      "hazard_frames": 5227,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 8.690810586643595e-07,
+          "max_rotation_deg": 0.00030071260447307063,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 2.091309789151873e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828950441623e-12,
+          "max_rotation_deg": 5.533085616490783e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 4.6309237357490644e-07,
+          "max_rotation_deg": 0.00021811201459148364,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 174049012,
+        "seed_u64": 18129188567272900340
+      },
+      "task_success": true,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 34735,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 3359,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/003_7c80f956e0fb20e8",
+      "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.446474111448274e-07,
+          "max_rotation_deg": 8.537736462516729e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828949760916e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.953078380453183e-07,
+          "max_rotation_deg": 0.00018621271013243327,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 4036756497,
+        "seed_u64": 13164292624197878801
+      },
+      "task_success": true,
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "clutter_contact_episode": false,
+      "clutter_stability_events": 0,
+      "collision_free": true,
+      "collision_free_task_success": true,
+      "contact_entries": {
+        "clutter": 0,
+        "grasp_target": 17993,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "contact_frames": {
+        "clutter": 0,
+        "grasp_target": 2974,
+        "hazard_bar": 0,
+        "mounted_fixture": 0,
+        "other_environment": 0,
+        "place_receptacle": 0
+      },
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/003_7c80f956e0fb20e8",
+      "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+      "hazard_contact_episode": false,
+      "hazard_entries": 0,
+      "hazard_frames": 0,
+      "per_object": {
+        "01": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.446474111448274e-07,
+          "max_rotation_deg": 8.537736462516729e-05,
+          "stability_event": false,
+          "stable": true
+        },
+        "03": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6418867093980225e-12,
+          "max_rotation_deg": 2.4148365394514667e-06,
+          "stability_event": false,
+          "stable": true
+        },
+        "04": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.68871664757366e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "06": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 2.6327828949760916e-12,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        },
+        "08": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 3.953078380453183e-07,
+          "max_rotation_deg": 0.00018621271013243327,
+          "stability_event": false,
+          "stable": true
+        },
+        "09": {
+          "contact_entries": 0,
+          "contact_episode": false,
+          "contact_frames": 0,
+          "max_displacement_m": 6.098455074265985e-13,
+          "max_rotation_deg": 0.0,
+          "stability_event": false,
+          "stable": true
+        }
+      },
+      "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+      "seed": 3103,
+      "task_object_touched": true,
+      "task_object_visible": {
+        "exo_camera_1": true,
+        "wrist_camera": true
+      },
+      "task_seed": {
+        "seed_u32": 4036756497,
+        "seed_u64": 13164292624197878801
+      },
+      "task_success": true,
+      "training_global_step": 20000
+    }
+  ],
+  "resource_samples": [
+    {
+      "disk_free_bytes": 14156926976,
+      "gpu": "52, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 157235957760,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666010.6647491
+    },
+    {
+      "disk_free_bytes": 14156922880,
+      "gpu": "34, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 157325819904,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666070.7145936
+    },
+    {
+      "disk_free_bytes": 14156918784,
+      "gpu": "35, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 157416763392,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666130.7676826
+    },
+    {
+      "disk_free_bytes": 14156976128,
+      "gpu": "32, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 157508329472,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666190.8214383
+    },
+    {
+      "disk_free_bytes": 14154821632,
+      "gpu": "39, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 158103842816,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666250.872325
+    },
+    {
+      "disk_free_bytes": 14154285056,
+      "gpu": "40, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 159581999104,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666310.9234972
+    },
+    {
+      "disk_free_bytes": 14154280960,
+      "gpu": "46, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 161190281216,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666370.9745736
+    },
+    {
+      "disk_free_bytes": 14154326016,
+      "gpu": "48, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 162784485376,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666431.0251105
+    },
+    {
+      "disk_free_bytes": 14154272768,
+      "gpu": "34, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 164386959360,
+      "pending_jobs": 8,
+      "pids_current": 533,
+      "stage": "smoke",
+      "unix_time": 1788666491.0765889
+    },
+    {
+      "disk_free_bytes": 14154268672,
+      "gpu": "37, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 165952557056,
+      "pending_jobs": 8,
+      "pids_current": 533,
+      "stage": "smoke",
+      "unix_time": 1788666551.1261716
+    },
+    {
+      "disk_free_bytes": 14157746176,
+      "gpu": "36, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 167507013632,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666611.1774333
+    },
+    {
+      "disk_free_bytes": 14157742080,
+      "gpu": "41, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 169071013888,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666671.2287548
+    },
+    {
+      "disk_free_bytes": 14157737984,
+      "gpu": "56, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 170622402560,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666731.2813938
+    },
+    {
+      "disk_free_bytes": 14157774848,
+      "gpu": "37, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 172176773120,
+      "pending_jobs": 8,
+      "pids_current": 531,
+      "stage": "smoke",
+      "unix_time": 1788666791.3327138
+    },
+    {
+      "disk_free_bytes": 14157770752,
+      "gpu": "45, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 173709082624,
+      "pending_jobs": 8,
+      "pids_current": 530,
+      "stage": "smoke",
+      "unix_time": 1788666851.3848634
+    },
+    {
+      "disk_free_bytes": 14157725696,
+      "gpu": "54, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 175244808192,
+      "pending_jobs": 8,
+      "pids_current": 530,
+      "stage": "smoke",
+      "unix_time": 1788666911.4368193
+    },
+    {
+      "disk_free_bytes": 14157500416,
+      "gpu": "32, 9256, 23028",
+      "gpu_processes": "3246631, 1123\n3246623, 1123\n3246632, 1161\n3246628, 1161\n3246627, 1123\n3246624, 1161\n3246626, 1123\n3246629, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 179635064832,
+      "pending_jobs": 8,
+      "pids_current": 530,
+      "stage": "smoke",
+      "unix_time": 1788666971.4851477
+    },
+    {
+      "disk_free_bytes": 13851750400,
+      "gpu": "3, 2317, 23028",
+      "gpu_processes": "3246631, 1123\n3246632, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 125098545152,
+      "pending_jobs": 2,
+      "pids_current": 493,
+      "stage": "smoke",
+      "unix_time": 1788667061.5839593
+    },
+    {
+      "disk_free_bytes": 13851582464,
+      "gpu": "3, 2317, 23028",
+      "gpu_processes": "3246631, 1123\n3246632, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 125218332672,
+      "pending_jobs": 2,
+      "pids_current": 494,
+      "stage": "smoke",
+      "unix_time": 1788667121.6356444
+    },
+    {
+      "disk_free_bytes": 13798924288,
+      "gpu": "0, 1937, 23028",
+      "gpu_processes": "3246631, 752\n3246632, 1161",
+      "gpu_processes_returncode": 0,
+      "gpu_returncode": 0,
+      "memory_current_bytes": 127643803648,
+      "pending_jobs": 2,
+      "pids_current": 493,
+      "stage": "smoke",
+      "unix_time": 1788667181.6867352
+    }
+  ],
+  "results": [
+    {
+      "arm": "ACT",
+      "candidate_index": 0,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/000_857d651406f1212b",
+      "elapsed_s": 1028.9178884029388,
+      "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": false,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 3775,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 3629,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/000_857d651406f1212b",
+        "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+        "hazard_contact_episode": true,
+        "hazard_entries": 3775,
+        "hazard_frames": 3629,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 5.550576972467711e-07,
+            "max_rotation_deg": 0.00019413919123843776,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 3.818191820832846e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828950441623e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 7.355209242305528e-07,
+            "max_rotation_deg": 0.00035212548251853035,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+        "seed": 3103,
+        "task_object_touched": false,
+        "task_object_visible": {
+          "exo_camera_1": false,
+          "wrist_camera": false
+        },
+        "task_seed": {
+          "seed_u32": 2633040365,
+          "seed_u64": 636455319143252461
+        },
+        "task_success": false,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_act_seed3103_step20000_000_857d651406f1212b",
+      "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+      "schedule_row_sha256": "e557c5cf48f0bc1a4f265c6bc15a5a29ef0c8b442aca32791e9c75dec9aa6b55",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 0,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/000_857d651406f1212b",
+      "elapsed_s": 1030.6648488044739,
+      "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": true,
+        "clutter_stability_events": 0,
+        "collision_free": false,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 82,
+          "grasp_target": 0,
+          "hazard_bar": 3375,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 66,
+          "grasp_target": 0,
+          "hazard_bar": 3289,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/000_857d651406f1212b",
+        "episode_id": "857d651406f1212b25a20e4273840c5067488764c4bf80eca99ae421fb0c0bb5",
+        "hazard_contact_episode": true,
+        "hazard_entries": 3375,
+        "hazard_frames": 3289,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 5.550575683571758e-07,
+            "max_rotation_deg": 0.00019413919123843776,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 3.818191820832846e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 82,
+            "contact_episode": true,
+            "contact_frames": 66,
+            "max_displacement_m": 0.0017548336369323295,
+            "max_rotation_deg": 1.323861968490101,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 7.355209258904538e-07,
+            "max_rotation_deg": 0.00035212548251853035,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+        "seed": 3103,
+        "task_object_touched": false,
+        "task_object_visible": {
+          "exo_camera_1": false,
+          "wrist_camera": false
+        },
+        "task_seed": {
+          "seed_u32": 2633040365,
+          "seed_u64": 636455319143252461
+        },
+        "task_success": false,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_pact_seed3103_step20000_000_857d651406f1212b",
+      "row_sha256": "6dd366d95b5ef9b8a28afbd3e0603f0dbe7d618eb9e1511487975bcf774fde3b",
+      "schedule_row_sha256": "c3b9491dfcabcbba3be84c1cda8f528175df09d5e8cc268acf8ae5ad8cc03207",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 1,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/001_5eaa206efc07d605",
+      "elapsed_s": 1040.450731754303,
+      "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": true,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 2953,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 1197,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/001_5eaa206efc07d605",
+        "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.654395685837931e-07,
+            "max_rotation_deg": 9.305741096614904e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828951351736e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.9655740156109072e-07,
+            "max_rotation_deg": 9.211264120822169e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 929475138,
+          "seed_u64": 5671386689028139586
+        },
+        "task_success": false,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_act_seed3103_step20000_001_5eaa206efc07d605",
+      "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+      "schedule_row_sha256": "bbb4a4540db652fb0f2afecdc906a0a9301b6158424b00ac76e56805345d2a36",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 1,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/001_5eaa206efc07d605",
+      "elapsed_s": 1044.1617848873138,
+      "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": true,
+        "clutter_stability_events": 0,
+        "collision_free": false,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 145,
+          "grasp_target": 688,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 145,
+          "grasp_target": 543,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/001_5eaa206efc07d605",
+        "episode_id": "5eaa206efc07d6057bf96661fce9b0966b5290491a9061ff01be6e12ceee060b",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.654395685837931e-07,
+            "max_rotation_deg": 9.305741096614904e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.632782895112394e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 1.9655740156109072e-07,
+            "max_rotation_deg": 9.211264120822169e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 145,
+            "contact_episode": true,
+            "contact_frames": 145,
+            "max_displacement_m": 0.00247314122691495,
+            "max_rotation_deg": 2.2568016664311257,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 929475138,
+          "seed_u64": 5671386689028139586
+        },
+        "task_success": false,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_pact_seed3103_step20000_001_5eaa206efc07d605",
+      "row_sha256": "67a5bf980883bf6ba57e2d68647dcb42fe106daa7121fd269d0389e1aaf7883e",
+      "schedule_row_sha256": "d6808c6728c3f708cb0a7c21b93b196da4240c4d5945b9756ddbdb88c8f932ce",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 2,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/002_878b1c32b5074562",
+      "elapsed_s": 1050.4997391700745,
+      "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": false,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 1211,
+          "hazard_bar": 3052,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 591,
+          "hazard_bar": 2841,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/002_878b1c32b5074562",
+        "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+        "hazard_contact_episode": true,
+        "hazard_entries": 3052,
+        "hazard_frames": 2841,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 8.687011255214269e-07,
+            "max_rotation_deg": 0.0003005719791897594,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828950441623e-12,
+            "max_rotation_deg": 5.533085616490783e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 4.630923726169521e-07,
+            "max_rotation_deg": 0.00021811201459148364,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 174049012,
+          "seed_u64": 18129188567272900340
+        },
+        "task_success": false,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_pact_seed3103_step20000_002_878b1c32b5074562",
+      "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+      "schedule_row_sha256": "0530596797019707c4b34026e05ca08bcb9616ee5e23767a6b9730ee7ae6fbba",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 2,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/002_878b1c32b5074562",
+      "elapsed_s": 1050.7830550670624,
+      "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": false,
+        "collision_free_task_success": false,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 76440,
+          "hazard_bar": 5388,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 8677,
+          "hazard_bar": 5227,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/002_878b1c32b5074562",
+        "episode_id": "878b1c32b507456298838f999a0080a7a37d60c7b88962b6f502594c1df35dbe",
+        "hazard_contact_episode": true,
+        "hazard_entries": 5388,
+        "hazard_frames": 5227,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 8.690810586643595e-07,
+            "max_rotation_deg": 0.00030071260447307063,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 2.091309789151873e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828950441623e-12,
+            "max_rotation_deg": 5.533085616490783e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 4.6309237357490644e-07,
+            "max_rotation_deg": 0.00021811201459148364,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 174049012,
+          "seed_u64": 18129188567272900340
+        },
+        "task_success": true,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_act_seed3103_step20000_002_878b1c32b5074562",
+      "row_sha256": "4bb3bdcb2cd486457cae8c38a703259bf30d52329f035013349c7323889caa3a",
+      "schedule_row_sha256": "da349b5f0f2bb36f23c1c988cd1bbe9542e2777cc5e35198b841c9dedde19545",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "ACT",
+      "candidate_index": 3,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "d302872e6b74e3949393e686eca5f397258b82158b8c881e7eb61651c506e2ac",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/003_7c80f956e0fb20e8",
+      "elapsed_s": 1232.1860036849976,
+      "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+      "metrics": {
+        "arm": "ACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": true,
+        "collision_free_task_success": true,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 34735,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 3359,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/act_seed3103_step20000/003_7c80f956e0fb20e8",
+        "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.446474111448274e-07,
+            "max_rotation_deg": 8.537736462516729e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.4148365394514667e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828949760916e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.953078380453183e-07,
+            "max_rotation_deg": 0.00018621271013243327,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 4036756497,
+          "seed_u64": 13164292624197878801
+        },
+        "task_success": true,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_act_seed3103_step20000_003_7c80f956e0fb20e8",
+      "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+      "schedule_row_sha256": "52c2f65dfacd41c94c4ddfc2090fbbfacbdfed6790e235c6c060084c0bbda1d2",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    },
+    {
+      "arm": "PACT",
+      "candidate_index": 3,
+      "checkpoint_seed": 3103,
+      "checkpoint_sha256": "24fb2e9d7abc9cb67cb7338e24d9fc5306719eb5eef0e4245a347f4e5d10dbe3",
+      "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/003_7c80f956e0fb20e8",
+      "elapsed_s": 1237.7761993408203,
+      "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+      "metrics": {
+        "arm": "PACT",
+        "clutter_contact_episode": false,
+        "clutter_stability_events": 0,
+        "collision_free": true,
+        "collision_free_task_success": true,
+        "contact_entries": {
+          "clutter": 0,
+          "grasp_target": 17993,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "contact_frames": {
+          "clutter": 0,
+          "grasp_target": 2974,
+          "hazard_bar": 0,
+          "mounted_fixture": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "directory": "diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/smoke/pact_seed3103_step20000/003_7c80f956e0fb20e8",
+        "episode_id": "7c80f956e0fb20e8a6fc9943456cb73fe50a2453b18dda65ed28d2c868a4505b",
+        "hazard_contact_episode": false,
+        "hazard_entries": 0,
+        "hazard_frames": 0,
+        "per_object": {
+          "01": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.446474111448274e-07,
+            "max_rotation_deg": 8.537736462516729e-05,
+            "stability_event": false,
+            "stable": true
+          },
+          "03": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6418867093980225e-12,
+            "max_rotation_deg": 2.4148365394514667e-06,
+            "stability_event": false,
+            "stable": true
+          },
+          "04": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.68871664757366e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "06": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 2.6327828949760916e-12,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          },
+          "08": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 3.953078380453183e-07,
+            "max_rotation_deg": 0.00018621271013243327,
+            "stability_event": false,
+            "stable": true
+          },
+          "09": {
+            "contact_entries": 0,
+            "contact_episode": false,
+            "contact_frames": 0,
+            "max_displacement_m": 6.098455074265985e-13,
+            "max_rotation_deg": 0.0,
+            "stability_event": false,
+            "stable": true
+          }
+        },
+        "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+        "seed": 3103,
+        "task_object_touched": true,
+        "task_object_visible": {
+          "exo_camera_1": true,
+          "wrist_camera": true
+        },
+        "task_seed": {
+          "seed_u32": 4036756497,
+          "seed_u64": 13164292624197878801
+        },
+        "task_success": true,
+        "training_global_step": 20000
+      },
+      "returncode": 0,
+      "rollout_id": "dualcam_smoke_pact_seed3103_step20000_003_7c80f956e0fb20e8",
+      "row_sha256": "7fc279e7cbe98e49c3a86f4fc25b3dd8529191190d515c9aabeb91dce4c095ff",
+      "schedule_row_sha256": "24c39951fea4e48ec80d3560adf4747511813dc4916e0b68667de8015f14a20a",
+      "stats_sha256": "61d46cfa0502623884697f7899ba20375178253fe59d7fe63659057eebb6a537",
+      "status": "complete",
+      "training_global_step": 20000
+    }
+  ],
+  "rollouts_complete": 8,
+  "rollouts_expected": 8,
+  "stage": "smoke",
+  "workers": 12
+}

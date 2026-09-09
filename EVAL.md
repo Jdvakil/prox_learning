@@ -1171,3 +1171,171 @@ link-7/hand/gripper coverage, and the frozen V9.5 replay places the inbound
 vessel outside every sensor cone in 7/8 variants. See
 `docs/PACT_PLACE_SKIN_VISIBILITY.md` for the artifact-backed resolution and
 coverage limits.
+
+# V10.11c ACT/PACT training and paired evaluation
+
+Completed six chunk-100 models and **300/300 raw-verified scientific rollouts**: ACT and PACT, seeds 3103/3104/3105, 50 paired instances per seed. All 150 pairs have identical non-RGB initial observations and selected environment seeds, with wrist RGB checked against the disclosed tolerance below. The smoke completed 8/8 rollouts on four separate instances, initially failed strict RGB equality, and was reconciled under that rule without rerunning any rollout; eight additional frozen smoke rows were reserved but not selected.
+
+The owner narrowed scope on 2026-09-05 to chunk 100 only and omitted chunk 25, gripper-status analysis, Wilson intervals and McNemar tests. Results below are descriptive. They do not establish statistical superiority.
+
+## Corpus and training
+
+The read-only collection ledger contains **482 attempts, 99 accepted strict-clean episodes**. All 24 cells have 4–5 episodes. Row directories resolve as `attempt_id[:16]`; no closeout was required. The split is **75 train / 24 validation**, taking the lowest SHA256(split seed:attempt_id) per cell for validation. Split seed: 2026090401. Converted T=176–546, sum 37,871; 1,514,840 windows were encoded, with independent source-preservation checks.
+
+The reused embedding verifier retains V10.9 schema labels and a V10.8 `note_on_window_count` paragraph. That legacy paragraph does not describe this corpus; the numerical episode/timestep/window fields and source reconstruction are authoritative.
+
+Both arms used 2,000 epochs, batch 8, learning rate 1e-5, KL 10, chunk 100, hidden 512, feed-forward 3,200, 7 encoder/7 decoder layers, 8 heads, wrist ResNet-18, and state/action dimensions 9/8. Training episode horizon was 635. The command comparison allowed only the checkpoint directory and five PACT flags. The frozen encoder hash is `6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206`. All six models passed strict checkpoint reload, offline inference and split/dataset provenance checks; PACT proximity consumption was checked using real versus zeroed embeddings.
+
+| Seed | Arm | Epochs | Best epoch | Best validation loss | Training minutes |
+|---|---|---:|---:|---:|---:|
+| 3103 | ACT | 2000 | 1995 | 0.135764 | 51.0 |
+| 3103 | PACT | 2000 | 1974 | 0.134507 | 54.0 |
+| 3104 | ACT | 2000 | 1886 | 0.156815 | 53.4 |
+| 3104 | PACT | 2000 | 1865 | 0.159752 | 56.1 |
+| 3105 | ACT | 2000 | 1756 | 0.119959 | 54.0 |
+| 3105 | PACT | 2000 | 1720 | 0.121472 | 56.9 |
+
+## Paired outcomes
+
+The overall comparison includes **all three independently trained seeds**: 150 rollouts per arm. For every episode-level rate, the pooled numerator divided by 150 is exactly the arithmetic mean of the three seed-level rates, because each seed contributes 50 instances. Frame and contact-entry columns are summed counts across the indicated seed(s), not percentages or per-rollout averages. Each arm is paired on the same instances within each seed; the three seed blocks use disjoint held-out instances. Thus variation between seed rows reflects both training randomness and held-out instance variation.
+
+Collision-free success means final task success with zero hazard-bar, other-environment, clutter or mounted-fixture contact entries. Task success was independently read from the final trajectory `success` field. Contact episodes have at least one physics sample with that contact. A frame below is an audited physics sample (2 ms plus episode boundaries), not a contact-pair entry or a rendered video frame.
+
+| Seed | Arm | Collision-free success | Task success | Hazard-contact episodes | Hazard frames | Hazard entries | Clutter-contact episodes |
+|---|---|---:|---:|---:|---:|---:|---:|
+| 3103 | ACT | 3/50 (6.0%) | 4/50 (8.0%) | 19/50 (38.0%) | 78119 | 83005 | 13/50 (26.0%) |
+| 3103 | PACT | 4/50 (8.0%) | 4/50 (8.0%) | 16/50 (32.0%) | 69743 | 78783 | 12/50 (24.0%) |
+| 3104 | ACT | 4/50 (8.0%) | 5/50 (10.0%) | 16/50 (32.0%) | 74220 | 77423 | 20/50 (40.0%) |
+| 3104 | PACT | 4/50 (8.0%) | 6/50 (12.0%) | 21/50 (42.0%) | 114345 | 123899 | 17/50 (34.0%) |
+| 3105 | ACT | 1/50 (2.0%) | 2/50 (4.0%) | 15/50 (30.0%) | 74855 | 92551 | 21/50 (42.0%) |
+| 3105 | PACT | 2/50 (4.0%) | 2/50 (4.0%) | 18/50 (36.0%) | 99571 | 107220 | 10/50 (20.0%) |
+| pooled | ACT | 8/150 (5.3%) | 11/150 (7.3%) | 50/150 (33.3%) | 227194 | 252979 | 54/150 (36.0%) |
+| pooled | PACT | 10/150 (6.7%) | 12/150 (8.0%) | 55/150 (36.7%) | 283659 | 309902 | 39/150 (26.0%) |
+
+## Per-object contact and stability
+
+Slot 01 is the tall route cylinder; 08 the tall near-target cylinder; 09 the tall near-target box. An object is stable only if it never exceeds 2 cm translation or 25° rotation from its settled baseline at any retained control sample. Object contact attribution was reconstructed from retained geom/body pair identities and counts; stability was reconstructed from retained poses and rotations.
+
+| Seed | Slot | Arm | Contact episodes | Contact frames | Contact entries | Stable episodes |
+|---|---|---|---:|---:|---:|---:|
+| 3103 | 01 | ACT | 1/50 (2.0%) | 1229 | 1270 | 46/50 (92.0%) |
+| 3103 | 01 | PACT | 2/50 (4.0%) | 2636 | 6985 | 46/50 (92.0%) |
+| 3103 | 08 | ACT | 2/50 (4.0%) | 187 | 254 | 49/50 (98.0%) |
+| 3103 | 08 | PACT | 3/50 (6.0%) | 606 | 635 | 49/50 (98.0%) |
+| 3103 | 09 | ACT | 2/50 (4.0%) | 136 | 136 | 50/50 (100.0%) |
+| 3103 | 09 | PACT | 2/50 (4.0%) | 1065 | 1120 | 48/50 (96.0%) |
+| 3104 | 01 | ACT | 11/50 (22.0%) | 8681 | 17548 | 38/50 (76.0%) |
+| 3104 | 01 | PACT | 7/50 (14.0%) | 6232 | 11867 | 43/50 (86.0%) |
+| 3104 | 08 | ACT | 1/50 (2.0%) | 774 | 774 | 50/50 (100.0%) |
+| 3104 | 08 | PACT | 0/50 (0.0%) | 0 | 0 | 49/50 (98.0%) |
+| 3104 | 09 | ACT | 2/50 (4.0%) | 822 | 1010 | 50/50 (100.0%) |
+| 3104 | 09 | PACT | 1/50 (2.0%) | 18 | 18 | 49/50 (98.0%) |
+| 3105 | 01 | ACT | 7/50 (14.0%) | 4433 | 10081 | 42/50 (84.0%) |
+| 3105 | 01 | PACT | 4/50 (8.0%) | 14644 | 32542 | 45/50 (90.0%) |
+| 3105 | 08 | ACT | 7/50 (14.0%) | 28736 | 87063 | 45/50 (90.0%) |
+| 3105 | 08 | PACT | 2/50 (4.0%) | 305 | 868 | 49/50 (98.0%) |
+| 3105 | 09 | ACT | 4/50 (8.0%) | 1948 | 2577 | 47/50 (94.0%) |
+| 3105 | 09 | PACT | 0/50 (0.0%) | 0 | 0 | 50/50 (100.0%) |
+| pooled | 01 | ACT | 19/150 (12.7%) | 14343 | 28899 | 126/150 (84.0%) |
+| pooled | 01 | PACT | 13/150 (8.7%) | 23512 | 51394 | 134/150 (89.3%) |
+| pooled | 08 | ACT | 10/150 (6.7%) | 29697 | 88091 | 144/150 (96.0%) |
+| pooled | 08 | PACT | 5/150 (3.3%) | 911 | 1503 | 147/150 (98.0%) |
+| pooled | 09 | ACT | 8/150 (5.3%) | 2906 | 3723 | 147/150 (98.0%) |
+| pooled | 09 | PACT | 3/150 (2.0%) | 1083 | 1138 | 147/150 (98.0%) |
+
+## Interpretation and provenance
+
+The original smoke stage exited 1 after 8/8 successful rollouts because three wrist RGB pairs failed exact byte equality: `AssertionError: initial observation mismatch: observation/wrist_camera`. Those pairs differed in 15, 24 and 48 of 658,944 uint8 channel values, each by exactly one intensity level; all 449 non-RGB observation datasets matched exactly. Before scientific evaluation, the pairing rule was amended to allow at most 1/255 intensity difference in at most 0.1% of RGB channel values while requiring exact equality for every other field. The cause of the sparse RGB differences was not conclusively established. Original failures, raw images and `smoke_reconciliation.json` are retained. No smoke performance outcome influenced this change.
+
+The outer coordinator was lost in a Codex crash during training; the six-model trainer survived. A detached coordinator reconnected without restarting a model. Its completion record explicitly marks the lost coordinator exit code as unavailable and relies on all six actual model exit codes and independent verification.
+
+Clutter here is effectively invisible to the proximity skin: inbound vessel `max_w_perp_m = 0.000` in **7/8** variants of `diagnostics_output/pact_place_v9_w1_resolvability_full/resolvability.json`; the 40 sensors cover **link1–link6 only**. Any PACT–ACT difference is **not evidence that PACT senses the clutter**. This historical resolvability check is not a new visibility measurement on the held-out evaluation instances.
+
+Evaluation used `molmo_spaces.tasks.enclosure_reach.PactPlaceCorridorV1011C33PctTallerPrimitiveSampler` from `experiment/pact-vs-act-remediation-v2`, with its implementation hash checked against the source freeze. The original chunk-100 temporal ensemble, 127.5 gripper threshold, 900-step horizon, disabled action noise and `end_on_success=false` were preserved. All five native thread pools were capped at 1. Initial and retry evaluation seeds were checked against 28,222 historical/collection-stream seeds and against each other.
+
+Scientific evaluation took 8.93 hours with worker-count history [4, 10]. Full H5 trajectories, actions, initial observations and raw telemetry are retained under `diagnostics_output/pact_place_v1011c_eval/`.
+
+Periodic training snapshots and optimizer resume bundles were omitted for the initial disk constraint. Verified best checkpoints are retained; each redundant final checkpoint was pruned after verification. Source-preservation checks rehashed 694 files. Every authorization flag remains false.
+
+Orphan `multiprocessing.spawn` workers belonging to this worktree cleaned: 0.
+
+Machine-readable report: `diagnostics_output/pact_place_v1011c_eval/analysis.json`. Completion was reconciled against `full_ledger.jsonl` and every raw result, not a progress summary.
+
+The owner requested increased concurrency after observing resource headroom. The original scheduler was paused while all active rollouts finished normally. Their actual Linux exit codes and raw artifacts were retained in `scheduler_resize_01/`; only the drained scheduler was terminated (stage `11_eval_full` actual exit -9). The resumed stage retained the original frozen schedule and completed the remaining instances without repeating or discarding a scientific rollout. The interrupted stage is not reported as successful.
+
+## Post-evaluation low-success audit
+
+The [artifact-backed audit](/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_post_eval_audit/AUDIT.md) confirms the low task scores and compares them with the complete V10.9 and repaired V10.10 runs. Current ACT/PACT never touch the target in 105/150 and 115/150 rollouts; no current early success is lost by the final frame. The wrist-camera target is never segmented in 62/150 and 75/150 rollouts, versus 2/40 and 6/40 in V10.10. This identifies a visibility/approach failure pattern, not proof that physical occlusion alone causes it.
+
+Relative to V10.10, the environment changes target placement and clutter composition as well as height, while training drops from 120 to 75 episodes and from 30,000 to 20,000 actual optimizer steps per model despite the same 2,000 epochs. Expert task success among completed collection attempts falls from 240/303 (79.2%) to 210/482 (43.6%). These confounded changes support a harder environment/data combination, not a height-only causal conclusion. The audit changes no experiment parameters or scores and launches no new training or rollouts; its corrected machine-readable source is `diagnostics_output/pact_place_v1011c_post_eval_audit/audit_v2.json`.
+
+### Approach and chunk-100 follow-up
+
+The [follow-up audit](/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_post_eval_audit/APPROACH_AND_CHUNK100.md) reconstructs world-frame TCP motion: 100/105 ACT and 112/115 PACT never-touch failures nevertheless pass within 10 cm XY of the tray. This includes 37 ACT and 40 PACT never-touch rollouts with no disallowed collision; their arm joints closely track the commanded motion. Many finish nearly stationary. This is consistent with an empty-handed placement-like trajectory, not solely physical blockage.
+
+The model predicts every 66 ms, but the original temporal ensemble combines up to 100 predictions of the current command, with weighted mean observation age 2.726 s at full history. A new offline diagnostic on all six frozen models and all 24 validation demonstrations finds pre-touch arm-command error 42.8% higher for ACT and 45.8% higher for PACT under the original history-100 blend than under newest-prediction-only aggregation. All models remain trained at chunk 100; only arithmetic on predictions from recorded expert observations was varied. This supports aggregation as a plausible contributor, **not a measured improvement in closed-loop task success**. No new rollout or training was performed, and the original scientific results remain unchanged.
+
+### Supervision timing and unused table-camera follow-up
+
+The [deeper learning-failure diagnosis](/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_post_eval_audit/learning_failure/DIAGNOSIS.md) verifies a one-control-step arm-label lag in all 99 V10.11c episodes (also all 144 V10.10 episodes): observation t is paired with the command already applied before it, rather than the forward command recorded at t+1. Two terminal status-only actions in each corpus were explicitly excluded from forward-target comparisons. No dataset was edited.
+
+All 99 source episodes already contain the table-camera RGB stream, verified again by hashes and full video decoding, but all six models use wrist RGB only. Initial target segmentation is present in 92/99 table views versus 15/99 wrist views. This supports testing corrected action alignment and both cameras for both arms while preserving the V10.11c clutter, not claiming a measured gain from that unrun remedy.
+
+The earlier offline comparison above scored against the existing lagged labels. A new six-model recheck against the actual next arm commands still favors history 10 over history 100 (pre-touch joint-error reductions 27.1% ACT / 28.6% PACT), but a trivial current-position predictor scores even lower. These errors are not success rates. The original scientific outcomes are unchanged; no new training or environment rollout was performed. All authorization flags remain false. The linked diagnosis records the actual initial diagnostic failures and subsequent successful rechecks.
+
+## V10.11c one-seed aligned dual-camera pilot (rollouts finished; pairing gate failed)
+
+Started 2026-09-05; target completion by 2026-09-06 11:03 UTC. This is a new seed-3103 ACT/PACT pilot, not a replacement or reanalysis of the completed three-seed experiment above. No new collection is needed: all 99 original demonstrations already contain the table-camera recording. The source corpus and historical artifacts remain read-only.
+
+The new derivative has 37,869 observation/next-command transitions, wrist plus table RGB for both arms, and the same ledger-derived 75/24 episode split. Two terminal status-only transitions are excluded; the frozen encoder's remaining embeddings are reused bit-for-bit. Training is 30,000 updates per arm (3,000 epochs, batch 8, learning rate 1e-5), with exact 20k/30k snapshots and optimizer resume bundles retained. Training chunk, temporal-ensemble history and gripper threshold remain 100, 100 and 127.5. No chunk-25 or shorter-averaging experiment is included.
+
+Four smoke pairs test infrastructure. Twelve separate development pairs select one shared checkpoint update count using a preregistered symmetric rule; the final evaluation is 50 fresh paired instances. Neither smoke nor development is pooled into the final result. Evaluation uses the collection `enclosure_reach.PactPlaceCorridorV1011C33PctTallerPrimitiveSampler` and `FrankaSkinHybridCameraSystem`, not the alternate `pact_place.py` environment. Evaluation concurrency is 12, capped at 12 by the owner's 2026-09-06 00:56 UTC amendment; the earlier optional 14-worker gate is superseded. The actual container limits are 15.36 CPU cores, 170.9 GiB RAM, and one 23,028-MiB NVIDIA A10. All thread-pool caps are 1; rollout storage is H5-only.
+
+Initial launch status: conversion and four contract/runtime-wiring tests passed before training started. See the dated outcome below for the current status; the paired evaluation has not passed its final gate. Stage exits, per-rollout completion receipts, frozen streams, raw metrics and subsequent results are recorded under [the pilot directory](/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103). The as-run conversion manifest retains several inherited parent-directory/token annotations; `conversion_metadata_clarification.json` identifies them. The training manifest and command explicitly bind the new directory and verified new data-tree hash, not the old dataset.
+
+Clutter remains effectively invisible to the proximity skin (inbound vessel `max_w_perp_m = 0.000` in 7/8 historical variants; 40 sensors on link1–link6 only). Any PACT–ACT difference is not evidence that PACT senses clutter. Both policies receive the added RGB view. All authorization flags remain false. Wilson intervals, McNemar tests and gripper-status analysis are omitted as requested.
+
+Training recovery, 2026-09-06 02:16 UTC: ACT finished with actual exit 0 at 30,000 updates. PACT's initial process exited **1** during epoch 1423 with `RuntimeError: can't start new thread`, raised while a data-loader queue was shutting down. The original log and failure receipt are retained. Its last atomic optimizer/RNG checkpoint is epoch 1400 / 14,010 updates. PACT is resuming from that checkpoint, replaying 220 completed updates plus any uncommitted work from the failed epoch, with a planned clean process renewal at 20k before continuing to 30k. Dataset, split, normalization, batch size and four loader workers are unchanged; explicit PyTorch intra/inter-op caps are now 1. The exact thread owner at failure was not captured, so a particular leak or external process is not asserted as the cause. `recovery_01/` preserves the failed log history, checkpoint, manifests and actual recovery-process exits. No evaluation stage was skipped or declared successful because of this failure.
+
+Smoke repair, 2026-09-06 03:38 UTC: both models have reached 30,000 updates and all four retained checkpoints passed strict reload and input-consumption checks. The first eight smoke workers each exited **1** at result export with `AttributeError: 'DualCameraInferencePolicy' object has no attribute '_input_proj_proximity_shape'`; smoke stage exit was **1**, not a successful completion. The new adapter omitted a metadata field initialized by the inherited policy loader. The fix derives that field from the loaded model's actual projection weights and changes no model, action arithmetic, environment or seed. Five regression tests, including runtime initialization plus the inherited metadata exporter for both arms, passed. All failed attempts and receipts are preserved under `recovery_02/`; all four smoke pairs are being repeated. No development or final-test rollout had started when the repair was made.
+
+### Outcome and unresolved gate — 2026-09-06 08:23 UTC
+
+Both models finished 30,000 updates. Repaired smoke completed 8/8 and development completed 48/48, with actual stage exits 0. The symmetric development rule selected the 30k snapshots: at both 20k and 30k, ACT scored 2/12 and PACT 1/12 task successes; pooled hazard frames broke the tie in favor of 30k. Smoke/development outcomes are not included in the final panel.
+
+All 100 original final rollout workers exited 0, reconciled against the ledger and raw artifacts. Nevertheless, final stage `07_final` exited **1**, because only 49/50 initial-observation pairs passed. A pre-recorded, bounded same-instance repeat of both arms also completed with worker exits 0 but failed the same gate; the repeated stage exited **1** at 08:18:14 UTC after 1,028.806 seconds. This is not a completed, verified paired evaluation. The normal `08_final_raw_audit` stage was **not run**, and no `pilot_completion.json` was issued.
+
+The failed instance is `af02b30513b020e021abbcbdb050dd1688bafd0396ba2f783a5c9b39cb47e80d`. An exhaustive independent comparison confirms all 459 non-RGB initial datasets match exactly and table RGB is identical. Original wrist RGB had 42 channel values differing by one level and three by two; the repeat had 79 differing by one and three by two, out of 658,944 values. Both fail the unchanged maximum difference of one uint8 intensity level. No tolerance, seed, checkpoint or inference parameter was changed; no further repeat was launched. Original stage/ledger/attempts remain in `recovery_03/`, and the repeat failure is preserved in `pairing_recovery_failure.json` and `logs/07_final.log`.
+
+A separate diagnostic recount completed with actual exit 0, reconstructing all 102 original/repeat trajectories, physics contact classes and object poses. It checked every canonical receipt against the 100-entry ledger and rechecked 703 protected-source/implementation hashes with zero mismatches. This independent diagnostic does **not** convert the failed pairing gate into a pass. Its evidence is [blocked_raw_audit.json](/root/prox_learning_pact_remediation/diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/blocked_raw_audit.json).
+
+The following descriptive counts use the **original first attempts**, retaining all 50 instances per arm, including the explicitly failed pair. Every episode-level count and hazard-frame total is unchanged in the repeat panel.
+
+| Endpoint | ACT, seed 3103 | PACT, seed 3103 |
+|---|---:|---:|
+| Task success | 14/50 (28%) | 7/50 (14%) |
+| Collision-free task success | 12/50 (24%) | 7/50 (14%) |
+| Entirely collision-free episode | 23/50 (46%) | 27/50 (54%) |
+| Hazard-bar contact episode | 14/50 (28%) | 14/50 (28%) |
+| Clutter-contact episode | 19/50 (38%) | 13/50 (26%) |
+| Hazard-bar contact frames, total | 127,472 | 49,565 |
+| Hazard-bar contact frames, mean/episode | 2,549.44 | 991.30 |
+
+Contact frames are physics-audit samples, not RGB frames or policy-control steps. Stability events mean displacement exceeding 2 cm or rotation exceeding 25 degrees at any recorded control observation. First-attempt per-object values:
+
+| Slot | Arm | Contact episodes | Contact frames | Stable episodes |
+|---|---|---:|---:|---:|
+| 01 | ACT | 8/50 | 8,816 | 38/50 |
+| 01 | PACT | 5/50 | 20,054 | 45/50 |
+| 08 | ACT | 3/50 | 1,184 | 48/50 |
+| 08 | PACT | 0/50 | 0 | 50/50 |
+| 09 | ACT | 5/50 | 12,972 | 48/50 |
+| 09 | PACT | 2/50 | 1,010 | 50/50 |
+
+Repeating the affected pair changes slot-01 total contact frames to ACT 7,965 and PACT 20,065; contact/stability episode counts remain unchanged. Original and repeat maximum displacement/rotation and all pair-level endpoints are retained separately in the diagnostic JSON; attempts are not pooled. On the 49 pairs that passed the gate, task success remains ACT 14/49 versus PACT 7/49. This post-hoc subset is diagnostic, not a replacement benchmark, but shows the one pairing exception does not explain the low task scores.
+
+Both arms touched the task object in 23/50 episodes. PACT has fewer clutter-contact episodes and fewer hazard-contact frames, but identical hazard-contact incidence, lower task success and lower collision-free task success. These data do not meet the owner's joint performance/safety goal. The combined camera/alignment/update intervention does not isolate any one cause; comparison with the original experiment uses a different test stream. This is one seed only, not a pooled three-seed result.
+
+Clutter here remains effectively invisible to the proximity skin: inbound vessel `max_w_perp_m = 0.000` in 7 of 8 variants in `diagnostics_output/pact_place_v9_w1_resolvability_full/resolvability.json`; the 40 sensors cover link1–link6 only. Neither reduced contacts nor input sensitivity is evidence that PACT senses the clutter. No new chunk-25 experiment, shorter-averaging trial, Wilson intervals, McNemar tests or gripper-status analysis was performed. All authorization flags remain false.
+
+The controllers and workers have stopped. Scoped `multiprocessing.spawn` workers with PPID 1 found during cleanup: **0**. The hourly monitor was sent SIGTERM after the bounded repair failed and was subsequently observed absent; its actual exit code was not captured. No artifact was deleted. Further pairing repair needs a new decision; this pilot is stopped, not declared successful.

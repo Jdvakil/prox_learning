@@ -1,0 +1,85 @@
+{
+  "utc": "2026-09-08T20:47:03.664986+00:00",
+  "resume_step": 15600,
+  "comparisons": {
+    "15630": {
+      "train": {
+        "exact": false,
+        "prior": {
+          "kl": 0.005192198790609837,
+          "l1": 0.1006011813879013,
+          "loss": 0.15252315998077393
+        },
+        "replayed": {
+          "kl": 0.005192200653254986,
+          "l1": 0.10061763226985931,
+          "loss": 0.15253962576389313
+        },
+        "delta": {
+          "kl": 1.862645149230957e-09,
+          "l1": 1.6450881958007812e-05,
+          "loss": 1.646578311920166e-05
+        }
+      },
+      "validation": {
+        "exact": true,
+        "prior": {
+          "kl": 0.0010096923215314746,
+          "l1": 0.10585770756006241,
+          "loss": 0.11595463752746582
+        },
+        "replayed": {
+          "kl": 0.0010096923215314746,
+          "l1": 0.10585770756006241,
+          "loss": 0.11595463752746582
+        },
+        "delta": {
+          "kl": 0.0,
+          "l1": 0.0,
+          "loss": 0.0
+        }
+      }
+    },
+    "15660": {
+      "train": {
+        "exact": false,
+        "prior": {
+          "kl": 0.0049207378178834915,
+          "l1": 0.10835595428943634,
+          "loss": 0.15756332874298096
+        },
+        "replayed": {
+          "kl": 0.00492079695686698,
+          "l1": 0.10831315070390701,
+          "loss": 0.15752112865447998
+        },
+        "delta": {
+          "kl": 5.9138983488082886e-08,
+          "l1": -4.280358552932739e-05,
+          "loss": -4.220008850097656e-05
+        }
+      },
+      "validation": {
+        "exact": false,
+        "prior": {
+          "kl": 0.000980259501375258,
+          "l1": 0.10700341314077377,
+          "loss": 0.11680600792169571
+        },
+        "replayed": {
+          "kl": 0.0009799309773370624,
+          "l1": 0.10727446526288986,
+          "loss": 0.11707377433776855
+        },
+        "delta": {
+          "kl": -3.2852403819561005e-07,
+          "l1": 0.00027105212211608887,
+          "loss": 0.00026776641607284546
+        }
+      }
+    }
+  },
+  "first_validation_exact": true,
+  "training_replay_bit_identical": false,
+  "interpretation": "Saved policy/encoder/optimizer/RNG were restored under unchanged code and deterministic epoch seeds. The first resumed validation is exact, but replayed training losses are not bit-identical. These records do not establish a bit-identical uninterrupted GPU training trajectory."
+}
