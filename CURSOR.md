@@ -22,6 +22,36 @@ Newest session at the top.
 
 ---
 
+## 2026-09-10 — train_exp.sh cut again
+
+- **When:** User: still too complicated.
+- **Why:** Drop env knobs, dry-run, tee, path math. Three ifs + one python line.
+- **What:** `scripts/train_exp.sh` ~25 lines. Run name `hallway_${EXP}_s$SEED`.
+- **How:** Hardcoded act dir. `python` after conda activate.
+- **Not done:** User runs EXP=ACT / PACT_RAW / PACT_READOUT. No GPU from this edit.
+
+---
+
+## 2026-09-10 — train_exp.sh simplified
+
+- **When:** User: launcher too complicated.
+- **Why:** Cut usage/preflight/aliases. Keep EXP + WANDB_PROJECT + train.
+- **What:** Short `scripts/train_exp.sh`. Same three arms, nonempty-dir refuse, tee log.
+- **How:** `case` + one `imitate_episodes.py` array. `python` after conda activate.
+- **Not done:** User still runs the three EXP commands. No GPU from this edit.
+
+---
+
+## 2026-09-10 — hallway train_exp.sh launcher
+
+- **When:** User asked for one bash command per arm (`EXP=ACT` / `PACT_RAW` / `PACT_READOUT`) with controlled W&B project, run name, and output folder.
+- **Why:** Wrapper `pact.py train` has no `--wandb-project`. Direct `imitate_episodes.py` flags are long. Need one EXP per call, no GPU launch from this edit.
+- **What:** [`scripts/train_exp.sh`](scripts/train_exp.sh). README Start here §6 + routing row. Historical trainer, pinned `--run_dir`, logs in `runs/pact_batch_logs/`.
+- **How:** Env knobs `EXP`, `WANDB_PROJECT`, `SEED`, `NAME`, `EPOCHS`, `BATCH_SIZE`, `LR`, `DRY_RUN=1`. Extra CLI args forwarded. Refuse nonempty run dir and `EXP=ALL`.
+- **Not done:** No training started. User runs the three `EXP=` commands. Closed-loop eval is still `eval_act.py`.
+
+---
+
 ## 2026-09-08 — v1011d full-randomize + easy 0.25 n=50 done
 
 - **When:** User: two of three tmux 5 runs done. w0 `simple_v1011d_smoke_video/` and w1 `simple_v1011d_easy025_n50/` both `completed: 50`. w2 wrist n=50 still live (4/50).

@@ -190,10 +190,23 @@ python scripts/pact.py train v1011d --run v1011d_readout_s0 --arm readout --seed
 python scripts/pact.py train hallway --run hallway_readout_s1 --arm readout --seed 1
 ```
 
-Add `--dry-run` to print the trainer command. There is **no resume**: an
-interrupted job needs a new name. Best weights = lowest **validation loss**, not
-rollout success. `--encoder-checkpoint PATH` / `--encoder-lr VALUE` apply only
-to `--arm readout`. Tensors and architecture: [§4.21](#421-v12-training-and-evaluation).
+Hallway ACT / PACT-raw / PACT-readout with a **chosen W&B project** and a pinned
+ckpt folder: [`scripts/train_exp.sh`](scripts/train_exp.sh). One `EXP` per call.
+Historical `imitate_episodes.py` (not `pact.py train`); split/normalization differ
+from the wrapper ([§4.20](#420-dataset-bound-training-and-evaluation)).
+
+```bash
+WANDB_PROJECT=my_project EXP=ACT ./scripts/train_exp.sh
+WANDB_PROJECT=my_project EXP=PACT_RAW ./scripts/train_exp.sh
+WANDB_PROJECT=my_project EXP=PACT_READOUT ./scripts/train_exp.sh
+```
+
+Writes `submodules/act/ckpts/pact_place_corridor_v5/hallway_<EXP>_s0/`. Another seed: `SEED=1`.
+
+`pact.py train --dry-run` prints the wrapper trainer command. There is **no resume**: an interrupted job needs a new name. Best weights =
+lowest **validation loss**, not rollout success. `--encoder-checkpoint PATH` /
+`--encoder-lr VALUE` apply only to `--arm readout`. Tensors and architecture:
+[§4.21](#421-v12-training-and-evaluation).
 
 | `--arm` | What the policy sees | What trains |
 |---|---|---|
@@ -567,6 +580,7 @@ still unwired.
 | run anything | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§3 Setup](#3-setup) |
 | train another v12 seed or arm while eval runs | [Start here §8](#8-keep-the-gpu-busy-more-trains-while-evals-run) |
 | train v1011d PACT (exo+wrist hdf5) | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§4.20](#420-dataset-bound-training-and-evaluation) |
+| train hallway ACT / raw / readout with a W&B project | [Start here §6](#6-train-a-new-model) (`scripts/train_exp.sh`) |
 | start a new v12 checkpoint | [Start here §6](#6-train-a-new-model); [§4.21](#421-v12-training-and-evaluation) |
 | understand the wrapper / batch multiple training jobs | [§4.22](#422-wrapper-reference-and-batch-training) |
 | read results / fix workflow errors / add another dataset | [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
@@ -3513,6 +3527,7 @@ diagnostics_output/  committed legacy renders
 reports/2026-08-14/  weekly report with PNGs
 reports/eval_summaries/  archived eval_summary.json — only durable published numbers
 train_blur_baseline.sh / eval_blur_baseline.sh
+scripts/train_exp.sh  hallway ACT / PACT-raw / PACT-readout (`EXP=` + `WANDB_PROJECT`)
 ```
 
 **`franka_assets/` has zero textual references.** It is reached only through
