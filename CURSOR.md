@@ -22,6 +22,16 @@ Newest session at the top.
 
 ---
 
+## 2026-09-10 — train_exp.sh RUN braces
+
+- **When:** User: script only echoes `ACT_s2000`.
+- **Why:** Bash `$TASK_` / `$SEED_bs` / `$BATCH_SIZE_cs` / `$CHUNK_SIZE_lr` / `$LR_e` are empty names. Only `${EXP}` + `_s` + `$EPOCHS` survived.
+- **What:** Brace `RUN=` in `scripts/train_exp.sh`. Quote the python args. README §6 names the full string.
+- **How:** Intended name `pact_place_corridor_v5_ACT_s0_bs8_cs50_lr1e-5_e2000`.
+- **Not done:** User reruns the script. Old W&B run `ACT_s2000` is leftover.
+
+---
+
 ## 2026-09-10 — train_exp.sh cut again
 
 - **When:** User: still too complicated.

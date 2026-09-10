@@ -13,9 +13,10 @@ BATCH_SIZE=8
 LR=1e-5
 EPOCHS=2000
 
-RUN=$TASK_${EXP}_s$SEED_bs$BATCH_SIZE_cs$CHUNK_SIZE_lr$LR_e$EPOCHS
+# Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
+RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
 
-echo $RUN
+echo "$RUN"
 
 if [ "$EXP" = ACT ]; then
   extra=
@@ -28,9 +29,9 @@ else
 fi
 
 python imitate_episodes.py \
-  --task_name $TASK --policy_class ACT --ckpt_dir ckpts \
-  --run_dir ckpts/$TASK/$RUN \
-  --kl_weight 10 --chunk_size $CHUNK_SIZE --hidden_dim 512 --dim_feedforward 3200 \
-  --batch_size $BATCH_SIZE --lr $LR --seed $SEED --num_epochs $EPOCHS \
-  --wandb_project $WANDB_PROJECT --wandb_run_name $RUN \
+  --task_name "$TASK" --policy_class ACT --ckpt_dir ckpts \
+  --run_dir "ckpts/$TASK/$RUN" \
+  --kl_weight 10 --chunk_size "$CHUNK_SIZE" --hidden_dim 512 --dim_feedforward 3200 \
+  --batch_size "$BATCH_SIZE" --lr "$LR" --seed "$SEED" --num_epochs "$EPOCHS" \
+  --wandb_project "$WANDB_PROJECT" --wandb_run_name "$RUN" \
   $extra

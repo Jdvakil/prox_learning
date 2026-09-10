@@ -201,7 +201,11 @@ WANDB_PROJECT=my_project EXP=PACT_RAW ./scripts/train_exp.sh
 WANDB_PROJECT=my_project EXP=PACT_READOUT ./scripts/train_exp.sh
 ```
 
-Writes `submodules/act/ckpts/pact_place_corridor_v5/hallway_<EXP>_s0/`. Another seed: `SEED=1`.
+Run name is `${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}`
+(braces required in bash; `$TASK_` is empty). Default echo:
+`pact_place_corridor_v5_ACT_s0_bs8_cs50_lr1e-5_e2000`. Writes that folder under
+`submodules/act/ckpts/pact_place_corridor_v5/`. Another seed: `SEED=1`. A
+Ctrl-C run named `ACT_s2000` was the unbraced bug — do not reuse that name.
 
 `pact.py train --dry-run` prints the wrapper trainer command. There is **no resume**: an interrupted job needs a new name. Best weights =
 lowest **validation loss**, not rollout success. `--encoder-checkpoint PATH` /
