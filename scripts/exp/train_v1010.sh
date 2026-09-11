@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# ./scripts/train_exp_v107_spaced.sh
+# ./scripts/exp/train_v1010.sh
 set -e
 cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
 
 WANDB_PROJECT=PC_ACT_experiments
 EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
-SEED=1
-TASK=pact_place_corridor_v107_spaced
+SEED=0
+TASK=pact_place_corridor_v1010
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5

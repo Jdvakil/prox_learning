@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# ./scripts/train_exp_v1011c.sh
+# ./scripts/exp/train_v107_spaced.sh
 set -e
 cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
 
-WANDB_PROJECT=PC_ACT_experiments
-EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
-SEED=1
-TASK=pact_place_corridor_v10_11c_100
-CHUNK_SIZE=50
-BATCH_SIZE=8
-LR=1e-5
-EPOCHS=2000
+WANDB_PROJECT="${WANDB_PROJECT:-PC_ACT_experiments}"
+EXP="${EXP:-PACT_READOUT}" # ACT, PACT_RAW, PACT_READOUT
+SEED="${SEED:-1}"
+TASK="${TASK:-pact_place_corridor_v107_spaced}"
+CHUNK_SIZE="${CHUNK_SIZE:-50}"
+BATCH_SIZE="${BATCH_SIZE:-8}"
+LR="${LR:-1e-5}"
+EPOCHS="${EPOCHS:-2000}"
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
@@ -34,4 +34,5 @@ python imitate_episodes.py \
   --kl_weight 10 --chunk_size "$CHUNK_SIZE" --hidden_dim 512 --dim_feedforward 3200 \
   --batch_size "$BATCH_SIZE" --lr "$LR" --seed "$SEED" --num_epochs "$EPOCHS" \
   --wandb_project "$WANDB_PROJECT" --wandb_run_name "$RUN" \
-  $extra
+  $extra \
+  "$@"

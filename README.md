@@ -190,22 +190,33 @@ python scripts/pact.py train v1011d --run v1011d_readout_s0 --arm readout --seed
 python scripts/pact.py train hallway --run hallway_readout_s1 --arm readout --seed 1
 ```
 
-Hallway ACT / PACT-raw / PACT-readout with a **chosen W&B project** and a pinned
-ckpt folder: [`scripts/train_exp.sh`](scripts/train_exp.sh). One `EXP` per call.
-Historical `imitate_episodes.py` (not `pact.py train`); split/normalization differ
-from the wrapper ([§4.20](#420-dataset-bound-training-and-evaluation)).
+Historical hallway / v1010 / v107_spaced / v1011c ACT / PACT-raw / PACT-readout
+launchers live in [`scripts/exp/`](scripts/exp/). One `EXP` per call.
+`imitate_episodes.py` (not `pact.py train`); split/normalization differ from
+the wrapper ([§4.20](#420-dataset-bound-training-and-evaluation)).
 
 ```bash
-WANDB_PROJECT=my_project EXP=ACT ./scripts/train_exp.sh
-WANDB_PROJECT=my_project EXP=PACT_RAW ./scripts/train_exp.sh
-WANDB_PROJECT=my_project EXP=PACT_READOUT ./scripts/train_exp.sh
+EXP=ACT ./scripts/exp/train_v1_hallway.sh
+EXP=PACT_RAW ./scripts/exp/train_v1010.sh
+EXP=PACT_READOUT ./scripts/exp/train_v107_spaced.sh
+EXP=PACT_READOUT ./scripts/exp/train_v1011c.sh
+```
+
+Closed-loop eval launchers (same RUN knobs → `CKPT_DIR`). Wired today:
+hallway `eval_act.py`, v1011d `eval_act_v1011d.py`. v1010 / v107_spaced /
+v1011c scripts exist and **exit** (`--task` not wired). New `--output_dir`.
+Do not paste into `eval_output/simple_hallway_n50/`.
+
+```bash
+NUM_ROLLOUTS=2 ./scripts/exp/eval_v1_hallway.sh
+NUM_ROLLOUTS=2 ./scripts/exp/eval_v1011d.sh
 ```
 
 Run name is `${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}`
-(braces required in bash; `$TASK_` is empty). Default echo:
-`pact_place_corridor_v5_ACT_s0_bs8_cs50_lr1e-5_e2000`. Writes that folder under
-`submodules/act/ckpts/pact_place_corridor_v5/`. Another seed: `SEED=1`. A
-Ctrl-C run named `ACT_s2000` was the unbraced bug — do not reuse that name.
+(braces required in bash; `$TASK_` is empty). Prefix `EXP=` / `SEED=` overrides
+the file default (`SEED=1` → `…_s1_…`). Writes under
+`submodules/act/ckpts/<TASK>/`. A Ctrl-C run named `ACT_s2000` was the
+unbraced bug — do not reuse that name.
 
 `pact.py train --dry-run` prints the wrapper trainer command. There is **no resume**: an interrupted job needs a new name. Best weights =
 lowest **validation loss**, not rollout success. `--encoder-checkpoint PATH` /
@@ -584,7 +595,7 @@ still unwired.
 | run anything | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§3 Setup](#3-setup) |
 | train another v12 seed or arm while eval runs | [Start here §8](#8-keep-the-gpu-busy-more-trains-while-evals-run) |
 | train v1011d PACT (exo+wrist hdf5) | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§4.20](#420-dataset-bound-training-and-evaluation) |
-| train hallway ACT / raw / readout with a W&B project | [Start here §6](#6-train-a-new-model) (`scripts/train_exp.sh`) |
+| train hallway ACT / raw / readout with a W&B project | [Start here §6](#6-train-a-new-model) (`scripts/exp/train_v1_hallway.sh`) |
 | start a new v12 checkpoint | [Start here §6](#6-train-a-new-model); [§4.21](#421-v12-training-and-evaluation) |
 | understand the wrapper / batch multiple training jobs | [§4.22](#422-wrapper-reference-and-batch-training) |
 | read results / fix workflow errors / add another dataset | [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
@@ -3531,7 +3542,7 @@ diagnostics_output/  committed legacy renders
 reports/2026-08-14/  weekly report with PNGs
 reports/eval_summaries/  archived eval_summary.json — only durable published numbers
 train_blur_baseline.sh / eval_blur_baseline.sh
-scripts/train_exp.sh  hallway ACT / PACT-raw / PACT-readout (`EXP=` + `WANDB_PROJECT`)
+scripts/exp/  historical train + eval launchers (`EXP=` / `NUM_ROLLOUTS=`). `train_exp.sh` moved here.
 ```
 
 **`franka_assets/` has zero textual references.** It is reached only through

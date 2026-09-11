@@ -22,6 +22,15 @@ Newest session at the top.
 
 ---
 
+## 2026-09-11 — scripts/exp train+eval launchers
+
+- **When:** User: bash eval launchers like `train_exp_v107_spaced.sh`; move train+eval into one folder; edit params and run.
+- **Why:** Train scripts sat in `scripts/`. No matching eval wrappers. `train_exp.sh` already renamed to `train_exp_v1_hallway.sh`.
+- **What:** [`scripts/exp/`](scripts/exp/) — `train_{v1_hallway,v1010,v107_spaced,v1011c}.sh` and `eval_{v1_hallway,v1011d,v1010,v107_spaced,v1011c}.sh`. Deleted `scripts/train_exp_*.sh`. README §6 / routing / inventory. `EXP=` prefix now overrides because defaults use `${EXP:-…}`.
+- **How:** Train still `imitate_episodes.py`. Hallway eval = `eval_act.py --task hallway`. v1011d eval = `eval_act_v1011d.py` (default ckpt is the 20260903 raw run). v1010 / v107_spaced / v1011c eval call `eval_act.py` with the unwired `--task` and exit.
+- **Not done:** Did not wire those three dumps. Did not start train or eval. User runs from `scripts/exp/`.
+
+
 ## 2026-09-10 — train_exp.sh RUN braces
 
 - **When:** User: script only echoes `ACT_s2000`.
