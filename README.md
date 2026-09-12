@@ -6,7 +6,7 @@ answer one question: *does a proximity skin make a robot arm safer than cameras 
 **Start here:** [Convert, train, eval](#start-here-dataset-to-results-with-the-wrapper)
 is the operator cookbook. Convert / prepare / train use `python scripts/pact.py`
 from the repository root. **Hallway eval is `eval_act.py`. v1011d eval is
-`eval_act_v1011d.py`.** Wrapper `pact.py eval` / `verify` is parked. Do not collect when converted data
+`eval_act_v1011d.py`. v107_spaced eval is `eval_act_v107spaced.py`.** Wrapper `pact.py eval` / `verify` is parked. Do not collect when converted data
 already exists. `train` defaults to full PACT-readout; `raw` and `act` are
 explicit baselines. On this checkout `v12`, `v1011d` and `hallway` are already
 converted and prepared. `v12_readout_s0` is the trained v12 readout run.
@@ -17,6 +17,7 @@ is `eval_output/place_corridor_readout_s0_n50_fast/` (Aug 29). Frozen
 (14%)**, free **43/50 (86%)**, ever 19/50 — `eval_output/simple_hallway_n50/`.
 Same readout ckpt, **different house schedule**. Query-sampled skin history and
 gated EGL. `eval_act.py` is hallway eval. **v1011d eval is `eval_act_v1011d.py`.**
+**v107_spaced eval is `eval_act_v107spaced.py`.**
 v1011d in-dist PACT-raw n=50 (not the paper MVP; do not mix with hallway): full
 randomize exo+wrist place **7/50 (14%)**, bar **10/50 (20%)**, free **20/50
 (40%)** — `eval_output/simple_v1011d_smoke_video/`. Easy clutter 0.25 place
@@ -58,7 +59,8 @@ writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). 
 
 This is the convert / train cookbook. Convert / prepare / train run from the
 repository root with `python scripts/pact.py`. **Hallway in-env eval is
-`eval_act.py`.** **v1011d in-env eval is `eval_act_v1011d.py`**
+`eval_act.py`.** **v1011d in-env eval is `eval_act_v1011d.py`.**
+**v107_spaced in-env eval is `eval_act_v107spaced.py`**
 ([below](#eval-act-frozen)). Wrapper `eval` / `verify` is parked (v12
 construction; different protocol). A train command without a prepared manifest
 is not scientifically equivalent (split, normalization).
@@ -79,7 +81,7 @@ you do not have yet.
 | Eval runtime `hallway` | **Not installed.** Run `setup hallway --env` before the first *wrapper* hallway eval | `assets/pact_env/hallway` |
 | Pretrained surface encoder | Done (readout init) | `experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt` |
 | Trained v12 readout | Done | `runs/pact/v12_readout_s0` (`policy_best.ckpt` + `prox_encoder_best.pt`) |
-| Frozen eval script | Done | hallway: `eval_act.py`. v1011d: `eval_act_v1011d.py`. Wrapper `pact.py eval` parked |
+| Frozen eval script | Done | hallway: `eval_act.py`. v1011d: `eval_act_v1011d.py`. v107_spaced: `eval_act_v107spaced.py`. Wrapper `pact.py eval` parked |
 | Hallway `eval_act.py` smoke n=2 | **Done.** Gate `17/785` both eps. Not a paper rate. EGL `__del__` noise after `eval_summary.json` is harmless. | `eval_output/simple_hallway_smoke/` |
 | Hallway `eval_act.py` n=50 | **Done 2026-09-07.** House=1, seeds `2026+i`. Terminal **18/50 (36%)**, ever 19/50, bar **7/50 (14%)**, free **43/50 (86%)**. Gate `17/785`. Not the Aug 29 random-house JSON. | `eval_output/simple_hallway_n50/` |
 | v1011d wrist-only smoke n=2 | **Done 2026-09-07.** Policy `--cameras wrist_camera` (train was exo+wrist). Full clutter scale 1. Terminal **0/2**, ever 0/2, bar **2/2**, free **0/2**. Never `grasp_target`. Gate `22/1030`. Not a rate. Do not mix with hallway wrist or exo+wrist v1011d. | `eval_output/simple_v1011d_wrist_only/` |
@@ -203,8 +205,9 @@ EXP=PACT_READOUT ./scripts/exp/train_v1011c.sh
 ```
 
 Closed-loop eval launchers (same RUN knobs → `CKPT_DIR`). Wired today:
-hallway `eval_act.py`, v1011d `eval_act_v1011d.py`. v1010 / v107_spaced /
-v1011c scripts exist and **exit** (`--task` not wired). New `--output_dir`.
+hallway `eval_act.py`, v1011d `eval_act_v1011d.py`, v107_spaced
+`eval_act_v107spaced.py`. v1010 / v1011c scripts exist and **exit**
+(`--task` not wired). New `--output_dir`.
 Do not paste into `eval_output/simple_hallway_n50/`.
 
 ```bash
@@ -244,6 +247,7 @@ Serial and two-GPU batch recipes: [§4.22](#422-wrapper-reference-and-batch-trai
 ### 7. Evaluate a completed run
 
 **Closed-loop eval:** hallway = `eval_act.py`. v1011d = `eval_act_v1011d.py`.
+v107_spaced = `eval_act_v107spaced.py`.
 `python scripts/pact.py eval` and `verify` now exit with a pointer. Convert /
 train / `offline` / `check` still use the wrapper.
 
@@ -253,7 +257,8 @@ train / `offline` / `check` still use the wrapper.
 | `data/pact_pick_n_place_v2/data/v1011d` | `eval_act_v1011d.py` | Wired. Randomized clutter. |
 | `data/pact_pick_n_place_v2/data/v12` | — | **Not wired.** Overlay + settle-park + pre-policy contact. |
 | `data/pact_pick_n_place_v2/data/v12.1` | — | 5-ep table-cam preview. Not a suite. |
-| `data/pact_place_corridor/data/{v1010,v107,v107_spaced,v5}` | — | Not a suite yet. |
+| `data/pact_place_corridor/data/v107_spaced` | `eval_act_v107spaced.py` | Wired. Spaced bench. table+wrist. |
+| `data/pact_place_corridor/data/{v1010,v107,v5}` | — | Not a suite yet. |
 | `data/mixed_v1011_clutter_geometry` | — | Viz / clutter geometry. Not this eval. |
 | `data/table_smoke` | — | 10-ep schema check. Do not eval. |
 | `data/molmo-pi0-eval-videos` | — | Videos. Not MuJoCo policy eval. |
@@ -270,6 +275,12 @@ python eval_act_v1011d.py \
   --ckpt_dir submodules/act/ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \
   --num_rollouts 2 --skin_substeps snapshot \
   --output_dir eval_output/simple_v1011d_smoke
+
+# v107_spaced (dedicated script; table+wrist; not v1011d). n=2 is wiring.
+python eval_act_v107spaced.py \
+  --ckpt_dir submodules/act/ckpts/pact_place_corridor_v107_spaced/pact_place_corridor_v107_spaced_PACT_READOUT_s0_bs8_cs50_lr1e-5_e2000 \
+  --num_rollouts 2 --skin_substeps snapshot \
+  --output_dir eval_output/simple_v107_spaced_smoke
 
 # v1011d full-randomize n=50 done in simple_v1011d_smoke_video/. Do not paste.
 # v1011d easy 0.25 n=50 done in simple_v1011d_easy025_n50/. Do not paste.
@@ -371,8 +382,10 @@ Field definitions: [§4.23](#423-results-troubleshooting-and-experiment-handoff)
 - Convert again into a nonempty folder.
 - Eval a v1011d checkpoint in the old V10.10 four-object script (OOD; see §4.17).
 - Drop a failed eval row or swap its seed to chase a rate.
-- Paste `python scripts/pact.py eval` or `verify` (parked; use `eval_act.py` / `eval_act_v1011d.py`).
+- Paste `python scripts/pact.py eval` or `verify` (parked; use `eval_act.py` / `eval_act_v1011d.py` / `eval_act_v107spaced.py`).
 - Use `eval_act.py --task v1011d` as the experiment path (use `eval_act_v1011d.py`).
+- Use `eval_act.py --task v107_spaced` (use `eval_act_v107spaced.py`).
+- Mix v107_spaced rates with hallway or v1011d. Different sampler, clutter, cameras.
 - Reuse `eval_output/simple_v1011d_smoke/` after changing `--skin_substeps` or `--exec_horizon`.
 - Reuse `eval_output/simple_v1011d_smoke/` for `--save_video` (already complete; resume skips, no MP4s). Use a new `--output_dir`.
 - New `--output_dir` after the `simple_v1011d_smoke_video/` construction crash (n=50 is done; do not paste into that dir).
@@ -390,14 +403,16 @@ Field definitions: [§4.23](#423-results-troubleshooting-and-experiment-handoff)
 | Collect a **new** dataset | §4.7, §4.15, §12; then add a profile and convert |
 | Inspect / visualize scenes or HDF5 | [§4.2](#42-live--inspect-scenes), [§4.2.1](#421-live--visualize-a-dataset-folder) |
 | Pretrain the surface encoder | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
-| Closed-loop eval | [`eval_act.py`](#eval-act-frozen) (hallway); [`eval_act_v1011d.py`](#eval-act-frozen) (v1011d) |
+| Closed-loop eval | [`eval_act.py`](#eval-act-frozen) (hallway); [`eval_act_v1011d.py`](#eval-act-frozen) (v1011d); [`eval_act_v107spaced.py`](#eval-act-frozen) (v107_spaced) |
 | Historical hallway n=50 JSON | [§4.3](#43-live--hallway-act-vs-pact); protocol snapshot `old_eval_act_place_corridor.py` |
 | Flags, artifacts, errors, new profiles | [§4.22](#422-wrapper-reference-and-batch-training), [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
 
 <a id="eval-act-frozen"></a>
 **Experiment eval.** Hallway: repo-root `eval_act.py`. v1011d: repo-root
-`eval_act_v1011d.py` (do not use `eval_act.py --task v1011d`). v12 overlay,
-v12.1, v107, mixed, table_smoke, and pi0 videos are **not** wired yet.
+`eval_act_v1011d.py` (do not use `eval_act.py --task v1011d`). v107_spaced:
+repo-root `eval_act_v107spaced.py` (do not use `eval_act.py --task v107_spaced`).
+v12 overlay, v12.1, v107 (unspaced), mixed, table_smoke, and pi0 videos are
+**not** wired yet.
 `pact.py eval` is parked. Protocol source is `old_eval_act_place_corridor.py`
 at commit `1bfe693`. Do **not** run that snapshot (it imports drifted
 `ACTInferencePolicy` and defaults to rays). Do **not** patch
@@ -428,6 +443,12 @@ python eval_act_v1011d.py \
   --num_rollouts 2 --skin_substeps snapshot \
   --output_dir eval_output/simple_v1011d_smoke
 
+# v107_spaced smoke (table+wrist; cycle 24 houses)
+python eval_act_v107spaced.py \
+  --ckpt_dir submodules/act/ckpts/pact_place_corridor_v107_spaced/pact_place_corridor_v107_spaced_PACT_READOUT_s0_bs8_cs50_lr1e-5_e2000 \
+  --num_rollouts 2 --skin_substeps snapshot \
+  --output_dir eval_output/simple_v107_spaced_smoke
+
 # v1011d full-randomize n=50 done in simple_v1011d_smoke_video/. Do not paste.
 # v1011d easy 0.25 n=50 done in simple_v1011d_easy025_n50/. Do not paste.
 # v1011d wrist-only n=2 done in simple_v1011d_wrist_only/. n=50 running in
@@ -457,6 +478,14 @@ along width so one cam still runs. Env still has exo for `--save_video`. New
 `1000/policy_dt_ms` ≈ 15.15), then remuxes **H.264** `yuv420p` `+faststart`
 so VS Code / Cursor can play it (OpenCV `mp4v` will not). Skin gate stays on.
 Molmospaces `save_videos` stays off (obs cache wipe). Not a protocol field.
+
+`eval_act_v107spaced.py` also uses this checkout's `submodules/molmospaces`
+(`4c6a215` / `main`), `FrankaSkinPactPlaceV107SpacedBenchConfig`, and
+`PactPlaceCorridorV107SpacedBenchSampler`. Cameras default `table_camera` +
+`wrist_camera` (train hdf5). Same 24-cell `v10_7_*` XMLs as v1011d; clutter
+layout is the spaced bench, not randomized V10.11d. No `--clutter_xy_scale`.
+Do not mix rates with hallway or v1011d. Do not use `eval_act.py --task
+v107_spaced`.
 Construction ``ValueError`` from ``sample_task`` (settle overlap, empty
 annulus, ``could not place target-relative clutter``, slot place) retries up
 to 64 RNG draws; attempt 0 keeps the episode seed. Extra RGB render each step;
@@ -603,6 +632,7 @@ still unwired.
 | diagnose zero success / choose splits / iterate quickly | [§4.18](#418-zero-success-diagnostics-and-dataset-splits) |
 | eval hallway | [`eval_act.py`](#eval-act-frozen) |
 | eval v1011d | [`eval_act_v1011d.py`](#eval-act-frozen) |
+| eval v107_spaced | [`eval_act_v107spaced.py`](#eval-act-frozen) |
 | eval v12 / other `data/` dumps | Not wired in `eval_act.py` yet. Do not use parked `pact.py eval` |
 | walk convert → train → eval (skeptic) | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§4.21](#421-v12-training-and-evaluation) |
 | cite the hallway paper MVP (readout n=50) | [§4.4](#44-live--corridor-skin-fire--compress-skin) [§6](#6-headline-result) [§8](#8-paper-claims) |
@@ -1710,6 +1740,7 @@ Place eval only **warns** if omitted.
 |---|---|---|---|
 | hallway v5 (frozen) | **`eval_act.py --task hallway`** | `/home/jaydv/code/molmospaces-pact-place` @ `977acd6` | 800 |
 | v1011d (frozen) | **`eval_act_v1011d.py`** | `submodules/molmospaces` | 1050 |
+| v107_spaced (frozen) | **`eval_act_v107spaced.py`** | `submodules/molmospaces` @ `4c6a215` / `main` | 1050 |
 | hallway v5 (historical) | `eval_act_place_corridor.py` | `/home/jaydv/code/molmospaces-pact-place` @ `977acd6` | 800 |
 | **v1011d (historical OOD)** | **`eval_act_pact_pick_n_place.py`** | **`/home/jaydv/code/molmospaces-pact-v1010` @ `origin/main` (`4bba4cb`)** | **1050** |
 | obstacle / gate-bar | `eval_act_obstacle.py` | submodule / whatever collected that hdf5 | — |
@@ -1726,6 +1757,13 @@ Easy 0.25 n=50: 14/50 / 3/50 / 22/50 (`simple_v1011d_easy025_n50/`). Do not
 mix. Historical `eval_act_pact_pick_n_place.py` is **OOD** (FourObject
 sampler, 0/48). Do **not** set
 `MOLMOSPACES_PACT_PLACE` for v1011d (that is the hallway pin).
+
+v107_spaced **in-dist eval** is repo-root `eval_act_v107spaced.py`: table +
+wrist, `FrankaSkinPactPlaceV107SpacedBenchConfig` +
+`PactPlaceCorridorV107SpacedBenchSampler`, same `v10_7_*` XMLs, env
+`pact_place_corridor_v10_7_spaced_bench`, molmo `submodules/molmospaces`
+(`4c6a215` / `main`). Do not mix with hallway or v1011d. Do not use
+`eval_act.py --task v107_spaced`.
 
 Obstacle eval pins cells: `visible` / `invisible` / `free`. Invisible = geom group 4
 (cameras skip, skin sees). Gate-bar ckpts need `--eval_sampler gate`. Source + ckpts for

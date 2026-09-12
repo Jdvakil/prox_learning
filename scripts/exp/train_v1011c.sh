@@ -5,7 +5,7 @@ cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
 
 WANDB_PROJECT=PC_ACT_experiments
-EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
+EXP=PACT_RAW #ACT, PACT_RAW, PACT_READOUT
 SEED=0
 TASK=pact_place_corridor_v10_11c_100
 CHUNK_SIZE=50

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """One entry point for dataset-bound PACT convert / prepare / train.
 
-Closed-loop eval is repo-root eval_act.py. ``eval`` / ``verify`` here are parked.
+Closed-loop eval is repo-root eval_act.py (hallway), eval_act_v1011d.py
+(v1011d), or eval_act_v107spaced.py (v107_spaced). ``eval`` / ``verify`` here
+are parked.
 """
 from __future__ import annotations
 import argparse
@@ -249,12 +251,14 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.command in ('eval', 'verify'):
         raise SystemExit(
-            "scripts/pact.py eval / verify is parked. Closed-loop eval is repo-root eval_act.py.\n"
+            "scripts/pact.py eval / verify is parked. Closed-loop eval:\n"
             "  hallway: python eval_act.py --task hallway --cameras wrist_camera "
             "--ckpt_dir ... --num_rollouts 2 --output_dir eval_output/NAME\n"
-            "  v1011d:  python eval_act.py --task v1011d --cameras exo_camera_1 wrist_camera "
-            "--molmo /home/jaydv/code/prox_learning/submodules/molmospaces "
-            "--ckpt_dir ... --num_rollouts 2 --output_dir eval_output/NAME\n"
+            "  v1011d:  python eval_act_v1011d.py --ckpt_dir ... --num_rollouts 2 "
+            "--output_dir eval_output/NAME\n"
+            "  v107_spaced: python eval_act_v107spaced.py --ckpt_dir ... "
+            "--cameras table_camera wrist_camera --num_rollouts 2 "
+            "--output_dir eval_output/NAME\n"
             "  v12 overlay and other data/ dumps are not a --task yet.\n"
             "Convert / prepare / train / offline / check still use this wrapper."
         )

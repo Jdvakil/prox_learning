@@ -22,6 +22,16 @@ Newest session at the top.
 
 ---
 
+## 2026-09-12 — v107_spaced closed-loop eval
+
+- **When:** User: models trained on v107_spaced; need eval like hallway / v1011d. Gave sampler `PactPlaceCorridorV107SpacedBenchSampler`, config `FrankaSkinPactPlaceV107SpacedBenchConfig`, scenes `pact_place_corridor_v10_7_{neg5,center,pos5}.xml`.
+- **Why:** `eval_act.py --task v107_spaced` exited unwired. `scripts/exp/eval_v107_spaced.sh` pointed at that.
+- **What:** New [`eval_act_v107spaced.py`](eval_act_v107spaced.py) cloned from `eval_act_v1011d.py`. Dropped `--clutter_xy_scale`. Default cameras `table_camera wrist_camera` (rename hybrid `exo_camera_1` so obs keys match train hdf5). Molmo `submodules/molmospaces`. [`scripts/exp/eval_v107_spaced.sh`](scripts/exp/eval_v107_spaced.sh) now calls the new script. README start-here / frozen eval / do-not. `eval_act.py` still refuses `--task v107_spaced` with a pointer.
+- **How:** Same protocol spine (gated EGL, exec_horizon, snapshot/train skin, cycle_24, construction retry). Assert env `pact_place_corridor_v10_7_spaced_bench` + spaced-bench layout marker.
+- **Not done:** User runs n=2 smoke. No GPU from this edit. Did not wire v1010 / v1011c / unspaced v107.
+
+---
+
 ## 2026-09-11 — eval scripts static knobs
 
 - **When:** User: last cut was too simple; they only wanted no `${VAR:-default}`.
