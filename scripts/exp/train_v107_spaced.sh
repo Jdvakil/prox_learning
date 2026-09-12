@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# ./scripts/exp/train_v107_spaced.sh
+# ./scripts/train_exp.sh
 set -e
 cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
 
-WANDB_PROJECT="${WANDB_PROJECT:-PC_ACT_experiments}"
-EXP="${EXP:-PACT_READOUT}" # ACT, PACT_RAW, PACT_READOUT
-SEED="${SEED:-1}"
-TASK="${TASK:-pact_place_corridor_v107_spaced}"
-CHUNK_SIZE="${CHUNK_SIZE:-50}"
-BATCH_SIZE="${BATCH_SIZE:-8}"
-LR="${LR:-1e-5}"
-EPOCHS="${EPOCHS:-2000}"
+WANDB_PROJECT=PC_ACT_experiments
+EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
+SEED=0
+TASK=pact_place_corridor_v107_spaced
+CHUNK_SIZE=50
+BATCH_SIZE=8
+LR=1e-5
+EPOCHS=2000
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"

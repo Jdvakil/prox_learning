@@ -1,47 +1,42 @@
 #!/usr/bin/env bash
 # ./scripts/exp/eval_v1011c.sh
-# Not a suite yet. mixed v10.11c is not eval_act / eval_act_v1011d. Edit CKPT_DIR after train.
 set -e
-REPO=/home/jaydv/code/prox_learning
-cd "$REPO"
-export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"
-export MUJOCO_GL="${MUJOCO_GL:-egl}"
-export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-egl}"
-export MLSPACES_ASSETS_DIR="${MLSPACES_ASSETS_DIR:-$REPO/assets}"
+cd /home/jaydv/code/prox_learning
+export OMP_NUM_THREADS=2
+export MUJOCO_GL=egl
+export PYOPENGL_PLATFORM=egl
+export MLSPACES_ASSETS_DIR=/home/jaydv/code/prox_learning/assets
 
-EXP="${EXP:-PACT_READOUT}"
-SEED="${SEED:-1}"
-TASK="${TASK:-pact_place_corridor_v10_11c_100}"
-CHUNK_SIZE="${CHUNK_SIZE:-50}"
-BATCH_SIZE="${BATCH_SIZE:-8}"
-LR="${LR:-1e-5}"
-EPOCHS="${EPOCHS:-2000}"
+EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
+SEED=0
+TASK=pact_place_corridor_v10_11c_100
+CHUNK_SIZE=50
+BATCH_SIZE=8
+LR=1e-5
+EPOCHS=2000
+NUM_ROLLOUTS=2
+HOUSE_IND=1
+SEED_BASE=2026
+SKIN=egl
+HISTORY=query
+CAMERAS="exo_camera_1 wrist_camera"
+CKPT_NAME=policy_best.ckpt
+
+# Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
+CKPT_DIR=/home/jaydv/code/prox_learning/submodules/act/ckpts/$TASK/$RUN
+OUTPUT_DIR=/home/jaydv/code/prox_learning/eval_output/$RUN
 
-CKPT_DIR="${CKPT_DIR:-$REPO/submodules/act/ckpts/$TASK/$RUN}"
-CKPT_NAME="${CKPT_NAME:-policy_best.ckpt}"
-EVAL_TASK="${EVAL_TASK:-mixed}"
-CAMERAS="${CAMERAS:-exo_camera_1 wrist_camera}"
-NUM_ROLLOUTS="${NUM_ROLLOUTS:-2}"
-HOUSE_IND="${HOUSE_IND:-1}"
-SEED_BASE="${SEED_BASE:-2026}"
-SKIN="${SKIN:-egl}"
-HISTORY="${HISTORY:-query}"
-OUTPUT_DIR="${OUTPUT_DIR:-$REPO/eval_output/${TASK}_${EXP}_s${SEED}_n${NUM_ROLLOUTS}}"
-
-echo "ckpt=$CKPT_DIR"
-echo "out=$OUTPUT_DIR"
-echo "closed-loop --task $EVAL_TASK is not wired (README §7). This call will exit."
+echo "$RUN"
 
 python eval_act.py \
   --ckpt_dir "$CKPT_DIR" \
   --ckpt_name "$CKPT_NAME" \
-  --task "$EVAL_TASK" \
+  --task mixed \
   --cameras $CAMERAS \
   --num_rollouts "$NUM_ROLLOUTS" \
   --house_ind "$HOUSE_IND" \
   --seed_base "$SEED_BASE" \
   --skin "$SKIN" \
   --history "$HISTORY" \
-  --output_dir "$OUTPUT_DIR" \
-  "$@"
+  --output_dir "$OUTPUT_DIR"

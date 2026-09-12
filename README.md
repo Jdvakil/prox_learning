@@ -208,13 +208,13 @@ v1011c scripts exist and **exit** (`--task` not wired). New `--output_dir`.
 Do not paste into `eval_output/simple_hallway_n50/`.
 
 ```bash
-NUM_ROLLOUTS=2 ./scripts/exp/eval_v1_hallway.sh
-NUM_ROLLOUTS=2 ./scripts/exp/eval_v1011d.sh
+./scripts/exp/eval_v1_hallway.sh
+./scripts/exp/eval_v1011d.sh
 ```
 
-Run name is `${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}`
-(braces required in bash; `$TASK_` is empty). Prefix `EXP=` / `SEED=` overrides
-the file default (`SEED=1` → `…_s1_…`). Writes under
+Edit knobs in the file (same `RUN` string as train). Run name is
+`${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}`
+(braces required in bash; `$TASK_` is empty). Writes under
 `submodules/act/ckpts/<TASK>/`. A Ctrl-C run named `ACT_s2000` was the
 unbraced bug — do not reuse that name.
 
@@ -1269,6 +1269,37 @@ agnosticism (trained on orange bars, reacts to a blue sphere). Baseline subtract
 is a **sim-only privilege PACT does not have** (trap 4).
 
 ### 4.6 Live — paper figures
+
+The curated [paper image gallery](images/index.html) lives in `images/`, grouped
+into `robot`, `skin`, `sensors`, `environments`, `tasks`, and `results`.
+It contains 45 PNGs: 13 new MuJoCo renders, 17 original environment plates,
+12 recorded task frames, and three result plots (also supplied as SVG/PDF).
+New renders are 2400 pixels wide with 8-sample antialiasing. All new figures
+omit text; the robot's base collar has a uniform black presentation finish
+to suppress manufacturer lettering. Original source plates and video frames
+retain any native manufacturer markings and their original resolution.
+
+Use [manifest.json](images/manifest.json) for source paths, dimensions, hashes,
+frame indices, and presentation changes. Environment-only renders show XML
+defaults, with surrounding room walls/ceiling hidden for the cutaway. They
+are setup illustrations, not sampled task outcomes. Task frames come from
+collision-free successful **v1011d PACT-raw episodes 10 and 22**, at 624×352;
+they have not been enlarged or generatively enhanced.
+
+The three text-free result panels use the **historical August 2026 hallway**
+JSONs, not v1011d or corrected-history evaluation. Bars left to right are
+ACT, PACT-raw, PACT-readout; scale is 0–100%, grid spacing 25%, and whiskers
+are 95% Wilson intervals. Counts, colors, intervals, and protocol are in
+[plot_data.json](images/results/plot_data.json). Put labels in the paper layout
+or caption. Original media and experiment outputs are unchanged.
+
+Rebuild this collection (MuJoCo/NumPy/Pillow/Matplotlib and FFmpeg required):
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/build_paper_images.py
+# Rebuild only one part:
+/opt/conda/envs/mlspaces/bin/python scripts/build_paper_images.py --only native
+```
 
 ```bash
 conda activate mlspaces

@@ -22,6 +22,24 @@ Newest session at the top.
 
 ---
 
+## 2026-09-11 — eval scripts static knobs
+
+- **When:** User: last cut was too simple; they only wanted no `${VAR:-default}`.
+- **What:** Restored eval knobs as plain `VAR=value` (NUM_ROLLOUTS, CAMERAS, CKPT_DIR, EGL exports, house/skin). `RUN="${TASK}_…"` stays (same as train; not a default).
+- **Not done:** Live `eval_v1_hallway.sh` still old process. v1010 / v107_spaced / v1011c still not wired.
+
+---
+
+## 2026-09-11 — eval scripts match train style
+
+- **When:** User: strip fancy eval launchers; keep them like train scripts.
+- **Why:** `${VAR:-}`, env exports, `"$@"`, SAVE_VIDEO if, not-wired echos.
+- **What:** `scripts/exp/eval_*.sh` now: set vars, `echo $RUN`, one python line. SEED=0 to match live train files. Did not touch the running `eval_v1_hallway.sh` process.
+- **How:** Hallway/v1010/v107/v1011c → `eval_act.py`. v1011d → `eval_act_v1011d.py` with the existing 20260903 ckpt path. README §6 prefix-override text dropped.
+- **Not done:** v1010 / v107_spaced / v1011c still not wired.
+
+---
+
 ## 2026-09-11 — scripts/exp train+eval launchers
 
 - **When:** User: bash eval launchers like `train_exp_v107_spaced.sh`; move train+eval into one folder; edit params and run.

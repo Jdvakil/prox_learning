@@ -1,0 +1,93 @@
+{
+  "protocol": "Historical August 2026 hallway evaluation, 50 rollouts per arm, one training seed. Readout uses query-sampled history; not corrected-history or v1011d results.",
+  "bar_order": [
+    "ACT",
+    "PACT-raw",
+    "PACT-readout"
+  ],
+  "colors": [
+    "#8794a8",
+    "#dc9642",
+    "#287db5"
+  ],
+  "y_scale": [
+    0,
+    1
+  ],
+  "grid_lines": [
+    0,
+    0.25,
+    0.5,
+    0.75,
+    1
+  ],
+  "error_bars": "95% Wilson binomial intervals",
+  "metrics": {
+    "place_success": {
+      "counts": [
+        14,
+        21,
+        20
+      ],
+      "rates": [
+        0.28,
+        0.42,
+        0.4
+      ],
+      "interval_low": [
+        0.17474170665911457,
+        0.2937500335471229,
+        0.27608389730256844
+      ],
+      "interval_high": [
+        0.41665123695956163,
+        0.5576655823142139,
+        0.5381856225241026
+      ]
+    },
+    "bar_hits": {
+      "counts": [
+        17,
+        18,
+        6
+      ],
+      "rates": [
+        0.34,
+        0.36,
+        0.12
+      ],
+      "interval_low": [
+        0.22436949222500358,
+        0.24138749651847016,
+        0.056176001509323906
+      ],
+      "interval_high": [
+        0.4784617394976701,
+        0.49858983123886924,
+        0.23804817383202598
+      ]
+    },
+    "collision_free": {
+      "counts": [
+        33,
+        32,
+        44
+      ],
+      "rates": [
+        0.66,
+        0.64,
+        0.88
+      ],
+      "interval_low": [
+        0.52153826050233,
+        0.5014101687611308,
+        0.7619518261679741
+      ],
+      "interval_high": [
+        0.7756305077749965,
+        0.7586125034815299,
+        0.9438239984906762
+      ]
+    }
+  }
+}

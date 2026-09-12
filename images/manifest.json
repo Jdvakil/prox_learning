@@ -1,0 +1,745 @@
+[
+  {
+    "file": "robot/fr3_opposite_2400.png",
+    "category": "robot",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations.",
+    "sha256": "effc040c74bb07b6978ed9c32f55fdd9f61d4de733224ec620854ef5ff452cbb",
+    "camera": {
+      "azimuth": 225,
+      "elevation": -16,
+      "distance": 1.35,
+      "lookat": [
+        0.23,
+        0,
+        0.43
+      ]
+    }
+  },
+  {
+    "file": "robot/fr3_side_2400.png",
+    "category": "robot",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations.",
+    "sha256": "e5ce96d38484346fb0772800f2db90712cda3170e9d8034f4626216ce14770f7",
+    "camera": {
+      "azimuth": 90,
+      "elevation": -16,
+      "distance": 1.35,
+      "lookat": [
+        0.23,
+        0,
+        0.43
+      ]
+    }
+  },
+  {
+    "file": "robot/fr3_three_quarter_2400.png",
+    "category": "robot",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations.",
+    "sha256": "26ba5475df103ac480f37ab0c5a2332142b190e693ded34ed891c205331e2d4d",
+    "camera": {
+      "azimuth": 135,
+      "elevation": -16,
+      "distance": 1.35,
+      "lookat": [
+        0.23,
+        0,
+        0.43
+      ]
+    }
+  },
+  {
+    "file": "skin/forearm_skin_detail_2400.png",
+    "category": "skin",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations.",
+    "sha256": "09627ce4e6db65a2039b639b3aff35fc9cc4cb1561f2439b302796ce1521dc18"
+  },
+  {
+    "file": "skin/skin_shells_isolated_2400.png",
+    "category": "skin",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical seven dermis meshes in their assembled pose; underlying arm hidden for anatomy visualization.",
+    "sha256": "f29fc71ee7488e6a429b8d4157fb6c6f6e3a76d199ff5c46312885b8eb6eb33d"
+  },
+  {
+    "file": "sensors/forearm_sensor_locations_2400.png",
+    "category": "sensors",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations. Red spheres indicate camera origins.",
+    "sha256": "3025270bfa2a0e8e5421864794fd227c1ff9dd73f6ca094930deca8863434571"
+  },
+  {
+    "file": "sensors/sensor_locations_2400.png",
+    "category": "sensors",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Canonical 40-sensor model; white background; uniform black cosmetic base collar to suppress lettering; no annotations. Red spheres indicate exact camera origins; markers are a visualization overlay.",
+    "sha256": "8f738fbadd5082dae939d2050a5ed3a816264f16109595e2fba9e63a1e6c72b0"
+  },
+  {
+    "file": "sensors/single_sensor_field_of_view_2400.png",
+    "category": "sensors",
+    "dimensions": [
+      2400,
+      2400
+    ],
+    "source": "assets/robots/franka_skin/model_hybrid.xml",
+    "method": "native_mujoco_render",
+    "note": "Actual link4_sensor_0 position, orientation and field of view; frustum truncated at 0.22 m for display.",
+    "sha256": "98a17f46baede0fd8f0c2203216142855a605e9e17df6a76c1d80eae06121543"
+  },
+  {
+    "file": "environments/cabinet_cavity_scene_2400.png",
+    "category": "environments",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/cabinet_cavity.xml",
+    "method": "native_mujoco_scene_render",
+    "note": "Static source environment geometry at XML defaults; no robot or task sampler inserted. Presentation cutaway hides enclosing room walls and ceiling; white background and pale floor. No outcome claim or text overlays.",
+    "sha256": "9969ba5e388fa4d442f9362524f98b3cdbbd42da91edd57ff58e941cecf7a2d8",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/cabinet_cavity_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "532e6e9ef5caff3d1968df5d9060536b1c4c82f5288b50cb7fdd01bf02cb8e29",
+    "config": "FrankaSkinCabinetCavitySmokeConfig",
+    "task_description": "Pick up the small reddish-brown potato",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/clutter_reach_scene_2400.png",
+    "category": "environments",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/clutter_reach.xml",
+    "method": "native_mujoco_scene_render",
+    "note": "Static source environment geometry at XML defaults; no robot or task sampler inserted. Presentation cutaway hides enclosing room walls and ceiling; white background and pale floor. No outcome claim or text overlays.",
+    "sha256": "63d63bcf495ba3baa3e2d23462b0f3f052428a5910740f0324f60c4723d18de9",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinClutterReachSmokeConfig/clutter_reach_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/clutter_reach_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinClutterReachSmokeConfig/clutter_reach_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "15ce9dd7b0c6f13e871250025b0b9c84754d89b8019692e8e52a8a5e2506e5ef",
+    "config": "FrankaSkinClutterReachSmokeConfig",
+    "task_description": "Pick up the small reddish-brown potato",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinClutterReachSmokeConfig/clutter_reach_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/cubby_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinCubbySmokeConfig/cubby_overreach_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "99b0fafa04111fac1bd30d041e337fbcfb2ec0a4cadd6699daa3522d07344263",
+    "config": "FrankaSkinCubbySmokeConfig",
+    "task_description": "Pick up the gray circular electrical connector",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinCubbySmokeConfig/cubby_overreach_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/four_object_clutter_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinPactPlaceV1010FourObjectConfig/pact_place_corridor_v10_7_center_house_1/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "60af6a19ea344c7c201f39634a897ff2bb167a2cefcff4939948108ce936e5c9",
+    "config": "FrankaSkinPactPlaceV1010FourObjectConfig",
+    "task_description": "Pick up the glossy green tapered cup and place it in or on the blue tray",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinPactPlaceV1010FourObjectConfig/pact_place_corridor_v10_7_center_house_1/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/fumehood_clutter_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinHybridClutterPnPCheckConfig/fumehood_clutter_house_1/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "9e5d29f7d7c13dc69ac2910bda29756cbc6559fa6f02bb92201a5a9b3bca3124",
+    "config": "FrankaSkinHybridClutterPnPCheckConfig",
+    "task_description": "Pick up the red plastic cup",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinHybridClutterPnPCheckConfig/fumehood_clutter_house_1/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/hallway_scene_2400.png",
+    "category": "environments",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml",
+    "method": "native_mujoco_scene_render",
+    "note": "Static source environment geometry at XML defaults; no robot or task sampler inserted. Presentation cutaway hides enclosing room walls and ceiling; white background and pale floor. No outcome claim or text overlays.",
+    "sha256": "1bef7343ffc92a4b931879ef789ea233724528bf6a06c23c417c0dfe84fc9fc5",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinPactPlaceV5Config/pact_place_corridor_v2_house_1/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/hallway_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinPactPlaceV5Config/pact_place_corridor_v2_house_1/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "e1c8c80be6a19024120e55b4e3f1e1cb27fc52fb2a694d822dd94d9530899671",
+    "config": "FrankaSkinPactPlaceV5Config",
+    "task_description": "Pick up the glossy green tapered cup and place it in or on the blue tray",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinPactPlaceV5Config/pact_place_corridor_v2_house_1/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/house_cubby_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinHouseCubbySmokeConfig/val_0_ceiling_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "f644b628873623d2b355dfb9cc22935d356cfb09e14e08e6c0ff1fdcdb072e99",
+    "config": "FrankaSkinHouseCubbySmokeConfig",
+    "task_description": "Pick up the gray circular electrical connector with flange",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinHouseCubbySmokeConfig/val_0_ceiling_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/house_fumehood_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinHouseFumehoodSmokeConfig/val_0_ceiling_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "5cde340de9c08b7abdd0917a7db0dce3c62ddc0e9b9ac849db1e083d454e895b",
+    "config": "FrankaSkinHouseFumehoodSmokeConfig",
+    "task_description": "Pick up the gray circular electrical connector with flange",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinHouseFumehoodSmokeConfig/val_0_ceiling_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/house_panel_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinHousePanelSmokeConfig/val_0_ceiling_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "c8852fea51218d3ce6868d1ddbdfa3adb9478d3d52b6db0af36df7707fa4f439",
+    "config": "FrankaSkinHousePanelSmokeConfig",
+    "task_description": "Pick up the gray circular connector",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinHousePanelSmokeConfig/val_0_ceiling_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/panel_slalom_scene_2400.png",
+    "category": "environments",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/panel_slalom.xml",
+    "method": "native_mujoco_scene_render",
+    "note": "Static source environment geometry at XML defaults; no robot or task sampler inserted. Presentation cutaway hides enclosing room walls and ceiling; white background and pale floor. No outcome claim or text overlays.",
+    "sha256": "02efcafcb8f135f0b50df8668891f4df1e522a0db297d4d69038a113bdc04d2b",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinPanelSlalomSmokeConfig/panel_slalom_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/panel_slalom_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinPanelSlalomSmokeConfig/panel_slalom_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "22306e8a3b718f77e8be084d89386763016c64d956e53abd47885c6582c86885",
+    "config": "FrankaSkinPanelSlalomSmokeConfig",
+    "task_description": "Pick up the gray circular electrical connector with flange",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinPanelSlalomSmokeConfig/panel_slalom_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/real_env_0_table_shelf_h0_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_0_table_shelf_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "c0be50ae797c16477fa09ef7366e30bbb824e9373ab14f81a1eb959b8bfa9948"
+  },
+  {
+    "file": "environments/real_env_1_kitchen_h1_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_1_kitchen_house_1/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "1d216fcced8394150237f222aa82d7f63ad23b38578b3b89d76d9ae256abf109"
+  },
+  {
+    "file": "environments/real_env_2_shelfbay_h2_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_2_shelfbay_house_2/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "ea40e912f780e4a835ee9cb78219acb227f33875a3bbb4360370a75539039eb0"
+  },
+  {
+    "file": "environments/real_env_3_desk_hutch_h3_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_3_desk_hutch_house_3/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "0a397dcae0c299823b8b43a09b0527aa305450ea996e2149d7e11132bad5391f"
+  },
+  {
+    "file": "environments/real_env_4_sink_h4_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_4_sink_house_4/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "eace9f2f7e057cfa9619f6e40df9233ecda50fc57956643fa8abab6c99848229"
+  },
+  {
+    "file": "environments/real_env_5_corner_h5_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinRealTableConfig/real_env_5_corner_house_5/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no captions; native manufacturer markings may be present.",
+    "sha256": "95c7af6b155dba7276233c7d7d55c2bcb70c1887ab8f8e06e0ff9be04f001ce2"
+  },
+  {
+    "file": "environments/shelf_reach_scene_2400.png",
+    "category": "environments",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/shelf_reach.xml",
+    "method": "native_mujoco_scene_render",
+    "note": "Static source environment geometry at XML defaults; no robot or task sampler inserted. Presentation cutaway hides enclosing room walls and ceiling; white background and pale floor. No outcome claim or text overlays.",
+    "sha256": "2bbb68459c55b35ebedef8309682849f025c5799c09afe70df124e49ad1f2090",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinShelfReachSmokeConfig/shelf_reach_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "environments/shelf_reach_views.png",
+    "category": "environments",
+    "dimensions": [
+      1920,
+      1080
+    ],
+    "source": "experiments_output/default/environment_viz/FrankaSkinShelfReachSmokeConfig/shelf_reach_house_0/sample_00/01_robot_scene.png",
+    "method": "unchanged_source_copy",
+    "note": "Existing simulation views; no added captions. Native manufacturer markings may be present. This is environment illustration, not an outcome measurement.",
+    "sha256": "13a0d188f76e6a9deb7170536412ac9688b8ff9453b2207b61f193092982b306",
+    "config": "FrankaSkinShelfReachSmokeConfig",
+    "task_description": "Pick up the small reddish-brown potato",
+    "source_metadata": "experiments_output/default/environment_viz/FrankaSkinShelfReachSmokeConfig/shelf_reach_house_0/sample_00/metadata.json"
+  },
+  {
+    "file": "tasks/v1011d_ep010_01_frame0000.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "c2486fd410b08069146a451b8c12b0519890b7ea16e521854ed16cd744f42c9a",
+    "episode": 10,
+    "frame_index": 0,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep010_02_frame0210.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "4fc5e1342566bf50a89bef4aa21b32d722e5ce6bc21baaa5a9fcc047c15f0b4f",
+    "episode": 10,
+    "frame_index": 210,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep010_03_frame0420.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "1d87cc2c44cc0a10013621886b03ba5e9683059db5c639af5709923925b228f7",
+    "episode": 10,
+    "frame_index": 420,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep010_04_frame0630.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "47a619babb0789de686a50888b1e286299551d3f07642681b2f0010166799841",
+    "episode": 10,
+    "frame_index": 630,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep010_05_frame0840.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "bcaa4d1fd8275d22f3e6c1dd46d2558f704b2eea314145431183f24278ed7e8c",
+    "episode": 10,
+    "frame_index": 840,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep010_06_frame1029.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep010_house10_seed2036_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "0bb3fa3fab43214b79ab00980d2c85ca7eec95e14e0cfa45a181460aaa247855",
+    "episode": 10,
+    "frame_index": 1029,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_01_frame0000.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "0064e28c96b623b6c52f8dce1b2b3770131421763fac5285e345a79fd0b3fb55",
+    "episode": 22,
+    "frame_index": 0,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_02_frame0210.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "df2c7c6a876f9031dfe2502ff0f990a6804ae0ad809ba0f80d30632acbc5096c",
+    "episode": 22,
+    "frame_index": 210,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_03_frame0420.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "13775f17f99fc5e01ba58161d8cf9e0868348afb488ec81428748d7738587bac",
+    "episode": 22,
+    "frame_index": 420,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_04_frame0630.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "ed80899e7cb3c2c93a9ef42681a37f4d769797c80e859027b5357a7b4a6e6a03",
+    "episode": 22,
+    "frame_index": 630,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_05_frame0840.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "9ca15c2f2763c6e3a2d9820feb9835f300224e6545c61c2d3408768e4e652a99",
+    "episode": 22,
+    "frame_index": 840,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "tasks/v1011d_ep022_06_frame1029.png",
+    "category": "tasks",
+    "dimensions": [
+      624,
+      352
+    ],
+    "source": "eval_output/simple_v1011d_smoke_video/videos/ep022_house22_seed2048_exo_camera_1.mp4",
+    "method": "lossless_png_of_decoded_video_frame",
+    "note": "Full original video frame; native resolution, no generative enhancement. Successful collision-free v1011d PACT-raw rollout; separate protocol from historical hallway charts.",
+    "sha256": "16b73e536e09721a51a2c7212ed9944eb6be3465542f511c1d6290c3a7d6aa91",
+    "episode": 22,
+    "frame_index": 1029,
+    "total_frames": 1051,
+    "source_summary": "eval_output/simple_v1011d_smoke_video/eval_summary.json",
+    "terminal_success": 1,
+    "collision_free": 1
+  },
+  {
+    "file": "results/historical_hallway_bar_hits.png",
+    "category": "results",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+    "method": "plot_from_saved_eval_json",
+    "note": "Historical August 2026 hallway evaluation, 50 rollouts per arm, one training seed. Readout uses query-sampled history; not corrected-history or v1011d results.",
+    "sha256": "80d007cce1a2e0f7448eb030bab67aee3690600fb9dce7374cda730602f387a1",
+    "sources": [
+      "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_raw_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_readout_s0_n50_fast/eval_summary.json"
+    ],
+    "bar_order": [
+      "ACT",
+      "PACT-raw",
+      "PACT-readout"
+    ],
+    "counts": [
+      17,
+      18,
+      6
+    ],
+    "total": 50,
+    "error_bars": "95% Wilson intervals",
+    "y_scale": [
+      0,
+      1
+    ]
+  },
+  {
+    "file": "results/historical_hallway_collision_free.png",
+    "category": "results",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+    "method": "plot_from_saved_eval_json",
+    "note": "Historical August 2026 hallway evaluation, 50 rollouts per arm, one training seed. Readout uses query-sampled history; not corrected-history or v1011d results.",
+    "sha256": "4efd7df3196b019b97b914f5a956498bc467a79e9418613584898a9c8398fe2c",
+    "sources": [
+      "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_raw_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_readout_s0_n50_fast/eval_summary.json"
+    ],
+    "bar_order": [
+      "ACT",
+      "PACT-raw",
+      "PACT-readout"
+    ],
+    "counts": [
+      33,
+      32,
+      44
+    ],
+    "total": 50,
+    "error_bars": "95% Wilson intervals",
+    "y_scale": [
+      0,
+      1
+    ]
+  },
+  {
+    "file": "results/historical_hallway_place_success.png",
+    "category": "results",
+    "dimensions": [
+      2400,
+      1600
+    ],
+    "source": "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+    "method": "plot_from_saved_eval_json",
+    "note": "Historical August 2026 hallway evaluation, 50 rollouts per arm, one training seed. Readout uses query-sampled history; not corrected-history or v1011d results.",
+    "sha256": "fde31704fae2a310c4f45e1570f31d90eba8f3175613e61b69d55275a8e28bff",
+    "sources": [
+      "eval_output/place_corridor_vanilla_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_raw_s0_n50/eval_summary.json",
+      "eval_output/place_corridor_readout_s0_n50_fast/eval_summary.json"
+    ],
+    "bar_order": [
+      "ACT",
+      "PACT-raw",
+      "PACT-readout"
+    ],
+    "counts": [
+      14,
+      21,
+      20
+    ],
+    "total": 50,
+    "error_bars": "95% Wilson intervals",
+    "y_scale": [
+      0,
+      1
+    ]
+  }
+]
