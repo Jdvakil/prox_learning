@@ -23,6 +23,7 @@ CLUTTER_XY_SCALE=1.0
 CAMERAS="exo_camera_1 wrist_camera"
 CKPT_NAME=policy_best.ckpt
 CKPT_DIR=/home/jaydv/code/prox_learning/submodules/act/ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0
+WANDB_PROJECT=PC_ACT_experiments
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
@@ -40,4 +41,6 @@ python eval_act_v1011d.py \
   --history "$HISTORY" \
   --skin_substeps "$SKIN_SUBSTEPS" \
   --clutter_xy_scale "$CLUTTER_XY_SCALE" \
-  --output_dir "$OUTPUT_DIR"
+  --output_dir "$OUTPUT_DIR" \
+  --wandb_project "$WANDB_PROJECT" \
+  --wandb_run_name "${RUN}_eval"

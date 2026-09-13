@@ -22,6 +22,26 @@ Newest session at the top.
 
 ---
 
+## 2026-09-12 — v1011d first-frame slideshow
+
+- **When:** User: one H.264 video of the first frame of every v1011d episode (raw dump).
+- **Why:** Full `dataset_viz.py` decodes whole trajectories. Converted hdf5 RGB is 240×320. Need native sidecar t=0 stills.
+- **What:** [`scripts/dataset_first_frames.py`](scripts/dataset_first_frames.py). README §4.2.1 recipe + scripts table.
+- **How:** `_row_dirs` / `find_rgb_mp4` from convert. cv2 reads frame 0 only. Default `exo_camera_1`, 2 fps, index overlay. ffmpeg `libx264` `yuv420p` `+faststart` from a raw BGR pipe. `out_dir_for` same as dataset_viz. Dump on this machine: `/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d` (repo `data/` missing).
+- **Not done:** User runs the command. Did not encode. Did not restore `data/`. Did not run `dataset_viz.py`.
+
+---
+
+## 2026-09-12 — W&B on frozen evals
+
+- **When:** Plan: live dashboard for long n=50 closed-loop eval (~15 min/ep).
+- **Why:** Train already logs to `PC_ACT_experiments`. Frozen evals only printed + wrote `episodes.jsonl` / `eval_summary.json`.
+- **What:** [`scripts/pact_eval_wandb.py`](scripts/pact_eval_wandb.py). Hooked [`eval_act.py`](eval_act.py), [`eval_act_v1011d.py`](eval_act_v1011d.py), [`eval_act_v107spaced.py`](eval_act_v107spaced.py). Wired shells pass `--wandb_project PC_ACT_experiments` and `--wandb_run_name "${RUN}_eval"`. README start-here §1/§6/§7 + frozen-eval.
+- **How:** Default on. `--no_wandb`. Step log every 50 control steps (`--wandb_log_every 0` = episode-only). W&B step = `episode * horizon + ep_step`. Collision frames = sum of `frames_with_contact` hazard_bar/other_environment/clutter/mounted_fixture. Hazard frames = hazard_bar. Resume jsonl logs running rates. Init after parse/prepare_model (DETR argv shield already; helper also stubs argv during `wandb.init`). Not in `_protocol_identity`. No MP4s. Did not touch `eval_v1010.sh` / `eval_v1011c.sh`.
+- **Not done:** User runs eval (`wandb login` once like train). n=50 ACT v107: `EXP=ACT` in `scripts/exp/eval_v107_spaced.sh`. No GPU from this edit.
+
+---
+
 ## 2026-09-12 — v107_spaced closed-loop eval
 
 - **When:** User: models trained on v107_spaced; need eval like hallway / v1011d. Gave sampler `PactPlaceCorridorV107SpacedBenchSampler`, config `FrankaSkinPactPlaceV107SpacedBenchConfig`, scenes `pact_place_corridor_v10_7_{neg5,center,pos5}.xml`.

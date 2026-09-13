@@ -139,6 +139,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_wandb
 
 _EPISODE_METRICS: list[dict] = []
 _METRICS_JSONL: Path | None = None
@@ -1345,13 +1346,15 @@ def _rollout(
     skin_substeps: str,
     exo_video: Path | None = None,
     video_fps: float = 1000.0 / 66.0,
-) -> tuple[bool, bool, dict]:
+    on_step=None,
+) -> tuple[bool, bool, dict, int]:
     """Full-horizon loop. Headline success is terminal judge_success."""
     policy.reset()
     task._eval_snapshot_renders = 0
     task._eval_substep_queries = 0
     writer = _ExoMp4(exo_video, video_fps) if exo_video is not None else None
     extra: dict = {}
+    last_step = 0
     try:
         if skin_substeps == "train":
             _reset_prox_buffer(task)
@@ -1371,6 +1374,9 @@ def _rollout(
                 task._proximity_camera_names = []
                 task._fast_eval_substep_ready = False
             observation, _, terminal, truncated, _ = task.step(action)
+            last_step = int(_step)
+            if on_step is not None:
+                on_step(_step, task)
             task._proximity_camera_names = []
             if writer is not None:
                 writer.write(_grab_exo_rgb(task))
@@ -1381,7 +1387,7 @@ def _rollout(
             if _one_bool(terminal) or _one_bool(truncated):
                 break
         terminal = _one_bool(task.judge_success())
-        return terminal, ever or terminal, extra
+        return terminal, ever or terminal, extra, last_step
     finally:
         if writer is not None:
             path = writer.close()
@@ -1472,6 +1478,7 @@ def parse_args() -> argparse.Namespace:
         "Cursor can play it. Skin gate stays on. Does not set molmospaces "
         "save_videos (that keeps the obs cache). Not a protocol field.",
     )
+    pact_eval_wandb.add_cli_flags(p)
     return p.parse_args()
 
 
@@ -1587,6 +1594,24 @@ def main() -> None:
     dt_ms = float(getattr(eval_cfg, "policy_dt_ms", 66.0) or 66.0)
     video_fps = 1000.0 / dt_ms if dt_ms > 0 else 15.0
     video_dir = output_dir / "videos"
+    wb = pact_eval_wandb.start(
+        args,
+        output_dir=output_dir,
+        horizon=horizon,
+        extra_config={
+            "task": "v107_spaced",
+            "ckpt_dir": str(ckpt_dir),
+            "ckpt_name": args.ckpt_name,
+            "camera_names": list(cameras),
+            "skin": args.skin,
+            "history": args.history,
+            "skin_substeps": args.skin_substeps,
+            "exec_horizon": exec_horizon,
+            "chunk_size": chunk,
+            "house_schedule": protocol["house_schedule"],
+        },
+    )
+    wb.log_running(_EPISODE_METRICS, _summarize_place_metrics())
     if args.save_video:
         video_dir.mkdir(parents=True, exist_ok=True)
         print(
@@ -1682,13 +1707,14 @@ def main() -> None:
                     video_dir
                     / f"ep{i:03d}_house{house:02d}_seed{seed}_{_TABLE_CAM}.mp4"
                 )
-            terminal, ever, video_extra = _rollout(
+            terminal, ever, video_extra, last_step = _rollout(
                 task,
                 policy,
                 horizon,
                 skin_substeps=args.skin_substeps,
                 exo_video=exo_path,
                 video_fps=video_fps,
+                on_step=lambda step, rolled, i=i: wb.maybe_log_step(i, step, rolled),
             )
             print(
                 f"{_LOG} ep={i} seed={seed} house={house} cell={cell} "
@@ -1715,8 +1741,16 @@ def main() -> None:
             )
             done.add((i, seed))
             _write_summary(summary_path, summary_payload(len(_EPISODE_METRICS)))
+            wb.log_episode(
+                episode=i,
+                ep_step=last_step,
+                rec=_EPISODE_METRICS[-1],
+                summary=_summarize_place_metrics(),
+                records=_EPISODE_METRICS,
+            )
     finally:
         sampler.close()
+        wb.finish()
 
     collision = _summarize_place_metrics()
     if collision is not None:

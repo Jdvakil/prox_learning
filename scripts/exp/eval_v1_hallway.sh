@@ -21,6 +21,7 @@ SKIN=egl
 HISTORY=query
 CAMERAS="wrist_camera"
 CKPT_NAME=policy_best.ckpt
+WANDB_PROJECT=PC_ACT_experiments
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
@@ -39,4 +40,6 @@ python eval_act.py \
   --seed_base "$SEED_BASE" \
   --skin "$SKIN" \
   --history "$HISTORY" \
-  --output_dir "$OUTPUT_DIR"
+  --output_dir "$OUTPUT_DIR" \
+  --wandb_project "$WANDB_PROJECT" \
+  --wandb_run_name "${RUN}_eval"

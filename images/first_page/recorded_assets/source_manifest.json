@@ -1,0 +1,209 @@
+{
+  "dataset": "pact_pick_n_place_v2 / v1011d",
+  "row": "000_187ba0ce76cb3011",
+  "recording_type": "Recorded simulated scripted demonstration",
+  "trajectory": "traj_0",
+  "frame_index": 150,
+  "elapsed_seconds": 9.9,
+  "rgb_sources": [
+    {
+      "path": "/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/rows/000_187ba0ce76cb3011/episode_00000000_exo_camera_1.mp4",
+      "sha256": "bfe042dd58d007dd8f779e9cb2ef95e2860d1f5bdd4ec54dd988dcbb76cf969c",
+      "frame_index": 150,
+      "output": "exo_camera_1.png",
+      "size": [
+        624,
+        352
+      ]
+    },
+    {
+      "path": "/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/rows/000_187ba0ce76cb3011/episode_00000000_wrist_camera.mp4",
+      "sha256": "d4333425e1797bf06e129de06a6937beca67f8abca88008530cb9c20e530e0d9",
+      "frame_index": 150,
+      "output": "wrist_camera.png",
+      "size": [
+        624,
+        352
+      ]
+    }
+  ],
+  "hdf5": "/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/rows/000_187ba0ce76cb3011/trajectory.h5",
+  "hdf5_sha256": "793cbca4a74e42ea4147b9731256fe2e139ec54dce7e01fb512e27d925110914",
+  "range_processing": "Mean over four stored samples; finite ranges >= 0.02 m; all 64 pixels per sensor retained; no upper display cutoff",
+  "range_min_m": 0.10424870997667313,
+  "range_max_m": 3.1723334789276123,
+  "per_sensor_sample_counts": {
+    "link1_sensor_0": 64,
+    "link1_sensor_1": 64,
+    "link1_sensor_2": 64,
+    "link1_sensor_3": 64,
+    "link1_sensor_4": 64,
+    "link1_sensor_5": 64,
+    "link1_sensor_6": 64,
+    "link2_sensor_0": 64,
+    "link2_sensor_1": 64,
+    "link2_sensor_2": 64,
+    "link2_sensor_3": 64,
+    "link2_sensor_4": 64,
+    "link2_sensor_5": 64,
+    "link2_sensor_6": 64,
+    "link3_sensor_0": 64,
+    "link3_sensor_1": 64,
+    "link3_sensor_2": 64,
+    "link3_sensor_3": 64,
+    "link3_sensor_4": 64,
+    "link4_sensor_0": 64,
+    "link4_sensor_1": 64,
+    "link4_sensor_2": 64,
+    "link4_sensor_3": 64,
+    "link4_sensor_4": 64,
+    "link5_back_sensor_0": 64,
+    "link5_back_sensor_1": 64,
+    "link5_back_sensor_2": 64,
+    "link5_back_sensor_3": 64,
+    "link5_back_sensor_4": 64,
+    "link5_back_sensor_5": 64,
+    "link5_front_sensor_0": 64,
+    "link5_front_sensor_1": 64,
+    "link5_front_sensor_2": 64,
+    "link5_front_sensor_3": 64,
+    "link6_sensor_0": 64,
+    "link6_sensor_1": 64,
+    "link6_sensor_2": 64,
+    "link6_sensor_3": 64,
+    "link6_sensor_4": 64,
+    "link6_sensor_5": 64
+  },
+  "projection": "CV calibration; MP4 height/FOV correction to 624 x 352; no RGB depth occlusion culling",
+  "measurement_count": 2560,
+  "projected_counts": {
+    "exo_camera_1": 2304,
+    "wrist_camera": 1089
+  },
+  "task": "Pick up the compact glossy green tapered cup and place it in or on the blue tray",
+  "success": true,
+  "contact_audit": {
+    "contact_taxonomy_version": "pact_place_robot_environment_v3",
+    "legacy_contact_classes_unchanged": [
+      "grasp_target",
+      "hazard_bar",
+      "other_environment"
+    ],
+    "added_contact_classes": [
+      "place_receptacle",
+      "clutter",
+      "mounted_fixture"
+    ],
+    "sampling_level": "every_2ms_control_physics_step_plus_episode_boundaries",
+    "sample_count": 12739,
+    "contact_class_totals": {
+      "grasp_target": 96265,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0,
+      "clutter": 0,
+      "mounted_fixture": 0
+    },
+    "frames_with_contact": {
+      "grasp_target": 7243,
+      "hazard_bar": 0,
+      "other_environment": 0,
+      "place_receptacle": 0,
+      "clutter": 0,
+      "mounted_fixture": 0
+    },
+    "maximum_penetration_depth_m": {
+      "grasp_target": 0.0003336733328357448,
+      "hazard_bar": 0.0,
+      "other_environment": 0.0,
+      "place_receptacle": 0.0,
+      "clutter": 0.0,
+      "mounted_fixture": 0.0
+    },
+    "first_contact_step": {
+      "grasp_target": 120,
+      "hazard_bar": null,
+      "other_environment": null,
+      "place_receptacle": null,
+      "clutter": null,
+      "mounted_fixture": null
+    },
+    "phase_contact_class_totals": {
+      "inbound": {
+        "grasp_target": 1832,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "outbound": {
+        "grasp_target": 77381,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "placement": {
+        "grasp_target": 17052,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "other": {
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      }
+    },
+    "phase_frames_with_contact": {
+      "inbound": {
+        "grasp_target": 239,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "outbound": {
+        "grasp_target": 5643,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "placement": {
+        "grasp_target": 1361,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      },
+      "other": {
+        "grasp_target": 0,
+        "hazard_bar": 0,
+        "other_environment": 0,
+        "place_receptacle": 0,
+        "clutter": 0,
+        "mounted_fixture": 0
+      }
+    },
+    "inbound_hazard_contact_frames": 0,
+    "outbound_hazard_contact_frames": 0,
+    "non_target_contact_entries": 0,
+    "collision_free": true,
+    "place_receptacle_contact_exempt": false,
+    "place_receptacle_exempt_during_placement_including_preplace": true,
+    "place_receptacle_outside_placement_entries": 0,
+    "contact_frame_payload_retained": false,
+    "contact_frames": []
+  }
+}

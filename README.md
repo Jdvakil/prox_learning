@@ -104,7 +104,11 @@ export MLSPACES_ASSETS_DIR="$PWD/assets"
 
 `mlspaces` supplies PyTorch/CUDA. `setup DATASET --env` only overlays pinned
 simulator packages. Readout training needs the pretrained encoder in the table
-above. Configure W&B before unattended training; the wrapper has no `--no_wandb`.
+above. Configure W&B before unattended training **and** frozen eval (`wandb login`,
+same as train). The three frozen eval scripts log to `PC_ACT_experiments` by
+default (run name suffix `_eval` from the wired shells so eval does not share
+a train run). `--no_wandb` opts out. Wrapper `pact.py train` has no
+`--no_wandb`.
 See [Setup](#3-setup) for assets and sanity checks.
 
 ### 2. What the names mean
@@ -207,12 +211,14 @@ EXP=PACT_READOUT ./scripts/exp/train_v1011c.sh
 Closed-loop eval launchers (same RUN knobs → `CKPT_DIR`). Wired today:
 hallway `eval_act.py`, v1011d `eval_act_v1011d.py`, v107_spaced
 `eval_act_v107spaced.py`. v1010 / v1011c scripts exist and **exit**
-(`--task` not wired). New `--output_dir`.
-Do not paste into `eval_output/simple_hallway_n50/`.
+(`--task` not wired). New `--output_dir`. W&B on by default
+(`PC_ACT_experiments`, name `${RUN}_eval`). `--no_wandb` in the python
+command if needed. Do not paste into `eval_output/simple_hallway_n50/`.
 
 ```bash
 ./scripts/exp/eval_v1_hallway.sh
 ./scripts/exp/eval_v1011d.sh
+./scripts/exp/eval_v107_spaced.sh
 ```
 
 Edit knobs in the file (same `RUN` string as train). Run name is
@@ -287,6 +293,16 @@ python eval_act_v107spaced.py \
 # v1011d wrist-only n=2 done in simple_v1011d_wrist_only/. n=50 running in
 # simple_v1011d_wrist_only_n50/. Do not paste either command again.
 ```
+
+**W&B (frozen evals).** On by default for `eval_act.py`, `eval_act_v1011d.py`,
+and `eval_act_v107spaced.py`. Project `PC_ACT_experiments` (same as
+`scripts/exp/train_*.sh`). Wired shells pass `--wandb_run_name "${RUN}_eval"`
+so eval does not mix with train runs. `--no_wandb` opts out.
+`--wandb_log_every 50` logs live episode/step/progress plus running collision
+and hazard-bar frames; `0` is episode-only. No MP4s uploaded. Resume from
+`episodes.jsonl` also logs current rates so a restarted job is not a blank
+dashboard. W&B flags are not resume-protocol fields. `wandb login` once, same
+as train.
 
 `offline` / `check` are still diagnostics, not task success:
 
@@ -424,6 +440,13 @@ Defaults: open-loop chunk, gated **EGL** skin, last-8 **query** skins, terminal
 (train readout is 8 consecutive control steps). `--skin rays` and
 `--history consecutive` are non-headline. **~15 min/ep with EGL is expected.**
 Headline metric is terminal success; JSON also logs ever-success.
+
+**W&B:** on by default for these three scripts. Project `PC_ACT_experiments`.
+Wired shells (`eval_v1_hallway.sh`, `eval_v1011d.sh`, `eval_v107_spaced.sh`)
+pass `--wandb_run_name "${RUN}_eval"` so eval does not share a train run.
+`--no_wandb` skips. `--wandb_log_every 50` (chunk) ticks live progress;
+`0` = episode-only. Helper: [`scripts/pact_eval_wandb.py`](scripts/pact_eval_wandb.py).
+No videos to W&B. Do not put wandb keys in `_protocol_identity`.
 
 ```bash
 conda activate mlspaces
@@ -992,6 +1015,28 @@ Open `experiments_output/default/dataset_viz/index.html` in VS Code Simple Brows
 playback. `--reencode DIR` H.264-remuxes every `.mp4` under `DIR`. `--include-sensor-rgb` pulls the 256²
 mosaic sidecar (large). `foxglove_viz.py` remains the older datagen-only exporter.
 
+**First-frame slideshow (not `dataset_viz.py`).** `scripts/dataset_first_frames.py`
+grabs **frame 0 only** from each HF-row sidecar mp4 and concatenates them into one
+H.264 `yuv420p` clip (0.5 s hold at `--fps 2`). Overlay is episode index + row
+folder. Does **not** decode the rest of the trajectory. Do **not** pull stills from
+converted ACT hdf5 (those RGB tensors are 240×320). On this checkout repo `data/`
+is absent; the raw v1011d dump is `/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d`
+(200 rows, padded `episode_00000000_{exo_camera_1,wrist_camera}.mp4`). Default
+camera is table/exo. Output lands under
+`experiments_output/default/dataset_viz/` (outside-repo dumps keep the absolute
+path, no leading `/`).
+
+```bash
+conda activate mlspaces
+cd /home/jaydv/code/prox_learning
+python scripts/dataset_first_frames.py \
+  --data /mnt/laptop/data/pact_pick_n_place_v2/data/v1011d \
+  --cameras exo_camera_1 \
+  --fps 2
+# -> experiments_output/default/dataset_viz/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/first_frames.mp4
+# tiled exo|wrist: --cameras exo_camera_1,wrist_camera
+```
+
 <p align="center">
   <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/02_sensor_cones.png">
     <img src="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/02_sensor_cones.png"
@@ -1299,6 +1344,78 @@ agnosticism (trained on orange bars, reacts to a blue sphere). Baseline subtract
 is a **sim-only privilege PACT does not have** (trap 4).
 
 ### 4.6 Live — paper figures
+
+**Current point-cloud asset: link-6-only, no RGB.**
+[Rotate and inspect the reconstruction](images/link6_reconstruction/index.html),
+including individual sensor selection and text-free PNG export.
+[Paper PNG](images/link6_reconstruction/link6_hood_scan.png),
+[vector SVG](images/link6_reconstruction/link6_hood_scan.svg), and
+[Canva PPTX](images/link6_reconstruction/link6_canva.pptx) use actual HDF5 range data.
+The complete snapshot is **6 sensors × 8 × 8 = 384 samples**, with no range cutoff.
+An accumulated approach scan contains **40,704 samples from frames 0–105**, before
+the grasp phase; a spatial fume-hood crop displays 29,536 of these. Full points,
+including those outside the crop, remain in the NPZ and PLY files. This is a
+partial reconstruction of observed surfaces, not a complete object model.
+
+This build reads only `obs/proximity/link6_sensor_*` and their recorded calibration.
+The four stored depth planes are successive substeps: it uses the **last raw
+plane**, not the temporal mean used by the earlier overlay. Backprojection uses
+pixel centres `(u+0.5, v+0.5)` with the recorded boundary-centred intrinsics and
+stored sensor poses. No RGB, wrist/external camera depth, scene meshes, fitted
+surfaces, interpolation, sensor rays or grid lines enter the point-cloud plates.
+The [manifest](images/link6_reconstruction/manifest.json) records all processing
+and the end-of-step pose timing limitation. The
+[384-row CSV](images/link6_reconstruction/link6_snapshot_384.csv) identifies the
+sensor, frame, substep, pixel, raw depth and world coordinates of every snapshot
+point. Canva slide 2 has six independently editable groups of 64 points; dense
+scan slides use transparent PNGs, with full vector SVGs supplied separately.
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/reconstruct_link6.py
+# Python environment with Pillow and python-pptx:
+python scripts/package_link6_figure.py
+```
+
+The older RGB triptych below remains available for context. Its camera-overlay
+point cloud is superseded by the link-6-only reconstruction above.
+
+**First-page figure from recorded data:** [preview and downloads](images/first_page/index.html).
+The default [PNG](images/first_page/first_page.png), [PDF](images/first_page/first_page.pdf)
+and SVG contain no text. Three panels show synchronized external RGB, wrist RGB,
+and recorded proximity returns projected onto external RGB. All source images
+come from the v1011d dataset, row `000_187ba0ce76cb3011`, frame 150. This is a
+recorded simulated demonstration, not a newly rendered scene or a learned-policy
+comparison. RGB pixels are only cropped and scaled. The earlier conceptual
+illustration has been replaced; its renderer is not part of this build.
+
+Import [first_page_canva.pptx](images/first_page/first_page_canva.pptx) into Canva:
+slide 1 has no text; slide 2 has three editable labels. The three images retain
+their complete source frames within editable crops. The 630 measured markers
+form a separate group and can be ungrouped for individual editing. A second
+editable group contains rays from calibrated sensor origins and neighboring
+grid edges for four wrist sensors. The source cloud retains all **2,560 samples
+(40 sensors × 8 × 8)**; the former 60 cm display cutoff is removed. Samples
+outside the camera crop remain in the NPZ and
+[3D PLY file](images/first_page/recorded_assets/pointcloud_40x8x8.ply).
+The [point-cloud panel](images/first_page/pointcloud_panel.png) is also exported
+separately as PNG, SVG and PDF. No interpolated points were added. Presentation
+structure and a LibreOffice export are checked; import into Canva itself is not
+verified. The PDF is 7 inches wide. Native PNG is 1284×352; the 3600-pixel export
+adds no detail to the original 624×352 camera recordings.
+
+[caption.txt](images/first_page/caption.txt) explains the sensing example without
+claiming collision-reduction evidence from this single demonstration.
+[figure_notes.txt](images/first_page/figure_notes.txt) and
+[source_manifest.json](images/first_page/recorded_assets/source_manifest.json)
+record source hashes, range filtering, pooling, calibration and crop details.
+[canva_assets.zip](images/first_page/canva_assets.zip) bundles editable files and
+separate source images. Rebuild:
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/extract_first_page_recordings.py
+# Python environment with Pillow, python-pptx and cairosvg:
+python scripts/build_recorded_first_page.py
+```
 
 The curated [paper image gallery](images/index.html) lives in `images/`, grouped
 into `robot`, `skin`, `sensors`, `environments`, `tasks`, and `results`.
@@ -3647,6 +3764,7 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `build_hybrid_on_franka_skin.py` | builds `model_hybrid.xml` |
 | `housekeeping.sh` | tiered disk cleanup, dry-run default |
 | `dataset_viz.py` | folder of h5 → one MCAP + tiled MP4 + HTML (ACT / HF / datagen) |
+| `dataset_first_frames.py` | HF rows → one H.264 slideshow of t=0 RGB (not full-traj viz) |
 | `visualize_environment.py` | sample + render place/obstacle XML. Uses `custom_scenes/` for v10_7 |
 | `foxglove_viz.py` | datagen h5 → `.mcap` (older; prefer `dataset_viz.py`) |
 | `hybrid_viz_lib.py` | shared MuJoCo/EGL helpers |

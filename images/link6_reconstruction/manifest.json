@@ -1,0 +1,44 @@
+{
+  "source": "/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/rows/000_187ba0ce76cb3011/trajectory.h5",
+  "sha256": "793cbca4a74e42ea4147b9731256fe2e139ec54dce7e01fb512e27d925110914",
+  "trajectory": "traj_0",
+  "sensor_names": [
+    "link6_sensor_0",
+    "link6_sensor_1",
+    "link6_sensor_2",
+    "link6_sensor_3",
+    "link6_sensor_4",
+    "link6_sensor_5"
+  ],
+  "snapshot_frame": 86,
+  "snapshot_samples": 384,
+  "accumulation_frames": [
+    0,
+    105
+  ],
+  "accumulated_samples": 40704,
+  "hood_samples": 29536,
+  "obstacle_detail_samples": 632,
+  "hood_bounds_m": [
+    [
+      0.45,
+      -0.5,
+      0.7
+    ],
+    [
+      1.4,
+      0.5,
+      1.55
+    ]
+  ],
+  "hdf5_address": "traj_0/obs/proximity/{sensor}[frame,3,pixel_v,pixel_u]",
+  "backprojection": "Latest raw substep only. X=(u+0.5-cx)*depth/fx; Y=(v+0.5-cy)*depth/fy; Z=depth. Transform by recorded cam2world_gl (CV convention).",
+  "calibration_check": "Recorded extrinsic_cv inverts cam2world_gl; world-to-sensor roundtrip within 1e-5 m.",
+  "caveats": [
+    "End-of-policy-step poses paired with latest available substep; no substep poses stored.",
+    "Accumulation is 0\u2013105 inclusive (before grasp starts at 106); no interpolation, meshing, filling, or temporal averaging.",
+    "Static surfaces can accumulate coherently; robot motion can leave traces. Not a complete object reconstruction.",
+    "PNG/SVG colour encodes height in world coordinates; snapshot and interactive viewer use sensor identity.",
+    "Raw readings are from recorded simulation, not physical sensor hardware."
+  ]
+}
