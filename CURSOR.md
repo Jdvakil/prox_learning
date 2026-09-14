@@ -22,6 +22,32 @@ Newest session at the top.
 
 ---
 
+## 2026-09-13 — paper docs: README refresh + PAPER.md
+
+- **When:** User: paper due in 2 days; README + CURSOR must hold method, model, results; new distilled plain-language markdown.
+- **Why:** README disk-truth was 09-03 / results to 09-08. Six n=50 evals from 09-11/12 (H-B hallway retrain grid; T-107 v107_spaced three arms) were unrecorded; wrist-only n=50 was listed "running" but died at 4/50 on 09-07; §10 had no verified model spec (encoder architecture, token counts 320 vs 40, history mismatch).
+- **What:** [`PAPER.md`](PAPER.md) new (repo root; user override of the no-new-markdown rule): experiment-set tags (H-A/H-B/H-C/T-107/T-1011d/T-OOD/O-INV/O-BLUR/S), intro, mermaid system + data diagrams, robot/skin, tasks, model I/O + encoder + token injection + ACT + inference, encoder pretraining, eval protocol + metric definitions, H-A/H-B/H-C tables with Fisher p, other sets, limitations, conclusion, glossary, figure inventory, pending list. README: header results block, §0 rows, §1 retitled 2026-09-13, §5 sensor wording, §6 H-B + H-C tables, §7 rows, §8 multi-set claim + other-sets block + limitations, §10 model spec subsection, §11 repo map + scripts, §13 rows, §14 traps 33-38, §15 log + unresolved, §16 ckpt size. Copied six `eval_summary.json` to `reports/eval_summaries/pact_place_corridor_{v5_ACT_s1,v5_PACT_RAW_s0,v5_PACT_READOUT_s0,v107_spaced_ACT_s0,v107_spaced_PACT_RAW_s0,v107_spaced_PACT_READOUT_s0}_bs8_cs50_lr1e-5_e2000.json`.
+- **How:** Facts from code (`encoders/surface_geometry.py`, `detr_vae.py`, `imitate_episodes.py`, `eval_act.py`, `model_hybrid.xml`, `enclosure_reach.py`, contact audit) and from on-disk JSON; Fisher via scipy on the JSON counts. Flagged unverified: "83% vs 10% coverage" (no script), effective znear. No GPU, no eval or train touched.
+- **Not done:** H-B ACT s0 n=50, raw s1, readout s1; `--history consecutive` n=50; v1010 / v1011c eval wiring; H-B result bars not scripted in `build_paper_images.py`. User commits.
+
+## 2026-09-13 (later) — PAPER.md revised to the narrative review
+
+- **When:** User supplied `reports/paper_narrative_review.txt` (complementary-sensing framing, three-question structure, replacement opening/conclusion, factual checks).
+- **What:** `PAPER.md` rewritten: argument-led main text (§1 opening + contributions + title; §2 diagrams relabelled "one policy query", data flow branches native rows → encoder pretraining; §3 what the skin supplies; §4 method with purpose-before-dimensions and PACT-raw as a complete front end; §5 protocol + paired vs unpaired stats; §6 figure plan; §7 results as question / setup / observation / interpretation / evidence — 7.1 hallway 22-point reduction with McNemar, 7.2 "Controlled visual unobservability" (O-INV), 7.3 representation, 7.4 "Task dependence" (T-107), 7.5 what "live" means; §8 limitations grouped scope / comparison design / deployment fidelity; §9 conclusion). Appendices A–F: inventory (adds `v1011d_speedcheck_n50`), exact config, statistics, figures, glossary, proposed inference-dependence / visibility studies + pending runs. README §8 claim block + §10 data facts + traps 38–39 synced.
+- **How:** Verified before writing: H-A strict 13/17/20 and side mismatch 24/50; H-B seeds+sides matched, McNemar 11 vs 0 (p = 0.00098), 8 vs 1, 6 vs 2; O-INV success 11/14/18 vs 9/8/15; hallway T 243–634 median 480 sum 72,955; v107_spaced 210 (111/99), v1010 215, v1011c 99. Dropped "83%/10%" from claim-ready text, dark-cupboard analogy, "invisible until hit", "sensor does not know shape", "survive scrutiny", "honest negative", "needs newer runs before it can carry a claim".
+- **Not done:** No experiments launched. Inference-dependence study is future work only. H-B bars still unplotted.
+
+## 2026-09-13 (evening) — PAPER.md storyline pass
+
+- **When:** User's narrative note: vision infers geometry, skin measures it; proximity buys collision avoidance, not task success; hazards unavailable/ambiguous to RGB.
+- **What:** `PAPER.md` §1–§9 rewritten as a storyline (one-page story with four numbered findings + thesis; introduction in prose; inferred-vs-measured table in §4; §5.1 names the two deliberate bar properties — same RGBA as hood walls (verified in `pact_place_corridor_v2.xml`), side entry outside the wrist view — and labels the hallway as the partial-observability/ambiguity case vs O-INV as the excluded-from-RGB case; §7.4 titled "proximity is a clearance sense, not a task sense"). Appendices A–F unchanged.
+- **How:** All guardrails from `reports/paper_narrative_review.txt` kept: no "invisible" title, glass = motivation only, O-INV any-contact + older raw design, no pooling, McNemar for H-B, T-107 not proof of avoidance-only.
+- **Not done:** No experiments. README §8 pointer unchanged (still accurate).
+
+
+
+---
+
 ## 2026-09-12 — v1011d first-frame slideshow
 
 - **When:** User: one H.264 video of the first frame of every v1011d episode (raw dump).

@@ -1,0 +1,1559 @@
+{
+  "camera_names": [
+    "wrist_camera"
+  ],
+  "chunk_size": 50,
+  "ckpt_dir": "/home/jaydv/code/prox_learning/submodules/act/ckpts/pact_place_corridor_v5/pact_place_corridor_v5_PACT_RAW_s0_bs8_cs50_lr1e-5_e2000",
+  "ckpt_name": "policy_best.ckpt",
+  "ckpt_sha256": "23eab32ae4dc52b0d0167ffbbae690fe0c681e5a9c0243d3dfac935d5ac3a75c",
+  "collision": {
+    "bar_hit_rate": 0.26,
+    "bar_hits": 13,
+    "collision_free": 37,
+    "collision_free_rate": 0.74,
+    "collision_free_task_success": 19,
+    "collision_free_task_success_rate": 0.38,
+    "collision_rate": 0.26,
+    "episodes": 50,
+    "episodes_detail": [
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 8237,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 0,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 135,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2026,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 35156,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 1,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 136,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2027,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 28610,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 2,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 95,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2028,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 7387,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 3,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 110,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2029,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 2649,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 2732,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 4,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 19,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 0,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2030,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 108503,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 5,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 87,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2031,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 40100,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 6,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 124,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2032,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 645,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 2335,
+          "hazard_bar": 645,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 7,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 171,
+          "hazard_bar": 31,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2033,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 1222,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 1222,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 8,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 14,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2034,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 1150,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 1139,
+          "hazard_bar": 1195,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 9,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 163,
+          "hazard_bar": 36,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2035,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 3902,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 10,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 134,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2036,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 7181,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 11,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 122,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2037,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 43179,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 12,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 124,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2038,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 696,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 5972,
+          "hazard_bar": 1158,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 13,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 159,
+          "hazard_bar": 29,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2039,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 40378,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 14,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 129,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2040,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 2052,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 15,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 87,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2041,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 13993,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 16,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 149,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2042,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 161085,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 17,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 120,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2043,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 332,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 4312,
+          "hazard_bar": 376,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 18,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 101,
+          "hazard_bar": 38,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2044,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 603,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 180134,
+          "hazard_bar": 684,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 19,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 87,
+          "hazard_bar": 28,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2045,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 636,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 149440,
+          "hazard_bar": 1268,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 20,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 159,
+          "hazard_bar": 30,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2046,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 3844,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 21,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 124,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2047,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 89778,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 22,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 141,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2048,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 4040,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 23,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 75,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2049,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 56505,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 24,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 105,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2050,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 163512,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 25,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 80,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2051,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 52157,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 26,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 134,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2052,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 1468,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 352,
+          "hazard_bar": 1887,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 27,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 62,
+          "hazard_bar": 187,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2053,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 1903,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 28,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 80,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2054,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 1072,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 1091,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 29,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 18,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2055,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 43494,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 30,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 108,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2056,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 122,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 31,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 110,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2057,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 3014,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 32,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 103,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2058,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 49752,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 33,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 151,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2059,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 54732,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 34,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 90,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2060,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 847,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 1067,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 35,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 24,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2061,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 868,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 36,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 140,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2062,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 2690,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 37,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 112,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2063,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 6581,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 38,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 120,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2064,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 96544,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 39,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 119,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2065,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 38930,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 40,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 124,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2066,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 32146,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 41,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 122,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2067,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 172231,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 42,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 118,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2068,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 1,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 24604,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 43,
+        "ever_success": 1,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 118,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2069,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 1
+      },
+      {
+        "bar_contact_frames": 4338,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 4695,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 44,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 26,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 0,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2070,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 5261,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 45,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 128,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2071,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 7159,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 46,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 111,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2072,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 543,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 47,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 130,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2073,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 2017,
+        "clutter_frames": 0,
+        "collision_free": 0,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 0,
+          "hazard_bar": 2748,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 48,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": null,
+          "hazard_bar": 36,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 1,
+        "intrusion_side": "left",
+        "other_environment_frames": 0,
+        "seed": 2074,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      },
+      {
+        "bar_contact_frames": 0,
+        "clutter_frames": 0,
+        "collision_free": 1,
+        "collision_free_task_success": 0,
+        "contact_class_totals": {
+          "clutter": 0,
+          "grasp_target": 24401,
+          "hazard_bar": 0,
+          "other_environment": 0,
+          "place_receptacle": 0
+        },
+        "episode_idx": 49,
+        "ever_success": 0,
+        "first_contact_step": {
+          "clutter": null,
+          "grasp_target": 114,
+          "hazard_bar": null,
+          "other_environment": null,
+          "place_receptacle": null
+        },
+        "gripper_close_commanded": 1,
+        "hit_bar": 0,
+        "intrusion_side": "right",
+        "other_environment_frames": 0,
+        "seed": 2075,
+        "sensor_fresh_renders": 17,
+        "sensor_skipped_renders": 785,
+        "success": 0
+      }
+    ],
+    "ever_success": 21,
+    "ever_success_rate": 0.42,
+    "gripper_close_commanded": 48,
+    "gripper_close_rate": 0.96,
+    "success": 21,
+    "success_rate": 0.42
+  },
+  "completed": 50,
+  "encoder_path": null,
+  "encoder_sha256": null,
+  "ever_success_rate": 0.42,
+  "house_ind": 1,
+  "molmospaces_commit": "977acd6719a8c05b688d3e70da356d61dd32d259",
+  "molmospaces_root": "/home/jaydv/code/molmospaces-pact-place",
+  "num_rollouts": 50,
+  "package_versions": {
+    "mujoco": "3.6.0",
+    "torch": "2.7.1+cu126"
+  },
+  "protocol": {
+    "chunk": 50,
+    "end_on_success": false,
+    "history": "query",
+    "history_mode": "query_steps_train_mismatch",
+    "skin": "egl",
+    "success": "terminal",
+    "temporal_aggregation": false
+  },
+  "protocol_source": "old_eval_act_place_corridor.py@1bfe69398722d916cca5b1e5a6ae308e90f8b476",
+  "scene_xml": "/home/jaydv/code/molmospaces-pact-place/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v2.xml",
+  "script": "/home/jaydv/code/prox_learning/eval_act.py",
+  "script_sha256": "51407cd57dc987687c29dc65b5c55c8a8a92debc53af0daaa8ec7ef754d16a93",
+  "success": 21,
+  "success_rate": 0.42,
+  "task": "hallway",
+  "task_horizon": 800,
+  "task_sampler_class": "PactPlaceCorridorV2Sampler",
+  "total": 50,
+  "v1011d_ood_four_object": false
+}

@@ -11,22 +11,29 @@ already exists. `train` defaults to full PACT-readout; `raw` and `act` are
 explicit baselines. On this checkout `v12`, `v1011d` and `hallway` are already
 converted and prepared. `v12_readout_s0` is the trained v12 readout run.
 
-**Historical results:** hallway n=50 random-house (place 40% / bar 12% / free 88%)
-is `eval_output/place_corridor_readout_s0_n50_fast/` (Aug 29). Frozen
-`eval_act.py` house=1 n=50 (2026-09-07) is place **18/50 (36%)**, bar **7/50
-(14%)**, free **43/50 (86%)**, ever 19/50 — `eval_output/simple_hallway_n50/`.
-Same readout ckpt, **different house schedule**. Query-sampled skin history and
-gated EGL. `eval_act.py` is hallway eval. **v1011d eval is `eval_act_v1011d.py`.**
-**v107_spaced eval is `eval_act_v107spaced.py`.**
-v1011d in-dist PACT-raw n=50 (not the paper MVP; do not mix with hallway): full
-randomize exo+wrist place **7/50 (14%)**, bar **10/50 (20%)**, free **20/50
-(40%)** — `eval_output/simple_v1011d_smoke_video/`. Easy clutter 0.25 place
-**14/50 (28%)**, bar **3/50 (6%)**, free **22/50 (44%)** —
-`eval_output/simple_v1011d_easy025_n50/`. Wrist-only n=50 still running.
-Other `data/` dumps (v12 overlay, v12.1, v107, mixed, table_smoke) are not wired
-yet. JSON labels `history_mode: query_steps_train_mismatch` because readout
-training uses 8 consecutive control steps. Do not mix wrapper ever-success
-numbers with `eval_act.py` terminal rates.
+**Results on disk (2026-09-13).** Experiment-set tags (H-A, H-B, H-C, T-107, T-1011d, O-INV, S)
+are defined in [`PAPER.md`](PAPER.md) §0; never pool numbers across sets.
+**H-A** (Aug 25-29 ckpts, legacy evaluator, random house, n=50): ACT 14/17/33, PACT-raw 21/18/32,
+**PACT-readout 20/6/44** (place / bar / collision-free of 50) —
+`eval_output/place_corridor_{vanilla_s0_n50,raw_s0_n50,readout_s0_n50_fast}/`.
+**H-B** (Sep 10 retrain `bs8_cs50_lr1e-5_e2000`, frozen `eval_act.py`, house 1, seeds 2026-2075,
+n=50): ACT s1 15/20/30, PACT-raw s0 21/13/37, **PACT-readout s0 21/9/41** (ever 24, strict 19).
+Readout vs ACT bar p = 0.027 —
+`eval_output/pact_place_corridor_v5_{ACT_s1,PACT_RAW_s0,PACT_READOUT_s0}_bs8_cs50_lr1e-5_e2000/`.
+Gaps: ACT s0 n=2 only; PACT-raw s1 and PACT-readout s1 eval dirs empty (ckpts trained).
+**H-C** (Aug 28 readout ckpt on frozen `eval_act.py`, house 1, n=50): 18/7/43, ever 19 —
+`eval_output/simple_hallway_n50/`. Same ckpt as H-A readout, different house schedule.
+**T-107** (v107_spaced, table+wrist, 24 houses, horizon 1050, n=50, one seed): ACT 13/8/19,
+PACT-raw **0**/9/19, PACT-readout 2/6/20. Skin arms lose the task; negative set —
+`eval_output/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
+**T-1011d** (PACT-raw only, `eval_act_v1011d.py`): full randomize 7/10/20 (ever 10) —
+`eval_output/simple_v1011d_smoke_video/`; easy 0.25 14/3/22 — `eval_output/simple_v1011d_easy025_n50/`;
+wrist-only **aborted at 4/50** on 2026-09-07 (0/4) — `eval_output/simple_v1011d_wrist_only_n50/`.
+v1010 (6 ckpts) and v10_11c_100 (3 ckpts) are trained, not evaluated (eval unwired).
+Other `data/` dumps (v12 overlay, v12.1, mixed, table_smoke) are not wired. Frozen-eval JSON
+labels `history_mode: query_steps_train_mismatch` (readout trains on 8 consecutive control
+steps; eval feeds 8 query-spaced frames). Do not mix wrapper ever-success numbers with
+`eval_act.py` terminal rates.
 
 <p align="center">
   <a href="experiments_output/default/environment_viz/FrankaSkinCabinetCavitySmokeConfig/cabinet_cavity_house_0/sample_00/01_robot_scene.png">
@@ -47,11 +54,15 @@ Better on **both** axes versus ACT. Bar-hit / collision-free vs ACT: Fisher p = 
 PACT-raw (36% bar / 64% free) p = **0.009**. Frozen peak-closeness (**PACT-raw**) does **not**
 cut hallway bar hits (36% vs 34%) and places at 42% (tied with readout). The 2026-07-05
 invisible-cell 66%→40% grid is archived and wiped; it is not this checkout's reproducible result.
+**Replication (H-B, 2026-09-12, retrained ckpts, frozen `eval_act.py`, house 1):** readout again has
+the fewest bar hits (9/50 = 18% vs ACT 20/50 = 40%, p = 0.027; raw 13/50 = 26%) at equal-or-better
+place (42% vs 30%). Readout is the lowest-bar arm in every hallway eval on disk (6, 9, 7 of 50).
 
 This file is the whole project document: what we built, what the numbers say, what you may claim,
 how to run every experiment, and what will bite you. Figures with PNGs from the 2026-08-14 weekly
 writeup live in [`reports/2026-08-14/report.md`](reports/2026-08-14/report.md). Agent protocol is
-[`CLAUDE.md`](CLAUDE.md); session log is [`CURSOR.md`](CURSOR.md).
+[`CLAUDE.md`](CLAUDE.md); session log is [`CURSOR.md`](CURSOR.md). **Paper brief in plain
+language, every result tagged by experiment set: [`PAPER.md`](PAPER.md).**
 
 ---
 
@@ -85,9 +96,17 @@ you do not have yet.
 | Hallway `eval_act.py` smoke n=2 | **Done.** Gate `17/785` both eps. Not a paper rate. EGL `__del__` noise after `eval_summary.json` is harmless. | `eval_output/simple_hallway_smoke/` |
 | Hallway `eval_act.py` n=50 | **Done 2026-09-07.** House=1, seeds `2026+i`. Terminal **18/50 (36%)**, ever 19/50, bar **7/50 (14%)**, free **43/50 (86%)**. Gate `17/785`. Not the Aug 29 random-house JSON. | `eval_output/simple_hallway_n50/` |
 | v1011d wrist-only smoke n=2 | **Done 2026-09-07.** Policy `--cameras wrist_camera` (train was exo+wrist). Full clutter scale 1. Terminal **0/2**, ever 0/2, bar **2/2**, free **0/2**. Never `grasp_target`. Gate `22/1030`. Not a rate. Do not mix with hallway wrist or exo+wrist v1011d. | `eval_output/simple_v1011d_wrist_only/` |
-| v1011d wrist-only n=50 | **Running 2026-09-08** (tmux 5 w2). Same protocol as the n=2 smoke. Do not paste. Do not cite 4/50. Not hallway wrist. | `eval_output/simple_v1011d_wrist_only_n50/` |
+| v1011d wrist-only n=50 | **Aborted 2026-09-07 at 4/50** (0/4 place, 3/4 bar, 1/4 free). No process alive. Not a rate. Resume with the same flags if wanted. | `eval_output/simple_v1011d_wrist_only_n50/` |
 | v1011d full-randomize exo+wrist n=50 | **Done 2026-09-08.** Snapshot, cycle_24, scale 1. Terminal **7/50 (14%)**, ever **10/50 (20%)**, bar **10/50 (20%)**, free **20/50 (40%)**. Grasp 25/50. Gate `22/1030`. Not hallway. Not easy 0.25. | `eval_output/simple_v1011d_smoke_video/` |
 | v1011d easy 0.25 exo+wrist n=50 | **Done 2026-09-08.** Optimistic vs the 200 full-randomize demos. Terminal **14/50 (28%)**, ever 14/50, bar **3/50 (6%)**, free **22/50 (44%)**. Grasp 25/50. Gate `22/1030`. Do not mix with full randomize or hallway. | `eval_output/simple_v1011d_easy025_n50/` |
+| **H-B hallway retrain grid** (`scripts/exp/train_v1_hallway.sh`, 2026-09-10) | **Six ckpts done** (ACT / RAW / READOUT × s0, s1), `bs8 cs50 lr1e-5 e2000`, best-val. | `submodules/act/ckpts/pact_place_corridor_v5/pact_place_corridor_v5_{ACT,PACT_RAW,PACT_READOUT}_s{0,1}_bs8_cs50_lr1e-5_e2000/` |
+| H-B eval ACT s1 n=50 | **Done 2026-09-11.** Frozen `eval_act.py`, house 1, seeds 2026+i. Place **15/50 (30%)**, bar **20/50 (40%)**, free **30/50 (60%)**, strict 12. | `eval_output/pact_place_corridor_v5_ACT_s1_bs8_cs50_lr1e-5_e2000/` |
+| H-B eval PACT-raw s0 n=50 | **Done 2026-09-12.** Place **21/50 (42%)**, bar **13/50 (26%)**, free **37/50 (74%)**, strict 19. | `eval_output/pact_place_corridor_v5_PACT_RAW_s0_bs8_cs50_lr1e-5_e2000/` |
+| H-B eval PACT-readout s0 n=50 | **Done 2026-09-12.** Place **21/50 (42%)**, ever 24, bar **9/50 (18%)**, free **41/50 (82%)**, strict 19. vs ACT s1 bar p = 0.027. | `eval_output/pact_place_corridor_v5_PACT_READOUT_s0_bs8_cs50_lr1e-5_e2000/` |
+| H-B eval ACT s0 | n=2 smoke only (1/2). **Not run at n=50.** | `eval_output/pact_place_corridor_v5_ACT_s0_bs8_cs50_lr1e-5_e2000/` |
+| H-B eval PACT-raw s1 / readout s1 | **Empty dirs.** Ckpts exist; eval never produced output. | `eval_output/pact_place_corridor_v5_PACT_RAW_s1_bs8_cs50_lr1e-5_e2000/`, `…_PACT_READOUT_s1_n2/` |
+| **T-107 v107_spaced three arms n=50** | **Done 2026-09-12.** `eval_act_v107spaced.py`, table+wrist, cycle_24, horizon 1050, one seed. ACT **13/50** place / 8 bar / 19 free; PACT-raw **0/50** / 9 / 19 (42 gripper closes); PACT-readout **2/50** / 6 / 20. Negative on task; collisions flat. | `eval_output/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/` |
+| T-1010 / T-1011c ckpts | **Trained 2026-09-11, never evaluated.** v1010: 3 arms × 2 seeds; v10_11c_100: 3 arms × s0. `scripts/exp/eval_v1010.sh` / `eval_v1011c.sh` are unwired. | `submodules/act/ckpts/pact_place_corridor_{v1010,v10_11c_100}/` |
 
 Skip convert/prepare/setup when those paths already exist. Re-convert is refused
 if the destination is nonempty. Re-prepare is refused if the contract would
@@ -406,7 +425,7 @@ Field definitions: [§4.23](#423-results-troubleshooting-and-experiment-handoff)
 - Reuse `eval_output/simple_v1011d_smoke/` for `--save_video` (already complete; resume skips, no MP4s). Use a new `--output_dir`.
 - New `--output_dir` after the `simple_v1011d_smoke_video/` construction crash (n=50 is done; do not paste into that dir).
 - Mix `--clutter_xy_scale 0.25` rates with full-randomize. Easy n=50 is **14/50** place; full randomize is **7/50**. Optimistic vs the 200 demos. Dirs `simple_v1011d_easy025_n50/` vs `simple_v1011d_smoke_video/`.
-- Mix `--cameras wrist_camera` v1011d rates with exo+wrist. Train hdf5 is both cameras. Wrist-only is a hallway-style ablation. n=2 smoke is done in `simple_v1011d_wrist_only/`. n=50 still running in `simple_v1011d_wrist_only_n50/` — do not paste. Do not cite 4/50.
+- Mix `--cameras wrist_camera` v1011d rates with exo+wrist. Train hdf5 is both cameras. Wrist-only is a hallway-style ablation. n=2 smoke is done in `simple_v1011d_wrist_only/`. n=50 **aborted at 4/50** on 2026-09-07 in `simple_v1011d_wrist_only_n50/` — not a rate. Do not cite 4/50.
 - Mix v1011d n=50 with hallway readout (40% / 12% / 88% random-house or 36% / 14% / 86% house=1). Different env, different ckpt family (PACT-raw vs readout).
 - Cite 21/33 from the incomplete v12 wrapper test as a success rate.
 - Claim `--task v12` works in `eval_act.py` (not wired).
@@ -603,9 +622,11 @@ historical sections below are provenance, not eval defaults.
 
 <a id="1-now--disk-truth-2026-09-03"></a>
 <a id="1-now--disk-truth-2026-08-27"></a>
-## 1. Now — disk truth, 2026-09-03
+<a id="1-now--disk-truth-2026-09-13"></a>
+## 1. Now — disk truth, 2026-09-13
 
-This table preserves the September 3 snapshot. September 5–6: v12/v1011d/hallway
+Rows dated 09-10 to 09-13 are the H-B / T-107 additions; set tags per [`PAPER.md`](PAPER.md) §0.
+This table otherwise preserves the September 3 snapshot. September 5–6: v12/v1011d/hallway
 are converted and prepared; wrapper convert/train/eval is in the
 [start-here cookbook](#start-here-dataset-to-results-with-the-wrapper).
 §4.20–4.23 remain the detailed flag reference. Earlier OOD results stay historical.
@@ -615,9 +636,12 @@ are converted and prepared; wrapper convert/train/eval is in the
 | **Hallway `eval_act.py` n=50** | **Done 2026-09-07.** House=1, seeds `2026+i`. Terminal **18/50 (36%)**, ever 19/50, bar **7/50 (14%)**, free **43/50 (86%)**. Out `eval_output/simple_hallway_n50/`. Copy `reports/eval_summaries/simple_hallway_n50.json`. Not the Aug 29 random-house folder (20/50 / 6/50 / 44/50). [`eval_act.py`](#eval-act-frozen) |
 | **Hallway `eval_act.py` smoke n=2** | **Done 2026-09-06.** Not a rate. Gate 17/785 both. Terminal 1/2, bar 0/2, free 2/2. Out `eval_output/simple_hallway_smoke/`. EGL `__del__` after write is shutdown noise. [`eval_act.py`](#eval-act-frozen) |
 | **v1011d wrist-only smoke n=2** | **Done 2026-09-07.** `--cameras wrist_camera`. Terminal 0/2, ever 0/2, bar 2/2, free 0/2. Never grasp. Gate 22/1030. Out `eval_output/simple_v1011d_wrist_only/`. Not a rate. Do not mix with hallway or exo+wrist v1011d. [`eval_act_v1011d.py`](#eval-act-frozen) |
-| **v1011d wrist-only n=50** | **Running 2026-09-08.** `eval_output/simple_v1011d_wrist_only_n50/`. Do not paste. Do not cite 4/50. [`eval_act_v1011d.py`](#eval-act-frozen) |
+| **v1011d wrist-only n=50** | **Aborted 2026-09-07 at 4/50** (0/4 place). `eval_output/simple_v1011d_wrist_only_n50/`. No process alive. Not a rate. [`eval_act_v1011d.py`](#eval-act-frozen) |
 | **v1011d full-randomize exo+wrist n=50** | **Done 2026-09-08.** Terminal **7/50 (14%)**, ever 10/50, bar **10/50 (20%)**, free **20/50 (40%)**. Grasp 25/50. Gate 22/1030. Out `eval_output/simple_v1011d_smoke_video/`. Copy `reports/eval_summaries/simple_v1011d_smoke_video.json`. Not hallway. Not easy 0.25. [`eval_act_v1011d.py`](#eval-act-frozen) |
 | **v1011d easy 0.25 exo+wrist n=50** | **Done 2026-09-08.** Terminal **14/50 (28%)**, ever 14/50, bar **3/50 (6%)**, free **22/50 (44%)**. Grasp 25/50. Optimistic vs 200 demos. Out `eval_output/simple_v1011d_easy025_n50/`. Copy `reports/eval_summaries/simple_v1011d_easy025_n50.json`. Do not mix. [`eval_act_v1011d.py`](#eval-act-frozen) |
+| **H-B hallway retrain grid (2026-09-10 → 09-12)** | Six ckpts `pact_place_corridor_v5_{ACT,PACT_RAW,PACT_READOUT}_s{0,1}_bs8_cs50_lr1e-5_e2000`. Frozen `eval_act.py` house 1 n=50: **ACT s1 15/20/30**, **raw s0 21/13/37**, **readout s0 21/9/41** (place/bar/free; readout ever 24, strict 19). Readout vs ACT bar **p = 0.027**; raw vs readout bar p = 0.47; place p = 0.30 / 1.0. ACT s0 n=2 only; raw s1 + readout s1 eval dirs empty. JSON copied to `reports/eval_summaries/pact_place_corridor_v5_*.json`. |
+| **T-107 v107_spaced three arms n=50 (2026-09-12)** | `eval_act_v107spaced.py`, table+wrist, cycle_24, horizon 1050, s0. **ACT 13/8/19, PACT-raw 0/9/19, PACT-readout 2/6/20.** Readout vs ACT place p = 0.004 (worse). Collision-free 38-40% all arms; 26-28/50 episodes touch clutter in every arm. Negative set; needs more seeds / diagnosis. Dirs `eval_output/pact_place_corridor_v107_spaced_ACT_s0_bs8_cs50_lr1e-5_e2000/`, `eval_output/pact_place_corridor_v107_spaced_PACT_RAW_s0_bs8_cs50_lr1e-5_e2000/`, `eval_output/pact_place_corridor_v107_spaced_PACT_READOUT_s0_bs8_cs50_lr1e-5_e2000/`; JSON in `reports/eval_summaries/pact_place_corridor_v107_spaced_*.json`. |
+| **T-1010 / T-1011c ckpts (2026-09-11)** | Trained, **no eval** (`eval_v1010.sh`, `eval_v1011c.sh` unwired). 6 + 3 ckpts, ~7 GB each. |
 | Hallway ACT vs PACT-raw n=50 | **Done. Control, not the MVP.** Place 28% vs 42% (p = 0.21); bar 34% vs 36% (p = 1.0). Raw closeness does not cut hallway bar hits. n=20 smoke was luck. |
 | Archived 66% → 40% (invisible-cell, 2026-07-05) | **Wiped.** Source datagen + `obstacle_prox_v2` + July ckpts gone 2026-08-24. Metrics only in `reports/eval_summaries/`. Not retrainable here. Do not mix with the hallway MVP. |
 | **New HF clones (v1010 / v12 / mixed v10.11c / …)** | **September 3 snapshot (v12 is now prepared; §4.21).** v1011d: convert + train **done**. Eval on V10.10 four-object sampler is **OOD**. Spread n=48 horizon 800 **and** 1050 **done**: place **0/48** both. Grasp 2/48 (800) and 1/48 (1050). Do **not** cite as a policy number. Fair eval needs `PactPlaceCorridorV1011DRandomizedLayoutSampler` @ `70dedc0`. [§4.17](#417-new-clones-2026-09-03--not-act-ready). |
@@ -1713,7 +1737,7 @@ v1011d dump). No vanilla ACT control ckpt for this task yet — this is PACT-raw
 | Fork | What it is | Do it? |
 |---|---|---|
 | **A. GPU jobs on the pipe that already works** | v5 hallway. Convert + 3 ckpts + readout n=50 **done** ([§4.4](#44-live--corridor-skin-fire--compress-skin)). Optional: Amine 40-row ([§4.3.1](#431-live--amine-40-row-place-protocol)). | Retrain v5 = wasted GPU. Paper MVP is readout 40% place / 88% collision-free. Do not overwrite that eval dir. |
-| **B. v1011d PACT-raw** | Convert + train **done**. In-dist `eval_act_v1011d.py` n=50 **done 2026-09-08**: full randomize place **7/50**, bar 10/50, free 20/50. Easy 0.25 place **14/50**, bar 3/50, free 22/50. Do not mix those two. Historical FourObject spread 800 **and** 1050: place **0/48** both — **OOD**, do not cite. | Do not paste in-dist 7/50 or 14/50 into the hallway table. Wrist-only n=50 still running. No vanilla ACT ckpt yet. |
+| **B. v1011d PACT-raw** | Convert + train **done**. In-dist `eval_act_v1011d.py` n=50 **done 2026-09-08**: full randomize place **7/50**, bar 10/50, free 20/50. Easy 0.25 place **14/50**, bar 3/50, free 22/50. Do not mix those two. Historical FourObject spread 800 **and** 1050: place **0/48** both — **OOD**, do not cite. | Do not paste in-dist 7/50 or 14/50 into the hallway table. Wrist-only n=50 aborted at 4/50 (2026-09-07). No vanilla ACT ckpt yet. |
 
 Best first set for **B**: `data/pact_pick_n_place_v2/data/v1011d` (**200**). Convert writes
 exo+wrist. `TASK_CONFIGS['pact_pick_n_place_v2']` points at that hdf5. v12 reconvert also keeps
@@ -3214,8 +3238,8 @@ OMP_NUM_THREADS=2 python -m pytest -q \
 **The problem.** A robot arm reaches into a tight space. Cameras fail: self-occlusion, darkness,
 a thin obstacle in a blind spot. A human stops looking and starts *feeling*.
 
-**What we built.** 40 ToF-like distance sensors on the whole arm (forearm, upper arm, wrist).
-Each is an 8×8 depth image, 45° cone. They answer "how close is something, right here?" — not
+**What we built.** 40 short-range depth sensors on links 1–6 of the arm (7 / 7 / 5 / 5 / 10 / 6;
+none on the hand). Each is an 8×8 depth image, 45° cone, rendered at 60 Hz. They answer "how close is something, right here?" — not
 colour, texture, or shape.
 
 **The question.** Does adding this skin make the robot *safer* than cameras alone? Fewer crashes.
@@ -3238,8 +3262,8 @@ closeness is **not** enough — the encoder has to train with ACT.
 | **imitation learning** | Copy demonstrations. The brain uses a sense only if the demos *cannot be explained without it* |
 | **ACT** | Off-the-shelf action-chunking transformer. Cameras + joints. Nothing about it is ours except the proximity token path |
 | **vanilla** | Cameras only. The comparison point |
-| **PACT-raw** | Same brain + 40 peak-closeness numbers. Won the wiped invisible-cell grid. **Does not** cut hallway bar hits |
-| **PACT-readout** | Same brain + 40 live 128-d CLS tokens; encoder finetuned with ACT. **Hallway paper MVP:** 40% place, 88% collision-free |
+| **PACT-raw** | Same brain + 40 peak-closeness numbers (320 tokens). Won the wiped invisible-cell grid. Bar hits: 36% (H-A), 26% (H-B) — inconsistent |
+| **PACT-readout** | Same brain + 40 live 128-d CLS tokens; encoder finetuned with ACT. **Main model.** H-A 40% place / 12% bar / 88% free; H-B 42 / 18 / 82; H-C 36 / 14 / 86 |
 | **PACT-trunk** | Same brain + processed reflex embedding. Did nothing. Abandoned |
 | **success rate** | Fraction that completed the task (lift or place) |
 | **collision rate** | Fraction that touched something they should not. Lower is better |
@@ -3287,6 +3311,36 @@ successes on this eval; n=50 is small for a 12-point place gap, so that p-value 
 
 All 20 readout successes were collision-free (strict 20/50). All 6 collisions were bar hits.
 Readout n=20 smoke (25% place / 30% bar) was luck; cite n=50 only.
+
+### H-B — retrained ckpts, frozen `eval_act.py`, house 1, seeds 2026-2075 (2026-09-11/12)
+
+Independent retrain (`scripts/exp/train_v1_hallway.sh`, `bs8 cs50 lr1e-5 e2000`, best-val) and a
+different evaluator / house schedule from H-A. One seed per arm; **ACT is seed 1, PACT arms seed 0.**
+
+| Brain (seed) | place-success ↑ | ever | bar hit ↓ | collision-free ↑ | strict ↑ | gripper close |
+|---|---|---|---|---|---|---|
+| cameras only (`ACT`, s1) | 15/50 (**30%**) | 15 | 20/50 (**40%**) | 30/50 (60%) | 12/50 | 48 |
+| cameras + peak closeness (`PACT-raw`, s0) | 21/50 (**42%**) | 21 | 13/50 (**26%**) | 37/50 (74%) | 19/50 | 48 |
+| **cameras + finetuned CLS (`PACT-readout`, s0)** | 21/50 (**42%**) | 24 | 9/50 (**18%**) | 41/50 (**82%**) | 19/50 | 50 |
+
+| contrast | place | bar / collision-free | strict |
+|---|---|---|---|
+| ACT vs PACT-raw | p = 0.30 | p = 0.20 | p = 0.19 |
+| ACT vs PACT-readout | p = 0.30 | p = **0.027** | p = 0.19 |
+| PACT-raw vs PACT-readout | p = 1.0 | p = 0.47 | p = 1.0 |
+
+Bar hits by intrusion side (28 right / 22 left in every arm): ACT 5 R / 15 L; raw 1 R / 12 L;
+readout 3 R / 6 L. No other-environment or clutter contacts in the PACT arms (one ACT episode).
+JSON `reports/eval_summaries/pact_place_corridor_v5_{ACT_s1,PACT_RAW_s0,PACT_READOUT_s0}_bs8_cs50_lr1e-5_e2000.json`.
+
+### H-C — Aug 28 readout ckpt on frozen `eval_act.py`, house 1, n=50 (2026-09-07)
+
+Place **18/50 (36%)**, ever 19, bar **7/50 (14%)**, free **43/50 (86%)**, strict 18. vs H-B ACT s1
+(same house / seeds): bar **p = 0.006**, place p = 0.67. JSON `reports/eval_summaries/simple_hallway_n50.json`.
+
+**Across H-A, H-B, H-C:** readout has the fewest bar hits in every hallway evaluation on disk
+(6, 9, 7 of 50) against ACT (17, 20), with place at or above ACT each time (40 / 42 / 36 % vs
+28 / 30 %). PACT-raw is inconsistent (36 % bar in H-A, 26 % in H-B).
 
 ### Why we believe it
 
@@ -3344,7 +3398,8 @@ brushing with no bar ~60%; the old counter could not split bar vs cavity. One se
 <a id="7-every-experiment-one-line"></a>
 ## 7. Every experiment, one line
 
-**ACT** = cameras only. **PACT** = cameras + skin. Results `x% vs y%`.
+**ACT** = cameras only. **PACT** = cameras + skin. Results `x% vs y%`. Set tags (H-A, H-B,
+T-107, …) per [`PAPER.md`](PAPER.md) §0.
 
 | Experiment | Description | Results | Run |
 |---|---|---|---|
@@ -3368,6 +3423,11 @@ brushing with no bar ~60%; the old counter could not split bar vs cavity. One se
 | Compress the skin | 32-d embedding + XYZ | Validity 100%; XYZ 20.6 mm; pixel 87/95%. Compressor grade, not policy | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Finetune readout into ACT | Unfreeze encoder; 128-d CLS tokens live at train/eval | Place **40%**; bar **12%**; collision-free **88%**. vs ACT bar p = 0.016. **Paper MVP** | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
 | Hallway pick-and-place | 152 coauthor demos, n=50, three arms | ACT 28/34/66 vs raw 42/36/64 vs **readout 40/12/88** (place / bar / free). Raw ≠ safety win. Readout is | [§4.3](#43-live--hallway-act-vs-pact) |
+| **H-B** hallway retrain grid | Sep 10 ckpts, frozen `eval_act.py`, house 1, n=50, three arms | ACT s1 **30/40/60** vs raw s0 **42/26/74** vs **readout s0 42/18/82** (place / bar / free). Readout vs ACT bar p = 0.027. Raw s1 / readout s1 / ACT s0 n=50 pending | [§6](#6-headline-result) |
+| **H-C** Aug readout ckpt, frozen eval | Same ckpt as H-A readout, house 1, n=50 | **36/14/86**; vs H-B ACT bar p = 0.006 | [§4.4](#44-live--corridor-skin-fire--compress-skin) |
+| **T-107** v107_spaced three arms | table+wrist, 24 houses, horizon 1050, n=50, s0 | ACT **26%** place vs raw **0%** vs readout **4%**; bar 16 / 18 / 12%; free 38 / 38 / 40%. Skin arms lose the task. Negative | [§1](#1-now--disk-truth-2026-09-13) |
+| **T-1011d** wrist-only | PACT-raw, `--cameras wrist_camera`, n=50 | **Aborted 4/50** (0/4). Not a rate | [§1](#1-now--disk-truth-2026-09-13) |
+| **T-1010 / T-1011c** | 6 + 3 ckpts trained 09-11 | No eval (unwired) | [§1](#1-now--disk-truth-2026-09-13) |
 | Sep clones (v12 / v1010 / mixed / v1011d) | New envs + table/exo cam dumps | v1011d: convert + train + in-dist n=50 **done** (full 7/50, easy 0.25 14/50). FourObject 0/48 is **OOD**. Others viz / no task row | [§4.17](#417-new-clones-2026-09-03--not-act-ready) |
 | Collect a taller doorway pole | 44 cm pole on TCP line | 0 examples collected | [§4.7](#47-parked--gate-bar-v31) |
 | Blur cameras only at test time | Freeze policy, blur RGB, leave skin | 0 of these tests run | [§4.8](#48-parked--test-time-camera-blur) |
@@ -3382,6 +3442,30 @@ including the earlier query-history readout evaluator. Any claim based on them m
 identify that protocol. The corrected consecutive-history evaluator and v12 adapter
 require their own live validation and measurements; the 69 unit tests are not
 evidence for a new success rate. See §4.23 for result provenance and reporting.
+
+**2026-09-13:** the plain-language paper brief with every set labelled is [`PAPER.md`](PAPER.md).
+H-B (retrain + frozen eval) replicates the H-A direction: readout bar 9/50 vs ACT 20/50
+(p = 0.027), place 21/50 vs 15/50. Copy-paste multi-set line:
+
+> Across two hallway evaluation sets, PACT-readout reduces hazard-contact rates by 22 percentage
+> points relative to ACT (34% → 12%, H-A; 40% → 18%, H-B; relative reductions ≈65% and 55%),
+> while observed placement rises from 28% to 40% and from 30% to 42% (placement differences
+> statistically uncertain). H-B scenarios are matched across arms: ACT contacted the bar in 11
+> scenarios where readout did not, readout in none where ACT did not (exact McNemar p = 0.00098;
+> unpaired Fisher p = 0.027). Placement without counted collisions: H-A 13 / 17 / 20, H-B
+> 12 / 19 / 19 of 50 (ACT / raw / readout). An archived camera-hidden study (O-INV, older
+> PACT-raw, any-contact metric) shows the largest contact difference in the camera-hidden
+> condition (66% vs 40%, p = 0.016). On the spaced bench (T-107) the benefit does not extend to
+> task completion (placement 26% / 0% / 4%); the cause is unresolved.
+
+Framing per `reports/paper_narrative_review.txt` (2026-09-13): RGB supplies visual task context,
+proximity supplies measured local range; the useful geometric representation is learned. Three
+questions organise the paper — what geometry the skin makes available (S), whether it helps when
+the hazard is excluded from RGB (O-INV, "controlled visual unobservability"), and whether a
+learned policy uses it to reduce contact during manipulation (H-A, H-B). T-107 is "task
+dependence", not a failure to hide. H-C is a second evaluation of the H-A readout ckpt, not a
+third replication; do not pool sets into n=150. Suggested title: *PACT: Learning Collision-Aware
+Manipulation with Proximity Skin.*
 
 **One-sentence claim (the live MVP).** A full-body proximity skin, encoded with a geometry
 transformer whose 128-d CLS readout is **finetuned with ACT** (**PACT-readout**), improves
@@ -3422,6 +3506,18 @@ of 40% or mix house schedules in one Fisher test. Write **both** place and
 collision-free. Do not write "success unchanged" or drop the place number. Do
 not write "PACT-raw is the hallway winner."
 
+### Other sets — label clearly, need newer runs
+
+- **T-107 (v107_spaced, "task dependence"):** ACT 13/8/19, PACT-raw 0/9/19, PACT-readout 2/6/20
+  (place / bar / free of 50); placement without collisions 7 / 0 / 2. Readout vs ACT place
+  p = 0.004. Contact reduction did not extend to improved manipulation on the spaced bench;
+  cause unresolved (two cameras, hallway-only encoder pretraining, clutter saturating the 20 cm
+  cap are hypotheses). 210 demos, 111 L / 99 R; 24 indices = condition grid, not 24 houses.
+- **T-1011d (PACT-raw only):** full 7/10/20 (ever 10); easy 0.25 14/3/22; wrist-only aborted
+  4/50. No ACT / readout arm → no comparison. Do not mix with hallway.
+- **T-OOD:** 0/48 on the four-object sampler. Do not cite.
+- **T-1010 / T-1011c:** ckpts only.
+
 ### Archived 2026-07-05 grid (wiped — do not lead with this)
 
 A full-body proximity skin fused as raw per-sensor closeness (**PACT-raw**) cut **collision
@@ -3453,7 +3549,11 @@ Trunk worse (72%). Background contact with no bar ~60%. One seed. Sim only.
 - Any `--temp_agg_off` number from **before 2026-07-04**. Invalid (arm froze ~30 cm short).
 - Injecting crashes into behaviour cloning. Convert filters and upweights existing bows.
 
-Limitations a reviewer will use: one seed; hallway bar may be visible to the wrist cam; sim
+Limitations a reviewer will use: one seed; H-B mixes ACT seed 1 with PACT seed 0; eval skin
+history is query-spaced while training used 8 consecutive steps (`history_mode:
+query_steps_train_mismatch`); eval skin is a 1-substep snapshot vs 4-substep min at train;
+PACT-raw uses 320 skin tokens vs readout 40; expert reads the true bar pose; encoder pretrained
+on hallway skin only; skin arms fail T-107; hallway bar may be visible to the wrist cam; sim
 only; n=50 not a multi-seed grid; PACT-raw control from 08-27 vs readout 08-29; demos subtract a
 parked-obstacle baseline PACT cannot use; n=25 is noise; low collisions can mean broken;
 training loss does not predict behaviour. The archived invisible-cell grid adds renderer
@@ -3500,9 +3600,92 @@ easy. Do not collect that. v3.1 is the fix.
 ## 10. Method
 
 **PACT** = ACT + proximity tokens in transformer memory:
-`[latent z, qpos, prox tokens, ~160 image tokens]`.
+`[latent z, qpos, prox tokens, image tokens]` (≈80 image tokens per camera at 240×320).
 
-**Published win** (use unless a later eval beats it): `--prox_feature raw`, **global** mash
+### PACT-readout model spec (code-verified 2026-09-13; plain-language version in `PAPER.md` §6)
+
+**Inputs per query.** Wrist RGB `1×3×240×320` (/255); qpos 9 (z-scored); skin history
+`8×40×8×8` metres = last **8 consecutive control steps** (`raw_causal`, `submodules/act/utils.py:137-146`,
+left-padded by repeating the first frame). hdf5 skin is min-pooled over 4 sub-frames at convert.
+
+**Skin encoder** `encoders/surface_geometry.py:405-443` (`SurfaceEmbeddingEncoder`, 837,700 params,
+weights shared across the 40 sensors, run once per sensor):
+
+| stage | spec |
+|---|---|
+| closeness | `c = 1 − d/0.20`; valid 5 mm ≤ d ≤ 20 cm, else 0 (`:131-164`). No mask channel |
+| sub-frames | each of 8 control steps repeated ×4 → 32 frames (`encode_pooled_history`, `:875-914`) |
+| conv stem | `Conv2d(1→32,3,pad1)→GELU→Conv2d(32→32,3,pad1)→GELU`, stays 8×8 |
+| frame token | `Linear(2048→128)` per frame |
+| sequence | `[CLS] + 32 frame tokens` = 33, fixed sinusoidal positions |
+| transformer | `TransformerEncoderLayer(d=128, heads=4, ff=256, dropout 0.1, GELU, pre-norm)` × 4 |
+| readout | CLS hidden state, 128-d, **no projection**; grads on under `--finetune_prox_encoder` |
+| pretrain-only heads | 32-d embedding; XYZ(3)+validity; 8×8 recon; future frame |
+
+No spatial patchification; no per-sensor identity inside the encoder. `xyz` (3-d) and
+`embedding` (32-d, frozen) taps exist for ablations.
+
+**Token injection** (`detr/models/detr_vae.py:120-127, 228-233`; `transformer.py:66-75`):
+`Linear(feat → K·512)` shared across sensors; `additional_pos_embed` = `Embedding(2 + 40·K, 512)`
+(row 0 z, row 1 qpos, rows 2… one per skin token — the only place sensor identity lives);
+memory = `[z, qpos, prox₁…prox_{40K}, image]`.
+
+| arm | feat | K | skin tokens | `additional_pos_embed` | encoder trained |
+|---|---|---|---|---|---|
+| ACT | — | — | 0 | (2, 512) | — |
+| PACT-raw | 1 (peak closeness, 50 cm cap, current frame) | 8 | **320** | (322, 512) | no |
+| PACT-readout | 128 (CLS) | 1 | **40** | (42, 512) | yes, lr 1e-5 with ACT |
+
+Token parity between raw and readout is **not** held. Say so.
+
+**ACT** (`imitate_episodes.py:94-113`, `detr/main.py`): ResNet-18 (ImageNet, FrozenBN, **one
+backbone shared across cameras**), hidden 512, ff 3200, enc 4 / dec 7, 8 heads, dropout 0.1,
+post-norm ReLU, 50 queries = chunk, CVAE latent 32 (style encoder: 4-layer transformer over
+`[CLS, qpos, a₁…a₅₀]`, train only), loss = masked L1 + 10·KL, AdamW lr 1e-5 (policy, backbone,
+skin encoder; `prox_encoder_lr` null in every run), wd 1e-4, batch 8, 2000 epochs, random 80/20
+episode split (norm stats over all episodes), best-val ckpt. qpos 9 / action 8. No image or
+prox dropout, no blur, in any shipped run. Params: ACT 83.93 M, raw 84.10 M, readout 84.02 M.
+Best epochs (H-B ckpts): ACT s0 1853, s1 1736; raw s0 1740, s1 1987; readout s0 1864, s1 1913.
+
+**Skin-encoder pretraining** (`encoders/train.py`; config
+`experiments_output/default/surface_encoder_train/pact_place_corridor_v5/config.json`):
+hallway native rows, 122/15/15 episodes, 591,760 train windows, self-supervised targets from
+depth (nearest-surface XYZ, validity, recon, future), loss = BCE(valid) + 5·MSE(xyz/0.2) + recon
+(fg ×10 + 0.1 occupancy BCE) + 0.5·future, AdamW 3e-4 wd 0.01 cosine, bs 512, 20 epochs, seed 0.
+Test: XYZ MAE 20.62 mm, validity F1 1.0, recon P/R 0.874/0.953. sha256 `cec5cb8e…`. Same init
+for every readout run on every dataset.
+
+**Inference** (`eval_act.py`): z = 0; one forward per 50 steps, chunk replayed open-loop, no
+temporal aggregation; gripper snapped at 127.5; RGB + 40 EGL skin cameras rendered only at
+queries (~17 fresh / 785 skipped per 800 steps). Skin history = last 8 **query** frames
+(`--history query`, JSON `query_steps_train_mismatch`); `--history consecutive` matches train
+but has no n=50 run. Skin at eval is a 1-substep snapshot (`proximity_sensor_period_ms = 0`).
+
+**Sensors** (`assets/robots/franka_skin/model_hybrid.xml`): 40 MuJoCo 8×8 depth cameras,
+fovy 45°, links 1–6 only (7/7/5/5/6+4/6; **no link7 / hand**), 9 mm off a non-colliding dermis
+shell, dedicated 8×8 EGL renderer with the shell hidden, planar-z metres, 60 Hz (4 sub-frames
+per 66 ms control step). Per-sensor plate check 38/40 (`scripts/verify_hybrid_skin_sensors.py`,
+`diagnostics_output/20260611_hybrid_sensor_verify/`). The "83% vs 10% coverage" figure has no
+producing script on disk — unverified.
+
+**Hallway data facts:** 152 episodes, 243–634 control steps (median 480; 72,955 total; `episode_len 636`
+is padding). Direct ACT split 121 / 31 (seed 1); 24 of the 31 validation episodes were also in
+encoder pretraining; norm stats over all episodes. Robot base jitter is horizontal position +
+yaw (z fixed). Timing at 66 ms: chunk 3.3 s; 8 consecutive train steps 0.462 s; 8 eval query
+frames 23.1 s once full — the policy is not a reflex.
+
+**Hallway task** (`molmospaces-pact-place@977acd6`, `tasks/enclosure_reach.py`): aperture
+0.85 × 0.70 m at x 0.58; hazard bar half-extents (0.055, 0.240, 0.090) at x 0.615, z 0.89,
+inner face |y| 0.10, one side per episode; `Cup_10` at x 0.76, y ~ U(−0.04, 0.04), z 0.72; tray
+at (0.35, 0.32). Expert reads the true bar pose (`protr_center/half`) and bows with safe gap
+0.10 m in / 0.14 m out; never reads the skin. Success = cup supported on tray (≥50 % weight or
+cached pose) ∧ robot not touching cup ∧ tray moved < 10 cm / 45°, judged at the terminal step.
+Contacts audited every 2 ms, penetration only, floor excluded; `collision_free` = no
+hazard_bar + other_environment + clutter frames; `hit_bar` = any hazard_bar frame;
+`gripper_close_commanded` = intent, not a grasp.
+
+
+**Archived O-INV recipe** (obstacle grid, wiped; not the hallway MVP): `--prox_feature raw`, **global** mash
 (40 sensors → one 40-d vector → 8 anonymous tokens), `n_proximity_sensors = 1`, chunk 100.
 
 **Direct-trainer defaults** (not the wrapper): `--prox_feature raw --prox_layout per_sensor`.
@@ -3693,6 +3876,7 @@ re-parses `sys.argv`. Eval is exempt (it shields that parser).
 README.md            this file — science, claims, run cookbook
 CLAUDE.md            agent working agreement
 CURSOR.md            session change log (not a result)
+PAPER.md             plain-language paper brief; every result tagged by experiment set
 eval_act.py          frozen hallway / v1011d eval (not v12)
 old_eval_act_place_corridor.py  protocol snapshot @ 1bfe693; do not run
 pyproject.toml       not installed; see §3
@@ -3726,7 +3910,8 @@ eval_output/         gitignored rollouts
 experiments_output/  encoder trains, viz, figures
 diagnostics_output/  committed legacy renders
 reports/2026-08-14/  weekly report with PNGs
-reports/eval_summaries/  archived eval_summary.json — only durable published numbers
+reports/eval_summaries/  archived eval_summary.json — only durable published numbers (H-A, H-B, H-C, T-107, T-1011d, O-INV)
+images/              paper figure set + manifest.json (first_page teaser, robot, sensors, skin, environments, results, link6 reconstruction)
 train_blur_baseline.sh / eval_blur_baseline.sh
 scripts/exp/  historical train + eval launchers (`EXP=` / `NUM_ROLLOUTS=`). `train_exp.sh` moved here.
 ```
@@ -3758,6 +3943,11 @@ Older `model.xml` is the 29-sensor skin. `model.xml.bak_before_orientation_fix` 
 | `convert_pact_place_to_act.py` | hallway / v1011d rows → ACT hdf5 (wrist + exo/table RGB when present) |
 | `probe_prox_decodability.py` | swerve linear probe |
 | `compare_pact.py` | Wilson CI + Fisher |
+| `build_paper_images.py` | `images/{robot,sensors,skin,environments,tasks,results}` + `manifest.json` (results = H-A only) |
+| `build_recorded_first_page.py`, `extract_first_page_recordings.py`, `render_first_page_assets.py` | `images/first_page/` teaser from a v1011d demo frame |
+| `reconstruct_link6.py`, `package_link6_figure.py` | `images/link6_reconstruction/` skin-only point cloud |
+| `pact_eval_wandb.py` | W&B logging hook for the three frozen evals |
+| `exp/train_*.sh`, `exp/eval_*.sh` | one-arm launchers (`EXP=ACT|PACT_RAW|PACT_READOUT`); v1010 / v1011c eval unwired |
 | `analyze_obstacle_dataset.py` | bar / deflect / scrape stats |
 | `proximity_necessity.py` | vision-vs-skin coverage |
 | `verify_hybrid_skin_sensors.py` | per-sensor QA |
@@ -3949,6 +4139,16 @@ collisions).
 | **Place-corridor `eval_act.py` house=1 n=50** | place **18/50 (36%)**; ever 19/50; bar **7/50 (14%)**; free **43/50 (86%)**. Same readout ckpt. Not a random-house replay | 09-07 `simple_hallway_n50` |
 | **v1011d PACT-raw full randomize n=50** | place **7/50 (14%)**; ever 10/50; bar **10/50 (20%)**; free **20/50 (40%)**. Grasp 25/50. Not hallway. Not easy 0.25 | 09-08 `simple_v1011d_smoke_video` |
 | **v1011d PACT-raw easy 0.25 n=50** | place **14/50 (28%)**; ever 14/50; bar **3/50 (6%)**; free **22/50 (44%)**. Optimistic vs 200 demos | 09-08 `simple_v1011d_easy025_n50` |
+| v1011d PACT-raw wrist-only | **aborted 4/50**: 0/4 place, 3/4 bar | 09-07 `simple_v1011d_wrist_only_n50` |
+| **H-B hallway ACT s1 n=50** | place **15/50 (30%)**; bar **20/50 (40%)**; free **30/50 (60%)**; strict 12 | 09-11 `pact_place_corridor_v5_ACT_s1_…` |
+| **H-B hallway PACT-raw s0 n=50** | place **21/50 (42%)**; bar **13/50 (26%)**; free **37/50 (74%)**; strict 19 | 09-12 `pact_place_corridor_v5_PACT_RAW_s0_…` |
+| **H-B hallway PACT-readout s0 n=50** | place **21/50 (42%)**; ever 24; bar **9/50 (18%)**; free **41/50 (82%)**; strict 19; vs ACT bar p = 0.027 | 09-12 `pact_place_corridor_v5_PACT_READOUT_s0_…` |
+| **T-107 v107_spaced n=50 (ACT / raw / readout)** | place **13 / 0 / 2**; bar 8 / 9 / 6; free 19 / 19 / 20; gripper close 50 / 42 / 50 | 09-12 `pact_place_corridor_v107_spaced_*` |
+| Skin tokens per arm | ACT 0; PACT-raw **320** (K=8, feat 1); PACT-readout **40** (K=1, feat 128) | ckpt `additional_pos_embed` shapes |
+| Skin encoder | 837,700 params; 4 layers d=128 h=4; CLS 128-d; pretrain XYZ MAE 20.62 mm | `surface_encoder_train/…/config.json` |
+| Best epochs (H-B ckpts) | ACT 1853 / 1736; raw 1740 / 1987; readout 1864 / 1913 (s0 / s1) | ckpt filenames |
+| Sensor placement | links 1–6: 7 / 7 / 5 / 5 / 6+4 / 6; none on link7 / hand | `model_hybrid.xml` |
+| Per-sensor plate check | 0.145 m read for 0.15 m plate; 38/40 pass | `diagnostics_output/20260611_hybrid_sensor_verify/` |
 | Place-corridor eval time | ACT 119.5 s / 2 eps. PACT-raw **2121 s / 2 eps** with `renders=19 skip=883` (EGL). Readout n=50_fast ~15 min/ep gated EGL. Legacy evaluator defaults to `mj_multiRay`; `--egl-prox` selects EGL. Current `pact.py` uses native EGL and corrected readout history; timings are not transferable | smoke 2026-08-29 |
 | Surface encoder test XYZ | 20.6 mm; validity 100%; pixel 87.4 / 95.3% | 08-25 |
 | Corridor 20 cm / 50 cm tile hit | 11% / 40%; `link1_sensor_5` 100% at 20 cm | probe |
@@ -4052,6 +4252,19 @@ Every one of these has already cost real time.
     binds `PactPlaceCorridorV1010FourObjectSampler` from `origin/main`. V1011D class lives
     only on `70dedc0`. 0/48 place at horizon 800 and 1050 is almost-never-grasp on the wrong
     clutter family, not a broken success flag. Do not cite. [§4.17](#417-new-clones-2026-09-03--not-act-ready).
+33. **Skin history mismatch.** Readout trains on 8 consecutive control steps; `eval_act.py
+    --history query` (headline) feeds 8 query-spaced frames. JSON says
+    `query_steps_train_mismatch`. `--history consecutive` exists; no n=50 run.
+34. **H-B seed mix.** ACT n=50 is seed 1; PACT-raw / readout n=50 are seed 0. ACT s0 has n=2 only.
+35. **Wrist-only n=50 died silently at 4/50** (2026-09-07). README said "running" for six days.
+    Check `completed` in the JSON, not the README.
+36. **Eval skin is a 1-substep snapshot** (`proximity_sensor_period_ms = 0`); train hdf5 is a
+    4-substep min. `eval_act_v1011d.py --skin_substeps train` reproduces the pool; hallway
+    `eval_act.py` cannot.
+37. **"83% vs 10% directional coverage" has no producing script or artifact.** Regenerate or drop.
+38. **No link7 / hand sensors; `episode_len 636` is padding** (real T 243–634, median 480).
+39. **H-A rows are not scenario-matched** (ACT / readout sides differ in 24/50) — Fisher only.
+    H-B rows are matched (same seeds + sides) — report McNemar alongside Fisher.
 
 ---
 
@@ -4105,10 +4318,23 @@ Every one of these has already cost real time.
   Kitchen overlay off. Smoke n=2 done. Spread n=48 horizon 800 **and** 1050 **done 2026-09-04**
   (place 0/48 both). Confirmed mismatch: FourObject sampler vs V10.11d randomized clutter.
   This does not independently validate `judge_success`. Fair pin is `70dedc0` / `PactPlaceCorridorV1011DRandomizedLayoutSampler`.
+- **Hallway retrain grid (2026-09-10).** `scripts/exp/train_v1_hallway.sh`, six ckpts
+  (ACT / RAW / READOUT × s0, s1), `bs8 cs50 lr1e-5 e2000`. Same recipe for v1010, v107_spaced,
+  v10_11c_100.
+- **H-B evals (2026-09-11/12).** Frozen `eval_act.py` house 1: ACT s1 15/20/30, raw s0 21/13/37,
+  readout s0 21/9/41. Readout again lowest bar (p = 0.027 vs ACT). Set label H-B.
+- **v107_spaced eval wired + run (2026-09-12).** `eval_act_v107spaced.py`. ACT 13, raw 0, readout 2
+  of 50 place. Negative set T-107; collisions flat.
+- **Paper docs (2026-09-13).** `PAPER.md` written; README sections 0/1/6/7/8/10/11/13/14/15/16
+  refreshed with set tags; six new JSONs archived to `reports/eval_summaries/`.
 
 ### Unresolved
 
-- Whether the hallway readout result holds with a different seed.
+- Whether the hallway readout result holds with a different seed. H-B partially answers
+  (independent retrain, same direction); s1 evals for raw / readout and ACT s0 n=50 are pending.
+- Whether `--history consecutive` at eval changes the H-B numbers.
+- Why both skin arms fail T-107 (0–4 % vs 26 %) while collision-free is flat.
+- v1010 / v1011c evals (ckpts exist; scripts unwired).
 - Whether v1011d PACT-raw place/bar numbers beat a vanilla ACT control (no vanilla ckpt yet).
   Current 0/48 is **OOD** (V10.10 four-object eval vs V10.11d train). Do not cite. Need
   V1011D sampler eval first, then a vanilla ckpt.
@@ -4138,7 +4364,7 @@ Every one of these has already cost real time.
 | `data/pact_pick_n_place_v2/` | 12 G | v12 165 + v12.1 5 — viz; **not** ACT-converted |
 | `data/mixed_v1011_clutter_geometry/` | 5.5 G | v10.11c 99 — viz; **not** ACT-converted |
 | `data/table_smoke/` | 0.9 G | 10-row schema smoke — **do not train** |
-| `submodules/act/ckpts` | ~22 G | v5 vanilla + PACT-raw + readout only |
+| `submodules/act/ckpts` | ~180 G | v5: 3 Aug + 6 Sep ckpts; v1010 6; v10_11c_100 3; v107_spaced 3; v1011d 1 (+3 failed). ~7 GB each |
 | `act_style_data/pact_place_corridor_v5` | 4.4 G | converted ACT hdf5 — **keep**; still the only row |
 | `custom_scenes/` | small | v10_7 hashed + v5/v3 chain + v12 wrapper. Eval + viz. |
 | `assets/safety` | 342 M | `sweep_v*.h5` + demo mp4/mcap; **no `cvae_v3/`** |

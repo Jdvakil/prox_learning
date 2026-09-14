@@ -1,0 +1,360 @@
+NARRATIVE-LED REVIEW OF THE PAPER PLAN
+Reviewed 2026-09-13 against the Claude plan, the new PAPER.md draft, source code,
+converted datasets, saved evaluations, and figure provenance.
+
+Purpose: give Claude concrete revisions for a persuasive, technically grounded
+paper-writing reference. This review does not launch or require new experiments.
+The original plan, PAPER.md, and experiment outputs were not edited by this review.
+
+1. THE ARGUMENT TO BUILD
+
+Use the author's question as the organizing principle:
+
+  Does live proximity sensing improve collision avoidance in learned manipulation
+  policies when task-relevant hazards are unavailable or ambiguous in RGB?
+
+Separate two cases within that question: hazards whose direct visual appearance is
+unavailable, and hazards that remain visible but whose local clearance is difficult
+to estimate. They motivate the same sensing approach but require distinct evidence.
+
+The central distinction should be:
+
+  RGB provides visual task context; proximity supplies direct local range
+  measurements. PACT learns how to combine these complementary observations when
+  predicting manipulation actions.
+
+Metric range is measured; the policy representation is learned. Proximity does not
+directly measure a complete scene model, semantic context, or the correct action.
+Use "visual task context" rather than always calling camera information "global":
+the hallway policy has only a wrist camera. Distributed sensor viewpoints matter
+alongside the difference between appearance and range.
+
+Recommended title:
+  PACT: Learning Collision-Aware Manipulation with Proximity Skin
+
+More tightly scoped alternative:
+  PACT: Proximity Skin for Collision-Aware Manipulation in Confined Spaces
+
+Avoid an unqualified "invisible obstacles" title for the current readout results.
+Keep visual unobservability prominent in the research question and explain exactly
+which experimental condition implements it.
+
+2. REPLACEMENT OPENING FOR PAPER.md
+
+Manipulation requires both understanding the task and estimating clearance around
+the moving robot. RGB observations provide rich visual task context, but nearby
+surfaces can be occluded, outside the available camera views, or visually ambiguous.
+In confined workspaces such as fume hoods, the arm must negotiate this geometry
+while reaching, grasping, and transporting an object. Distributed proximity sensing
+offers a complementary observation: local range measurements around the arm.
+
+We investigate whether providing these measurements during policy execution can
+reduce collisions in learned manipulation. We introduce PACT, which augments an
+ACT policy with proximity features from 40 simulated sensors distributed along
+the arm. PACT-readout encodes each sensor's recent depth observations using a
+shared geometry encoder and jointly finetunes its features with the action policy.
+The resulting policy combines visual context, robot joint state, and local range
+information when predicting action chunks.
+
+Our experiments distinguish collision avoidance from task completion. Across two
+hallway evaluation sets, PACT-readout reduces hazard-contact rates from 34% to 12%
+and from 40% to 18% relative to ACT, while observed placement rates increase from
+28% to 40% and from 30% to 42%. The placement differences remain statistically
+uncertain. An archived experiment separately examines a hazard excluded from RGB
+rendering, and a spaced-bench evaluation identifies limits to the benefit across
+tasks. Together, these studies examine how proximity sensing can complement visual
+policies, with the strongest current readout evidence coming from confined hallway
+manipulation.
+
+For the submitted abstract, compress this opening and give exact evaluation-set
+details in Methods. The archived study must retain its status and different model
+identity wherever its quantitative results appear.
+
+3. GIVE EACH EXPERIMENT A ROLE IN THE ARGUMENT
+
+A. What local geometry is available from the skin? [S]
+
+Use the sensor layout and recorded sensor-only reconstruction to make the sensing
+contribution tangible. Show an actual 8x8 observation, its local range structure,
+and how distributed viewpoints sample nearby surfaces.
+
+The 20.62 mm encoder result is mean Euclidean endpoint error on valid targets.
+It evaluates the encoder's auxiliary geometry prediction; it is not sensor accuracy,
+robot clearance error, or the accuracy of the final finetuned policy representation.
+Keep the physical sensor model, raw point reconstruction, encoder pretraining, and
+policy performance as separate quantities.
+
+B. Does proximity help in a controlled camera-hidden condition? [O-INV]
+
+The archived visibility study is directly relevant to the author's question and
+deserves a named supporting subsection: "Controlled visual unobservability."
+Do not leave it buried among unrelated unsuccessful development experiments.
+
+                        ACT contacts   PACT-raw contacts   Observed difference
+  No bar                30/50 (60%)    29/50 (58%)         2 percentage points
+  Visible bar           32/50 (64%)    25/50 (50%)        14 percentage points
+  Camera-hidden bar     33/50 (66%)    20/50 (40%)        26 percentage points
+
+All are the archived collision metric, which includes background contacts; these
+are not hazard-specific bar-hit counts. Hidden-condition Fisher p = 0.01577.
+Hidden-condition task success is 18/50 for ACT and 15/50 for raw. Report it alongside
+contacts. "No significant success difference" does not establish equivalence.
+
+The largest observed contact-rate difference occurs in the camera-hidden condition.
+Describe this as consistent with the complementary-sensing motivation. Do not infer
+a statistically established effect of visibility from a significant comparison in
+one condition and a nonsignificant comparison in another; that needs an interaction
+analysis. High background contact rates also limit mechanistic interpretation.
+
+Explain the intervention plainly: geometry is excluded from policy RGB rendering,
+retained in proximity rendering, and retained in collision physics. This is a
+controlled simulator visibility condition, not a physical glass experiment.
+
+This study used an older PACT-raw design and a different task. Source demonstrations
+and trained checkpoints are no longer available; saved evaluation JSONs survive.
+It supplies historical supporting evidence, not a reproducible readout replication.
+
+C. Does the learned fusion method reduce contact during manipulation? [H-A, H-B]
+
+These are the main PACT-readout results. Lead with the repeated 22-percentage-point
+hazard-contact reduction across the two comparisons. Relative reductions are about
+65% and 55%. Keep percentages and counts together and keep the protocols separate.
+
+  H-A: ACT 17/50 bar contacts; raw 18/50; readout 6/50.
+       Placement: ACT 14/50; raw 21/50; readout 20/50.
+       Successful placement without counted collisions, derived from episode rows:
+       ACT 13/50; raw 17/50; readout 20/50.
+
+  H-B: ACT 20/50 bar contacts; raw 13/50; readout 9/50.
+       Placement: ACT 15/50; raw 21/50; readout 21/50.
+       Successful placement without counted collisions:
+       ACT 12/50; raw 19/50; readout 19/50.
+
+H-A is the historical random-house evaluation. H-B uses fixed house 1 and evaluation
+seeds 2026-2075, with ACT training seed 1 and PACT training seed 0. The hallway bar is
+not excluded from RGB rendering. These results establish observed contact reductions
+in this setting, without isolating camera unobservability as the cause.
+
+Use H-C as an additional evaluation of the historical readout checkpoint, not a
+third independent training replication. Do not pool the three sets into an n=150
+result or write that all three have their own matched ACT baseline.
+
+D. How does the choice of representation affect the comparison? [H-A, H-B]
+
+Explain raw versus readout as a comparison of complete proximity front ends.
+Readout has fewer observed bar contacts in both tables; its separation from raw
+is stronger in H-A and uncertain in H-B. Keep the design comparison explicit:
+scalar versus learned features, snapshot versus history, 50 cm versus 20 cm cap,
+320 versus 40 tokens, and joint encoder finetuning versus no learned skin encoder.
+The present results do not isolate finetuning or any one of these differences.
+
+E. Where does the benefit stop? [T-107]
+
+Use a concise subsection titled "Task dependence" or "Extension to a spaced bench."
+This is a completed result, not a pending run. Placement is ACT 13/50, raw 0/50,
+readout 2/50; successful placement without counted collisions is 7/50, 0/50, 2/50.
+
+Suggested interpretation:
+  The contact reduction observed in the hallway did not extend to improved
+  manipulation on the spaced bench. Additional proximity observations therefore
+  do not provide a uniform task-performance benefit under the evaluated recipes.
+
+Do not use the failure as proof that cameras already supplied enough geometry,
+that the encoder saturated, or that proximity is useful only for collision avoidance.
+Those are hypotheses. This experiment identifies scope and motivates further work.
+
+Keep T-1011d's completed raw-only conditions, incomplete wrist-only run, OOD
+diagnostics, and trained-only checkpoints in separately labeled inventory sections.
+
+4. THE MISSING LINK FOR THE WORD "LIVE"
+
+The saved runs establish that PACT receives proximity during inference. They do not
+yet isolate how much of the benefit depends on its current proximity observations,
+as opposed to the complete training recipe and learned policy differences.
+
+If further experiment time is available, prioritize a targeted inference-input
+study over another unrelated environment. This is a proposed study, not a result:
+
+  - Freeze one trained readout policy and its encoder.
+  - Use the same initial scenarios and evaluation protocol across conditions.
+  - Compare live readings with a controlled stale or mismatched-reading condition.
+  - Preserve sensor order, units, history shape, and preprocessing. Explain the
+    disturbance; corrupted readings can themselves induce distribution shift.
+  - Report contacts, task completion, and their joint outcome for every condition.
+
+Separately, a paired action-query diagnostic can hold RGB, joint state, and policy
+weights exactly fixed while changing only proximity. That checks input dependence;
+action changes alone do not establish collision avoidance. During full rollouts,
+RGB and joint state will naturally diverge as policies take different actions.
+
+For the exact "unavailable to RGB" question, either use a controlled visibility
+condition for the same model or audit hazard visibility over the relevant approach
+history and all policy cameras. One occluded frame does not establish that the policy
+never previously observed the hazard or that no indirect visual cues remain.
+
+Do not call a zeroed-skin readout checkpoint "ACT." Retain independently trained ACT
+as its own baseline. The older v1 skin-zeroing result does not establish dependence
+for the current readout model.
+
+5. CONCRETE REVISIONS TO THE NEW PAPER.md
+
+Section 1: replace the dark-cupboard analogy with the opening above. Separate the
+20 cm encoder preprocessing cap from the simulated sensors' raw depth outputs.
+
+Section 2: replace "camera never sees" and "invisible until it is hit" with the
+specific observability conditions being studied. Replace "does it crash less" with
+the author's research question. Depth grids carry local surface-shape information;
+remove the claim that a sensor does not know shape. Replace claims that the network
+uses a modality only when demonstrations cannot be explained without it with a
+design hypothesis about learning to use complementary inputs.
+
+Contributions: use three concrete items: distributed range sensing and its data
+pipeline; geometry representation and policy fusion; an empirical investigation
+of contact reduction and task dependence. Describe sensor verification accurately
+(38/40 pass the stated check); do not call all 40 sensors verified. Present measured
+findings as contributions, with completed negative results integrated into scope.
+
+Section 3: label the inference diagram "one policy query," not one control step.
+The reported default history comprises eight query observations, not consecutive
+control steps. Branch the data diagram from native demonstrations to encoder
+pretraining and separately to ACT conversion; pretraining uses native and pooled
+input modes, not solely the converted ACT HDF5 path.
+
+Sections 4-7: retain the accessible method explanation and apply the factual checks
+listed below. For every component explain its purpose before listing dimensions.
+Clarify that the policy learns from raw sensor-derived features, not the accumulated
+world-coordinate point cloud shown in the illustrative reconstruction figure.
+
+Sections 8-10: organize around the questions in section 3 of this review. Use
+descriptive experiment names in prose, with H-A/H-B/etc. in table captions and source
+notes. Replace "strongest table" with a descriptive protocol label. Replace "each
+needs newer runs before it can carry a claim" with actual completion/evidence status.
+
+Section 11: group limitations into scope, comparison design, and deployment fidelity.
+Keep them precise and proportionate. History/sampling behavior and preprocessing
+belong in Methods too. Avoid using limitations as the closing summary of the project.
+
+Section 12, suggested conclusion:
+  Distributed proximity sensing supplies local range observations that complement
+  visual task context during confined manipulation. PACT-readout integrates these
+  observations through a jointly trained geometry representation. In two hallway
+  evaluation sets, it reduced hazard contacts by 22 percentage points relative to
+  ACT. The broader experiments show that this benefit is task dependent and does
+  not imply a general increase in manipulation success. These findings motivate
+  policies that combine visual inference with local range sensing around the arm.
+
+6. FIGURES THAT MAKE THE ARGUMENT VISIBLE
+
+Figure 1: show the task, the actual policy camera view, and recorded local range
+observations from the same instant. Caption it as complementary observations. If
+using images/first_page, state that it is a scripted v1011d demonstration, not a
+learned-policy success or proof of hazard invisibility. Its displayed ranges are
+mean-pooled; that differs from policy preparation's minimum pooling.
+
+Figure 2: show one 8x8 sensor grid, its history encoder, sensor-specific tokens,
+fusion with RGB and joint state, and the action chunk. Put exact hyperparameters
+in the accompanying table. Distinguish the learned encoder from raw point clouds.
+
+Figure 3: separate H-A and H-B panels, with contact rate and task completion given
+comparable visual prominence, counts, and confidence intervals. Include successful
+placement without counted collisions in the table. Do not count contact-free rate
+as an independent confirmation: in these hallway runs it complements bar hits.
+
+Figure 4 or supporting panel: show the archived free/visible/camera-hidden comparison
+with its model and provenance clearly named. Keep its any-contact metric separate
+from hallway bar hits. A schematic visibility illustration must be labeled as such.
+
+If suitable saved policy videos exist, select a matched-scenario example and report
+why it was selected. An example illustrates behavior; the full evaluation establishes
+the rate. Sensor-only reconstruction shows information content, not learned avoidance.
+
+7. FACTUAL AND ANALYSIS CHECKS TO RETAIN FROM THE EARLIER REVIEW
+
+  - Converted hallway HDF5 lengths: 243-634, median 480, total 72,955 control steps.
+    The configured length 636 is not the stored length of every episode.
+  - v107_spaced: 210 demonstrations, 111 left / 99 right. Its 24 house indices
+    encode a task-condition grid, not 24 distinct household environments.
+  - v1010: 215 demonstrations. v10_11c_100: 99 demonstrations.
+  - Remove the claimed hallway base z jitter of +/-0.5 m. The inspected base sampler
+    fixes z and varies horizontal position/yaw; use the exact collection version.
+  - The direct ACT split is 121/31, reconstructed from the fixed split seed 1.
+    Matching HDF5 source rows shows 24/31 ACT validation episodes were used for skin
+    encoder pretraining. State this and the all-episode normalization policy. These
+    observations concern validation independence, not proof of rollout contamination.
+  - Encoder pretraining mixes native and pooled windows and balances validity in
+    sampling. The 20.62 mm number is a valid-target Euclidean endpoint error.
+  - At the nominal 66 ms control step, 50-step open-loop execution spans 3.3 s.
+    Eight consecutive timestamps span 0.462 s; eight query timestamps span 23.1 s
+    once the history is full. Do not describe the evaluated policy as a fast reflex.
+  - H-B evaluation seeds and intrusion sides match across arms. Use a consistent
+    paired analysis where the scenarios are matched. ACT/readout bar discordance
+    is 11 ACT-only contacts versus zero readout-only contacts: exact McNemar
+    p=0.0009765625. Unpaired Fisher gives p=0.0266052. Select by design, not p-value.
+  - H-A rows are not matched by index: ACT/readout intrusion sides differ in 24/50.
+    Do not apply a paired test without reconstructing actual scenario identity.
+  - Keep primary comparisons clear and identify exploratory multiple comparisons.
+    Rollout uncertainty is distinct from variation over training seeds.
+  - Retain incomplete wrist-only as 4/50 completed, with 0/4 observed placements.
+    Describe an abort date/cause only if the corresponding log establishes it.
+  - Include v1011d_speedcheck_n50 in the diagnostic inventory: 0/50, OOD sampler,
+    ray-based proximity. It is separate from the two 0/48 horizon evaluations.
+  - Drop unverified 83%/10% directional coverage from claim-ready text.
+  - Keep glass as motivation or future sensor-specific validation. Renderer-masked
+    obstacles do not demonstrate physical transparent-object sensing performance.
+
+8. REVISED DELIVERABLE ORDER FOR CLAUDE
+
+First finish PAPER.md as the author's self-contained writing reference. Begin with
+the argument and accessible explanation; put the full experiment inventory, exact
+configuration tables, source paths, glossary, and pending work in appendices.
+
+For every substantive result include: question, setup, observation, interpretation,
+and evidence path. Mark hypotheses separately. Explanations should be readable prose;
+reserve exact experiment tags and filenames for tables and source notes.
+
+Then synchronize README summaries and the CURSOR log. Preserve archived JSONs,
+configuration files, split/encoder metadata, evaluator versions, and figure provenance.
+The six new summaries are already present under reports/eval_summaries in the current
+workspace; verify them rather than copying over existing files.
+
+Do not turn the writing reference into a deadline-driven sequence of new experiments.
+Keep proposed inference-dependence/visibility studies in an explicit future-work box
+until the author supplies completed results.
+
+9. PRINCIPAL LOCAL SOURCES
+
+Claude plan:
+  /home/jaydv/.claude/plans/i-am-working-on-groovy-corbato.md
+Current draft:
+  PAPER.md
+Visibility implementation:
+  submodules/molmospaces/molmo_spaces/env/env.py:352
+  submodules/molmospaces/molmo_spaces/tasks/enclosure_reach.py:1175
+Archived visibility results:
+  reports/eval_summaries/{vanilla,pact_raw}_v2_{free,visible,invisible}.json
+Historical hallway:
+  reports/eval_summaries/place_corridor_vanilla_s0_n50.json
+  reports/eval_summaries/place_corridor_raw_s0_n50.json
+  reports/eval_summaries/place_corridor_readout_s0_n50_fast.json
+September hallway and spaced bench:
+  reports/eval_summaries/pact_place_corridor_v5_*_bs8_cs50_lr1e-5_e2000.json
+  reports/eval_summaries/pact_place_corridor_v107_spaced_*_bs8_cs50_lr1e-5_e2000.json
+Encoder and training:
+  encoders/surface_geometry.py:397
+  encoders/train.py:115
+  encoders/train.py:477
+  experiments_output/default/surface_encoder_train/pact_place_corridor_v5/config.json
+  experiments_output/default/surface_encoder_train/pact_place_corridor_v5/test_metrics.json
+  submodules/act/imitate_episodes.py:44
+  submodules/act/utils.py:185
+Dataset metadata:
+  act_style_data/pact_place_corridor_v5/episode_*.hdf5
+  act_style_data/pact_place_corridor/data/v107_spaced/accepted/convert_meta.json
+  act_style_data/mixed_v1011_clutter_geometry/pact_place_corridor_v10_11c_100/convert_meta.json
+Inference:
+  eval_act.py:781
+Figures:
+  images/first_page/figure_notes.txt
+  images/first_page/caption.txt
+  images/link6_reconstruction/manifest.json
+  images/link6_reconstruction/caption.txt
