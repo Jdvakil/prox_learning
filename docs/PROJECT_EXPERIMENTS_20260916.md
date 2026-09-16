@@ -8,6 +8,29 @@
 
 **Reading guide:** §7 contains policy experiments and their results; §4 contains sensor/representation measurements; Appendix A contains the environment-development experiments; Appendix B records configurations and naming; Appendix C explains statistics; Appendix D indexes evidence and existing figures; Appendix E defines terms; Appendix F lists work without recovered results.
 
+**Branch covered explicitly:** `experiment/pact-valid-ablation-followup-v1`, including the scientific record through `e0d6a40`. The branch's ablations are completed experiments, not just proposed controls. The sections below now give their hypotheses, interventions, sample sizes, results, uncertainty, and limitations rather than relying on a directory listing.
+
+<a id="branch-ablations"></a>
+### Where to find the ablation experiments from this branch
+
+| Experiment / intervention | What was actually compared | Where the full results appear |
+|---|---|---|
+| Original 3-D proximity removal | ACT, learned 3-D PACT, and the same PACT with zero tokens; 960 rollouts | [P01](#p01-results) |
+| Frozen 32-D front-end and zero-input screen | ACT, 32-D PACT, and zeroed PACT; 120 rollouts, followed by a training-support audit | [P02 and S13](#p02-results) |
+| `PACT_PERMUTED`, first valid-input follow-up | Same seed-3101 checkpoint, live versus unrelated real proximity frames; 40 matched pairs | [P03](#p03-results) |
+| `PACT_PERMUTED`, independent training seed | Three arms on the same 40 instances at seeds 3101 and 3102; 240 records including reused seed-3101 results | [P04](#p04-results) |
+| `PACT_PERMUTED` and `PACT_ZERO`, larger contact study | Four arms, three seeds, 100 shared instances; 1,200 rollouts | [P05](#p05-results) |
+| Geometry × live/unrelated proximity | Fixed 32-D PACT under C0, C2, and Z_093; 720 rollouts | [P07](#p07-results) |
+| Blur × live/unrelated proximity | ACT, live PACT, and `PACT_PERMUTED` at four inference-time blur levels; 900 rollouts | [P08](#p08-results) |
+| RGB removal × live/unrelated proximity | Sighted and constant-image versions of three arms; 450 rollouts | [P09](#p09-results) |
+| Placement action-chunk size and `PACT_PERMUTED` | Chunks 1, 25, and 100; the chunk-100 test includes the same-checkpoint unrelated-frame control | [L01–L03](#placement-chunk-ablations) |
+| Frozen 32-D versus finetuned 128-D pathway | Complete-method comparison with ACT, three seeds, 450 rollouts | [L09/L11](#readout-method-comparison); several pathway changes, not unfreezing alone |
+| Equal-update training/sampling control | Original, uniform continuation, and acquisition-window continuation for both ACT and PACT; 216 Stage-B comparisons | [L10](#training-sampler-ablation) |
+| Temporal-history and learned proximity-conditioning ablations | `CURRENT_FRAME_ONLY`, `FULL_CAUSAL`, `QPOS_ONLY`, zero-differential control, and privileged reference; nine trained models | [Y15](#parked-reference-ablations); separate Safety-CVAE reference model |
+| Proximity/state interventions in the activity gate | Clear proximity, shuffled state, and mean state on the same historical false positives | [Y17–Y21](#activity-gate-ablations); offline diagnostics and calibration |
+
+The first valid-input follow-up, independent-seed replication, and larger contact study are present in branch commits [0e6e985](https://github.com/Jdvakil/prox_learning/commit/0e6e98574fcf9b7153dbfe063441fbb8aadc5f10), [dc1be08](https://github.com/Jdvakil/prox_learning/commit/dc1be08c96c6d734a73709ab5aeee8e1daef5a87), and [d110ad8](https://github.com/Jdvakil/prox_learning/commit/d110ad8c59fa7c12597191503b6416777903fee1), respectively. Their `PACT_PERMUTED` results use the **older frozen 32-D encoder**. They must not be relabeled as ablations of the later jointly finetuned 128-D encoder.
+
 ---
 
 ## 1. The story in one page
@@ -82,9 +105,23 @@ The record includes open-table pick-and-place, a two-level fridge, obstacle pick
 
 ### 5.2 Representation and modality interventions
 
-The recovered local `PACT_PERMUTED` control supplies **whole real 40×32 frames from unrelated training episodes/timesteps**. It destroys correspondence with the current scene and temporal coherence. Despite its name, it is **not an isolated permutation of sensor identities**. The live and intervention arms use the same trained policy.
+**What `PACT_PERMUTED` actually does.** The intervention replaces the live proximity representation at every control step with a **complete, previously recorded 40-sensor × 32-D embedding frame** from an unrelated training timestep. RGB, robot state, action decoding, and the policy checkpoint remain the same. The policy still receives 40 proximity tokens in their original sensor order, and all 32 feature coordinates of each token remain intact. It therefore tests dependence on proximity that corresponds to the current scene; it does not test a smaller skin or shuffle sensor identities.
 
-`PACT_ZERO` is retained as a failure probe. For the frozen 32-D model it is not a validated in-distribution null measurement. The local frozen-versus-finetuned comparison changes feature dimensionality and pooling as well as encoder optimization; it cannot isolate the causal effect of unfreezing alone.
+For the initial follow-up, [the token-plan builder](../scripts/build_pact_permuted_token_plan.py), specifically `select_sources()` and `main()`, uses the frozen **199-episode training partition**, containing **31,176 complete frames / 1,247,040 sensor embeddings**. With seed `2026073105`, it chooses 900 distinct source frames per rollout without replacement within that rollout. Adjacent source frames must come from different episodes. Frames may recur across different rollouts because 40 × 900 exceeds the available frame population. The saved float32 tensor has shape `(40, 900, 40, 32)`; the builder verifies shape, finite values, and hashes before use.
+
+In [`PactPermutedInferencePolicy`](../submodules/act/eval_pact_valid_ablation_row.py), `prepare_model()` loads the ordinary PACT weights, while `_surface_positions()` ignores the live raw sensor array and returns the selected frozen frame for that control step. `load_token_plan()` verifies the token-plan and tensor hashes. Recorded flags identify the pathway as consumed, nonzeroed, and unaligned with live geometry. The larger contact study uses [`load_contact_token_plan()`](../submodules/act/eval_pact_contact_endpoint_row.py) with the same intervention semantics and its own larger frozen plan. The placement follow-up has a separate source dataset and plan; its result is recorded under L03.
+
+| Intervention | Preserved | Changed / removed | Appropriate interpretation |
+|---|---|---|---|
+| Live proximity | Scene-corresponding sensor frames and normal policy inputs | Nothing | Full method |
+| `PACT_PERMUTED` | Same checkpoint and token dimensions; real whole-frame embeddings; within-frame sensor order and cross-sensor relationships | Correspondence with current RGB, robot state, and geometry; temporal coherence between supplied frames | Sensitivity to unrelated, temporally incoherent measurements |
+| `PACT_ZERO` | Same checkpoint and pathway dimensions | Every proximity feature set to zero | For 32-D PACT, an out-of-distribution input-failure probe |
+| Constant RGB / blind | Proximity, robot state, scene, controller, and checkpoints | Wrist image replaced by the ImageNet mean | Complete visual-input removal at inference |
+| Test-time blur | Same scene and checkpoints | RGB fidelity at the specified sigma | Robustness to an inference-time visual distribution shift |
+
+**Limits of the word “distribution-matched.”** It describes empirical support of individual proximity frames, not the joint distribution of RGB, state, proximity, and history. A sequence of real but unrelated frames can still be a strong mismatch and an active distractor. A live-versus-permuted difference supports the utility of scene-corresponding measurements under this intervention, but cannot separately identify sensor-ID alignment, history, latency, or a pure capacity effect. Similarly, `PACT_PERMUTED − ACT` mixes architecture/training differences with possible harm from wrong sensor information.
+
+The zero-support audit in P02/S13 is essential: zero is common for old invalid 3-D sensor tokens but never occurs in the new 32-D training embeddings. Even in the 3-D case, per-token support alone does not prove that simultaneously zeroing all 40 sensors is a typical whole observation. The latest frozen-versus-finetuned comparison also changes feature width, readout, and pooling; it cannot isolate the causal effect of unfreezing alone.
 
 ### 5.3 Controller and history
 
@@ -225,119 +262,468 @@ The adequacy screen has **58/64 clean expert demonstrations, 59/64 ordinary expe
 
 The original 960-row confirmatory launch completed one scientific row; eight more crossed initial-observation acceptance but lost their processes before results, and 951 never started. This is **incomplete**, not a null. R2 used a separately frozen fresh-instance schedule. [Interruption ledger](PACT_CONFIRMATORY_INTERRUPTION_AND_R2_RECOVERY.md).
 
-#### P01 — Original learned 3-D representation, confirmatory R2
+<a id="p01-results"></a>
+#### P01 — Original learned 3-D representation and zero-input ablation, confirmatory R2
 
-**Setup:** 160 shared instances × two training seeds, 320 rollouts per arm. This is pickup/extraction, not full placement.
+**Question:** does the original learned surface-coordinate representation improve collision-free pickup, and does the trained policy depend on its proximity input?
 
-| Method | Task success | Strict success |
-|---|---:|---:|
-| ACT | 177/320 (55.3%) | 170/320 (53.1%) |
-| 3-D PACT | 169/320 (52.8%) | 159/320 (49.7%) |
-| PACT_ZERO | 169/320 (52.8%) | 160/320 (50.0%) |
+**Design:** 160 held-out physical instances × seeds 3101/3102 × ACT, PACT, and `PACT_ZERO` = **960 completed rollouts**, with 320 per arm. This is pickup/extraction, not full placement. ACT and PACT were trained separately on the matched data; `PACT_ZERO` uses each seed's PACT checkpoint with all 40 tokens zeroed during inference. Checkpoints were selected by validation loss. ACT best epochs were 1,904/1,829; PACT best epochs were 1,968/1,793. The frozen 819,172-parameter encoder had mean/median held-out surface error 3.26/1.88 cm and 51.3% of valid targets within 2 cm.
 
-PACT−ACT strict gap is −3.4 points, instance-bootstrap 95% CI [−8.4, +1.6]. **Completed negative/inconclusive comparison.** The interrupted earlier confirmatory execution and its recovery are not an extra successful replication. [Final decision](PACT_VS_ACT_FINAL_DECISION.md), [interruption/recovery](PACT_CONFIRMATORY_INTERRUPTION_AND_R2_RECOVERY.md).
+| Method | Task success | Strict success | Any hazard contact | Other-environment contact | Target contact |
+|---|---:|---:|---:|---:|---:|
+| ACT | 177/320 (55.3%) | 170/320 (53.1%) | 67/320 (20.9%) | 1/320 | 275/320 |
+| 3-D PACT | 169/320 (52.8%) | 159/320 (49.7%) | 69/320 (21.6%) | 2/320 | 280/320 |
+| PACT_ZERO | 169/320 (52.8%) | 160/320 (50.0%) | 71/320 (22.2%) | 2/320 | 278/320 |
 
-#### P02–P04 — Frozen 32-D screen, valid ablation, and second seed
-
-| ID / stage | ACT task / strict | Live PACT task / strict | Unrelated-frame control task / strict | Zeroed PACT |
-|---|---:|---:|---:|---:|
-| P02: seed 3101 screen, n=40 | 19 / 19 | 29 / 29 | Added in P03 | 2 task / 1 strict |
-| P03: valid intervention, same seed/scenes | Reuses P02 | Reuses P02 | 24 / 24 | Not the validated control |
-| P04: seed 3102 replication, n=40 | 24 / 24 | 22 / 21 | 15 / 15 | Not required |
-
-All counts are out of 40. P03 adds a new control arm, not 40 new live PACT episodes. Its live-control strict gap is +12.5 points, paired CI [−2.5, +27.5], McNemar p=0.2266. Seed-3102 live-control gap is +15 points, CI [2.5, 27.5], exact McNemar p≈0.0703; the different inferential procedures need not agree at the threshold.
-
-Across the two seeds, live-control strict gap is +13.75 points, clustered CI [3.75, 23.75]. PACT−ACT is +8.75 points, CI [−5.0, 22.5]. **The large screen advantage over ACT did not replicate.** Zero-input collapse is not by itself a valid physical-information claim, as S13 establishes.
-
-Evidence: [screen](PACT_FRONTEND_SCREEN_DECISION.md), [valid ablation](PACT_VALID_ABLATION_DECISION.md), [replication](PACT_SEED_REPLICATION_DECISION.md).
-
-#### P05 — Larger matched contact-endpoint study
-
-**Setup:** frozen 32-D PACT; 100 shared instances × three training seeds × four arms = 1,200 rollouts. The same-checkpoint unrelated-frame intervention preserves real-frame values while breaking correspondence.
-
-| Method | Task success | Strict success | Any hazard contact | Mean hazard-contact samples |
-|---|---:|---:|---:|---:|
-| ACT | 169/300 (56.3%) | 159/300 (53.0%) | 67/300 (22.3%) | 3,023.4 |
-| Live PACT | 183/300 (61.0%) | 171/300 (57.0%) | 42/300 (14.0%) | 1,678.2 |
-| Unrelated-frame PACT | 171/300 (57.0%) | 159/300 (53.0%) | 70/300 (23.3%) | 3,658.0 |
-| Zeroed PACT | 24/300 (8.0%) | 20/300 (6.7%) | 107/300 (35.7%) | 3,912.6 |
-
-Live−control hazard incidence: **−9.33 points**, CI [−14.33, −5.0]. Mean sample difference: **−1,979.8**, CI [−3,152.9, −965.2], a 54.1% point-estimate reduction. Live−ACT task gain remains uncertain: +4.7 points [−2.3, +11.7]; strict gain +4.0 [−2.3, +10.3]. The live-control mean-contact gap favors live in all three seeds.
-
-This supports lower contact burden from live scene-corresponding proximity for this frozen 32-D model. It does not isolate sensor identity, temporal freshness, or finetuning. [Decision](PACT_CONTACT_ENDPOINT_DECISION.md), [analysis](../diagnostics_output/pact_contact_endpoint/analysis.json).
-
-#### P06 — Contact-tail and target-engagement reanalyses
-
-Reuses P05; no new trials.
-
-| Analysis | ACT | Live PACT | Unrelated-frame control |
+| Strict-success comparison | Difference | Paired-instance bootstrap 95% CI | Reported two-sided Fisher p |
 |---|---:|---:|---:|
-| Episodes exceeding 500 hazard samples | 59/300 | 33/300 | 58/300 |
+| Live PACT − ACT | −3.44 pp | [−8.4, +1.6] pp | 0.4290 |
+| Live PACT − PACT_ZERO | −0.31 pp | [−1.6, +0.9] pp | 1.0000 |
+
+Hazard contact-pair entries total **1,029,374 / 1,191,065 / 1,196,616** for ACT/live/zero respectively. These count contact pairs at audit samples, not distinct collision events. The failure taxonomy records target-contact-without-success in **81 / 88 / 85** rollouts. Saved pooled Wilson intervals for strict success are [47.7%, 58.5%], [44.2%, 55.1%], and [44.6%, 55.4%]; because the same 160 instances occur at both seeds, the paired-instance intervals are the more relevant comparison uncertainty.
+
+**Finding:** the complete 3-D method did not improve success or contact, and zeroing its features barely changed the measured outcome. This is a completed negative result, recorded as `PACT_NO_CONFIRMED_BENEFIT`, not a missing experiment. It motivated investigation of a richer representation. It does not prove that any proximity representation is useless; nor does a near-zero contrast establish equivalence beyond the resolution of this design.
+
+**Evidence:** [final decision, checkpoint hashes, and contact taxonomy](PACT_VS_ACT_FINAL_DECISION.md), [R2 recovery and earlier interruption](PACT_CONFIRMATORY_INTERRUPTION_AND_R2_RECOVERY.md). The interrupted first execution is not another completed 960-rollout study.
+
+<a id="p02-results"></a>
+#### P02 — Frozen 32-D front-end screen and the invalid zero-input ablation
+
+**Question:** does a richer per-sensor learned embedding produce a policy that can use proximity more effectively than the original 3-D representation?
+
+**Design:** seed 3101; 40 matched instances per arm; **120 rollouts** of ACT, live PACT, and `PACT_ZERO`. PACT uses the frozen 837,700-parameter 32-D encoder, checkpoint hash `6fd2dd037e3236b5b6bf7fce8cb2709ead0cf52adcbbe9cbad1061efc2fe3206`. PACT's selected checkpoint is epoch 1,796, validation loss 0.085737, hash `9db867f5b2cf059f5fad56f2eebd2e0e27024bb511ee0d526ea50692c4cf1457`. Encoder validation gives mean/median surface error 3.20/1.69 cm, 52.9% within 2 cm, and validity precision/recall 99.4%/99.9%. The encoder remains frozen during policy training and evaluation.
+
+| Arm | Task success | Strict success, Wilson 95% CI | Any hazard contact | Target contact | Other-environment contact |
+|---|---:|---:|---:|---:|---:|
+| ACT | 19/40 (47.5%) | 19/40 (47.5%); [32.9, 62.5]% | 6/40 (15.0%) | 35/40 | 0/40 |
+| Live PACT | 29/40 (72.5%) | 29/40 (72.5%); [57.2, 83.9]% | 2/40 (5.0%) | 37/40 | 0/40 |
+| PACT_ZERO | 2/40 (5.0%) | 1/40 (2.5%); [0.4, 12.9]% | 21/40 (52.5%) | 27/40 | 0/40 |
+
+The original decision-bearing live-minus-zero strict-success contrast was **+70.0 pp**, paired bootstrap 95% CI **[+55.0, +82.5] pp**, with 28 live-only successes and zero zero-only successes; exact McNemar p = **7.451 × 10⁻⁹**. The live-minus-ACT secondary contrast was **+25.0 pp**, paired CI **[+7.5, +42.5] pp**. The original report gives an unpaired Fisher p = 0.0392; P04's paired reanalysis of these same scenes gives McNemar p = 0.01294. These are different tests on reused data, not two replications.
+
+| Arm | Target contact-pair entries | Hazard contact-pair entries | Failure taxonomy: strict / hazard / target-touch-without-success / failure-after-close |
+|---|---:|---:|---|
+| ACT | 7,573,898 | 163,549 | 19 / 6 / 15 / 0 |
+| Live PACT | 10,622,992 | 135,165 | 29 / 2 / 8 / 1 |
+| PACT_ZERO | 637,970 | 215,196 | 1 / 21 / 13 / 5 |
+
+**S13 — Why the zero result was subsequently disqualified as modality evidence.** The audit compared the complete 199-episode training partition in both representations:
+
+| Training-support measurement | Original 3-D tokens | New 32-D embeddings |
+|---|---:|---:|
+| Sensor tokens examined | 1,247,040 | 1,247,040 |
+| Exactly zero vectors | 1,184,764 (95.0%) | 0 (0.0%) |
+| Vectors with norm below 0.1 | 1,186,598 | 0 |
+| Norm mean / median / minimum | 0.0090 / 0 / 0 | 6.3123 / 6.3182 / 6.0157 |
+| Zero's coordinate-wise standardized distance: median / maximum | 0.13σ / 0.22σ | 2.20σ / 5.89σ |
+| Coordinates where zero is more than 3σ from the mean | 0/3 | 10/32 |
+
+For the new embedding, an all-zero observation is far outside the observed norm range. The enormous live-minus-zero gap measures the response to an unsupported input, not a calibrated removal of physical information. The audit also found all **255** old/new converted episodes identical in length, action, wrist RGB, qpos, and qvel; **199/56** train/validation assignments and normalization statistics match exactly. This ruled out a different non-proximity training dataset as a confound in reusing ACT.
+
+**Finding:** `FRONTEND_SCREEN_SIGNAL_PRESENT` remains the historical output of the original rule, with an explicit validity amendment. The promising ACT comparison required replication, while the zero-input primary required a replacement instrument. P03 supplies that replacement; it does not inherit the +70-point claim. All 120 records reconciled; 118 preselected payloads were losslessly compacted, with the first and last rows retained unpacked.
+
+**Evidence:** [screen decision and amendment](PACT_FRONTEND_SCREEN_DECISION.md), [data equality and zero-support audit](PACT_ACT_DATA_EQUIVALENCE_AND_ZERO_SUPPORT.md), [machine-readable audit](../diagnostics_output/pact_valid_ablation/data_and_zero_support_audit.json).
+
+<a id="p03-results"></a>
+#### P03 — `PACT_PERMUTED`: first scene-correspondence ablation
+
+**Question:** after replacing the invalid zero-input control with real sensor embeddings, does the *same trained policy* perform better with proximity that corresponds to its current environment?
+
+**Design:** the seed-3101 PACT checkpoint and its 40 completed live rollouts from P02 are held fixed. The only new execution is **40 `PACT_PERMUTED` rollouts** on those same instances. At each of 900 control steps, the intervention supplies an unrelated complete training frame, as specified in §5.2. Thus 80 live/control observations enter the paired analysis, but only 40 new rollouts were collected. Camera/state input, normalization, policy weights, sensor order, action interpretation, and task geometry are preserved. There is no separately trained “permuted model.”
+
+The source's original preregistration says 512 token frames. The smoke exposed exhaustion at step 512 in a 900-step rollout **before any terminal scientific result existed**. The documented pre-outcome amendment froze a new 900-frame plan and output root, with the seed, checkpoint, instances, metrics, and thresholds unchanged. The replacement smoke passed on attempt 0. The executed experiment is the amended 900-step version, not the stale 512-frame text.
+
+| Endpoint | Live PACT | PACT_PERMUTED |
+|---|---:|---:|
+| Ordinary task success | 29/40 (72.5%) | 24/40 (60.0%) |
+| Collision-free task success | 29/40 (72.5%) | 24/40 (60.0%) |
+| Strict-success Wilson 95% interval | [57.2%, 83.9%] | [44.6%, 73.7%] |
+| Any hazard contact | 2/40 (5.0%) | 5/40 (12.5%) |
+| Any target contact | 37/40 (92.5%) | 36/40 (90.0%) |
+| Other-environment contact | 0/40 | 0/40 |
+| Hazard contact-pair entries, total | 135,165 | 137,282 |
+| Target contact-pair entries, total | 10,622,992 | 8,994,813 |
+
+The matched strict-success table is:
+
+| Same physical instance | PACT_PERMUTED succeeds | PACT_PERMUTED fails | Total |
+|---|---:|---:|---:|
+| Live PACT succeeds | 21 | 8 | 29 |
+| Live PACT fails | 3 | 8 | 11 |
+| Total | 24 | 16 | 40 |
+
+The effect is **+12.5 pp**, paired whole-instance bootstrap 95% CI **[−2.5, +27.5] pp**, using 20,000 replicates. Exact two-sided McNemar p = **0.2265625**, based on the 8 versus 3 discordant pairs. Failure-taxonomy counts for live/control are strict success **29/24**, hazard contact **2/5**, target-touch-without-success **8/10**, and failure-after-close **1/1**.
+
+**Predeclared decision and result:** a positive signal required at least +10 pp **and** a CI lower bound above zero. At least +5 pp without satisfying that stronger rule was a weak signal. The result is **`VALID_ABLATION_WEAK_SIGNAL`**, because the interval crosses zero. The study did not pass its own stronger evidence gate. The small change in total contact-pair entries, despite fewer hazard-contact episodes, also warns against treating incidence and contact duration/burden as interchangeable.
+
+**What this establishes:** a suggestive within-checkpoint advantage for live scene-corresponding proximity, with substantial uncertainty. It does not establish a sensor-ID effect or identify whether spatial mismatch versus temporal incoherence causes the difference. The later larger contact study addresses precision on contact outcomes. All 40 new scientific results and 40 driver records reconciled; 38 payloads were losslessly compacted and rows 0/39 remain unpacked.
+
+**Evidence:** [preregistration](PACT_VALID_ABLATION_PREREGISTRATION.md), [horizon amendment](PACT_VALID_ABLATION_HORIZON_AMENDMENT.md), [decision](PACT_VALID_ABLATION_DECISION.md), [analysis](../diagnostics_output/pact_valid_ablation/analysis.json), [token-plan builder](../scripts/build_pact_permuted_token_plan.py).
+
+<a id="p04-results"></a>
+#### P04 — `PACT_PERMUTED`: independent-seed replication of the screen
+
+**Question:** is the seed-3101 advantage over ACT reproducible under a second independently trained PACT checkpoint, and is live proximity still better than unrelated frames?
+
+**Design:** seeds 3101 and 3102, ACT/live PACT/`PACT_PERMUTED`, and the **same 40 physical instances at both seeds**. The 120 seed-3101 records are reused from P02/P03. Seed 3102 adds 120 new rollout records; its ACT checkpoint can be reused because the equality audit confirms the matched training payload. PACT is trained at seed 3102 with the same frozen 32-D encoder and recipe. The same control-frame plan is used across corresponding instances. `PACT_ZERO` is excluded from the evidence-bearing replication.
+
+| Training seed | Arm | Task success | Strict success | Hazard-contact episodes | Target-contact episodes |
+|---|---|---:|---:|---:|---:|
+| 3101 | ACT | 19/40 (47.5%) | 19/40 (47.5%) | 6/40 | 35/40 |
+| 3101 | Live PACT | 29/40 (72.5%) | 29/40 (72.5%) | 2/40 | 37/40 |
+| 3101 | PACT_PERMUTED | 24/40 (60.0%) | 24/40 (60.0%) | 5/40 | 36/40 |
+| 3102 | ACT | 24/40 (60.0%) | 24/40 (60.0%) | 6/40 | 37/40 |
+| 3102 | Live PACT | 22/40 (55.0%) | 21/40 (52.5%) | 4/40 | 38/40 |
+| 3102 | PACT_PERMUTED | 15/40 (37.5%) | 15/40 (37.5%) | 6/40 | 33/40 |
+
+No arm has other-environment contact in this replication matrix. Seed-3102 strict-success Wilson intervals are ACT **[44.6%, 73.7%]**, live **[37.5%, 67.1%]**, and permuted **[24.2%, 53.0%]**. Its hazard contact-pair totals are ACT **94,565**, live **58,824**, and permuted **116,597**.
+
+| Seed | Strict-success contrast | Difference | Paired 95% CI | First-only / second-only successes | Exact McNemar p |
+|---|---|---:|---:|---:|---:|
+| 3101 | Live − permuted | +12.5 pp | [−2.5, +27.5] pp | 8 / 3 | 0.2266 |
+| 3101 | Permuted − ACT | +12.5 pp | [−7.5, +32.5] pp | 11 / 6 | 0.3323 |
+| 3101 | Live − ACT | +25.0 pp | [+7.5, +42.5] pp | 12 / 2 | 0.01294 |
+| 3102 | Live − permuted | +15.0 pp | [+2.5, +27.5] pp | 7 / 1 | 0.07031 |
+| 3102 | Permuted − ACT | −22.5 pp | [−40.0, −5.0] pp | 3 / 12 | 0.03516 |
+| 3102 | Live − ACT | −7.5 pp | [−25.0, +12.5] pp | 6 / 9 | 0.6072 |
+
+The seed-3102 live-versus-permuted bootstrap interval and exact test differ at the conventional 0.05 threshold; both are retained rather than selecting the more favorable procedure.
+
+| Pooled arm / contrast | Task successes | Strict successes or difference | Whole-instance clustered 95% CI for difference |
+|---|---:|---:|---:|
+| ACT | 43/80 (53.75%) | 43/80 (53.75%) | — |
+| Live PACT | 51/80 (63.75%) | 50/80 (62.50%) | — |
+| PACT_PERMUTED | 39/80 (48.75%) | 39/80 (48.75%) | — |
+| Live − permuted | — | +13.75 pp | [+3.75, +23.75] pp |
+| Permuted − ACT | — | −5.00 pp | [−20.0, +10.0] pp |
+| Live − ACT | — | +8.75 pp | [−5.0, +22.5] pp |
+
+Pooled resampling moves both seed outcomes for an instance together: this is **40 distinct environments**, not 80 independent environments. Uncertainty is conditional on these two trained checkpoints.
+
+**Finding:** the live-versus-permuted direction repeats, but the large live-versus-ACT task advantage does not. Seed 3102 reverses the ACT comparison from +25 to −7.5 pp. The predeclared replication decision is **`SEED_REPLICATION_FAILED`**. Summarizing only the positive pooled modality result would hide the failed ACT replication. These results motivated the larger, contact-focused study below.
+
+**Evidence:** [replication decision](PACT_SEED_REPLICATION_DECISION.md), [preregistration](PACT_SEED_REPLICATION_PREREGISTRATION.md), [complete analysis](../diagnostics_output/pact_seed_replication/analysis.json).
+
+<a id="p05-results"></a>
+#### P05 — `PACT_PERMUTED` and zero-input ablations in the 1,200-rollout contact study
+
+**Question:** does live, scene-corresponding proximity reduce hazardous contact compared with realistic but unrelated sensor inputs, and does that benefit coexist with task progress?
+
+**Design:** the unchanged `pact_collision_corridor_v1` pickup environment; frozen 32-D encoder; **100 fresh physical instances × three training seeds × four arms = 1,200 rollouts**. Every instance is evaluated under ACT, live PACT, `PACT_PERMUTED`, and `PACT_ZERO` at seeds 3101–3103. The existing 3101/3102 models are retained; seed 3103 adds independently initialized ACT/PACT using the same 2,000-epoch recipe. Permuted and zero arms use their seed's ordinary PACT weights; neither is trained separately. The scientific unit is a matched instance, observed at three trained seeds, not an individual physics sample.
+
+The co-primary endpoints are strict success and the number of physics audit samples containing hazard-bar contact. Strict success requires task success and zero hazard-bar/other-environment contact entries. Intended target contacts are allowed. The decision-bearing information contrast is **live PACT − PACT_PERMUTED on hazard-contact samples**. `PACT_ZERO` remains an out-of-distribution failure diagnostic. Whole-instance bootstrap resampling uses 20,000 replicates, moving every arm and seed for a sampled instance together.
+
+**Results by training seed.** Each row contains 100 rollouts; every arm's median hazard-contact count is zero.
+
+| Seed | Arm | Task success | Strict success | Any hazard contact | Mean hazard-contact samples per rollout |
+|---|---|---:|---:|---:|---:|
+| 3101 | ACT | 55/100 | 52/100 | 23/100 | 3,885.81 |
+| 3101 | Live PACT | 62/100 | 60/100 | 9/100 | 380.53 |
+| 3101 | PACT_PERMUTED | 59/100 | 57/100 | 18/100 | 2,936.89 |
+| 3101 | PACT_ZERO | 4/100 | 3/100 | 37/100 | 3,970.39 |
+| 3102 | ACT | 53/100 | 50/100 | 21/100 | 1,763.39 |
+| 3102 | Live PACT | 58/100 | 51/100 | 20/100 | 3,062.77 |
+| 3102 | PACT_PERMUTED | 59/100 | 52/100 | 30/100 | 4,729.89 |
+| 3102 | PACT_ZERO | 11/100 | 9/100 | 35/100 | 3,989.20 |
+| 3103 | ACT | 61/100 | 57/100 | 23/100 | 3,421.13 |
+| 3103 | Live PACT | 63/100 | 60/100 | 13/100 | 1,591.43 |
+| 3103 | PACT_PERMUTED | 53/100 | 50/100 | 22/100 | 3,307.24 |
+| 3103 | PACT_ZERO | 9/100 | 8/100 | 35/100 | 3,778.28 |
+
+| Seed | Live − permuted mean hazard samples, 95% paired-instance CI | Live − ACT strict success, 95% paired-instance CI |
+|---|---:|---:|
+| 3101 | −2,556.4 [−4,121.9, −1,184.1] | +8.0 pp [−2.0, +18.0] |
+| 3102 | −1,667.1 [−2,854.8, −702.7] | +1.0 pp [−10.0, +12.0] |
+| 3103 | −1,715.8 [−3,070.0, −552.1] | +3.0 pp [−5.0, +11.0] |
+
+This separates two findings that a pooled headline would obscure. Live PACT has fewer mean hazard-contact samples than its permuted version in **all three seeds**, with each interval below zero. Against ACT, however, live PACT has **more** mean hazard-contact samples at seed 3102, despite marginally fewer contact episodes. Task/strict point estimates favor PACT over ACT at every seed, but their individual strict-success intervals all cross zero.
+
+**Pooled outcomes.** Each arm has 300 rollouts over the same 100 physical instances. Strict-success and mean-contact intervals below are whole-instance clustered bootstrap intervals, not 300-independent-trial intervals.
+
+| Method | Task success | Strict success, clustered 95% CI | Any hazard contact | Mean hazard samples, clustered 95% CI |
+|---|---:|---:|---:|---:|
+| ACT | 169/300 (56.3%) | 159/300 (53.0%); [45.3, 60.7]% | 67/300 (22.3%) | 3,023.4; [1,854.8, 4,348.9] |
+| Live PACT | 183/300 (61.0%) | 171/300 (57.0%); [48.7, 65.0]% | 42/300 (14.0%) | 1,678.2; [954.3, 2,497.5] |
+| PACT_PERMUTED | 171/300 (57.0%) | 159/300 (53.0%); [45.0, 61.0]% | 70/300 (23.3%) | 3,658.0; [2,235.8, 5,268.9] |
+| PACT_ZERO | 24/300 (8.0%) | 20/300 (6.7%); [4.0, 9.3]% | 107/300 (35.7%) | 3,912.6; [2,586.2, 5,391.9] |
+
+**Primary and important secondary contrasts.** Differences are first arm minus second; negative values favor the first arm for contacts, positive values for success. Intervals are paired and clustered by physical instance.
+
+| Contrast | Endpoint | Difference | 95% CI |
+|---|---|---:|---:|
+| Live − permuted | Mean hazard-contact samples | **−1,979.8** | **[−3,152.9, −965.2]** |
+| Live − permuted | Any hazard-contact rate | **−9.33 pp** | **[−14.33, −5.00] pp** |
+| Live − permuted | Strict success | +4.0 pp | [0.0, +8.0] pp |
+| Live − permuted | Task success | +4.0 pp | [−0.7, +8.7] pp |
+| Live − permuted | Mean hazard contact-pair entries | −3,230.6 | [−5,573, −1,354] |
+| Live − permuted | Mean rollout maximum hazard penetration | −0.340 mm | [−0.546, −0.159] mm |
+| Live − ACT | Mean hazard-contact samples | **−1,345.2** | **[−2,521, −279]** |
+| Live − ACT | Any hazard-contact rate | **−8.33 pp** | **[−13.33, −3.7] pp** |
+| Live − ACT | Strict success | +4.0 pp | [−2.3, +10.3] pp |
+| Live − ACT | Task success | +4.7 pp | [−2.3, +11.7] pp |
+| Live − ACT | Mean hazard contact-pair entries | −1,085.2 | [−2,404, +181.9] |
+| Live − ACT | Mean rollout maximum hazard penetration | −0.294 mm | [−0.486, −0.127] mm |
+| Permuted − ACT | Mean hazard-contact samples | +634.6 | [−234.1, +1,570] |
+| Permuted − ACT | Any hazard-contact rate | +1.0 pp | [−2.7, +4.7] pp |
+| Permuted − ACT | Strict success | 0.0 pp | [−6.0, +6.3] pp |
+| Permuted − ACT | Task success | +0.7 pp | [−5.7, +7.0] pp |
+| Live − zero, OOD diagnostic | Mean hazard-contact samples | −2,234.4 | [−3,397, −1,240] |
+| Live − zero, OOD diagnostic | Any hazard-contact rate | −21.7 pp | [−28.3, −15.3] pp |
+| Live − zero, OOD diagnostic | Strict success | +50.3 pp | [+42.3, +58.3] pp |
+
+Relative to the permuted control, live proximity has **54.1% fewer mean hazard-contact samples** and **40.0% fewer hazard-contact episodes**. Relative to ACT, the corresponding reductions are **44.5%** and **37.3%**. These are point estimates; the difference intervals above carry the uncertainty. The strict-success interval against permuted reaches zero and the interval against ACT crosses zero. Neither supports describing the task-success improvement as statistically established.
+
+| Additional pooled contact measurement | ACT | Live PACT | PACT_PERMUTED | PACT_ZERO |
+|---|---:|---:|---:|---:|
+| Mean hazard contact-pair entries per rollout | 3,352.5 | 2,267.3 | 5,498.0 | 4,554.1 |
+| Mean of per-rollout maximum hazard penetration | 0.417 mm | 0.123 mm | 0.463 mm | 0.400 mm |
+| Mean other-environment contact samples per rollout | 2.01 | 2.53 | 0.40 | 2.51 |
+
+Penetration means include zero-contact rollouts. They are not the penetration depth of a typical collision. Other-environment contacts are rare; the principal measured benefit concerns the hazard bar. The original report also supplies Fisher exact p-values, explicitly labeled as cluster-unaware descriptive tests. They do not replace the paired instance bootstrap.
+
+**Predeclared decision:** the result is `CONTACT_REDUCTION_WITH_TASK_BENEFIT`. Its exact rule requires a pooled live-minus-permuted contact interval strictly below zero, a negative mean contact gap in each seed, and *positive point estimates* of live-minus-ACT strict success pooled and in every seed. The label does **not** require a strict-success CI above zero. The defensible reading is established contact reduction under this intervention plus positive but uncertain task-success differences.
+
+**Design and audit qualifications:**
+
+- The original camera-visibility partition put **285/285 eligible recorded episodes** in the vision-disadvantaged subset. The subset analysis was dropped before rollout outcomes; this study does not contain a selective visible-versus-hidden-hazard comparison.
+- The 100-instance allocation used a historical contact-effect power approximation: about 99 instances for the previous contact effect, versus 108 for the previous binary effect. This was a design calculation, not a guarantee of significance.
+- The fixed 1,200-row schedule reconciled. Endpoints and hashes were retained for every row, but most trajectory/video payloads were deleted under an outcome-blind storage rule. Rows 0 and 1199 were selected for full retention. The contact payload is summary-only, which constrains the temporal reanalyses in P06.
+- This is frozen **32-D** PACT. Neither this study nor the decision token establishes a causal benefit of jointly finetuning a 128-D encoder.
+
+**Evidence:** [preregistration with exact decision rules](../configs/pact_contact_endpoint_preregistration_v1.json), [final decision and full contrast family](PACT_CONTACT_ENDPOINT_DECISION.md), [all seed/arm summaries and contrasts](../diagnostics_output/pact_contact_endpoint/analysis.json), [`load_contact_token_plan()` and evaluator](../submodules/act/eval_pact_contact_endpoint_row.py).
+
+#### P06 — Contact-tail, entry, and target-engagement reanalyses
+
+**Question:** is the P05 contact benefit mainly fewer trajectories entering prolonged collision, or faster recovery once contact starts? Does the benefit correspond to useful target engagement?
+
+**Design:** reanalysis of P05's existing 1,200 records; **no new policy trials**. A diagnostic high-contact tail is defined as more than 500 hazard-contact samples. Tail-conditioned quantities describe selected episodes and must not be presented as unconditional randomized comparisons.
+
+| Analysis | ACT | Live PACT | PACT_PERMUTED |
+|---|---:|---:|---:|
+| Episodes with more than 500 hazard samples | 59/300 (19.7%) | 33/300 (11.0%) | 58/300 (19.3%) |
+| Mean hazard samples within this high-contact tail | About 15,363 | About 15,236 | About 18,894 |
 | Hazard contact with no target touch | 34/300 | 3/300 | 30/300 |
-| Fewer than 50 target samples within high-contact tail | 34/59 | 5/33 | 33/58 |
+| Fewer than 50 target samples within the high-contact tail | 34/59 | 5/33 | 33/58 |
+| Tail maximum penetration: median | 0.813 mm | 0.551 mm | 0.893 mm |
+| Tail maximum penetration: mean | 1.997 mm | 0.887 mm | 2.255 mm |
+| Tail maximum penetration: largest observed | 10.850 mm | 8.955 mm | 10.460 mm |
+| Middle 50% of recorded first hazard-contact steps | 47–148 | 142–344 | 54–147 |
 
-All 67 no-target-touch hazard episodes fail. Mean hazard samples **conditional on entering the high-contact tail** are about 15,363 ACT versus 15,236 PACT, so the evidence concerns fewer entries into that regime rather than faster escape. Among both-successful live/control pairs, the mean hazard-sample difference is −0.8 [−19.8, 22.0], not a measurable gain. [Tail analysis](PACT_TAIL_CHARACTERIZATION.md), [engagement analysis](PACT_ABSORBING_FAILURE_CHARACTERIZATION.md), [contact decision](PACT_CONTACT_ENDPOINT_DECISION.md).
+Summing the three seed outcomes within each of the 100 physical instances, live PACT has lower/higher/equal hazard samples than ACT on **24/13/63** instances, and lower/higher/equal samples than permuted on **26/4/70**. The mean summed differences are approximately −4,036 and −5,939 samples respectively; both medians are zero. These sparse, heavy-tailed outcomes explain why means and medians tell different parts of the story.
 
-#### P07 — Zero-shot geometry study V3
+Of the 33 live-PACT high-contact episodes, **31** are also high-contact under the matched permuted arm. All **20** physical instances that produce a live-PACT high-contact episode fall within the **29** such permuted instances. This is consistent with a concentration of residual failures in shared difficult geometry rather than entirely new failure locations.
 
-**Setup:** fixed frozen 32-D policies, live and unrelated-frame arms only; 40 instances × three seeds × three conditions × two arms = 720 rollouts. C0 uses aperture 0.85 m, panel inner face y=0.10 m, panel z=0.89 m. C2 narrows the aperture to 0.70 m and moves the inner face to y=0.07 m; Z_093 raises the panel to z=0.93 m. The [frozen config](../configs/pact_geometry_generalization_v3.json) defines jitter and the remaining fixed geometry.
+**Finding:** live proximity reduces entry into the measured high-contact regime. Once in that regime, live PACT's mean burden is close to ACT's, so these summaries do not establish faster escape. All **67** hazard episodes without any target touch across ACT/live/permuted fail the task. Live PACT has far fewer of them. Conversely, restricting to pairs in which both live and permuted succeed yields a mean contact difference of **−0.8 samples**, CI **[−19.8, +22.0]**, with no resolved benefit in that conditioned subset.
 
-| Condition / method | Task | Strict | Hazard incidence | Mean hazard samples |
+**Logging limit:** all 1,200 contact records lack a retained full per-physics-step contact sequence. Contact-pair entries count simultaneous geometry contacts over samples, not contact-onset transitions. The summaries therefore cannot reconstruct precise collision episode duration, escape latency, or impulse. Lower contact totals must not be rewritten as faster collision recovery.
+
+**Evidence:** [tail characterization](PACT_TAIL_CHARACTERIZATION.md), [target-engagement characterization](PACT_ABSORBING_FAILURE_CHARACTERIZATION.md), [both-successful contrast](PACT_CONTACT_ENDPOINT_DECISION.md).
+
+<a id="p07-results"></a>
+#### P07 — Geometry × proximity ablation: zero-shot geometry study V3
+
+**Question:** does the contact benefit of scene-corresponding proximity survive changes to corridor geometry without retraining?
+
+**Design:** fixed frozen 32-D PACT checkpoints at seeds 3101–3103, each evaluated with live and unrelated-frame inputs; **40 instances × three seeds × three conditions × two arms = 720 rollouts**. There is no ACT arm. Geometry, rather than token dimensions or model weights, changes between conditions. All arms, seeds, and conditions for each instance move together in the 20,000-replicate bootstrap.
+
+| Condition | Geometry relative to source condition | Purpose / qualification |
+|---|---|---|
+| C0 | Aperture 0.85 m; panel inner face y=0.10 m; panel z=0.89 m | In-distribution contact-effect reproduction |
+| C2 | Aperture reduced to 0.70 m; panel inner face moved to y=0.07 m; z retained | Narrower clearance; 12/12 clean expert successes in the feasibility screen |
+| Z_093 | Panel raised to z=0.93 m, otherwise source geometry | Height shift; 11/12 clean expert successes in the later screen |
+
+The expert qualification rule requires at least **10/12** task successes without hazard or other-environment contact, independently of learned-policy performance. The training support fixes aperture width at **0.85 m** and panel z at **0.89 m**, with panel inner-face y in **[0.095, 0.105] m**. C2's 0.70 m aperture / 0.07 m inner face and Z_093's 0.93 m height are therefore outside that support. C2 also fixes face jitter at zero, whereas C0/Z_093 retain ±0.005 m; all retain panel-x jitter ±0.015 m. These details come from the [frozen configuration](../configs/pact_geometry_generalization_v3.json). No policy, encoder, normalization, or checkpoint is adjusted using these outcomes.
+
+| Condition / arm | Task success | Strict success | Any hazard contact | Mean hazard-contact samples |
 |---|---:|---:|---:|---:|
-| C0 live | 75/120 | 70/120 | 10/120 | 610.4 |
-| C0 control | 66/120 | 63/120 | 22/120 | 1,903.7 |
-| C2 live | 55/120 | 50/120 | 23/120 | 2,047.4 |
-| C2 control | 46/120 | 41/120 | 37/120 | 3,793.7 |
-| Z_093 live | 67/120 | 55/120 | 20/120 | 2,049.4 |
-| Z_093 control | 66/120 | 56/120 | 34/120 | 3,795.2 |
+| C0 live | 75/120 (62.5%) | 70/120 (58.3%) | 10/120 (8.3%) | 610.4 |
+| C0 PACT_PERMUTED | 66/120 (55.0%) | 63/120 (52.5%) | 22/120 (18.3%) | 1,903.7 |
+| C2 live | 55/120 (45.8%) | 50/120 (41.7%) | 23/120 (19.2%) | 2,047.4 |
+| C2 PACT_PERMUTED | 46/120 (38.3%) | 41/120 (34.2%) | 37/120 (30.8%) | 3,793.7 |
+| Z_093 live | 67/120 (55.8%) | 55/120 (45.8%) | 20/120 (16.7%) | 2,049.4 |
+| Z_093 PACT_PERMUTED | 66/120 (55.0%) | 56/120 (46.7%) | 34/120 (28.3%) | 3,795.2 |
 
-Pooled shifted incidence gap: −11.7 points [−18.3, −5.4]; mean hazard-sample gap: −1,746.1 [−2,794.3, −811.8]. Contact advantage survives relative to this control, but live task/strict performance drops from C0, and Z_093 strict success does not favor live. **No ACT arm; no current-128-D generalization claim.** [V3 report](PACT_GEOMETRY_GENERALIZATION_V3.md).
+**Seed-level outcomes.** Task/strict/hazard entries below are counts out of 40 in that order; contact means include all 40 rollouts.
 
-Earlier geometry V1 completed 48 expert feasibility rows: clean C0 11/12, C1 4/12, C2 12/12, C3 5/12. Only one shifted condition passed, so no learned policy ran. V3 carries forward C0/C2 qualification without rerunning it and uses Z_093's later 11/12 clean screen. V2 stopped at 9/900 policy rows and was abandoned before interpretation. These are predecessors, not independent positive replications. [V1](PACT_GEOMETRY_GENERALIZATION.md), [V2 progress](PACT_GEOMETRY_GENERALIZATION_V2_PROGRESS.md).
+| Condition | Seed | Live: task / strict / hazard | Permuted: task / strict / hazard | Live / permuted mean hazard samples |
+|---|---|---:|---:|---:|
+| C0 | 3101 | 29 / 28 / 2 | 27 / 26 / 6 | 215.9 / 2,838.1 |
+| C0 | 3102 | 20 / 18 / 5 | 19 / 18 / 7 | 882.5 / 1,042.4 |
+| C0 | 3103 | 26 / 24 / 3 | 20 / 19 / 9 | 732.8 / 1,830.6 |
+| C2 | 3101 | 25 / 22 / 6 | 23 / 20 / 12 | 1,342.3 / 4,318.1 |
+| C2 | 3102 | 13 / 13 / 11 | 8 / 8 / 13 | 3,260.2 / 3,389.2 |
+| C2 | 3103 | 17 / 15 / 6 | 15 / 13 / 12 | 1,539.8 / 3,673.8 |
+| Z_093 | 3101 | 26 / 21 / 6 | 28 / 24 / 9 | 1,862.2 / 3,778.3 |
+| Z_093 | 3102 | 19 / 16 / 7 | 18 / 15 / 12 | 1,482.2 / 3,195.2 |
+| Z_093 | 3103 | 22 / 18 / 7 | 20 / 17 / 13 | 2,803.8 / 4,412.0 |
 
-#### P08 — Test-time RGB blur sweep
+| Live − permuted contrast | Any hazard contact, 95% CI | Mean hazard samples, 95% CI | Strict success, 95% CI |
+|---|---:|---:|---:|
+| C0 | −10.0 pp [−19.2, −1.7] | −1,293.3 [−2,755.7, −139.8] | +5.8 pp [0.0, +11.7] |
+| C2 | −11.7 pp [−20.8, −3.3] | −1,746.3 [−3,403.8, −374.8] | +7.5 pp [−4.2, +19.2] |
+| Z_093 | −11.7 pp [−21.7, −2.5] | −1,745.8 [−3,354.1, −415.4] | −0.8 pp [−10.8, +10.0] |
+| Both shifted conditions pooled | −11.7 pp [−18.3, −5.4] | −1,746.1 [−2,794.3, −811.8] | Not the decision-bearing endpoint |
 
-**Setup:** frozen policies; 25 instances × three seeds × three arms × four blur levels = 900 rollouts. This is different from training new blurred-image policies in O03.
+**Finding:** the recorded decision is `GEOMETRY_GENERALIZES`, referring specifically to preservation of the *contact advantage over the permuted control*. C0 reproduces the earlier contact-effect direction, and both shifted conditions favor live proximity on the two contact measures. Absolute live strict success nevertheless falls **16.7 pp under C2** and **12.5 pp under Z_093** relative to C0. Z_093 strict success does not favor live over permuted. Thus this is not evidence of unchanged placement performance, superiority to ACT under the shifts, or generalization of the later 128-D method.
 
-| Test sigma | ACT strict | Live PACT strict | Control strict | ACT / live / control mean hazard samples |
+**Earlier versions and non-results:** V1 completed 48 expert feasibility rows: clean C0 **11/12**, C1 **4/12**, C2 **12/12**, C3 **5/12**. Only one shifted condition passed, so no learned-policy evaluation ran in V1. The later feasibility records also contain **11/12** clean successes for `HALF_Y_030`, a condition omitted from the final V3 policy matrix. V2 stopped at **9/900** policy rows and was abandoned before interpretation. V3 reuses C0/C2 expert qualification and adds Z_093's screen; these are predecessors, not independent positive replications.
+
+**Evidence:** [V3 report](PACT_GEOMETRY_GENERALIZATION_V3.md), [full V3 analysis](../diagnostics_output/pact_geometry_generalization_v3/analysis.json), [V1 feasibility](PACT_GEOMETRY_GENERALIZATION.md), [incomplete V2](PACT_GEOMETRY_GENERALIZATION_V2_PROGRESS.md).
+
+<a id="p08-results"></a>
+#### P08 — Test-time RGB blur × `PACT_PERMUTED` ablation
+
+**Question:** as the image degrades, does live proximity preserve collision-free task completion better than ACT or unrelated proximity?
+
+**Design:** the same **25 instances × three trained seeds × three arms × four blur levels = 900 rollouts**. The arms are ACT, frozen 32-D live PACT, and `PACT_PERMUTED`; Gaussian blur sigma is 0, 0.5, 1, or 2 at inference. No blur-aware policy is trained here. This is distinct from O03's train-time blur experiment. Scenes, checkpoints, sensor processing, and contact taxonomy remain fixed; conditions are paired by physical instance. The predeclared collapse floor is 10% strict success.
+
+| Sigma | Arm | Task success | Strict success | Any hazard contact | Mean hazard-contact samples |
+|---|---|---:|---:|---:|---:|
+| 0 | ACT | 37/75 | 36/75 | 18/75 | 3,333.00 |
+| 0 | Live PACT | 45/75 | 44/75 | 4/75 | 678.93 |
+| 0 | PACT_PERMUTED | 36/75 | 36/75 | 14/75 | 1,945.99 |
+| 0.5 | ACT | 35/75 | 33/75 | 17/75 | 3,319.07 |
+| 0.5 | Live PACT | 44/75 | 42/75 | 4/75 | 657.80 |
+| 0.5 | PACT_PERMUTED | 37/75 | 37/75 | 14/75 | 2,575.44 |
+| 1 | ACT | 31/75 | 30/75 | 21/75 | 4,245.39 |
+| 1 | Live PACT | 35/75 | 34/75 | 6/75 | 894.55 |
+| 1 | PACT_PERMUTED | 31/75 | 31/75 | 18/75 | 3,162.53 |
+| 2 | ACT | 14/75 | 13/75 | 25/75 | 4,507.28 |
+| 2 | Live PACT | 16/75 | 14/75 | 12/75 | 2,748.24 |
+| 2 | PACT_PERMUTED | 17/75 | 15/75 | 22/75 | 5,705.21 |
+
+| Sigma | Live − ACT strict-success gap, 95% CI | Live − permuted strict-success gap, 95% CI |
+|---|---:|---:|
+| 0 | +10.7 pp [−5.3, +26.7] | +10.7 pp [+4.0, +17.3] |
+| 0.5 | +12.0 pp [−2.7, +26.7] | +6.7 pp [−1.3, +14.7] |
+| 1 | +5.3 pp [−9.3, +20.0] | +4.0 pp [−4.0, +12.0] |
+| 2 | +1.3 pp [−10.7, +13.3] | −1.3 pp [−9.3, +6.7] |
+
+| Sigma | Seed | ACT strict | Live PACT strict | PACT_PERMUTED strict |
+|---|---|---:|---:|---:|
+| 0 | 3101 | 11/25 | 18/25 | 15/25 |
+| 0 | 3102 | 12/25 | 11/25 | 10/25 |
+| 0 | 3103 | 13/25 | 15/25 | 11/25 |
+| 0.5 | 3101 | 10/25 | 18/25 | 15/25 |
+| 0.5 | 3102 | 11/25 | 11/25 | 10/25 |
+| 0.5 | 3103 | 12/25 | 13/25 | 12/25 |
+| 1 | 3101 | 12/25 | 15/25 | 11/25 |
+| 1 | 3102 | 6/25 | 9/25 | 8/25 |
+| 1 | 3103 | 12/25 | 10/25 | 12/25 |
+| 2 | 3101 | 5/25 | 4/25 | 3/25 |
+| 2 | 3102 | 4/25 | 0/25 | 0/25 |
+| 2 | 3103 | 4/25 | 10/25 | 12/25 |
+
+**Contact contrasts.** Mean-sample differences and 95% whole-instance intervals:
+
+| Sigma | Live − ACT | Live − permuted |
+|---|---:|---:|
+| 0 | −2,654 [−5,552, −364] | −1,267 [−2,935, +60] |
+| 0.5 | −2,661 [−5,192, −484] | −1,918 [−4,104, −228] |
+| 1 | −3,351 [−6,427, −592] | −2,268 [−4,818, −279] |
+| 2 | −1,759 [−3,811, −22] | −2,957 [−5,474, −899] |
+
+**Finding:** `NO_BLUR_ROBUSTNESS`. No positive-sigma live-minus-ACT strict-success interval has a lower bound above zero. The within-instance arm-by-sigma strict-success interaction is **−5.3 pp per sigma**, CI **[−12.6, +1.4]**; the task advantage does not demonstrably widen as vision degrades. At sigma 2, pooled strict success is **17.3% ACT / 18.7% live / 20.0% permuted**, with striking seed heterogeneity, including zero successes for both PACT arms at seed 3102.
+
+The contact result is more favorable: live PACT has fewer hazard-contact episodes than ACT and permuted at every sigma, with the reported incidence-gap intervals excluding zero. Mean contact burden also favors live PACT at every positive sigma. This supports retained contact-reduction ability under blur, while the preregistered task-robustness claim fails. It does not show that an inert policy has solved the task or that a policy trained without vision would perform similarly.
+
+**Evidence:** [blur report](PACT_BLUR_SWEEP.md), [absolute results, per-seed data, slopes, and paired intervals](../diagnostics_output/pact_blur_sweep/analysis.json).
+
+<a id="p09-results"></a>
+#### P09 — Complete RGB removal with live and unrelated proximity
+
+**Question:** what remains of the proximity benefit when the camera provides no task image at all?
+
+**Design:** frozen ACT, 32-D PACT, and `PACT_PERMUTED`, each sighted and blind; **25 shared instances × three seeds × three arms × two image conditions = 450 rollouts**. Blind replaces wrist RGB with the **ImageNet mean**, not a black scene or a selectively hidden hazard. Proximity, robot state, physics, and checkpoints remain unchanged. All 450 rows reconcile and the recorded intervention flags match the schedule. No blind-policy training occurs.
+
+| Condition / method | Task success | Strict success | Any hazard contact | Mean hazard-contact samples |
 |---|---:|---:|---:|---:|
-| 0 | 36/75 | 44/75 | 36/75 | 3,333 / 679 / 1,946 |
-| 0.5 | 33/75 | 42/75 | 37/75 | 3,319 / 658 / 2,575 |
-| 1 | 30/75 | 34/75 | 31/75 | 4,245 / 895 / 3,163 |
-| 2 | 13/75 | 14/75 | 15/75 | 4,507 / 2,748 / 5,705 |
+| Sighted ACT | 37/75 (49.3%) | 36/75 (48.0%) | 16/75 (21.3%) | 2,967.9 |
+| Sighted live PACT | 44/75 (58.7%) | 43/75 (57.3%) | 4/75 (5.3%) | 693.6 |
+| Sighted PACT_PERMUTED | 37/75 (49.3%) | 37/75 (49.3%) | 14/75 (18.7%) | 1,932.8 |
+| Blind ACT | 1/75 (1.3%) | 0/75 (0.0%) | 48/75 (64.0%) | 12,289.4 |
+| Blind live PACT | 1/75 (1.3%) | 1/75 (1.3%) | 37/75 (49.3%) | 8,113.7 |
+| Blind PACT_PERMUTED | 0/75 (0.0%) | 0/75 (0.0%) | 46/75 (61.3%) | 9,934.5 |
 
-At sigma 2, ACT/live hazard incidence is 25/75 versus 12/75. Contact burden improves, but **the predeclared task-robustness hypothesis fails**: every positive-sigma live−ACT strict-success interval includes zero; slope interaction −5.3 points/sigma [−12.6, +1.4]. [Report](PACT_BLUR_SWEEP.md).
+**Seed-level blind outcomes.** Each row is 25 rollouts:
 
-#### P09 — Complete RGB replacement
+| Seed | Arm | Task / strict | Any hazard contact | Mean hazard-contact samples |
+|---|---|---:|---:|---:|
+| 3101 | ACT | 0 / 0 | 17/25 | 10,216.92 |
+| 3101 | Live PACT | 1 / 1 | 12/25 | 7,212.64 |
+| 3101 | PACT_PERMUTED | 0 / 0 | 17/25 | 10,343.60 |
+| 3102 | ACT | 1 / 0 | 16/25 | 12,341.56 |
+| 3102 | Live PACT | 0 / 0 | 12/25 | 8,986.72 |
+| 3102 | PACT_PERMUTED | 0 / 0 | 13/25 | 10,156.60 |
+| 3103 | ACT | 0 / 0 | 15/25 | 14,309.68 |
+| 3103 | Live PACT | 0 / 0 | 13/25 | 8,141.72 |
+| 3103 | PACT_PERMUTED | 0 / 0 | 16/25 | 9,303.40 |
 
-**Setup:** sighted/blind, 25 instances × three seeds × three arms = 450 rollouts. Replacing all RGB is not selective hiding of the hazard.
+Under blindness, live-minus-ACT mean contact burden is **−4,175.7 samples**, clustered 95% CI **[−7,356.3, −1,263.0]**; live-minus-permuted is **−1,820.8**, CI **[−2,999.0, −784.8]**. Both strict-success contrasts are only **+1.3 pp**, CI **[0.0, +4.0] pp**.
 
-| Condition / method | Task | Strict | Hazard incidence | Mean hazard samples |
-|---|---:|---:|---:|---:|
-| Sighted ACT | 37/75 | 36/75 | 16/75 | 2,967.9 |
-| Sighted PACT | 44/75 | 43/75 | 4/75 | 693.6 |
-| Sighted control | 37/75 | 37/75 | 14/75 | 1,932.8 |
-| Blind ACT | 1/75 | 0/75 | 48/75 | 12,289.4 |
-| Blind PACT | 1/75 | 1/75 | 37/75 | 8,113.7 |
-| Blind control | 0/75 | 0/75 | 46/75 | 9,934.5 |
+| Blind minus sighted, same arm | Strict-success degradation, paired 95% CI | Change in mean hazard samples, paired 95% CI |
+|---|---:|---:|
+| ACT | −48.0 pp [−64.0, −32.0] | +9,321.5 [+4,441.4, +14,340.8] |
+| Live PACT | −56.0 pp [−69.3, −42.7] | +7,420.1 [+3,993.7, +11,141.4] |
+| PACT_PERMUTED | −49.3 pp [−60.0, −37.3] | +8,001.7 [+4,234.6, +11,887.7] |
 
-Blind PACT−ACT mean-contact gap is −4,175.7 [−7,356.3, −1,263.0]; live−control −1,820.8 [−2,999.0, −784.8]. **Contact benefit survives while manipulation collapses.** Sighted counts differ from P08's sigma-zero execution; retain each experiment's own records. [Report](PACT_BLIND_RGB.md).
+**Finding:** `PROXIMITY_STANDALONE_CONTACT_BENEFIT` is the saved contact decision. Proximity retains a relative contact benefit, but **task completion collapses in every blind arm**, and blind live PACT still contacts the hazard on almost half its rollouts. The numerical result supports “lower contact under camera failure,” not “safe manipulation without vision.” It also cannot substitute for an observability-controlled experiment that hides only the hazard while preserving visual task information.
+
+The sighted counts differ slightly from P08's sigma-zero execution. Those are separately executed reference rows; this inventory retains each experiment's own outcomes rather than replacing them with whichever reference looks more favorable.
+
+**Evidence:** [blind-RGB report](PACT_BLIND_RGB.md), [seed-level results and paired sighted/blind degradation](../diagnostics_output/pact_blind_rgb/analysis.json).
 
 ### 7.4 Local full placement: chunking, clutter, and latest readout
 
-#### L01–L03 — Recovered-152 chunk comparisons
+<a id="placement-chunk-ablations"></a>
+#### L01–L03 — Placement action-chunk ablations and the chunk-100 `PACT_PERMUTED` test
 
-The recovered “V5” dataset uses `PactPlaceCorridorV2Sampler`, with no added household clutter. It is not the later cluttered V5 sampler. All 152 expert recordings were recovered without divergence. [Recovery](PACT_PLACE_V5_DEMO_RECOVERY.md), [sampler inventory](../diagnostics_output/manipulation_eval_inventory_20260906/README.md).
+**Question:** do longer action chunks overcome the failure to attempt a grasp, and, once the policies are functional, does live proximity help full pick-and-place?
 
-The preceding chunk-1 training-only comparison completed 2,000 epochs at seed 3101: best validation loss **0.042982 ACT versus 0.047391 PACT**, at epochs 1,954 and 1,773. Its original report correctly says no rollout had yet run; the subsequent L01 evaluation below supplies the behavioral outcome. [Training report](/root/pact_place_152_pact_vs_act_seed3101/EVAL.md).
+**Common setup:** the recovered 152-demonstration corpus uses `PactPlaceCorridorV2Sampler` / `pact_place_corridor_v2.xml`, no added household clutter, a 900-step horizon, and training seed 3101. This recovered “V5” is not the later cluttered V5 sampler. All 152 expert recordings were recovered without divergence. The frozen 32-D corridor encoder is reused for placement. Each chunk length has its own trained ACT/PACT pair; these are not just three evaluation settings on one checkpoint. Training-command comparisons verify changes to chunk size and checkpoint directory, with the intended proximity flags distinguishing the two methods.
 
-| ID / chunk | ACT task / strict | Frozen PACT task / strict | Other findings |
-|---|---:|---:|---|
-| L01: chunk 1, n=20 | 0 / 0 | 0 / 0 | Neither policy commands gripper closure |
-| L02: chunk 25, n=40 | 8 / 6 | 11 / 10 | Closure attempted in ACT 9/40, PACT 20/40; interaction CI includes zero |
-| L03: chunk 100, n=40 | 13 / 13 | 19 / 16 | Unrelated-frame control 7 task / 6 strict; closure in all 40 for all arms |
+The original chunk-1 training completed 2,000 epochs. Best validation losses were **0.042982 ACT** and **0.047391 PACT**, at epochs 1,954 and 1,773. Those offline losses did not predict a functional grasping policy.
 
-These are one-seed development comparisons, not three independent demonstrations that proximity improves performance. The zero-success chunk-1 run cannot establish safe task execution. [Chunk 1](/root/pact_place_chunk1_eval_seed3101/EVAL.md), [chunk 25](../EVAL.md), [chunk 100](/root/pact_place_chunk100_eval_seed3101/EVAL.md).
+| Experiment | Arm | N | Task success | Strict success | Gripper-close command | Hazard-contact episodes | Other-environment contact |
+|---|---|---:|---:|---:|---:|---:|---:|
+| L01: chunk 1 | ACT | 20 | 0/20 | 0/20 | 0/20 | 11/20 | 0/20 |
+| L01: chunk 1 | PACT | 20 | 0/20 | 0/20 | 0/20 | 2/20 | 0/20 |
+| L02: chunk 25 | ACT | 40 | 8/40 | 6/40 | 9/40 | 13/40 | 0/40 |
+| L02: chunk 25 | PACT | 40 | 11/40 | 10/40 | 20/40 | 6/40 | 0/40 |
+| L03: chunk 100 | ACT | 40 | 13/40 | 13/40 | 40/40 | 13/40 | 0/40 |
+| L03: chunk 100 | Live PACT | 40 | 19/40 | 16/40 | 40/40 | 12/40 | 3/40 |
+| L03: chunk 100 | PACT_PERMUTED | 40 | 7/40 | 6/40 | 40/40 | 8/40 | 5/40 |
+
+**L01 — Chunk 1 collapse.** All 40 rollouts reach the horizon, and neither policy ever commands closure. Collision-free episodes are ACT **9/20**, PACT **18/20**, but collision-free task completion is zero for both. The preregistered collapse threshold is at most 1/20 strict successes in either arm; both meet it. Decision: **`CHUNK1_COLLAPSE`**. Lower contact from a policy that never attempts the grasp is not task-level safety evidence.
+
+**L02 — Chunk 25 partial recovery.** Both policies sometimes close the gripper, but at substantially different rates. The strict gap is **+10.0 pp** for PACT, approximate paired 95% interval **[−3.7, +23.7] pp**. Among episodes that command closure, ACT task/strict success is **8/9 and 6/9**, versus PACT **11/20 and 10/20**. No episode succeeds without a close command. PACT's larger unconditional count therefore includes a higher probability of attempting the grasp; the conditional comparison itself is selected by policy behavior and does not establish ACT superiority. Decision: **`CHUNK25_PARTIAL`**.
+
+The same 20 physical instances are available at all three chunk lengths:
+
+| Arm | Chunk | Close command | Task success | Strict success |
+|---|---:|---:|---:|---:|
+| ACT | 1 | 0/20 | 0/20 | 0/20 |
+| ACT | 25 | 6/20 | 6/20 | 5/20 |
+| ACT | 100 | 20/20 | 7/20 | 7/20 |
+| PACT | 1 | 0/20 | 0/20 | 0/20 |
+| PACT | 25 | 9/20 | 4/20 | 4/20 |
+| PACT | 100 | 20/20 | 10/20 | 9/20 |
+
+For the 40 instances shared by chunks 25 and 100, the difference-in-differences `(PACT − ACT)@25 − (PACT − ACT)@100` is **+2.5 pp**, approximate paired 95% interval **[−19.1, +24.1] pp**. This is not evidence that a shorter chunk increases the proximity advantage. Geometry matching uses task seed, jitters, and intrusion side; manifest role/version hashes legitimately differ for some shared scenes.
+
+**L03 — The completed full-placement `PACT_PERMUTED` ablation.** At chunk 100 every arm commands closure in all 40 episodes, satisfying the predefined functional-policy gate. The live and permuted arms share the same PACT checkpoint. The permuted version consumes 900 complete frozen 40×32 frames per rollout, using the placement-specific token plan `5bf2ea3125842b77a4360c429cd06987fe1f0ef9c26fb33c670cb90b1e0c2eff`. Encoder identity is independently checked against `6fd2dd…3206`. The 40-scene manifest contains 20 left and 20 right approaches and has zero task-seed overlap with the 152 demonstrations.
+
+| Chunk-100 comparison | Task-success difference | Strict-success difference | Recorded approximate paired 95% strict interval |
+|---|---:|---:|---:|
+| Live PACT − ACT | +15.0 pp | +7.5 pp | [−10.2, +25.2] pp, recomputed in L02 |
+| Live PACT − PACT_PERMUTED | +30.0 pp | +25.0 pp | [+8.2, +41.8] pp |
+| PACT_PERMUTED − ACT | −15.0 pp | −17.5 pp | Not supplied in the summary |
+
+**Finding:** live proximity improves the measured placement outcome relative to this same-checkpoint intervention, while the ACT comparison remains imprecise. The permuted control is worse than ACT on task completion but has fewer hazard-contact episodes (**8 versus 13**). Its apparent contact advantage therefore does not imply better manipulation. Wrong sensor frames can actively derail behavior, so this result should not be described as an architecture-only control. Decision: **`FUNCTIONAL_CHUNK100`**, a bounded development result at one seed.
+
+**Execution and limits:** chunk 1, 25, and 100 dispatches reconcile **40/40**, **80/80**, and **120/120** scientific jobs respectively, separately from their smoke checks. Chunk-25 ACT had an earlier training attempt fail at epoch 1,800 due to disk exhaustion; the completed pair was retrained and audited as recorded in its report. All scientific rollouts reach 900 steps. No household clutter is present. The older receptacle-contact diagnostic lacks an expert phase under a learned policy and can overclassify contact outside placement; retain that caveat rather than importing later contact semantics. Neither the chunk-size study nor L03 is a current-128-D encoder ablation.
+
+**Evidence:** [demo recovery](PACT_PLACE_V5_DEMO_RECOVERY.md), [chunk-1 training](/root/pact_place_152_pact_vs_act_seed3101/EVAL.md), [chunk-1 evaluation](/root/pact_place_chunk1_eval_seed3101/EVAL.md), [chunk-25 evaluation and matched chunk contrasts](../EVAL.md), [chunk-100 evaluation](/root/pact_place_chunk100_eval_seed3101/EVAL.md).
 
 #### L04–L07 — First clutter datasets and decoder diagnostic
 
@@ -356,6 +742,7 @@ The detailed L07 object audit finds lower PACT contact incidence for the route c
 
 One seed, 50 original rollouts per method. ACT task/strict **14/50 and 12/50**; PACT **7/50 and 7/50**; hazard incidence **14/50 for both**. All original attempts finished, but initial-scene pairing failed on one instance and again on a bounded repeat. These are descriptive original-attempt counts, **not a validated paired benchmark**. [Evaluation record](../EVAL.md), [pairing audit](../diagnostics_output/pact_place_v1011c_dualcam_aligned_s3103/evaluation/blocked_raw_audit.json).
 
+<a id="readout-method-comparison"></a>
 #### L09 / L11 — V10.10 wrist280, frozen versus finetuned readout, three seeds
 
 **Question:** does the complete finetuned 128-D method improve placement and contact outcomes on the current four-object environment?
@@ -371,16 +758,48 @@ One seed, 50 original rollouts per method. ACT task/strict **14/50 and 12/50**; 
 | Method | Forbidden-contact physics samples | Hazard samples | Clutter samples |
 |---|---:|---:|---:|
 | ACT | 376,556 (8.452%) | 232,733 (5.224%) | 160,802 (3.609%) |
-| Frozen PACT | 135,897 (3.050%) | 44,673 (1.003%) | See source contact breakdown |
+| Frozen PACT | 135,897 (3.050%) | 44,673 (1.003%) | 92,866 (2.084%) |
 | Finetuned PACT | 85,933 (1.929%) | 54,634 (1.226%) | 32,207 (0.723%) |
 
 Denominator: **4,455,150 audited physics samples per method**. Categories overlap; forbidden is their union including other environment and mounted fixtures. The older ACT hazard/clutter-only union 371,293 is not the complete forbidden count.
 
-| Seed | ACT task / strict | Finetuned PACT task / strict |
-|---|---:|---:|
-| 3103 | 19/50 / 16/50 | 27/50 / 24/50 |
-| 3104 | 22/50 / 15/50 | 26/50 / 18/50 |
-| 3105 | 23/50 / 15/50 | 30/50 / 21/50 |
+**Per-seed results for all three methods.** Every row represents 50 rollouts and 1,485,050 audited physics samples.
+
+| Seed | Method | Task success | Strict success | Forbidden-contact samples | Hazard-contact samples |
+|---|---|---:|---:|---:|---:|
+| 3103 | ACT | 19/50 (38%) | 16/50 (32%) | 141,834 (9.551%) | 66,395 (4.471%) |
+| 3103 | Frozen PACT | 20/50 (40%) | 16/50 (32%) | 59,086 (3.979%) | 18,183 (1.224%) |
+| 3103 | Finetuned PACT | 27/50 (54%) | 24/50 (48%) | 29,000 (1.953%) | 20,148 (1.357%) |
+| 3104 | ACT | 22/50 (44%) | 15/50 (30%) | 179,136 (12.063%) | 140,601 (9.468%) |
+| 3104 | Frozen PACT | 19/50 (38%) | 10/50 (20%) | 52,204 (3.515%) | 14,271 (0.961%) |
+| 3104 | Finetuned PACT | 26/50 (52%) | 18/50 (36%) | 32,329 (2.177%) | 19,606 (1.320%) |
+| 3105 | ACT | 23/50 (46%) | 15/50 (30%) | 55,586 (3.743%) | 25,737 (1.733%) |
+| 3105 | Frozen PACT | 35/50 (70%) | 25/50 (50%) | 24,607 (1.657%) | 12,219 (0.823%) |
+| 3105 | Finetuned PACT | 30/50 (60%) | 21/50 (42%) | 24,604 (1.657%) | 14,880 (1.002%) |
+
+**What changed in this representation comparison:** both proximity methods begin from the original pretrained encoder. The finetuned version uses a trainable stem/transformer, 128-D CLS readout, and minimum pooling. The earlier method uses a frozen 32-D pathway. Model width, readout, preprocessing, and joint optimization therefore change together. No recovered same-width, same-pooling, frozen-128-D control isolates the effect of unfreezing in this matrix.
+
+**Matched outcome counts.** These numbers expose wins and losses on the same scenarios; they are not additional rollouts or an independent statistical test.
+
+| Comparison, first versus second | First-only task successes | Second-only task successes | First-only strict successes | Second-only strict successes |
+|---|---:|---:|---:|---:|
+| Finetuned PACT versus ACT | 33 | 14 | 30 | 13 |
+| Frozen PACT versus ACT | 34 | 24 | 28 | 23 |
+| Finetuned PACT versus frozen PACT | 30 | 21 | 29 | 17 |
+
+**Failure-stage analysis from the same 450 trajectories.** The mutually exclusive recorded hierarchy gives:
+
+| Outcome / failure stage | ACT | Frozen PACT | Finetuned PACT |
+|---|---:|---:|---:|
+| Final task success | 64 | 74 | 83 |
+| No target interaction | 40 | 17 | 20 |
+| Touched without hold | 35 | 42 | 26 |
+| Held without lift | 1 | 4 | 6 |
+| Lifted without placement | 8 | 12 | 14 |
+| Supported without final success | 2 | 1 | 1 |
+| Total | 150 | 150 | 150 |
+
+Independent geometric diagnostics count ≥1 cm target lift in **74 ACT / 87 frozen / 98 finetuned** rollouts and sustained lift for at least 15 observations in **69 / 79 / 91**. The contact-based “held” flag is not itself a validated stable-grasp measurement. These diagnostics indicate where behavior changes, without making a causal claim that any single encoder change fixed grasping.
 
 **Observation:** finetuned PACT versus ACT gains 12.7 points task success and 11.3 points strict success, with 77.2% fewer forbidden-contact samples and 76.5% fewer hazard samples. Task and strict-success counts favor finetuned PACT in all three seeds.
 
@@ -390,17 +809,47 @@ L09 is the original frozen comparison; L11 adds the 128-D arm. The standalone se
 
 **Evidence:** [three-method report](PACT_PLACE_V1010C_THREE_METHOD_COMPARISON.md), [final review](../diagnostics_output/pact_place_v1010c_readout_s3_v1/FINAL_REVIEW.md), [450 audited rows](../diagnostics_output/pact_place_v1010c_readout_s3_v1/comparison.json), [contact union reconstruction](../diagnostics_output/pact_place_v1010c_readout_s3_v1/root_review/frame_avoidance.json).
 
-#### L10 — Acquisition-window training continuation
+<a id="training-sampler-ablation"></a>
+#### L10 — Acquisition-window sampling versus equal-update training controls
 
-**Setup:** three frozen-encoder PACT seeds; same 12 exposed diagnostic scenes per seed; three arms: original frozen checkpoint, equal-update uniform continuation, acquisition-window continuation. New training adds 3,000 updates to 60,000.
+**Question:** can increased exposure to acquisition windows repair frozen PACT's grasping failures, beyond any benefit from simply doing more training?
 
-| Arm | Task success | Strict success |
-|---|---:|---:|
-| Original checkpoint | 16/36 | 11/36 |
-| Uniform continuation | 22/36 | 14/36 |
-| Acquisition-window continuation | 20/36 | 13/36 |
+**Design:** ACT and frozen-encoder PACT at seeds 3103–3105, with three variants per arm: the original 60,000-update checkpoint, a uniform-sampling continuation to 63,000 updates, and an acquisition-window continuation to 63,000. This is **12 trained continuation branches**, not three new PACT models alone. Stage B crosses both arms, three seeds, three variants, and the **same 12 exposed physical scenes**, giving **216 comparisons**. Of these, 36 frozen-PACT records are reused from Stage A and 180 are new Stage-B rollouts. Scene repetition across seeds and variants must be retained in interpreting the counts.
 
-The targeted sampler underperforms equal-update uniform continuation and raises contact samples 86.3% versus uniform. **Rejected at Gate B; later stages not run.** [Final review](../diagnostics_output/pact_place_v1010b_grasp_v1/FINAL_REVIEW.md).
+The exposure intervention worked as intended: acquisition-window starts rose from approximately **12.3–12.6%** under uniform sampling to **34.3–34.5%** under the candidate, with matched ACT/PACT start streams within each seed/variant. Both continuations receive exactly 3,000 committed updates, making uniform continuation the essential training-budget control.
+
+| Arm | Training variant | Task success /36 | Strict success /36 | Exclusive pickup failures /36 | Hazard-or-clutter samples |
+|---|---|---:|---:|---:|---:|
+| ACT | Original 60,000 | 18 | 13 | 6 | 53,331 |
+| ACT | Uniform 63,000 | 18 | 13 | 7 | 50,282 |
+| ACT | Acquisition 63,000 | 18 | 11 | 3 | 62,179 |
+| PACT | Original 60,000 | 16 | 11 | 9 | 24,296 |
+| PACT | Uniform 63,000 | 22 | 14 | 7 | 17,371 |
+| PACT | Acquisition 63,000 | 20 | 13 | 8 | 32,362 |
+
+Each row has **1,069,236 audited physics samples**. Hazard-or-clutter is a union, counting simultaneous contact once. Exclusive pickup failure refers to touched-without-hold after applying the recorded failure hierarchy, not every failed grasp attempt.
+
+| Arm | Seed | Original task / strict | Uniform task / strict | Acquisition task / strict |
+|---|---|---:|---:|---:|
+| ACT | 3103 | 6/12 / 4/12 | 5/12 / 4/12 | 6/12 / 3/12 |
+| ACT | 3104 | 6/12 / 4/12 | 7/12 / 5/12 | 7/12 / 5/12 |
+| ACT | 3105 | 6/12 / 5/12 | 6/12 / 4/12 | 5/12 / 3/12 |
+| PACT | 3103 | 3/12 / 2/12 | 7/12 / 6/12 | 5/12 / 4/12 |
+| PACT | 3104 | 6/12 / 4/12 | 7/12 / 4/12 | 8/12 / 4/12 |
+| PACT | 3105 | 7/12 / 5/12 | 8/12 / 4/12 | 7/12 / 5/12 |
+
+| Acquisition candidate versus control | PACT task wins / losses on matched cases | ACT task wins / losses | PACT qualifying acquisition repairs |
+|---|---:|---:|---:|
+| Original checkpoint | 8 / 4 | 3 / 3 | 5 |
+| Uniform continuation | 1 / 3 | 3 / 3 | 1 |
+
+A qualifying repair requires a control pickup failure, candidate target lift of at least 1 cm, and a continuous bilateral-contact interval of at least one second. The frozen gate requires three repairs against **each** control; only one qualifies against uniform. The candidate reduces PACT pickup failures by just one versus original, below the required three, and increases them versus uniform.
+
+**Finding:** the candidate gains four PACT task successes over the original checkpoint but loses two against equal-update uniform continuation. It increases PACT contact samples **33.2% versus original** and **86.3% versus uniform**, exceeding the allowed 10% increase. For ACT, it loses two strict successes against both controls and raises contact samples **16.6% / 23.7%**. Seed-specific no-loss conditions also fail. Decision: **`STOPPED_AT_GATE_B`**; Stages C/D are unrun. Uniform continuation was better in this exposed development screen but was not promoted through a fresh final evaluation.
+
+**Execution accounting:** the whole bounded program contains **240 valid new rollouts**: 12 in A1, 48 in A2, and 180 in B. The 216-row Stage-B table includes reused measurements and must not be added to 240 as new data. All 12 continuations finish, totaling 36,000 committed updates; two diagnosed training retries include 240 additional unsaved optimizer updates that were replayed. Independent review reconstructs the 216 Stage-B trajectories and preserves the original baseline selection.
+
+**Evidence:** [final review and complete seed table](../diagnostics_output/pact_place_v1010b_grasp_v1/FINAL_REVIEW.md), [Stage-B gate](../diagnostics_output/pact_place_v1010b_grasp_v1/gates/B.json), [realized sampling exposure](../diagnostics_output/pact_place_v1010b_grasp_v1/root_review/realized_training_exposure.json).
 
 #### L12 — Completion time of the latest successful rollouts
 
@@ -480,13 +929,169 @@ Evidence: [raw head](HYBRID_OBSTACLE_RAW_HEAD_QUALIFICATION_FINAL_DECISION.md), 
 | Y12: one on-policy aggregation round | Differential MAE improves 0.313→0.208 on ACT-only and 0.355→0.151 on oracle trajectories, but no valid activation contract; stops before new live development | [Decision](HYBRID_OBSTACLE_ON_POLICY_REFERENCE_FINAL_DECISION.md) |
 | Y13: parked-field data-contract audit | 60,793 paired frames lack required parked 40×8×8 supervision; proposed model cannot be trained from these records | [Decision](HYBRID_OBSTACLE_PARKED_SKIN_REFERENCE_FINAL_DECISION.md) |
 | Y14: parked-skin supervision generation | Missing arrays are collected/reconstructed and audited; no policy/model performance in this stage | [Dataset decision](HYBRID_OBSTACLE_PARKED_SKIN_DATASET_FINAL_DECISION.md) |
-| Y15: causal parked-field models, three seeds and history comparison | Overall reference MAE 0.011337 versus zero 0.042062 (73.0% lower); seed-0 false-positive rate 2.15% exceeds 2% gate, others 1.42%/1.10%. Four-frame history MAE 0.012809 is worse than current-frame 0.011337 | Threshold-transfer failure; not evidence of closed-loop success. [Decision](CAUSAL_PARKED_SKIN_REFERENCE_V1_FINAL_DECISION.md) |
+| Y15: nine trained current-frame / four-frame / state-conditioned ablations | Mean head-space MAE **0.011337 / 0.012809 / 0.048446** respectively, versus zero-differential **0.042062**; current-frame seed-0 false-positive rate **2.15%** fails the 2% gate | Full per-seed, calibration, and model-selection results are in [the detailed Y15 section](#parked-reference-ablations) |
 | Y16: trajectory-aware threshold calibration | Threshold 0.99960858 passes calibration; diagnostic hazard-absent sequence has seven consecutive false positives | Failed transfer. [Decision](HYBRID_OBSTACLE_REFERENCE_THRESHOLD_FINAL_DECISION.md) |
 | Y17: proximity-only activity and causal attribution | On 17 old false positives, clear proximity lowers activity 0.9999→0.0229; state shuffling/mean replacement leaves 0.9999. No feasible proximity-only calibration threshold | Supports proximity ambiguity on these examples, not a state-only cause. [Decision](HYBRID_OBSTACLE_PROX_ACTIVITY_GATE_FINAL_DECISION.md) |
 | Y18: activity identifiability / ensemble diagnostic | Changed-pixel agreement rejects 17/17 historical false positives while retaining 96.5% active frames (AUROC 0.979) | Diagnostic separation on reused failures; not final calibration success. [Decision](HYBRID_OBSTACLE_ACTIVITY_IDENTIFIABILITY_FINAL_DECISION.md) |
 | Y19: trajectory-bootstrap uncertainty | Five models each see 24–28 unique clusters from 40; median agreement active 0.5467 versus zero 0.6000; no feasible threshold | Bootstrap data variation does not reproduce the seed-ensemble diagnostic. [Decision](HYBRID_OBSTACLE_UNCERTAINTY_ABSTENTION_FINAL_DECISION.md) |
 | Y20: full-seed joint calibration | 1,690 feasible calibration pairs; median active recall 1.0 and zero calibration upper-bound false activation; offline transfer fails all three checks | Failed qualification. [Decision](HYBRID_OBSTACLE_FULL_SEED_JOINT_GATE_FINAL_DECISION.md) |
 | Y21: three-pair agreement repair | Historical false-positive executions 10/17→9/17, threshold 0.225→0.166667; transfer still fails | Restoring the third pair does not fix the regression. [Decision](HYBRID_OBSTACLE_THREE_PAIR_JOINT_GATE_FINAL_DECISION.md) |
+
+<a id="parked-reference-ablations"></a>
+#### Y15 — Temporal-history, state-conditioning, and zero-differential ablations: nine trained models
+
+**Question:** can a model infer the proximity field that would be measured if the removable obstacle were parked away, and does that prediction require recent history or learned conditioning on the measured proximity field?
+
+This is a completed ablation program in the branch's **hybrid ACT + Safety-CVAE reference-learning work**. It is a different model and objective from PACT-128D. The model predicts a counterfactual 40×8×8 parked field, which feeds a frozen SafetyHead. The evaluated correction is `head(current) − head(predicted_parked)`, compared with the corresponding privileged target. Errors below are **SafetyHead-space differential MAE**, not collision rates, geometric error in millimeters, or robot task-success rates. No live policy evaluation occurs in Y15.
+
+**Inputs and fair comparison.** Deployable inputs are proximity closeness/validity plus a 29-D state: qpos 9, qvel 9, nominal action 8, gripper state 2, and gripper command 1. No RGB, step index, timestamp, oracle differential, or parked target enters as an input. The shared model uses sensor/link identity embeddings, per-sensor convolutions, two width-192 cross-sensor transformer blocks with four attention heads, and a per-sensor decoder. The SafetyHead stays frozen; gradients pass through it to the reference model, with its output scale applied once.
+
+| Ablation arm | Learned conditioning / history | Parameters | What it tests |
+|---|---|---:|---|
+| `CURRENT_FRAME_ONLY` | Current field and validity plus 29-D state | 838,434 | Single-frame reference model |
+| `FULL_CAUSAL` | Four causal field/validity frames plus state | 840,162 | Whether adding history improves reference prediction |
+| `QPOS_ONLY` | Learned logits from the 29-D state and learned sensor/pixel priors | 762,818 | Removal of measured proximity from the learned feature/decoder-logit path |
+| `ZERO_DIFFERENTIAL` | Predicted parked field equals current field | 0 trained parameters | Predict no obstacle-specific correction |
+| Privileged true-parked reference | Actual counterfactual parked field | Not a deployable model | Numerical ceiling for reproducing the target |
+
+**Important `QPOS_ONLY` detail:** the name is shorthand; its state includes more than qpos. It is also not completely independent of proximity. All learned variants apply the same physical output constraint using current closeness: `predicted_delta = sigmoid(mask_logits) × current_closeness × sigmoid(magnitude_logits)`, then `predicted_parked = current_closeness − predicted_delta`. Thus state alone drives `QPOS_ONLY`'s learned logits, but current proximity still constrains its output. [`CausalParkedSkinReferenceV1.forward()` and `build_model()`](../causal_parked_skin/model.py) document this explicitly. The ablation isolates learned proximity conditioning, not every possible use of the current field.
+
+**Dataset and partitioning.** The frozen dataset contains **364 trajectory files / 60,793 frames but only 100 unique episode identities**; source modes reuse identities. All copies of an episode remain in the same partition, with no crossing on five audited identity keys.
+
+| Partition | Trajectory files | Frames | Unique episode identities | Oracle-active frames |
+|---|---:|---:|---:|---:|
+| Training | 256 | 43,519 | 64 | 11,308 (26.0%) |
+| Validation | 24 | 3,910 | 8 | 810 (20.7%) |
+| Calibration | 24 | 3,821 | 8 | 549 (14.4%) |
+| Offline test | 60 | 9,543 | 20 | 1,744 (18.3%) |
+
+All **46,382 oracle-zero frames** remain in the corpus. Training draws about 50% active frames per batch; evaluation uses the natural unmodified partitions. Learner-induced on-policy data exists **only in training**, so generalization to that source mode is not measurable on this test set.
+
+**Validation-only architecture/loss selection, before final ablations.** Six seed-0 candidates were compared without opening offline test:
+
+| Candidate | Hidden width / blocks | Parameters | Best validation head MAE | Selected epoch |
+|---|---:|---:|---:|---:|
+| `c3_active_heavy`, selected | 192 / 2 | 840,162 | 0.019381 | 39 |
+| `c2_quiet_heavy` | 192 / 2 | 840,162 | 0.019994 | 51 |
+| `c4_one_block` | 192 / 1 | 543,138 | 0.020122 | 44 |
+| `c5_wide` | 256 / 2 | 1,379,106 | 0.021185 | 34 |
+| `c6_narrow` | 128 / 2 | 440,482 | 0.022313 | 32 |
+| `c1_balanced` | 192 / 2 | 840,162 | 0.025964 | 16 |
+
+Four earlier short diagnostics are disclosed separately. An uncapped class weight of roughly 1,200 made the mask overactivate and produced validation MAE **0.2739**, worse than the zero baseline. Capping it at 32 corrected that failure. These development fits and six validation candidates are not additional independent test replications.
+
+**Final protocol:** each of the three learned variants is fitted at seeds **0, 1, and 2**, for **nine models**. Maximum training is 100 epochs with patience 12; each checkpoint is selected by validation MAE. Calibration thresholds are then fixed from calibration oracle-zero norms. Offline test is opened after all nine fits and calibrations are finalized. The temporal-history gate allows retaining the simpler current-frame model if history does not deliver the required improvement.
+
+| Variant | Test MAE, seed 0 | Test MAE, seed 1 | Test MAE, seed 2 | Mean test MAE | Across-seed CV |
+|---|---:|---:|---:|---:|---:|
+| **CURRENT_FRAME_ONLY** | 0.009087 | 0.013956 | 0.010968 | **0.011337** | 0.177 |
+| FULL_CAUSAL | 0.008874 | 0.019692 | 0.009861 | 0.012809 | 0.381 |
+| QPOS_ONLY | 0.049031 | 0.046296 | 0.050012 | 0.048446 | 0.034 |
+| ZERO_DIFFERENTIAL | — | — | — | 0.042062 | — |
+| Privileged true-parked reference | — | — | — | 3.84 × 10⁻⁸ | — |
+
+**All nine checkpoint and activation outcomes.** Recall and false positives use each model's separately frozen calibration threshold; low false-positive rate without recall is not success.
+
+| Variant | Seed | Selected epoch | Test active recall | Test oracle-zero false-positive rate | Test active median direction cosine |
+|---|---|---:|---:|---:|---:|
+| CURRENT_FRAME_ONLY | 0 | 53 | 98.28% | 2.154% | 0.99917 |
+| CURRENT_FRAME_ONLY | 1 | 61 | 94.32% | 1.423% | 0.99789 |
+| CURRENT_FRAME_ONLY | 2 | 82 | 97.19% | 1.103% | 0.99888 |
+| FULL_CAUSAL | 0 | 60 | 97.99% | 1.334% | 0.99895 |
+| FULL_CAUSAL | 1 | 16 | 83.60% | 2.718% | 0.99167 |
+| FULL_CAUSAL | 2 | 46 | 91.34% | 2.885% | 0.99793 |
+| QPOS_ONLY | 0 | 9 | 0.11% | 0.000% | 0.21553 |
+| QPOS_ONLY | 1 | 1 | 0.57% | 0.090% | 0.35195 |
+| QPOS_ONLY | 2 | 6 | 0.00% | 0.000% | 0.34307 |
+
+**What the ablations show:**
+
+- The current-frame model's mean MAE is **73.0% lower than zero differential** and **76.6% lower than QPOS_ONLY**. The state-conditioned model's mean error is **15.2% worse than zero differential**. Learned proximity conditioning helps this offline objective under the shared output constraint.
+- Four-frame history has **13.0% higher mean MAE** and greater seed variability than the current frame. However, it has lower MAE at **two of three seeds**; its worse average is driven by seed 1. The supported conclusion is that the tested temporal model did not provide a reliable average improvement here, not that temporal information can never help proximity policies.
+- The zero-differential control cannot detect active corrections. The state-conditioned arm also has almost no active recall at its calibration thresholds. Their quiet output must not be mistaken for correct hazard detection.
+
+**Calibration and the failed readiness gate.** The current-frame model's thresholds and transfer results are:
+
+| Seed | Frozen threshold | Calibration false-positive rate | Validation false-positive rate | Offline-test false-positive rate | ≤2% test gate |
+|---|---:|---:|---:|---:|---|
+| 0 | 0.0281943 | 1.01% | 2.61% | 2.15% | Fail |
+| 1 | 0.0554084 | 1.01% | 1.35% | 1.42% | Pass |
+| 2 | 0.0348688 | 1.01% | 1.39% | 1.10% | Pass |
+
+The saved decision is **`PARKED_REFERENCE_MODEL_OVERFIT`**, imposed by the failure of the seed-0 false-positive gate. More precisely, the observed problem is threshold transfer: seed-0 differential MAE improves from **0.020782 validation → 0.009914 calibration → 0.009087 test**, so a simple “test error rose” account would be wrong. The report's later threshold-CV sentence uses **0.0313 / 0.1394 / 0.0368**, which `final_training.json` identifies as the **FULL_CAUSAL** thresholds; it must not be attributed to CURRENT_FRAME_ONLY's threshold table.
+
+**Additional test measurements, current-frame seed 0:** changed-mask precision **0.797**, recall **0.903**, F1 **0.847**, AUPRC **0.900**, with changed-pixel prevalence **0.000798**. All-valid parked-field MAE is **0.0000934**, but MAE on the changed pixels is **0.07354**; reporting only the all-pixel score would hide the rare-pixel difficulty. There are zero nonfinite outputs and zero physical-bound violations. Predicted-versus-oracle correction-norm correlation is **0.934**, oracle-zero RMS **0.00628**, and hazard-absent RMS **0.00844**, compared with raw SafetyHead RMS **2.1764** on those absent frames.
+
+| Offline source mode, seed 0 | Frames | Active frames | Differential MAE |
+|---|---:|---:|---:|
+| ACT-only on-policy | 4,000 | 781 | 0.007285 |
+| Oracle on-policy | 4,000 | 641 | 0.008801 |
+| Expert reconstructed | 1,543 | 322 | 0.014497 |
+| Learner-induced on-policy | 0 | — | Not evaluable |
+
+The validity-mask agreement entry 0.119 in the frozen training JSON is a documented obsolete metric definition. The corrected agreement is 1.000 because all 24,430,080 test pixels have true current and parked validity; that result is uninformative about handling dead sensors. The JSON is preserved rather than silently rewritten. No current-128-D history claim, closed-loop safety gain, or learner-induced-state generalization should be inferred from Y15.
+
+**Evidence:** [full final decision and corrections](CAUSAL_PARKED_SKIN_REFERENCE_V1_FINAL_DECISION.md), [all nine trained models and test metrics](../diagnostics_output/causal_parked_skin_reference_v1/final_training.json), [model and ablation definitions](../causal_parked_skin/model.py), [validation selection](../diagnostics_output/causal_parked_skin_reference_v1/selection.json).
+
+<a id="activity-gate-ablations"></a>
+#### Y17–Y21 — Proximity/state interventions and uncertainty-control follow-ups
+
+**Y17 question:** were the parked-reference model's early false activations caused by a robot-state/onset prior, or by how it interpreted proximity? The experiment holds the seed-0 `CURRENT_FRAME_ONLY` checkpoint fixed and applies eight interventions across five matched frame groups. The key group consists of **17 previously identified false-positive frames**, not 17 new independent episodes. Its activity score is `sigmoid(max mask logit)` from the shared decoder.
+
+| Intervention on the same 17 frames | Mean activity | Mean predicted correction norm | Predicted changed-mask fraction |
+|---|---:|---:|---:|
+| Full input | 0.9999 | 0.1178 | 0.00391 |
+| Identity control, current field re-supplied | 0.9999 | 0.1178 | 0.00391 |
+| State shuffled within onset frames | 0.9999 | 0.1164 | 0.00402 |
+| State replaced by its batch mean | 0.9999 | 0.1179 | 0.00423 |
+| State swapped across hazard strata | 0.7316 | 0.0794 | 0.00324 |
+| Proximity retained, state zeroed | 0.5489 | 0.0571 | 0.00076 |
+| Proximity swapped across hazard strata | 0.3848 | 0.1570 | 0.00170 |
+| Real state retained, proximity replaced by clear reference | **0.0229** | **0.0008** | **0.00000** |
+
+The identity control reproduces the full-input prediction exactly. Shuffling or mean-replacing state leaves the false activation almost unchanged, while clearing proximity suppresses it. The recorded diagnostic classification is **`PROXIMITY_AMBIGUITY_DOMINANT`**. This local intervention evidence contradicts the earlier simple state-prior explanation. It does not prove formal non-identifiability from proximity in all states. Zeroing the whole state vector is itself out of distribution and is a weaker control than shuffling or mean replacement.
+
+A separate **90,241-parameter proximity-only activity gate** was then trained once at seed 0 with a nested **40/8/8/8 episode** train/validation/calibration/test split, onset-zero weighting of 4×, and an onset-max penalty. Its inputs are only closeness and validity. It failed the joint calibration requirement of median active recall ≥0.80 and a bootstrap upper bound on mean trajectory false-positive rate ≤0.02.
+
+| Calibration threshold | Median active recall | Mean trajectory false-positive rate | Maximum hazard-absent trajectory false-positive rate | Longest onset false-positive run |
+|---|---:|---:|---:|---:|
+| 0.50 | 0.802 | 0.2471 | 0.6450 | 5 |
+| 0.80 | 0.751 | 0.1805 | 0.5700 | 5 |
+| 0.90 | 0.580 | 0.1297 | 0.3350 | 2 |
+| 0.99 | 0.022 | 0.0109 | 0.0350 | 1 |
+
+Of **5,447** candidate thresholds, 3,502 clear the recall screen but **zero** satisfy the whole contract. Gate AUROC is **0.9893 training / 0.7859 calibration / 0.8734 nested test**, versus **0.9982 / 0.9998 / 0.9979** for the old shared head on those same splits. Decision: **`PROX_ACTIVITY_GATE_CALIBRATION_INFEASIBLE`**. No live rollouts are run in this stage.
+
+**Y18 question:** can disagreement among the three already trained current-frame models identify those failures? The models are loaded as fixed diagnostics. Several uncertainty metrics are compared; none is silently promoted to a live controller by this audit.
+
+| Diagnostic uncertainty measure | AUROC | Partial AUROC at 5% false-positive rate | Recorded interpretation |
+|---|---:|---:|---|
+| Changed-pixel-mask agreement | **0.9787** | 0.7825 | Selected diagnostic |
+| Active-link-set agreement | 0.9596 | 0.8037 | Passes diagnostic criterion |
+| Active-sensor-set agreement | 0.9609 | 0.7975 | Passes diagnostic criterion |
+| Correction-norm coefficient of variation | 0.9476 | 0.5476 | Excluded: would also reject many ordinary quiet frames |
+| Maximum parked-field variance | 0.9219 | 0.6962 | Fails criterion |
+| Mean parked-field variance | 0.9035 | 0.6653 | Fails criterion |
+| Mean pairwise correction cosine | 0.8968 | 0.6231 | Fails criterion |
+| Minimum pairwise correction cosine | 0.8868 | 0.5385 | Fails criterion |
+| Correction-norm variance | 0.6678 | 0.4872 | Fails criterion |
+| Predicted-head variance | 0.6231 | 0.4872 | Fails criterion |
+
+At the selected diagnostic operating point, mask agreement rejects **17/17** historical false positives while retaining **96.5%** of active and **94.4%** of hard-active frames. Median mask agreement is **0.1667** on historical failures versus **0.7143 / 0.7555 / 0.7778** for hard-active/late-active/onset-active groups. This operating point is distinct from the report's fixed top-5%-rejection analysis, which retains **92.39%** active and **88.20%** hard-active frames while also rejecting 17/17.
+
+No exact current-proximity or full-input opposite-label collision was found in the 60,793-frame search under its recorded rules. Absence of such a pair in a finite corpus does not prove global observability. The immediate conclusion is useful diagnostic separation on reused examples, recorded as **`EPISTEMIC_UNCERTAINTY_SIGNAL_PRESENT`**; 17 correlated historical frames provide limited evidence of future false-positive rejection.
+
+**Y19–Y21 test whether the diagnostic can become a calibrated gate, and record the failures:**
+
+| Follow-up | Controlled change | Result |
+|---|---|---|
+| Y19: trajectory-bootstrap ensemble | Train five models on bootstrap samples of 40 episode clusters; each sees 24–28 unique clusters | Median mask agreement active **0.5467**, zero **0.6000**; no jointly feasible activation threshold. Data-bootstrap variation does not reproduce the three-seed diagnostic separation |
+| Y20: full-seed joint gate | Use the original full-data seeds with joint calibration | **1,690** calibration pairs feasible, median active recall **1.0**, zero upper-bound calibration false activation; nevertheless all three offline transfer checks fail |
+| Y21: three-pair agreement repair | Restore the missing pair in the three-seed agreement calculation | Historical false-positive executions improve only **10/17 → 9/17**; threshold changes **0.225 → 0.166667**; offline transfer still fails |
+
+These negative controls prevent presenting Y18's 17/17 diagnostic rejection as a validated deployable safety mechanism. Y22 below is a separate bounded live development result; its unused uncertainty veto cannot establish that the uncertainty component caused any live benefit.
+
+**Evidence:** [all eight input interventions and one-fit gate](HYBRID_OBSTACLE_PROX_ACTIVITY_GATE_FINAL_DECISION.md), [ten uncertainty diagnostics and identifiability audit](HYBRID_OBSTACLE_ACTIVITY_IDENTIFIABILITY_FINAL_DECISION.md), [trajectory-bootstrap ensemble](HYBRID_OBSTACLE_UNCERTAINTY_ABSTENTION_FINAL_DECISION.md), [joint calibration](HYBRID_OBSTACLE_FULL_SEED_JOINT_GATE_FINAL_DECISION.md), [three-pair repair](HYBRID_OBSTACLE_THREE_PAIR_JOINT_GATE_FINAL_DECISION.md).
 
 #### Y22 — Three-pair gate, bounded live development
 
@@ -642,9 +1247,11 @@ The quoted confidence intervals and p-values are those in the source analyses, e
 
 Scientific failure records, invalid initial attempts, repair reports, and later successful infrastructure retries should remain together in any release. A corrected summary supersedes an erroneous interpretation without deleting the original attempt.
 
-### D.2 Machine-readable source manifest
+### D.2 Source access and local audit index
 
-The companion [source manifest](PROJECT_EXPERIMENTS_20260916.sources.json) records paths, SHA-256 hashes, source type, and remote commit for the material indexed during this audit. A listed file is an evidence pointer, not automatically a distinct experiment or a verified completed rollout. The readable source tables below include retained report families and remote per-arm summaries; all raw trajectory files are intentionally not expanded into this document.
+This Markdown contains the numerical results, interpretations, and source links needed to read the inventory. The optional local index `docs/PROJECT_EXPERIMENTS_20260916.sources.json` records paths, hashes, source types, and the remote commit from the initial audit; it is **not included in this Markdown-only commit**. The readable source tables below remain part of this file. A listed directory is an evidence pointer, not automatically a distinct experiment or a completed rollout.
+
+Repository-relative links point to retained code, reports, and result summaries where available. Absolute `/root/...` links identify local-only artifact roots and will require that workspace; the experiment's principal results are reproduced above so that these paths are not required to understand the conclusion. Plans and other uncommitted local documents are not evidence of completed experiments. Raw trajectory files are not exhaustively listed here.
 
 ### D.3 Remote per-arm results, read directly from saved JSONs
 
