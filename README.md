@@ -235,7 +235,8 @@ hallway `eval_act.py`, v1011d `eval_act_v1011d.py`, v107_spaced
 command if needed. Do not paste into `eval_output/simple_hallway_n50/`.
 
 ```bash
-./scripts/exp/eval_v1_hallway.sh
+EXP=PACT_RAW ./scripts/exp/eval_v1_hallway.sh
+EXP=PACT_READOUT ./scripts/exp/eval_v1_hallway.sh
 ./scripts/exp/eval_v1011d.sh
 ./scripts/exp/eval_v107_spaced.sh
 ```
@@ -312,6 +313,8 @@ python eval_act_v107spaced.py \
 # v1011d wrist-only n=2 done in simple_v1011d_wrist_only/. n=50 running in
 # simple_v1011d_wrist_only_n50/. Do not paste either command again.
 ```
+
+**Sensor-keep ablation (hallway, paired with H-B).** `--sensor_keep_frac` 1 / 0.75 / 0.5 / 0.25 / 0, same `seed_base=2026` and `house_ind=1`. **100% column is the existing H-B n=50 dirs** (do not re-run). **0% keep must run** — train skin is already mostly far, so drop-to-0.5 m is the normal state; if 0% ≈ 100% the policy ignores skin. Poisson per link; log realized mean±sd. `--save_first_frame` writes t=0 RGB+depth+mosaic. Flags and table: [eval-act-frozen](#eval-act-frozen). v12 has no closed-loop eval.
 
 **W&B (frozen evals).** On by default for `eval_act.py`, `eval_act_v1011d.py`,
 and `eval_act_v107spaced.py`. Project `PC_ACT_experiments` (same as
@@ -467,6 +470,36 @@ pass `--wandb_run_name "${RUN}_eval"` so eval does not share a train run.
 `0` = episode-only. Helper: [`scripts/pact_eval_wandb.py`](scripts/pact_eval_wandb.py).
 No videos to W&B. Do not put wandb keys in `_protocol_identity`.
 
+**Sensor-keep sweep (sensor-agnostic test).** Hallway H-B paired: same ckpts, house 1, seeds `2026+i`, n=50, frozen `eval_act.py` (open-loop chunk, gated EGL, query history, terminal `judge_success`). Columns are **nominal** keep %. **100% = existing H-B numbers** (do not overwrite those dirs). Sweep **75 / 50 / 25 / 0** into new `eval_output/..._keep{pct}/`. **0% is required.** Train skin pixels are already 85–90% ≥0.5 m, so filling a dropped SPAD with 0.5 m is the normal training state. If 0% ≈ 100% on place/bar/free, the policy ignores skin and “sensor agnostic” is trivial. Vanilla ACT s1 (no prox) is the other control: if PACT at 0% ≈ ACT, skin was unused.
+
+Keep rule ([`submodules/act/sensor_keep.py`](submodules/act/sensor_keep.py)): groups by prefix before `_sensor_` (`link5_back` and `link5_front` are two links). `p>=1` keep all exact; `p<=0` drop all; else per link `k=clip(Poisson(p*n_L),0,n_L)` then uniform sample. Clip pulls E[k] below λ; small links are noisy (`link5_front` n=4). Do not claim realized keep equals nominal p. Each `episodes.jsonl` row logs per-link counts; `eval_summary.json` `sensor_keep` is mean±sd overall and per link. Fill = `D_MAX` 0.5 m (raw closeness 0; readout >20 cm invalid → zero XYZ). Never fill 0. Architecture stays 40 tokens.
+
+Flags: `--sensor_keep_frac` (default 1), `--sensor_mask_seed` (default `--seed_base`), `--sensor_mask_fixed` (one mask for all eps, figure), `--save_first_frame` (not a protocol field; enables `{cam}_depth` on hallway 977acd6 / submodule molmospaces — RGB uuid unchanged, policy still reads `obs[cam]`). Resume refuses `sensor_keep_frac` / `sensor_mask_fixed` mismatch. Helper: [`scripts/pact_eval_sensor_keep.py`](scripts/pact_eval_sensor_keep.py). Shell: [`scripts/exp/eval_v1_hallway.sh`](scripts/exp/eval_v1_hallway.sh) defaults `SENSOR_KEEP_FRACS="0.75 0.5 0.25 0"`. Same flags on `eval_act_v1011d.py` / `eval_act_v107spaced.py`; those are not the paired H-B table.
+
+Place / bar / free of 50. Fill keep% cells after the sweep. 100% already on disk:
+
+| ckpt | 100% | 75% | 50% | 25% | 0% |
+|---|---|---|---|---|---|
+| ACT s1 | 15 / 20 / 30 | — | — | — | — |
+| PACT-raw s0 | 21 / 13 / 37 | | | | |
+| PACT-readout s0 | 21 / 9 / 41 | | | | |
+
+100% dirs: `eval_output/pact_place_corridor_v5_{ACT_s1,PACT_RAW_s0,PACT_READOUT_s0}_bs8_cs50_lr1e-5_e2000/`. Protocol footnote: Poisson per link, fill 0.5 m, realized keep mean±sd. ACT has no skin — only the 100% column. If readout 0% ≈ readout 100% (and ≈ ACT), stop claiming the skin is used. Paired tests on the same 50 seeds are allowed.
+
+```bash
+# hallway keep smoke (0% and 50%). n=2. Not a rate. New dirs.
+CKPT=submodules/act/ckpts/pact_place_corridor_v5/pact_place_corridor_v5_PACT_RAW_s0_bs8_cs50_lr1e-5_e2000
+for P in 0.5 0; do
+  PCT=$(python -c "print(int(100*float('$P')))")
+  python eval_act.py \
+    --ckpt_dir "$CKPT" --task hallway --cameras wrist_camera --num_rollouts 2 \
+    --house_ind 1 --seed_base 2026 --skin egl --history query \
+    --sensor_keep_frac "$P" --save_first_frame \
+    --output_dir "eval_output/pact_place_corridor_v5_PACT_RAW_s0_keep${PCT}_smoke" \
+    --wandb_run_name "pact_place_corridor_v5_PACT_RAW_s0_keep${PCT}_smoke_eval"
+done
+```
+
 ```bash
 conda activate mlspaces
 cd /home/jaydv/code/prox_learning
@@ -505,7 +538,8 @@ checkout's `submodules/molmospaces`,
 `PactPlaceCorridorV1011DRandomizedLayoutSampler`. Default house schedule is
 `i % 24`. `--skin_substeps train` is a squeeze run (16.67 ms substeps). Resume
 is `episodes.jsonl`; protocol mismatch (`exec_horizon` / `skin_substeps` /
-house schedule / `clutter_xy_scale` / `cameras`) refuses the output dir. `--clutter_xy_scale
+house schedule / `clutter_xy_scale` / `cameras` / `sensor_keep_frac` /
+`sensor_mask_fixed`) refuses the output dir. `--clutter_xy_scale
 1` is full V10.11d (slots 01/03/04/06 wander the published boxes; 08/09 use the
 22 cm / ±65° ring). `--clutter_xy_scale 0.25` is **easy eval**: those boxes
 shrink toward the v1011c seats. Slots 08/09 keep the 22 cm / ±65° ring

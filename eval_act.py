@@ -152,6 +152,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_sensor_keep
 import pact_eval_wandb
 
 _EPISODE_METRICS: list[dict] = []
@@ -433,8 +434,10 @@ def _install_raycast_proximity() -> None:
     )
 
 
-def _configure_eval_cameras(eval_cfg, *, need_skin: bool) -> None:
-    """Policy-rate skin, no RGB depth. Snapshot plus all RGB cams, not wrist only."""
+def _configure_eval_cameras(
+    eval_cfg, *, need_skin: bool, record_depth: bool = False
+) -> None:
+    """Policy-rate skin. RGB depth only when --save_first_frame (uuid {cam}_depth)."""
     eval_cfg.proximity_sensor_period_ms = 0.0
     cams = []
     for cam in list(eval_cfg.camera_config.cameras):
@@ -442,19 +445,20 @@ def _configure_eval_cameras(eval_cfg, *, need_skin: bool) -> None:
         if (not need_skin) and is_prox:
             continue
         if not is_prox:
-            update = {"record_depth": False}
+            update = {"record_depth": bool(record_depth)}
             if hasattr(cam, "model_copy"):
                 cam = cam.model_copy(update=update)
             elif hasattr(cam, "copy"):
                 cam = cam.copy(update=update)
             else:
-                cam.record_depth = False
+                cam.record_depth = bool(record_depth)
         cams.append(cam)
     eval_cfg.camera_config.cameras = cams
     n_prox = sum(1 for c in cams if getattr(c, "is_proximity_sensor", False))
     print(
         f"[act-eval-place] cameras={len(cams)} proximity={n_prox} "
-        f"period_ms={eval_cfg.proximity_sensor_period_ms} (0=policy-rate)"
+        f"period_ms={eval_cfg.proximity_sensor_period_ms} (0=policy-rate) "
+        f"record_depth={int(bool(record_depth))}"
     )
 
 
@@ -466,6 +470,7 @@ def _record_place_metric(
     episode_idx: int | None = None,
     seed: int | None = None,
     ever_success: bool | None = None,
+    extra: dict | None = None,
 ) -> None:
     """Bar / free fields copied from old_eval_act_place_corridor.py:509."""
     frames = audit.get("frames_with_contact") or {}
@@ -499,6 +504,8 @@ def _record_place_metric(
         rec["seed"] = int(seed)
     if ever_success is not None:
         rec["ever_success"] = int(bool(ever_success))
+    if extra:
+        rec.update(extra)
     _EPISODE_METRICS.append(rec)
     extra = f" renders={n_fresh} skip={n_skip}" if (n_fresh or n_skip) else ""
     ever_s = rec.get("ever_success")
@@ -687,7 +694,7 @@ def _apply_training_arch(pc, ckpt_dir: Path) -> None:
             setattr(pc, name, policy_config[name])
 
 
-class FrozenACTPolicy(InferencePolicy):
+class FrozenACTPolicy(pact_eval_sensor_keep.SensorKeepMixin, InferencePolicy):
     """Open-loop chunk ACT. Query-step skin history by default. Local to this file."""
 
     def __init__(self, exp_config, task=None) -> None:
@@ -707,6 +714,11 @@ class FrozenACTPolicy(InferencePolicy):
         self._prox_pcfg: dict | None = None
         self._encoder_path: str | None = None
         self.gripper_close_commanded = False
+        self._sensor_keep_frac = 1.0
+        self._sensor_mask_seed = 0
+        self._sensor_mask_fixed = False
+        self._sensor_keep_mask = None
+        self._sensor_keep_info = None
 
     def reset(self) -> None:
         self._step = 0
@@ -805,6 +817,7 @@ class FrozenACTPolicy(InferencePolicy):
         frame = stack_obs_proximity(
             obs, self._prox_encoder.sensor_order, pool=self._prox_pool
         )
+        frame = self.mask_proximity(frame)
         self._prox_hist.append(np.array(frame, copy=True))
         self._prox_hist = self._prox_hist[-8:]
 
@@ -853,6 +866,7 @@ class FrozenACTPolicy(InferencePolicy):
                 prox_np = stack_obs_proximity(
                     obs, self._prox_encoder.sensor_order, pool=self._prox_pool
                 )
+                prox_np = self.mask_proximity(prox_np)
                 prox_t = torch.from_numpy(prox_np).float().cuda().unsqueeze(0)
                 proximity_positions = encode_for_act(self._prox_encoder, prox_t)
             if self._step == 0:
@@ -1050,10 +1064,35 @@ def _fill_policy_config(eval_cfg, args, cameras: tuple[str, ...], chunk: int) ->
     eval_cfg.policy_config = pc
 
 
-def _rollout(task, policy, horizon: int, on_step=None) -> tuple[bool, bool, int]:
+def _rollout(
+    task,
+    policy,
+    horizon: int,
+    on_step=None,
+    *,
+    episode_idx: int = 0,
+    seed: int = 0,
+    save_first_frame: bool = False,
+    output_dir: Path | None = None,
+    cameras: tuple[str, ...] | None = None,
+) -> tuple[bool, bool, int]:
     """Full-horizon loop. Headline success is terminal judge_success."""
     policy.reset()
+    if hasattr(policy, "begin_sensor_keep"):
+        policy.begin_sensor_keep(episode_idx)
     observation, _ = task.reset()
+    if save_first_frame:
+        if output_dir is None:
+            raise SystemExit("[eval_act] --save_first_frame needs --output_dir")
+        pact_eval_sensor_keep.dump_first_frame(
+            obs=observation,
+            policy=policy,
+            cameras=cameras or tuple(policy.pc.camera_names),
+            output_dir=Path(output_dir),
+            episode_idx=episode_idx,
+            seed=seed,
+            prox_pool=str(getattr(policy, "_prox_pool", "min")),
+        )
     ever = False
     last_step = 0
     for _step in range(int(horizon)):
@@ -1121,6 +1160,7 @@ def parse_args() -> argparse.Namespace:
         "--output_dir",
         default="/home/jaydv/code/prox_learning/eval_output/eval_act",
     )
+    pact_eval_sensor_keep.add_cli_flags(p)
     pact_eval_wandb.add_cli_flags(p)
     return p.parse_args()
 
@@ -1186,7 +1226,11 @@ def main() -> None:
     else:
         eval_cfg, xml, sampler_cls = _build_v1011d_cfg(args, output_dir)
     _fill_policy_config(eval_cfg, args, cameras, chunk)
-    _configure_eval_cameras(eval_cfg, need_skin=bool(eval_cfg.policy_config.use_proximity))
+    _configure_eval_cameras(
+        eval_cfg,
+        need_skin=bool(eval_cfg.policy_config.use_proximity),
+        record_depth=bool(args.save_first_frame),
+    )
     _install_chunk_gated_sensors()
     if args.skin == "rays":
         if eval_cfg.policy_config.use_proximity:
@@ -1205,15 +1249,30 @@ def main() -> None:
     global _METRICS_JSONL
     _EPISODE_METRICS.clear()
     _METRICS_JSONL = output_dir / "episodes.jsonl"
+    summary_path = output_dir / "eval_summary.json"
+    keep_protocol = pact_eval_sensor_keep.protocol_fields(args)
+    if summary_path.is_file():
+        saved = json.loads(summary_path.read_text())
+        old = saved.get("protocol") or {}
+        mismatch = pact_eval_sensor_keep.keep_fields_mismatch(old, keep_protocol)
+        if mismatch:
+            raise SystemExit(
+                f"[eval_act] refuse resume into {summary_path.parent}: {mismatch}. "
+                "Use a new --output_dir."
+            )
     done = _load_resume(_METRICS_JSONL)
 
     policy = FrozenACTPolicy(eval_cfg)
     policy.prepare_model()
+    policy.configure_sensor_keep(
+        keep_frac=float(args.sensor_keep_frac),
+        mask_seed=pact_eval_sensor_keep.resolved_mask_seed(args),
+        mask_fixed=bool(args.sensor_mask_fixed),
+    )
     horizon = int(eval_cfg.task_horizon)
     sampler = sampler_cls(eval_cfg)
     history_label = _history_json_label(args.history)
     encoder_path = getattr(policy, "_encoder_path", None)
-    summary_path = output_dir / "eval_summary.json"
     wb = pact_eval_wandb.start(
         args,
         output_dir=output_dir,
@@ -1227,6 +1286,9 @@ def main() -> None:
             "history": args.history,
             "house_ind": args.house_ind,
             "chunk_size": chunk,
+            **keep_protocol,
+            "sensor_mask_seed": pact_eval_sensor_keep.resolved_mask_seed(args),
+            "save_first_frame": bool(args.save_first_frame),
         },
     )
     wb.log_running(_EPISODE_METRICS, _summarize_place_metrics())
@@ -1262,7 +1324,10 @@ def main() -> None:
                 "success": "terminal",
                 "end_on_success": False,
                 "temporal_aggregation": False,
+                **keep_protocol,
             },
+            "save_first_frame": bool(args.save_first_frame),
+            "sensor_keep": pact_eval_sensor_keep.summary_keep_block(_EPISODE_METRICS),
             "package_versions": {
                 "torch": torch.__version__,
                 "mujoco": _pkg_version("mujoco"),
@@ -1278,7 +1343,8 @@ def main() -> None:
         f"[eval_act] molmospaces={_MOLMO_ROOT} commit={_git_rev(_MOLMO_ROOT)} "
         f"sampler={sampler_cls.__name__} xml={Path(xml).name} cameras={cameras} "
         f"horizon={horizon} n={args.num_rollouts} skin={args.skin} "
-        f"history={history_label}",
+        f"history={history_label} sensor_keep_frac={args.sensor_keep_frac} "
+        f"sensor_mask_fixed={int(bool(args.sensor_mask_fixed))}",
         flush=True,
     )
 
@@ -1303,6 +1369,11 @@ def main() -> None:
                 policy,
                 horizon,
                 on_step=lambda step, rolled, i=i: wb.maybe_log_step(i, step, rolled),
+                episode_idx=i,
+                seed=seed,
+                save_first_frame=bool(args.save_first_frame),
+                output_dir=output_dir,
+                cameras=cameras,
             )
             print(
                 f"[eval_act] ep={i} seed={seed} wall={time.monotonic() - t0:.1f}s "
@@ -1316,6 +1387,7 @@ def main() -> None:
                 episode_idx=i,
                 seed=seed,
                 ever_success=ever,
+                extra=policy.sensor_keep_log(),
             )
             done.add((i, seed))
             _write_summary(summary_path, summary_payload(len(_EPISODE_METRICS)))

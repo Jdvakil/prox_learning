@@ -22,6 +22,32 @@ Newest session at the top.
 
 ---
 
+## 2026-09-16 — hallway eval shell honors EXP=
+
+- **When:** User ran `EXP=PACT_READOUT … ./scripts/exp/eval_v1_hallway.sh`. Echoed `PACT_RAW` keep75.
+- **Why:** Script assigned `EXP=PACT_RAW` after the env prefix, so the prefix never stuck.
+- **What:** [`scripts/exp/eval_v1_hallway.sh`](scripts/exp/eval_v1_hallway.sh) uses `${EXP:-PACT_RAW}`, `${SEED:-0}`, `${NUM_ROLLOUTS:-50}`. README eval launchers show `EXP=PACT_RAW` / `PACT_READOUT`.
+- **How:** Same `${VAR:-default}` pattern as train shells. Keep-frac / first-frame knobs already used it.
+- **Not done:** Live tmux is already **PACT_RAW keep75** n=50 (valid raw arm). Leave it. Readout needs a second GPU or wait, then `EXP=PACT_READOUT NUM_ROLLOUTS=50 SENSOR_KEEP_FRACS="0.75 0.5 0.25 0" SAVE_FIRST_FRAME=1 ./scripts/exp/eval_v1_hallway.sh`. Confirm echo contains `PACT_READOUT` before ep0.
+
+---
+
+## 2026-09-16 — sensor-keep eval (Poisson per link)
+
+- **When:** User: show model is sensor-agnostic; n% sensors per link via Poisson; save first-frame RGBD+sensors; then notes: required 0% control, sweep 100/75/50/25/0 paired with H-B, `--sensor_mask_fixed`, log realized mean±sd, fill 0.5 m, hallway `{cam}_depth` uuid, one ablation table with 100% = H-B.
+- **Why:** Train skin is already 85–90% far; drop-to-0.5 m is the normal state. Without 0% keep, “sensor agnostic” can be “policy ignores skin.”
+- **What:** [`submodules/act/sensor_keep.py`](submodules/act/sensor_keep.py) Poisson keep + fill=`D_MAX` + RGBD/mosaic composer. [`scripts/pact_eval_sensor_keep.py`](scripts/pact_eval_sensor_keep.py) flags `--sensor_keep_frac` `--sensor_mask_seed` `--sensor_mask_fixed` `--save_first_frame`. Wired into [`eval_act.py`](eval_act.py), [`eval_act_v1011d.py`](eval_act_v1011d.py), [`eval_act_v107spaced.py`](eval_act_v107spaced.py): mask after `stack_obs_proximity`, t=0 PNG, jsonl per-link counts, summary mean±sd, protocol identity. Hallway shell defaults sweep 75/50/25/0. Tests [`tests/test_sensor_keep.py`](tests/test_sensor_keep.py). README `#eval-act-frozen` paired table (100% = H-B).
+- **How:** `p>=1` keep all exact (Poisson(n) would drop). `p<=0` drop all. Else `k=clip(Poisson(p*n_L),0,n_L)` then uniform. `link5_back` / `link5_front` are two links. Fill 0.5 m never 0. `--save_first_frame` sets `record_depth=True`; depth uuid `{cam}_depth` on hallway 977acd6; RGB uuid unchanged. ACT + `p<1` is a no-op + warn.
+- **Not done:** User runs smoke n=2 (0% and 50%) then n=50 sweep 75/50/25/0 for raw s0 and readout s0. v12 still unwired.
+
+## 2026-09-16 (later) — first-frame dump unwraps molmo obs list
+
+- **When:** Keep-smoke n=2 died at t=0: `missing RGB obs['wrist_camera']`.
+- **Why:** `task.reset()` returns a **list of dicts**. Policy uses `obs[0]`. Dump treated the list as the obs dict.
+- **What:** `unwrap_obs` in [`scripts/pact_eval_sensor_keep.py`](scripts/pact_eval_sensor_keep.py). Test `test_unwrap_obs_list_like_molmo_reset`.
+- **How:** Same unwrap as `FrozenACTPolicy.obs_to_model_input`.
+- **Not done:** Re-run keep 50/0 smoke.
+
 ## 2026-09-13 — paper docs: README refresh + PAPER.md
 
 - **When:** User: paper due in 2 days; README + CURSOR must hold method, model, results; new distilled plain-language markdown.
