@@ -14,10 +14,15 @@ The current model is **PACT-128D with a jointly fine-tuned proximity encoder**, 
 | A02 | Sensor-location assignment | Current 128-D, seed 3103 | **Completed; both primary dependence comparisons positive** | Does the policy depend on which body location produced each embedding? |
 | A03 | History content, ordering, and freshness | Current 128-D | **Planned; no results** | Does the policy depend on past geometry, its ordering, and fresh measurements? |
 | A04 | Reduce the sensor count from 40 to 20 | Current-model study discussed with the team | **Planned; execution/results not verified here** | How does reducing instrumentation affect performance? |
+| S01 | VL53L4CD single-zone transfer | Current 128-D, seed 3103; 50 matched scenes | **Completed; strict success 22%; negative transfer** | Can one distance per sensor replace the original grid without retraining? |
+| S02 | VL53L7CX 8×8 transfer | Current 128-D, seed 3103; 50 matched scenes | **Completed; strict success 48%; retention inconclusive** | Does the fixed model tolerate this different multizone profile? |
+| S03 | VL53L7CX native 4×4 resolution | Current 128-D, seed 3103; 50 matched scenes | **Completed; strict success 50%; retention inconclusive** | Can sixteen native values replace sixty-four with other L7CX settings fixed? |
+| S04 | VL53L1CB sequential 2×2 transfer | Current 128-D, seed 3103; 50 matched scenes | **Completed; strict success 16%; loss exceeds margin** | Does the fixed model tolerate four sequential ranges and narrower coverage? |
+| S05 | L7CX 4×4 → 2×2 software aggregation | Current 128-D, seed 3103; 50 scheduled scenes | **Running; final results pending** | Can four quadrant minima preserve performance with physical acquisition unchanged? |
 | H01–H13 | Earlier ablations and related controls | Multiple older models and tasks | **Recorded separately in Section 5** | Historical evidence; preserve each experiment's model and task identity |
 | External | Visibility/intervention and representation ablations held by colleague | Current 128-D, according to the team | **Visibility/interventions reported completed; representation ablations believed completed; numerical records unavailable here** | Reconcile exact conditions before duplicating or making claims |
 
-A02 is the completed spatial-identity follow-up to A01. A03 remains planned. Current status and the retained scientific artifacts determine whether a result is complete; an implemented intervention alone is not a measured finding.
+A02 is the completed spatial-identity follow-up to A01. A03 remains planned. S01–S05 are documented in Section 8, including both reused ACT/PACT references and every completed sensor-transfer result. Current status and the retained scientific artifacts determine whether a result is complete; an implemented intervention alone is not a measured finding.
 
 ## 2. A01 — Live versus unrelated 128-D embeddings
 
@@ -359,3 +364,180 @@ Related archived studies include [free/visible/camera-hidden obstacles and train
 - **Evidence:** frozen protocol, structured analysis, paired records, figure, implementation entry points, and execution deviations.
 
 Update the register when an experiment changes status. Preserve the original evidence and distinguish later reanalysis from new independent experiments.
+
+## 8. Sensor-model transfer and spatial-resolution experiments
+
+**Status at this update (2026-09-17 UTC): four completed sensor interventions, 50 scientific rollouts each; one additional 50-rollout software-aggregation intervention is running.** The original PACT and ACT results below are reused reference evaluations, not new sensor experiments. All PACT conditions retain **40 mounted sensors**. Changing 8×8 to 4×4 or 2×2 changes spatial information per sensor; it does not execute A04's proposed reduction from 40 physical sensors to 20.
+
+These are **zero-shot inference evaluations of simulated measurement profiles**: the previously jointly fine-tuned policy and its corresponding encoder receive no further updates, and normalization is not refit. “Zero-shot” describes adaptation to the changed measurement stream; the task and these 50 initial scenarios were already evaluated. The studies do not establish unseen-environment, new-task, or physical-hardware generalization.
+
+### Shared configuration, references, and outcome definitions
+
+All PACT rows use the seed-3103 final-update-60,000 checkpoint, paired 128-D encoder, and normalization hashes recorded in A01. They retain wrist RGB at 240×320, the canonical 40-sensor order, the original encoder calibration/preprocessing, eight causal control frames, and minimum pooling over four observation polls. The controller predicts chunks of 100, queries every control step, uses temporal aggregation history 100, and executes all 900 actions without early success termination. Physics runs at 2 ms; the control interval is 66 ms. A repeated value or held poll is not an additional independent measurement.
+
+Each completed intervention uses all **50 identical source scenarios**, including the original selected sampling retry, XML, object poses, and robot initialization. Initial physical observations and wrist RGB are checked against the saved references; only the declared proximity values/metadata and, where optics change, proximity-specific diagnostic projections may differ. No scenes are removed because a policy fails. Original policy/encoder/stats hashes and unchanged inference weights are audited.
+
+The original PACT reference is the **VL53L5CX-like 8×8 simulator**, with a 45°×45° view and four simulated acquisitions at 16, 32, 48, and 64 ms per 66 ms control interval. Its nominal 60 Hz 8×8 acquisition exceeds the real L5CX's documented 8×8 maximum of 15 Hz. This source distribution is preserved as historical evidence; it is not presented as a hardware-accurate L5CX implementation. The L7CX studies use 15 Hz native acquisition. See the [L5CX driver manual](https://www.st.com/resource/en/user_manual/um2884-a-guide-to-using-the-vl53l5cx-multizone-timeofflight-ranging-sensor-with-wide-field-of-view-ultra-lite-driver-uld-stmicroelectronics.pdf) and [L7CX driver manual](https://www.st.com/resource/en/user_manual/um3038-a-guide-to-using-the-vl53l7cx-timeofflight-multizone-ranging-sensor-with-90-fov-stmicroelectronics.pdf).
+
+The **ACT reference is the camera-only seed-3103 ACT** from the [audited three-method comparison](diagnostics_output/pact_place_v1010c_readout_s3_v1/comparison.json), using the same 50 scene identities and controller horizon. Its policy hash is `9abe289b329b78ec622f1c22984dd995fdd471aecebcd6ca6fdfa64de7fddf81`. Do not substitute the older frozen-encoder 32-D PACT comparator for ACT. On this documentation update, all 50 ACT results and raw contact telemetry were reread; their result hashes and physical scenario identities matched the source records.
+
+**Primary outcome:** collision-free placement, requiring successful task completion and no forbidden contact anywhere in the full rollout. Forbidden classes are `hazard_bar`, `clutter`, `other_environment`, and `mounted_fixture`; intended `grasp_target` and `place_receptacle` contacts remain allowed. Collision-free rollouts include unsuccessful rollouts, so they must not be described as task success. Every complete arm has **1,485,050 audited physics samples** (50 × 29,701). Contact exposure counts the union of forbidden classes once per sample. Categories overlap; their counts must not be added to reconstruct the union.
+
+### Complete cross-profile outcome table
+
+All completed rows below have 50 rollouts. ACT is descriptive context; each intervention's prespecified paired comparator is identified in the statistical table.
+
+| Policy / simulated profile | Placement | Collision-free placement | Collision-free rollout | Any forbidden contact ↓ |
+|---|---:|---:|---:|---:|
+| ACT — RGB + joints | 19/50 (38%) | **16/50 (32%)** | 25/50 (50%) | 25/50 (50%) |
+| Original PACT — L5CX-like 8×8 | 27/50 (54%) | **24/50 (48%)** | 32/50 (64%) | 18/50 (36%) |
+| S01 — VL53L4CD single-zone | 20/50 (40%) | **11/50 (22%)** | 17/50 (34%) | 33/50 (66%) |
+| S02 — VL53L7CX 8×8 | 28/50 (56%) | **24/50 (48%)** | 33/50 (66%) | 17/50 (34%) |
+| S03 — VL53L7CX 4×4 | 29/50 (58%) | **25/50 (50%)** | 35/50 (70%) | 15/50 (30%) |
+| S04 — VL53L1CB 2×2 sequential | 19/50 (38%) | **8/50 (16%)** | 18/50 (36%) | 32/50 (64%) |
+| S05 — L7CX 4×4 → 2×2 software aggregation | Pending | Pending | Pending | Pending |
+
+| Policy / simulated profile | Target touch | Lift ≥1 cm | Forbidden-contact samples | Contact exposure ↓ |
+|---|---:|---:|---:|---:|
+| ACT — RGB + joints | 36/50 (72%) | 25/50 (50%) | 141,834 | 9.551% |
+| Original PACT — L5CX-like 8×8 | 43/50 (86%) | 33/50 (66%) | 29,000 | 1.953% |
+| S01 — VL53L4CD single-zone | 35/50 (70%) | 25/50 (50%) | 114,359 | 7.701% |
+| S02 — VL53L7CX 8×8 | 44/50 (88%) | 32/50 (64%) | 25,337 | 1.706% |
+| S03 — VL53L7CX 4×4 | 43/50 (86%) | 32/50 (64%) | 25,163 | 1.694% |
+| S04 — VL53L1CB 2×2 sequential | 35/50 (70%) | 22/50 (44%) | 113,468 | 7.641% |
+
+ACT's all-forbidden total is **141,834 samples (9.551%)**. The older hazard-plus-clutter union of 139,167 excludes other-environment contacts and must not replace this total. The 2×2 L1CB condition ties ACT's placement rate (38%) and has lower contact exposure, but has lower collision-free placement (16% versus 32%) and more rollouts with any forbidden contact (64% versus 50%). Therefore “worse than ACT” must identify the metric.
+
+### Contact-class detail
+
+Cells show **rollouts with the contact / 50; audited samples**. Overlapping categories explain why totals can exceed the union.
+
+| Policy / simulated profile | Hazard bar | Clutter | Other environment | Mounted fixture |
+|---|---:|---:|---:|---:|
+| ACT — RGB + joints | 11/50; 66,395 | 21/50; 94,445 | 2/50; 2,667 | 0/50; 0 |
+| Original PACT — L5CX-like 8×8 | 6/50; 20,148 | 13/50; 9,251 | 0/50; 0 | 0/50; 0 |
+| S01 — VL53L4CD single-zone | 11/50; 61,210 | 25/50; 53,660 | 0/50; 0 | 0/50; 0 |
+| S02 — VL53L7CX 8×8 | 4/50; 10,153 | 13/50; 15,184 | 0/50; 0 | 0/50; 0 |
+| S03 — VL53L7CX 4×4 | 5/50; 13,461 | 10/50; 11,702 | 0/50; 0 | 0/50; 0 |
+| S04 — VL53L1CB 2×2 sequential | 12/50; 58,855 | 24/50; 55,559 | 0/50; 0 | 0/50; 0 |
+
+### Paired statistics and the performance-retention rule
+
+Differences are **new condition minus its specified reference** for collision-free placement. The saved analyses use exact two-sided McNemar tests and descriptive paired bootstrap 95% intervals with 20,000 scenario resamples. Bootstrap seeds are `2026091701` through `2026091704` for S01–S04; S05 uses `2026091705`. Inference conditions on one trained checkpoint pair and the matched scenes. These are sequential exploratory follow-ups sharing references, not independent replications; the listed p-values are unadjusted across sensor studies and should not be presented as a jointly controlled confirmatory family.
+
+Each study froze a **10-percentage-point maximum acceptable loss** before its scientific outcomes. A conservative one-sided 95% lower bound above −10 pp supports retention; a conservative one-sided upper bound below −10 pp establishes a loss exceeding the margin. Otherwise retention is inconclusive. The bounds combine one-sided 97.5% Clopper–Pearson bounds for paired gain/loss probabilities. The lower and upper bounds listed below are separate one-sided bounds, not a two-sided 95% interval. A nonsignificant difference alone never establishes retention.
+
+| Study | Primary reference | Strict-success difference | Paired bootstrap 95% CI | Exact McNemar p | Reference-only / new-only successes |
+|---|---|---:|---:|---:|---:|
+| S01 — VL53L4CD single-zone | Original PACT 8×8 | -26 pp | [-40, -12] pp | 0.0023498535 | 15 / 2 |
+| S02 — VL53L7CX 8×8 | Original PACT 8×8 | +0 pp | [-14, +14] pp | 1 | 7 / 7 |
+| S03 — VL53L7CX 4×4 | L7CX 8×8 (S02) | +2 pp | [-6, +10] pp | 1 | 2 / 3 |
+| S04 — VL53L1CB 2×2 sequential | Original PACT 8×8 | -32 pp | [-46, -20] pp | 3.0517578e-05 | 16 / 0 |
+
+| Study | One-sided lower bound | One-sided upper bound | Saved retention decision |
+|---|---:|---:|---|
+| S01 | -44.12 pp | -4.15 pp | `INCONCLUSIVE_RETENTION` |
+| S02 | -20.92 pp | +20.92 pp | `INCONCLUSIVE_RETENTION` |
+| S03 | -12.46 pp | +16.06 pp | `INCONCLUSIVE_RETENTION` |
+| S04 | -46.70 pp | -12.41 pp | `LOSS_EXCEEDS_MARGIN` |
+
+S01 has a statistically detectable decline versus zero, while its conservative bounds do not determine whether the loss exceeds 10 pp. That is why its saved decision is `INCONCLUSIVE_RETENTION`; it does not mean the observed degradation is absent. S02 and S03 have encouraging point estimates, but their prespecified retention tests remain inconclusive. S04 establishes a loss exceeding the margin.
+
+### S01 — VL53L4CD single-zone transfer
+
+**Status:** completed 2026-09-17 at 04:35 UTC; 50/50 scientific rollouts, zero technical retries, zero contact-censored failures.
+
+**Question:** can the fixed policy and fine-tuned encoder operate with one range value per mounted sensor, supplied through a fixed scalar-to-8×8 adapter?
+
+**Executed measurement model:** a nominal 18° circular cone, nearest visible geometric ray from a 33×33 internal integration grid, optical-axis depth converted to radial distance, a 1 mm–1.2 m envelope, and 1 mm rounding. Each scalar is broadcast across all 64 input cells. The internal 33×33 values are discarded before inference, so this is genuinely one spatial value per sensor. Returns below the envelope saturate at 1 mm; above-range values become 1.2 m. Validity is saved for audit, not supplied as a new policy channel. Retain the original four acquisitions per 66 ms; ST's up-to-100-Hz capability is not treated as a mandatory rate. The fixed cone and nearest-ray rule are declared simulation approximations, not ST firmware or calibrated reflectance/ambient-light behavior. [ST L4CD datasheet](https://www.st.com/resource/en/datasheet/vl53l4cd.pdf).
+
+**Results:** placement falls from 27/50 to 20/50 (54% → 40%); collision-free placement falls from 24/50 to 11/50 (48% → 22%); forbidden-contact rollouts rise from 18/50 to 33/50 (36% → 66%). Exposure rises from 29,000 to 114,359 samples (1.953% → 7.701%). Strict-success difference: **−26 pp [−40, −12]**, exact `p = 0.00234985`, with 15 reference-only and two transfer-only successes.
+
+**Implication:** this specific single-zone transfer fails to preserve the original observed safety/task performance. The result limits transfer under the full changed sensing profile; it does not prove that a policy trained for single-zone sensors cannot work. Resolution, coverage, distance convention and range limits change together. The result is retained as negative evidence, alongside the L7CX results.
+
+**Evidence:** [protocol](docs/PACT_V1010C_VL53L4CD_128D_3103.md), [results](diagnostics_output/pact_place_v1010c_vl53l4cd_s3103_v1/RESULTS.md), [analysis](diagnostics_output/pact_place_v1010c_vl53l4cd_s3103_v1/analysis.json), [paired records](diagnostics_output/pact_place_v1010c_vl53l4cd_s3103_v1/paired_results.csv), and [sensor implementation](scripts/pact_vl53l4cd_sensor.py). Orchestrator/worker: `scripts/pact_v1010c_vl53l4cd_128d.py` and its `_eval.py` counterpart.
+
+### S02 — VL53L7CX 8×8 transfer
+
+**Status:** completed 2026-09-17 at 12:32 UTC; 50/50 scientific rollouts, zero technical retries, zero contact-censored failures.
+
+**Question:** does the frozen policy tolerate a different multizone profile while retaining an 8×8 spatial grid?
+
+**Executed measurement model:** native 8×8 ideal depth rendering, 60°×60° field of view, 2 cm–3.5 m clipping, 1 mm rounding, optical-axis depth, and 15 Hz full-grid acquisition. Native observations are held between acquisitions and polled using the original four-poll control interface; held polls are not independent captures. All forty mounts and their ordering remain fixed. The simulator uses the datasheet's 60°×60° square view directly rather than deriving a pinhole angle from the advertised 90° diagonal. Range, optics, and native rate differ from the original source, so this is a combined profile transfer. [ST L7CX datasheet](https://www.st.com/resource/en/datasheet/vl53l7cx.pdf).
+
+**Results:** placement is 28/50 (56%), collision-free placement 24/50 (48%), collision-free rollouts 33/50 (66%), and forbidden-contact rollouts 17/50 (34%). Contact exposure is 25,337/1,485,050 (1.706%). Relative to original PACT, strict success is unchanged in aggregate: **0 pp [−14, +14]**, exact `p = 1`; seven scenes improve and seven regress.
+
+**Implication:** the frozen policy remains useful under this simulated profile, with point estimates close to its source performance. Identical aggregate success does not imply identical behavior or established noninferiority. The one-sided lower retention bound is −20.92 pp, so formal retention within 10 pp is inconclusive. Do not describe this as proven equivalence or real-hardware transfer.
+
+**Evidence:** [protocol](docs/PACT_V1010C_VL53L7CX_128D_3103.md), [results](diagnostics_output/pact_place_v1010c_vl53l7cx_s3103_v1/RESULTS.md), [analysis](diagnostics_output/pact_place_v1010c_vl53l7cx_s3103_v1/analysis.json), [paired records](diagnostics_output/pact_place_v1010c_vl53l7cx_s3103_v1/paired_results.csv), and [sensor implementation](scripts/pact_vl53l7cx_sensor.py). Orchestrator/worker: `scripts/pact_v1010c_vl53l7cx_128d.py` and its `_eval.py` counterpart.
+
+### S03 — VL53L7CX native 4×4 resolution ablation
+
+**Status:** completed 2026-09-17 at 17:11 UTC; 50/50 scientific rollouts, zero technical retries, zero contact-censored failures.
+
+**Question:** can the same policy operate with sixteen native spatial measurements instead of sixty-four when the L7CX profile's other settings remain fixed?
+
+**Executed intervention:** render a native 4×4 grid, then repeat each value into a 2×2 block of the expected 8×8 tensor. Hold S02's 60°×60° optics, 2 cm–3.5 m clipping, optical-axis distance convention, 1 mm rounding and 15 Hz native acquisition fixed. Although ST supports up to 60 Hz in 4×4 mode, this run retains 15 Hz to avoid changing resolution and rate simultaneously. Its primary reference is **S02's L7CX 8×8**, not the original L5CX-like source. Both modes are ideal per-zone rays rather than calibrated physical zone integration.
+
+**Results:** placement is 29/50 (58%), collision-free placement 25/50 (50%), collision-free rollouts 35/50 (70%), and forbidden-contact rollouts 15/50 (30%). Exposure is 25,163/1,485,050 (1.694%). Relative to S02, strict success changes by **+2 pp [−6, +10]**, exact `p = 1`, with three 4×4-only and two 8×8-only successes.
+
+**Implication:** substantial useful performance remains with sixteen native values per sensor. The two-point increase is one additional safe completion and is not evidence that fewer zones improve performance. The prespecified retention lower bound is −12.46 pp, so retention within 10 pp remains inconclusive. This is the cleanest completed within-profile resolution comparison, with the fixed shape adapter included in the intervention.
+
+**Evidence:** [protocol](docs/PACT_V1010C_VL53L7CX_4X4_128D_3103.md), [results](diagnostics_output/pact_place_v1010c_vl53l7cx_4x4_s3103_v1/RESULTS.md), [analysis](diagnostics_output/pact_place_v1010c_vl53l7cx_4x4_s3103_v1/analysis.json), [paired records](diagnostics_output/pact_place_v1010c_vl53l7cx_4x4_s3103_v1/paired_results.csv), and [sensor implementation](scripts/pact_vl53l7cx_4x4_sensor.py). Orchestrator/worker: `scripts/pact_v1010c_vl53l7cx_4x4_128d.py` and its `_eval.py` counterpart.
+
+### S04 — VL53L1CB 2×2 sequential-zone transfer
+
+**Status:** completed 2026-09-17 at 22:32 UTC; 50/50 scientific rollouts, zero technical retries, zero contact-censored failures. Saved primary decision: **`LOSS_EXCEEDS_MARGIN`**.
+
+**Question:** can the fixed policy operate with four sequentially acquired quadrant distances from a narrower-view sensor profile?
+
+**Executed measurement model:** ST VL53L1, ordering code **VL53L1CBV0FY/1**, approximated by four quadrant-center rays. The nominal 27° diagonal field is modeled as a square pinhole with **19.2695° horizontal and vertical** fields. Depth is converted to Euclidean line-of-sight distance, rounded to 1 mm, floored at 4 cm, and uses a nominal 2.5 m detection envelope. Returns beyond the envelope map to the documented 8191 mm no-target code. The 2.5 m choice comes from a typical white-target corner-ROI specification at 16 ms; it is not the device's advertised 8 m extended-ranging mode. Below-range saturation is an explicit unvalidated model assumption. [ST L1 datasheet](https://www.st.com/resource/en/datasheet/vl53l1.pdf) and [multizone/timing manual](https://www.st.com/resource/en/user_manual/um2133-timeofflight-longdistance-ranging-sensor-with-advanced-multizone-and-multiobject-detection-stmicroelectronics.pdf).
+
+The model updates one quadrant every approximately 16.7 ms: **60 zone updates/s, 15 complete sweeps/s**. Other quadrants retain their last value and timestamp. All four reset values are initially filled from the unchanged stationary reset state. Each of the four values is repeated into a 4×4 block of the 8×8 input. The simulation does not integrate all returns over a physical ROI, model SPAD angular response, or reproduce ST target-selection firmware.
+
+**Results:** placement is 19/50 (38%), collision-free placement 8/50 (16%), collision-free rollouts 18/50 (36%), and forbidden-contact rollouts 32/50 (64%). Exposure is 113,468/1,485,050 (7.641%). Relative to original PACT, strict success changes by **−32 pp [−46, −20]**, exact `p = 0.0000305176`. Sixteen scenes succeed strictly only with the original profile; none succeed strictly only with this transfer. The one-sided upper difference bound is **−12.41 pp**, establishing a loss greater than the 10 pp margin.
+
+**Implication:** this is a clear negative transfer result for the complete simulated profile. It does not isolate a failure caused by 2×2 resolution. Relative to S03, coverage narrows from 60°×60° to about 19.3°×19.3°, sixteen distances become four, simultaneous capture becomes sequential, and close-range/distance encoding changes. Reduced coverage, sparse-ray approximation, mixed acquisition times and mismatch with the frozen encoder's spatial assumptions are plausible explanations, not experimentally isolated causes. A proximity-dependent policy can be misled by unfamiliar input; ACT does not have an automatic fallback role inside PACT. Physical L1CB hardware performance has not been measured.
+
+**Evidence:** [protocol](docs/PACT_V1010C_VL53L1_2X2_128D_3103.md), [results](diagnostics_output/pact_place_v1010c_vl53l1_2x2_s3103_v1/RESULTS.md), [analysis](diagnostics_output/pact_place_v1010c_vl53l1_2x2_s3103_v1/analysis.json), [paired records](diagnostics_output/pact_place_v1010c_vl53l1_2x2_s3103_v1/paired_results.csv), and [sensor implementation](scripts/pact_vl53l1_2x2_sensor.py). Orchestrator/worker: `scripts/pact_v1010c_vl53l1_2x2_128d.py` and its `_eval.py` counterpart.
+
+### S05 — L7CX 4×4-to-2×2 software aggregation
+
+**Status: running; no final scientific results at this update.** Launched 2026-09-17 at 23:39 UTC. The frozen schedule contains 50 matched scenarios; do not treat the ten-step infrastructure preflight or any partial results as the final study.
+
+**Question:** can the policy retain useful performance with four derived spatial values per sensor while preserving S03's native acquisition, field of view, distance encoding and timing?
+
+**Executed intervention:** continue acquiring the same native 4×4 L7CX grid, then take the minimum in each nonoverlapping 2×2 block. For encoded native grid `D`, `Q[y,x] = min(D[2*y:2*y+2, 2*x:2*x+2])`. Repeat each of these four values into a 4×4 block of the encoder's 8×8 input. The original 2 cm floor, 3.5 m above-range value, 1 mm rounding and 15 Hz acquisition remain unchanged. A below-range return retains its 2 cm floor rather than being discarded as free space. Minimum aggregation was fixed before scientific outcomes; no pooling operator is selected by performance.
+
+This is **software aggregation of sixteen measurements into four values**, not a native ST 2×2 mode, a four-ray renderer, a physical sensor-count reduction, or a hardware-cost experiment. The primary comparator is S03's native 4×4 condition. Comparison with S04 can provide descriptive context, but differs in several sensor properties and cannot isolate their individual causes.
+
+**Verified before launch:** ten targeted tests passed; the original controller reproduced actions/readouts exactly for 105 steps; ten synthetic aggregated-history checks and ten real-scene interface steps passed; model weights remained unchanged; the initial inputs matched exact aggregation of the saved 4×4 reference; all 50 reference outcomes were reaudited. The frozen protocol uses the same 10 pp retention margin and 20,000 paired bootstrap resamples, seed `2026091705`.
+
+The run records both native `(892,40,4,4)` and aggregated `(892,40,2,2)` streams for each full rollout, plus acquisition/poll timestamps, delivered-input hashes, complete trajectories and contact telemetry. The final audit will independently recompute quadrant minima and reconstruct the hash of all 900 consumed encoder inputs before publishing completion. Scientific failures remain in the results; the first full rollout is a technical gate included in the fifty, followed by up to six workers. Hourly checks inspect worker liveness and resource limits.
+
+**Pending results:** placement, collision-free placement, forbidden-contact incidence/exposure, matched gains/losses, intervals and the frozen retention decision. A positive result would support tolerance to this particular spatial-compression operator. A negative result would identify another limit of the frozen policy/adapter. Neither outcome validates native 2×2 hardware transfer.
+
+**Evidence:** [execution protocol](docs/PACT_V1010C_VL53L7CX_2X2_AGGREGATE_128D_3103.md), [frozen protocol](diagnostics_output/pact_place_v1010c_vl53l7cx_2x2_aggregate_s3103_v1/protocol.json), [preflight](diagnostics_output/pact_place_v1010c_vl53l7cx_2x2_aggregate_s3103_v1/preflight/report.json), [health status](diagnostics_output/pact_place_v1010c_vl53l7cx_2x2_aggregate_s3103_v1/health/STATUS.md), and [adapter](scripts/pact_vl53l7cx_2x2_aggregate_sensor.py). Orchestrator/worker: `scripts/pact_v1010c_vl53l7cx_2x2_aggregate_128d.py` and its `_eval.py` counterpart. Final output root: `diagnostics_output/pact_place_v1010c_vl53l7cx_2x2_aggregate_s3103_v1/`.
+
+### Evidence audit and fixed artifact identities
+
+The four completed interventions contain **200 new scientific rollouts**, in addition to reused references. All four final analysis hashes match their completion markers and reviews; none has missing scenes, technical retries, or contact-censored failures. S01 and S02 additionally ran separate complete live preflights; these are excluded from the outcome tables. All studies performed controller/history and real-scene interface checks. Saved native input provenance, scenario matching, weight hashes and recomputed outcomes support the declared interventions; they do not establish hardware fidelity or perfectly deterministic closed-loop trajectories.
+
+Each completed output root contains `protocol.json`, `sensor_profile.json`, `source_manifest.json`, `preflight/report.json`, `valid_ledger.jsonl`, `analysis.json`, `paired_results.csv`, `RESULTS.md`, `results.png/pdf`, `completion_review.json` and `finished.json`. Original attempts and process-exit receipts are preserved. Earlier results and hash-bound implementations were not overwritten.
+
+| Study | Final analysis file SHA-256 | Frozen protocol self-hash |
+|---|---|---|
+| S01 | `66796e182e1331551386aaee658b6bb03abfec71a92470c80579bcfdeba073b6` | `84f557b78e3ff75cebd6d0ee2b9b8937cbc2a2e4a70d5d846dc4513498bf043a` |
+| S02 | `ee949e7a685b67a2c1f55e1f02eda229afead939792d50a6b769eddadd6522f2` | `bbc67a2b51078f6dbdd580dfb0b48670e46aa3c1fdb6802131d4f063fffd23fb` |
+| S03 | `84763f6a90734a17d9c379bf9ccf11df36cbdbe9d5b2709debc9e977bba3ad23` | `cbd06e21b5f50be1d7ce43af2097ca060a423ba022c7ba7344d14cb714526112` |
+| S04 | `f6a5de550270728e9057f293c371aa1442ff78141a7255484295ffa2d3048e7a` | `c5231b8e4242d5205eae5df0745db7ca77c13169df88f62030e188edb40517d9` |
+
+S05's protocol self-hash is `6b387a8718bae44f7f3d15f45f6bf9d657788ba23f5e538fd233ec690d4c423f`; its final analysis hash is pending. Linked scripts, protocols and raw experiment artifacts are local evidence and are not all tracked on GitHub. This documentation-only update publishes the complete numerical account in `ablation.md`; it does not upload checkpoints, trajectories or the untracked sensor evaluation code.
+
+### Combined implications and manuscript wording
+
+The completed evidence supports **selective tolerance to sensing changes, with substantial failures under other profiles**. The L7CX 8×8 and 4×4 runs retain useful observed collision-free placement, while the single-zone L4CD and sequential 2×2 L1CB profiles degrade it. These experiments complement A01/A02: a policy that demonstrably depends on proximity should also be evaluated when that measurement stream changes. They do not show universal sensor interchangeability, prove encoder fine-tuning causes transfer, or establish that two-dimensional grid resolution alone determines success.
+
+> With the seed-3103 policy and its jointly fine-tuned encoder held fixed, we evaluated idealized sensor-profile changes on 50 matched source scenarios. Collision-free placement was 48% with the original L5CX-like stream, 48% with an L7CX-like 8×8 stream, and 50% with an L7CX-like 4×4 stream. Single-zone L4CD-like and sequential four-zone L1CB-like profiles reduced this outcome to 22% and 16%, respectively. The L7CX point estimates indicate useful performance under these simulated changes, although the prespecified 10-point retention tests remained inconclusive. The L1CB-like transfer exceeded that loss margin. Because profile changes also alter coverage, timing and range encoding, these results describe sensitivity of the complete frozen system rather than an isolated effect of resolution or physical hardware validation.
+
+Keep the running S05 condition out of completed-results claims until all fifty rollouts and its final provenance audit finish. Report both positive-looking point estimates and negative transfers; do not select only the successful profiles for the paper.
