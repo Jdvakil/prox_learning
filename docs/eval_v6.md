@@ -1,11 +1,10 @@
 # V6 evals
 
-`eval_act_v1011d.py` on this branch is the prefetch-8 FrozenACT evaluator from
-[`Jdvakil/prox_learning` main](https://github.com/Jdvakil/prox_learning/blob/main/eval_act_v1011d.py).
-Do not edit it. `--history consecutive` is the 8-step causal window.
+`eval_act_v1011d.py` on this branch differs from Jay `main`: `--history consecutive`
+is the 8-step causal window (prefetch last 7 idle chunk steps plus the query),
+matching readout training. Main still samples skin on every control step.
 
-`eval_act_v6.py` is the same protocol with the v6 world. Do not edit
-`eval_act_v1011d.py` to add v6.
+`eval_act_v6.py` is unchanged. Same prefetch-8 protocol on the v6 world.
 
 Four v6 runs on `eval_act_v6.py`:
 

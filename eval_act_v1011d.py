@@ -16,6 +16,9 @@ Headline defaults: ``--skin_substeps snapshot``, ``--exec_horizon`` = chunk
 aggregation), gated EGL, terminal ``judge_success``. ``--clutter_xy_scale
 0.25`` is the easy eval (smaller XY boxes toward v1011c seats).
 ``--skin_substeps train`` matches convert min-pool of 4 substeps at 16.67 ms.
+``--history consecutive`` is the 8-step causal window (prefetch the last 7
+idle chunk steps plus the query), matching readout training. It is not
+skin on every control step.
 
     conda activate mlspaces
     cd /home/jaydv/code/prox_learning
@@ -69,6 +72,9 @@ _DEFAULT_CAMERAS = ("exo_camera_1", "wrist_camera")
 _LOG = "[eval_act_v1011d]"
 _SKIN_SUBSTEPS = "snapshot"
 _TRAIN_PERIOD_MS = 16.6667
+# Geometry readout: last 8 control steps ending at the chunk query.
+# Do not render skin on the other idle chunk steps.
+PROX_CAUSAL_STEPS = 8
 _EXO_CAM = "exo_camera_1"
 _CONSTRUCTION_RETRY_STRIDE = 1_000_003
 _CONSTRUCTION_RETRY_MAX = 64
@@ -627,7 +633,7 @@ def _one_bool(value) -> bool:
     return bool(arr.reshape(-1)[0])
 
 
-def _left_pad_hist(frames: list[np.ndarray], length: int = 8) -> np.ndarray:
+def _left_pad_hist(frames: list[np.ndarray], length: int = PROX_CAUSAL_STEPS) -> np.ndarray:
     if not frames:
         raise ValueError("proximity history is empty at encode time")
     block = np.stack(frames, axis=0)
@@ -809,11 +815,26 @@ class FrozenACTPolicy(InferencePolicy):
         age = self._step - start
         return not (0 <= age < len(chunk))
 
+    def _wants_prox_prefetch(self, age: int, chunk_len: int) -> bool:
+        """True on the last 7 idle chunk steps plus the next query (8 frames)."""
+        if self.history_mode != "consecutive":
+            return False
+        if self._prox_encoder is None or not is_geometry_feature(self.pc.prox_feature):
+            return False
+        n = PROX_CAUSAL_STEPS
+        if n <= 1:
+            return False
+        return age >= chunk_len - (n - 1)
+
     def needs_fresh_proximity_observation(self) -> bool:
         if not self.pc.use_proximity:
             return False
         if self.history_mode == "consecutive" and is_geometry_feature(self.pc.prox_feature):
-            return True
+            if not self._pending_chunks:
+                return True
+            start, chunk = self._pending_chunks[0]
+            age = self._step - start
+            return self._wants_prox_prefetch(age, len(chunk))
         return self.needs_fresh_camera_observation()
 
     def needs_fresh_policy_observation(self) -> bool:
@@ -826,11 +847,16 @@ class FrozenACTPolicy(InferencePolicy):
             return
         if self.history_mode == "query" and not self.needs_fresh_camera_observation():
             return
+        if self.history_mode == "consecutive" and self._pending_chunks:
+            start, chunk = self._pending_chunks[0]
+            age = self._step - start
+            if not self._wants_prox_prefetch(age, len(chunk)):
+                return
         frame = stack_obs_proximity(
             obs, self._prox_encoder.sensor_order, pool=self._prox_pool
         )
         self._prox_hist.append(np.array(frame, copy=True))
-        self._prox_hist = self._prox_hist[-8:]
+        self._prox_hist = self._prox_hist[-PROX_CAUSAL_STEPS:]
 
     def inference_model(self, obs):
         if self._policy is None:
@@ -841,7 +867,7 @@ class FrozenACTPolicy(InferencePolicy):
             start, chunk = self._pending_chunks[0]
             k = self._step - start
             if 0 <= k < len(chunk):
-                if self.history_mode == "consecutive":
+                if self._wants_prox_prefetch(k, len(chunk)):
                     self.record_proximity_observation(obs)
                 return chunk[k]
 
@@ -882,6 +908,7 @@ class FrozenACTPolicy(InferencePolicy):
             if self._step == 0:
                 print(
                     f"{_LOG} proximity ON history={self.history_mode} "
+                    f"prefetch={PROX_CAUSAL_STEPS if self.history_mode == 'consecutive' else 0} "
                     f"feature={pc.prox_feature} exec_horizon={self.exec_horizon}"
                 )
 
@@ -1466,7 +1493,7 @@ def _write_summary(path: Path, payload: dict) -> None:
 def _history_json_label(mode: str) -> str:
     if mode == "query":
         return "query_steps_train_mismatch"
-    return "consecutive_control_steps"
+    return "consecutive_prefetch_8"
 
 
 def parse_args() -> argparse.Namespace:
@@ -1510,7 +1537,9 @@ def parse_args() -> argparse.Namespace:
         "--history",
         choices=("query", "consecutive"),
         default="query",
-        help="Kept for a future readout arm. Raw ckpt is a single frame.",
+        help="query: one skin snapshot at the chunk query. consecutive: 8-step "
+        "causal window (prefetch the last 7 idle chunk steps plus the query), "
+        "matching readout training. Not every-control-step skin.",
     )
     p.add_argument(
         "--output_dir",
@@ -1548,8 +1577,8 @@ def main() -> None:
         )
     if args.history == "consecutive" and args.skin == "egl":
         print(
-            f"{_LOG} WARNING: --history consecutive with --skin egl renders "
-            "40 EGL cameras every control step. Non-headline. Use --skin rays.",
+            f"{_LOG} WARNING: --history consecutive with --skin egl still uses "
+            "EGL for the 8-step prefetch window. Headline readout uses --skin rays.",
             flush=True,
         )
     if args.skin_substeps == "snapshot" and args.skin == "egl":
