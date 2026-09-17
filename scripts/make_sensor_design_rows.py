@@ -31,6 +31,14 @@ from sensor_designs import DESIGNS, apply_design
 
 
 def transform_row(src_h5: Path, dst_h5: Path, design: str, seed: int, row_name: str) -> int:
+    """Copy the source h5, then replace each proximity dataset by deleting it and
+    recreating it with the transformed values.
+
+    In-place assignment (prox[sensor][...] = new) into a compressed/chunked
+    dataset can leave the file structurally corrupt when the recompressed data
+    no longer fits the original allocation - here it silently damaged the
+    neighbouring obs_scene bytes. Deleting and recreating each dataset, carrying
+    over its dtype, chunking and compression, keeps the file clean."""
     shutil.copy2(src_h5, dst_h5)
     n = 0
     with h5py.File(dst_h5, "r+") as handle:
@@ -42,8 +50,14 @@ def transform_row(src_h5: Path, dst_h5: Path, design: str, seed: int, row_name: 
             for sensor in list(prox.keys()):
                 digest = hashlib.sha256(f"{seed}|{row_name}|{sensor}".encode()).digest()
                 rng = np.random.default_rng(int.from_bytes(digest[:8], "little"))
-                data = prox[sensor][()].astype(np.float32)
-                prox[sensor][...] = apply_design(data, design, rng)
+                ds = prox[sensor]
+                data = ds[()].astype(np.float32)
+                kw = {"dtype": ds.dtype, "chunks": ds.chunks,
+                      "compression": ds.compression,
+                      "compression_opts": ds.compression_opts}
+                new = apply_design(data, design, rng).astype(ds.dtype)
+                del prox[sensor]
+                prox.create_dataset(sensor, data=new, **kw)
                 n += 1
     return n
 
