@@ -10,15 +10,15 @@
     "warmup": 50,
     "latency": {
       "fresh_policy_query": {
-        "mean_ms": 5.4193,
-        "p50_ms": 5.4079,
-        "p99_ms": 5.4929,
+        "mean_ms": 5.4201,
+        "p50_ms": 5.4072,
+        "p99_ms": 5.5263,
         "n": 1000
       },
       "obs_to_action": {
-        "mean_ms": 6.774,
-        "p50_ms": 6.7688,
-        "p99_ms": 6.8638,
+        "mean_ms": 6.9855,
+        "p50_ms": 6.9852,
+        "p99_ms": 7.0662,
         "n": 1000
       }
     },
@@ -39,21 +39,21 @@
     "warmup": 50,
     "latency": {
       "encoder_forward": {
-        "mean_ms": 0.6962,
-        "p50_ms": 0.6947,
-        "p99_ms": 0.7245,
+        "mean_ms": 0.7049,
+        "p50_ms": 0.7049,
+        "p99_ms": 0.7207,
         "n": 1000
       },
       "fresh_policy_query": {
-        "mean_ms": 5.5021,
-        "p50_ms": 5.4987,
-        "p99_ms": 5.5635,
+        "mean_ms": 5.553,
+        "p50_ms": 5.5511,
+        "p99_ms": 5.5996,
         "n": 1000
       },
       "obs_to_action": {
-        "mean_ms": 7.8489,
-        "p50_ms": 7.8433,
-        "p99_ms": 7.9839,
+        "mean_ms": 7.9955,
+        "p50_ms": 7.9902,
+        "p99_ms": 8.107,
         "n": 1000
       }
     },
@@ -64,18 +64,15 @@
     }
   },
   "pact_minus_act": {
-    "fresh_policy_query_mean_ms": 0.0828,
-    "fresh_policy_query_p99_ms": 0.0706,
-    "obs_to_action_mean_ms": 1.0749,
-    "obs_to_action_p99_ms": 1.1201,
-    "encoder_forward_mean_ms": 0.6962,
+    "fresh_policy_query_mean_ms": 0.1329,
+    "fresh_policy_query_p99_ms": 0.0733,
+    "obs_to_action_mean_ms": 1.01,
+    "obs_to_action_p99_ms": 1.0408,
+    "encoder_forward_mean_ms": 0.7049,
     "peak_inference_mb": 13.3,
     "weights_resident_mb": 6.8
   },
   "added_obs_to_action_share_of_control_period": {
-    "100ms_period": "1.07%",
-    "50ms_period": "2.15%",
-    "33.3333ms_period": "3.22%",
-    "20ms_period": "5.37%"
+    "66ms_period": "1.53%"
   }
 }
