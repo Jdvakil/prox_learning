@@ -1,47 +1,30 @@
-"""Frozen ACT / PACT eval for v1011d only.
+"""Frozen ACT / PACT eval for Hub v6 two-object only.
 
-Do not import or edit ``eval_act.py`` (hallway n=50 lives there). Protocol
-source for the gate / open-loop chunk is ``old_eval_act_place_corridor.py``
-(commit 1bfe693). Do not run that snapshot. Do not import
-``eval_act_obstacle.ACTInferencePolicy``. Do not edit the live corridor
-evaluator, ``eval_pact.py``, or ``eval_place_fast_hooks.py``.
+Protocol is the v1011d frozen evaluator (open-loop chunk, gated sensors,
+``FrozenACTPolicy`` local to this file) with the v6 world swapped in.
 
-World: ``FrankaSkinPactPlaceV1011DRandomizedClutterConfig`` +
-``PactPlaceCorridorV1011DRandomizedLayoutSampler`` + the three
-``pact_place_corridor_v10_7_{neg5,center,pos5}.xml`` files. Molmo is this
-checkout's ``submodules/molmospaces``.
+Do not import ``eval_act_obstacle.ACTInferencePolicy``. Do not edit
+``eval_act_pact_pick_n_place.py``, ``eval_act_place_corridor.py``,
+``eval_pact.py``, or ``eval_place_fast_hooks.py``.
+
+World: ``PactPlaceCorridorV1010TwoObjectSampler`` + Hub contract 24-cell
+rows + ``pact_place_corridor_v10_7_{neg5,center,pos5}.xml``.
 
 Headline defaults: ``--skin_substeps snapshot``, ``--exec_horizon`` = chunk
-(50), ``--clutter_xy_scale 1`` (full V10.11d), open-loop (no temporal
-aggregation), gated EGL, terminal ``judge_success``. ``--clutter_xy_scale
-0.25`` is the easy eval (smaller XY boxes toward v1011c seats).
-``--skin_substeps train`` matches convert min-pool of 4 substeps at 16.67 ms.
-``--history consecutive`` is the 8-step causal window (prefetch the last 7
-idle chunk steps plus the query), matching readout training. It is not
-skin on every control step.
+(50), open-loop, gated sensors, terminal ``judge_success``. ``--history
+consecutive`` uses the 8-step causal window (prefetch the last 7 idle
+chunk steps plus the query). Every-step skin is worse (17/48 vs 20/48).
+``--skin rays`` is the v6 default.
 
-    conda activate mlspaces
-    cd /home/jaydv/code/prox_learning
-    export OMP_NUM_THREADS=2 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
-    export MLSPACES_ASSETS_DIR="$PWD/assets"
+    conda activate mlspaces-warp111
+    cd /home/ekshan/prox_learning_v6_train/submodules/act
+    export OMP_NUM_THREADS=1 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl
+    export MLSPACES_ASSETS_DIR=/home/ekshan/prox_learning/assets
 
-    python eval_act_v1011d.py \\
-      --ckpt_dir submodules/act/ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \\
-      --num_rollouts 2 --skin_substeps snapshot \\
-      --save_video \\
-      --output_dir eval_output/simple_v1011d_smoke_video
-
-    # Easy clutter (new dir). Do not mix with full-randomize rates.
-    python eval_act_v1011d.py \\
-      --ckpt_dir submodules/act/ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \\
-      --num_rollouts 2 --skin_substeps snapshot --clutter_xy_scale 0.25 \\
-      --save_video \\
-    # Wrist-only ablation (OOD vs 200-ep exo+wrist train). New dir.
-    python eval_act_v1011d.py \\
-      --ckpt_dir submodules/act/ckpts/pact_pick_n_place_v2/20260903_171108_pact_pick_n_place_v2_v1011d_s0 \\
-      --num_rollouts 2 --skin_substeps snapshot --cameras wrist_camera \\
-      --save_video \\
-      --output_dir eval_output/simple_v1011d_wrist
+    python eval_act_v6.py \\
+      --ckpt_dir ckpts/pact_pick_n_place_v6/<run> \\
+      --molmo /home/ekshan/prox_learning_v1011d_n100/submodules/molmospaces \\
+      --num_rollouts 2 --spread_cells --output_dir /tmp/v6_smoke
 """
 from __future__ import annotations
 
@@ -56,41 +39,17 @@ os.environ.setdefault("PACT_CONTACT_AUDIT_SUMMARY_ONLY", "1")
 if not _LIVE_RENDER:
     os.environ.pop("DISPLAY", None)
 
-_REPO_ROOT = Path(__file__).resolve().parent
-_ACT_DIR = _REPO_ROOT / "submodules" / "act"
-_V1011D_MOLMO = _REPO_ROOT / "submodules" / "molmospaces"
-_ENV_VERSION = "pact_place_corridor_v10_11d_randomized_clutter"
-_EXPECTED_XML = frozenset(
-    {
-        "pact_place_corridor_v10_7_neg5.xml",
-        "pact_place_corridor_v10_7_center.xml",
-        "pact_place_corridor_v10_7_pos5.xml",
-    }
-)
-_N_CELLS = 24
+_ACT_DIR = Path(__file__).resolve().parent
+_REPO_ROOT = _ACT_DIR.parents[1]
+_ENV_VERSION = "pact_place_corridor_v10_10_two_object"
+_LOG = "[eval_act_v6]"
 _DEFAULT_CAMERAS = ("exo_camera_1", "wrist_camera")
-_LOG = "[eval_act_v1011d]"
-_SKIN_SUBSTEPS = "snapshot"
 _TRAIN_PERIOD_MS = 16.6667
-# Geometry readout: last 8 control steps ending at the chunk query.
-# Do not render skin on the other idle chunk steps.
-PROX_CAUSAL_STEPS = 8
 _EXO_CAM = "exo_camera_1"
-_CONSTRUCTION_RETRY_STRIDE = 1_000_003
-_CONSTRUCTION_RETRY_MAX = 64
-# Log tags only. Retry is any ValueError from sample_task — molmo strings
-# change (tmux 5 w0 died on "could not place target-relative clutter" while
-# the live process still had the four settle-only markers).
-_CONSTRUCTION_FAIL_MARKERS = (
-    "settled clutter overlaps target",
-    "settled clutter objects overlap",
-    "clutter drifted during settle",
-    "clutter did not settle",
-    "target-relative annulus is empty",
-    "could not place target-relative clutter",
-    "V10.11d could not place slot",
-    "V10.11 could not place",
-)
+_N_CELLS = 24
+# Geometry readout: last 8 control steps ending at the chunk query.
+# Do not render skin on the other 42 idle chunk steps.
+PROX_CAUSAL_STEPS = 8
 
 
 def _argv_value(*names: str, default: str | None = None) -> str | None:
@@ -104,16 +63,22 @@ def _argv_value(*names: str, default: str | None = None) -> str | None:
     return default
 
 
+_DEFAULT_MOLMO = os.environ.get(
+    "MOLMOSPACES_PACT_V1010",
+    "/home/ekshan/prox_learning_v1011d_n100/submodules/molmospaces",
+)
 _MOLMO_ROOT = Path(
-    _argv_value("--molmo", "--molmospaces_root", default=str(_V1011D_MOLMO))
+    _argv_value("--molmo", "--molmospaces_root", default=_DEFAULT_MOLMO)
 ).resolve()
 if not (_MOLMO_ROOT / "molmo_spaces").is_dir():
     raise SystemExit(
         f"{_LOG} molmospaces missing at {_MOLMO_ROOT}. "
-        "Point --molmo at this checkout's submodules/molmospaces."
+        "Point --molmo at the v1011d collect tree."
     )
 
 os.environ.setdefault("MLSPACES_ASSETS_DIR", str(_REPO_ROOT / "assets"))
+os.environ["MOLMOSPACES_PACT_PLACE"] = str(_MOLMO_ROOT)
+os.environ["MOLMOSPACES_PACT_V1010"] = str(_MOLMO_ROOT)
 sys.path.insert(0, str(_MOLMO_ROOT))
 if str(_ACT_DIR) not in sys.path:
     sys.path.insert(0, str(_ACT_DIR))
@@ -131,7 +96,6 @@ import shutil
 import subprocess
 import time
 from contextlib import contextmanager
-from importlib.metadata import PackageNotFoundError, version
 
 import cv2
 import numpy as np
@@ -144,17 +108,37 @@ from encoders.pact import (
     resolve_act_encoder_load,
 )
 from encoders.peak_closeness import stack_obs_proximity
+from eval_place_v1010_scene import (
+    V1010_SCENE_BY_POSE,
+    assert_v1010_scene_hashes,
+    resolve_v1010_scenes_dir,
+    spread_episode_count,
+    v1010_cell,
+)
+from molmo_spaces.configs.camera_configs import FrankaSkinHybridCameraSystem
 from molmo_spaces.configs.policy_configs import BasePolicyConfig
+from molmo_spaces.configs.task_configs import PickAndPlaceTaskConfig
+from molmo_spaces.data_generation.config.object_manipulation_datagen_configs import (
+    FrankaSkinPACTCollisionCorridorConfig,
+)
 from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
+from molmo_spaces.tasks.pick_and_place_task import PickAndPlaceTask
+from molmo_spaces.tasks.task_sampler_errors import HouseInvalidForTask
+from pact_place_v12_contract import EVAL_MASTER_SEED, build_row
 from policy import ACTPolicy
 from utils import set_seed
-import pact_eval_wandb
+
+try:
+    from molmo_spaces.tasks.enclosure_reach import PactPlaceCorridorV1010TwoObjectSampler
+except ImportError as exc:
+    raise SystemExit(
+        f"{_LOG} PactPlaceCorridorV1010TwoObjectSampler missing on {_MOLMO_ROOT}: {exc}"
+    ) from exc
 
 _EPISODE_METRICS: list[dict] = []
 _METRICS_JSONL: Path | None = None
 
-# Copied from old_eval_act_place_corridor.py (1bfe693) lines 110-264.
 _RENDER_CLASS_NAMES = frozenset(
     {
         "CameraParameterSensor",
@@ -200,12 +184,6 @@ def _heartbeat(suite, extra: str = "") -> None:
 
 
 def _patch_all_named_get_observation(class_name: str) -> int:
-    """Patch ``class_name`` only on ``molmo_spaces.*`` modules.
-
-    Walking every ``sys.modules`` entry ``getattr``s HuggingFace lazy
-    image processors and prints a wall of ``ProximityDepthBufferSensor``
-    alias warnings. Those classes are not ours.
-    """
     patched = 0
     seen: set[int] = set()
     for mod_name, mod in list(sys.modules.items()):
@@ -235,10 +213,6 @@ def _patch_all_named_get_observation(class_name: str) -> int:
 
 
 def _install_chunk_gated_sensors() -> None:
-    """Skip RGB / 8x8 skin EGL on steps the open-loop chunk will ignore.
-
-    Copied from old_eval_act_place_corridor.py (1bfe693).
-    """
     from molmo_spaces.env.abstract_sensors import SensorSuite
     from molmo_spaces.env.sensors_cameras import (
         CameraParameterSensor,
@@ -279,7 +253,6 @@ def _install_chunk_gated_sensors() -> None:
             if _is_prox_depth_sensor(sensor, prox_types)
         ]
         t0 = time.perf_counter()
-        snapshot = True
         if prox_names and hasattr(env, "reset_proximity_depth_buffer"):
             ready = bool(getattr(task, "_fast_eval_substep_ready", False))
             frames = getattr(env, "_proximity_depth_frames", {}) or {}
@@ -293,16 +266,12 @@ def _install_chunk_gated_sensors() -> None:
                 snapshot = False
             task._fast_eval_substep_ready = False
             if snapshot:
-                n_snap = int(getattr(task, "_eval_snapshot_renders", 0) or 0) + 1
-                task._eval_snapshot_renders = n_snap
-                self._eval_snapshot_renders = int(
-                    getattr(self, "_eval_snapshot_renders", 0) or 0
+                task._eval_snapshot_renders = int(
+                    getattr(task, "_eval_snapshot_renders", 0) or 0
                 ) + 1
             else:
-                n_sub = int(getattr(task, "_eval_substep_queries", 0) or 0) + 1
-                task._eval_substep_queries = n_sub
-                self._eval_substep_queries = int(
-                    getattr(self, "_eval_substep_queries", 0) or 0
+                task._eval_substep_queries = int(
+                    getattr(task, "_eval_substep_queries", 0) or 0
                 ) + 1
         obs = orig(self, env, task, **kwargs)
         dt = time.perf_counter() - t0
@@ -341,10 +310,6 @@ def _pixel_dirs_cam(h: int = 8, w: int = 8, fovy_deg: float = 45.0):
 
 
 def _install_raycast_proximity() -> None:
-    """Replace 40 EGL ``update_scene`` calls with ``mj_multiRay``.
-
-    Copied from old_eval_act_place_corridor.py (1bfe693). Iteration only.
-    """
     import mujoco
     from molmo_spaces.env.env import CPUMujocoEnv
 
@@ -399,60 +364,31 @@ def _install_raycast_proximity() -> None:
             if hasattr(mujoco, "mj_multiRay"):
                 if _multi_wants_normal:
                     mujoco.mj_multiRay(
-                        model,
-                        data,
-                        pnt,
-                        vec,
-                        geomgroup,
-                        1,
-                        -1,
-                        geomid,
-                        dist,
-                        None,
-                        nray,
-                        cutoff,
+                        model, data, pnt, vec, geomgroup, 1, -1,
+                        geomid, dist, None, nray, cutoff,
                     )
                 else:
                     mujoco.mj_multiRay(
-                        model,
-                        data,
-                        pnt,
-                        vec,
-                        geomgroup,
-                        1,
-                        -1,
-                        geomid,
-                        dist,
-                        nray,
-                        cutoff,
+                        model, data, pnt, vec, geomgroup, 1, -1,
+                        geomid, dist, nray, cutoff,
                     )
             else:
                 one_gid = np.zeros((1, 1), dtype=np.int32)
                 for i in range(nray):
                     dist[i, 0] = mujoco.mj_ray(
-                        model,
-                        data,
-                        pnt,
+                        model, data, pnt,
                         np.ascontiguousarray(dirs_w[i].reshape(3, 1), dtype=np.float64),
-                        geomgroup,
-                        1,
-                        -1,
-                        one_gid,
+                        geomgroup, 1, -1, one_gid,
                     )
             depth = dist.reshape(8, 8).astype(np.float32)
             depth[depth < 0] = np.float32(cutoff)
             self._proximity_depth_frames.setdefault(name, []).append(depth)
 
     CPUMujocoEnv.record_proximity_depths = record_proximity_depths
-    print(
-        "[act-eval-place] proximity mj_multiRay ON "
-        "(iteration only; not the paper-table EGL rasterizer)",
-        flush=True,
-    )
+    print(f"{_LOG} proximity mj_multiRay ON", flush=True)
 
 
 def _configure_eval_cameras(eval_cfg, *, need_skin: bool, period_ms: float) -> None:
-    """RGB without depth. period_ms=0 is snapshot; 16.6667 is train substeps."""
     eval_cfg.proximity_sensor_period_ms = float(period_ms)
     cams = []
     for cam in list(eval_cfg.camera_config.cameras):
@@ -478,16 +414,8 @@ def _configure_eval_cameras(eval_cfg, *, need_skin: bool, period_ms: float) -> N
 
 
 def _record_place_metric(
-    task,
-    success: bool,
-    audit: dict,
-    *,
-    episode_idx: int | None = None,
-    seed: int | None = None,
-    ever_success: bool | None = None,
-    extra: dict | None = None,
+    task, success: bool, audit: dict, *, extra: dict | None = None
 ) -> None:
-    """Bar / free fields copied from old_eval_act_place_corridor.py:509."""
     frames = audit.get("frames_with_contact") or {}
     totals = audit.get("contact_class_totals") or {}
     bar_frames = int(frames.get("hazard_bar") or 0)
@@ -498,7 +426,7 @@ def _record_place_metric(
     n_skip = int(getattr(suite, "_fast_eval_n_skip", 0) or 0)
     policy = getattr(task, "_registered_policy", None)
     rec = {
-        "episode_idx": int(episode_idx) if episode_idx is not None else len(_EPISODE_METRICS),
+        "episode_idx": int((extra or {}).get("episode_idx", len(_EPISODE_METRICS))),
         "success": int(success),
         "hit_bar": int(bar_frames > 0),
         "bar_contact_frames": bar_frames,
@@ -516,30 +444,16 @@ def _record_place_metric(
         "sensor_skipped_renders": n_skip,
         "snapshot_renders": int(getattr(task, "_eval_snapshot_renders", 0) or 0),
         "substep_queries": int(getattr(task, "_eval_substep_queries", 0) or 0),
+        "arm": "PACT" if getattr(getattr(policy, "pc", None), "use_proximity", False) else "ACT",
     }
-    if seed is not None:
-        rec["seed"] = int(seed)
-    if ever_success is not None:
-        rec["ever_success"] = int(bool(ever_success))
     if extra:
         rec.update(extra)
     _EPISODE_METRICS.append(rec)
-    extra = (
-        f" renders={n_fresh} skip={n_skip}"
-        f" snapshot={rec.get('snapshot_renders', 0)}"
-        f" substep={rec.get('substep_queries', 0)}"
-        if (n_fresh or n_skip or rec.get("snapshot_renders") or rec.get("substep_queries"))
-        else ""
-    )
-    ever_s = rec.get("ever_success")
     print(
         f"[act-eval-place] ep{rec['episode_idx']:03d} success={success} "
-        f"ever={ever_s} "
-        f"hit_bar={rec['hit_bar']} bar_frames={bar_frames} "
-        f"other={other_frames} clutter={clutter_frames} "
-        f"collision_free={rec['collision_free']} "
-        f"grip_close={rec['gripper_close_commanded']} "
-        f"side={rec['intrusion_side'] or '-'}{extra}",
+        f"hit_bar={rec['hit_bar']} collision_free={rec['collision_free']} "
+        f"strict={rec['collision_free_task_success']} "
+        f"fresh={n_fresh} skip={n_skip} cell={rec.get('cell')}",
         flush=True,
     )
     if _METRICS_JSONL is not None:
@@ -548,31 +462,22 @@ def _record_place_metric(
 
 
 def _summarize_place_metrics() -> dict | None:
-    """Copied from old_eval_act_place_corridor.py:553 plus ever-success."""
     if not _EPISODE_METRICS:
         return None
     n = len(_EPISODE_METRICS)
-    bar_hits = sum(int(m["hit_bar"]) for m in _EPISODE_METRICS)
     successes = sum(int(m["success"]) for m in _EPISODE_METRICS)
     collision_free = sum(int(m["collision_free"]) for m in _EPISODE_METRICS)
     strict = sum(int(m.get("collision_free_task_success", 0)) for m in _EPISODE_METRICS)
-    if strict == 0:
-        strict = sum(
-            1 for m in _EPISODE_METRICS if int(m["success"]) and int(m["collision_free"])
-        )
+    bar_hits = sum(int(m["hit_bar"]) for m in _EPISODE_METRICS)
     grip = sum(int(m.get("gripper_close_commanded", 0)) for m in _EPISODE_METRICS)
-    ever = sum(int(m.get("ever_success", m["success"])) for m in _EPISODE_METRICS)
     return {
         "episodes": n,
         "success": successes,
         "success_rate": successes / n,
-        "ever_success": ever,
-        "ever_success_rate": ever / n,
         "bar_hits": bar_hits,
         "bar_hit_rate": bar_hits / n,
         "collision_free": collision_free,
         "collision_free_rate": collision_free / n,
-        "collision_rate": 1.0 - (collision_free / n),
         "collision_free_task_success": strict,
         "collision_free_task_success_rate": strict / n,
         "gripper_close_commanded": grip,
@@ -583,10 +488,9 @@ def _summarize_place_metrics() -> dict | None:
 
 @contextmanager
 def _detr_argv(ckpt_dir: str, seed: int):
-    """Shield DETR's main.py:get_args_parser from this script's CLI flags."""
     orig = sys.argv
     sys.argv = [
-        orig[0] if orig else "eval_act_v1011d.py",
+        orig[0] if orig else "eval_act_v6.py",
         "--ckpt_dir", ckpt_dir,
         "--policy_class", "ACT",
         "--task_name", "obstacle_baseline",
@@ -600,30 +504,11 @@ def _detr_argv(ckpt_dir: str, seed: int):
 
 
 def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
     with Path(path).open("rb") as handle:
-        return hashlib.file_digest(handle, "sha256").hexdigest()
-
-
-def _git_rev(path: Path) -> str | None:
-    path = Path(path).resolve()
-    if (path / ".git").exists():
-        try:
-            return subprocess.check_output(
-                ["git", "-C", str(path), "rev-parse", "HEAD"], text=True
-            ).strip()
-        except subprocess.CalledProcessError:
-            return None
-    marker = path / "runtime.json"
-    if marker.is_file():
-        return json.loads(marker.read_text()).get("revision")
-    return None
-
-
-def _pkg_version(name: str) -> str | None:
-    try:
-        return version(name)
-    except PackageNotFoundError:
-        return None
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _one_bool(value) -> bool:
@@ -651,15 +536,6 @@ def _chunk_from_weights(weights: dict) -> int:
     return int(weights[key].shape[0])
 
 
-def _n_backbones(weights: dict) -> int:
-    ids: set[int] = set()
-    for name in weights:
-        parts = str(name).split(".")
-        if len(parts) >= 3 and parts[0] == "model" and parts[1] == "backbones" and parts[2].isdigit():
-            ids.add(int(parts[2]))
-    return len(ids)
-
-
 def _load_state_dict(ckpt_path: Path) -> dict:
     try:
         weights = torch.load(ckpt_path, map_location="cpu", weights_only=True)
@@ -672,29 +548,6 @@ def _load_state_dict(ckpt_path: Path) -> dict:
     return weights
 
 
-def _resolve_cameras(args: argparse.Namespace, ckpt_dir: Path) -> tuple[str, ...]:
-    training = ckpt_dir / "training_config.json"
-    from_json: list[str] | None = None
-    if training.is_file():
-        saved = json.loads(training.read_text())
-        pc = saved.get("policy_config") or {}
-        names = pc.get("camera_names")
-        if names:
-            from_json = [str(n) for n in names]
-    if args.cameras:
-        cameras = tuple(args.cameras)
-        if from_json is not None and list(cameras) != from_json:
-            print(
-                f"{_LOG} WARNING: --cameras {list(cameras)} != "
-                f"training_config.json {from_json}. OOD ablation.",
-                flush=True,
-            )
-        return cameras
-    if from_json is not None:
-        return tuple(from_json)
-    return _DEFAULT_CAMERAS
-
-
 def _apply_training_arch(pc, ckpt_dir: Path) -> None:
     training = ckpt_dir / "training_config.json"
     if not training.is_file():
@@ -702,15 +555,8 @@ def _apply_training_arch(pc, ckpt_dir: Path) -> None:
     saved = json.loads(training.read_text())
     policy_config = saved.get("policy_config") or {}
     for name in (
-        "hidden_dim",
-        "dim_feedforward",
-        "enc_layers",
-        "dec_layers",
-        "nheads",
-        "backbone",
-        "state_dim",
-        "action_dim",
-        "kl_weight",
+        "hidden_dim", "dim_feedforward", "enc_layers", "dec_layers",
+        "nheads", "backbone", "state_dim", "action_dim", "kl_weight",
     ):
         if name in policy_config:
             setattr(pc, name, policy_config[name])
@@ -770,7 +616,7 @@ class FrozenACTPolicy(InferencePolicy):
             if pcfg_path.is_file():
                 self._prox_pcfg = json.loads(pcfg_path.read_text())
                 load_kwargs = resolve_act_encoder_load(
-                    pc.ckpt_dir, self._prox_pcfg, ckpt or "", policy_name=pc.ckpt_name
+                    pc.ckpt_dir, self._prox_pcfg, ckpt or ""
                 )
             else:
                 load_kwargs = {
@@ -801,7 +647,11 @@ class FrozenACTPolicy(InferencePolicy):
         self._policy = policy
         with open(self.stats_path, "rb") as handle:
             self._stats = pickle.load(handle)
-        print(f"{_LOG} loaded {self.ckpt_path}")
+        print(
+            f"{_LOG} loaded {self.ckpt_path} history={self.history_mode} "
+            f"exec_horizon={self.exec_horizon} n_prox_tokens="
+            f"{policy_config.get('n_proximity_sensors', 0) * policy_config.get('prox_tokens_per_sensor', 1)}"
+        )
 
     def obs_to_model_input(self, obs):
         if isinstance(obs, (list, tuple)):
@@ -905,11 +755,14 @@ class FrozenACTPolicy(InferencePolicy):
                 )
                 prox_t = torch.from_numpy(prox_np).float().cuda().unsqueeze(0)
                 proximity_positions = encode_for_act(self._prox_encoder, prox_t)
+            if pc.prox_ablate == "zero":
+                proximity_positions = torch.zeros_like(proximity_positions)
             if self._step == 0:
                 print(
                     f"{_LOG} proximity ON history={self.history_mode} "
                     f"prefetch={PROX_CAUSAL_STEPS if self.history_mode == 'consecutive' else 0} "
-                    f"feature={pc.prox_feature} exec_horizon={self.exec_horizon}"
+                    f"feature={pc.prox_feature} ablate={pc.prox_ablate} "
+                    f"exec_horizon={self.exec_horizon}"
                 )
 
         with torch.no_grad():
@@ -965,6 +818,20 @@ class ACTPolicyConfig(BasePolicyConfig):
     prox_tokens_per_sensor: int = 8
     finetune_prox_encoder: bool = False
     prox_policy_tap: str = ""
+    prox_ablate: str = "none"
+
+
+class V6EvalConfig(FrankaSkinPACTCollisionCorridorConfig):
+    policy_config: ACTPolicyConfig = ACTPolicyConfig()
+    task_type: str = "pick_and_place"
+    task_config: PickAndPlaceTaskConfig = PickAndPlaceTaskConfig(task_cls=PickAndPlaceTask)
+    task_horizon: int | None = 1050
+    viz_sensor_rgb: bool = False
+    filter_for_successful_trajectories: bool = False
+    use_wandb: bool = False
+    num_workers: int = 1
+    save_videos: bool = False
+    use_passive_viewer: bool = False
 
 
 def _disable_action_noise(eval_cfg) -> None:
@@ -975,67 +842,81 @@ def _disable_action_noise(eval_cfg) -> None:
 
 
 def _set_cfg(eval_cfg, name: str, value) -> None:
-    """Pydantic configs reject unknown fields. Skip names this class does not have."""
     fields = getattr(type(eval_cfg), "model_fields", None)
     if isinstance(fields, dict) and name not in fields:
         return
     setattr(eval_cfg, name, value)
 
 
-def _build_v1011d_cfg(args, output_dir: Path):
-    from molmo_spaces.configs.camera_configs import FrankaSkinHybridCameraSystem
-    try:
-        from molmo_spaces.data_generation.config.pact_place_datagen_configs import (
-            FrankaSkinPactPlaceV1011DRandomizedClutterConfig,
-        )
-        from molmo_spaces.tasks.pact_place import PactPlaceCorridorV1011DRandomizedLayoutSampler
-    except ImportError as exc:
-        raise SystemExit(
-            f"{_LOG} V1011D config/sampler missing on {_MOLMO_ROOT}: {exc}"
-        ) from exc
+def _build_eval_rows(num_rollouts: int, spread_cells: bool, house_ind: int) -> list[dict]:
+    if spread_cells:
+        per_cell, total = spread_episode_count(num_rollouts)
+        rows = []
+        for cell_i in range(_N_CELLS):
+            family, side, pose = v1010_cell(cell_i)
+            for k in range(per_cell):
+                row = build_row(family, side, pose, attempt_index=k)
+                row["role_index"] = len(rows)
+                row["eval_master_seed"] = EVAL_MASTER_SEED
+                rows.append(row)
+        return rows[:total]
+    family, side, pose = v1010_cell(house_ind)
+    rows = []
+    for k in range(num_rollouts):
+        row = build_row(family, side, pose, attempt_index=k)
+        row["role_index"] = k
+        rows.append(row)
+    return rows
 
-    eval_cfg = FrankaSkinPactPlaceV1011DRandomizedClutterConfig()
-    sampler_cls = eval_cfg.task_sampler_config.task_sampler_class
-    if sampler_cls is not PactPlaceCorridorV1011DRandomizedLayoutSampler:
-        raise SystemExit(
-            f"{_LOG} sampler is {getattr(sampler_cls, '__name__', sampler_cls)}, "
-            "expected PactPlaceCorridorV1011DRandomizedLayoutSampler. "
-            "No four-object fallback."
-        )
-    version = str(getattr(sampler_cls, "PACT_PLACE_ENVIRONMENT_VERSION", "") or "")
-    if version != _ENV_VERSION:
-        raise SystemExit(
-            f"{_LOG} sampler PACT_PLACE_ENVIRONMENT_VERSION={version!r} "
-            f"!= {_ENV_VERSION!r}"
-        )
-    eval_cfg.policy_config = ACTPolicyConfig()
-    _set_cfg(eval_cfg, "task_horizon", args.horizon or 1050)
-    _set_cfg(eval_cfg, "end_on_success", False)
-    _set_cfg(eval_cfg, "terminate_upon_success", False)
-    _set_cfg(eval_cfg, "output_dir", output_dir)
-    _set_cfg(eval_cfg, "num_workers", 1)
-    _set_cfg(eval_cfg, "save_videos", False)
-    _set_cfg(eval_cfg, "use_passive_viewer", False)
-    _set_cfg(eval_cfg, "viz_sensor_rgb", False)
-    eval_cfg.camera_config = FrankaSkinHybridCameraSystem()
-    _disable_action_noise(eval_cfg)
-    paths = [Path(p) for p in list(eval_cfg.task_sampler_config.scene_xml_paths or [])]
-    names = {p.name for p in paths}
-    if names != set(_EXPECTED_XML):
-        raise SystemExit(
-            f"{_LOG} scene XML set {sorted(names)} != {sorted(_EXPECTED_XML)}"
-        )
-    missing = [p for p in paths if not p.is_file()]
-    if missing:
-        raise SystemExit(f"{_LOG} missing scene XML: {missing}")
-    if len(paths) != _N_CELLS:
-        raise SystemExit(
-            f"{_LOG} expected {_N_CELLS} scene paths (24-cell grid), got {len(paths)}"
-        )
-    eval_cfg.task_sampler_config.house_inds = list(range(_N_CELLS))
-    eval_cfg.task_sampler_config.samples_per_house = 1
-    xml = paths[0] if paths else Path("unknown.xml")
-    return eval_cfg, xml, sampler_cls, paths
+
+def _bind_scene(eval_cfg, row: dict, scenes_dir: Path) -> Path:
+    pose = str(row.get("pose_id") or "center")
+    xml = scenes_dir / V1010_SCENE_BY_POSE[pose]["filename"]
+    row["environment_version"] = _ENV_VERSION
+    row["pact_v106_scene_sha256"] = hashlib.sha256(xml.read_bytes()).hexdigest()
+    eval_cfg.task_sampler_config.scene_xml_paths = [str(xml)] * 2
+    return xml
+
+
+def _sample_row(eval_cfg, row: dict, scenes_dir: Path):
+    xml = _bind_scene(eval_cfg, row, scenes_dir)
+    last_error = None
+    max_retries = int(row.get("max_sampling_retries", 8))
+    for retry_index in range(max_retries + 1):
+        seed = {
+            "seed_u32": int(row["task_seed_u32"]) + retry_index,
+            "seed_u64": int(row["task_seed_u64"]) + retry_index,
+        }
+        sampler = PactPlaceCorridorV1010TwoObjectSampler(eval_cfg)
+        sampler.seed_task_sampling(seed["seed_u32"])
+        sampler.set_pact_manifest_row(row)
+        try:
+            task = sampler.sample_task(
+                house_index=int(row.get("scene_template_house_index") or 1)
+            )
+        except HouseInvalidForTask as exc:
+            last_error = f"HouseInvalidForTask: {exc.reason}"
+            sampler.close()
+            continue
+        except Exception as exc:
+            last_error = f"{type(exc).__name__}: {exc}"
+            sampler.close()
+            continue
+        if task is None:
+            last_error = "sample_task returned None"
+            sampler.close()
+            continue
+        return task, sampler, seed, xml
+    raise RuntimeError(
+        f"row {row.get('role_index')} sampling failed after "
+        f"{max_retries + 1} tries: {last_error}"
+    )
+
+
+def _default_history(prox_feature: str | None) -> str:
+    if prox_feature and is_geometry_feature(prox_feature):
+        return "consecutive"
+    return "query"
 
 
 def _fill_policy_config(eval_cfg, args, cameras: tuple[str, ...], chunk: int) -> None:
@@ -1045,7 +926,6 @@ def _fill_policy_config(eval_cfg, args, cameras: tuple[str, ...], chunk: int) ->
     pc.chunk_size = chunk
     pc.exec_horizon = int(getattr(args, "exec_horizon", None) or chunk)
     pc.camera_names = cameras
-    pc.history_mode = args.history
     pc.seed = args.seed_base
     _apply_training_arch(pc, Path(pc.ckpt_dir))
     prox_cfg_path = Path(pc.ckpt_dir) / "prox_config.json"
@@ -1056,13 +936,20 @@ def _fill_policy_config(eval_cfg, args, cameras: tuple[str, ...], chunk: int) ->
         pc.prox_layout = pcfg.get("prox_layout", "per_sensor")
         pc.prox_pool = pcfg.get("prox_pool", "min")
         pc.prox_tokens_per_sensor = int(pcfg.get("prox_tokens_per_sensor", 8))
+        pc.prox_encoder_ckpt = pcfg.get("prox_encoder_ckpt", "")
         pc.finetune_prox_encoder = bool(pcfg.get("finetune_prox_encoder", False))
         pc.prox_policy_tap = pcfg.get("prox_policy_tap") or ""
-        print(
-            f"{_LOG} PACT ckpt -> proximity ON "
-            f"(feature={pc.prox_feature}, layout={pc.prox_layout}, "
-            f"K={pc.prox_tokens_per_sensor}, pool={pc.prox_pool})"
-        )
+    pc.prox_ablate = str(getattr(args, "prox_ablate", "none") or "none")
+    if args.history in (None, "auto"):
+        pc.history_mode = _default_history(pc.prox_feature if pc.use_proximity else None)
+    else:
+        pc.history_mode = args.history
+    print(
+        f"{_LOG} PACT={'ON' if pc.use_proximity else 'OFF'} "
+        f"feature={pc.prox_feature if pc.use_proximity else '-'} "
+        f"K={pc.prox_tokens_per_sensor} history={pc.history_mode} "
+        f"ablate={pc.prox_ablate} exec_horizon={pc.exec_horizon}"
+    )
     eval_cfg.policy_config = pc
 
 
@@ -1090,266 +977,13 @@ def _reset_prox_buffer(task) -> None:
         env.reset_proximity_depth_buffer(names)
 
 
-def _assert_v1011d_task(task, house: int) -> str:
-    from molmo_spaces.data_generation.pact_place.contracts import v1010_cell
-
-    params = dict(getattr(task, "scene_params", None) or {})
-    version = params.get("pact_place_environment_version")
-    if version != _ENV_VERSION:
-        raise RuntimeError(
-            f"{_LOG} scene_params pact_place_environment_version={version!r} "
-            f"!= {_ENV_VERSION!r}"
-        )
-    if params.get("pact_v1011d_all_clutter_randomized") is not True:
-        raise RuntimeError(
-            f"{_LOG} scene_params pact_v1011d_all_clutter_randomized is not True"
-        )
-    family, side, pose = v1010_cell(house)
-    return f"{family}|{side}|{pose}"
-
-
-def _house_index(i: int, args: argparse.Namespace) -> int:
-    if args.house_ind is None:
-        return int(i) % _N_CELLS
-    return int(args.house_ind)
-
-
-def _house_schedule(args: argparse.Namespace) -> str:
-    if args.house_ind is None:
-        return "cycle_24"
-    return f"pin_{int(args.house_ind)}"
-
-
-def _clutter_xy_scale_token(scale: float) -> float:
-    return float(f"{float(scale):.6g}")
-
-
-def _protocol_identity(args: argparse.Namespace, exec_horizon: int) -> dict:
-    cameras = list(getattr(args, "cameras", None) or _DEFAULT_CAMERAS)
-    return {
-        "exec_horizon": int(exec_horizon),
-        "skin_substeps": str(args.skin_substeps),
-        "house_schedule": _house_schedule(args),
-        "clutter_xy_scale": _clutter_xy_scale_token(
-            float(getattr(args, "clutter_xy_scale", 1.0))
-        ),
-        "cameras": cameras,
-    }
-
-
-def _refuse_resume_mismatch(summary_path: Path, protocol: dict) -> None:
-    if not summary_path.is_file():
-        return
-    saved = json.loads(summary_path.read_text())
-    old = saved.get("protocol") or {}
-    for key, value in protocol.items():
-        old_val = old.get(key)
-        if old_val is None and key == "clutter_xy_scale":
-            old_val = 1.0
-        if old_val is None and key == "cameras":
-            old_val = list(_DEFAULT_CAMERAS)
-        if key == "clutter_xy_scale":
-            try:
-                mismatch = float(old_val) != float(value)
-            except (TypeError, ValueError):
-                mismatch = True
-        elif key == "cameras":
-            mismatch = list(old_val) != list(value)
-        else:
-            mismatch = old_val != value
-        if mismatch:
-            raise SystemExit(
-                f"{_LOG} refuse resume into {summary_path.parent}: "
-                f"protocol {key}={old_val!r} != {value!r}. "
-                "Use a new --output_dir."
-            )
-
-
-def _shrink_interval(lo: float, hi: float, center: float, scale: float) -> tuple[float, float]:
-    """Shrink [lo, hi] toward ``center``, staying inside the original interval."""
-    if hi < lo:
-        lo, hi = hi, lo
-    mid = min(max(float(center), lo), hi)
-    s = float(scale)
-    return (mid + s * (lo - mid), mid + s * (hi - mid))
-
-
-_CLUTTER_SCALE_PATCHED = False
-
-
-def _install_clutter_xy_scale(scale: float) -> None:
-    """Eval-only. Do not edit the molmospaces V10.11d sampler.
-
-    scale=1: full proposal boxes. scale<1: shrink slots 01/03/04/06 toward
-    the v1011c seats already in ``by_slot``. Slots 08/09 keep the 22 cm /
-    ±65° ring — shrinking ``NEAR_RADIUS_MAX_M`` empties the annulus
-    (cup+object+2 cm gap > 11 cm at scale 0.25).
-    """
-    global _CLUTTER_SCALE_PATCHED
-    from molmo_spaces.tasks.pact_place import (
-        PactPlaceCorridorV1011DRandomizedLayoutSampler as Cls,
-    )
-
-    token = _clutter_xy_scale_token(scale)
-    if abs(token - 1.0) < 1e-12:
-        print(f"{_LOG} clutter_xy_scale=1 full V10.11d layout randomize", flush=True)
-        return
-    if _CLUTTER_SCALE_PATCHED:
-        raise RuntimeError(f"{_LOG} clutter_xy_scale already patched")
-    orig_rand = Cls._randomize_base_slot_centers
-    orig_draw = Cls._draw_theta
-
-    def _randomize(self, by_slot, layout, _orig=orig_rand, _scale=token):
-        full = type(self).SLOT_RANDOMIZATION_BOXES_M
-        shrunk = {}
-        for slot, box in full.items():
-            cx = float(by_slot[slot]["center_m"][0])
-            cy = float(by_slot[slot]["center_m"][1])
-            shrunk[slot] = {
-                "x": _shrink_interval(float(box["x"][0]), float(box["x"][1]), cx, _scale),
-                "y": _shrink_interval(float(box["y"][0]), float(box["y"][1]), cy, _scale),
-            }
-        self.SLOT_RANDOMIZATION_BOXES_M = shrunk
-        try:
-            return _orig(self, by_slot, layout)
-        finally:
-            del self.SLOT_RANDOMIZATION_BOXES_M
-
-    def _draw(self, _orig=orig_draw, _scale=token):
-        th = _orig(self)
-        th["pact_v1011d_eval_clutter_xy_scale"] = _scale
-        return th
-
-    Cls._randomize_base_slot_centers = _randomize
-    Cls._draw_theta = _draw
-    _CLUTTER_SCALE_PATCHED = True
-    print(
-        f"{_LOG} clutter_xy_scale={token} "
-        "slots 01/03/04/06 toward v1011c seats; 08/09 stay 22cm/±65° "
-        "(shrinking that ring empties the annulus). Easy eval. Not full V10.11d.",
-        flush=True,
-    )
-
-
-def _construction_tag(exc: BaseException) -> str:
-    msg = str(exc)
-    if any(m in msg for m in _CONSTRUCTION_FAIL_MARKERS):
-        return "known"
-    return "valueerror"
-
-
-def _sample_v1011d_task(sampler, house: int, seed: int):
-    """Datagen retries settle failures. Eval must too or n=50 dies on hairline contact.
-
-    Attempt 0 keeps ``seed``. Later attempts offset the RNG so resume is
-    deterministic. Do not drop the episode. Any ``ValueError`` from
-    ``sample_task`` is construction (settle, annulus, slot place, hash bind).
-    """
-    last: BaseException | None = None
-    for attempt in range(_CONSTRUCTION_RETRY_MAX):
-        draw_seed = int(seed) + attempt * _CONSTRUCTION_RETRY_STRIDE
-        set_seed(draw_seed)
-        sampler.seed_task_sampling(draw_seed)
-        try:
-            task = sampler.sample_task(house_index=house)
-        except ValueError as exc:
-            last = exc
-            print(
-                f"{_LOG} construction retry house={house} seed={seed} "
-                f"attempt={attempt} draw_seed={draw_seed} "
-                f"tag={_construction_tag(exc)}: {exc}",
-                flush=True,
-            )
-            continue
-        if task is None:
-            last = RuntimeError("sample_task returned None")
-            print(
-                f"{_LOG} construction retry house={house} seed={seed} "
-                f"attempt={attempt}: sample_task returned None",
-                flush=True,
-            )
-            continue
-        return task, attempt
-    raise RuntimeError(
-        f"{_LOG} construction failed house={house} seed={seed} "
-        f"after {_CONSTRUCTION_RETRY_MAX} attempts: {last}"
-    ) from last
-
-
-def _mp4_codec(path: Path) -> str:
-    probe = subprocess.run(
-        [
-            "ffprobe",
-            "-v",
-            "error",
-            "-select_streams",
-            "v:0",
-            "-show_entries",
-            "stream=codec_name",
-            "-of",
-            "csv=p=0",
-            str(path),
-        ],
-        capture_output=True,
-        text=True,
-    )
-    return probe.stdout.strip().lower() if probe.returncode == 0 else ""
-
-
-def encode_h264_ide(mp4_path: Path) -> Path | None:
-    """MPEG-4 Part 2 (OpenCV mp4v) does not play in VS Code / Cursor. H.264 does."""
-    if not mp4_path.is_file():
-        return None
-    if _mp4_codec(mp4_path) == "h264":
-        return mp4_path
-    ffmpeg = shutil.which("ffmpeg")
-    if ffmpeg is None:
-        print(f"{_LOG} ffmpeg missing — {mp4_path} stays MPEG-4 (IDE will not play it)", flush=True)
-        return mp4_path
-    tmp = mp4_path.with_name(mp4_path.stem + ".h264tmp.mp4")
-    cmd = [
-        ffmpeg,
-        "-y",
-        "-loglevel",
-        "error",
-        "-i",
-        str(mp4_path),
-        "-an",
-        "-c:v",
-        "libx264",
-        "-pix_fmt",
-        "yuv420p",
-        "-preset",
-        "fast",
-        "-crf",
-        "20",
-        "-movflags",
-        "+faststart",
-        str(tmp),
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0 or not tmp.is_file():
-        print(
-            f"{_LOG} ffmpeg h264 failed on {mp4_path}: {(result.stderr or '')[-400:]}",
-            flush=True,
-        )
-        if tmp.exists():
-            tmp.unlink()
-        return mp4_path
-    tmp.replace(mp4_path)
-    print(f"{_LOG} h264 {mp4_path} codec={_mp4_codec(mp4_path) or 'unknown'}", flush=True)
-    return mp4_path
-
-
 def _grab_exo_rgb(task) -> np.ndarray | None:
-    """Current-world exo RGB. Independent of the chunk gate (skip steps reuse stale RGB)."""
     env = getattr(task, "_env", None)
     if env is None or not hasattr(env, "render_rgb_frame"):
         return None
     try:
         frame = env.render_rgb_frame(_EXO_CAM)
-    except Exception as exc:
-        print(f"{_LOG} {_EXO_CAM} render failed: {exc}", flush=True)
+    except Exception:
         return None
     if frame is None:
         return None
@@ -1357,7 +991,6 @@ def _grab_exo_rgb(task) -> np.ndarray | None:
     if arr.ndim == 3 and arr.shape[-1] == 4:
         arr = arr[..., :3]
     if arr.ndim != 3 or arr.shape[-1] != 3:
-        print(f"{_LOG} {_EXO_CAM} unexpected shape {arr.shape}", flush=True)
         return None
     if arr.dtype != np.uint8:
         arr = np.clip(arr, 0, 255).astype(np.uint8)
@@ -1365,8 +998,6 @@ def _grab_exo_rgb(task) -> np.ndarray | None:
 
 
 class _ExoMp4:
-    """Stream one RGB camera to MP4. Do not keep the episode in RAM."""
-
     def __init__(self, path: Path, fps: float):
         self.path = path
         self.fps = float(fps)
@@ -1379,13 +1010,13 @@ class _ExoMp4:
             return
         if self._writer is None:
             h, w = int(frame.shape[0]), int(frame.shape[1])
-            if (w % 2) or (h % 2):
-                w -= w % 2
-                h -= h % 2
-                frame = frame[:h, :w]
+            w -= w % 2
+            h -= h % 2
+            frame = frame[:h, :w]
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            writer = cv2.VideoWriter(str(self.path), fourcc, self.fps, (w, h))
+            writer = cv2.VideoWriter(
+                str(self.path), cv2.VideoWriter_fourcc(*"mp4v"), self.fps, (w, h)
+            )
             if not writer.isOpened():
                 raise RuntimeError(f"{_LOG} VideoWriter failed for {self.path}")
             self._writer = writer
@@ -1401,41 +1032,41 @@ class _ExoMp4:
             self._writer.release()
             self._writer = None
         if self.n_frames <= 0:
-            print(f"{_LOG} no {_EXO_CAM} frames; skipped {self.path}", flush=True)
             return None
-        encoded = encode_h264_ide(self.path)
-        print(
-            f"{_LOG} wrote {self.path} frames={self.n_frames} fps={self.fps:.3f} "
-            f"codec={_mp4_codec(self.path) or 'unknown'}",
-            flush=True,
-        )
-        return encoded or self.path
+        ffmpeg = shutil.which("ffmpeg")
+        if ffmpeg is not None:
+            tmp = self.path.with_name(self.path.stem + ".h264tmp.mp4")
+            result = subprocess.run(
+                [
+                    ffmpeg, "-y", "-loglevel", "error", "-i", str(self.path),
+                    "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                    "-preset", "fast", "-crf", "20", "-movflags", "+faststart",
+                    str(tmp),
+                ],
+                capture_output=True, text=True,
+            )
+            if result.returncode == 0 and tmp.is_file():
+                tmp.replace(self.path)
+            elif tmp.exists():
+                tmp.unlink()
+        return self.path
 
 
 def _rollout(
-    task,
-    policy,
-    horizon: int,
-    *,
-    skin_substeps: str,
-    exo_video: Path | None = None,
+    task, policy, horizon: int, *, skin_substeps: str, exo_video: Path | None = None,
     video_fps: float = 1000.0 / 66.0,
-    on_step=None,
-) -> tuple[bool, bool, dict, int]:
-    """Full-horizon loop. Headline success is terminal judge_success."""
+) -> tuple[bool, dict]:
     policy.reset()
     task._eval_snapshot_renders = 0
     task._eval_substep_queries = 0
     writer = _ExoMp4(exo_video, video_fps) if exo_video is not None else None
     extra: dict = {}
-    last_step = 0
     try:
         if skin_substeps == "train":
             _reset_prox_buffer(task)
         observation, _ = task.reset()
         if writer is not None:
             writer.write(_grab_exo_rgb(task))
-        ever = False
         for _step in range(int(horizon)):
             if hasattr(task, "is_done") and task.is_done():
                 break
@@ -1448,31 +1079,24 @@ def _rollout(
                 task._proximity_camera_names = []
                 task._fast_eval_substep_ready = False
             observation, _, terminal, truncated, _ = task.step(action)
-            last_step = int(_step)
-            if on_step is not None:
-                on_step(_step, task)
             task._proximity_camera_names = []
             if writer is not None:
                 writer.write(_grab_exo_rgb(task))
-            if _one_bool(task.judge_success()):
-                ever = True
             if getattr(task, "observation_cache", None):
                 task.observation_cache[-1] = [{}]
             if _one_bool(terminal) or _one_bool(truncated):
                 break
-        terminal = _one_bool(task.judge_success())
-        return terminal, ever or terminal, extra, last_step
+        return _one_bool(task.judge_success()), extra
     finally:
         if writer is not None:
             path = writer.close()
-            extra["video_camera"] = _EXO_CAM
             extra["video_frames"] = int(writer.n_frames)
             if path is not None:
                 extra["video_path"] = str(path)
 
 
-def _load_resume(jsonl: Path) -> set[tuple[int, int]]:
-    done: set[tuple[int, int]] = set()
+def _load_resume(jsonl: Path) -> set[int]:
+    done: set[int] = set()
     if not jsonl.is_file():
         return done
     for line in jsonl.read_text().splitlines():
@@ -1480,123 +1104,51 @@ def _load_resume(jsonl: Path) -> set[tuple[int, int]]:
             continue
         rec = json.loads(line)
         _EPISODE_METRICS.append(rec)
-        if "episode_idx" in rec and "seed" in rec:
-            done.add((int(rec["episode_idx"]), int(rec["seed"])))
+        if "role_index" in rec:
+            done.add(int(rec["role_index"]))
+        elif "episode_idx" in rec:
+            done.add(int(rec["episode_idx"]))
     return done
-
-
-def _write_summary(path: Path, payload: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n")
-
-
-def _history_json_label(mode: str) -> str:
-    if mode == "query":
-        return "query_steps_train_mismatch"
-    return "consecutive_prefetch_8"
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--ckpt_dir", "--checkpoint-dir", dest="ckpt_dir", required=True)
     p.add_argument("--ckpt_name", default="policy_best.ckpt")
-    p.add_argument(
-        "--cameras",
-        nargs="+",
-        default=None,
-        help="Policy RGB. Default exo_camera_1 wrist_camera (train-matched). "
-        "wrist_camera alone is a hallway-style ablation; train was both. "
-        "Env still has exo for --save_video. New --output_dir.",
-    )
     p.add_argument("--molmo", "--molmospaces_root", dest="molmo", default=None)
     p.add_argument("--num_rollouts", type=int, default=2)
-    p.add_argument(
-        "--house_ind",
-        type=int,
-        default=None,
-        help="Pin one 24-cell index. Default cycles house_index = i %% 24.",
-    )
-    p.add_argument("--horizon", type=int, default=None)
+    p.add_argument("--house_ind", type=int, default=1)
+    p.add_argument("--horizon", "--task_horizon", dest="horizon", type=int, default=1050)
     p.add_argument("--chunk_size", type=int, default=None)
-    p.add_argument(
-        "--exec_horizon",
-        type=int,
-        default=None,
-        help="Re-query every K steps; execute chunk[:K]. Default = ckpt chunk size.",
-    )
-    p.add_argument(
-        "--skin_substeps",
-        choices=("snapshot", "train"),
-        default="snapshot",
-        help="snapshot: period 0, one EGL at query (hallway-like). "
-        "train: 16.67 ms, keep 4 substep frames at query.",
-    )
-    p.add_argument("--seed_base", type=int, default=2026)
-    p.add_argument("--skin", choices=("egl", "rays"), default="egl")
+    p.add_argument("--exec_horizon", type=int, default=None)
+    p.add_argument("--skin_substeps", choices=("snapshot", "train"), default="snapshot")
+    p.add_argument("--seed_base", type=int, default=EVAL_MASTER_SEED)
+    p.add_argument("--skin", choices=("egl", "rays"), default="rays")
     p.add_argument(
         "--history",
-        choices=("query", "consecutive"),
-        default="query",
-        help="query: one skin snapshot at the chunk query. consecutive: 8-step "
-        "causal window (prefetch the last 7 idle chunk steps plus the query), "
-        "matching readout training. Not every-control-step skin.",
+        choices=("auto", "query", "consecutive"),
+        default="auto",
+        help="auto: consecutive for readout/geometry, query for raw/ACT.",
     )
     p.add_argument(
-        "--output_dir",
-        default="/home/jaydv/code/prox_learning/eval_output/eval_act_v1011d",
+        "--prox_ablate",
+        choices=("none", "zero"),
+        default="none",
+        help="Readout ablation. 'zero' keeps skin token count but feeds zeros.",
     )
-    p.add_argument(
-        "--save_video",
-        "--save_videos",
-        action="store_true",
-        help="Write exo_camera_1 RGB MP4 every control step under "
-        "output_dir/videos/. Remux to H.264 yuv420p +faststart so VS Code / "
-        "Cursor can play it. Skin gate stays on. Does not set molmospaces "
-        "save_videos (that keeps the obs cache). Not a protocol field.",
-    )
-    p.add_argument(
-        "--clutter_xy_scale",
-        type=float,
-        default=1.0,
-        help="1.0 = full V10.11d (slots 01/03/04/06 proposal boxes). "
-        "(0,1] shrinks those four toward v1011c seats. Slots 08/09 keep "
-        "the 22 cm / ±65° ring (shrinking it empties the annulus). "
-        "Easy eval. New --output_dir. Not the full-randomize protocol.",
-    )
-    pact_eval_wandb.add_cli_flags(p)
+    p.add_argument("--output_dir", required=True)
+    p.add_argument("--save_video", action="store_true")
+    p.add_argument("--spread_cells", action="store_true")
+    p.add_argument("--row_start", type=int, default=0)
+    p.add_argument("--row_end", type=int, default=None)
     return p.parse_args()
 
 
 def main() -> None:
-    global _SKIN_SUBSTEPS
     args = parse_args()
-    _SKIN_SUBSTEPS = args.skin_substeps
     if args.molmo is not None and Path(args.molmo).resolve() != _MOLMO_ROOT:
         raise SystemExit(
             f"{_LOG} --molmo must be on the command line before import-time path setup"
-        )
-    if args.history == "consecutive" and args.skin == "egl":
-        print(
-            f"{_LOG} WARNING: --history consecutive with --skin egl still uses "
-            "EGL for the 8-step prefetch window. Headline readout uses --skin rays.",
-            flush=True,
-        )
-    if args.skin_substeps == "snapshot" and args.skin == "egl":
-        print(
-            f"{_LOG} skin_substeps=snapshot (hallway-like). "
-            "Train-matched squeeze is --skin_substeps train.",
-            flush=True,
-        )
-    if args.skin_substeps == "train":
-        print(
-            f"{_LOG} skin_substeps=train: period={_TRAIN_PERIOD_MS} ms, "
-            "keep 4 substep frames at query. Reset obs is still a snapshot.",
-            flush=True,
-        )
-    args.clutter_xy_scale = _clutter_xy_scale_token(float(args.clutter_xy_scale))
-    if not (0.0 < float(args.clutter_xy_scale) <= 1.0):
-        raise SystemExit(
-            f"{_LOG} --clutter_xy_scale must be in (0, 1], got {args.clutter_xy_scale}"
         )
 
     ckpt_dir = Path(args.ckpt_dir).resolve()
@@ -1607,19 +1159,6 @@ def main() -> None:
     if not stats_path.is_file():
         raise SystemExit(f"{_LOG} missing {stats_path}")
 
-    cameras = _resolve_cameras(args, ckpt_dir)
-    args.cameras = list(cameras)
-    if "wrist_camera" not in cameras:
-        raise SystemExit(
-            f"{_LOG} cameras {list(cameras)} must include wrist_camera"
-        )
-    if list(cameras) != list(_DEFAULT_CAMERAS):
-        print(
-            f"{_LOG} WARNING: policy cameras {list(cameras)} != train "
-            f"{list(_DEFAULT_CAMERAS)} (200-ep hdf5 is exo+wrist). "
-            "Hallway-style ablation. New --output_dir. Do not mix rates.",
-            flush=True,
-        )
     weights = _load_state_dict(ckpt_path)
     chunk = _chunk_from_weights(weights)
     if args.chunk_size is not None and int(args.chunk_size) != chunk:
@@ -1627,42 +1166,43 @@ def main() -> None:
             f"{_LOG} --chunk_size {args.chunk_size} != ckpt query_embed {chunk}"
         )
     exec_horizon = int(args.exec_horizon) if args.exec_horizon is not None else chunk
-    if exec_horizon <= 0:
-        raise SystemExit(f"{_LOG} --exec_horizon must be positive")
     args.exec_horizon = exec_horizon
-    n_bb = _n_backbones(weights)
-    if n_bb > 1 and n_bb != len(cameras):
-        raise SystemExit(
-            f"{_LOG} checkpoint has {n_bb} backbones, --cameras has {len(cameras)}"
-        )
-    if n_bb == 1 and len(cameras) != 1:
-        print(
-            f"{_LOG} DETRVAE shares 1 backbone across {len(cameras)} cameras "
-            f"{list(cameras)}",
-            flush=True,
-        )
     del weights
 
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
-    eval_cfg, xml, sampler_cls, xml_paths = _build_v1011d_cfg(args, output_dir)
-    _install_clutter_xy_scale(float(args.clutter_xy_scale))
+    eval_cfg = V6EvalConfig()
+    _set_cfg(eval_cfg, "task_horizon", args.horizon)
+    _set_cfg(eval_cfg, "end_on_success", False)
+    _set_cfg(eval_cfg, "terminate_upon_success", False)
+    _set_cfg(eval_cfg, "output_dir", output_dir)
+    _set_cfg(eval_cfg, "num_workers", 1)
+    _set_cfg(eval_cfg, "save_videos", False)
+    _set_cfg(eval_cfg, "use_passive_viewer", False)
+    _set_cfg(eval_cfg, "viz_sensor_rgb", False)
+    eval_cfg.camera_config = FrankaSkinHybridCameraSystem()
+    eval_cfg.task_sampler_config.task_sampler_class = PactPlaceCorridorV1010TwoObjectSampler
+    eval_cfg.task_sampler_config.house_inds = [1]
+    _disable_action_noise(eval_cfg)
+
+    scenes_dir = resolve_v1010_scenes_dir(_MOLMO_ROOT)
+    assert_v1010_scene_hashes(scenes_dir)
+    cameras = _DEFAULT_CAMERAS
     _fill_policy_config(eval_cfg, args, cameras, chunk)
-    period_ms = _TRAIN_PERIOD_MS if args.skin_substeps == "train" else 0.0
-    _configure_eval_cameras(
-        eval_cfg,
-        need_skin=bool(eval_cfg.policy_config.use_proximity),
-        period_ms=period_ms,
-    )
-    _install_chunk_gated_sensors()
-    if args.skin == "rays":
-        if eval_cfg.policy_config.use_proximity:
-            _install_raycast_proximity()
-    elif eval_cfg.policy_config.use_proximity:
+    pc = eval_cfg.policy_config
+    if pc.history_mode == "consecutive" and args.skin == "egl":
         print(
-            f"{_LOG} --skin egl: 40-cam rasterizer on query steps.",
+            f"{_LOG} WARNING: --history consecutive with --skin egl renders "
+            "40 EGL cameras every control step. Use --skin rays.",
             flush=True,
         )
+    period_ms = _TRAIN_PERIOD_MS if args.skin_substeps == "train" else 0.0
+    _configure_eval_cameras(
+        eval_cfg, need_skin=bool(pc.use_proximity), period_ms=period_ms
+    )
+    _install_chunk_gated_sensors()
+    if args.skin == "rays" and pc.use_proximity:
+        _install_raycast_proximity()
 
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
@@ -1672,196 +1212,130 @@ def main() -> None:
     _EPISODE_METRICS.clear()
     _METRICS_JSONL = output_dir / "episodes.jsonl"
     summary_path = output_dir / "eval_summary.json"
-    protocol = _protocol_identity(args, exec_horizon)
-    _refuse_resume_mismatch(summary_path, protocol)
     done = _load_resume(_METRICS_JSONL)
 
     policy = FrozenACTPolicy(eval_cfg)
     policy.prepare_model()
     horizon = int(eval_cfg.task_horizon)
-    sampler = sampler_cls(eval_cfg)
-    history_label = _history_json_label(args.history)
-    encoder_path = getattr(policy, "_encoder_path", None)
+    rows = _build_eval_rows(args.num_rollouts, args.spread_cells, args.house_ind)
+    row_end = len(rows) if args.row_end is None else min(int(args.row_end), len(rows))
+    row_start = max(0, int(args.row_start))
+    rows = rows[row_start:row_end]
+    print(
+        f"{_LOG} molmospaces={_MOLMO_ROOT} env={_ENV_VERSION} "
+        f"sampler=PactPlaceCorridorV1010TwoObjectSampler n={len(rows)} "
+        f"rows[{row_start}:{row_end}] history={pc.history_mode} "
+        f"skin={args.skin} skin_substeps={args.skin_substeps} "
+        f"exec_horizon={exec_horizon} horizon={horizon}",
+        flush=True,
+    )
+
     dt_ms = float(getattr(eval_cfg, "policy_dt_ms", 66.0) or 66.0)
     video_fps = 1000.0 / dt_ms if dt_ms > 0 else 15.0
     video_dir = output_dir / "videos"
-    wb = pact_eval_wandb.start(
-        args,
-        output_dir=output_dir,
-        horizon=horizon,
-        extra_config={
-            "task": "v1011d",
-            "ckpt_dir": str(ckpt_dir),
-            "ckpt_name": args.ckpt_name,
-            "camera_names": list(cameras),
-            "skin": args.skin,
-            "history": args.history,
-            "skin_substeps": args.skin_substeps,
-            "exec_horizon": exec_horizon,
-            "chunk_size": chunk,
-            "house_schedule": protocol["house_schedule"],
-            "clutter_xy_scale": protocol["clutter_xy_scale"],
-        },
-    )
-    wb.log_running(_EPISODE_METRICS, _summarize_place_metrics())
-    if args.save_video:
-        video_dir.mkdir(parents=True, exist_ok=True)
-        print(
-            f"{_LOG} --save_video: {_EXO_CAM} every control step -> {video_dir} "
-            f"fps={video_fps:.3f} H.264 yuv420p +faststart. "
-            "Skin gate unchanged. molmospaces save_videos=False.",
-            flush=True,
-        )
 
-    def summary_payload(n_done: int) -> dict:
+    def summary_payload() -> dict:
         collision = _summarize_place_metrics()
         return {
             "ckpt_dir": str(ckpt_dir),
             "ckpt_name": args.ckpt_name,
             "ckpt_sha256": _file_sha256(ckpt_path),
-            "encoder_path": encoder_path,
-            "encoder_sha256": _file_sha256(Path(encoder_path)) if encoder_path else None,
             "script": str(Path(__file__).resolve()),
             "script_sha256": _file_sha256(Path(__file__).resolve()),
-            "protocol_source": "old_eval_act_place_corridor.py@1bfe69398722d916cca5b1e5a6ae308e90f8b476",
+            "protocol_source": "eval_act_v1011d.py FrozenACTPolicy + Hub v6 two-object",
             "molmospaces_root": str(_MOLMO_ROOT),
-            "molmospaces_commit": _git_rev(_MOLMO_ROOT),
-            "task": "v1011d",
-            "config_class": "FrankaSkinPactPlaceV1011DRandomizedClutterConfig",
-            "task_sampler_class": sampler_cls.__name__,
+            "task": "pact_pick_n_place_v6",
             "environment_version": _ENV_VERSION,
-            "scene_xmls": [p.name for p in xml_paths],
-            "scene_xml": str(xml),
+            "task_sampler_class": "PactPlaceCorridorV1010TwoObjectSampler",
             "camera_names": list(cameras),
-            "house_ind": args.house_ind,
-            "house_schedule": protocol["house_schedule"],
-            "num_rollouts": args.num_rollouts,
-            "completed": n_done,
+            "num_rollouts": len(rows),
+            "completed": len(_EPISODE_METRICS),
             "task_horizon": horizon,
             "chunk_size": chunk,
             "exec_horizon": exec_horizon,
+            "spread_cells": bool(args.spread_cells),
             "protocol": {
-                **protocol,
-                "history": args.history,
-                "history_mode": history_label,
+                "history": pc.history_mode,
                 "skin": args.skin,
+                "skin_substeps": args.skin_substeps,
+                "exec_horizon": exec_horizon,
                 "chunk": chunk,
                 "success": "terminal",
-                "end_on_success": False,
                 "temporal_aggregation": False,
+                "two_object": True,
             },
-            "save_video": bool(args.save_video),
-            "video_camera": _EXO_CAM if args.save_video else None,
-            "clutter_xy_scale": protocol["clutter_xy_scale"],
-            "package_versions": {
-                "torch": torch.__version__,
-                "mujoco": _pkg_version("mujoco"),
-            },
+            "use_proximity": bool(pc.use_proximity),
+            "prox_feature": pc.prox_feature if pc.use_proximity else None,
+            "prox_ablate": pc.prox_ablate,
             "collision": collision,
             "success": None if collision is None else collision["success"],
             "total": None if collision is None else collision["episodes"],
             "success_rate": None if collision is None else collision["success_rate"],
-            "ever_success_rate": None if collision is None else collision["ever_success_rate"],
         }
 
-    print(
-        f"{_LOG} molmospaces={_MOLMO_ROOT} commit={_git_rev(_MOLMO_ROOT)} "
-        f"config=FrankaSkinPactPlaceV1011DRandomizedClutterConfig "
-        f"sampler={sampler_cls.__name__} version={_ENV_VERSION} "
-        f"xml={sorted(_EXPECTED_XML)} cameras={cameras} "
-        f"horizon={horizon} n={args.num_rollouts} skin={args.skin} "
-        f"skin_substeps={args.skin_substeps} exec_horizon={exec_horizon} "
-        f"house_schedule={protocol['house_schedule']} history={history_label} "
-        f"save_video={int(bool(args.save_video))} "
-        f"clutter_xy_scale={protocol['clutter_xy_scale']}",
-        flush=True,
-    )
-
     try:
-        for i in range(args.num_rollouts):
-            seed = int(args.seed_base) + i
-            house = _house_index(i, args)
-            if (i, seed) in done:
-                print(f"{_LOG} skip existing ep={i} seed={seed}", flush=True)
-                _write_summary(summary_path, summary_payload(len(_EPISODE_METRICS)))
+        for row in rows:
+            role = int(row["role_index"])
+            if role in done:
+                print(f"{_LOG} skip existing role={role}", flush=True)
                 continue
-            set_seed(seed)
-            task, n_retry = _sample_v1011d_task(sampler, house, seed)
-            cell = _assert_v1011d_task(task, house)
-            _disarm_prox_cameras(task)
-            if args.skin_substeps == "train":
-                _reset_prox_buffer(task)
-            audit = PactPlaceContactAudit()
-            task._contact_audit_hook = audit
-            task.register_policy(policy)
+            sampler = None
             t0 = time.monotonic()
-            exo_path = None
-            if args.save_video:
-                exo_path = (
-                    video_dir
-                    / f"ep{i:03d}_house{house:02d}_seed{seed}_{_EXO_CAM}.mp4"
+            try:
+                task, sampler, seed, xml = _sample_row(eval_cfg, row, scenes_dir)
+                _disarm_prox_cameras(task)
+                if args.skin_substeps == "train":
+                    _reset_prox_buffer(task)
+                audit = PactPlaceContactAudit()
+                task._contact_audit_hook = audit
+                task.register_policy(policy)
+                exo_path = None
+                if args.save_video:
+                    video_dir.mkdir(parents=True, exist_ok=True)
+                    exo_path = video_dir / f"ep{role:03d}_{_EXO_CAM}.mp4"
+                terminal, video_extra = _rollout(
+                    task, policy, horizon,
+                    skin_substeps=args.skin_substeps,
+                    exo_video=exo_path,
+                    video_fps=video_fps,
                 )
-            terminal, ever, video_extra, last_step = _rollout(
-                task,
-                policy,
-                horizon,
-                skin_substeps=args.skin_substeps,
-                exo_video=exo_path,
-                video_fps=video_fps,
-                on_step=lambda step, rolled, i=i: wb.maybe_log_step(i, step, rolled),
-            )
+                _record_place_metric(
+                    task, bool(terminal), audit.summary(),
+                    extra={
+                        "episode_idx": role,
+                        "role_index": role,
+                        "cell": row.get("cell"),
+                        "episode_id": row.get("episode_id"),
+                        "scene_xml": str(xml),
+                        "environment_version": _ENV_VERSION,
+                        "seed_u64": int(seed["seed_u64"]),
+                        **video_extra,
+                    },
+                )
+                done.add(role)
+                print(
+                    f"{_LOG} row={role:03d} {row.get('cell')} "
+                    f"ok={int(terminal)} {time.monotonic() - t0:.1f}s",
+                    flush=True,
+                )
+            finally:
+                if sampler is not None:
+                    sampler.close()
+            summary_path.write_text(json.dumps(summary_payload(), indent=2, default=str) + "\n")
+    finally:
+        collision = _summarize_place_metrics()
+        if collision is not None:
             print(
-                f"{_LOG} ep={i} seed={seed} house={house} cell={cell} "
-                f"wall={time.monotonic() - t0:.1f}s "
-                f"terminal={int(terminal)} ever={int(ever)} "
-                f"snapshot={getattr(task, '_eval_snapshot_renders', 0)} "
-                f"substep={getattr(task, '_eval_substep_queries', 0)} "
-                f"settle_retry={n_retry}",
+                f"{_LOG} place {collision['success']}/{collision['episodes']} "
+                f"({collision['success_rate']*100:.1f}%)  "
+                f"strict {collision['collision_free_task_success']}/{collision['episodes']} "
+                f"({collision['collision_free_task_success_rate']*100:.1f}%)  "
+                f"collfree {collision['collision_free']}/{collision['episodes']} "
+                f"({collision['collision_free_rate']*100:.1f}%)",
                 flush=True,
             )
-            _record_place_metric(
-                task,
-                bool(terminal),
-                audit.summary(),
-                episode_idx=i,
-                seed=seed,
-                ever_success=ever,
-                extra={
-                    "house_index": house,
-                    "cell": cell,
-                    "construction_retries": int(n_retry),
-                    "clutter_xy_scale": protocol["clutter_xy_scale"],
-                    **video_extra,
-                },
-            )
-            done.add((i, seed))
-            _write_summary(summary_path, summary_payload(len(_EPISODE_METRICS)))
-            wb.log_episode(
-                episode=i,
-                ep_step=last_step,
-                rec=_EPISODE_METRICS[-1],
-                summary=_summarize_place_metrics(),
-                records=_EPISODE_METRICS,
-            )
-    finally:
-        sampler.close()
-        wb.finish()
-
-    collision = _summarize_place_metrics()
-    if collision is not None:
-        print(
-            f"{_LOG} terminal {collision['success']}/{collision['episodes']} "
-            f"({collision['success_rate']*100:.1f}%)  "
-            f"ever {collision['ever_success']}/{collision['episodes']} "
-            f"({collision['ever_success_rate']*100:.1f}%)  "
-            f"bar_hit {collision['bar_hits']}/{collision['episodes']} "
-            f"({collision['bar_hit_rate']*100:.1f}%)  "
-            f"collision_free {collision['collision_free']}/{collision['episodes']} "
-            f"({collision['collision_free_rate']*100:.1f}%)",
-            flush=True,
-        )
-    _write_summary(summary_path, summary_payload(len(_EPISODE_METRICS)))
-    print(f"{_LOG} wrote {summary_path}", flush=True)
+        summary_path.write_text(json.dumps(summary_payload(), indent=2, default=str) + "\n")
+        print(f"{_LOG} wrote {summary_path}", flush=True)
 
 
 if __name__ == "__main__":
