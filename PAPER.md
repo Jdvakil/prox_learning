@@ -676,5 +676,5 @@ occluded frame does not show that the policy never observed the hazard.
 | hallway PACT-raw s1, PACT-readout s1 n = 50 | H-B | second training seed | checkpoints trained; evaluation dirs empty |
 | hallway readout `--history consecutive` n = 50 | H-B | remove the history mismatch | not run |
 | v1010 (3 arms × 2 seeds), v1011c (3 arms) | T-1010 / T-1011c | further task families | checkpoints only; evaluators unwired |
-| v1011d ACT and readout, full randomise | T-1011d | turn the raw-only table into a comparison | not trained |
+| v1011d ACT and readout, full randomise | T-1011d | turn the raw-only table into a comparison | not trained; launcher `scripts/exp/train_v1011d.sh` |
 | v1011d wrist-only n = 50 | T-1011d | wrist-only ablation | 4/50 completed |

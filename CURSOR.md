@@ -22,6 +22,36 @@ Newest session at the top.
 
 ---
 
+## 2026-09-17 — v1011d single-run sensor keep
+
+- **When:** User: how to run for number of sensors after stripping the v1011d sweep.
+- **Why:** `eval_act_v1011d.py` had no `--sensor_keep_frac`. Keep is a per-link rate, not a sensor count.
+- **What:** Wired keep + first-frame into [`eval_act_v1011d.py`](eval_act_v1011d.py) (same pattern as v107). [`scripts/exp/eval_v1011d.sh`](scripts/exp/eval_v1011d.sh) knobs `SENSOR_KEEP_FRAC` / `SAVE_FIRST_FRAME` / `SENSOR_MASK_FIXED`. One value. `p!=1` writes `eval_output/$RUN_keep{pct}/`.
+- **How:** Poisson per link, fill 0.5 m. `1` keep all, `0` drop all, `0.5` ≈ half per link (realized mean±sd in jsonl).
+- **Not done:** User edits `SENSOR_KEEP_FRAC` and runs. Not the hallway H-B table. Do not overlap the live hallway readout GPU.
+
+---
+
+## 2026-09-17 — eval_v1011d.sh single run
+
+- **When:** User: make `eval_v1011d.sh` simple; no sweeps; edit knobs in file.
+- **Why:** Keep-fraction loop was hallway ablation. v1011d is not that table.
+- **What:** [`scripts/exp/eval_v1011d.sh`](scripts/exp/eval_v1011d.sh) one `eval_act_v1011d.py` call. Knobs at top. `OUTPUT_DIR=eval_output/$RUN`. README: v1011d shell is not a keep sweep.
+- **How:** Same shape as `eval_v1011c.sh`. Kept v1011d flags: cameras, `HISTORY=consecutive`, `skin_substeps`, `clutter_xy_scale`, wandb.
+- **Not done:** User edits `EXP=` / `NUM_ROLLOUTS` / `HISTORY` and runs. Prefix `EXP=` still overwritten by the assignment.
+
+---
+
+## 2026-09-17 — v1011d train/eval naming fix
+
+- **When:** User: fix v1011d naming order.
+- **Why:** Train key, eval key, and camera order must agree. The duplicate v1011d config used wrist before exo, while converted data and evaluator use exo before wrist.
+- **What:** `constants.py` now uses `camera_names=['exo_camera_1', 'wrist_camera']`; `eval_v1011d.sh` now uses `TASK=pact_pick_n_place_v2_v1011d`. Comments now match 200 exo+wrist episodes.
+- **How:** Train and eval both resolve `ckpts/pact_pick_n_place_v2_v1011d/${RUN}`. Encoder path remains hallway `pact_surface_embedding_encoder_v1.pt`.
+- **Not done:** User runs train. Edit `EXP=` in the file for ACT / PACT_READOUT. Prefix `EXP=ACT ./…` is overwritten. Eval `HISTORY=consecutive` still dirty vs old n=50 `query`.
+
+---
+
 ## 2026-09-16 — hallway eval shell honors EXP=
 
 - **When:** User ran `EXP=PACT_READOUT … ./scripts/exp/eval_v1_hallway.sh`. Echoed `PACT_RAW` keep75.

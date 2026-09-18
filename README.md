@@ -215,16 +215,21 @@ python scripts/pact.py train v1011d --run v1011d_readout_s0 --arm readout --seed
 python scripts/pact.py train hallway --run hallway_readout_s1 --arm readout --seed 1
 ```
 
-Historical hallway / v1010 / v107_spaced / v1011c ACT / PACT-raw / PACT-readout
+Historical hallway / v1010 / v107_spaced / v1011c / v1011d ACT / PACT-raw / PACT-readout
 launchers live in [`scripts/exp/`](scripts/exp/). One `EXP` per call.
 `imitate_episodes.py` (not `pact.py train`); split/normalization differ from
 the wrapper ([§4.20](#420-dataset-bound-training-and-evaluation)).
+**T-1011d train is the exp shell**, not `pact.py train`. Edit `EXP=` in the file
+(prefix `EXP=ACT ./…` is overwritten by the assignment). Writes
+`submodules/act/ckpts/pact_pick_n_place_v2/<RUN>/`. Closed-loop:
+`./scripts/exp/eval_v1011d.sh` (`eval_act_v1011d.py`).
 
 ```bash
 EXP=ACT ./scripts/exp/train_v1_hallway.sh
 EXP=PACT_RAW ./scripts/exp/train_v1010.sh
 EXP=PACT_READOUT ./scripts/exp/train_v107_spaced.sh
 EXP=PACT_READOUT ./scripts/exp/train_v1011c.sh
+./scripts/exp/train_v1011d.sh
 ```
 
 Closed-loop eval launchers (same RUN knobs → `CKPT_DIR`). Wired today:
@@ -464,8 +469,10 @@ Defaults: open-loop chunk, gated **EGL** skin, last-8 **query** skins, terminal
 Headline metric is terminal success; JSON also logs ever-success.
 
 **W&B:** on by default for these three scripts. Project `PC_ACT_experiments`.
-Wired shells (`eval_v1_hallway.sh`, `eval_v1011d.sh`, `eval_v107_spaced.sh`)
+Wired shells (`eval_v1_hallway.sh`, `eval_v107_spaced.sh`)
 pass `--wandb_run_name "${RUN}_eval"` so eval does not share a train run.
+`eval_v1011d.sh` is a single-run config (edit knobs in the file); same W&B name.
+Set `SENSOR_KEEP_FRAC` (one value, no loop) for a keep-fraction run.
 `--no_wandb` skips. `--wandb_log_every 50` (chunk) ticks live progress;
 `0` = episode-only. Helper: [`scripts/pact_eval_wandb.py`](scripts/pact_eval_wandb.py).
 No videos to W&B. Do not put wandb keys in `_protocol_identity`.
@@ -474,7 +481,7 @@ No videos to W&B. Do not put wandb keys in `_protocol_identity`.
 
 Keep rule ([`submodules/act/sensor_keep.py`](submodules/act/sensor_keep.py)): groups by prefix before `_sensor_` (`link5_back` and `link5_front` are two links). `p>=1` keep all exact; `p<=0` drop all; else per link `k=clip(Poisson(p*n_L),0,n_L)` then uniform sample. Clip pulls E[k] below λ; small links are noisy (`link5_front` n=4). Do not claim realized keep equals nominal p. Each `episodes.jsonl` row logs per-link counts; `eval_summary.json` `sensor_keep` is mean±sd overall and per link. Fill = `D_MAX` 0.5 m (raw closeness 0; readout >20 cm invalid → zero XYZ). Never fill 0. Architecture stays 40 tokens.
 
-Flags: `--sensor_keep_frac` (default 1), `--sensor_mask_seed` (default `--seed_base`), `--sensor_mask_fixed` (one mask for all eps, figure), `--save_first_frame` (not a protocol field; enables `{cam}_depth` on hallway 977acd6 / submodule molmospaces — RGB uuid unchanged, policy still reads `obs[cam]`). Resume refuses `sensor_keep_frac` / `sensor_mask_fixed` mismatch. Helper: [`scripts/pact_eval_sensor_keep.py`](scripts/pact_eval_sensor_keep.py). Shell: [`scripts/exp/eval_v1_hallway.sh`](scripts/exp/eval_v1_hallway.sh) defaults `SENSOR_KEEP_FRACS="0.75 0.5 0.25 0"`. Same flags on `eval_act_v1011d.py` / `eval_act_v107spaced.py`; those are not the paired H-B table.
+Flags: `--sensor_keep_frac` (default 1), `--sensor_mask_seed` (default `--seed_base`), `--sensor_mask_fixed` (one mask for all eps, figure), `--save_first_frame` (not a protocol field; enables `{cam}_depth` on hallway 977acd6 / submodule molmospaces — RGB uuid unchanged, policy still reads `obs[cam]`). Resume refuses `sensor_keep_frac` / `sensor_mask_fixed` mismatch. Helper: [`scripts/pact_eval_sensor_keep.py`](scripts/pact_eval_sensor_keep.py). Shell: [`scripts/exp/eval_v1_hallway.sh`](scripts/exp/eval_v1_hallway.sh) defaults `SENSOR_KEEP_FRACS="0.75 0.5 0.25 0"`. Same flags on `eval_act_v1011d.py` / `eval_act_v107spaced.py` (not the paired H-B table). `eval_v1011d.sh` is one `SENSOR_KEEP_FRAC` (edit in file), not a keep loop.
 
 Place / bar / free of 50. Fill keep% cells after the sweep. 100% already on disk:
 
@@ -704,7 +711,7 @@ still unwired.
 | understand why v12 eval died with `settled clutter overlaps target` | [Start here §7](#7-evaluate-a-completed-run); [§4.23](#423-results-troubleshooting-and-experiment-handoff) |
 | run anything | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§3 Setup](#3-setup) |
 | train another v12 seed or arm while eval runs | [Start here §8](#8-keep-the-gpu-busy-more-trains-while-evals-run) |
-| train v1011d PACT (exo+wrist hdf5) | [Start here](#start-here-dataset-to-results-with-the-wrapper); [§4.20](#420-dataset-bound-training-and-evaluation) |
+| train v1011d PACT (exo+wrist hdf5) | [Start here §6](#6-train-a-new-model) (`scripts/exp/train_v1011d.sh`). Wrapper alternative: `python scripts/pact.py train v1011d …` (different split) |
 | train hallway ACT / raw / readout with a W&B project | [Start here §6](#6-train-a-new-model) (`scripts/exp/train_v1_hallway.sh`) |
 | start a new v12 checkpoint | [Start here §6](#6-train-a-new-model); [§4.21](#421-v12-training-and-evaluation) |
 | understand the wrapper / batch multiple training jobs | [§4.22](#422-wrapper-reference-and-batch-training) |
@@ -4355,6 +4362,11 @@ Every one of these has already cost real time.
 - **Hallway retrain grid (2026-09-10).** `scripts/exp/train_v1_hallway.sh`, six ckpts
   (ACT / RAW / READOUT × s0, s1), `bs8 cs50 lr1e-5 e2000`. Same recipe for v1010, v107_spaced,
   v10_11c_100.
+- **v1011d exp train shell (2026-09-17).** `scripts/exp/train_v1011d.sh` clones
+  `train_v1011c.sh` with `TASK=pact_pick_n_place_v2_v1011d`. Eval uses the same task name and
+  `CKPT_DIR` follows that RUN
+  (`eval_v1011d.sh`). Does not overwrite dated `20260903_171108_…_v1011d_s0`. No ACT/readout
+  ckpt until you run it.
 - **H-B evals (2026-09-11/12).** Frozen `eval_act.py` house 1: ACT s1 15/20/30, raw s0 21/13/37,
   readout s0 21/9/41. Readout again lowest bar (p = 0.027 vs ACT). Set label H-B.
 - **v107_spaced eval wired + run (2026-09-12).** `eval_act_v107spaced.py`. ACT 13, raw 0, readout 2
