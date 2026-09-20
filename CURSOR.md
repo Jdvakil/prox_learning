@@ -22,6 +22,40 @@ Newest session at the top.
 
 ---
 
+## 2026-09-20 — T-1011d three-arm numbers into README / PAPER.md
+
+- **When:** User: explain the stale lines, update README / CURSOR / PAPER.md incl. Methods; will write the paper from them.
+- **Why:** PAPER.md still said T-1011d was PACT-raw only and ACT / readout "not trained". The 2026-09-17 three-arm n=50 evals exist, and their `eval_summary.json` rates are over 52 records (2 stale).
+- **What:** Docs only. README: T-1011d three-arm line in "Results on disk", stale-record mechanism + clean n=50 table + noise floor in the eval-speed block. PAPER.md: §5.1 randomised-clutter task, §5.5 v1011d history / query schedule, §6 T-1011d protocol column + reproducibility paragraph, new §7.5 T-1011d results (old §7.5 → §7.6), §7.3 / §8 / §9 / App. A / C / F updated.
+- **How:** Counts recomputed from `episodes.jsonl` with `seed == episode_idx` (n=50 per arm). Paired exact McNemar on matched seeds. No file under `eval_output/` edited.
+- **Finding to keep straight:** easy 0.25 only. Bar hit ACT 18, raw 3, readout 10. Raw beats readout on bar hit here (1 vs 8 discordant, p = 0.039), opposite of H-A / H-B. Placement flat (13 / 12 / 13). Parity / speed checks are not task-success evidence.
+- **Not done:** Stale-record repair on disk, `_load_resume` guard, hook port to `eval_act.py` / `eval_act_v107spaced.py`, commit — all wait on user. No train/eval launched.
+
+---
+
+## 2026-09-19 — bare FR3 paper render (no skin)
+
+- **When:** User: same pose as `images/skin/skin_shells_isolated_2400.png`, but Franka only, no dermis.
+- **Why:** Isolated-shell plate hides the arm. Need the matching bare FR3 + Robotiq plate.
+- **What:** [`scripts/build_paper_images.py`](scripts/build_paper_images.py) hides `_skin` bodies and writes `images/robot/fr3_no_skin_2400.png`. Same camera as the three-quarter / isolated-shell views. README gallery count 46/14; PAPER.md inventory.
+- **How:** Inverse of the isolated-shell geom-group hide. One 2400 render; did not rebuild the rest of `--only native`.
+- **Not done:** User commit. No train/eval.
+
+---
+
+## 2026-09-18 — v1011d eval speed: lazy skin-camera poses
+
+- **When:** User: eval takes 15 h+, coauthors 4 h. Must not change policy, READOUT, or paper protocol.
+- **Why:** Logs 2026-09-17: ACT 115 s/ep, PACT_RAW 1281 s/ep (22 skin queries ≈ 22 s), PACT_READOUT 1296 s/ep (169 queries ≈ 150 s). ~1100 s/ep unexplained by rendering. `CPUMujocoEnv.step` calls `registry.update_all_cameras` after each of 33 ctrl substeps; 40 skin cams × scipy + by-name body lookups. Skin depth renders by MJCF camera name, so those registry poses are unread (only `sensor_param_*`, which nothing consumes).
+- **What:** New [`scripts/pact_eval_lazy_cameras.py`](scripts/pact_eval_lazy_cameras.py). [`eval_act_v1011d.py`](eval_act_v1011d.py): installs it after the chunk gate; `--eager_cameras` for A/B; summary fields `lazy_prox_cameras`, `export_sensors_dropped`. [`scripts/exp/eval_v1011d.sh`](scripts/exp/eval_v1011d.sh): knob `EAGER_CAMERAS=0`. README eval section.
+- **How:** Patch `CameraRegistry.update_all_cameras` to skip prox cams and bump a generation; `__getitem__` / `__iter__` recompute a prox cam on read (`_last_reference_pose=None`, full recompute). RGB cams run the original `update_pose` every substep. No molmospaces, policy, or encoder edit. `--skin rays` deliberately not used (READOUT trained on EGL depth). Fake-camera unit test passed; no rollout run by the agent.
+- **Update (same day, after user ran the profile):** pose refresh was only ~40% of the hidden cost (68 s of a 164 s 100-step rollout). Larger share: `ObjectImagePointsSensor` (82 s) — 126 segmentation renders per step, not in the chunk gate's render list, output unread in eval. Added `install_export_sensor_filter()` + `--keep_export_sensors`; `EAGER_CAMERAS=1` now restores both. `env_states` left in. Sensor calls `np.random.choice`; no other global-numpy draw inside a rollout (action noise off, per-episode reseed) — identity check must confirm. New [`scripts/exp/test_lazy_cameras.sh`](scripts/exp/test_lazy_cameras.sh) (tests 1–5).
+- **Results (agents ran the tests, 2026-09-18):** original 1378/1368 s/ep vs both hooks 95–99 s (≈14×), `snapshot=169` everywhere. Read-only audit: no hunk in policy / gate / skin / history / metrics; no reader of prox registry poses or `object_image_points`; RNG clean. Original-vs-original already drifts ~1 % in contact counts; fast-vs-fast over 24 eps flips success in 2/24, `hit_bar`/`collision_free` equal 24/24; fast-vs-paper differences same kind and size. Standalone seed-8 / seed-13 runs differ from in-sequence episodes 8 / 13 on both paths → episodes depend on process history → sharding flags **removed** again. Audit follow-ups applied: weakref env in the helper; per-episode `lazy_prox_cameras` / `export_sensors_dropped` fields. Evaluator diff is +22 lines, 0 removed.
+- **Found, not fixed:** `_load_resume` loads stale records from another `--seed_base` (three 2026-09-17 v1011d dirs summarize 52 episodes; same flaw in `eval_act.py`, `eval_act_v107spaced.py`). Repair + guard wait for the user.
+- **Not done:** same hooks for `eval_act.py` / `eval_act_v107spaced.py`. Isolated-GPU test done (`eval_output/_iso_*`, nothing else on the GPU): original 1363 / 1362 s/ep, fast 87–95 s/ep; fast-vs-fast still differs (ep0 bar frames 4396 vs 4446, 1 px × 1 gray level at t=0), original-vs-fast differs by the same amount (4349 vs 4396 / 4446), ep1 equal in all three, outcome fields equal everywhere. Noise is inherent, not GPU sharing.
+
+---
+
 ## 2026-09-17 — v1011d single-run sensor keep
 
 - **When:** User: how to run for number of sensors after stripping the v1011d sweep.

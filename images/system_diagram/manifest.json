@@ -1,0 +1,22 @@
+{
+  "method": "PACT-readout inference path",
+  "sources": [
+    "README.md \u00a710",
+    "encoders/surface_geometry.py:390\u2013463,875\u2013914",
+    "submodules/act/detr/models/detr_vae.py:109\u2013127,185\u2013240",
+    "submodules/act/detr/models/transformer.py:53\u201391",
+    "eval_act.py:707\u2013838,1158"
+  ],
+  "camera_note": "Overview thumbnail is the existing simulator re-render at the same lowered pose as the range thumbnails, using original dataset geometry. Camera count/selection varies by run; hallway headline uses wrist RGB.",
+  "range_thumbnails": "Three previously exported simulator range panels illustrate different body locations, not policy attention or intermediate features.",
+  "range_preprocessing": "Per-sensor valid depths 0.005\u20130.20 m mapped to closeness; out-of-range/dead pixels become zero. Overview thumbnail colours use the figure scale, not this policy preprocessing.",
+  "temporal_note": "8 pooled observations are repeated four times for the 32-frame shared temporal encoder. Training uses consecutive steps; eval_act.py defaults to query-spaced history. Diagram does not imply continuous reflex control.",
+  "architecture": "40 shared-encoder CLS readouts of width128 projected to 40 tokens of width512; sensor identity is supplied by learned ACT positional embeddings. ACT memory also includes image, qpos and latent tokens.",
+  "pretraining": "Auxiliary geometry targets supervise encoder pretraining. These heads are not runtime inputs; main readout is not a reconstructed object map. Policy training finetunes the encoder.",
+  "inference": "z=0; action chunk of50 commands with8 dimensions for the documented readout configuration. Query cadence and camera choice depend on run.",
+  "editing": "PPTX has native boxes, separate editable text and arrow segments; source thumbnails are PNGs. SVGs embed images and retain vector text/shapes. Third slide has no labels.",
+  "canvas": [
+    1840,
+    760
+  ]
+}

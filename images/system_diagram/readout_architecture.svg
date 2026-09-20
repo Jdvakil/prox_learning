@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="760" viewBox="0 0 1840 760">
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arrow_647080" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#647080"/></marker><marker id="arrow_2869AE" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#2869AE"/></marker><marker id="arrow_087F79" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#087F79"/></marker><marker id="arrow_6A5192" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6A5192"/></marker><marker id="arrow_A86D22" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#A86D22"/></marker></defs>
+<rect x="30" y="90" width="230" height="105" rx="10" fill="#EFF5FC" stroke="#2869AE" stroke-width="2"/>
+<text x="145.0" y="134.07793420485564" font-family="DejaVu Sans,Arial,sans-serif" font-size="25.577934204855623" font-weight="700" fill="#2869AE" text-anchor="middle">RGB camera(s)</text>
+<text x="145.0" y="167.5" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">240 × 320 per view</text>
+<rect x="310" y="90" width="230" height="105" rx="10" fill="#EFF5FC" stroke="#2869AE" stroke-width="2"/>
+<text x="425.0" y="134.5" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#2869AE" text-anchor="middle">ResNet-18</text>
+<text x="425.0" y="165.41497710922172" font-family="DejaVu Sans,Arial,sans-serif" font-size="17.914977109221713" font-weight="400" fill="#647080" text-anchor="middle">Shared visual backbone</text>
+<rect x="590" y="90" width="260" height="105" rx="10" fill="#EFF5FC" stroke="#2869AE" stroke-width="2"/>
+<text x="720.0" y="134.5" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#2869AE" text-anchor="middle">Image tokens</text>
+<text x="720.0" y="167.34622227870622" font-family="DejaVu Sans,Arial,sans-serif" font-size="19.846222278706232" font-weight="400" fill="#647080" text-anchor="middle">512-d + image positions</text>
+<polyline points="260,143 310,143" fill="none" stroke="#2869AE" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_2869AE)"/>
+<polyline points="540,143 590,143" fill="none" stroke="#2869AE" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_2869AE)"/>
+<rect x="30" y="315" width="230" height="132" rx="10" fill="#EAF6F3" stroke="#087F79" stroke-width="2"/>
+<text x="145.0" y="373.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#087F79" text-anchor="middle">Range history</text>
+<text x="145.0" y="406.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">8 × 40 × 8 × 8</text>
+<text x="145.0" y="483" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="400" fill="#647080" text-anchor="middle">Closeness: 5–200 mm</text>
+<rect x="310" y="290" width="255" height="180" rx="10" fill="#EAF6F3" stroke="#087F79" stroke-width="2"/>
+<text x="437.5" y="371.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" font-weight="700" fill="#087F79" text-anchor="middle">Shared encoder</text>
+<text x="437.5" y="401.54337010599176" font-family="DejaVu Sans,Arial,sans-serif" font-size="16.54337010599178" font-weight="400" fill="#647080" text-anchor="middle">CNN + temporal transformer</text>
+<text x="437.5" y="503" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="400" fill="#647080" text-anchor="middle">Repeat each of 8 frames ×4</text>
+<rect x="615" y="320" width="230" height="125" rx="10" fill="#EAF6F3" stroke="#087F79" stroke-width="2"/>
+<text x="730.0" y="374.5" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#087F79" text-anchor="middle">40 readouts</text>
+<text x="730.0" y="407.4548335397392" font-family="DejaVu Sans,Arial,sans-serif" font-size="19.9548335397392" font-weight="400" fill="#647080" text-anchor="middle">128-d CLS per sensor</text>
+<rect x="890" y="315" width="250" height="132" rx="10" fill="#EAF6F3" stroke="#087F79" stroke-width="2"/>
+<text x="1015.0" y="371.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="24" font-weight="700" fill="#087F79" text-anchor="middle">Projection</text>
+<text x="1015.0" y="405.78466213092014" font-family="DejaVu Sans,Arial,sans-serif" font-size="19.78466213092014" font-weight="400" fill="#647080" text-anchor="middle">512-d + sensor identity</text>
+<polyline points="260,381 310,381" fill="none" stroke="#087F79" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_087F79)"/>
+<polyline points="565,381 615,381" fill="none" stroke="#087F79" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_087F79)"/>
+<polyline points="845,381 890,381" fill="none" stroke="#087F79" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_087F79)"/>
+<rect x="1190" y="185" width="225" height="288" rx="10" fill="#F4F0F8" stroke="#6A5192" stroke-width="2"/>
+<text x="1302.5" y="321.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#6A5192" text-anchor="middle">ACT encoder</text>
+<text x="1302.5" y="354.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">4 layers · 512-d</text>
+<polyline points="850,143 1148,143 1148,240 1190,240" fill="none" stroke="#2869AE" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_2869AE)"/>
+<polyline points="1140,381 1190,381" fill="none" stroke="#087F79" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_087F79)"/>
+<rect x="1480" y="220" width="220" height="210" rx="10" fill="#F4F0F8" stroke="#6A5192" stroke-width="2"/>
+<text x="1590.0" y="317.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#6A5192" text-anchor="middle">ACT decoder</text>
+<text x="1590.0" y="350.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">7 layers</text>
+<polyline points="1415,330 1480,330" fill="none" stroke="#6A5192" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_6A5192)"/>
+<rect x="1465" y="64" width="250" height="102" rx="10" fill="#F4F0F8" stroke="#6A5192" stroke-width="2"/>
+<text x="1590.0" y="106.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" font-weight="700" fill="#6A5192" text-anchor="middle">50 queries</text>
+<text x="1590.0" y="139.11301129474828" font-family="DejaVu Sans,Arial,sans-serif" font-size="19.11301129474826" font-weight="400" fill="#647080" text-anchor="middle">Learned action positions</text>
+<polyline points="1590,166 1590,220" fill="none" stroke="#6A5192" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_6A5192)"/>
+<rect x="1470" y="505" width="245" height="102" rx="10" fill="#FCF6EB" stroke="#A86D22" stroke-width="2"/>
+<text x="1592.5" y="548.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#A86D22" text-anchor="middle">Action chunk</text>
+<text x="1592.5" y="581.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">50 × 8 commands</text>
+<polyline points="1590,430 1590,505" fill="none" stroke="#6A5192" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_6A5192)"/>
+<rect x="890" y="520" width="250" height="100" rx="10" fill="#F7F9FB" stroke="#647080" stroke-width="2"/>
+<text x="1015.0" y="562.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="26" font-weight="700" fill="#647080" text-anchor="middle">Joint state</text>
+<text x="1015.0" y="595.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">9-d → 512-d token</text>
+<polyline points="1140,570 1170,570 1170,438 1190,438" fill="none" stroke="#647080" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_647080)"/>
+<rect x="1190" y="530" width="225" height="100" rx="10" fill="#F7F9FB" stroke="#647080" stroke-width="2"/>
+<text x="1302.5" y="571.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" font-weight="700" fill="#647080" text-anchor="middle">z = 0</text>
+<text x="1302.5" y="601.5329707681849" font-family="DejaVu Sans,Arial,sans-serif" font-size="16.532970768184907" font-weight="400" fill="#647080" text-anchor="middle">Latent token at inference</text>
+<polyline points="1303,530 1303,473" fill="none" stroke="#647080" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#arrow_647080)"/>
+<rect x="300" y="588" width="485" height="94" rx="10" fill="#F7FAF9" stroke="#087F79" stroke-width="2"/>
+<text x="542.5" y="625.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="24" font-weight="700" fill="#087F79" text-anchor="middle">Geometry pretraining</text>
+<text x="542.5" y="660.0" font-family="DejaVu Sans,Arial,sans-serif" font-size="20" font-weight="400" fill="#647080" text-anchor="middle">XYZ · validity · depth · future</text>
+<polyline points="300,635 285,635 285,425 310,425" fill="none" stroke="#087F79" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="8 6" marker-end="url(#arrow_087F79)"/>
+<text x="460.0" y="555" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="400" fill="#087F79" text-anchor="middle">Initialize shared encoder</text>
+<text x="30" y="737" font-family="DejaVu Sans,Arial,sans-serif" font-size="19" font-weight="400" fill="#647080" text-anchor="start">Inference path shown. History sampling and camera selection depend on the run.</text>
+</svg>

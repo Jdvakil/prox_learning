@@ -26,9 +26,21 @@ Gaps: ACT s0 n=2 only; PACT-raw s1 and PACT-readout s1 eval dirs empty (ckpts tr
 **T-107** (v107_spaced, table+wrist, 24 houses, horizon 1050, n=50, one seed): ACT 13/8/19,
 PACT-raw **0**/9/19, PACT-readout 2/6/20. Skin arms lose the task; negative set —
 `eval_output/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
-**T-1011d** (PACT-raw only, `eval_act_v1011d.py`): full randomize 7/10/20 (ever 10) —
+**T-1011d-old** (PACT-raw only, Sep 3 ckpt, `eval_act_v1011d.py`): full randomize 7/10/20 (ever 10) —
 `eval_output/simple_v1011d_smoke_video/`; easy 0.25 14/3/22 — `eval_output/simple_v1011d_easy025_n50/`;
 wrist-only **aborted at 4/50** on 2026-09-07 (0/4) — `eval_output/simple_v1011d_wrist_only_n50/`.
+**T-1011d three arms** (2026-09-17, `bs8_cs50_lr1e-5_e2000` seed 0, exo+wrist, **easy
+`--clutter_xy_scale 0.25`**, `--history consecutive`, `--seed_base 0`, cycle_24, horizon 1050,
+n=50, original slow path): ACT 13/18/15 (strict 9), PACT-raw 12/**3**/26 (strict 11),
+PACT-readout 13/10/22 (strict 11), ever 13/12/14. Seeds match across arms; paired McNemar on
+bar hit: ACT vs readout 8 vs 0 p = 0.0078, ACT vs raw 15 vs 0 p = 0.0001, raw vs readout
+1 vs 8 p = 0.039 (**raw has fewer bar hits than readout here**). Placement is flat
+(discordant 8 vs 8, 6 vs 5). **Count only records with `seed == episode_idx`**: each dir
+holds 52 lines (2 stale `--seed_base 2026` records, both fail + bar hit), so
+`eval_summary.json` / W&B rates in those dirs are over 52 and wrong —
+`eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
+Easy 0.25 is optimistic vs the 200 full-randomize demos; three-arm full randomize
+(`--clutter_xy_scale 1`) is not run.
 v1010 (6 ckpts) and v10_11c_100 (3 ckpts) are trained, not evaluated (eval unwired).
 Other `data/` dumps (v12 overlay, v12.1, mixed, table_smoke) are not wired. Frozen-eval JSON
 labels `history_mode: query_steps_train_mismatch` (readout trains on 8 consecutive control
@@ -245,6 +257,88 @@ EXP=PACT_READOUT ./scripts/exp/eval_v1_hallway.sh
 ./scripts/exp/eval_v1011d.sh
 ./scripts/exp/eval_v107_spaced.sh
 ```
+
+**v1011d eval speed (2026-09-18).** PACT arms ran ~1290 s/episode vs ACT ~115 s
+(n=50 ≈ 18 h vs 1.6 h). Skin EGL render was only 22–150 s of that. A 100-step cProfile
+(`eval_output/_prof_eager/profile.txt`, 164 s rollout) split the rest in two:
+
+| cost | share | what | who reads it |
+|---|---|---|---|
+| `ObjectImagePointsSensor` | 82 s | one segmentation render per task object × camera, **every** step (3 × 42 = 126), bypasses the chunk gate | nobody in eval (dataset annotation) |
+| `update_all_cameras` | 68 s | registry pose of all 40 skin cameras after each of 33 ctrl substeps | nobody (skin depth renders by MJCF camera name) |
+| physics + audit + rest | ~4 s | | |
+
+`eval_act_v1011d.py` installs [`scripts/pact_eval_lazy_cameras.py`](scripts/pact_eval_lazy_cameras.py):
+(1) the 40 skin-camera poses are recomputed only when read; (2) `object_image_points` is
+dropped from the sensor suite (same idea as `submodules/act/eval_place_fast_hooks.py`;
+`env_states` stays). `exo_camera_1` / `wrist_camera` keep the original per-substep update,
+skin stays `--skin egl` with the same query schedule, policy / encoder / readout / seeds /
+horizon / success judge untouched. Not protocol fields; `eval_summary.json` records
+`lazy_prox_cameras` and `export_sensors_dropped` (also per episode in `episodes.jsonl`).
+`--eager_cameras --keep_export_sensors` (= `EAGER_CAMERAS=1` in the shell script) restores
+the original path.
+
+Gate before paper use — `./scripts/exp/test_lazy_cameras.sh 1..5` (profile, lazy run,
+original run, old-vs-new identity, new-vs-running-paper-eval identity). Manual form:
+
+```bash
+python - <<'PY'
+import json, sys
+a, b = (
+    [json.loads(l) for l in open(f"eval_output/{d}/episodes.jsonl")]
+    for d in sys.argv[1:3]
+)
+skip = {"video_path"}
+bad = [(x["episode_idx"], k) for x, y in zip(a, b) for k in x if k not in skip and x[k] != y.get(k)]
+print("IDENTICAL" if not bad and len(a) == len(b) else f"MISMATCH {bad}")
+PY
+cmp -s <(cd eval_output/<eager>/first_frames && sha256sum *) \
+       <(cd eval_output/<lazy>/first_frames && sha256sum *) && echo FRAMES_IDENTICAL
+```
+
+Pass the two dir names as arguments to the python snippet.
+
+**Measured 2026-09-18 (PACT_READOUT, busy GPU).** Original path 1378 / 1368 s per episode;
+both hooks 95–99 s (failed episodes; successful ones run 420–770 s); `snapshot=169` in all.
+n=50 ≈ 1.5–2.5 h instead of ≈ 18 h.
+
+**The eval is not bit-reproducible, with or without the hooks.** Original code vs the
+original paper run, same seeds: outcome fields equal, contact-frame counts drift ~1 %.
+Identical fast-path code run twice over 24 episodes: terminal success flipped in 2/24
+episodes (4 vs 2 successes; paper run 5), `hit_bar` and `collision_free` equal in 24/24,
+first-frame PNGs differ by ≤10 pixels of 1 gray level in about half the episodes.
+Fast-vs-paper disagreements (1 and 3 success flips) are the same kind and size as
+fast-vs-fast. n=24 cannot rule out a success shift below ~15 points. Treat single-run
+n=50 success rates as ± a few episodes.
+
+**Episodes depend on process history.** Seed 8 / cell 8 run as the first episode of a
+fresh process gives a different scene and trajectory (success, first grasp step 97) than
+the same seed as episode 8 of a sequential run (fail, step 104) — on both the original and
+the fast path. So: no sharding (removed), and a resumed run is not the same experiment as
+an uninterrupted one. Run n=50 in one process.
+
+**Stale records.** `_load_resume` loads every line of `episodes.jsonl`. The three
+2026-09-17 v1011d dirs start with two `--seed_base 2026` records (episode_idx 0 / 1, seeds
+2026 / 2027, cells `F0|left|neg5` and `F0|left|center`; in all three arms both are
+fail + bar hit + not collision-free). They match the script defaults (`--num_rollouts 2`,
+`--seed_base 2026`): an earlier 2-episode run wrote into the same `--output_dir`. Resume
+keys on `(episode_idx, seed)`, so `(0, 2026)` did not block `(0, 0)`: the n=50 run ran all
+50 episodes, but the two old records stayed in the metric list. Each file has 52 lines and `eval_summary.json` / W&B divide by 52
+(e.g. readout success 13/52 = 0.25, bar 12/52). Use records with `seed == episode_idx` only:
+
+| arm | place | ever | bar hit | collision-free | strict | clutter-contact eps |
+|---|---|---|---|---|---|---|
+| ACT | 13/50 | 13 | 18/50 | 15/50 | 9/50 | 26 |
+| PACT-raw | 12/50 | 12 | 3/50 | 26/50 | 11/50 | 24 |
+| PACT-readout | 13/50 | 14 | 10/50 | 22/50 | 11/50 | 26 |
+
+Not repaired on disk yet (needs user go-ahead; backup first). `_load_resume` has no guard
+yet; same flaw in `eval_act.py` / `eval_act_v107spaced.py` (their dirs are clean). Do not
+reuse an `--output_dir` across seed bases.
+
+**Noise floor for reading the table.** Three 24-episode READOUT runs (paper + two fast
+repeats): success 5 / 4 / 2, bar hit 6 / 6 / 6, collision-free 11 / 11 / 11. Bar hit and
+collision-free were stable under rerun; terminal success moved by up to 3 of 24.
 
 Edit knobs in the file (same `RUN` string as train). Run name is
 `${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}`
@@ -1410,6 +1504,221 @@ is a **sim-only privilege PACT does not have** (trap 4).
 
 ### 4.6 Live — paper figures
 
+**Live sensor guard and native 8×8 point projection:**
+[points on the obstacle](images/whole_body/sensor_guard_pointcloud/side_view/points_at_trigger.png),
+[actual sensor origins and rays](images/whole_body/sensor_guard_pointcloud/side_view/rays_at_trigger.png),
+[guard OFF/ON comparison](images/whole_body/sensor_guard_pointcloud/side_view/comparison.png),
+[original recorded HDF5 example](images/whole_body/sensor_guard_pointcloud/recorded_dataset_frame000/points_on_scene.png),
+and [images, raw measurements, code and Canva deck](images/whole_body/sensor_guard_pointcloud/sensor_guard_pointcloud_assets.zip).
+The paired runs use identical initial conditions and motor commands. A simple
+50 Hz guard holds the current joint positions when any native link-6 depth is
+at most 0.14 m. It uses no RGB, object IDs, known obstacle pose, contact flags or
+time-based trigger. It activates at 0.64 s from sensor 4, pixel `(u=0,v=7)`,
+reading 0.139287844 m. The disabled run contacts the panel at 3.5 s; the enabled
+run has no environment contacts in all 2,501 physics steps. This demonstrates
+this explicit sensor-stop guard in one simulated scene, not PACT/ACT performance
+or successful task completion. The robot state and readings are exactly equal
+between runs through the triggering observation.
+
+Each snapshot preserves all **6×8×8 = 384** raw samples. XYZ is computed from
+axial depth, pixel centres and the camera's calibrated pose. At the trigger,
+32 rays hit the panel; the remaining samples observe other geometry/background.
+The maximum panel-surface error across exported live frames is below 0.2 µm.
+Points are not snapped to surfaces, interpolated, randomly sampled, or filled
+in. Marker radius is 3 mm for display only. Occlusion is depth-tested. The
+optional line layer connects original sensor origins to actual panel returns;
+segmentation labels are used for that display and geometric validation only.
+NPZ/CSV/PLY exports preserve sensor/pixel correspondence; native 8×8 grids retain
+black borders. The separate `recorded_dataset_frame000` example reads unchanged
+depth and calibration directly from the existing v12 HDF5. Other clouds are
+fresh simulated sensor readings from the guard demonstration, not original
+recorded or physical hardware measurements.
+
+Code: [backprojection and direct HDF5 export](scripts/proximity_pointcloud.py)
+and [physics, live guard, point overlays and packaging](scripts/export_sensor_guard_pointcloud.py).
+The demonstration reuses the commanded approach saved by
+`scripts/export_kitchen_contact_dynamics.py`; run that exporter first if its
+`collision_physics_states.npz` is absent. Rebuild from the repository root:
+
+```bash
+MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=2 /opt/conda/envs/mlspaces/bin/python scripts/export_sensor_guard_pointcloud.py --stop-distance 0.14
+```
+
+To export only the original recorded samples, without rendering or physics:
+
+```bash
+/opt/conda/envs/mlspaces/bin/python scripts/proximity_pointcloud.py --hdf5 /mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3/trajectory.h5 --frame 0 --substep 3 --out images/whole_body/link6_recorded_export
+```
+
+**Physics-stepped kitchen contact demonstration:**
+[collision video](images/whole_body/kitchen_contact_dynamics/collision_motion.mp4),
+[avoidance video](images/whole_body/kitchen_contact_dynamics/avoidance_motion.mp4),
+[six-frame close-up comparison](images/whole_body/kitchen_contact_dynamics/side_view/comparison.png),
+[contact debug image](images/whole_body/kitchen_contact_dynamics/contact_debug.png),
+[simulated contact-force trace](images/whole_body/kitchen_contact_dynamics/contact_force_trace.png),
+[Canva deck](images/whole_body/kitchen_contact_dynamics/kitchen_sequences_canva.pptx),
+and [all assets](images/whole_body/kitchen_contact_dynamics/kitchen_contact_dynamics_assets.zip).
+The previous figure sequences below set joint positions directly and did not
+demonstrate an impact response. This demonstration instead steps MuJoCo using
+the model's position actuators and torque limits. The wrist reaches the panel,
+is blocked, and deflects as the motor target continues forward. Contact records
+and `mj_contactForce` are logged at every 2 ms motion step; the avoidance run has
+no robot/environment contacts throughout its 2,501 checked steps. Original props
+and the panel remain static. These are new simulations with scripted commands,
+not recorded dataset trials, learned-policy results, or hardware measurements.
+Clean frames and videos have no overlays. Only `contact_debug.png` adds a red
+marker at the detected contact point and an arrow along its normal. The separate
+force plot is an evidence diagnostic. Each sequence includes six 1920×1440
+frames at the same times, plus a wider context view; the deck keeps frames
+independently movable. The saved states, logs and manifest support inspection.
+Rebuild with `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=2 /opt/conda/envs/mlspaces/bin/python scripts/export_kitchen_contact_dynamics.py`.
+
+**Kitchen motion sequences (six frames per case):**
+[collision strip](images/whole_body/kitchen_motion_sequences/side_view/collision_strip.png),
+[avoidance strip](images/whole_body/kitchen_motion_sequences/side_view/avoidance_strip.png),
+[comparison](images/whole_body/kitchen_motion_sequences/side_view/comparison.png),
+[editable Canva deck](images/whole_body/kitchen_motion_sequences/kitchen_sequences_canva.pptx),
+and [all individual frames](images/whole_body/kitchen_motion_sequences/kitchen_sequences_assets.zip).
+The new side view and an opposite-side alternative each have six 1920×1440
+text-free frames per motion. Each deck slide contains 12 independently movable
+images: collision on top, avoidance below, progressing left to right. Both
+motions share the first two poses. The direct approach ends in verified link-7
+contact with the hood panel; the avoidance path moves laterally around its edge
+and advances through the opening. Each path is checked at 505 configurations
+(101 per joint-interpolated segment); the avoidance path has no robot/environment
+contacts at these samples. These are constructed IK paths using original scene
+geometry, not policy rollouts, dynamic simulations, or evidence of a shared
+task goal being reached. Checks, joint paths and camera settings accompany the
+images. Rebuild with `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=2 /opt/conda/envs/mlspaces/bin/python scripts/export_kitchen_motion_sequences.py`.
+
+**Kitchen collision/clearance pair:**
+[collision](images/whole_body/kitchen_collision_pair/collision.png) and
+[avoidance pose](images/whole_body/kitchen_collision_pair/avoidance.png), with
+[separate scene/sensor panels](images/whole_body/kitchen_collision_pair/kitchen_collision_pair_assets.zip).
+These are constructed MuJoCo poses in the same restored v12 scene as the kitchen
+first-page figure, with identical camera, lighting and object transforms. The
+collision pose has one verified link-7 contact with `pact_intrusion_right`
+(2.78 mm penetration); the alternative pose has no robot/environment contacts
+and 91.05 mm clearance from that panel. They illustrate contact versus clearance,
+not recorded policy outcomes or a validated avoidance trajectory. Both versions
+also have `first_page_*.png` layouts with freshly rendered sensor RGB/depth/8×8
+panels, black grid borders, and all 40 native 8×8 numerical readouts. Images have
+no text overlays. Exact poses and checks are in the pair's `manifest.json`.
+Rebuild with `MUJOCO_GL=egl PYOPENGL_PLATFORM=egl OMP_NUM_THREADS=2 /opt/conda/envs/mlspaces/bin/python scripts/export_kitchen_collision_pair.py`.
+
+**System diagram:** [overview PNG](images/system_diagram/system_overview.png),
+[detailed readout architecture](images/system_diagram/readout_architecture.png),
+[editable Canva PPTX](images/system_diagram/system_diagram_canva.pptx), and
+[all formats](images/system_diagram/system_diagram_assets.zip).
+The deck contains an overview, a detailed PACT-readout inference diagram, and an
+unlabelled overview. Boxes, text, and connector segments are native editable
+objects. SVG/PDF retain vectors; PNG previews are 3680×1520. The only thumbnails
+are existing dataset RGB and previously exported sensor grids.
+
+The diagrams follow §10 and the current source: shared per-sensor temporal
+encoding → 40 CLS readouts (128-d) → projected sensor tokens (512-d), fused with
+image, joint-state, and latent tokens in ACT. Geometry pretraining is shown as
+initialization, not a reconstructed object map supplied to the policy. Inference
+uses `z=0` and action chunks. Camera choice and history sampling are run-specific;
+the overview does not imply continuously refreshed reflex control. The detailed
+diagram uses the documented 50-command, 8-d-action readout configuration. See
+`images/system_diagram/manifest.json` for source references and omitted details.
+Rebuild with `/opt/conda/envs/mlspaces/bin/python scripts/build_system_diagram.py`,
+then `/usr/bin/python3 scripts/render_system_diagram.py` (system librsvg/Cairo).
+
+**Whole-body sensing examples, including kitchen items:**
+[gallery](images/whole_body/index.html),
+[kitchen first-page layout](images/whole_body/first_page_kitchen_items.png),
+[editable Canva PPTX](images/whole_body/whole_body_canva.pptx), and
+[complete image bundle](images/whole_body/whole_body_figure_assets.zip).
+Three configurations are supplied: the recorded v12 kitchen-item layout, the
+v1011d fume-hood clutter layout, and the existing cabinet-cavity experiment scene.
+Every scene has external views with/without robot, a wrist view, selected sensor
+RGB/depth/8×8 triptychs, all 40 bordered sensor grids, and numerical depth arrays.
+All 40 sensors contribute their actual native 8×8 simulated depth, totalling
+2,560 rays per pose. RGB is a diagnostic rendering from each sensor location;
+the proximity hardware does not produce RGB. There are no generated objects,
+invented points, or text overlays. Each PPTX panel is a separate movable image.
+
+These are illustrative simulator renders, **not new policy results**. The v12
+scene uses its existing kitchen-overlay placement routine (auxiliary kitchen
+poses are absent from the frozen HDF5 config); the arm is lowered 16 cm so
+`link6_sensor_3` sees the bottle, cup, and shakers. The v1011d arm is lowered 8 cm.
+The cabinet is a fresh sample of `FrankaSkinCabinetCavitySmokeConfig` with the
+40-sensor hybrid skin and a 0.35 m pedestal; its compiled model/state are retained
+under `images/whole_body/source_snapshots/` for exact export replay. Original
+recorded v12 arrays and video frames are saved separately from the adjusted-pose
+renders. No source dataset is modified.
+
+For the figure narrative, compare kitchen `link6_sensor_3` (bottles/cup) with
+`link5_back_sensor_4` (bench/opening) and `link2_sensor_3` (tray edge). The latter
+two measure nearby surfaces outside the wrist camera's field of view. Each
+manifest records surface IDs and ray counts from native segmentation, including
+a geometric wrist-FOV check. This supports the need for spatial coverage around
+the arm; it does not establish RGB occlusion, physical glass detectability,
+collision-avoidance improvement, or policy success. The sampled cabinet scene
+similarly provides link-1, link-5, and link-6 views of its walls and opening.
+The text-free layouts leave labels and explanatory arrows for editing in Canva.
+
+Rebuild the images with
+`/opt/conda/envs/mlspaces/bin/python scripts/export_whole_body_examples.py --kitchen --fumehood --snapshot images/whole_body/source_snapshots/cabinet_cavity --sensors link6_sensor_4 link5_back_sensor_4 link1_sensor_3`,
+then run `/opt/conda/envs/mlspaces/bin/python scripts/package_whole_body_figure.py`.
+
+**Lowered-arm sensor views:**
+[sensor 4 RGB / depth / 8×8](images/table_occlusion/lowered_robot/link6_sensor_4/rgb_depth_8x8.png),
+[gallery](images/table_occlusion/lowered_robot/index.html), and
+[all clean images](images/table_occlusion/lowered_robot/lowered_robot_images.zip).
+Link 6 is lowered 8 cm using arm-joint inverse kinematics, preserving its
+orientation and leaving the robot base, original scene objects, and table camera
+unchanged. This brings the orange and blue objects into the sensor view. These
+are **new simulation renders at an adjusted pose**, not recorded experiment
+frames. All six native 8×8 arrays are freshly rendered at that pose; no old HDF5
+readouts are reused. RGB is a diagnostic view from the sensor location, not an
+RGB output of the proximity sensor. Dense depth and native 8×8 share the fixed
+0.05–1.0 m colour scale; NPY/CSV files retain unclipped metre values. The export
+also includes matched table views with and without robot geometry. PNGs contain
+no text. The manifest records pose changes and surface-hit counts for each
+sensor; these counts alone do not establish table-camera occlusion. Rebuild with
+`/opt/conda/envs/mlspaces/bin/python scripts/export_lowered_sensor_views.py`.
+Enlarged 8×8 panels in both sensor export sets include solid black 4 px cell
+boundaries and an outer border. Native 8×8 images and numerical readings remain
+unchanged. Refresh these panels, triptychs, and ZIP archives without re-rendering
+the scene using `/opt/conda/envs/mlspaces/bin/python scripts/sensor_grid_image.py`.
+
+**Clean table-camera occlusion pair:**
+[with robot](images/table_occlusion/table_with_robot_highres.png) and
+[without robot](images/table_occlusion/table_without_robot_highres.png), both
+2496×1408. These are deterministic simulator re-renders of v1011d row
+`000_187ba0ce76cb3011`, initial frame 0, using the recorded table-camera calibration,
+robot joints, frozen object poses, original object meshes and scene parameters.
+Only robot geometry visibility changes between the pair; the pedestal remains.
+No labels, overlays, inpainting, generative images or physics steps are applied.
+The [original decoded frame](images/table_occlusion/table_original_recording_frame000.png)
+and native-resolution paired renders are also supplied. The source reproduction
+differs by about 1.91 RGB levels on average; roughly 97% of pixels differ by less
+than 10 levels. The passive gripper joints use mechanical coupling because their
+individual states are not stored. See [manifest](images/table_occlusion/manifest.json)
+for source paths, verification and the visibility-only change. Rebuild with
+`/opt/conda/envs/mlspaces/bin/python scripts/export_table_occlusion_pair.py`.
+
+**Sensor RGB / depth / 8×8 exports:**
+[sensor-view gallery](images/table_occlusion/sensor_views/index.html),
+[selected sensor 4 triptych](images/table_occlusion/sensor_views/link6_sensor_4/rgb_depth_8x8.png),
+and [all six sensor image sets](images/table_occlusion/sensor_views/sensor_rgb_depth_8x8.zip).
+Each set is from the same frame 0 and sensor pose as the table-camera pair.
+RGB and dense depth are 1024×1024 simulator diagnostic renders from the sensor
+viewpoint; the proximity sensor itself does not output RGB. The third panel
+uses the unchanged recorded `obs/proximity/link6_sensor_i[0,3,:,:]` values,
+enlarged with nearest-neighbor only. Both depth images use the same fixed
+0.05–1.0 m colour scale (near red, far blue), with unclipped numerical arrays
+in NPY/CSV. All PNGs omit text and annotations. Original raw arrays were checked
+against the HDF5; all six restored sensor poses agree to within 1e-6.
+The [manifest](images/table_occlusion/sensor_views/manifest.json) records the
+nonzero native-depth replay differences, so the dense view should not be
+described as an original high-resolution sensor measurement or exact proof of
+table-camera occlusion. Rebuild with
+`/opt/conda/envs/mlspaces/bin/python scripts/export_sensor_modalities.py`.
+
 **Current point-cloud asset: link-6-only, no RGB.**
 [Rotate and inspect the reconstruction](images/link6_reconstruction/index.html),
 including individual sensor selection and text-free PNG export.
@@ -1484,7 +1793,7 @@ python scripts/build_recorded_first_page.py
 
 The curated [paper image gallery](images/index.html) lives in `images/`, grouped
 into `robot`, `skin`, `sensors`, `environments`, `tasks`, and `results`.
-It contains 45 PNGs: 13 new MuJoCo renders, 17 original environment plates,
+It contains 46 PNGs: 14 new MuJoCo renders, 17 original environment plates,
 12 recorded task frames, and three result plots (also supplied as SVG/PDF).
 New renders are 2400 pixels wide with 8-sample antialiasing. All new figures
 omit text; the robot's base collar has a uniform black presentation finish

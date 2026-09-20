@@ -68,3 +68,8 @@ data/pact_place_corridor_v5/**
 data/pact_place_corridor_v5/*
 
 carson_data/**
+
+# Compiled MuJoCo models. GitHub rejects blobs over 100 MB;
+# images/whole_body/source_snapshots/cabinet_cavity/model.mjb is 136 MB.
+# Keep the file locally for --snapshot replay. metadata.json and state.npz stay tracked.
+*.mjb

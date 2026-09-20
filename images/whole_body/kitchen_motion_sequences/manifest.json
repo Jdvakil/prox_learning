@@ -1,0 +1,6762 @@
+{
+  "type": "Illustrative kinematic paths in a restored experiment scene; not learned-policy or physics rollouts.",
+  "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+  "source_scene": "/home/jaydv/code/prox_learning/custom_scenes/pact_place_corridor_v12.xml",
+  "source_frame": 0,
+  "source_provenance": {
+    "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+    "source_frame": 0,
+    "adjusted_simulation_pose": {
+      "vertical_shift_m": -0.16,
+      "original_arm_qpos": [
+        -0.010201739147305489,
+        -0.824212372303009,
+        -0.051338061690330505,
+        -2.3212363719940186,
+        -0.12462368607521057,
+        1.4556080102920532,
+        0.09182917326688766
+      ],
+      "adjusted_arm_qpos": [
+        -0.07034216707476035,
+        -0.8725987984262761,
+        -0.03122707105280448,
+        -2.759301964316884,
+        -0.11630600230474601,
+        1.846227879988365,
+        0.09182917326688766
+      ]
+    },
+    "kitchen_auxiliary_geometry": {
+      "provenance": "Reconstructed with the existing v12 kitchen-placement routine; these auxiliary poses are absent from frozen_config.",
+      "placed_bodies": [
+        "pact_preview_extra_Bottle_1/Bottle_1",
+        "pact_preview_extra_Soap_Bottle_1/Soap_Bottle_1",
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1",
+        "pact_preview_extra_Paper_Towel_1/Paper_Towel_1",
+        "pact_preview_extra_Soap_Bottle_3/Soap_Bottle_3",
+        "pact_preview_extra_Salt_Shaker_2/Salt_Shaker_2",
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2"
+      ]
+    },
+    "note": "Original recorded scene reconstructed with its existing kitchen overlay. Link 6 lowered 16 cm to expose bottles in sensor 3. All displayed readings recomputed; source recorded arrays saved separately.",
+    "initial_scene_rgb_check": {
+      "comparison": "Source video frame0 versus reconstructed initial scene, before lowering the arm",
+      "mean_absolute_rgb_error_0_255": 1.883556114024864,
+      "fraction_pixels_max_channel_error_under_10": 0.9700520833333334
+    }
+  },
+  "motion": "Six IK waypoints per path, preserving link6 sensor4 orientation. Shared first two poses. Joint-linear interpolation checked at 101 positions per segment, including both endpoints.",
+  "collision": "First five exported poses are contact-free; final pose contacts the existing hood panel with link7. Only the final approach segment has contact.",
+  "avoidance": "Lateral detour toward the open side, then forward past the panel front. No robot/environment contact at any of the 505 checked configurations. Does not demonstrate reaching a shared task goal or sensor-driven policy behavior.",
+  "limits": "Sampled kinematic collision checks; no continuous swept-volume certificate, time parameterization, dynamics, forces or learned policy were evaluated.",
+  "distance_method": "MuJoCo signed geometry distance, capped at 0.5 m. If it returns zero with distinct nearest witness points, their Euclidean separation is used. Contact decisions use mj_forward contact records independently.",
+  "camera": {
+    "lookat": [
+      0.32,
+      0,
+      0.89
+    ],
+    "distance": 1.65,
+    "elevation": -20,
+    "fovy": 42
+  },
+  "azimuth_by_view": {
+    "side_view": -55,
+    "opposite_side": 55
+  },
+  "individual_frame_pixels": [
+    1920,
+    1440
+  ],
+  "frames_per_sequence": 6,
+  "image_order": "Left to right in each strip; collision top, avoidance bottom in comparisons and PPTX.",
+  "changes": "Only robot joint positions and camera angle; original objects, panel geometry, material, lighting and object transforms retained. No generated image content or text overlays.",
+  "sensor4_translation_waypoints_m": {
+    "collision": [
+      [
+        -0.14,
+        -0.07,
+        0.12
+      ],
+      [
+        -0.075,
+        -0.07,
+        0.12
+      ],
+      [
+        -0.035,
+        -0.07,
+        0.12
+      ],
+      [
+        0.01,
+        -0.07,
+        0.12
+      ],
+      [
+        0.037,
+        -0.07,
+        0.12
+      ],
+      [
+        0.047,
+        -0.07,
+        0.12
+      ]
+    ],
+    "avoidance": [
+      [
+        -0.14,
+        -0.07,
+        0.12
+      ],
+      [
+        -0.075,
+        -0.07,
+        0.12
+      ],
+      [
+        -0.035,
+        0.005,
+        0.12
+      ],
+      [
+        0.01,
+        0.09,
+        0.12
+      ],
+      [
+        0.07,
+        0.18,
+        0.12
+      ],
+      [
+        0.14,
+        0.18,
+        0.12
+      ]
+    ]
+  },
+  "checks": {
+    "collision": {
+      "frame_checks": [
+        {
+          "frame": 1,
+          "contacts": []
+        },
+        {
+          "frame": 2,
+          "contacts": []
+        },
+        {
+          "frame": 3,
+          "contacts": []
+        },
+        {
+          "frame": 4,
+          "contacts": []
+        },
+        {
+          "frame": 5,
+          "contacts": []
+        },
+        {
+          "frame": 6,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.002782069614675642,
+              "position_world": [
+                0.5613910348073378,
+                -0.20301406179341913,
+                0.9433104883400933
+              ]
+            }
+          ]
+        }
+      ],
+      "sampled_checks": [
+        {
+          "segment": 0,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.18421767036397435,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.18358513741349805,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.18295216368798142,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.1823187517705408,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.1816849042489778,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.18105062371576572,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.18041591276804086,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.17978077400759124,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.17914521004084638,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.1785092234788658,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.17787281693732976,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.17723599303652732,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.17659875440134637,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.1759611036612627,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.17804171465245888,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.17468457640716223,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.17404570517493848,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.17340643240137527,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.17276676073872443,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.17212669284375992,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.1714862313777682,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.17084537900653407,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.1702041384003334,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.16956251223391933,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.1689205031865126,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.1682781139417897,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.16763534718787065,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.16699220561730987,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.16634869192708404,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.16570480881857957,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.16506055899758273,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.16441594517426752,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.1637709700631852,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.16312563638325078,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.16247994685773393,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.16183390421424607,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.17843403618276588,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.16054077050544108,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.15989368491695277,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.15924625716412638,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.1585984899961086,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.1579503861663188,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.15730194843243608,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.15665317955638847,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.15600408230434043,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.15535465944668084,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.15470491375801262,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.15405484801713804,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.15340446500704943,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.1527537675149156,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.1521027583320703,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.15145144025399981,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.15079981608033188,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.15014788861482248,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.16677299157673847,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.14884313504387048,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.1481903145664729,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.14753720205329848,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.14688380032856252,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.14623011222053503,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.14557614056152932,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.14492188818788837,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.14426735793997278,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.14361255266214962,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.1602380044570007,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.1423021284141955,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.14164651515271143,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.15827015795312163,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.14033450065602626,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.13967810515316487,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.13902145464205418,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.13836455199864986,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.13770740010279936,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.13705000183822968,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.1363923600925328,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.1357344777571548,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.15234734099444247,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.13441800290232575,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.13375941618491552,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.13310060048187985,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.13244155870373608,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.1317822937647778,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.13112280858305908,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.13046310608038542,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.12980318918229644,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.12914306081805518,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.12848272392063542,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.12782218142670604,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.12716143627662002,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.12650049141439934,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.12583934978772324,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.1251780143479142,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.12451648804992445,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.12385477385232146,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.1231928747172783,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.12253079361055552,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.1218685335014897,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.13842460822862018,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.12054348817147718,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.11988070890696294,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.11921776255294303,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.11921776255294303,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.11882701759837234,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.11843606578071662,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.1180449076886785,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.13486840099608965,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.11726197504062091,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.11687020166635557,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.11647822438121565,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.11608604377824633,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.11569366045135736,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.132526632239949,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.11490828800578429,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.1145153000792367,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.11412211181304255,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.11372872380542243,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.11333513665545432,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.13017674911895602,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.1125473673290817,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.11215318635511841,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.11175880864369003,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.11136423479815344,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.11096946542271681,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.1105745011224397,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.11017934250323214,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.10978399017185282,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.10938844473590742,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.10899270680384887,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.10859677698497622,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.12545312223257943,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.10780434412820068,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.10740784231311194,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.10701115105683473,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.10661427097287779,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.10621720267558865,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.12307962286333658,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.10542250390259186,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.1050248746597629,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.10462705966935693,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.10422905954989808,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.10383087492074229,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.10343250640207685,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.10303395461491728,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.10263522018110866,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.10223630372332261,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.10183720586505716,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.1014379272306356,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.12942597418445784,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.10063883013473074,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.10023901292600745,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.09983901744664386,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.09943884432506972,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.11631371359014328,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.09863796767309713,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.09823726540364204,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.09783638801386108,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.09743533613626136,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.09703411040416136,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.1139116675202897,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.09623113991378841,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.09582939642620042,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.09542748162548165,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.09502539614899193,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.09462314063489546,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.09422071572216062,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.11110026733635252,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.09341536026065689,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.09301243099382948,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.09260933489224432,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.09220607259886937,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.09180264475746636,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.09139905201259224,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.0909952950095985,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.09059137439462928,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.09018729081461807,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.08978304491728922,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.10666321990049397,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.0889740687655197,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.08856933981046484,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.08816445113686366,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.08775940339637103,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.08735419724142346,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.08694883332523995,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.08654331230181805,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.08613763482593455,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.08573180155314308,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.0853258131397735,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.08491967024293057,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.08451337352049165,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.08410692363110744,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.08370032123419824,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.08329356698995533,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.0828866615593371,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.0824796056040693,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.08207239978664382,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.08166504477031655,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.08125754121910622,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.08084988979779428,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.08044209117192175,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.08003414600778924,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.07962605497245534,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.07921781873373496,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.07921781873373496,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.07878088302009939,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.07834365524193654,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.07790613622741976,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.07746832680614857,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.0943176458848957,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.07659184006885777,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.07615316441915071,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.07571420169530907,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.0752749527340344,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.07483541837344149,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.0743955994530579,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.07395549681382257,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.07351511129808073,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.07307444374958522,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.0726334950134932,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.07219226593636369,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.07175075736615588,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.07130897015222665,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.070866905145329,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.07042456319761119,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.06998194516261097,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.06953905189525844,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.06909588425186924,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.06865244309014584,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.06820872926917387,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.06776474364942031,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.06732048709273171,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.06687596046233224,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.06643116462281945,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.06598610044016517,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.06554076878171239,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.08242340188285938,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.06464930651361904,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.0815338115746754,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.06375678478461255,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.08064307732879782,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.06286321058255984,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.07975120569721071,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.061968590917054193,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.0615208912319275,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.06107293281934362,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.07796407660584675,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.06017624334226146,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.059727514046351786,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.059278529560156334,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.05882929077131949,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.05837979856882013,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.05793005384297112,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.05748005748541683,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.057029810389130575,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.05657931344841182,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.056128567558885505,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.05567757361749848,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.07257608095597776,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.05477484517352549,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.05432311247142375,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.05387113531842547,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.05341891461805392,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.052966451275141435,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.06986744826072673,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.05206080028754989,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.05160761445905804,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.051154189620392976,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.05070052668289481,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.05024662655919776,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.04979249016322895,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.07771762845978686,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.06624117378973125,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.04842867250029392,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.047973600180267646,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.04751829617690495,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.047062761411835186,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.046606996807965095,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.06351063614326563,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.045694781781811966,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.04523833321169779,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.04478165850711602,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.04432475859731467,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.04386763441280361,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.043410286885350986,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.042952716947981195,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.042494925534972805,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.05939787293997165,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.04157868202540893,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.04112023180365765,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.040661563855871934,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.040202679122562146,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.03974357854547894,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.03928426306760979,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.03882473363317495,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.03836499118762815,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.03790503667765077,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.03744487105115191,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.05434437245680446,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.03652391024634283,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.03606311696996123,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.03560211638090971,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.05249964440794812,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.03467949708202733,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.03421788028383799,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.03421788028383799,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.033952469013714515,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.03368695888495288,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.033421350082360135,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.033155642790906666,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.03288983719572836,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.03262393348212289,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.032357931835552356,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.03209183244164248,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.031825635486181225,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.03155934115512037,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.0312929496345744,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.031026461110820077,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.030759875770297485,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.030493193799607573,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.04759547226522187,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.029959540714945776,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.029692569974987922,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.029425503352890733,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.029158341036065627,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.028891083212084785,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.02862373006868246,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.028356281793752932,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.028088738575351102,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.04519616063959792,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.027553368061157935,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.044661870608318055,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.02701762003375785,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.026749604924447674,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.02648149600336736,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.026213293459693258,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.02594499748276147,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.025676608262067968,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.025408125987266602,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.025139550848171766,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.024870883034755487,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.024602122737148457,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.024333270145641246,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.024064325450680935,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.02379528884287319,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.023526160512982064,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.02325694065192985,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.02298762945079536,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.022718227100815173,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.022448733793383746,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.03956634424564151,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.02190947507252572,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.021639710042672733,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.021369854822512524,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.02109990960422281,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.02082987458013752,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.020559749942746893,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.020289535884695842,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.020019232598786463,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.019748840277974966,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.019478359115373437,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.019207789304249934,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.018937131038025964,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.01866638451027913,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.01839554991474113,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.018124627445297744,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.017853617295989666,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.017582519661011098,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.01731133473471036,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.017040062711590306,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.01676870378630524,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.03389388093845184,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.016225726008632257,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.015954107546321317,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.015682402962000516,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.015410612451090657,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.015138736209164281,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.014866774431947616,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.014594727315317522,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.014322595055303753,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.031450187736911175,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.013778075890000905,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.030906136704064373,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.013233218507305744,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.012960663476118683,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.012688024480903892,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.01241530171875016,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.012142495386895158,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.011869605682727104,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.011596632803784757,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.011323576947756875,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.011050438312481203,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.010777217095945701,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.010503913496286878,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.010230527711791672,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.009957059940894908,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.009683510382180738,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.009409879234381857,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.009136166696378734,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.008862372967201493,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.008588498246026368,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.008314542732179462,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.008040506625132672,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.007766390124506974,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.007492193430069903,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.007217916741735664,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.007217916741735664,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.007118514616190841,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.0070191001000818876,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.00691967320298803,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.006820233934488385,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.006720782304167838,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.006621318321611835,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.006521841996409372,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.006422353338152331,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.006322852356435814,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.006223339060856037,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.0061238134610136505,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.006024275566511306,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.005924725386954211,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.005825162931950568,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.0057255882111122425,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.0230352279156544,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.0055264020103876765,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.005426790549736271,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.005327166861721634,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.005227530955967841,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.022538113201805206,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.005028222529754767,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.0049285500285591866,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.004828865348150192,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.004729168498167291,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.0046294594882505535,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.004529738328044486,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.004430005027195261,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.0043302595953527145,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.02164249301837381,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.004130732377297441,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.004030950610396933,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.003931156751127541,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.003831350809151979,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.003731532794136516,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.00363170271574853,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.003531860583659841,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.02084551245722064,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.003332140197077948,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.003232261961940597,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.0031323717118140193,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.0030324694563829135,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.002932555205334753,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.002832628968359897,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.0027326907551508133,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.002632740575403081,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.0025327784388153867,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.0024328043550880807,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.002332818333925735,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.002232820385033696,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.0021328105181216413,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.002032788742901359,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.0019327550690875217,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.0018327095063963572,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.0017326520645489785,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.0016325827532672756,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.0015325015822771348,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.0014324085613059978,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.001332303700084525,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.01864961500271746,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.018549656177675306,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.0010319181722663329,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.0009317660474051913,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.0008316021309874301,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.0007314264327600295,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.0006312389624730795,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.0005310397298777803,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.0004308287447296611,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.0003306060167863611,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.017649462591388762,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.017549378566588527,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 2.9867473799405353e-05,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.73,
+          "panel_signed_distance_m": -7.040212769604537e-05,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -7.040212769604537e-05,
+              "position_world": [
+                0.5600352010638479,
+                -0.20302278359431297,
+                0.943339407590257
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.74,
+          "panel_signed_distance_m": -0.0001706834231591792,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0001706834231591792,
+              "position_world": [
+                0.5600853417115794,
+                -0.20302257576675686,
+                0.9433387199443233
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.75,
+          "panel_signed_distance_m": -0.0002709764028162587,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0002709764028162587,
+              "position_world": [
+                0.5601354882014081,
+                -0.2030223590808118,
+                0.9433380028534957
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.76,
+          "panel_signed_distance_m": -0.00037128105689032687,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.00037128105689032687,
+              "position_world": [
+                0.560185640528445,
+                -0.20302213353607318,
+                0.943337256311717
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.77,
+          "panel_signed_distance_m": -0.00047159737560309445,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.00047159737560309445,
+              "position_world": [
+                0.5602357986878015,
+                -0.20302189913213792,
+                0.9433364803129393
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.78,
+          "panel_signed_distance_m": -0.0005719253491723864,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0005719253491723864,
+              "position_world": [
+                0.560285962674586,
+                -0.20302165586860402,
+                0.9433356748511125
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.79,
+          "panel_signed_distance_m": -0.0006722649678142512,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0006722649678142512,
+              "position_world": [
+                0.5603361324839071,
+                -0.203021403745071,
+                0.9433348399201944
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8,
+          "panel_signed_distance_m": -0.0007726162217417399,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0007726162217417399,
+              "position_world": [
+                0.5603863081108709,
+                -0.20302114276113864,
+                0.9433339755141417
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.81,
+          "panel_signed_distance_m": -0.0008729791011649057,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0008729791011649057,
+              "position_world": [
+                0.5604364895505825,
+                -0.2030208729164088,
+                0.9433330816269174
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": -0.0009733535962913598,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0009733535962913598,
+              "position_world": [
+                0.5604866767981456,
+                -0.20302059421048357,
+                0.9433321582524854
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": -0.0010737396973268254,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0010737396973268254,
+              "position_world": [
+                0.5605368698486635,
+                -0.20302030664296755,
+                0.9433312053848161
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.84,
+          "panel_signed_distance_m": -0.0011741373944725852,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0011741373944725852,
+              "position_world": [
+                0.5605870686972363,
+                -0.2030200102134651,
+                0.9433302230178795
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.85,
+          "panel_signed_distance_m": -0.0012745466779288117,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0012745466779288117,
+              "position_world": [
+                0.5606372733389644,
+                -0.2030197049215825,
+                0.9433292111456516
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.86,
+          "panel_signed_distance_m": -0.0013749675378927906,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0013749675378927906,
+              "position_world": [
+                0.5606874837689464,
+                -0.20301939076692677,
+                0.9433281697621094
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.87,
+          "panel_signed_distance_m": -0.0014753999645590319,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0014753999645590319,
+              "position_world": [
+                0.5607376999822795,
+                -0.203019067749107,
+                0.9433270988612354
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.88,
+          "panel_signed_distance_m": -0.0015758439481178277,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0015758439481178277,
+              "position_world": [
+                0.5607879219740588,
+                -0.20301873586773167,
+                0.9433259984370139
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.89,
+          "panel_signed_distance_m": -0.0016762994787594687,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0016762994787594687,
+              "position_world": [
+                0.5608381497393797,
+                -0.20301839512241246,
+                0.9433248684834326
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9,
+          "panel_signed_distance_m": -0.0017767665466704718,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0017767665466704718,
+              "position_world": [
+                0.5608883832733353,
+                -0.20301804551276093,
+                0.9433237089944828
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.91,
+          "panel_signed_distance_m": -0.0018772451420340233,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0018772451420340233,
+              "position_world": [
+                0.5609386225710169,
+                -0.20301768703839024,
+                0.9433225199641586
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.92,
+          "panel_signed_distance_m": -0.001977735255030977,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.001977735255030977,
+              "position_world": [
+                0.5609888676275154,
+                -0.20301731969891457,
+                0.9433213013864583
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.93,
+          "panel_signed_distance_m": -0.0020782368758401892,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0020782368758401892,
+              "position_world": [
+                0.56103911843792,
+                -0.2030169434939491,
+                0.9433200532553823
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": -0.002178749994637741,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.002178749994637741,
+              "position_world": [
+                0.5610893749973189,
+                -0.20301655842311084,
+                0.9433187755649345
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": -0.0022792746015958265,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0022792746015958265,
+              "position_world": [
+                0.5611396373007977,
+                -0.2030161644860171,
+                0.9433174683091231
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.96,
+          "panel_signed_distance_m": -0.0023798106868854196,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0023798106868854196,
+              "position_world": [
+                0.5611899053434426,
+                -0.20301576168228685,
+                0.9433161314819583
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.97,
+          "panel_signed_distance_m": -0.0024803582406747182,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0024803582406747182,
+              "position_world": [
+                0.5612401791203373,
+                -0.20301535001154034,
+                0.9433147650774543
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.98,
+          "panel_signed_distance_m": -0.0025809172531282565,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0025809172531282565,
+              "position_world": [
+                0.561290458626564,
+                -0.2030149294733984,
+                0.9433133690896276
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 0.99,
+          "panel_signed_distance_m": -0.0026814877144084592,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.0026814877144084592,
+              "position_world": [
+                0.5613407438572042,
+                -0.20301450006748345,
+                0.9433119435124995
+              ]
+            }
+          ]
+        },
+        {
+          "segment": 4,
+          "fraction": 1.0,
+          "panel_signed_distance_m": -0.002782069614675642,
+          "contacts": [
+            {
+              "bodies": [
+                "pact_intrusion_right",
+                "robot_0/fr3_link7"
+              ],
+              "geom_ids": [
+                21,
+                121
+              ],
+              "signed_distance_m": -0.002782069614675642,
+              "position_world": [
+                0.5613910348073378,
+                -0.20301406179341913,
+                0.9433104883400933
+              ]
+            }
+          ]
+        }
+      ],
+      "checked_configurations": 505,
+      "minimum_panel_distance_m": -0.002782069614675642,
+      "maximum_checked_joint_increment_rad": 0.002162599607687943
+    },
+    "avoidance": {
+      "frame_checks": [
+        {
+          "frame": 1,
+          "contacts": []
+        },
+        {
+          "frame": 2,
+          "contacts": []
+        },
+        {
+          "frame": 3,
+          "contacts": []
+        },
+        {
+          "frame": 4,
+          "contacts": []
+        },
+        {
+          "frame": 5,
+          "contacts": []
+        },
+        {
+          "frame": 6,
+          "contacts": []
+        }
+      ],
+      "sampled_checks": [
+        {
+          "segment": 0,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.18421767036397435,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.18358513741349805,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.18295216368798142,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.1823187517705408,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.1816849042489778,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.18105062371576572,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.18041591276804086,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.17978077400759124,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.17914521004084638,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.1785092234788658,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.17787281693732976,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.17723599303652732,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.17659875440134637,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.1759611036612627,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.17804171465245888,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.17468457640716223,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.17404570517493848,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.17340643240137527,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.17276676073872443,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.17212669284375992,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.1714862313777682,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.17084537900653407,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.1702041384003334,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.16956251223391933,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.1689205031865126,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.1682781139417897,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.16763534718787065,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.16699220561730987,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.16634869192708404,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.16570480881857957,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.16506055899758273,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.16441594517426752,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.1637709700631852,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.16312563638325078,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.16247994685773393,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.16183390421424607,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.17843403618276588,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.16054077050544108,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.15989368491695277,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.15924625716412638,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.1585984899961086,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.1579503861663188,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.15730194843243608,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.15665317955638847,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.15600408230434043,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.15535465944668084,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.15470491375801262,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.15405484801713804,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.15340446500704943,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.1527537675149156,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.1521027583320703,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.15145144025399981,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.15079981608033188,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.15014788861482248,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.16677299157673847,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.14884313504387048,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.1481903145664729,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.14753720205329848,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.14688380032856252,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.14623011222053503,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.14557614056152932,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.14492188818788837,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.14426735793997278,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.14361255266214962,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.1602380044570007,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.1423021284141955,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.14164651515271143,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.15827015795312163,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.14033450065602626,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.13967810515316487,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.13902145464205418,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.13836455199864986,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.13770740010279936,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.13705000183822968,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.1363923600925328,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.1357344777571548,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.15234734099444247,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.13441800290232575,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.13375941618491552,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.13310060048187985,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.13244155870373608,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.1317822937647778,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.13112280858305908,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.13046310608038542,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.12980318918229644,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.12914306081805518,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.12848272392063542,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.12782218142670604,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.12716143627662002,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.12650049141439934,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.12583934978772324,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.1251780143479142,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.12451648804992445,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.12385477385232146,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.1231928747172783,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.12253079361055552,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.1218685335014897,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.13842460822862018,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.12054348817147718,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.11988070890696294,
+          "contacts": []
+        },
+        {
+          "segment": 0,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.11921776255294303,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.11921776255294303,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.1188949570934736,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.11857026334049192,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.1182436901845314,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.11791524657267022,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.11758494150812493,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.11725278404984646,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.1169187833121144,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.11658294846412864,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.11624528872959972,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.1332850726353313,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.11556453176584959,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.1152214532529068,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.11487658728515147,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.11452994335266915,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.11418153099757766,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.11383135981360487,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.1134794394456735,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.11312577958947957,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.13026963884731182,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.11241328044642218,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.11205446080101909,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.11169394094942586,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.11133173083486259,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.11096784044877922,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.11060227983042736,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.11023505906643094,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.10986618829035705,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.10949567768228628,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.10912353746837841,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.10874977792044349,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.10837440935550519,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.10799744213536877,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.1076188866661848,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.10723875339801332,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.10685705282438727,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.12411766283104891,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.10608899194963828,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.10570265284900124,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.10531478884300316,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.10492541063595971,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.10453452897302146,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.10414215463973364,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.10374829846159057,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.10335297130359483,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.1029561840698105,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.10255794770292087,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.10215827318378137,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.10175717153097609,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.10135465380036725,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.10095073108465341,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.10054541451291656,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.10013871525017938,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.0997306444969528,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.09932121348878853,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.09891043349582951,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.09849831582236163,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.09808487180635998,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.09767011281904225,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.09725405026441447,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.0968366955788212,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.0964180602304942,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.11425799173198016,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.0955769935752871,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.09515458536023358,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.09473094266519555,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.09430607711105271,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.0938800003478552,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.09345272405437072,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.09302425993763058,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.0925946197324759,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.09216381520110384,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.09173185813261309,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.09129876034254991,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.0908645336724539,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.09042918998940408,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.0899927411855626,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.08955519917772359,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.08911657590685551,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.08867688333764846,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.08823613345805958,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.08779433827885791,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.08735150983317042,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.08690766017602837,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.08646280138391192,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.08601694555429795,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.08557010480520305,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.08512229127473409,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.08467351712062965,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.08422379451981105,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.08377313566792621,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.08332155277889786,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.08286905808447026,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.08241566383375687,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.08196138229278856,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.08150622574406129,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.08105020648608374,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.08059333683292713,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.0801356291137737,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.0796770956724665,
+          "contacts": []
+        },
+        {
+          "segment": 1,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.07921774886705685,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.07921774886705685,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.07887201972600788,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.07852382185153195,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.07817316390108027,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.07782005464273678,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.07746450295474727,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.08372972183764049,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.07674610835076923,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.07638328373778475,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.07601805330018852,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.07565042645981727,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.07528041274575104,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.07490802179380844,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.07453326334603973,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.07415614725021479,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.07377668345930793,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.07339488203097642,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.07301075312703348,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.07262430701292177,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.07223555405717647,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.07184450473088827,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.07145116960716165,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.07105555936056468,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.07065768476658056,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.07025755670105144,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.06985518613961628,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.06945058415714911,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.06904376192719164,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.06863473072137749,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.0682235019088584,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.0678100869557221,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.06739449742440912,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.06697674497312228,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.06655684135523589,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.06613894472189863,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.06572996530257477,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.06533023174276592,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.0649399780392386,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.0645594388964551,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.06418884939370686,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.06382844463078018,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.06347845935238483,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.06313912755175846,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.0628106820540417,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.062493354080239955,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.06218737279279531,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.06189296482401855,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.061610353788878906,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.06133975978386432,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.0610805526037437,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.06082250756757318,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.06056257906776015,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.060300785151214883,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.06004088290539829,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.05979324349161796,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.05955866549050846,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.05933735647916063,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.059129517324649744,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.0589353416004768,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.05875501500879001,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.058588714812214324,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.058436609279227475,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.058298857147083764,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.05817560710630979,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.05806699731075552,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.05797315491711782,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.057894195657694644,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.057830223449954504,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.05778133004625168,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.05774759472672551,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.05772908403808677,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.05772585158059245,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.05773793784510981,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.057765370101699014,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.05780816234067973,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.057866315266649634,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.057939816345424014,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.058028639903367187,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.058132747278103365,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.05825208701911525,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.05838659513629864,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.05853619539413222,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.0587007996487355,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.05888030822477392,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.05907461032887266,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.05928358449598238,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.05950709906494702,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.059745012679416405,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.05999717481015454,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.06026342629479225,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.06054359989108176,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.06083752083979743,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.0611450074335382,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.06146587158783341,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.06179991941114167,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.06214695177054656,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.06250676485017369,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.06287915069961895,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.06326389776992114,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.06366079143489566,
+          "contacts": []
+        },
+        {
+          "segment": 2,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.06406961449590366,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.06406961449590366,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.0645377883040663,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.06500635744060568,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.06547513609819788,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.06594408735159267,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.06641317441728306,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.06688236065777148,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.06735160958581836,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.06782088486866557,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.08793161476361316,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.0687593699653641,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.06922850792386266,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.0696975285347577,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.07016639630035734,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.07063507590235416,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.07110353220589104,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.07289631737382744,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.07204238454284577,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.0725230314896544,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.07301401417050597,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.07351522980614561,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.07402657311904859,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.07454793654789019,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.0750792104566212,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.07562028333771555,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.0761710223304299,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.0767259070739002,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.07728064307310287,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.07783519150066648,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.07838951367231131,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.07894357105056596,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.0794973252484687,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.08005073803324729,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.08060377132998106,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.08115638722524478,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.08170854797072849,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.08226021598684313,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.08281135386629844,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.08336192437766368,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.10253695142325528,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.08446121527090665,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.08500986210095139,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.08555779446620346,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.08610497606714831,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.08665137080101644,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.08719694276518196,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.0877416562605351,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.08828547579483105,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.08882836608601415,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.08937449762721646,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.0899296174355864,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.0904936565525326,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.09106650768514386,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.09164806262710339,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.09223821238386763,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.09283684729317704,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.0934438571408404,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.09405913127176006,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.09468255869617173,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.09531402819111395,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.09595342839713805,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.0965987125904266,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.1213076020725478,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.09788736140318599,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.09853018321957153,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.09917196403311017,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.0998126747430274,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.1004522865367035,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.10109077089217769,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.10172809958061245,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.10236424466871404,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.10299917852110996,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.10363287380268606,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.10426530348087769,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.1048964408279192,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.10552625942304936,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.10615473315467304,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.10678187997064144,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.10741282493947485,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.1080508250983532,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.1086898482614793,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.10932706606403272,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.10996243092815562,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.11059589536043407,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.1112274119541431,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.11185693339149008,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.11248441244585436,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.11310980198402609,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.1137358263914455,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.11436850275441637,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.11500795330223212,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.11565408303538081,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.11630679704755921,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.1169660005771196,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.1176315990560622,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.11830349815661523,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.11898160383544647,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.11966582237556035,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.12035606042593167,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.1210522250389295,
+          "contacts": []
+        },
+        {
+          "segment": 3,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.12175422370559418,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.0,
+          "panel_signed_distance_m": 0.12175422370559418,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.01,
+          "panel_signed_distance_m": 0.12165073697086178,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.02,
+          "panel_signed_distance_m": 0.12155012395017044,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.03,
+          "panel_signed_distance_m": 0.12145239534339716,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.04,
+          "panel_signed_distance_m": 0.121357561520057,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.05,
+          "panel_signed_distance_m": 0.12126563251557333,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.06,
+          "panel_signed_distance_m": 0.12117661802765217,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.07,
+          "panel_signed_distance_m": 0.12109052741276581,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.08,
+          "panel_signed_distance_m": 0.12100736968274768,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.09,
+          "panel_signed_distance_m": 0.12092715350150186,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.1,
+          "panel_signed_distance_m": 0.12084988718182899,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.11,
+          "panel_signed_distance_m": 0.12077557868237591,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.12,
+          "panel_signed_distance_m": 0.12070423560470515,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.13,
+          "panel_signed_distance_m": 0.12063586519049117,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.14,
+          "panel_signed_distance_m": 0.12057047431884933,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.15,
+          "panel_signed_distance_m": 0.1205080695037915,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.16,
+          "panel_signed_distance_m": 0.12044865689181784,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.17,
+          "panel_signed_distance_m": 0.12039224225964612,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.18,
+          "panel_signed_distance_m": 0.12033883101207654,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.19,
+          "panel_signed_distance_m": 0.12028842817999981,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.2,
+          "panel_signed_distance_m": 0.12024103841854672,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.21,
+          "panel_signed_distance_m": 0.1201966660053828,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.22,
+          "panel_signed_distance_m": 0.120155314839149,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.23,
+          "panel_signed_distance_m": 0.12011698843804823,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.24,
+          "panel_signed_distance_m": 0.12008168993858598,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.25,
+          "panel_signed_distance_m": 0.12004942209445676,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.26,
+          "panel_signed_distance_m": 0.12002018727558378,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.27,
+          "panel_signed_distance_m": 0.11999398746731299,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.28,
+          "panel_signed_distance_m": 0.11997082426975868,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.29,
+          "panel_signed_distance_m": 0.11995069889730417,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.3,
+          "panel_signed_distance_m": 0.11993361217825788,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.31,
+          "panel_signed_distance_m": 0.11991956455466421,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.32,
+          "panel_signed_distance_m": 0.11990855608227036,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.33,
+          "panel_signed_distance_m": 0.11990058643064821,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.34,
+          "panel_signed_distance_m": 0.11989565488347365,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.35000000000000003,
+          "panel_signed_distance_m": 0.11989376033895804,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.36,
+          "panel_signed_distance_m": 0.11989490131043863,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.37,
+          "panel_signed_distance_m": 0.11989907592712169,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.38,
+          "panel_signed_distance_m": 0.11990628193497897,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.39,
+          "panel_signed_distance_m": 0.11991651669779889,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.4,
+          "panel_signed_distance_m": 0.1199284766844568,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.41000000000000003,
+          "panel_signed_distance_m": 0.11993940799646277,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.42,
+          "panel_signed_distance_m": 0.1199492205938325,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.43,
+          "panel_signed_distance_m": 0.11995791366063338,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.44,
+          "panel_signed_distance_m": 0.11996548640614665,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.45,
+          "panel_signed_distance_m": 0.12449145623073772,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.46,
+          "panel_signed_distance_m": 0.1199772678943794,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.47000000000000003,
+          "panel_signed_distance_m": 0.11998147517853058,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.48,
+          "panel_signed_distance_m": 0.11998455922354245,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.49,
+          "panel_signed_distance_m": 0.1199865193594166,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.5,
+          "panel_signed_distance_m": 0.11998735493922183,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.51,
+          "panel_signed_distance_m": 0.11998706533873493,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.52,
+          "panel_signed_distance_m": 0.11998564995607762,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.53,
+          "panel_signed_distance_m": 0.11998310821135721,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.54,
+          "panel_signed_distance_m": 0.11997943954630205,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.55,
+          "panel_signed_distance_m": 0.11997464342390157,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.56,
+          "panel_signed_distance_m": 0.11996871932804087,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.5700000000000001,
+          "panel_signed_distance_m": 0.11996166676313884,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.58,
+          "panel_signed_distance_m": 0.11995348525378341,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.59,
+          "panel_signed_distance_m": 0.12422883607899259,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.6,
+          "panel_signed_distance_m": 0.12412100168894699,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.61,
+          "panel_signed_distance_m": 0.1199221625997671,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.62,
+          "panel_signed_distance_m": 0.11990946094910976,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.63,
+          "panel_signed_distance_m": 0.1198956282667188,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.64,
+          "panel_signed_distance_m": 0.11988066419053835,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.65,
+          "panel_signed_distance_m": 0.11986456837612552,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.66,
+          "panel_signed_distance_m": 0.1198473404962854,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.67,
+          "panel_signed_distance_m": 0.11982898024070443,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.68,
+          "panel_signed_distance_m": 0.1198094873155855,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.6900000000000001,
+          "panel_signed_distance_m": 0.11978886144327974,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.7000000000000001,
+          "panel_signed_distance_m": 0.11976710236192296,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.71,
+          "panel_signed_distance_m": 0.11974420982506694,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.72,
+          "panel_signed_distance_m": 0.11972018360131567,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.73,
+          "panel_signed_distance_m": 0.11969502347395815,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.74,
+          "panel_signed_distance_m": 0.1196687292406024,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.75,
+          "panel_signed_distance_m": 0.1196413007128116,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.76,
+          "panel_signed_distance_m": 0.11961273771573622,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.77,
+          "panel_signed_distance_m": 0.11958304008775075,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.78,
+          "panel_signed_distance_m": 0.11955220768008791,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.79,
+          "panel_signed_distance_m": 0.12271294415663646,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8,
+          "panel_signed_distance_m": 0.11948713799276467,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.81,
+          "panel_signed_distance_m": 0.11945290047658173,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8200000000000001,
+          "panel_signed_distance_m": 0.1194175277069482,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.8300000000000001,
+          "panel_signed_distance_m": 0.11938101959392663,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.84,
+          "panel_signed_distance_m": 0.11934337605825479,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.85,
+          "panel_signed_distance_m": 0.11930459703098609,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.86,
+          "panel_signed_distance_m": 0.11926468245312458,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.87,
+          "panel_signed_distance_m": 0.11922363227526694,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.88,
+          "panel_signed_distance_m": 0.11918144645724058,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.89,
+          "panel_signed_distance_m": 0.11913812496774336,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9,
+          "panel_signed_distance_m": 0.11909366778398592,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.91,
+          "panel_signed_distance_m": 0.12241735470067966,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.92,
+          "panel_signed_distance_m": 0.1190013462829389,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.93,
+          "panel_signed_distance_m": 0.11895348195940655,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9400000000000001,
+          "panel_signed_distance_m": 0.1189044819284141,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.9500000000000001,
+          "panel_signed_distance_m": 0.118854346204369,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.96,
+          "panel_signed_distance_m": 0.11880307480805054,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.97,
+          "panel_signed_distance_m": 0.11875066776625764,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.98,
+          "panel_signed_distance_m": 0.11869712511145367,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 0.99,
+          "panel_signed_distance_m": 0.11864244688141828,
+          "contacts": []
+        },
+        {
+          "segment": 4,
+          "fraction": 1.0,
+          "panel_signed_distance_m": 0.11858663311889303,
+          "contacts": []
+        }
+      ],
+      "checked_configurations": 505,
+      "minimum_panel_distance_m": 0.05772585158059245,
+      "maximum_checked_joint_increment_rad": 0.0037805680499884975
+    }
+  }
+}

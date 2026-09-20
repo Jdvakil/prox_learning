@@ -28,6 +28,9 @@ WANDB_PROJECT=PC_ACT_experiments_eval
 SENSOR_KEEP_FRAC=1
 SAVE_FIRST_FRAME=1
 SENSOR_MASK_FIXED=0
+# 1 = original slow path: per-substep pose refresh of the 40 skin cams +
+# per-step object_image_points segmentation renders. A/B only.
+EAGER_CAMERAS=0
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
@@ -52,17 +55,25 @@ fi
 
 echo "${RUN}${OUT_TAG} p=${SENSOR_KEEP_FRAC}"
 
-python eval_act_v1011d.py \
-  --ckpt_dir "$CKPT_DIR" \
-  --ckpt_name "$CKPT_NAME" \
-  --cameras $CAMERAS \
-  --num_rollouts "$NUM_ROLLOUTS" \
-  --seed_base "$SEED_BASE" \
-  --skin "$SKIN" \
-  --history "$HISTORY" \
-  --skin_substeps "$SKIN_SUBSTEPS" \
-  --clutter_xy_scale "$CLUTTER_XY_SCALE" \
-  --output_dir "$OUTPUT_DIR" \
-  --wandb_project "$WANDB_PROJECT" \
-  --wandb_run_name "${RUN}${OUT_TAG}_eval" \
-  "${EXTRA[@]}"
+if [ "${EAGER_CAMERAS}" = "1" ]; then
+  EXTRA+=(--eager_cameras --keep_export_sensors)
+fi
+
+run_eval() {
+  python eval_act_v1011d.py \
+    --ckpt_dir "$CKPT_DIR" \
+    --ckpt_name "$CKPT_NAME" \
+    --cameras $CAMERAS \
+    --num_rollouts "$NUM_ROLLOUTS" \
+    --seed_base "$SEED_BASE" \
+    --skin "$SKIN" \
+    --history "$HISTORY" \
+    --skin_substeps "$SKIN_SUBSTEPS" \
+    --clutter_xy_scale "$CLUTTER_XY_SCALE" \
+    --output_dir "$OUTPUT_DIR" \
+    --wandb_project "$WANDB_PROJECT" \
+    --wandb_run_name "${RUN}${OUT_TAG}_eval" \
+    "${EXTRA[@]}" "$@"
+}
+
+run_eval

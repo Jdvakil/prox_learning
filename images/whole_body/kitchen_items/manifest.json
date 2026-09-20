@@ -1,0 +1,1461 @@
+{
+  "environment": "kitchen_items",
+  "provenance": {
+    "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+    "source_frame": 0,
+    "adjusted_simulation_pose": {
+      "vertical_shift_m": -0.16,
+      "original_arm_qpos": [
+        -0.010201739147305489,
+        -0.824212372303009,
+        -0.051338061690330505,
+        -2.3212363719940186,
+        -0.12462368607521057,
+        1.4556080102920532,
+        0.09182917326688766
+      ],
+      "adjusted_arm_qpos": [
+        -0.07034216707476035,
+        -0.8725987984262761,
+        -0.03122707105280448,
+        -2.759301964316884,
+        -0.11630600230474601,
+        1.846227879988365,
+        0.09182917326688766
+      ]
+    },
+    "kitchen_auxiliary_geometry": {
+      "provenance": "Reconstructed with the existing v12 kitchen-placement routine; these auxiliary poses are absent from frozen_config.",
+      "placed_bodies": [
+        "pact_preview_extra_Bottle_1/Bottle_1",
+        "pact_preview_extra_Soap_Bottle_1/Soap_Bottle_1",
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1",
+        "pact_preview_extra_Paper_Towel_1/Paper_Towel_1",
+        "pact_preview_extra_Soap_Bottle_3/Soap_Bottle_3",
+        "pact_preview_extra_Salt_Shaker_2/Salt_Shaker_2",
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2"
+      ]
+    },
+    "note": "Original recorded scene reconstructed with its existing kitchen overlay. Link 6 lowered 16 cm to expose bottles in sensor 3. All displayed readings recomputed; source recorded arrays saved separately.",
+    "initial_scene_rgb_check": {
+      "comparison": "Source video frame0 versus reconstructed initial scene, before lowering the arm",
+      "mean_absolute_rgb_error_0_255": 1.883556114024864,
+      "fraction_pixels_max_channel_error_under_10": 0.9700520833333334
+    }
+  },
+  "selected_sensors": [
+    "link6_sensor_3",
+    "link5_back_sensor_4",
+    "link2_sensor_3"
+  ],
+  "sensor_count": 40,
+  "native_samples_per_sensor": 64,
+  "native_samples_total": 2560,
+  "rgb": "Diagnostic views from proximity sensor poses; proximity hardware does not output RGB. Cosmetic skin and invisible collision proxies are hidden in RGB.",
+  "depth": "Fresh MuJoCo depth at exported pose; native 8x8 rendered independently, not downsampled dense depth. Sensor renderer hides cosmetic skin and includes original sensor geometry.",
+  "grid": "Solid black cell boundaries and outer border; no interpolation of range bins.",
+  "colour_scale_metres": [
+    0.05,
+    1.0
+  ],
+  "colour_map": "turbo; near red, far blue; display saturates but arrays are unclipped",
+  "evidence": "Surface IDs come from native 8x8 segmentation. Nearby means axial depth <=0.65 m. Wrist exclusion is a geometric FOV test, not an occlusion test. Counts illustrate spatial coverage, not learned-policy efficacy.",
+  "camera": "External paired images use identical scene/camera; second image hides robot geometry only. Pedestal remains.",
+  "records": [
+    {
+      "sensor": "link1_sensor_0",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.14913701132553642,
+        -0.1241377476875306,
+        0.6904620099999998
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.9777425645822906,
+          0.01077081234477699,
+          -0.20953154179139472
+        ],
+        [
+          -0.20980819193738554,
+          0.05019336410551272,
+          -0.9764533520838242
+        ],
+        [
+          -1.0284999840681763e-07,
+          0.9986814385985178,
+          0.05133599320929123
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.026747096329927444
+    },
+    {
+      "sensor": "link1_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.12324873010105333,
+        -0.09255486265753095,
+        0.6347331999999999
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.8906227959326822,
+          -0.16505963243462354,
+          -0.42372910344416825
+        ],
+        [
+          -0.45474282332440485,
+          -0.32327249050480966,
+          -0.8298818358765101
+        ],
+        [
+          2.8224180936842203e-08,
+          0.9317994497870048,
+          -0.36297353261172427
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.09937205165624619
+    },
+    {
+      "sensor": "link1_sensor_2",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.0963149582558126,
+        -0.08531518626776619,
+        0.6926537799999998
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.7779591459961825,
+          0.045642487333877324,
+          -0.6266548735235908
+        ],
+        [
+          -0.6283148630749279,
+          0.05651279936004425,
+          -0.7759038190056977
+        ],
+        [
+          -1.5909584200057836e-07,
+          0.9973580434620601,
+          0.07264250230757788
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.07919509708881378
+    },
+    {
+      "sensor": "link1_sensor_3",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.20254113983653882,
+        -0.11175645910756297,
+        0.6872935399999999
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.9846740043407296,
+          -0.005689331588226182,
+          0.17431218167894003
+        ],
+        [
+          0.1744050032949378,
+          0.03211492616094316,
+          -0.9841501543684124
+        ],
+        [
+          1.1337172338143908e-06,
+          0.9994679899945553,
+          0.03261498083639334
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.10180183500051498
+    },
+    {
+      "sensor": "link1_sensor_4",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.18011536277473525,
+        -0.10515378249998297,
+        0.6359374999999998
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.9762202454937667,
+          0.12193937881125487,
+          0.17923398166423404
+        ],
+        [
+          0.21678106994863355,
+          -0.5491244818509589,
+          -0.8071358442937852
+        ],
+        [
+          1.2384197488335413e-07,
+          0.8267968863796241,
+          -0.5625005854867562
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.11399266123771667
+    },
+    {
+      "sensor": "link1_sensor_5",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.17116995981416172,
+        -0.050293451949893694,
+        0.5439289999999999
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.9924333648783978,
+          -0.11011281985532843,
+          -0.05432479341560402
+        ],
+        [
+          -0.12278443010469607,
+          -0.890011907318627,
+          -0.43909314337042876
+        ],
+        [
+          7.119314579528968e-08,
+          0.4424409245702378,
+          -0.8967976517952236
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.020677872002124786
+    },
+    {
+      "sensor": "link1_sensor_6",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.1390509096056635,
+        -0.09573529829493638,
+        0.7377197999999998
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.941753720883443,
+          0.13899778729567447,
+          -0.3062344597348511
+        ],
+        [
+          -0.33630332915715605,
+          0.3892371074992582,
+          -0.8575514823865819
+        ],
+        [
+          5.677993103470058e-08,
+          0.9105899676981494,
+          0.4133109129063488
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.034779176115989685
+    },
+    {
+      "sensor": "link2_sensor_0",
+      "nearby_surface_hits": {
+        "place_receptacle": 28,
+        "place_pedestal": 18
+      },
+      "axial_depth_min_by_surface_m": {
+        "place_receptacle": 0.06982170045375824,
+        "place_pedestal": 0.10690230131149292
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "place_receptacle": 28,
+        "place_pedestal": 18
+      },
+      "sensor_position_world": [
+        0.22741957399840546,
+        0.15506282292382728,
+        0.6839100893763055
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.6065882114631113,
+          0.7237408363828961,
+          0.32901359161251875
+        ],
+        [
+          -0.21641826257354674,
+          -0.24789568048780292,
+          0.9443044356668754
+        ],
+        [
+          0.7649927302521446,
+          -0.6440084885677165,
+          0.006260136906984633
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.26921501755714417
+    },
+    {
+      "sensor": "link2_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.15940848952290548,
+        0.14874687535603082,
+        0.694301585437001
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.6612091741824577,
+          0.7346829902459191,
+          -0.1518003024379948
+        ],
+        [
+          0.03725939713716803,
+          0.16993609951678848,
+          0.9847504553977087
+        ],
+        [
+          0.749275760519401,
+          -0.6567820231433976,
+          0.08498946272178882
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.024943513795733452
+    },
+    {
+      "sensor": "link2_sensor_2",
+      "nearby_surface_hits": {
+        "place_pedestal": 7
+      },
+      "axial_depth_min_by_surface_m": {
+        "place_pedestal": 0.1722700446844101
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "place_pedestal": 7
+      },
+      "sensor_position_world": [
+        0.18493950217558877,
+        0.1418788098481781,
+        0.6357043872387529
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.6728258633668117,
+          0.7387068054142036,
+          0.04021956264614068
+        ],
+        [
+          0.23801571370255709,
+          -0.2676226148138325,
+          0.9336630313292209
+        ],
+        [
+          0.700466899728579,
+          -0.6186197472397317,
+          -0.35588724437619806
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.13873615860939026
+    },
+    {
+      "sensor": "link2_sensor_3",
+      "nearby_surface_hits": {
+        "place_receptacle_lips": 28,
+        "jamb_l": 4,
+        "hood_side_l": 9,
+        "place_receptacle": 6
+      },
+      "axial_depth_min_by_surface_m": {
+        "place_receptacle_lips": 0.09841158241033554,
+        "jamb_l": 0.4725165069103241,
+        "hood_side_l": 0.4786464273929596,
+        "place_receptacle": 0.10085570067167282
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "place_receptacle_lips": 28,
+        "jamb_l": 4,
+        "hood_side_l": 9,
+        "place_receptacle": 6
+      },
+      "sensor_position_world": [
+        0.2483802693351258,
+        0.12267576559884683,
+        0.722987758445617
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.45190104172001433,
+          0.723018812517994,
+          0.5225220045485509
+        ],
+        [
+          -0.5608812966978499,
+          -0.22519486802899447,
+          0.7966802636114079
+        ],
+        [
+          0.6936840920093991,
+          -0.6530934605081218,
+          0.3037619336497285
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.09503334760665894
+    },
+    {
+      "sensor": "link2_sensor_4",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.19612358759320908,
+        0.13646897484600876,
+        0.7378437117549013
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.4383921466906835,
+          0.8971402781898322,
+          0.054329061922732624
+        ],
+        [
+          -0.5821889321550534,
+          0.237398221652722,
+          0.7776233867575506
+        ],
+        [
+          0.6847396388380713,
+          -0.37253376438330377,
+          0.6263786565635137
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.05179512873291969
+    },
+    {
+      "sensor": "link2_sensor_5",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.10031369860151226,
+        0.1095004881828027,
+        0.7797147027531486
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.5785312482373378,
+          0.6355582273146784,
+          -0.5112409749869148
+        ],
+        [
+          -0.299846176263591,
+          0.7486092720808327,
+          0.5913344471064654
+        ],
+        [
+          0.7585472070959401,
+          -0.18881180431114294,
+          0.6236635608721416
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.02915465272963047
+    },
+    {
+      "sensor": "link2_sensor_6",
+      "nearby_surface_hits": {
+        "place_pedestal": 58,
+        "bench_body": 3
+      },
+      "axial_depth_min_by_surface_m": {
+        "place_pedestal": 0.1237512156367302,
+        "bench_body": 0.3025874197483063
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "place_pedestal": 58,
+        "bench_body": 3
+      },
+      "sensor_position_world": [
+        0.24530214556679925,
+        0.12455821295614122,
+        0.6404197490705867
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.6395864241895965,
+          0.5870350803167473,
+          0.496305370180371
+        ],
+        [
+          -0.08911856797640957,
+          -0.5846496354154023,
+          0.8063762674152006
+        ],
+        [
+          0.7635359106382615,
+          -0.5599773372969186,
+          -0.3216182440093433
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.08592414110898972
+    },
+    {
+      "sensor": "link3_sensor_0",
+      "nearby_surface_hits": {
+        "place_pedestal": 19,
+        "place_receptacle": 4,
+        "bench_body": 3
+      },
+      "axial_depth_min_by_surface_m": {
+        "place_pedestal": 0.35184744000434875,
+        "place_receptacle": 0.2729325294494629,
+        "bench_body": 0.5465772151947021
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "place_pedestal": 19,
+        "place_receptacle": 4,
+        "bench_body": 3
+      },
+      "sensor_position_world": [
+        -0.0011993450244946052,
+        0.12667699231130397,
+        0.8196192394774057
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.6727923364724431,
+          0.4972660111477307,
+          0.5477928314072529
+        ],
+        [
+          0.23834413642549282,
+          -0.8466364359870568,
+          0.4758138479392116
+        ],
+        [
+          0.7003874246554802,
+          -0.18956070113912876,
+          -0.6881309439111898
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.0511404424905777
+    },
+    {
+      "sensor": "link3_sensor_1",
+      "nearby_surface_hits": {
+        "hood_side_l": 3,
+        "jamb_l": 4,
+        "hood_frame_l": 1
+      },
+      "axial_depth_min_by_surface_m": {
+        "hood_side_l": 0.5691347718238831,
+        "jamb_l": 0.5494813919067383,
+        "hood_frame_l": 0.5649847984313965
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "hood_side_l": 3,
+        "jamb_l": 4,
+        "hood_frame_l": 1
+      },
+      "sensor_position_world": [
+        0.03122160955839952,
+        0.17777143585956162,
+        0.9226400351712742
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.41531081030165423,
+          0.6508895969452112,
+          0.6354995385010777
+        ],
+        [
+          -0.6166435149886415,
+          -0.3121602278824343,
+          0.7227079407000027
+        ],
+        [
+          0.668780760989007,
+          -0.6920250896585224,
+          0.27172333174403246
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.03349706903100014
+    },
+    {
+      "sensor": "link3_sensor_2",
+      "nearby_surface_hits": {
+        "hood_side_l": 1,
+        "hood_frame_l": 1
+      },
+      "axial_depth_min_by_surface_m": {
+        "hood_side_l": 0.6263142824172974,
+        "hood_frame_l": 0.6070612072944641
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "hood_side_l": 1,
+        "hood_frame_l": 1
+      },
+      "sensor_position_world": [
+        0.04878233157924329,
+        0.15917055714953254,
+        0.9950707750910889
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.17036475971086998,
+          0.7751113915846952,
+          0.608422697870727
+        ],
+        [
+          -0.8687760545202048,
+          -0.1732066773565569,
+          0.46392630234920595
+        ],
+        [
+          0.46497743573313627,
+          -0.6076197639599439,
+          0.6438899026264493
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.10866466164588928
+    },
+    {
+      "sensor": "link3_sensor_3",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        -0.041822133855297094,
+        0.04959786004674639,
+        0.7935242272518699
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.02426776584811735,
+          0.9918329358135505,
+          0.12521382901347042
+        ],
+        [
+          0.946765558455088,
+          0.06301997796275532,
+          -0.3156952006299733
+        ],
+        [
+          -0.3210078704081354,
+          0.1108869235439756,
+          -0.9405626174386192
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.017833810299634933
+    },
+    {
+      "sensor": "link3_sensor_4",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        -0.03278013238209683,
+        0.16300103670150165,
+        0.9514200667526274
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.5284923553667921,
+          0.8488324992768601,
+          -0.013387251034402692
+        ],
+        [
+          -0.4195686290791645,
+          0.27487189562174874,
+          0.8651055464450192
+        ],
+        [
+          0.7380094821961904,
+          -0.45158479731796136,
+          0.5014111835807066
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.024813590571284294
+    },
+    {
+      "sensor": "link4_sensor_0",
+      "nearby_surface_hits": {
+        "sash": 6,
+        "hood_top": 8
+      },
+      "axial_depth_min_by_surface_m": {
+        "sash": 0.5621102452278137,
+        "hood_top": 0.5801570415496826
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "sash": 6,
+        "hood_top": 8
+      },
+      "sensor_position_world": [
+        0.11849878715076914,
+        0.03482982752394178,
+        1.0650074456809255
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.26213126497848954,
+          -0.6481598741961228,
+          0.7149657176416515
+        ],
+        [
+          0.964566551555657,
+          0.19898761103021784,
+          -0.173249237448577
+        ],
+        [
+          -0.02997611617277368,
+          0.7350460585150781,
+          0.6773542089045016
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.8518215417861938
+    },
+    {
+      "sensor": "link4_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        -0.0001207106090267418,
+        -0.057962127439684444,
+        0.9467270472656948
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.3189849675764511,
+          -0.9473258972117314,
+          0.02867463918234353
+        ],
+        [
+          -0.01078007800973757,
+          -0.033879780229296774,
+          -0.9993677753508553
+        ],
+        [
+          0.9476984649023936,
+          0.3184741825699561,
+          -0.021019387670526635
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.036807481199502945
+    },
+    {
+      "sensor": "link4_sensor_2",
+      "nearby_surface_hits": {
+        "sash": 1
+      },
+      "axial_depth_min_by_surface_m": {
+        "sash": 0.6292020678520203
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "sash": 1
+      },
+      "sensor_position_world": [
+        0.06978666459539135,
+        -0.016960352546506255,
+        1.0333762718850636
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.3808674863378869,
+          -0.7566135387578006,
+          0.5314846289584079
+        ],
+        [
+          0.8079924712278386,
+          -0.007118566627742573,
+          -0.5891498047596176
+        ],
+        [
+          0.44954212738050336,
+          0.6538235839869676,
+          0.6086268123675187
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.5826237201690674
+    },
+    {
+      "sensor": "link4_sensor_3",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        -0.044760800372103886,
+        -0.03626283709709162,
+        0.9014762331331826
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.15951217040900667,
+          -0.9245160004457944,
+          -0.34615896985506367
+        ],
+        [
+          -0.4759620292032405,
+          0.2351787488997546,
+          -0.8474379639965859
+        ],
+        [
+          0.8648791905509928,
+          0.29993519464320473,
+          -0.4025206389319699
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.15138563513755798
+    },
+    {
+      "sensor": "link4_sensor_4",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        -0.061010975905383104,
+        -0.04599120545712161,
+        0.9588627637015352
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.3018968571705571,
+          -0.8351517792418031,
+          -0.4597605825424681
+        ],
+        [
+          -0.07458159448476614,
+          0.46009467775941587,
+          -0.8847318651781273
+        ],
+        [
+          0.9504187884267908,
+          0.3013874468631841,
+          0.07661418588382479
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.05880073457956314
+    },
+    {
+      "sensor": "link5_back_sensor_0",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.3091226832353008,
+        0.09965393948215259,
+        0.9358628895260724
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.30938154717099053,
+          -0.8653499468983157,
+          -0.3942746855596556
+        ],
+        [
+          0.0472570238631384,
+          -0.42809530379484806,
+          0.9024971936601212
+        ],
+        [
+          -0.9497630399029443,
+          0.26058372986792144,
+          0.17333865051522465
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.06919524818658829
+    },
+    {
+      "sensor": "link5_back_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.259968237053776,
+        0.10068277478091656,
+        0.9691680320977608
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.2669328025544364,
+          -0.7690200644961604,
+          -0.5808227090281113
+        ],
+        [
+          0.19136407975246067,
+          -0.6329861422951366,
+          0.7501388755709262
+        ],
+        [
+          -0.9445245724177465,
+          0.08908806914868533,
+          0.316127581894448
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.1549670696258545
+    },
+    {
+      "sensor": "link5_back_sensor_2",
+      "nearby_surface_hits": {
+        "jamb_l": 14,
+        "hood_frame_l": 2,
+        "hood_side_l": 2,
+        "bench_top": 3
+      },
+      "axial_depth_min_by_surface_m": {
+        "jamb_l": 0.34449949860572815,
+        "hood_frame_l": 0.35165703296661377,
+        "hood_side_l": 0.35524117946624756,
+        "bench_top": 0.37571442127227783
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "jamb_l": 14,
+        "hood_frame_l": 2,
+        "hood_side_l": 2,
+        "bench_top": 3
+      },
+      "sensor_position_world": [
+        0.3898783250983493,
+        0.10033650986439965,
+        0.903868479488181
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.3189736820249655,
+          -0.9394916707366416,
+          0.12494475095780799
+        ],
+        [
+          0.010786650902951778,
+          0.12822399354129807,
+          0.9916865712727071
+        ],
+        [
+          -0.9477021886319209,
+          0.3176696524643071,
+          -0.030766110665346236
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.23567993938922882
+    },
+    {
+      "sensor": "link5_back_sensor_3",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.24916291467463525,
+        0.10080692260044405,
+        0.9273972142896098
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.36306431605568745,
+          -0.6736752486351836,
+          -0.6436971040662982
+        ],
+        [
+          -0.18761268081450233,
+          -0.6238331179656076,
+          0.7587052938571757
+        ],
+        [
+          -0.9126805489351741,
+          0.39622455792849487,
+          0.10010152491224714
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.18271562457084656
+    },
+    {
+      "sensor": "link5_back_sensor_4",
+      "nearby_surface_hits": {
+        "bench_top": 16,
+        "bench_body": 9,
+        "hood_side_l": 2,
+        "jamb_l": 2,
+        "place_receptacle": 11,
+        "place_receptacle_lips": 15,
+        "place_pedestal": 1
+      },
+      "axial_depth_min_by_surface_m": {
+        "bench_top": 0.20650874078273773,
+        "bench_body": 0.31854772567749023,
+        "hood_side_l": 0.39879754185676575,
+        "jamb_l": 0.3868319094181061,
+        "place_receptacle": 0.18820708990097046,
+        "place_receptacle_lips": 0.16347961127758026,
+        "place_pedestal": 0.2595720589160919
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "bench_top": 16,
+        "bench_body": 9,
+        "hood_side_l": 2,
+        "jamb_l": 2,
+        "place_receptacle": 11,
+        "place_receptacle_lips": 15,
+        "place_pedestal": 1
+      },
+      "sensor_position_world": [
+        0.3967580935068801,
+        0.06446387892471052,
+        0.8437346941759929
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.39429207649238446,
+          -0.8980900353841078,
+          0.19485391132613805
+        ],
+        [
+          -0.4023705574950819,
+          0.3593398463068449,
+          0.8420052311697765
+        ],
+        [
+          -0.8262152824030911,
+          0.2535925140849861,
+          -0.5030498423850618
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.4426383376121521
+    },
+    {
+      "sensor": "link5_back_sensor_5",
+      "nearby_surface_hits": {
+        "hood_side_l": 41,
+        "hood_frame_l": 6,
+        "jamb_l": 4
+      },
+      "axial_depth_min_by_surface_m": {
+        "hood_side_l": 0.39090412855148315,
+        "hood_frame_l": 0.36775583028793335,
+        "jamb_l": 0.3787989616394043
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "hood_side_l": 41,
+        "hood_frame_l": 6,
+        "jamb_l": 4
+      },
+      "sensor_position_world": [
+        0.4325888520164093,
+        0.06227736570861529,
+        0.9440442477076363
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.18800610559511005,
+          -0.8579592987769982,
+          0.4780790163780884
+        ],
+        [
+          0.4089674363708528,
+          0.3741696844260564,
+          0.8323116503118027
+        ],
+        [
+          -0.8929721945543498,
+          0.35199842172740703,
+          0.2805312297306696
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.5227414965629578
+    },
+    {
+      "sensor": "link5_front_sensor_0",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.19326758780294456,
+        -0.05073566129718868,
+        1.010130796544857
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.4038260912935902,
+          -0.9119361111281339,
+          -0.07278061013096754
+        ],
+        [
+          0.6092584180741973,
+          0.3274325570059183,
+          -0.7222133345613967
+        ],
+        [
+          0.6824431610004358,
+          0.2473063885811707,
+          0.6878305621086281
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.17105010151863098
+    },
+    {
+      "sensor": "link5_front_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.21963536300227032,
+        0.025499981378585113,
+        0.9623356091818897
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.3717729338707753,
+          0.3339194531081536,
+          -0.8661885963674809
+        ],
+        [
+          -0.9191567097258968,
+          -0.001604034297273349,
+          0.39388877876862105
+        ],
+        [
+          0.130137729375376,
+          0.942600247140814,
+          0.3075206423690881
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.20860645174980164
+    },
+    {
+      "sensor": "link5_front_sensor_2",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.26509008299868025,
+        0.056697407038311054,
+        0.9443110611876836
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.32261238699139827,
+          -0.6291130873367783,
+          -0.70720433475856
+        ],
+        [
+          -0.003524727243449155,
+          -0.7463501132094041,
+          0.6655442019957556
+        ],
+        [
+          -0.9465246029858757,
+          0.21720550603954508,
+          0.23856433951564004
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.19840723276138306
+    },
+    {
+      "sensor": "link5_front_sensor_3",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.16676923432605742,
+        -0.04917355963070363,
+        0.9346512911094906
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.08483536634360428,
+          -0.8463978075942602,
+          -0.5257506176096942
+        ],
+        [
+          -0.6294092679145646,
+          0.3635270720712039,
+          -0.6867983993389825
+        ],
+        [
+          0.7724292421190417,
+          0.3891771051474716,
+          -0.5018906721074177
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.19350969791412354
+    },
+    {
+      "sensor": "link6_sensor_0",
+      "nearby_surface_hits": {
+        "pact_intrusion_right": 55,
+        "hood_side_r": 7,
+        "hood_frame_r": 2
+      },
+      "axial_depth_min_by_surface_m": {
+        "pact_intrusion_right": 0.11434993892908096,
+        "hood_side_r": 0.34647542238235474,
+        "hood_frame_r": 0.3280709981918335
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "pact_intrusion_right": 55,
+        "hood_side_r": 7,
+        "hood_frame_r": 2
+      },
+      "sensor_position_world": [
+        0.449877042861563,
+        -0.12216446546747003,
+        0.9180377582069362
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.7113535406929467,
+          -0.006652584264458694,
+          0.7028028765352419
+        ],
+        [
+          -0.696318539570021,
+          -0.1291745456763176,
+          -0.7060130510127897
+        ],
+        [
+          0.09548105359011927,
+          -0.9915995562080083,
+          0.08725645267485704
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.2753485441207886
+    },
+    {
+      "sensor": "link6_sensor_1",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.3472817296279599,
+        -0.09219643631952842,
+        0.9569844018331457
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.8845022083396824,
+          -0.3244279950466419,
+          -0.3352645514697903
+        ],
+        [
+          0.4660912510989592,
+          -0.5831231190787296,
+          -0.6653768658774508
+        ],
+        [
+          0.02036637157744428,
+          -0.7447911814904284,
+          0.6669867366618767
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.09773539006710052
+    },
+    {
+      "sensor": "link6_sensor_2",
+      "nearby_surface_hits": {
+        "jamb_r": 11,
+        "hood_side_r": 4,
+        "hood_frame_r": 3,
+        "pact_intrusion_right": 4
+      },
+      "axial_depth_min_by_surface_m": {
+        "jamb_r": 0.350253164768219,
+        "hood_side_r": 0.32881829142570496,
+        "hood_frame_r": 0.3409139811992645,
+        "pact_intrusion_right": 0.42738643288612366
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "jamb_r": 11,
+        "hood_side_r": 4,
+        "hood_frame_r": 3,
+        "pact_intrusion_right": 4
+      },
+      "sensor_position_world": [
+        0.38421964533132186,
+        -0.12033265071855306,
+        0.922295930312245
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.9864348621925304,
+          -0.04384352298405218,
+          0.15818978520608956
+        ],
+        [
+          -0.1475231417814789,
+          -0.18587266572469152,
+          -0.971436191818751
+        ],
+        [
+          0.07199434207021782,
+          -0.9815951801169066,
+          0.17688334314211873
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.16919046640396118
+    },
+    {
+      "sensor": "link6_sensor_3",
+      "nearby_surface_hits": {
+        "pact_clutter_06/Soap_Bottle_11_soap_bottle_11": 11,
+        "cavity_obj_0/Cup_10_cup_10": 4,
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2_SaltShaker.002": 2,
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1_wine_bottle_1": 2,
+        "pact_clutter_04/Plate_22_plate_22": 2,
+        "bench_top": 2,
+        "pact_clutter_03/Plate_10_plate_10": 1
+      },
+      "axial_depth_min_by_surface_m": {
+        "pact_clutter_06/Soap_Bottle_11_soap_bottle_11": 0.11937563866376877,
+        "cavity_obj_0/Cup_10_cup_10": 0.2443695068359375,
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2_SaltShaker.002": 0.6125600934028625,
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1_wine_bottle_1": 0.6191651821136475,
+        "pact_clutter_04/Plate_22_plate_22": 0.6095867156982422,
+        "bench_top": 0.4939326345920563,
+        "pact_clutter_03/Plate_10_plate_10": 0.5052027106285095
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "pact_clutter_06/Soap_Bottle_11_soap_bottle_11": 11,
+        "cavity_obj_0/Cup_10_cup_10": 4,
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2_SaltShaker.002": 2,
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1_wine_bottle_1": 2,
+        "pact_clutter_04/Plate_22_plate_22": 2,
+        "bench_top": 2,
+        "pact_clutter_03/Plate_10_plate_10": 1
+      },
+      "sensor_position_world": [
+        0.49909142057239175,
+        -0.0234038707273211,
+        0.9086713992775108
+      ],
+      "sensor_rotation_cv": [
+        [
+          0.15664366895860957,
+          0.012474002498943315,
+          0.9875764072905147
+        ],
+        [
+          -0.9856384576975277,
+          -0.061893048053316385,
+          0.15711804896417014
+        ],
+        [
+          0.06308400496816158,
+          -0.998004834589655,
+          0.002599702454270547
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.16885435581207275
+    },
+    {
+      "sensor": "link6_sensor_4",
+      "nearby_surface_hits": {
+        "pact_intrusion_right": 64
+      },
+      "axial_depth_min_by_surface_m": {
+        "pact_intrusion_right": 0.051754534244537354
+      },
+      "nearby_hits_outside_wrist_fov": {
+        "pact_intrusion_right": 64
+      },
+      "sensor_position_world": [
+        0.504786668190892,
+        -0.10113276980250684,
+        0.9118365082379809
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.3968676240537312,
+          -0.01442646825762317,
+          0.9177624779819427
+        ],
+        [
+          -0.913251330489024,
+          -0.09403705359537029,
+          -0.3963950553565556
+        ],
+        [
+          0.09202226001338798,
+          -0.9954641678959173,
+          0.024145270702875976
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.6183629631996155
+    },
+    {
+      "sensor": "link6_sensor_5",
+      "nearby_surface_hits": {},
+      "axial_depth_min_by_surface_m": {},
+      "nearby_hits_outside_wrist_fov": {},
+      "sensor_position_world": [
+        0.32167548640673443,
+        -0.09542147712504409,
+        0.9026347870956133
+      ],
+      "sensor_rotation_cv": [
+        [
+          -0.7183921446163138,
+          0.05982830732834937,
+          -0.6930608199832078
+        ],
+        [
+          0.6956044359040527,
+          0.051943169352718144,
+          -0.716544748015222
+        ],
+        [
+          -0.0068698838546478735,
+          -0.9968562989718317,
+          -0.07893240079969843
+        ]
+      ],
+      "fovy_degrees": 45.0,
+      "difference_from_source_recorded_mae_m": 0.04126569628715515
+    }
+  ]
+}

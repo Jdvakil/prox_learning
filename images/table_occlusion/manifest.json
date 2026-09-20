@@ -1,0 +1,137 @@
+{
+  "source_hdf5": "/mnt/laptop/data/pact_pick_n_place_v2/data/v1011d/rows/000_187ba0ce76cb3011/trajectory.h5",
+  "frame": 0,
+  "scene": "/home/jaydv/code/prox_learning/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/pact_place_corridor_v10_7_neg5.xml",
+  "hdf5_sha256": "793cbca4a74e42ea4147b9731256fe2e139ec54dce7e01fb512e27d925110914",
+  "camera": "exo_camera_1",
+  "camera_pose": [
+    [
+      0.30191077404742445,
+      -0.4279769855260469,
+      0.8518718121725375,
+      -0.9028521870011403
+    ],
+    [
+      -0.9533361865124418,
+      -0.13553546461646443,
+      0.2697781557448899,
+      -0.5239613694312184
+    ],
+    [
+      -1.387778780781446e-17,
+      -0.8935691566360364,
+      -0.4489255643297261,
+      1.6499999523162843
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "fovy": 45.000000662644105,
+  "objects": [
+    {
+      "name": "cavity_obj_0/Cup_10",
+      "source": "/home/jaydv/code/prox_learning/assets/objects/thor/Kitchen Objects/Cup/Prefabs/Cup_10/Cup_10.xml",
+      "pose": [
+        0.7017240917151848,
+        0.07575829031917863,
+        0.7937508884541589,
+        0.592367038816332,
+        0.5923670135360294,
+        -0.386136374617551,
+        -0.3861363914416641
+      ]
+    },
+    {
+      "name": "pact_clutter_01/pact_primitive_cylinder_01",
+      "source": "recorded primitive definition",
+      "pose": [
+        0.6741504936076878,
+        -0.015174137521798492,
+        0.882882381864586,
+        0.9999999995820023,
+        -6.34496933516646e-06,
+        -3.308566182752928e-06,
+        2.801410806216093e-05
+      ]
+    },
+    {
+      "name": "pact_clutter_03/Plate_10",
+      "source": "/home/jaydv/code/prox_learning/assets/objects/thor/Kitchen Objects/Plate/Prefabs/Plate_10/Plate_10.xml",
+      "pose": [
+        1.1863795213109705,
+        -0.22126081127561428,
+        0.731333188914637,
+        0.7071066727636913,
+        0.7071068896093868,
+        -1.062771964850766e-08,
+        1.0627901449694908e-08
+      ]
+    },
+    {
+      "name": "pact_clutter_04/Plate_22",
+      "source": "/home/jaydv/code/prox_learning/assets/objects/thor/Kitchen Objects/Plate/Prefabs/Plate_22/Plate_22.xml",
+      "pose": [
+        0.9479869907130724,
+        -0.25205595023710364,
+        0.7343536865362692,
+        0.7079488793775212,
+        0.7062626696992796,
+        -0.0008441859968337776,
+        0.0008443502596191833
+      ]
+    },
+    {
+      "name": "pact_clutter_06/Soap_Bottle_11",
+      "source": "/home/jaydv/code/prox_learning/assets/objects/thor/Bathroom Objects/SoapBottle/Prefabs/Soap_Bottle_11/Soap_Bottle_11.xml",
+      "pose": [
+        0.5456156171168784,
+        -0.017744737428890957,
+        0.8149155064966065,
+        0.7071067166541075,
+        0.7071068457189817,
+        -8.01920548975213e-11,
+        7.861218498300674e-11
+      ]
+    },
+    {
+      "name": "pact_clutter_08/pact_primitive_cylinder_08",
+      "source": "recorded primitive definition",
+      "pose": [
+        0.8841120955142383,
+        0.10855984126473547,
+        0.8396568803126355,
+        0.9999999999897079,
+        1.6751742492858344e-06,
+        -3.8001279977595735e-06,
+        -1.8267378673514853e-06
+      ]
+    },
+    {
+      "name": "pact_clutter_09/pact_primitive_box_09",
+      "source": "recorded primitive definition",
+      "pose": [
+        0.814233947404281,
+        0.19386759623102295,
+        0.8396475094699444,
+        1.0,
+        2.014637386049818e-17,
+        8.315093641845995e-20,
+        -1.0221789647987684e-19
+      ]
+    }
+  ],
+  "link6_origin_error_m": 7.611762770362935e-09,
+  "hidden_robot_geoms": 71,
+  "original_rgb_mean_absolute_error": 1.9071757235819735,
+  "original_pixels_within_10_levels_percent": 97.05392263986013,
+  "link6_returns_hidden_by_robot_depth_check": 0,
+  "visibility_check": "384 recorded link6 samples at frame 0; samples project behind robot-on depth by >2 cm and agree with robot-off depth within 2.5 cm. Approximate visibility check, not object identification.",
+  "gripper_replay": "Recorded driver joints; passive spring/follower joints restored with mechanical coupling because their independent states are not stored.",
+  "exports": "Matched deterministic simulator re-renders; the original decoded recording is supplied separately.",
+  "changes_between_pair": "Only robot geometry visibility; pedestal retained. No physics step, object pose, light or camera change.",
+  "image_processing": "None: no generative model, inpainting, labels, markers, arrows or compositing."
+}

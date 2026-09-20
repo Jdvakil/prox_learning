@@ -131,6 +131,13 @@ def native_images():
                 'sensors/forearm_sensor_locations_2400.png',note=notes+' Red spheres indicate camera origins.')
     groups = m.geom_group.copy()
     for i in range(m.ngeom):
+        if '_skin' in m.body(m.geom_bodyid[i]).name:
+            m.geom_group[i] = 5
+    save_render(render(m,d), 'robot/fr3_no_skin_2400.png',
+                note='Canonical FR3 + Robotiq in the isolated-dermis pose; seven hybrid skin geoms hidden; white background; uniform black cosmetic base collar; no annotations.',
+                camera={'azimuth':135,'elevation':-16,'distance':1.35,'lookat':[.23,0,.43]})
+    m.geom_group[:] = groups
+    for i in range(m.ngeom):
         if '_skin' not in m.body(m.geom_bodyid[i]).name:
             m.geom_group[i] = 5
     save_render(render(m,d), 'skin/skin_shells_isolated_2400.png',

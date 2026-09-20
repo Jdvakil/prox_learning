@@ -1,0 +1,1211 @@
+{
+  "system_overview": [
+    {
+      "kind": "text",
+      "text": "RGB observations",
+      "x": 35,
+      "y": 48,
+      "w": 260,
+      "h": 36.358484903055405,
+      "size": 25.97034635932529,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "picture",
+      "path": "/home/jaydv/code/prox_learning/images/whole_body/kitchen_items/scene_with_robot.png",
+      "x": 35,
+      "y": 105,
+      "w": 260,
+      "h": 147
+    },
+    {
+      "kind": "text",
+      "text": "Global visual context",
+      "x": 30,
+      "y": 273,
+      "w": 270,
+      "h": 29.4,
+      "size": 21,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 350,
+      "y": 130,
+      "w": 255,
+      "h": 100,
+      "color": "2869AE",
+      "fill": "EFF5FC"
+    },
+    {
+      "kind": "text",
+      "text": "Visual encoder",
+      "x": 358,
+      "y": 161.8,
+      "w": 239,
+      "h": 36.4,
+      "size": 26,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 665,
+      "y": 130,
+      "w": 220,
+      "h": 100,
+      "color": "2869AE",
+      "fill": "EFF5FC"
+    },
+    {
+      "kind": "text",
+      "text": "Image tokens",
+      "x": 673,
+      "y": 161.8,
+      "w": 204,
+      "h": 36.4,
+      "size": 26,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          295,
+          180
+        ],
+        [
+          350,
+          180
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          605,
+          180
+        ],
+        [
+          665,
+          180
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "text",
+      "text": "Whole-body proximity",
+      "x": 20,
+      "y": 355,
+      "w": 290,
+      "h": 32.59911214051341,
+      "size": 23.285080100366724,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "picture",
+      "path": "/home/jaydv/code/prox_learning/images/whole_body/kitchen_items/link6_sensor_3/readout_8x8.png",
+      "x": 36,
+      "y": 420,
+      "w": 78,
+      "h": 78
+    },
+    {
+      "kind": "picture",
+      "path": "/home/jaydv/code/prox_learning/images/whole_body/kitchen_items/link5_back_sensor_4/readout_8x8.png",
+      "x": 126,
+      "y": 420,
+      "w": 78,
+      "h": 78
+    },
+    {
+      "kind": "picture",
+      "path": "/home/jaydv/code/prox_learning/images/whole_body/kitchen_items/link2_sensor_3/readout_8x8.png",
+      "x": 216,
+      "y": 420,
+      "w": 78,
+      "h": 78
+    },
+    {
+      "kind": "text",
+      "text": "40 sensors \u00d7 8 \u00d7 8 ranges",
+      "x": 20,
+      "y": 523,
+      "w": 290,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 350,
+      "y": 400,
+      "w": 255,
+      "h": 112,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "Temporal encoder",
+      "x": 358,
+      "y": 422.0,
+      "w": 239,
+      "h": 33.16502263521563,
+      "size": 23.689301882296878,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Shared across sensors",
+      "x": 358,
+      "y": 461.0,
+      "w": 239,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 665,
+      "y": 400,
+      "w": 220,
+      "h": 112,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "Sensor tokens",
+      "x": 673,
+      "y": 422.0,
+      "w": 204,
+      "h": 35.601048767697954,
+      "size": 25.429320548355683,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "One per sensor",
+      "x": 673,
+      "y": 461.0,
+      "w": 204,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          295,
+          456
+        ],
+        [
+          350,
+          456
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          605,
+          456
+        ],
+        [
+          665,
+          456
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 665,
+      "y": 612,
+      "w": 220,
+      "h": 90,
+      "color": "647080",
+      "fill": "F7F9FB"
+    },
+    {
+      "kind": "text",
+      "text": "Joint state",
+      "x": 673,
+      "y": 623.0,
+      "w": 204,
+      "h": 36.4,
+      "size": 26,
+      "color": "647080",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Arm + gripper",
+      "x": 673,
+      "y": 662.0,
+      "w": 204,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 1010,
+      "y": 205,
+      "w": 290,
+      "h": 307,
+      "color": "6A5192",
+      "fill": "F4F0F8"
+    },
+    {
+      "kind": "text",
+      "text": "PACT",
+      "x": 1018,
+      "y": 324.5,
+      "w": 274,
+      "h": 53.199999999999996,
+      "size": 38,
+      "color": "6A5192",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Multimodal transformer",
+      "x": 1018,
+      "y": 363.5,
+      "w": 274,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          885,
+          180
+        ],
+        [
+          947,
+          180
+        ],
+        [
+          947,
+          280
+        ],
+        [
+          1010,
+          280
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          885,
+          456
+        ],
+        [
+          947,
+          456
+        ],
+        [
+          947,
+          412
+        ],
+        [
+          1010,
+          412
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          885,
+          657
+        ],
+        [
+          975,
+          657
+        ],
+        [
+          975,
+          484
+        ],
+        [
+          1010,
+          484
+        ]
+      ],
+      "color": "647080",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1400,
+      "y": 299,
+      "w": 370,
+      "h": 118,
+      "color": "A86D22",
+      "fill": "FCF6EB"
+    },
+    {
+      "kind": "text",
+      "text": "Action chunk",
+      "x": 1408,
+      "y": 324.0,
+      "w": 354,
+      "h": 42.0,
+      "size": 30,
+      "color": "A86D22",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Arm + gripper commands",
+      "x": 1408,
+      "y": 363.0,
+      "w": 354,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1300,
+          358
+        ],
+        [
+          1400,
+          358
+        ]
+      ],
+      "color": "6A5192",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "text",
+      "text": "Execute, then query again",
+      "x": 1375,
+      "y": 455,
+      "w": 420,
+      "h": 30.799999999999997,
+      "size": 22,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Live RGB and proximity at each policy query",
+      "x": 32,
+      "y": 681,
+      "w": 570,
+      "h": 29.4,
+      "size": 21,
+      "color": "647080",
+      "bold": false,
+      "align": "left"
+    }
+  ],
+  "readout_architecture": [
+    {
+      "kind": "box",
+      "x": 30,
+      "y": 90,
+      "w": 230,
+      "h": 105,
+      "color": "2869AE",
+      "fill": "EFF5FC"
+    },
+    {
+      "kind": "text",
+      "text": "RGB camera(s)",
+      "x": 38,
+      "y": 108.5,
+      "w": 214,
+      "h": 35.80910788679787,
+      "size": 25.577934204855623,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "240 \u00d7 320 per view",
+      "x": 38,
+      "y": 147.5,
+      "w": 214,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 310,
+      "y": 90,
+      "w": 230,
+      "h": 105,
+      "color": "2869AE",
+      "fill": "EFF5FC"
+    },
+    {
+      "kind": "text",
+      "text": "ResNet-18",
+      "x": 318,
+      "y": 108.5,
+      "w": 214,
+      "h": 36.4,
+      "size": 26,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Shared visual backbone",
+      "x": 318,
+      "y": 147.5,
+      "w": 214,
+      "h": 25.080967952910395,
+      "size": 17.914977109221713,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 590,
+      "y": 90,
+      "w": 260,
+      "h": 105,
+      "color": "2869AE",
+      "fill": "EFF5FC"
+    },
+    {
+      "kind": "text",
+      "text": "Image tokens",
+      "x": 598,
+      "y": 108.5,
+      "w": 244,
+      "h": 36.4,
+      "size": 26,
+      "color": "2869AE",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "512-d + image positions",
+      "x": 598,
+      "y": 147.5,
+      "w": 244,
+      "h": 27.784711190188723,
+      "size": 19.846222278706232,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          260,
+          143
+        ],
+        [
+          310,
+          143
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          540,
+          143
+        ],
+        [
+          590,
+          143
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 30,
+      "y": 315,
+      "w": 230,
+      "h": 132,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "Range history",
+      "x": 38,
+      "y": 347.0,
+      "w": 214,
+      "h": 36.4,
+      "size": 26,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "8 \u00d7 40 \u00d7 8 \u00d7 8",
+      "x": 38,
+      "y": 386.0,
+      "w": 214,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Closeness: 5\u2013200 mm",
+      "x": 25,
+      "y": 465,
+      "w": 240,
+      "h": 25.2,
+      "size": 18,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 310,
+      "y": 290,
+      "w": 255,
+      "h": 180,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "Shared encoder",
+      "x": 318,
+      "y": 346.0,
+      "w": 239,
+      "h": 35.0,
+      "size": 25,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "CNN + temporal transformer",
+      "x": 318,
+      "y": 385.0,
+      "w": 239,
+      "h": 23.16071814838849,
+      "size": 16.54337010599178,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Repeat each of 8 frames \u00d74",
+      "x": 310,
+      "y": 485,
+      "w": 255,
+      "h": 25.2,
+      "size": 18,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 615,
+      "y": 320,
+      "w": 230,
+      "h": 125,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "40 readouts",
+      "x": 623,
+      "y": 348.5,
+      "w": 214,
+      "h": 36.4,
+      "size": 26,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "128-d CLS per sensor",
+      "x": 623,
+      "y": 387.5,
+      "w": 214,
+      "h": 27.93676695563488,
+      "size": 19.9548335397392,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "box",
+      "x": 890,
+      "y": 315,
+      "w": 250,
+      "h": 132,
+      "color": "087F79",
+      "fill": "EAF6F3"
+    },
+    {
+      "kind": "text",
+      "text": "Projection",
+      "x": 898,
+      "y": 347.0,
+      "w": 234,
+      "h": 33.599999999999994,
+      "size": 24,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "512-d + sensor identity",
+      "x": 898,
+      "y": 386.0,
+      "w": 234,
+      "h": 27.698526983288193,
+      "size": 19.78466213092014,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          260,
+          381
+        ],
+        [
+          310,
+          381
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          565,
+          381
+        ],
+        [
+          615,
+          381
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          845,
+          381
+        ],
+        [
+          890,
+          381
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1190,
+      "y": 185,
+      "w": 225,
+      "h": 288,
+      "color": "6A5192",
+      "fill": "F4F0F8"
+    },
+    {
+      "kind": "text",
+      "text": "ACT encoder",
+      "x": 1198,
+      "y": 295.0,
+      "w": 209,
+      "h": 36.4,
+      "size": 26,
+      "color": "6A5192",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "4 layers \u00b7 512-d",
+      "x": 1198,
+      "y": 334.0,
+      "w": 209,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          850,
+          143
+        ],
+        [
+          1148,
+          143
+        ],
+        [
+          1148,
+          240
+        ],
+        [
+          1190,
+          240
+        ]
+      ],
+      "color": "2869AE",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1140,
+          381
+        ],
+        [
+          1190,
+          381
+        ]
+      ],
+      "color": "087F79",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1480,
+      "y": 220,
+      "w": 220,
+      "h": 210,
+      "color": "6A5192",
+      "fill": "F4F0F8"
+    },
+    {
+      "kind": "text",
+      "text": "ACT decoder",
+      "x": 1488,
+      "y": 291.0,
+      "w": 204,
+      "h": 36.4,
+      "size": 26,
+      "color": "6A5192",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "7 layers",
+      "x": 1488,
+      "y": 330.0,
+      "w": 204,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1415,
+          330
+        ],
+        [
+          1480,
+          330
+        ]
+      ],
+      "color": "6A5192",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1465,
+      "y": 64,
+      "w": 250,
+      "h": 102,
+      "color": "6A5192",
+      "fill": "F4F0F8"
+    },
+    {
+      "kind": "text",
+      "text": "50 queries",
+      "x": 1473,
+      "y": 81.0,
+      "w": 234,
+      "h": 35.0,
+      "size": 25,
+      "color": "6A5192",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Learned action positions",
+      "x": 1473,
+      "y": 120.0,
+      "w": 234,
+      "h": 26.758215812647563,
+      "size": 19.11301129474826,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1590,
+          166
+        ],
+        [
+          1590,
+          220
+        ]
+      ],
+      "color": "6A5192",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1470,
+      "y": 505,
+      "w": 245,
+      "h": 102,
+      "color": "A86D22",
+      "fill": "FCF6EB"
+    },
+    {
+      "kind": "text",
+      "text": "Action chunk",
+      "x": 1478,
+      "y": 522.0,
+      "w": 229,
+      "h": 36.4,
+      "size": 26,
+      "color": "A86D22",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "50 \u00d7 8 commands",
+      "x": 1478,
+      "y": 561.0,
+      "w": 229,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1590,
+          430
+        ],
+        [
+          1590,
+          505
+        ]
+      ],
+      "color": "6A5192",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 890,
+      "y": 520,
+      "w": 250,
+      "h": 100,
+      "color": "647080",
+      "fill": "F7F9FB"
+    },
+    {
+      "kind": "text",
+      "text": "Joint state",
+      "x": 898,
+      "y": 536.0,
+      "w": 234,
+      "h": 36.4,
+      "size": 26,
+      "color": "647080",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "9-d \u2192 512-d token",
+      "x": 898,
+      "y": 575.0,
+      "w": 234,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1140,
+          570
+        ],
+        [
+          1170,
+          570
+        ],
+        [
+          1170,
+          438
+        ],
+        [
+          1190,
+          438
+        ]
+      ],
+      "color": "647080",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 1190,
+      "y": 530,
+      "w": 225,
+      "h": 100,
+      "color": "647080",
+      "fill": "F7F9FB"
+    },
+    {
+      "kind": "text",
+      "text": "z = 0",
+      "x": 1198,
+      "y": 546.0,
+      "w": 209,
+      "h": 35.0,
+      "size": 25,
+      "color": "647080",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Latent token at inference",
+      "x": 1198,
+      "y": 585.0,
+      "w": 209,
+      "h": 23.14615907545887,
+      "size": 16.532970768184907,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          1303,
+          530
+        ],
+        [
+          1303,
+          473
+        ]
+      ],
+      "color": "647080",
+      "dashed": false,
+      "arrow": true
+    },
+    {
+      "kind": "box",
+      "x": 300,
+      "y": 588,
+      "w": 485,
+      "h": 94,
+      "color": "087F79",
+      "fill": "F7FAF9"
+    },
+    {
+      "kind": "text",
+      "text": "Geometry pretraining",
+      "x": 308,
+      "y": 601.0,
+      "w": 469,
+      "h": 33.599999999999994,
+      "size": 24,
+      "color": "087F79",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "XYZ \u00b7 validity \u00b7 depth \u00b7 future",
+      "x": 308,
+      "y": 640.0,
+      "w": 469,
+      "h": 28.0,
+      "size": 20,
+      "color": "647080",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "line",
+      "points": [
+        [
+          300,
+          635
+        ],
+        [
+          285,
+          635
+        ],
+        [
+          285,
+          425
+        ],
+        [
+          310,
+          425
+        ]
+      ],
+      "color": "087F79",
+      "dashed": true,
+      "arrow": true
+    },
+    {
+      "kind": "text",
+      "text": "Initialize shared encoder",
+      "x": 300,
+      "y": 537,
+      "w": 320,
+      "h": 25.2,
+      "size": 18,
+      "color": "087F79",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "Inference path shown. History sampling and camera selection depend on the run.",
+      "x": 30,
+      "y": 718,
+      "w": 1550,
+      "h": 26.599999999999998,
+      "size": 19,
+      "color": "647080",
+      "bold": false,
+      "align": "left"
+    }
+  ]
+}

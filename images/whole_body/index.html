@@ -1,0 +1,45 @@
+<!doctype html><meta charset="utf-8"><title>Whole-body sensing examples</title>
+<style>body{font:17px Arial;max-width:1400px;margin:35px auto;line-height:1.5}img{width:100%}section{margin:60px 0}a{color:#1468b3}</style>
+<h1>Whole-body sensing: figure assets</h1><p id="editable-layouts"><a href="whole_body_canva.pptx">Editable Canva PPTX</a> · <a href="first_page_kitchen_items.png">Kitchen figure</a> · <a href="first_page_cabinet_cavity.png">Cabinet figure</a> · <a href="first_page_fumehood_clutter.png">Fume-hood figure</a> · <a href="whole_body_figure_assets.zip">Download all images</a></p><p>Original simulation scene geometry and native sensor depth. These images illustrate coverage around the arm; they do not measure policy improvement. Every PNG is text-free; 8×8 panels have black borders. RGB is a diagnostic sensor viewpoint.</p>
+<section><h2>Cabinet Cavity</h2>
+<p>Fresh sample from the existing experiment scene/config, seed 2026; not a recorded rollout.</p>
+<a href="cabinet_cavity/scene_with_robot.png"><img src="cabinet_cavity/scene_with_robot.png"></a>
+<p><a href="cabinet_cavity/scene_without_robot.png">Without robot</a> · <a href="cabinet_cavity/wrist_rgb.png">Wrist view</a> · <a href="cabinet_cavity/all_40_sensor_grids.png">All 40 sensor grids</a></p>
+<h3>link6_sensor_4: RGB / depth / 8×8</h3>
+<img src="cabinet_cavity/link6_sensor_4/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: cabinet: 25. See manifest for surface IDs and depth values.</p>
+<h3>link5_back_sensor_4: RGB / depth / 8×8</h3>
+<img src="cabinet_cavity/link5_back_sensor_4/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: cabinet: 64. See manifest for surface IDs and depth values.</p>
+<h3>link1_sensor_3: RGB / depth / 8×8</h3>
+<img src="cabinet_cavity/link1_sensor_3/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: cabinet: 48. See manifest for surface IDs and depth values.</p>
+</section>
+<section><h2>Fumehood Clutter</h2>
+<p>Original v1011d recorded scene geometry; link 6 lowered 8 cm. Fresh simulation readings at this pose.</p>
+<a href="fumehood_clutter/scene_with_robot.png"><img src="fumehood_clutter/scene_with_robot.png"></a>
+<p><a href="fumehood_clutter/scene_without_robot.png">Without robot</a> · <a href="fumehood_clutter/wrist_rgb.png">Wrist view</a> · <a href="fumehood_clutter/all_40_sensor_grids.png">All 40 sensor grids</a></p>
+<h3>link6_sensor_4: RGB / depth / 8×8</h3>
+<img src="fumehood_clutter/link6_sensor_4/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: pact_clutter_01/pact_primitive_cylinder_01: 36. See manifest for surface IDs and depth values.</p>
+<h3>link6_sensor_3: RGB / depth / 8×8</h3>
+<img src="fumehood_clutter/link6_sensor_3/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: hood_side_l: 17; pact_clutter_09/pact_primitive_box_09: 6; pact_clutter_08/pact_primitive_cylinder_08: 4. See manifest for surface IDs and depth values.</p>
+<h3>link5_back_sensor_4: RGB / depth / 8×8</h3>
+<img src="fumehood_clutter/link5_back_sensor_4/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: jamb_l: 9; bench_top: 6; bench_body: 1; place_receptacle: 4; place_receptacle_lips: 6. See manifest for surface IDs and depth values.</p>
+</section>
+<section><h2>Kitchen Items</h2>
+<p>Original recorded scene reconstructed with its existing kitchen overlay. Link 6 lowered 16 cm to expose bottles in sensor 3. All displayed readings recomputed; source recorded arrays saved separately.</p>
+<a href="kitchen_items/scene_with_robot.png"><img src="kitchen_items/scene_with_robot.png"></a>
+<p><a href="kitchen_items/scene_without_robot.png">Without robot</a> · <a href="kitchen_items/wrist_rgb.png">Wrist view</a> · <a href="kitchen_items/all_40_sensor_grids.png">All 40 sensor grids</a></p>
+<h3>link6_sensor_3: RGB / depth / 8×8</h3>
+<img src="kitchen_items/link6_sensor_3/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: pact_clutter_06/Soap_Bottle_11_soap_bottle_11: 11; cavity_obj_0/Cup_10_cup_10: 4; pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2_SaltShaker.002: 2; pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1_wine_bottle_1: 2; pact_clutter_04/Plate_22_plate_22: 2; bench_top: 2; pact_clutter_03/Plate_10_plate_10: 1. See manifest for surface IDs and depth values.</p>
+<h3>link5_back_sensor_4: RGB / depth / 8×8</h3>
+<img src="kitchen_items/link5_back_sensor_4/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: bench_top: 16; bench_body: 9; hood_side_l: 2; jamb_l: 2; place_receptacle: 11; place_receptacle_lips: 15; place_pedestal: 1. See manifest for surface IDs and depth values.</p>
+<h3>link2_sensor_3: RGB / depth / 8×8</h3>
+<img src="kitchen_items/link2_sensor_3/rgb_depth_8x8.png">
+<p>Nearby ray hits outside wrist FOV: place_receptacle_lips: 28; jamb_l: 4; hood_side_l: 9; place_receptacle: 6. See manifest for surface IDs and depth values.</p>
+</section>

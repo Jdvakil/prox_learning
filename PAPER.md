@@ -6,7 +6,8 @@ Writing reference for the paper. Main text (§1–§9) is the storyline in reada
 number is on this disk and carries an experiment-set tag in its table caption (Appendix A
 defines the tags). Appendices B–F hold exact configuration, statistics, figure provenance,
 glossary and proposed studies. Revised 2026-09-13 against `reports/paper_narrative_review.txt`
-and the author's narrative note.
+and the author's narrative note. 2026-09-20: T-1011d three-arm set added (§5.1, §5.5, §6, §7.5,
+App. A / C / F), with rollout-reproducibility and record-hygiene notes.
 
 Main model **PACT-readout**. Design comparison **PACT-raw**. Baseline **ACT**.
 
@@ -43,7 +44,10 @@ the two.
    pick-and-place through a fume-hood aperture with a wall-coloured bar entering from the side,
    PACT-readout cut hazard contact by 22 percentage points relative to ACT in two independent
    evaluation sets (34 % → 12 %; 40 % → 18 %; paired McNemar p = 0.00098 in the matched set) while
-   placing the cup at least as often (28 % → 40 %; 30 % → 42 %) (sets H-A, H-B).
+   placing the cup at least as often (28 % → 40 %; 30 % → 42 %) (sets H-A, H-B). On a
+   randomised-clutter variant with two cameras the same direction holds with placement flat
+   (hazard contact ACT 36 %, readout 20 %, raw 6 %; placement 26 / 26 / 24 %; set T-1011d, easy
+   clutter scale) — and there raw, not readout, has the fewest contacts (§7.5).
 4. *Proximity is a clearance sense, not a task sense.* On a spaced-bench variant with two
    cameras, the skin arms did not improve — and lost — task completion while contact rates
    stayed flat (set T-107). The benefit is collision avoidance, bounded by task; it is not a
@@ -255,6 +259,24 @@ position and yaw. Observation: wrist RGB (624×352 → 240×320), 9 joint values
 (min over four sub-frames). Action: 7 joint targets + binary gripper. The expert's oracle
 geometry is not an input; the policy must learn clearance from sensors.
 
+**Randomised-clutter variant (T-1011d; dataset `pact_pick_n_place_v2/v1011d`).** Same
+pick-and-place through the aperture with the side-entering bar, plus bench clutter whose
+positions are redrawn every episode. Six clutter bodies: two vessels (slots 01, 06), two plates
+(slots 03, 04) and two objects on a ring around the cup (slots 08, 09; 22 cm radius, ±65°).
+Palette, shapes and heights are fixed; only centres move. Vessel 01 is drawn from a 9 × 11 cm
+box, vessel 06 from 5.5 × 10 cm, each plate from 32 × 64 cm. Every draw is rejection-sampled
+(up to 96 candidates): it must stay inside the bench shell, clear every placed body and the
+cup, and — for slot 01, which sits on the route — keep both registered route predicates true,
+so a collision-free path always exists. Episodes cycle a fixed grid of 24 cells = 4 clutter
+layout families (target-side, inner-panel, outer-panel, aperture-side stagger) × 2 bar sides ×
+3 frozen robot-mount poses (`neg5`, `center`, `pos5`); the seed draws the layout inside the
+cell. 200 scripted demonstrations (100 left / 100 right, ≤ 559 steps), two policy cameras
+(`exo_camera_1` + `wrist_camera`), same 40-sensor skin, same observation and action spaces as
+the hallway. Same three arms, same recipe (§5.3), seed 0. Evaluation can shrink the clutter
+boxes toward their nominal seats (`--clutter_xy_scale`; 1 = training distribution, 0.25 = the
+"easy" setting used for the three-arm table in §7.5). Easy is a narrower distribution than the
+demonstrations were drawn from, not a different task.
+
 ### 5.2 The geometry encoder (why each part exists)
 
 *Purpose:* turn each sensor's recent depth grids into one feature the policy can attend to,
@@ -323,6 +345,27 @@ snapped at the midpoint. Cameras and the forty skin renders are produced only at
 skin is one sub-frame; training data a minimum over four. Both are protocol facts for Methods.
 The evaluated policy re-observes every 3.3 s; it is not a reflex.
 
+**T-1011d removes the history mismatch.** `eval_act_v1011d.py --history consecutive` renders
+the skin on the eight *consecutive* control steps that end at each query (0.462 s, the training
+window), recorded as `history_mode: consecutive_prefetch_8`. With horizon 1050 and chunk 50 that
+is 21 queries and 169 skin observations per readout episode (22 for raw, which uses the current
+observation only; 0 for ACT). Still one sub-frame per step (`--skin_substeps snapshot`), still
+open-loop 50-step chunks, z = 0, no temporal aggregation.
+
+**Evaluator cost, and what was removed.** A PACT episode on this evaluator took ≈ 1370 s against
+≈ 115 s for ACT. A profile showed the skin renders were not the cost. Two simulator chores that
+exist only when the forty skin cameras are registered were: (a) a dataset-annotation sensor that
+segmentation-renders every task object through every camera on every control step (126 renders
+per step), and (b) a camera-registry pose refresh of all forty skin cameras after each of the 33
+physics substeps per control step (≈ 1.4 M per episode). Neither output is read by the policy,
+the encoder, the success judge or the contact audit; skin depth is rendered from the simulator
+camera by name, not from the registry pose. An evaluation-side patch drops (a) and computes (b)
+only on read (`scripts/pact_eval_lazy_cameras.py`; `--eager_cameras --keep_export_sensors`
+restores the original). Policy cameras keep the original per-substep update. Measured episodes now take
+92–99 s (failed placements) and 420–770 s (successful ones; cause of the gap not profiled). The T-1011d table in §7.5
+was produced on the **original** path; the patch is for iteration speed and changes no protocol
+field. It is not yet ported to the hallway or T-107 evaluators.
+
 ---
 
 ## 6. Evaluation protocol
@@ -330,14 +373,15 @@ The evaluated policy re-observes every 3.3 s; it is not a reflex.
 Frozen scripts write checkpoint, encoder and script hashes, simulator commit, sampler, scene,
 seeds and protocol block into every `eval_summary.json`.
 
-| | H-A (historical random-house) | H-B (frozen evaluator, house 1) | H-C | T-107 (spaced bench) |
-|---|---|---|---|---|
-| checkpoints | Aug 25–29, one seed | Sep 10 retrain; ACT seed 1, PACT seed 0 | H-A readout ckpt | Sep 11, seed 0 |
-| evaluator | legacy `eval_act_place_corridor.py` | `eval_act.py` | `eval_act.py` | `eval_act_v107spaced.py` |
-| rollouts | 50 | 50, seeds 2026–2075, sides matched across arms | 50, same seeds | 50, seeds 2026–2075 |
-| scene | random house | house 1 | house 1 | 24 condition indices cycled |
-| horizon / chunk | 800 / 50 | 800 / 50 | 800 / 50 | 1050 / 50 |
-| cameras | wrist | wrist | wrist | table + wrist |
+| | H-A (historical random-house) | H-B (frozen evaluator, house 1) | H-C | T-107 (spaced bench) | T-1011d (randomised clutter) |
+|---|---|---|---|---|---|
+| checkpoints | Aug 25–29, one seed | Sep 10 retrain; ACT seed 1, PACT seed 0 | H-A readout ckpt | Sep 11, seed 0 | Sep 2026, seed 0, all three arms |
+| evaluator | legacy `eval_act_place_corridor.py` | `eval_act.py` | `eval_act.py` | `eval_act_v107spaced.py` | `eval_act_v1011d.py` |
+| rollouts | 50 | 50, seeds 2026–2075, sides matched across arms | 50, same seeds | 50, seeds 2026–2075 | 50, seeds 0–49, same seeds and cells across arms |
+| scene | random house | house 1 | house 1 | 24 condition indices cycled | 24 cells cycled (`i % 24`); clutter scale 0.25 |
+| horizon / chunk | 800 / 50 | 800 / 50 | 800 / 50 | 1050 / 50 | 1050 / 50 |
+| cameras | wrist | wrist | wrist | table + wrist | exo + wrist |
+| skin history at eval | not recorded in the JSON | 8 query-spaced | 8 query-spaced | 8 query-spaced | 8 consecutive (train-matched) |
 
 **Metrics, separated on purpose.** *Placement* (task completion): at the final step the cup rests
 on the tray (≥ 50 % weight supported, or a cached resting pose within 5 mm / 10°), the robot is
@@ -352,6 +396,25 @@ other contacts in the PACT arms; one ACT episode), so it is not an independent c
 exact McNemar test on discordant episodes, with unpaired Fisher alongside. H-A rows are not
 scenario-matched (sides differ in 24 of 50), so Fisher only. Rollout uncertainty at n = 50 is
 distinct from variation over training seeds, which is not measured.
+
+**Reproducibility of a rollout (measured on T-1011d, 2026-09-18).** The evaluator is seeded but
+not bit-reproducible. Same code, same seed, alone on the GPU: the first RGB frame differs by one
+grey level in a handful of pixels (GPU rasterisation), and open-loop 50-step chunks amplify it.
+Three runs of the same 24 readout episodes (the original run and two repeats) gave placement
+5 / 4 / 2, hazard contact 6 / 6 / 6, contact-free 11 / 11 / 11; per-episode contact-frame
+*counts* drift ≈ 1 %. So hazard contact and contact-free are stable under rerun at this n;
+placement carries about ± 3 episodes of rerun noise on top of binomial uncertainty. Two rules
+follow. (1) An episode also depends on what the process ran before it (seed 8 run alone ≠ seed 8
+as the ninth episode), so every n = 50 set is one uninterrupted process into a fresh output
+directory — no sharding, no resume. (2) Paired tests treat "same seed" as "same initial scene",
+which holds; they do not make the two rollouts noise-free.
+
+**Record hygiene (T-1011d).** Each of the three T-1011d output directories holds 52 records: the
+50 of the n = 50 run (`seed == episode_idx`, 0–49) plus two left by an earlier 2-episode
+default-argument run (`episode_idx` 0 / 1 with seeds 2026 / 2027; both failed and hit the bar in
+every arm). The evaluator's resume path loaded them into the metric list, so the
+`eval_summary.json` and W&B rates in those directories are over 52. All T-1011d numbers in this
+document are recomputed from `episodes.jsonl` over the 50 records with `seed == episode_idx`.
 
 ---
 
@@ -452,6 +515,12 @@ comparison ranks two complete front ends and does not attribute the gap to joint
 any single component. What it does show: measured range alone is not reliably enough; the
 representation matters.
 
+**Counter-evidence (T-1011d, §7.5).** On randomised clutter the order flips: raw 3/50 hazard
+contacts, readout 10/50 (paired 1 vs 8, p = 0.039), both below ACT's 18/50. Over the four
+three-arm sets: readout is below ACT on hazard contact in H-A, H-B and T-1011d; raw is below
+ACT in H-B and T-1011d but not H-A; T-107 is flat for both (8 / 9 / 6). Which front end is
+better is task dependent and not settled by these runs.
+
 ### 7.4 Task dependence: proximity is a clearance sense, not a task sense (T-107)
 
 **Setup.** A spaced-bench variant of the corridor task (`pact_place_corridor_v107_spaced`;
@@ -478,7 +547,44 @@ is not proof that proximity is useful *only* for avoidance.
 
 **Evidence.** `reports/eval_summaries/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
 
-### 7.5 What "live at inference" does and does not yet mean
+### 7.5 Randomised clutter: contact drops again, placement does not move (T-1011d)
+
+**Setup.** §5.1 randomised-clutter task; three arms, one seed each, exo + wrist cameras, easy
+clutter scale 0.25, train-matched consecutive skin history, seeds 0–49 identical across arms,
+n = 50, original (unpatched) evaluator path. Counts over the 50 records with
+`seed == episode_idx` (§6, record hygiene).
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 13/50 (26 %) | 13 | 18/50 (36 %) | 15/50 (30 %) | 9/50 | 26 | 15 |
+| PACT-raw | 12/50 (24 %) | 12 | **3/50 (6 %)** | 26/50 (52 %) | 11/50 | 24 | 1 |
+| PACT-readout | 13/50 (26 %) | 14 | 10/50 (20 %) | 22/50 (44 %) | 11/50 | 26 | 0 |
+
+Paired exact McNemar on matched seeds (discordant episodes, first arm only vs second arm only):
+
+| comparison | hazard contact | contact-free | placement |
+|---|---|---|---|
+| ACT vs PACT-readout | 8 vs 0, p = 0.0078 | 2 vs 9, p = 0.065 | 8 vs 8, p = 1.0 |
+| ACT vs PACT-raw | 15 vs 0, p = 0.0001 | 3 vs 14, p = 0.013 | 6 vs 5, p = 1.0 |
+| PACT-raw vs PACT-readout | 1 vs 8, p = 0.039 | 8 vs 4, p = 0.39 | 5 vs 6, p = 1.0 |
+
+**Interpretation.** Both proximity arms hit the bar less often than ACT, and in no episode did
+a proximity arm hit the bar where ACT did not. Placement is identical within noise (13 / 12 / 13).
+This is the hallway pattern — fewer hazard contacts, no placement cost — in a second task family
+with two cameras, and unlike T-107 the skin arms do not lose the task. Two things cut against
+the simple story and must be written as they are. (1) **PACT-raw, not readout, has the fewest
+bar hits here** (3 vs 10, p = 0.039), the reverse of H-A and H-B; the "learned representation
+beats measured range" ordering is not general. (2) Clutter contact is unchanged across arms
+(24–26 of 50): the skin arms avoid the bar and the hood structure (other-environment contact
+15 → 1 → 0) but not the small bench objects. Scope: easy clutter scale only; one training seed;
+three-arm full randomisation (scale 1) is not run (PACT-raw alone, older checkpoint: 7/50
+placement, 10/50 hazard contact, 20/50 contact-free).
+
+**Evidence.** `eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/episodes.jsonl`
+(filter `seed == episode_idx`; do not read `eval_summary.json` there). Rerun noise:
+`eval_output/_ab_lazy24_{a,b}/`.
+
+### 7.6 What "live at inference" does and does not yet mean
 
 The saved runs establish that PACT-readout receives proximity observations at every query and
 that a policy trained with them makes less contact. They do not isolate how much of the benefit
@@ -504,8 +610,15 @@ differences are within rollout uncertainty.
 
 **Deployment fidelity.** Evaluation skin history is query-spaced (23.1 s) while training windows
 are consecutive (0.462 s); evaluation skin is one sub-frame while training data is a
-four-sub-frame minimum. The policy re-observes every 3.3 s. Rendering cost (about 15 min per
-PACT episode) bounded the number of seeds and sets.
+four-sub-frame minimum (T-1011d uses train-matched consecutive history; the sub-frame gap
+remains). The policy re-observes every 3.3 s. Evaluation cost (about 15–23 min per PACT episode)
+bounded the number of seeds and sets; on T-1011d that cost was traced to unread simulator
+bookkeeping, not skin rendering, and removed (§5.5), after the reported runs.
+
+**Rollout reproducibility.** Rollouts are seeded but not bit-reproducible (GPU rasterisation
+noise amplified by open-loop chunks). Rerunning 24 episodes moved placement by up to 3 and did
+not move hazard contact or contact-free (§6). Episodes also depend on process history, so sets
+are single uninterrupted runs. T-1011d is evaluated at the easy clutter scale only.
 
 ---
 
@@ -532,7 +645,8 @@ avoidance depends on the readings it receives at the moment of acting.
 | H-B | hallway, Sep 10 retrain, three arms, house 1, seeds 2026–2075, n = 50 | frozen `eval_act.py` | complete for ACT s1, raw s0, readout s0; ACT s0 n = 2 only; raw s1 and readout s1 checkpoints trained, evaluation dirs empty | `reports/eval_summaries/pact_place_corridor_v5_*.json` |
 | H-C | H-A readout checkpoint on the frozen evaluator, house 1, n = 50 | frozen `eval_act.py` | complete | `reports/eval_summaries/simple_hallway_n50.json` |
 | T-107 | spaced bench, three arms, table + wrist, n = 50 | `eval_act_v107spaced.py`, horizon 1050 | complete | `reports/eval_summaries/pact_place_corridor_v107_spaced_*.json` |
-| T-1011d | randomised clutter, exo + wrist, PACT-raw only | `eval_act_v1011d.py`, horizon 1050 | full randomise 7/10/20 (placement / hazard / contact-free), ever 10; easy (`--clutter_xy_scale 0.25`, eval-time shrink) 14/3/22; wrist-only 4/50 completed, 0/4 placed | `reports/eval_summaries/simple_v1011d_*.json`; `eval_output/simple_v1011d_wrist_only_n50/` |
+| T-1011d | randomised clutter, exo + wrist, **three arms**, seed 0, easy scale 0.25, seeds 0–49, consecutive history, n = 50 | `eval_act_v1011d.py`, horizon 1050, original path | complete 2026-09-17: ACT 13/18/15, raw 12/3/26, readout 13/10/22 (placement / hazard / contact-free); count `seed == episode_idx` records only (dirs hold 52) | `eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/episodes.jsonl` |
+| T-1011d-old | same task, PACT-raw only, Sep 3 checkpoint | `eval_act_v1011d.py`, horizon 1050 | full randomise 7/10/20, ever 10; easy 0.25 14/3/22; wrist-only 4/50 completed, 0/4 placed | `reports/eval_summaries/simple_v1011d_*.json`; `eval_output/simple_v1011d_wrist_only_n50/` |
 | T-OOD | v1011d checkpoint on the four-object sampler (wrong clutter family) | historical | 0/48 at horizon 800 and 1050; `v1011d_speedcheck_n50` 0/50 with ray-based proximity | `reports/eval_summaries/pact_pick_n_place_v2_v1011d_raw_s0_n48_horizon*.json`; `eval_output/v1011d_speedcheck_n50/` |
 | T-1010 / T-1011c | v1010 (215 demos; 6 checkpoints) and v10_11c_100 (99 demos; 3 checkpoints) | evaluation scripts not wired | checkpoints only | `submodules/act/ckpts/pact_place_corridor_{v1010,v10_11c_100}/` |
 | O-INV | archived camera-hidden fume-hood study, three arms × three conditions, n = 50 | archived evaluator, any-contact metric | JSONs only; data and checkpoints deleted 2026-08-24 | `reports/eval_summaries/{vanilla,pact_raw,pact_trunk}_v2_*.json` |
@@ -610,6 +724,12 @@ placement_descent, retreat.
 - Exact McNemar (binomial on discordant pairs) for H-B, where seeds and intrusion sides match
   across arms. ACT vs readout: 11 vs 0, p = 0.00098. ACT vs raw: 8 vs 1, p = 0.039. Raw vs
   readout: 6 vs 2, p = 0.29.
+- Exact McNemar for T-1011d (seeds 0–49 and cells match across arms), hazard contact: ACT vs
+  readout 8 vs 0, p = 0.0078; ACT vs raw 15 vs 0, p = 0.0001; raw vs readout 1 vs 8, p = 0.039.
+  Contact-free: 2 vs 9 (p = 0.065), 3 vs 14 (p = 0.013), 8 vs 4 (p = 0.39). Placement: 8 vs 8,
+  6 vs 5, 5 vs 6 (all p = 1.0). Unpaired Fisher on hazard contact: 0.118, 0.0004, 0.071.
+- Rerun noise floor (T-1011d readout, 24 episodes × 3 runs): placement 5 / 4 / 2, hazard contact
+  6 / 6 / 6, contact-free 11 / 11 / 11.
 - 95 % Wilson intervals for H-A in `images/results/plot_data.json`.
 - Primary comparison: hazard contact, readout vs ACT, in each hallway set. Placement and the
   raw comparisons are secondary; multiple comparisons are not corrected.
@@ -621,7 +741,7 @@ All under `images/` with provenance in `images/manifest.json`.
 | use | file |
 |---|---|
 | Figure 1 teaser (scripted v1011d demo frame) | `images/first_page/first_page{,_labelled,_no_text}.{png,pdf,svg}`; notes `images/first_page/figure_notes.txt` |
-| robot renders | `images/robot/fr3_{side,three_quarter,opposite}_2400.png` |
+| robot renders | `images/robot/fr3_{side,three_quarter,opposite,no_skin}_2400.png` |
 | sensor placement, single-sensor cone | `images/sensors/{sensor_locations,forearm_sensor_locations,single_sensor_field_of_view}_2400.png` |
 | skin shells | `images/skin/{skin_shells_isolated,forearm_skin_detail}_2400.png` |
 | hallway scene | `images/environments/hallway_scene_2400.png`, `hallway_views.png` |
@@ -676,5 +796,6 @@ occluded frame does not show that the policy never observed the hazard.
 | hallway PACT-raw s1, PACT-readout s1 n = 50 | H-B | second training seed | checkpoints trained; evaluation dirs empty |
 | hallway readout `--history consecutive` n = 50 | H-B | remove the history mismatch | not run |
 | v1010 (3 arms × 2 seeds), v1011c (3 arms) | T-1010 / T-1011c | further task families | checkpoints only; evaluators unwired |
-| v1011d ACT and readout, full randomise | T-1011d | turn the raw-only table into a comparison | not trained; launcher `scripts/exp/train_v1011d.sh` |
+| v1011d three arms, full randomise (`--clutter_xy_scale 1`) n = 50 | T-1011d | the easy-scale table is optimistic vs the training distribution | checkpoints trained; not run. ≈ 2 h per PACT arm on the fast path |
+| v1011d three arms, easy scale, fast-path repeat n = 50 | T-1011d | rerun noise at full n; confirms the fast path on paper seeds | not run |
 | v1011d wrist-only n = 50 | T-1011d | wrist-only ablation | 4/50 completed |

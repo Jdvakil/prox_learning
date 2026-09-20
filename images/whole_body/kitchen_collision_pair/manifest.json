@@ -1,0 +1,215 @@
+{
+  "type": "Constructed, contact-checked MuJoCo pose illustrations; not recorded policy outcomes.",
+  "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+  "source_frame": 0,
+  "scene_xml": "/home/jaydv/code/prox_learning/custom_scenes/pact_place_corridor_v12.xml",
+  "source_figure": "images/whole_body/first_page_kitchen_items.png",
+  "source_provenance": {
+    "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+    "source_frame": 0,
+    "adjusted_simulation_pose": {
+      "vertical_shift_m": -0.16,
+      "original_arm_qpos": [
+        -0.010201739147305489,
+        -0.824212372303009,
+        -0.051338061690330505,
+        -2.3212363719940186,
+        -0.12462368607521057,
+        1.4556080102920532,
+        0.09182917326688766
+      ],
+      "adjusted_arm_qpos": [
+        -0.07034216707476035,
+        -0.8725987984262761,
+        -0.03122707105280448,
+        -2.759301964316884,
+        -0.11630600230474601,
+        1.846227879988365,
+        0.09182917326688766
+      ]
+    },
+    "kitchen_auxiliary_geometry": {
+      "provenance": "Reconstructed with the existing v12 kitchen-placement routine; these auxiliary poses are absent from frozen_config.",
+      "placed_bodies": [
+        "pact_preview_extra_Bottle_1/Bottle_1",
+        "pact_preview_extra_Soap_Bottle_1/Soap_Bottle_1",
+        "pact_preview_extra_Wine_Bottle_1/Wine_Bottle_1",
+        "pact_preview_extra_Paper_Towel_1/Paper_Towel_1",
+        "pact_preview_extra_Soap_Bottle_3/Soap_Bottle_3",
+        "pact_preview_extra_Salt_Shaker_2/Salt_Shaker_2",
+        "pact_preview_extra_Pepper_Shaker_2/Pepper_Shaker_2"
+      ]
+    },
+    "note": "Original recorded scene reconstructed with its existing kitchen overlay. Link 6 lowered 16 cm to expose bottles in sensor 3. All displayed readings recomputed; source recorded arrays saved separately.",
+    "initial_scene_rgb_check": {
+      "comparison": "Source video frame0 versus reconstructed initial scene, before lowering the arm",
+      "mean_absolute_rgb_error_0_255": 1.883556114024864,
+      "fraction_pixels_max_channel_error_under_10": 0.9700520833333334
+    }
+  },
+  "camera_pose_cv": [
+    [
+      0.13819064525137842,
+      -0.4446184139847414,
+      0.8849959386972919,
+      -0.95622038216375
+    ],
+    [
+      -0.9904056469775442,
+      -0.062037313404564025,
+      0.12348289833226388,
+      -0.32120630046066895
+    ],
+    [
+      0.0,
+      -0.8935691566360363,
+      -0.44892556432972597,
+      1.649999952316284
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "crop_pixels": [
+    380,
+    0,
+    2115,
+    1408
+  ],
+  "method": "Original scene restored; link6 sensor4 translated with IK preserving orientation. No physics steps, image generation, object changes, highlights or text overlays.",
+  "interpretation": "Collision shows actual MuJoCo contact. Avoidance shows a contact-free alternative pose, not a validated trajectory or a learned-policy rollout. This pair cannot establish that live proximity improves a policy.",
+  "sensors": "All 40 sensors freshly rendered at native 8x8 resolution for each pose. RGB and dense depth are diagnostic views from sensor poses; proximity hardware does not output RGB.",
+  "first_page_sensor_rows": [
+    "link6_sensor_0",
+    "link6_sensor_3",
+    "link5_back_sensor_4"
+  ],
+  "colour_scale_metres": [
+    0.05,
+    1.0
+  ],
+  "grids": "Solid black cell boundaries and outer borders.",
+  "unchanged_scene_verified": true,
+  "poses": [
+    {
+      "label": "collision",
+      "arm_qpos": [
+        0.15679097210574777,
+        -0.6666734856966827,
+        -0.29448275913843974,
+        -2.302818504483423,
+        -0.2680534398541635,
+        1.614473033132151,
+        0.09182917326688766
+      ],
+      "translation_from_previous_figure_sensor4_m": [
+        0.047,
+        -0.07,
+        0.12
+      ],
+      "contacts": [
+        {
+          "bodies": [
+            "pact_intrusion_right",
+            "robot_0/fr3_link7"
+          ],
+          "geom_ids": [
+            21,
+            121
+          ],
+          "signed_distance_m": -0.002782069614675642,
+          "position_world": [
+            0.5613910348073378,
+            -0.20301406179341913,
+            0.9433104883400933
+          ]
+        }
+      ],
+      "minimum_robot_panel_distance_m": -0.002782069614675642,
+      "closest_geom_pair": [
+        121,
+        21
+      ],
+      "sensor_evidence": [
+        {
+          "sensor": "link2_sensor_3",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link5_back_sensor_4",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link6_sensor_0",
+          "panel_hit_count": 7,
+          "closest_panel_axial_depth_m": 0.19551031291484833
+        },
+        {
+          "sensor": "link6_sensor_3",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link6_sensor_4",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        }
+      ]
+    },
+    {
+      "label": "avoidance",
+      "arm_qpos": [
+        -0.40181757993503375,
+        -0.8681583160342672,
+        0.50120280736611,
+        -2.3480057212680165,
+        0.28890253292893886,
+        1.5049415334865914,
+        0.09182917326688766
+      ],
+      "translation_from_previous_figure_sensor4_m": [
+        0.047,
+        0.14,
+        0.12
+      ],
+      "contacts": [],
+      "minimum_robot_panel_distance_m": 0.09104800987238588,
+      "closest_geom_pair": [
+        121,
+        21
+      ],
+      "sensor_evidence": [
+        {
+          "sensor": "link2_sensor_3",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link5_back_sensor_4",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link6_sensor_0",
+          "panel_hit_count": 6,
+          "closest_panel_axial_depth_m": 0.20224736630916595
+        },
+        {
+          "sensor": "link6_sensor_3",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        },
+        {
+          "sensor": "link6_sensor_4",
+          "panel_hit_count": 0,
+          "closest_panel_axial_depth_m": null
+        }
+      ]
+    }
+  ]
+}

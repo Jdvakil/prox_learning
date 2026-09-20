@@ -1,0 +1,277 @@
+{
+  "source_scene_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+  "type": "New sensor-guard counterfactual in original simulated scene; plus separately exported original HDF5 readings.",
+  "claim": "Enabling this explicit live proximity stop prevented the contact caused by the same approach command in this one simulation. This is not PACT/ACT evaluation or a general safety guarantee.",
+  "guard": "At 50 Hz, latch current arm joint positions if ANY finite positive link6 native depth <= threshold. Once latched, hold those motor targets. No RGB, object IDs, contact flags, object poses or time-index trigger is used in the decision.",
+  "threshold_m": 0.14,
+  "depth_units": "Metres along sensor optical Z; not Euclidean ray length.",
+  "trigger": {
+    "time_s": 0.64,
+    "sensor": "robot_0/link6_sensor_4",
+    "pixel_u": 0,
+    "pixel_v": 7,
+    "depth_m": 0.13928784430027008,
+    "threshold_m": 0.14,
+    "observation_index": 32
+  },
+  "metrics": {
+    "collision": {
+      "contact_steps": 751,
+      "first_contact_s": 3.5,
+      "peak_normal_force_N": 236.32767232748756
+    },
+    "sensor_stop": {
+      "contact_steps": 0,
+      "first_contact_s": null,
+      "peak_normal_force_N": 0
+    }
+  },
+  "pairing": "Same initial state, dynamics, target trajectory, gripper command and sensor sampling. Joint positions, velocities and depth observations match exactly through the trigger observation.",
+  "source_renderer": "molmo_spaces/env/env.py: record_proximity_depths; native square 8x8, group2 hidden, group4 enabled, skybox disabled.",
+  "points": "Six link6 sensors x 8x8 = 384 samples per snapshot. Every XYZ derives from its pixel depth and calibrated pose. No random samples, surface fitting, mesh sampling, interpolation, densification or snapping.",
+  "display": "3 mm radius spheres centered on the measured XYZs. Colour identifies sensor. All finite surface-return points are submitted to the depth-tested 3D renderer; field of view and occlusion determine visibility. Background misses are not drawn but all 384 raw samples remain saved. Optional lines connect real sensor origins to actual panel returns.",
+  "recorded_example": "recorded_dataset_frame000 reads unmodified traj_0/obs/proximity/link6_sensor_i[0,-1] and stored calibration directly from the original trajectory.h5. These are recorded simulated readings, not physical hardware measurements.",
+  "live_example": "All other clouds are fresh native simulated sensor readings from the motor-driven demonstration, saved at the exact observed robot state. They are not falsely labelled as original dataset samples.",
+  "image_order": "Top collision with guard disabled; bottom sensor-triggered stop with guard enabled; six time-matched frames left to right.",
+  "frame_times_s": [
+    0.0,
+    0.4,
+    0.8,
+    2.0,
+    3.6,
+    4.6
+  ],
+  "cameras": {
+    "side_view": {
+      "lookat": [
+        0.49,
+        -0.12,
+        0.98
+      ],
+      "distance": 0.88,
+      "azimuth": 62,
+      "elevation": -12,
+      "fovy": 42
+    },
+    "context": {
+      "lookat": [
+        0.4,
+        0,
+        0.92
+      ],
+      "distance": 1.55,
+      "azimuth": -40,
+      "elevation": -20,
+      "fovy": 42
+    }
+  },
+  "surface_checks": [
+    {
+      "sequence": "collision",
+      "frame": 1,
+      "time_s": 0.0,
+      "panel_hits_by_sensor": [
+        10,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 30,
+      "maximum_panel_surface_error_m": 1.0231476971905851e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "collision",
+      "frame": 2,
+      "time_s": 0.4,
+      "panel_hits_by_sensor": [
+        10,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 30,
+      "maximum_panel_surface_error_m": 1.04248126270301e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "collision",
+      "frame": 3,
+      "time_s": 0.8,
+      "panel_hits_by_sensor": [
+        11,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 31,
+      "maximum_panel_surface_error_m": 9.797864315014282e-08,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "collision",
+      "frame": 4,
+      "time_s": 2.0,
+      "panel_hits_by_sensor": [
+        10,
+        0,
+        1,
+        2,
+        12,
+        0
+      ],
+      "panel_hit_count": 25,
+      "maximum_panel_surface_error_m": 1.1825432857937024e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "collision",
+      "frame": 5,
+      "time_s": 3.6,
+      "panel_hits_by_sensor": [
+        8,
+        0,
+        1,
+        0,
+        2,
+        0
+      ],
+      "panel_hit_count": 11,
+      "maximum_panel_surface_error_m": 7.949080862990066e-08,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "collision",
+      "frame": 6,
+      "time_s": 4.6000000000000005,
+      "panel_hits_by_sensor": [
+        13,
+        0,
+        1,
+        2,
+        8,
+        0
+      ],
+      "panel_hit_count": 24,
+      "maximum_panel_surface_error_m": 1.2435450361114597e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 1,
+      "time_s": 0.0,
+      "panel_hits_by_sensor": [
+        10,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 30,
+      "maximum_panel_surface_error_m": 1.0231476971905851e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 2,
+      "time_s": 0.4,
+      "panel_hits_by_sensor": [
+        10,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 30,
+      "maximum_panel_surface_error_m": 1.04248126270301e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 3,
+      "time_s": 0.8,
+      "panel_hits_by_sensor": [
+        13,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 33,
+      "maximum_panel_surface_error_m": 1.5635359265631088e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 4,
+      "time_s": 2.0,
+      "panel_hits_by_sensor": [
+        14,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 34,
+      "maximum_panel_surface_error_m": 1.7050684444908093e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 5,
+      "time_s": 3.6,
+      "panel_hits_by_sensor": [
+        14,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 34,
+      "maximum_panel_surface_error_m": 1.7383271014304036e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "sensor_stop",
+      "frame": 6,
+      "time_s": 4.6000000000000005,
+      "panel_hits_by_sensor": [
+        14,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 34,
+      "maximum_panel_surface_error_m": 1.7383271014304036e-07,
+      "total_native_samples": 384
+    },
+    {
+      "sequence": "trigger",
+      "time_s": 0.64,
+      "panel_hits_by_sensor": [
+        12,
+        0,
+        0,
+        4,
+        16,
+        0
+      ],
+      "panel_hit_count": 32,
+      "maximum_panel_surface_error_m": 1.6428614205143965e-07,
+      "total_native_samples": 384
+    }
+  ]
+}

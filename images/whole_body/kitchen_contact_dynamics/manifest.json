@@ -1,0 +1,74 @@
+{
+  "type": "New physics-stepped simulator demonstration with scripted motor targets; not a recorded dataset or learned-policy rollout.",
+  "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+  "source_scene": "/home/jaydv/code/prox_learning/custom_scenes/pact_place_corridor_v12.xml",
+  "engine_version": "3.6.0",
+  "integration_timestep_s": 0.002,
+  "settling_steps": 400,
+  "controller": "Original model position actuators and torque limits. Gripper command 0. No external force, gravity compensation, manual pose assignment or contact correction during motion.",
+  "targets": "Existing six IK waypoints, smoothstep interpolation over 4 s and 1 s hold. Collision final command extends the last joint-space increment by 3x, so the motor attempts to continue after touch; actual joints remain governed by dynamics.",
+  "objects": "Original restored geometry and poses; all kitchen props and the hood panel remain static. Only robot joints evolve dynamically. No physical-hardware claim.",
+  "contact_evidence": "mj_forward contact records and mj_contactForce at every 2 ms step. Only detected environment contact is panel versus link7. Forces are simulated, not measured hardware forces.",
+  "visual_evidence": "Fixed close-up camera shows the gap closing, wrist contact and deflection under load. Clean PNGs and MP4s have no annotations. contact_debug.png projects the solver contact into the image and draws a ring/normal arrow above the mesh; contact_debug_depth_tested.png uses native 3D markers. Arrows indicate normal direction with fixed 0.055 m world length, not force magnitude.",
+  "caveat": "Avoidance is a hand-designed detour, not proof of proximity-driven policy performance or a completed manipulation task.",
+  "cameras": {
+    "side_view": {
+      "lookat": [
+        0.47,
+        -0.09,
+        0.93
+      ],
+      "distance": 0.76,
+      "azimuth": 80,
+      "elevation": -3,
+      "fovy": 38
+    },
+    "context": {
+      "lookat": [
+        0.32,
+        0,
+        0.89
+      ],
+      "distance": 1.65,
+      "azimuth": 55,
+      "elevation": -20,
+      "fovy": 42
+    }
+  },
+  "clean_frame_pixels": [
+    1920,
+    1440
+  ],
+  "evidence": {
+    "collision": {
+      "checked_motion_steps": 2501,
+      "contact_steps": 751,
+      "first_contact_time_s": 3.5,
+      "peak_normal_force_N": 236.32767232748756,
+      "deepest_penetration_m": -0.0009183490826333295,
+      "exported_times_s": [
+        0.0,
+        0.8,
+        2.0,
+        3.4,
+        3.6,
+        4.6
+      ]
+    },
+    "avoidance": {
+      "checked_motion_steps": 2501,
+      "contact_steps": 0,
+      "first_contact_time_s": null,
+      "peak_normal_force_N": 0,
+      "deepest_penetration_m": 0,
+      "exported_times_s": [
+        0.0,
+        0.8,
+        2.0,
+        3.4,
+        3.6,
+        4.6
+      ]
+    }
+  }
+}

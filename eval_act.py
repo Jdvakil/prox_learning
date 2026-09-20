@@ -1113,17 +1113,43 @@ def _rollout(
     return terminal, ever or terminal, last_step
 
 
-def _load_resume(jsonl: Path) -> set[tuple[int, int]]:
+def _load_resume(jsonl: Path, seed_base: int) -> set[tuple[int, int]]:
+    """Load finished episodes. Refuse records that are not from this run.
+
+    Every record must have ``seed == seed_base + episode_idx`` and a unique
+    ``episode_idx``. Otherwise a run with another ``--seed_base`` wrote into
+    this directory, and its records would be averaged into this summary
+    (2026-09-17 v1011d dirs: 52 records for n=50). Read-only; never edits
+    the file. Startup check only; no effect on rollouts.
+    """
     done: set[tuple[int, int]] = set()
     if not jsonl.is_file():
         return done
-    for line in jsonl.read_text().splitlines():
+    records: list[dict] = []
+    for lineno, line in enumerate(jsonl.read_text().splitlines(), start=1):
         if not line.strip():
             continue
         rec = json.loads(line)
-        _EPISODE_METRICS.append(rec)
-        if "episode_idx" in rec and "seed" in rec:
-            done.add((int(rec["episode_idx"]), int(rec["seed"])))
+        idx, seed = rec.get("episode_idx"), rec.get("seed")
+        if idx is None or seed is None:
+            problem = "has no episode_idx/seed"
+        elif int(seed) != int(seed_base) + int(idx):
+            problem = (
+                f"episode_idx={idx} seed={seed} is not from --seed_base {seed_base} "
+                f"(expected seed {int(seed_base) + int(idx)})"
+            )
+        elif (int(idx), int(seed)) in done:
+            problem = f"duplicates episode_idx={idx} seed={seed}"
+        else:
+            problem = None
+        if problem:
+            raise SystemExit(
+                f"[eval_act] refuse resume into {jsonl.parent}: {jsonl.name} line {lineno} "
+                f"{problem}. Use a new --output_dir."
+            )
+        done.add((int(idx), int(seed)))
+        records.append(rec)
+    _EPISODE_METRICS.extend(records)
     return done
 
 
@@ -1260,7 +1286,7 @@ def main() -> None:
                 f"[eval_act] refuse resume into {summary_path.parent}: {mismatch}. "
                 "Use a new --output_dir."
             )
-    done = _load_resume(_METRICS_JSONL)
+    done = _load_resume(_METRICS_JSONL, args.seed_base)
 
     policy = FrozenACTPolicy(eval_cfg)
     policy.prepare_model()

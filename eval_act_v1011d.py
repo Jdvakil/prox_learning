@@ -149,6 +149,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_lazy_cameras
 import pact_eval_sensor_keep
 import pact_eval_wandb
 
@@ -1513,17 +1514,43 @@ def _rollout(
                 extra["video_path"] = str(path)
 
 
-def _load_resume(jsonl: Path) -> set[tuple[int, int]]:
+def _load_resume(jsonl: Path, seed_base: int) -> set[tuple[int, int]]:
+    """Load finished episodes. Refuse records that are not from this run.
+
+    Every record must have ``seed == seed_base + episode_idx`` and a unique
+    ``episode_idx``. Otherwise a run with another ``--seed_base`` wrote into
+    this directory, and its records would be averaged into this summary
+    (2026-09-17 v1011d dirs: 52 records for n=50). Read-only; never edits
+    the file. Startup check only; no effect on rollouts.
+    """
     done: set[tuple[int, int]] = set()
     if not jsonl.is_file():
         return done
-    for line in jsonl.read_text().splitlines():
+    records: list[dict] = []
+    for lineno, line in enumerate(jsonl.read_text().splitlines(), start=1):
         if not line.strip():
             continue
         rec = json.loads(line)
-        _EPISODE_METRICS.append(rec)
-        if "episode_idx" in rec and "seed" in rec:
-            done.add((int(rec["episode_idx"]), int(rec["seed"])))
+        idx, seed = rec.get("episode_idx"), rec.get("seed")
+        if idx is None or seed is None:
+            problem = "has no episode_idx/seed"
+        elif int(seed) != int(seed_base) + int(idx):
+            problem = (
+                f"episode_idx={idx} seed={seed} is not from --seed_base {seed_base} "
+                f"(expected seed {int(seed_base) + int(idx)})"
+            )
+        elif (int(idx), int(seed)) in done:
+            problem = f"duplicates episode_idx={idx} seed={seed}"
+        else:
+            problem = None
+        if problem:
+            raise SystemExit(
+                f"{_LOG} refuse resume into {jsonl.parent}: {jsonl.name} line {lineno} "
+                f"{problem}. Use a new --output_dir."
+            )
+        done.add((int(idx), int(seed)))
+        records.append(rec)
+    _EPISODE_METRICS.extend(records)
     return done
 
 
@@ -1605,6 +1632,7 @@ def parse_args() -> argparse.Namespace:
         "the 22 cm / ±65° ring (shrinking it empties the annulus). "
         "Easy eval. New --output_dir. Not the full-randomize protocol.",
     )
+    pact_eval_lazy_cameras.add_cli_flags(p)
     pact_eval_sensor_keep.add_cli_flags(p)
     pact_eval_wandb.add_cli_flags(p)
     return p.parse_args()
@@ -1699,6 +1727,22 @@ def main() -> None:
         record_depth=bool(args.save_first_frame),
     )
     _install_chunk_gated_sensors()
+    lazy_prox_cameras = False
+    if args.eager_cameras:
+        print(f"{_LOG} --eager_cameras: original per-substep pose refresh.", flush=True)
+    else:
+        lazy_prox_cameras = bool(
+            pact_eval_lazy_cameras.install(
+                cam.name
+                for cam in eval_cfg.camera_config.cameras
+                if getattr(cam, "is_proximity_sensor", False)
+            )
+        )
+    export_sensors_dropped = not bool(args.keep_export_sensors)
+    if export_sensors_dropped:
+        pact_eval_lazy_cameras.install_export_sensor_filter()
+    else:
+        print(f"{_LOG} --keep_export_sensors: object_image_points polled every step.", flush=True)
     if args.skin == "rays":
         if eval_cfg.policy_config.use_proximity:
             _install_raycast_proximity()
@@ -1718,7 +1762,7 @@ def main() -> None:
     summary_path = output_dir / "eval_summary.json"
     protocol = _protocol_identity(args, exec_horizon)
     _refuse_resume_mismatch(summary_path, protocol)
-    done = _load_resume(_METRICS_JSONL)
+    done = _load_resume(_METRICS_JSONL, args.seed_base)
 
     policy = FrozenACTPolicy(eval_cfg)
     policy.prepare_model()
@@ -1805,6 +1849,8 @@ def main() -> None:
             },
             "save_video": bool(args.save_video),
             "save_first_frame": bool(args.save_first_frame),
+            "lazy_prox_cameras": lazy_prox_cameras,
+            "export_sensors_dropped": export_sensors_dropped,
             "video_camera": _EXO_CAM if args.save_video else None,
             "clutter_xy_scale": protocol["clutter_xy_scale"],
             "sensor_keep": pact_eval_sensor_keep.summary_keep_block(_EPISODE_METRICS),
@@ -1893,6 +1939,8 @@ def main() -> None:
                     "cell": cell,
                     "construction_retries": int(n_retry),
                     "clutter_xy_scale": protocol["clutter_xy_scale"],
+                    "lazy_prox_cameras": lazy_prox_cameras,
+                    "export_sensors_dropped": export_sensors_dropped,
                     **video_extra,
                     **policy.sensor_keep_log(),
                 },
