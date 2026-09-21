@@ -27,6 +27,9 @@ SENSOR_KEEP_FRACS="${SENSOR_KEEP_FRACS:-1}"
 SAVE_FIRST_FRAME="${SAVE_FIRST_FRAME:-0}"
 SENSOR_MASK_FIXED="${SENSOR_MASK_FIXED:-0}"
 SENSOR_MASK_SEED="${SENSOR_MASK_SEED:-}"
+# 1 = original slow path: per-substep pose refresh of the 40 skin cameras and
+# per-step object_image_points segmentation renders. A/B only. Not a protocol field.
+EAGER_CAMERAS="${EAGER_CAMERAS:-0}"
 
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
@@ -51,6 +54,9 @@ for P in ${SENSOR_KEEP_FRACS}; do
   fi
   if [ "${SENSOR_MASK_FIXED}" = "1" ]; then
     EXTRA+=(--sensor_mask_fixed)
+  fi
+  if [ "${EAGER_CAMERAS}" = "1" ]; then
+    EXTRA+=(--eager_cameras --keep_export_sensors)
   fi
   if [ -n "${SENSOR_MASK_SEED}" ]; then
     EXTRA+=(--sensor_mask_seed "${SENSOR_MASK_SEED}")

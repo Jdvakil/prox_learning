@@ -26,6 +26,31 @@ Gaps: ACT s0 n=2 only; PACT-raw s1 and PACT-readout s1 eval dirs empty (ckpts tr
 **T-107** (v107_spaced, table+wrist, 24 houses, horizon 1050, n=50, one seed): ACT 13/8/19,
 PACT-raw **0**/9/19, PACT-readout 2/6/20. Skin arms lose the task; negative set —
 `eval_output/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
+**Experiment ledger (2026-09-20).** `python scripts/exp_tracker.py` scans `eval_output/` and
+`submodules/act/ckpts/`, recomputes every count from `episodes.jsonl`, and writes
+`reports/experiments_evals.csv` + `reports/experiments_ckpts.csv`. It never edits a run.
+`--todo` = only what needs attention (trained ckpts with no citable eval, PARTIAL / DIRTY runs,
+finished runs not yet archived). `--task <substr>` filters. `--archive` copies finished
+summaries (n ≥ 20) to `reports/eval_summaries/`. `--all` includes scratch dirs (`_*`).
+Status: DONE / PARTIAL (fewer records than requested; no resume, rerun into a new dir) /
+DIRTY (mixed seed bases or duplicate episodes) / LEGACY (no seed field) / EMPTY. The `path`
+column says whether the fast or original evaluator path ran. Week rules: one fresh
+`OUTPUT_DIR` per run; n=50 in one process; run names keep the
+`<task>_<ARM>_s<seed>_bs.._cs.._lr.._e..[_tag]` pattern (the ledger parses arm and seed from
+it); after each batch run `python scripts/exp_tracker.py --archive`, then copy the rows you
+cite into PAPER.md §3.
+
+**PAPER.md is a facts-only paper reference (restructured 2026-09-20): 1 Methods, 2 Experimental
+design, 3 Results, A figures, B glossary. No narrative, no claims. Older narrative version:
+`git show 656acc0:PAPER.md`.** **PAPER.md audit 2026-09-20.** Every §7 count re-derived from disk: all matched. Corrected
+facts now in PAPER.md (use it, not older README prose, for the paper): trainable params ACT
+83,886,217 / raw +172,032 / readout +86,528 (+837,700 encoder), only decoder layer 1 of 7 trains
+(upstream ACT), episodes are not padded to 636, skin depth spans 0.012–3.70 m, the skin renderer
+hides the whole robot, `neg5/center/pos5` are ±5 mm pendant offsets, H-A / H-B PACT arms share
+training seed 0, hallway eval has no bar jitter. New in PAPER.md: T-107 paired tests, O-INV
+`pact_trunk` arm, hallway readout sensor-dropout keep 0.75 = 23/14/36 (n.s. vs keep 1; keep 0
+control not run), per-run training table. T-1011d and keep75 summaries
+copied to `reports/eval_summaries/`.
 **T-1011d-old** (PACT-raw only, Sep 3 ckpt, `eval_act_v1011d.py`): full randomize 7/10/20 (ever 10) —
 `eval_output/simple_v1011d_smoke_video/`; easy 0.25 14/3/22 — `eval_output/simple_v1011d_easy025_n50/`;
 wrist-only **aborted at 4/50** on 2026-09-07 (0/4) — `eval_output/simple_v1011d_wrist_only_n50/`.
@@ -35,9 +60,9 @@ n=50, original slow path): ACT 13/18/15 (strict 9), PACT-raw 12/**3**/26 (strict
 PACT-readout 13/10/22 (strict 11), ever 13/12/14. Seeds match across arms; paired McNemar on
 bar hit: ACT vs readout 8 vs 0 p = 0.0078, ACT vs raw 15 vs 0 p = 0.0001, raw vs readout
 1 vs 8 p = 0.039 (**raw has fewer bar hits than readout here**). Placement is flat
-(discordant 8 vs 8, 6 vs 5). **Count only records with `seed == episode_idx`**: each dir
-holds 52 lines (2 stale `--seed_base 2026` records, both fail + bar hit), so
-`eval_summary.json` / W&B rates in those dirs are over 52 and wrong —
+(discordant 8 vs 8, 6 vs 5). Dirs were repaired 2026-09-20 (2 stale
+`--seed_base 2026` records removed, summaries recomputed over 50, backups
+`*.bak_52records_20260920`); **W&B for these runs still shows 52-record rates** —
 `eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
 Easy 0.25 is optimistic vs the 200 full-randomize demos; three-arm full randomize
 (`--clutter_xy_scale 1`) is not run.
@@ -302,6 +327,23 @@ Pass the two dir names as arguments to the python snippet.
 both hooks 95–99 s (failed episodes; successful ones run 420–770 s); `snapshot=169` in all.
 n=50 ≈ 1.5–2.5 h instead of ≈ 18 h.
 
+**Ported 2026-09-20 to `eval_act.py` (hallway) and `eval_act_v107spaced.py`.** Same two hooks,
+same flags (`--eager_cameras --keep_export_sensors` = original), same provenance fields
+(`lazy_prox_cameras`, `export_sensors_dropped` in the summary and per episode). Shell knob
+`EAGER_CAMERAS=1` in `eval_v1_hallway.sh` / `eval_v107_spaced.sh`. The hallway worktree
+(`molmospaces-pact-place@977acd6`) has byte-identical `camera_manager.py`, `sensors.py`,
+`sensors_cameras.py`, so the hook applies unchanged. Wiring smoke, PACT_READOUT, 1 episode ×
+150 steps, seed 2026, fast vs original (`eval_output/_port_{hall,v107}_{fast,eager}/`; not a rate):
+
+| evaluator | original | fast | records | first frame |
+|---|---|---|---|---|
+| `eval_act.py` hallway | 175.2 s | 5.6 s | equal except contact-frame count 5628 vs 5667 (0.7 %, the known rerun drift) | byte-identical |
+| `eval_act_v107spaced.py` | 189.3 s | 14.9 s | identical | byte-identical |
+
+**v1010 and v1011c have no evaluator.** `eval_v1010.sh` / `eval_v1011c.sh` call
+`eval_act.py --task v1010` / `--task mixed`; both exit with "not wired". Nothing to port until
+an evaluator exists (both share v1011d's base config and 24 scene files).
+
 **The eval is not bit-reproducible, with or without the hooks.** Original code vs the
 original paper run, same seeds: outcome fields equal, contact-frame counts drift ~1 %.
 Identical fast-path code run twice over 24 episodes: terminal success flipped in 2/24
@@ -332,9 +374,20 @@ keys on `(episode_idx, seed)`, so `(0, 2026)` did not block `(0, 0)`: the n=50 r
 | PACT-raw | 12/50 | 12 | 3/50 | 26/50 | 11/50 | 24 |
 | PACT-readout | 13/50 | 14 | 10/50 | 22/50 | 11/50 | 26 |
 
-Not repaired on disk yet (needs user go-ahead; backup first). `_load_resume` has no guard
-yet; same flaw in `eval_act.py` / `eval_act_v107spaced.py` (their dirs are clean). Do not
-reuse an `--output_dir` across seed bases.
+**Repaired 2026-09-20.** The two stale lines were removed from the three dirs (kept lines
+byte-for-byte) and `eval_summary.json` recomputed over 50 (`collision`, `success`, `total`,
+`completed`, rates, `sensor_keep`; note field `repair_20260920`). Originals:
+`episodes.jsonl.bak_52records_20260920`, `eval_summary.json.bak_52records_20260920` in each
+dir. **W&B still shows the 52-record rates for those three runs.**
+
+**Resume guard (2026-09-20).** `_load_resume(jsonl, seed_base)` in `eval_act.py`,
+`eval_act_v1011d.py` and `eval_act_v107spaced.py` now refuses the output dir if any record has
+`seed != seed_base + episode_idx`, a duplicate `(episode_idx, seed)`, or no seed field
+(`refuse resume into … Use a new --output_dir`). Startup check only: it reads the file, never
+edits it, and touches nothing in the rollout. A scan of all 51 `eval_output/*/episodes.jsonl`
+found the paper dirs clean; only `pact_place_corridor_v5_PACT_RAW_s0_keep{0,50}_smoke/` hold
+duplicates (smoke, 4 lines each). Legacy H-A dirs have no seed field and are not resumed by
+these scripts. Rule stays: fresh `--output_dir` per run, n=50 in one process.
 
 **Noise floor for reading the table.** Three 24-episode READOUT runs (paper + two fast
 repeats): success 5 / 4 / 2, bar hit 6 / 6 / 6, collision-free 11 / 11 / 11. Bar hit and
@@ -1645,8 +1698,10 @@ scene uses its existing kitchen-overlay placement routine (auxiliary kitchen
 poses are absent from the frozen HDF5 config); the arm is lowered 16 cm so
 `link6_sensor_3` sees the bottle, cup, and shakers. The v1011d arm is lowered 8 cm.
 The cabinet is a fresh sample of `FrankaSkinCabinetCavitySmokeConfig` with the
-40-sensor hybrid skin and a 0.35 m pedestal; its compiled model/state are retained
-under `images/whole_body/source_snapshots/` for exact export replay. Original
+40-sensor hybrid skin and a 0.35 m pedestal; `metadata.json` and `state.npz` live
+under `images/whole_body/source_snapshots/cabinet_cavity/` for export replay.
+Compiled `model.mjb` (136 MB) stays local only — GitHub rejects files over 100 MB —
+and is gitignored. Original
 recorded v12 arrays and video frames are saved separately from the adjusted-pose
 renders. No source dataset is modified.
 

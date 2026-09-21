@@ -22,6 +22,16 @@ Newest session at the top.
 
 ---
 
+## 2026-09-20 — drop 136 MB model.mjb so GitHub push works
+
+- **When:** User `git push origin` rejected: `images/whole_body/source_snapshots/cabinet_cavity/model.mjb` is 136.20 MB (GitHub cap 100 MB).
+- **Why:** A later delete commit still ships the blob. The unpushed commit had to be rewritten.
+- **What:** `*.mjb` in [`.gitignore`](.gitignore). Rewrote the one unpushed commit (`cd8b489`); `model.mjb` stays on disk, not tracked. `metadata.json` + `state.npz` still in git. README snapshot sentence.
+- **How:** `git reset --soft HEAD~1`, `git rm --cached` the mjb, recommit same subject. No file over 90 MB in `origin/main..HEAD`. Did not push.
+- **Not done:** User runs `git push origin`. Other unstaged docs/eval edits stay unstaged.
+
+---
+
 ## 2026-09-20 — T-1011d three-arm numbers into README / PAPER.md
 
 - **When:** User: explain the stale lines, update README / CURSOR / PAPER.md incl. Methods; will write the paper from them.
@@ -29,7 +39,59 @@ Newest session at the top.
 - **What:** Docs only. README: T-1011d three-arm line in "Results on disk", stale-record mechanism + clean n=50 table + noise floor in the eval-speed block. PAPER.md: §5.1 randomised-clutter task, §5.5 v1011d history / query schedule, §6 T-1011d protocol column + reproducibility paragraph, new §7.5 T-1011d results (old §7.5 → §7.6), §7.3 / §8 / §9 / App. A / C / F updated.
 - **How:** Counts recomputed from `episodes.jsonl` with `seed == episode_idx` (n=50 per arm). Paired exact McNemar on matched seeds. No file under `eval_output/` edited.
 - **Finding to keep straight:** easy 0.25 only. Bar hit ACT 18, raw 3, readout 10. Raw beats readout on bar hit here (1 vs 8 discordant, p = 0.039), opposite of H-A / H-B. Placement flat (13 / 12 / 13). Parity / speed checks are not task-success evidence.
-- **Not done:** Stale-record repair on disk, `_load_resume` guard, hook port to `eval_act.py` / `eval_act_v107spaced.py`, commit — all wait on user. No train/eval launched.
+- **Not done:** Hook port to `eval_act.py` / `eval_act_v107spaced.py`, commit. No train/eval launched.
+
+---
+
+## 2026-09-20 — experiment ledger
+
+- **When:** User: many experiments this week; start tracking them, keep it organized.
+- **What:** New [`scripts/exp_tracker.py`](scripts/exp_tracker.py). Read-only scan of `eval_output/*/` and `submodules/act/ckpts/*/*/` → `reports/experiments_evals.csv`, `reports/experiments_ckpts.csv` + terminal tables. Flags `--todo`, `--task`, `--archive`, `--all`. README "Results on disk" block documents it and the week rules.
+- **How:** Counts recomputed from `episodes.jsonl` (summary JSON used for protocol fields only). Hygiene check = one seed offset + no duplicate `(episode_idx, seed)`. Arm / seed parsed from the ckpt dir name. Best epoch / val from the wandb `output.log` line `Best ckpt, val loss … @ epoch…`. Runs with n < 20 are treated as wiring smokes (not flagged, not archived).
+- **First scan:** 12 trained ckpts with no citable eval (v1010 × 6, v1011c × 3, hallway ACT s0 / raw s1 / readout s1); PARTIAL: hallway readout keep50 (6/50), `simple_v1011d_wrist_only_n50` (4/50).
+- **Not done:** No train/eval launched. Commit.
+
+---
+
+## 2026-09-20 — PAPER.md restructured to a facts-only reference
+
+- **When:** User: no claims or story; wants one document with accurate details for Methods, Experimental design and Results.
+- **What:** PAPER.md rebuilt as 1 Methods / 2 Experimental design / 3 Results / A figures / B glossary (800 lines). Removed: story, introduction, interpretation paragraphs, limitations prose, conclusion, claims ledger, proposed-studies prose. Kept every audited fact, table, test and evidence path.
+- **How:** Script lifted the audited blocks verbatim from the previous PAPER.md (no number retyped) and re-ordered them; section references renumbered. Previous narrative version: `git show 656acc0:PAPER.md`.
+- **Not done:** No train/eval. Commit.
+
+---
+
+## 2026-09-20 — PAPER.md ground-truth audit
+
+- **When:** User: draft goes out tomorrow; PAPER.md must hold all ground truth (results, system, models).
+- **Why:** PAPER.md was written 09-13 from README prose; several facts had never been checked against code.
+- **What:** Docs only. Three read-only audit agents (results vs disk; model / training vs code and ckpts; system / data / eval vs XML, configs, evaluators). PAPER.md: corrections + new material in §1, §2, §4, §5.1–5.5, §6, §7.1–7.6, §8, new §10 claims ledger, App. A–D, F. README "Results on disk" pointer. Copied 4 `eval_summary.json` files into `reports/eval_summaries/` (three T-1011d arms, hallway readout keep75).
+- **Found:** all §7 table counts match disk. Wrong before: parameter counts (state-dict sizes), "padded to 636", depth span 0.10–3.27 m, "robot-mount poses" (they are ±5 mm pendant offsets), "independent" H-A / H-B (PACT arms share seed 0). Unstated before: decoder layers 2–7 never train (upstream ACT), whole robot hidden from the skin renderer, no bar jitter at hallway eval, construction-retry redraws (13/50 T-1011d, 33/50 T-107, matched across arms), T-107 is seed-matched (paired tests added), O-INV `pact_trunk` arm (worse than ACT), unreported hallway readout keep-0.75 run (23/14/36).
+- **How:** One agent read raw recordings on `/mnt/laptop/data` (outside the repo, read-only) for attempt counts and observed randomisation ranges; those facts are marked "observed" / external mount in PAPER.md.
+- **Not done:** keep-0 control and the rest of the sensor-dropout sweep; v1010 / v1011c evaluators; three-arm T-1011d at clutter scale 1; second-seed evals. No train/eval launched.
+
+---
+
+## 2026-09-20 — speed hooks ported to hallway + v107 evaluators
+
+- **When:** User: transfer the speed patch to all paper eval scripts (v1 hallway, v1010, v1011c, v1011d, v107s).
+- **Why:** Mass eval week. Hallway / v107 PACT episodes still paid the two unread simulator chores.
+- **What:** [`eval_act.py`](eval_act.py), [`eval_act_v107spaced.py`](eval_act_v107spaced.py): import `pact_eval_lazy_cameras`, CLI flags, install after `_install_chunk_gated_sensors()`, `lazy_prox_cameras` / `export_sensors_dropped` in summary + per-episode record. [`scripts/exp/eval_v1_hallway.sh`](scripts/exp/eval_v1_hallway.sh), [`scripts/exp/eval_v107_spaced.sh`](scripts/exp/eval_v107_spaced.sh): `EAGER_CAMERAS` knob (default 0). README + PAPER.md §5.5.
+- **How:** Same block as `eval_act_v1011d.py`. Checked `molmospaces-pact-place@977acd6` vs submodule: `camera_manager.py`, `sensors.py`, `sensors_cameras.py` identical; `get_core_sensors` imported at call time in both; no reader of registry poses or `object_image_points` in either evaluator.
+- **Result (wiring smoke, 1 ep × 150 steps, not a rate):** hallway 175.2 s → 5.6 s; v107 189.3 s → 14.9 s. First frames byte-identical. v107 records identical; hallway differs only in a contact-frame count (5628 vs 5667). Dirs `eval_output/_port_*`.
+- **Not done:** **v1010 / v1011c have no evaluator** (`eval_act.py --task v1010|mixed` exits "not wired"; 9 ckpts unevaluated). Needs a user protocol decision before building. No n=50 A/B on hallway / v107 (only the 150-step smoke). Commit.
+
+---
+
+## 2026-09-20 — stale-record repair + resume guard (user approved)
+
+- **When:** User: "do it. I approve, if it wont change the quality of the future evals."
+- **Why:** Three 2026-09-17 T-1011d dirs summarized 52 records (2 stale `--seed_base 2026`). Mass train/eval starts now; the same accident must not recur.
+- **What:** (1) `eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`: removed the 2 stale lines from `episodes.jsonl`, recomputed `eval_summary.json` over 50, added `repair_20260920` note. Backups `*.bak_52records_20260920`. (2) `_load_resume(jsonl, seed_base)` in [`eval_act.py`](eval_act.py), [`eval_act_v1011d.py`](eval_act_v1011d.py), [`eval_act_v107spaced.py`](eval_act_v107spaced.py) refuses wrong-seed-base, duplicate, or seedless records. README + PAPER.md updated.
+- **How:** Kept lines written back byte-for-byte; summary arithmetic copied from `_summarize_place_metrics`; `sensor_keep` block via `pact_eval_sensor_keep.summary_keep_block`. Guard is a startup read; no rollout code path changed. Unit-tested by extracting the function from each script (clean resume ok, stale / duplicate / seedless refused, missing file ok, seed base 2026 ok).
+- **Result:** ACT 13/50, raw 12/50, readout 13/50 (was /52). Scan of 51 eval dirs: paper dirs clean; two `keep*_smoke` dirs have duplicates (left alone).
+- **Not done:** W&B runs still show 52-record rates. `script_sha256` of all three evaluators changes (guard) — new evals will record the new hash. Hook port, commit.
 
 ---
 

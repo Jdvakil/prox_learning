@@ -139,6 +139,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_lazy_cameras
 import pact_eval_sensor_keep
 import pact_eval_wandb
 
@@ -1548,6 +1549,7 @@ def parse_args() -> argparse.Namespace:
     )
     pact_eval_sensor_keep.add_cli_flags(p)
     pact_eval_wandb.add_cli_flags(p)
+    pact_eval_lazy_cameras.add_cli_flags(p)
     return p.parse_args()
 
 
@@ -1634,6 +1636,23 @@ def main() -> None:
         record_depth=bool(args.save_first_frame),
     )
     _install_chunk_gated_sensors()
+    # Eval speed hooks (scripts/pact_eval_lazy_cameras.py). Not protocol fields.
+    lazy_prox_cameras = False
+    if args.eager_cameras:
+        print(f"{_LOG} --eager_cameras: original per-substep pose refresh.", flush=True)
+    else:
+        lazy_prox_cameras = bool(
+            pact_eval_lazy_cameras.install(
+                cam.name
+                for cam in eval_cfg.camera_config.cameras
+                if getattr(cam, "is_proximity_sensor", False)
+            )
+        )
+    export_sensors_dropped = not bool(args.keep_export_sensors)
+    if export_sensors_dropped:
+        pact_eval_lazy_cameras.install_export_sensor_filter()
+    else:
+        print(f"{_LOG} --keep_export_sensors: object_image_points polled every step.", flush=True)
     if args.skin == "rays":
         if eval_cfg.policy_config.use_proximity:
             _install_raycast_proximity()
@@ -1739,6 +1758,8 @@ def main() -> None:
             },
             "save_video": bool(args.save_video),
             "save_first_frame": bool(args.save_first_frame),
+            "lazy_prox_cameras": lazy_prox_cameras,
+            "export_sensors_dropped": export_sensors_dropped,
             "video_camera": _TABLE_CAM if args.save_video else None,
             "sensor_keep": pact_eval_sensor_keep.summary_keep_block(_EPISODE_METRICS),
             "package_versions": {
@@ -1822,6 +1843,8 @@ def main() -> None:
                     "house_index": house,
                     "cell": cell,
                     "construction_retries": int(n_retry),
+                    "lazy_prox_cameras": lazy_prox_cameras,
+                    "export_sensors_dropped": export_sensors_dropped,
                     **video_extra,
                     **policy.sensor_keep_log(),
                 },
