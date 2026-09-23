@@ -66,8 +66,10 @@ bar hit: ACT vs readout 8 vs 0 p = 0.0078, ACT vs raw 15 vs 0 p = 0.0001, raw vs
 `eval_output/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/`.
 Easy 0.25 is optimistic vs the 200 full-randomize demos; three-arm full randomize
 (`--clutter_xy_scale 1`) is not run.
-v1010 (6 ckpts) and v10_11c_100 (3 ckpts) are trained, not evaluated (eval unwired).
-Other `data/` dumps (v12 overlay, v12.1, mixed, table_smoke) are not wired. Frozen-eval JSON
+v1010 (6 ckpts) and v10_11c_100 (3 ckpts) are trained, not evaluated. Since 2026-09-22
+`eval_act_place.py --env v1010|v1011c|v6|v107_spaced|v12` wires them (table-camera ckpts get
+the train-matched fovy-58 camera, [§0.1](#env-codes)); every `/mnt/laptop/data` dump is converted (v12.1 and
+table_smoke: converted only, too small to train). Frozen-eval JSON
 labels `history_mode: query_steps_train_mismatch` (readout trains on 8 consecutive control
 steps; eval feeds 8 query-spaced frames). Do not mix wrapper ever-success numbers with
 `eval_act.py` terminal rates.
@@ -109,7 +111,8 @@ This is the convert / train cookbook. Convert / prepare / train run from the
 repository root with `python scripts/pact.py`. **Hallway in-env eval is
 `eval_act.py`.** **v1011d in-env eval is `eval_act_v1011d.py`.**
 **v107_spaced in-env eval is `eval_act_v107spaced.py`**
-([below](#eval-act-frozen)). Wrapper `eval` / `verify` is parked (v12
+([below](#eval-act-frozen)). **v1010 / v1011c / v6 / v12 / v107_spaced hub: `eval_act_place.py
+--env`** ([§0.1](#env-codes); every dataset, env code, train and eval shell in one table). Wrapper `eval` / `verify` is parked (v12
 construction; different protocol). A train command without a prepared manifest
 is not scientifically equivalent (split, normalization).
 
@@ -129,7 +132,7 @@ you do not have yet.
 | Eval runtime `hallway` | **Not installed.** Run `setup hallway --env` before the first *wrapper* hallway eval | `assets/pact_env/hallway` |
 | Pretrained surface encoder | Done (readout init) | `experiments_output/default/surface_encoder_train/pact_place_corridor_v5/pact_surface_embedding_encoder_v1.pt` |
 | Trained v12 readout | Done | `runs/pact/v12_readout_s0` (`policy_best.ckpt` + `prox_encoder_best.pt`) |
-| Frozen eval script | Done | hallway: `eval_act.py`. v1011d: `eval_act_v1011d.py`. v107_spaced: `eval_act_v107spaced.py`. Wrapper `pact.py eval` parked |
+| Frozen eval script | Done | hallway: `eval_act.py`. v1011d: `eval_act_v1011d.py`. v107_spaced: `eval_act_v107spaced.py`. v1010 / v1011c / v6 / v12 / v107_spaced hub: `eval_act_place.py --env` (2026-09-22). Wrapper `pact.py eval` parked |
 | Hallway `eval_act.py` smoke n=2 | **Done.** Gate `17/785` both eps. Not a paper rate. EGL `__del__` noise after `eval_summary.json` is harmless. | `eval_output/simple_hallway_smoke/` |
 | Hallway `eval_act.py` n=50 | **Done 2026-09-07.** House=1, seeds `2026+i`. Terminal **18/50 (36%)**, ever 19/50, bar **7/50 (14%)**, free **43/50 (86%)**. Gate `17/785`. Not the Aug 29 random-house JSON. | `eval_output/simple_hallway_n50/` |
 | v1011d wrist-only smoke n=2 | **Done 2026-09-07.** Policy `--cameras wrist_camera` (train was exo+wrist). Full clutter scale 1. Terminal **0/2**, ever 0/2, bar **2/2**, free **0/2**. Never `grasp_target`. Gate `22/1030`. Not a rate. Do not mix with hallway wrist or exo+wrist v1011d. | `eval_output/simple_v1011d_wrist_only/` |
@@ -143,11 +146,140 @@ you do not have yet.
 | H-B eval ACT s0 | n=2 smoke only (1/2). **Not run at n=50.** | `eval_output/pact_place_corridor_v5_ACT_s0_bs8_cs50_lr1e-5_e2000/` |
 | H-B eval PACT-raw s1 / readout s1 | **Empty dirs.** Ckpts exist; eval never produced output. | `eval_output/pact_place_corridor_v5_PACT_RAW_s1_bs8_cs50_lr1e-5_e2000/`, `…_PACT_READOUT_s1_n2/` |
 | **T-107 v107_spaced three arms n=50** | **Done 2026-09-12.** `eval_act_v107spaced.py`, table+wrist, cycle_24, horizon 1050, one seed. ACT **13/50** place / 8 bar / 19 free; PACT-raw **0/50** / 9 / 19 (42 gripper closes); PACT-readout **2/50** / 6 / 20. Negative on task; collisions flat. | `eval_output/pact_place_corridor_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000/` |
-| T-1010 / T-1011c ckpts | **Trained 2026-09-11, never evaluated.** v1010: 3 arms × 2 seeds; v10_11c_100: 3 arms × s0. `scripts/exp/eval_v1010.sh` / `eval_v1011c.sh` are unwired. | `submodules/act/ckpts/pact_place_corridor_{v1010,v10_11c_100}/` |
+| T-1010 / T-1011c ckpts | **Trained 2026-09-11, never evaluated.** v1010: 3 arms × 2 seeds; v10_11c_100: 3 arms × s0. Wired 2026-09-22: `eval_v1011c.sh` / `eval_v1010.sh` → `eval_act_place.py` ([§0.1](#env-codes)). | `submodules/act/ckpts/pact_place_corridor_{v1010,v10_11c_100}/` |
 
 Skip convert/prepare/setup when those paths already exist. Re-convert is refused
 if the destination is nonempty. Re-prepare is refused if the contract would
 change. Training a *new* model only needs a **new `--run` name**.
+
+<a id="env-codes"></a>
+### 0.1 Every dataset by environment code (2026-09-22)
+
+Raw dumps live on `/mnt/laptop/data/` (there is no `data/` link in this checkout; pass the
+path). Every dump is converted. Env code = the tag in the paper table; it is in every `TASK`,
+run name and `eval_output/` dir. Converted with `python -m scripts.convert_pact_place_to_act
+--src <raw> --dst act_style_data/<same tree> --with_proximity --prox_pool min --image_h 240
+--image_w 320` (= `pact.py convert`); logs in `runs/convert_logs/`.
+
+| code | raw dump (`/mnt/laptop/data/…`) | eps | cams (train) | `TASK` (`constants.py`) | train | eval shell → evaluator |
+|---|---|---|---|---|---|---|
+| v5 (hallway) | `pact_place_corridor_v5` | 152 | wrist | `pact_place_corridor_v5` | `train_v1_hallway.sh` | `eval_v1_hallway.sh` → `eval_act.py --task hallway` |
+| v5_ext | `pact_place_corridor/data/v5/pick_and_place/accepted` | 193 | wrist | `pact_place_corridor_v5_ext` | `train_v5_ext.sh` | `eval_v5_ext.sh` → `eval_act.py --task hallway` |
+| v107 | `pact_place_corridor/data/v107/pick_and_place/accepted` | 48 | wrist | `pact_place_corridor_v107` | `train_v107.sh` | none (no V10.7 config in molmospaces) |
+| v107_spaced (hub) | `pact_pick_n_place_v2/data/v107_spaced` | 200 | exo + wrist | `pact_pick_n_place_v2_v107_spaced` | `train_v107_spaced_hub.sh` | `eval_v107_spaced_hub.sh` → `eval_act_place.py --env v107_spaced` |
+| v107_spaced (batman, T-107) | `pact_place_corridor/data/v107_spaced/accepted` | 210 | table + wrist | `pact_place_corridor_v107_spaced` | `train_v107_spaced.sh` | `eval_v107_spaced.sh` → `eval_act_v107spaced.py` (T-107, fov-45 view); `eval_v107_spaced_batman.sh` → `eval_act_place.py --env v107_spaced --cameras table_camera wrist_camera` (fov 58, `_cam58`) |
+| v1010 | `pact_place_corridor/data/v1010/accepted` | 215 | table + wrist | `pact_place_corridor_v1010` | `train_v1010.sh` | `eval_v1010.sh` → `eval_act_place.py --env v1010` (table_camera fov 58, see below) |
+| v1011c | `mixed_v1011_clutter_geometry/pact_place_corridor_v10_11c_100` | 99 | exo + wrist | `pact_place_corridor_v10_11c_100` | `train_v1011c.sh` | `eval_v1011c.sh` → `eval_act_place.py --env v1011c` |
+| v1011d | `pact_pick_n_place_v2/data/v1011d` | 200 | exo + wrist | `pact_pick_n_place_v2_v1011d` | `train_v1011d.sh` | `eval_v1011d.sh` → `eval_act_v1011d.py` |
+| v12 | `pact_pick_n_place_v2/data/v12` | 165 | exo + wrist | `pact_pick_n_place_v2_v12` | `train_v12.sh` | `eval_v12.sh` → `eval_act_place.py --env v12` |
+| v6 | `pact_pick_n_place_v2/data/v6` | 200 | exo + wrist | `pact_pick_n_place_v2_v6` | `train_v6.sh` | `eval_v6.sh` → `eval_act_place.py --env v6` |
+| v12.1 | `pact_pick_n_place_v2/data/v12.1` | 5 | exo + wrist | — | too small to train | — |
+| table_smoke | `table_smoke/pact_place_corridor_v10_10_tablecam_validation10` | 10 | exo + wrist | — | schema check only | — |
+
+Converted 2026-09-22 (0 skipped rows each): v6 200 (max T 622), v107_spaced hub 200 (620),
+v12.1 5 (557), v5_ext 193 (650), v107 48 (609). v107: 25 of 48 table mp4s were recorded on
+even control steps only (`floor(T/2)+1` frames); converted with the new
+`--hold_half_rate_video` (each frame held two steps; hdf5 attr `half_rate_video_held`), off by
+default. v5_ext / v107 hdf5 also carry `table_camera`, but they train wrist-only (the batman
+table camera pose is not recorded; see below). The v6 / v107_spaced / v107 collection
+closeouts say `authorizes_* = false` (development collections); converted on the user's call.
+
+**`eval_act_place.py` (new, fast path).** One evaluator for the V10.x worlds without their own
+script: `--env v1010 | v1011c | v6 | v107_spaced | v12` (+ `v1011d`, only for `--target_support
+train` reruns). Checked 2026-09-22: same v1011d ckpt and seeds through `eval_act_v1011d.py` twice
+and through this wrapper gave identical outcome fields; contact-frame counts differed between
+the two original runs as much as against the wrapper. It imports `eval_act_v1011d.py` and runs
+its `main()`; only the world is swapped (datagen config, sampler, environment-version check,
+cell count, default cameras, video camera). Rollout loop, FrozenACTPolicy, chunk gate, lazy skin
+cameras, sensor keep, resume guard and W&B are that file's own functions, so the protocol is the
+T-1011d one. `eval_summary.json` keeps `script` = `eval_act_v1011d.py` (the protocol code) and
+adds `wrapper_script` / `wrapper_script_sha256`, `env`, and `env` + `environment_version` in the
+protocol block (resume refuses another world). v12 installs the standing kitchen after
+`sample_task`, as the datagen expert does before the first observation; an extra in the motion
+lane is a construction failure and is redrawn (`seed + k·1000003`, up to 64). v12 cycles 8 cells
+(`cycle_8`), the others 24. `--clutter_xy_scale` stays v1011d only. v6 needs
+`submodules/molmospaces` ≥ `d57f350` (v6 two-object config, pulled 2026-09-22; additive only).
+
+New-world eval shells (`eval_v6.sh`, `eval_v12.sh`, `eval_v107_spaced_hub.sh`,
+`eval_v1011c.sh`, `eval_v1010.sh`, `eval_v107_spaced_batman.sh`; `eval_v1011d_tstrain.sh` keeps
+T-1011d's seeds 0–49 and clutter 0.25): n = 50, seeds `2026+i`, cells
+`i % n_cells`, horizon 1050, gated EGL skin, snapshot sub-steps, `--history consecutive` (8-step
+window, readout train-matched, as T-1011d), exo + wrist (table + wrist for the two batman shells), `--save_first_frame`, W&B `PC_ACT_experiments_eval`.
+`eval_v5_ext.sh` = H-B hallway settings (house 1, seeds `2026+i`, query history, wrist).
+`eval_v1011d.sh` now takes `CLUTTER_XY_SCALE=1` for full randomize → dir tag `_xy1` (the
+untagged dirs stay the easy-0.25 T-1011d set).
+
+**Shell guards (all `train_*.sh` / `eval_*.sh`).** `EXP`, `SEED` (and for evals `NUM_ROLLOUTS`,
+`TAG`, …) can be set from the environment; defaults unchanged. A train shell exits 0 with `DONE`
+when `policy_best.ckpt` exists and exits 3 (`REFUSE`) on a run dir without it (running or
+crashed). An eval shell exits 4 on a missing checkpoint, 0 (`DONE`) on a finished dir, 3 on a
+partial dir (no resume; rerun with `TAG=_rerun`).
+
+**Run one job.** One train and one eval script per env, same style as before: knobs at the top,
+one run per call. Set the arm with `EXP=` in the file or in front of the command (`SEED=` too;
+default 0). Run from the repo root inside `conda activate mlspaces`, one tmux window per job.
+
+```bash
+EXP=PACT_READOUT ./scripts/exp/train_v12.sh
+EXP=ACT ./scripts/exp/eval_v1011c.sh
+EXP=PACT_RAW SEED=1 ./scripts/exp/eval_v1010.sh
+```
+
+| env | train | eval |
+|---|---|---|
+| v5 (hallway) | `train_v1_hallway.sh` | `eval_v1_hallway.sh` (set `SENSOR_KEEP_FRACS=1` for a full-skin run) |
+| v5_ext | `train_v5_ext.sh` | `eval_v5_ext.sh` |
+| v107 | `train_v107.sh` | — |
+| v107_spaced (hub) | `train_v107_spaced_hub.sh` | `eval_v107_spaced_hub.sh` |
+| v107_spaced (batman, T-107) | `train_v107_spaced.sh` | `eval_v107_spaced_batman.sh` (fovy 58, `_cam58`); original T-107: `eval_v107_spaced.sh` |
+| v1010 | `train_v1010.sh` | `eval_v1010.sh` |
+| v1011c | `train_v1011c.sh` | `eval_v1011c.sh` (`_tstrain`) |
+| v1011d | `train_v1011d.sh` | `eval_v1011d_tstrain.sh` (demo-side cups); original T-1011d: `eval_v1011d.sh` |
+| v12 | `train_v12.sh` | `eval_v12.sh` |
+| v6 | `train_v6.sh` | `eval_v6.sh` |
+
+Needed for the paper table: train v12, v107_spaced hub, v6 (3 arms each); eval v1011c, v1010,
+v1011d_tstrain, v107_spaced_batman now, v12 / v107_spaced hub / v6 after training. Each train
+writes ~7.5 GB: run `scripts/housekeeping.sh --tier2 --apply` first (~165 GB of
+`policy_epoch_*.ckpt`; `policy_best` / `policy_last` / `prox_encoder_best.pt` stay). At most
+~3 trainings + 3 evals at once; keep `free -g` above ~8 GB.
+
+**Cup side, v1011c / v1011d (found 2026-09-22).** The V10.11 sampler draws the cup y uniform
+on ±0.375 m whatever the bar side (`_prepare_pact_clutter_layout`), but the demos only keep
+cups on the side away from the bar: v1011c 99/99, v1011d 199/200 (1 within 5 cm of centre).
+The other datasets keep the cup near the centre (demo |y| ≤ 0.12 m; eval draws ±0.06 m, checked
+on every cell). Rebuilding the 50 T-1011d scenes (seeds 0–49; construction retries match the
+original runs in 150/150) gives 21 cups under the bar, 27 away, 2 central; placements under the
+bar: ACT 0/21, raw 0/21, readout 0/21; away: 12/27, 12/27, 13/27; bar hits away / under: ACT
+7 / 10, raw 1 / 2, readout 2 / 8. `eval_act_place.py --target_support train` redraws out-of-support
+cups (construction retry; in-support draws untouched, so they repeat the uniform episode at
+the same seed) and logs `target_start_xy` / `target_in_train_support`; the summary splits
+success by support. `eval_v1011c.sh` defaults to `TARGET_SUPPORT=train` (`_tstrain`).
+
+**Batman `table_camera` = exo pose at fovy 58; evaluators rendered 45 (found 2026-09-22).**
+v1010, the 210-ep T-107 v107_spaced, v5_ext and 25 of 48 v107 rows carry a `table_camera` mp4
+rendered by the collector's publish step (pose never saved). It is exactly the hybrid
+`exo_camera_1` pose (`fr3_link0` offset `[-1.05, -0.55, 1.30]`, lookat `[0.55, 0, 0.45]`, up z,
+robot-base mounted) at its configured **fovy 58°**. molmospaces renders `exo_camera_1` at **45°**:
+`CameraManager._setup_robot_mounted_camera` drops `fov` in the lookat branch
+(`camera_manager.py` ~492 → `add_robot_mounted_camera`, default 45). Fitted on 19 batman frame-0
+renders rebuilt in sim: RGB MAE ~2.9 (0–255) at 58 vs ~29 at 45; fovy sweep minimum at 58.0 in
+every episode; the other 23 v107 rows (collector h264, h5 `sensor_param/table_camera` present)
+are 45°. Evidence (scratch, not in git): `EVIDENCE_montage.png` from this session. **Do not fix
+molmospaces globally**: the hub sets (v1011d, v6, table_smoke checked via h5 intrinsics) were
+recorded through the same 45° path, so `exo_camera_1` stays 45 for them. So:
+
+- `eval_act_place.py` puts a 58° `table_camera` (same pose, quaternion mode so `fov` reaches the
+  renderer) in the exo slot whenever the policy cameras include `table_camera`;
+  `--table_camera_fov 45` reproduces the old rename. Protocol field `table_camera_fov`.
+- **T-107 (`eval_act_v107spaced.py`) ran with the 45° view — zoomed in vs training.** Those JSONs
+  stay as they are (the script is unchanged). `eval_v107_spaced_batman.sh` re-evaluates the same
+  three checkpoints on `eval_act_place.py` with the 58° camera into `…_cam58` dirs (new set; also
+  consecutive history, so not paired with T-107).
+- `eval_v1010.sh` defaults to 58 (`TABLE_CAMERA_FOV=45` → `_fov45` dir).
+- v5_ext / v107 train wrist-only (v107's two table fovs would mix).
+- Recorded `intrinsic_cv` in these h5s has width / height swapped (cx 176, cy 312); do not
+  project with it as-is.
 
 ### 1. Every session: environment
 
@@ -433,12 +565,16 @@ train / `offline` / `check` still use the wrapper.
 |---|---|---|
 | `data/pact_place_corridor_v5` | `eval_act.py --task hallway` | Wired. Paper path. |
 | `data/pact_pick_n_place_v2/data/v1011d` | `eval_act_v1011d.py` | Wired. Randomized clutter. |
-| `data/pact_pick_n_place_v2/data/v12` | — | **Not wired.** Overlay + settle-park + pre-policy contact. |
+| `data/pact_pick_n_place_v2/data/v12` | `eval_act_place.py --env v12` | Wired 2026-09-22 (exp-shell ckpts; standing kitchen installed after `sample_task`). Wrapper overlay path stays parked. |
+| `data/pact_pick_n_place_v2/data/v6` | `eval_act_place.py --env v6` | Wired 2026-09-22. V10.10 two-object. |
+| `data/pact_pick_n_place_v2/data/v107_spaced` | `eval_act_place.py --env v107_spaced` | Wired 2026-09-22. Hub 200-ep set, exo+wrist. |
 | `data/pact_pick_n_place_v2/data/v12.1` | — | 5-ep table-cam preview. Not a suite. |
-| `data/pact_place_corridor/data/v107_spaced` | `eval_act_v107spaced.py` | Wired. Spaced bench. table+wrist. |
-| `data/pact_place_corridor/data/{v1010,v107,v5}` | — | Not a suite yet. |
-| `data/mixed_v1011_clutter_geometry` | — | Viz / clutter geometry. Not this eval. |
-| `data/table_smoke` | — | 10-ep schema check. Do not eval. |
+| `data/pact_place_corridor/data/v107_spaced` | `eval_act_v107spaced.py` | Wired. Spaced bench. table+wrist. **Renders table_camera at fovy 45; training was 58** ([§0.1](#env-codes)). `eval_v107_spaced_batman.sh` = fixed re-eval. |
+| `data/pact_place_corridor/data/v1010` | `eval_act_place.py --env v1010` | Wired 2026-09-22; table_camera at fovy 58 ([§0.1](#env-codes)). |
+| `data/pact_place_corridor/data/v5` (v5_ext) | `eval_act.py --task hallway` | Wrist-only ckpts on the hallway protocol. |
+| `data/pact_place_corridor/data/v107` | — | No V10.7 env config. Train only. |
+| `data/mixed_v1011_clutter_geometry` | `eval_act_place.py --env v1011c` | Wired 2026-09-22. |
+| `data/table_smoke` | — | 10-ep schema check. Converted; do not train or eval. |
 | `data/molmo-pi0-eval-videos` | — | Videos. Not MuJoCo policy eval. |
 
 ```bash
@@ -583,7 +719,11 @@ Field definitions: [§4.23](#423-results-troubleshooting-and-experiment-handoff)
 - Mix `--cameras wrist_camera` v1011d rates with exo+wrist. Train hdf5 is both cameras. Wrist-only is a hallway-style ablation. n=2 smoke is done in `simple_v1011d_wrist_only/`. n=50 **aborted at 4/50** on 2026-09-07 in `simple_v1011d_wrist_only_n50/` — not a rate. Do not cite 4/50.
 - Mix v1011d n=50 with hallway readout (40% / 12% / 88% random-house or 36% / 14% / 86% house=1). Different env, different ckpt family (PACT-raw vs readout).
 - Cite 21/33 from the incomplete v12 wrapper test as a success rate.
-- Claim `--task v12` works in `eval_act.py` (not wired).
+- Claim `--task v12` works in `eval_act.py` (not wired; v12 is `eval_act_place.py --env v12`).
+- Cite T-107 (fovy-45 table view) or any `--table_camera_fov 45` run as train-matched ([§0.1](#env-codes)).
+- "Fix" the molmospaces `exo_camera_1` fov globally: hub datasets were recorded at 45°.
+- Run `eval_act_place.py` for v1011d (stays `eval_act_v1011d.py`) or train on v12.1 / table_smoke.
+- Resume a partial eval dir; the shells refuse it (`TAG=_rerun` for a fresh dir).
 - Change eval code mid-suite and keep writing into the same `--output_dir`.
 
 ### 12. Outside the wrapper

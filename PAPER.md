@@ -572,6 +572,7 @@ another seed base or duplicate episodes. No rollout was rerun or altered.
 | T-1011d clutter range | full proposal boxes (scale 1) | scale 0.25 for the three-arm set |
 | RGB path | decoded from recorded mp4, resized INTER_AREA | rendered live, resized INTER_AREA |
 | observation rate | every control step | policy re-observes every 50 steps (3.3 s), executes the chunk open-loop |
+| T-107 table camera | `table_camera`: robot-base-mounted view at `fr3_link0` offset (−1.05, −0.55, 1.30) m, aimed at (0.55, 0, 0.45) m, vertical field of view 58° (collector's publish render) | same pose, vertical field of view 45° (`eval_act_v107spaced.py` renames the simulator's `exo_camera_1`, which renders at 45° because the look-at camera path does not pass the configured 58°). Measured 2026-09-22 on 19 rebuilt frame-0 scenes: RGB mean absolute error ≈ 2.9 / 255 at 58° vs ≈ 29 at 45° |
 
 ### 2.10 Properties of the simulated setup
 
@@ -679,10 +680,13 @@ randomisation) placement 7/50, ever 10, hazard contact 10/50, contact-free 20/50
 14/50, 3/50, 22/50; wrist-only ablation stopped at 4/50 (0 placed). No three-arm run at scale 1.
 Evidence: `reports/eval_summaries/simple_v1011d_*.json`.
 
+**Cup side (measured 2026-09-22).** The evaluator's sampler draws the cup y uniform on ±0.375 m regardless of the bar side; the 200 demonstrations have the cup on the side away from the bar (199; 1 within 5 cm of the centre). Rebuilding the 50 scenes above (same seeds; construction redraws identical to the runs): 21 cups on the bar side, 27 away, 2 within 5 cm of the centre. Placement on the bar side: ACT 0/21, PACT-raw 0/21, PACT-readout 0/21; away: 12/27, 12/27, 13/27. Hazard contact away / bar side: ACT 7 / 10, PACT-raw 1 / 2, PACT-readout 2 / 8.
+
 ### 3.4 Spaced bench, T-107
 
 Three arms, seed 0, table + wrist, query-spaced skin history, seeds 2026–2075, cells and sides
 identical across arms, horizon 1050. Construction redraws: 33 of 50 episodes, identical across arms.
+The evaluation table camera had a 45° vertical field of view; the training table camera had 58° (same pose; §2.9).
 
 | arm | placement | ever placed | placement without counted collisions | hazard contact | contact-free | episodes with clutter contact | gripper close commanded |
 |---|---|---|---|---|---|---|---|

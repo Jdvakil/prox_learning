@@ -39,6 +39,10 @@ CKPT_DIR=/home/jaydv/code/prox_learning/submodules/act/ckpts/$TASK/$RUN
 
 echo "$RUN keep_fracs=${SENSOR_KEEP_FRACS} fixed=${SENSOR_MASK_FIXED}"
 
+if [ ! -f "$CKPT_DIR/$CKPT_NAME" ]; then
+  echo "MISSING $CKPT_DIR/$CKPT_NAME"; exit 4
+fi
+
 for P in ${SENSOR_KEEP_FRACS}; do
   PCT=$(python -c "print(int(round(100*float('${P}'))))")
   OUT_TAG="_keep${PCT}"
@@ -61,6 +65,13 @@ for P in ${SENSOR_KEEP_FRACS}; do
     EXTRA+=(--sensor_mask_seed "${SENSOR_MASK_SEED}")
   fi
   echo "${RUN}${OUT_TAG} p=${P}"
+  if [ -f "$OUTPUT_DIR/eval_summary.json" ] || [ -s "$OUTPUT_DIR/episodes.jsonl" ]; then
+    DONE_N=$(python -c "import json,sys,os; p=sys.argv[1]; print(json.load(open(p)).get('completed',0) if os.path.isfile(p) else 0)" "$OUTPUT_DIR/eval_summary.json")
+    if [ "$DONE_N" -ge "$NUM_ROLLOUTS" ]; then
+      echo "DONE $OUTPUT_DIR ($DONE_N/$NUM_ROLLOUTS)"; continue
+    fi
+    echo "REFUSE $OUTPUT_DIR is partial ($DONE_N/$NUM_ROLLOUTS). No resume: new dir."; continue
+  fi
   python eval_act.py \
     --ckpt_dir "$CKPT_DIR" \
     --ckpt_name "$CKPT_NAME" \

@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# ./scripts/exp/eval_v1011c.sh
-# v1011c: V10.11c mixed clutter geometry (99 eps, exo + wrist). 24 cells, horizon 1050.
+# ./scripts/exp/eval_v1011d_tstrain.sh
+# T-1011d rerun with the cup only on the demo side (--target_support train). Same ckpts, seeds
+# 0-49, easy clutter 0.25 and consecutive history as T-1011d, so in-support scenes repeat T-1011d
+# episodes and only the 21 under-bar cups are redrawn. Dirs ..._tstrain. The published T-1011d
+# dirs (eval_act_v1011d.py, uniform cups) are not touched.
 # One run. Knobs below; EXP / SEED / NUM_ROLLOUTS / SEED_BASE / HISTORY / TAG can be set from the
-# environment (EXP=ACT ./scripts/exp/eval_v1011c.sh). Protocol = eval_act_v1011d.py (fast path) with the
-# v1011c world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
+# environment (EXP=ACT ./scripts/exp/eval_v1011d_tstrain.sh). Protocol = eval_act_v1011d.py (fast path) with the
+# v1011d world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
 set -e
 cd /home/jaydv/code/prox_learning
 export OMP_NUM_THREADS=2
@@ -11,16 +14,16 @@ export MUJOCO_GL=egl
 export PYOPENGL_PLATFORM=egl
 export MLSPACES_ASSETS_DIR=/home/jaydv/code/prox_learning/assets
 
-ENV=v1011c
+ENV=v1011d
 EXP="${EXP:-PACT_READOUT}"  # ACT, PACT_RAW, PACT_READOUT
 SEED="${SEED:-0}"
-TASK=pact_place_corridor_v10_11c_100
+TASK=pact_pick_n_place_v2_v1011d
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5
 EPOCHS=2000
 NUM_ROLLOUTS="${NUM_ROLLOUTS:-50}"
-SEED_BASE="${SEED_BASE:-2026}"
+SEED_BASE="${SEED_BASE:-0}"
 SKIN=egl
 # consecutive = 8-step causal skin window at each query (readout train-matched; T-1011d protocol).
 HISTORY="${HISTORY:-consecutive}"
@@ -29,6 +32,7 @@ CAMERAS="exo_camera_1 wrist_camera"
 # train = cup only on the demo side (away from the bar); every v1011c demo has it there.
 # uniform = sampler default (half the cups under the bar, as in T-1011d). README §0.1.
 TARGET_SUPPORT="${TARGET_SUPPORT:-train}"
+CLUTTER_XY_SCALE="${CLUTTER_XY_SCALE:-0.25}"
 CKPT_NAME=policy_best.ckpt
 WANDB_PROJECT=PC_ACT_experiments_eval
 # Per-link keep rate. 1=all, 0=drop all, 0.5=Poisson 50% on each link.
@@ -67,7 +71,7 @@ if [ -f "$OUTPUT_DIR/eval_summary.json" ] || [ -s "$OUTPUT_DIR/episodes.jsonl" ]
   echo "REFUSE $OUTPUT_DIR is partial ($DONE_N/$NUM_ROLLOUTS). No resume: rerun with TAG=_rerun into a new dir."; exit 3
 fi
 
-EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}" --target_support "${TARGET_SUPPORT}")
+EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}" --target_support "${TARGET_SUPPORT}" --clutter_xy_scale "${CLUTTER_XY_SCALE}")
 if [ "${SAVE_FIRST_FRAME}" = "1" ]; then
   EXTRA+=(--save_first_frame)
 fi

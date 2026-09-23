@@ -1,0 +1,38 @@
+{
+  "source_row": "/mnt/laptop/data/pact_pick_n_place_v2/data/v12/rows/000_2f77fef1863bdeb3",
+  "source_scene": "/home/jaydv/code/prox_learning/custom_scenes/pact_place_corridor_v12.xml",
+  "task": "Pick up the glossy green tapered cup and place it in or on the blue tray",
+  "actual_cup_asset": "Cup_10",
+  "actual_struck_asset": "Wine_Bottle_1",
+  "source_task_success": true,
+  "source_frames": [
+    175,
+    260,
+    479
+  ],
+  "bottle_tilt_degrees": [
+    6.156649318399953e-06,
+    25.87307017877416,
+    90.00023615592212
+  ],
+  "provenance": "Staged counterfactual of a real dataset task, not an unmodified dataset collision episode. Recorded task adapted with a smooth wrist-pitch change during transfer, preserving grasp-center motion and recorded pick/place endpoints; bottle moves under MuJoCo contact dynamics.",
+  "changes": [
+    "Collection wine bottle placed on the robot left (+Y), among clutter on the bench at original scale and made dynamic.",
+    "Original hood opening, blue tray, cup and household meshes retained.",
+    "Wrist-pitch adjustment limited to 35 degrees, with smooth transitions and recorded task endpoints.",
+    "Wider fixed camera and reduced headlight intensity; mid-contact frame selected at a modest bottle tilt.",
+    "Three renders from one fixed camera; no labels or overlays."
+  ],
+  "bottle_initial_position_m": [
+    0.55,
+    0.25,
+    0.883896
+  ],
+  "contacted_robot_bodies": [
+    "robot_0/fr3_link5",
+    "robot_0/fr3_link6",
+    "robot_0/fr3_link7"
+  ],
+  "validation": "First bottle contact is link 5. Middle frame has force-bearing link 5 contact with a tilted bottle. Links 6 and 7 also contact the bottle during the fall; no gripper contact. Bottle settles horizontally on the bench. Cup reaches recorded successful tray pose.",
+  "collection_overlay": "Existing v12 loader rebuilds auxiliary kitchen poses, which are absent from frozen_config."
+}

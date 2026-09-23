@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# ./scripts/exp/eval_v1011c.sh
-# v1011c: V10.11c mixed clutter geometry (99 eps, exo + wrist). 24 cells, horizon 1050.
+# ./scripts/exp/eval_v107_spaced_batman.sh
+# T-107 checkpoints (batman v107_spaced, 210 eps, table_camera + wrist) re-evaluated on the
+# eval_act_place.py protocol with the train-matched camera. Dir tag _cam58 keeps the original
+# T-107 dirs (eval_act_v107spaced.py, fov 45 rename, query history) untouched.
+# table_camera = hybrid exo_camera_1 pose at fovy 58 (batman publish render). The old rename
+# rendered it at 45 (zoomed in); TABLE_CAMERA_FOV=45 reproduces that (dir tag _cam45). README §0.1.
 # One run. Knobs below; EXP / SEED / NUM_ROLLOUTS / SEED_BASE / HISTORY / TAG can be set from the
-# environment (EXP=ACT ./scripts/exp/eval_v1011c.sh). Protocol = eval_act_v1011d.py (fast path) with the
-# v1011c world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
+# environment (EXP=ACT ./scripts/exp/eval_v107_spaced_batman.sh). Protocol = eval_act_v1011d.py (fast path) with the
+# v107_spaced world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
 set -e
 cd /home/jaydv/code/prox_learning
 export OMP_NUM_THREADS=2
@@ -11,10 +15,10 @@ export MUJOCO_GL=egl
 export PYOPENGL_PLATFORM=egl
 export MLSPACES_ASSETS_DIR=/home/jaydv/code/prox_learning/assets
 
-ENV=v1011c
+ENV=v107_spaced
 EXP="${EXP:-PACT_READOUT}"  # ACT, PACT_RAW, PACT_READOUT
 SEED="${SEED:-0}"
-TASK=pact_place_corridor_v10_11c_100
+TASK=pact_place_corridor_v107_spaced
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5
@@ -25,10 +29,9 @@ SKIN=egl
 # consecutive = 8-step causal skin window at each query (readout train-matched; T-1011d protocol).
 HISTORY="${HISTORY:-consecutive}"
 SKIN_SUBSTEPS=snapshot
-CAMERAS="exo_camera_1 wrist_camera"
-# train = cup only on the demo side (away from the bar); every v1011c demo has it there.
-# uniform = sampler default (half the cups under the bar, as in T-1011d). README §0.1.
-TARGET_SUPPORT="${TARGET_SUPPORT:-train}"
+CAMERAS="table_camera wrist_camera"
+# 58 = train-matched batman table camera. 45 = old renamed exo view (T-107 path).
+TABLE_CAMERA_FOV="${TABLE_CAMERA_FOV:-58}"
 CKPT_NAME=policy_best.ckpt
 WANDB_PROJECT=PC_ACT_experiments_eval
 # Per-link keep rate. 1=all, 0=drop all, 0.5=Poisson 50% on each link.
@@ -48,10 +51,7 @@ OUT_TAG=""
 if [ "$PCT" -ne 100 ]; then
   OUT_TAG="_keep${PCT}"
 fi
-if [ "${TARGET_SUPPORT}" = "train" ]; then
-  OUT_TAG="${OUT_TAG}_tstrain"
-fi
-OUT_TAG="${OUT_TAG}${TAG}"
+OUT_TAG="${OUT_TAG}_cam${TABLE_CAMERA_FOV}${TAG}"
 OUTPUT_DIR=/home/jaydv/code/prox_learning/eval_output/${RUN}${OUT_TAG}
 
 echo "${RUN}${OUT_TAG} env=${ENV} n=${NUM_ROLLOUTS} p=${SENSOR_KEEP_FRAC}"
@@ -67,7 +67,7 @@ if [ -f "$OUTPUT_DIR/eval_summary.json" ] || [ -s "$OUTPUT_DIR/episodes.jsonl" ]
   echo "REFUSE $OUTPUT_DIR is partial ($DONE_N/$NUM_ROLLOUTS). No resume: rerun with TAG=_rerun into a new dir."; exit 3
 fi
 
-EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}" --target_support "${TARGET_SUPPORT}")
+EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}" --table_camera_fov "${TABLE_CAMERA_FOV}")
 if [ "${SAVE_FIRST_FRAME}" = "1" ]; then
   EXTRA+=(--save_first_frame)
 fi

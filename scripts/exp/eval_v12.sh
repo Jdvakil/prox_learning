@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# ./scripts/exp/eval_v1011c.sh
-# v1011c: V10.11c mixed clutter geometry (99 eps, exo + wrist). 24 cells, horizon 1050.
+# ./scripts/exp/eval_v12.sh
+# v12: V10.11 preview one bottle + standing kitchen (hub data/v12). 8 cells (center pose), horizon 1050, exo + wrist.
 # One run. Knobs below; EXP / SEED / NUM_ROLLOUTS / SEED_BASE / HISTORY / TAG can be set from the
-# environment (EXP=ACT ./scripts/exp/eval_v1011c.sh). Protocol = eval_act_v1011d.py (fast path) with the
-# v1011c world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
+# environment (EXP=ACT ./scripts/exp/eval_v12.sh). Protocol = eval_act_v1011d.py (fast path) with the
+# v12 world swapped in by eval_act_place.py. Skips a finished dir; refuses a partial one (no resume).
 set -e
 cd /home/jaydv/code/prox_learning
 export OMP_NUM_THREADS=2
@@ -11,10 +11,10 @@ export MUJOCO_GL=egl
 export PYOPENGL_PLATFORM=egl
 export MLSPACES_ASSETS_DIR=/home/jaydv/code/prox_learning/assets
 
-ENV=v1011c
+ENV=v12
 EXP="${EXP:-PACT_READOUT}"  # ACT, PACT_RAW, PACT_READOUT
 SEED="${SEED:-0}"
-TASK=pact_place_corridor_v10_11c_100
+TASK=pact_pick_n_place_v2_v12
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5
@@ -26,9 +26,6 @@ SKIN=egl
 HISTORY="${HISTORY:-consecutive}"
 SKIN_SUBSTEPS=snapshot
 CAMERAS="exo_camera_1 wrist_camera"
-# train = cup only on the demo side (away from the bar); every v1011c demo has it there.
-# uniform = sampler default (half the cups under the bar, as in T-1011d). README §0.1.
-TARGET_SUPPORT="${TARGET_SUPPORT:-train}"
 CKPT_NAME=policy_best.ckpt
 WANDB_PROJECT=PC_ACT_experiments_eval
 # Per-link keep rate. 1=all, 0=drop all, 0.5=Poisson 50% on each link.
@@ -48,9 +45,6 @@ OUT_TAG=""
 if [ "$PCT" -ne 100 ]; then
   OUT_TAG="_keep${PCT}"
 fi
-if [ "${TARGET_SUPPORT}" = "train" ]; then
-  OUT_TAG="${OUT_TAG}_tstrain"
-fi
 OUT_TAG="${OUT_TAG}${TAG}"
 OUTPUT_DIR=/home/jaydv/code/prox_learning/eval_output/${RUN}${OUT_TAG}
 
@@ -67,7 +61,7 @@ if [ -f "$OUTPUT_DIR/eval_summary.json" ] || [ -s "$OUTPUT_DIR/episodes.jsonl" ]
   echo "REFUSE $OUTPUT_DIR is partial ($DONE_N/$NUM_ROLLOUTS). No resume: rerun with TAG=_rerun into a new dir."; exit 3
 fi
 
-EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}" --target_support "${TARGET_SUPPORT}")
+EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}")
 if [ "${SAVE_FIRST_FRAME}" = "1" ]; then
   EXTRA+=(--save_first_frame)
 fi

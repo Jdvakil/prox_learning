@@ -1,0 +1,62 @@
+{
+  "source_scene": "/home/jaydv/code/prox_learning/submodules/molmospaces/molmo_spaces/data_generation/custom_scenes/fumehood_clutter.xml",
+  "robot": "/home/jaydv/code/prox_learning/assets/robots/franka_skin/model_hybrid.xml",
+  "kind": "Staged MuJoCo illustration: prescribed arm joint path and cup attachment; bottle moves under mj_step contact dynamics. Not a policy evaluation.",
+  "frame_times": [
+    0.25,
+    2.3000000000000003,
+    4.8
+  ],
+  "frame_bottle_tilt_degrees": [
+    0.0007809191766793363,
+    34.14760628938729,
+    89.99346148987968
+  ],
+  "first_arm_contact": {
+    "t": 1.696,
+    "tilt": 0.0003929705948900256,
+    "contacts": [
+      {
+        "bodies": [
+          "hazard_bottle",
+          "robot/fr3_link6"
+        ],
+        "position": [
+          0.4131127082478979,
+          -0.13891636543393654,
+          1.153447353699726
+        ],
+        "force_N": 0.0
+      }
+    ]
+  },
+  "last_arm_contact": {
+    "t": 2.202,
+    "tilt": 23.60775003207661,
+    "contacts": [
+      {
+        "bodies": [
+          "hazard_bottle",
+          "robot/fr3_link6"
+        ],
+        "position": [
+          0.32323501202889693,
+          -0.2795704085897709,
+          1.1012864942119913
+        ],
+        "force_N": 0.0
+      }
+    ]
+  },
+  "contacted_robot_bodies": [
+    "robot/fr3_link5",
+    "robot/fr3_link6"
+  ],
+  "middle_frame": "Bottle toppling immediately after arm contact; no image overlays.",
+  "modifications": [
+    "Existing clutter populated; cabinet shifted back 0.45 m; adjustable hood jambs widened and sash raised.",
+    "Bench extension, free dynamic bottle, geometric hollow cup and cart goal disk added.",
+    "Room shell hidden for external camera; all three frames use identical scene and camera."
+  ],
+  "validation": "Positive-force arm contact; no bottle/gripper contacts; final bottle horizontal; cup at cart destination."
+}

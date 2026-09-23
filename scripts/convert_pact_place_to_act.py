@@ -133,6 +133,7 @@ def convert(
     max_episodes: int | None,
     require_clean: bool,
     task_name: str | None = None,
+    hold_half_rate_video: bool = False,
 ) -> None:
     dst_dir.mkdir(parents=True, exist_ok=True)
     rows = _row_dirs(src)
@@ -143,6 +144,7 @@ def convert(
     n_skip_dirty = 0
     n_skip_video = 0
     n_skip_action = 0
+    n_half_rate_held = 0
     max_T = 0
     sides: dict[str, int] = {}
     camera_names: list[str] | None = None
@@ -194,12 +196,20 @@ def convert(
             qpos = np.stack([_decode_qpos_qvel(grp["obs/agent/qpos"][t]) for t in range(T)])
             qvel = np.stack([_decode_qpos_qvel(grp["obs/agent/qvel"][t]) for t in range(T)])
             images: dict[str, np.ndarray] = {}
+            held: list[str] = []
             bad_video = False
             for cam in camera_names:
                 frames = _video_frames(found[cam], image_h, image_w)
-                if frames.shape[0] < T:
+                n_frames = int(frames.shape[0])
+                if n_frames < T and hold_half_rate_video and (T + 1) // 2 <= n_frames <= T // 2 + 1:
+                    # Camera recorded on even control steps only (v107 table_camera in
+                    # 25 of 48 rows: floor(T/2)+1 frames). Hold each frame for two
+                    # steps; frame k -> steps 2k and 2k+1.
+                    frames = frames[np.minimum(np.arange(T) // 2, n_frames - 1)]
+                    held.append(cam)
+                elif n_frames < T:
                     print(
-                        f"[skip] {row.name}: {frames.shape[0]} {cam} frames < {T}"
+                        f"[skip] {row.name}: {n_frames} {cam} frames < {T}"
                     )
                     n_skip_video += 1
                     bad_video = True
@@ -207,6 +217,8 @@ def convert(
                 images[cam] = frames[:T]
             if bad_video:
                 continue
+            if held:
+                n_half_rate_held += 1
             proximity = None
             if with_proximity:
                 proximity = _episode_proximity(grp, T, sensor_order, pool=prox_pool)
@@ -227,6 +239,7 @@ def convert(
                 dst.attrs["inbound_deflected"] = bool(scene.get("inbound_deflected", False))
                 dst.attrs["outbound_deflected"] = bool(scene.get("outbound_deflected", False))
                 dst.attrs["clean_success"] = _row_is_clean(res)
+                dst.attrs["half_rate_video_held"] = ",".join(held)
                 dst.create_dataset("action", data=actions, dtype="float32")
                 obs = dst.create_group("observations")
                 obs.create_dataset("qpos", data=qpos.astype(np.float32))
@@ -267,6 +280,8 @@ def convert(
         "n_skip_dirty": n_skip_dirty,
         "n_skip_video": n_skip_video,
         "n_skip_action": n_skip_action,
+        "hold_half_rate_video": hold_half_rate_video,
+        "n_half_rate_held": n_half_rate_held,
         "intrusion_sides": sides,
         "image_h": image_h,
         "image_w": image_w,
@@ -275,7 +290,7 @@ def convert(
     print(
         f"\n[convert-place] DONE — wrote {global_idx} episodes to {dst_dir}\n"
         f"[convert-place] skipped dirty={n_skip_dirty} video={n_skip_video} "
-        f"action={n_skip_action} sides={sides}\n"
+        f"action={n_skip_action} sides={sides} half_rate_held={n_half_rate_held}\n"
         f"[convert-place] cameras={camera_names}\n"
         f"[convert-place] >>> set TASK_CONFIGS[{task_hint!r}]: "
         f"num_episodes={global_idx}, episode_len={max_T + 2}, "
@@ -303,6 +318,12 @@ def main() -> None:
         action="store_true",
         help="keep rows whose success flag is false",
     )
+    parser.add_argument(
+        "--hold_half_rate_video",
+        action="store_true",
+        help="a camera mp4 recorded on even control steps only (floor(T/2)+1 frames) "
+        "is held for two steps instead of skipping the row",
+    )
     args = parser.parse_args()
     convert(
         src=args.src,
@@ -314,6 +335,7 @@ def main() -> None:
         max_episodes=args.max_episodes,
         require_clean=not args.keep_dirty,
         task_name=args.task_name,
+        hold_half_rate_video=args.hold_half_rate_video,
     )
 
 

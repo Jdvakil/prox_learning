@@ -5,8 +5,8 @@ cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
 
 WANDB_PROJECT=PC_ACT_experiments
-EXP=PACT_READOUT #ACT, PACT_RAW, PACT_READOUT
-SEED=0
+EXP="${EXP:-PACT_READOUT}"  # ACT, PACT_RAW, PACT_READOUT
+SEED="${SEED:-0}"
 TASK=pact_place_corridor_v5
 CHUNK_SIZE=50
 BATCH_SIZE=8
@@ -17,6 +17,15 @@ EPOCHS=2000
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
 
 echo "$RUN"
+
+RUN_DIR="ckpts/$TASK/$RUN"
+if [ -f "$RUN_DIR/policy_best.ckpt" ]; then
+  echo "DONE $RUN_DIR has policy_best.ckpt. Change SEED to train another."; exit 0
+fi
+if [ -d "$RUN_DIR" ] && [ -n "$(ls -A "$RUN_DIR")" ]; then
+  echo "REFUSE $RUN_DIR exists without policy_best.ckpt (running or crashed). Move it aside first."; exit 3
+fi
+
 
 if [ "$EXP" = ACT ]; then
   extra=

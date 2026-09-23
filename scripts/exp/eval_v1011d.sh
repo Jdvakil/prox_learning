@@ -8,19 +8,20 @@ export MUJOCO_GL=egl
 export PYOPENGL_PLATFORM=egl
 export MLSPACES_ASSETS_DIR=/home/jaydv/code/prox_learning/assets
 
-EXP=ACT #ACT, PACT_RAW, PACT_READOUT
-SEED=0
+EXP="${EXP:-ACT}"  # ACT, PACT_RAW, PACT_READOUT
+SEED="${SEED:-0}"
 TASK=pact_pick_n_place_v2_v1011d
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5
 EPOCHS=2000
-NUM_ROLLOUTS=50
+NUM_ROLLOUTS="${NUM_ROLLOUTS:-50}"
 SEED_BASE=0
 SKIN=egl
 HISTORY=consecutive
 SKIN_SUBSTEPS=snapshot
-CLUTTER_XY_SCALE=0.25
+# 0.25 = easy (T-1011d three-arm dirs, untagged). 1 = full V10.11d randomize -> dir tag _xy1.
+CLUTTER_XY_SCALE="${CLUTTER_XY_SCALE:-0.25}"
 CAMERAS="exo_camera_1 wrist_camera"
 CKPT_NAME=policy_best.ckpt
 WANDB_PROJECT=PC_ACT_experiments_eval
@@ -43,6 +44,8 @@ fi
 if [ "${SENSOR_MASK_FIXED}" = "1" ]; then
   OUT_TAG="${OUT_TAG}_fixed"
 fi
+XY_TAG=$(python -c "s=float('${CLUTTER_XY_SCALE}'); print('' if abs(s-0.25)<1e-9 else '_xy%g' % s)")
+OUT_TAG="${OUT_TAG}${XY_TAG}"
 OUTPUT_DIR=/home/jaydv/code/prox_learning/eval_output/${RUN}${OUT_TAG}
 
 EXTRA=(--sensor_keep_frac "${SENSOR_KEEP_FRAC}")
@@ -53,7 +56,18 @@ if [ "${SENSOR_MASK_FIXED}" = "1" ]; then
   EXTRA+=(--sensor_mask_fixed)
 fi
 
-echo "${RUN}${OUT_TAG} p=${SENSOR_KEEP_FRAC}"
+echo "${RUN}${OUT_TAG} p=${SENSOR_KEEP_FRAC} clutter_xy_scale=${CLUTTER_XY_SCALE}"
+
+if [ ! -f "$CKPT_DIR/$CKPT_NAME" ]; then
+  echo "MISSING $CKPT_DIR/$CKPT_NAME (not trained yet)"; exit 4
+fi
+if [ -f "$OUTPUT_DIR/eval_summary.json" ] || [ -s "$OUTPUT_DIR/episodes.jsonl" ]; then
+  DONE_N=$(python -c "import json,sys,os; p=sys.argv[1]; print(json.load(open(p)).get('completed',0) if os.path.isfile(p) else 0)" "$OUTPUT_DIR/eval_summary.json")
+  if [ "$DONE_N" -ge "$NUM_ROLLOUTS" ]; then
+    echo "DONE $OUTPUT_DIR ($DONE_N/$NUM_ROLLOUTS)"; exit 0
+  fi
+  echo "REFUSE $OUTPUT_DIR is partial ($DONE_N/$NUM_ROLLOUTS). No resume: new dir."; exit 3
+fi
 
 if [ "${EAGER_CAMERAS}" = "1" ]; then
   EXTRA+=(--eager_cameras --keep_export_sensors)

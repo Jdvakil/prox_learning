@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# ./scripts/exp/train_v1010.sh
+# ./scripts/exp/train_v5_ext.sh
+# v5 ext: pact_place_corridor/data/v5 (193 eps, same corridor v2 scene as hallway v5; trained wrist-only). Eval: eval_v5_ext.sh (eval_act.py --task hallway).
 set -e
 cd /home/jaydv/code/prox_learning/submodules/act
 export PYTHONPATH=$PWD
@@ -7,12 +8,11 @@ export PYTHONPATH=$PWD
 WANDB_PROJECT=PC_ACT_experiments
 EXP="${EXP:-PACT_READOUT}"  # ACT, PACT_RAW, PACT_READOUT
 SEED="${SEED:-0}"
-TASK=pact_place_corridor_v1010
+TASK=pact_place_corridor_v5_ext
 CHUNK_SIZE=50
 BATCH_SIZE=8
 LR=1e-5
 EPOCHS=2000
-
 # Brace every var. Bare $TASK_ is an empty name, not "$TASK" + "_".
 RUN="${TASK}_${EXP}_s${SEED}_bs${BATCH_SIZE}_cs${CHUNK_SIZE}_lr${LR}_e${EPOCHS}"
 
@@ -43,4 +43,5 @@ python imitate_episodes.py \
   --kl_weight 10 --chunk_size "$CHUNK_SIZE" --hidden_dim 512 --dim_feedforward 3200 \
   --batch_size "$BATCH_SIZE" --lr "$LR" --seed "$SEED" --num_epochs "$EPOCHS" \
   --wandb_project "$WANDB_PROJECT" --wandb_run_name "$RUN" \
-  $extra
+  $extra \
+  "$@"
