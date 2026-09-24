@@ -776,7 +776,87 @@ Paired exact McNemar (first arm only vs second arm only):
 Unpaired Fisher, contact-free: ACT vs readout p = 0.057; raw vs readout p = 0.088. No mounted-fixture
 contact in any arm. Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v6_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs100_lr1e-5_e2000.json`.
 
-### 3.9 Runs not done
+### 3.11 Kitchen bench, T-v12 (2026-09-23)
+
+V10.11 preview bench: one inbound bottle plus ten standing kitchen objects (installed after scene
+construction, as in data collection); 165 demonstrations (`pact_pick_n_place_v2/data/v12`), exo +
+wrist, 8 cells (4 layout families × 2 bar sides, centre pendant). Three arms, seed 0, batch 8,
+chunk 50, lr 1e-5, 2000 epochs. Evaluator `eval_act_place.py --env v12` (fast path), 50 rollouts,
+seeds 2026–2075, cells `i mod 8`, horizon 1050, open-loop 50-step chunks, gated EGL skin,
+consecutive (8-step) skin history, terminal success. Seeds and cells identical across arms;
+construction redraws 12 of 50, identical across arms.
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 30/50 (60 %) | 30 | 7/50 (14 %) | 34/50 (68 %) | 23/50 | 12 | 2 |
+| PACT-raw | 26/50 (52 %) | 26 | **0/50** | **44/50 (88 %)** | 24/50 | 6 | 0 |
+| PACT-readout | 26/50 (52 %) | 28 | 3/50 (6 %) | 36/50 (72 %) | 19/50 | 13 | 0 |
+
+Paired exact McNemar (first arm only vs second arm only):
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions | clutter-contact episodes |
+|---|---|---|---|---|---|
+| ACT vs PACT-readout | 5 vs 1, p = 0.22 | 6 vs 8, p = 0.79 | 12 vs 8, p = 0.50 | 11 vs 7, p = 0.48 | 4 vs 5, p = 1.0 |
+| ACT vs PACT-raw | 7 vs 0, p = 0.016 | 2 vs 12, p = 0.013 | 11 vs 7, p = 0.48 | 7 vs 8, p = 1.0 | 8 vs 2, p = 0.11 |
+| PACT-raw vs PACT-readout | 0 vs 3, p = 0.25 | 10 vs 2, p = 0.039 | 8 vs 8, p = 1.0 | 10 vs 5, p = 0.30 | 2 vs 9, p = 0.065 |
+
+Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v12_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
+
+### 3.12 Mixed clutter geometry, T-1011c (2026-09-24)
+
+Six fixed-seat clutter bodies (three runtime primitives), 99 demonstrations, exo + wrist. Cup restricted to the demonstration side (`--target_support train`; the sampler's other-side cups are redrawn). Construction redraws 27 of 50, identical across arms. Evaluator `eval_act_place.py` (the `eval_act_v1011d.py` protocol with the world swapped; fast path), 50 rollouts, seeds 2026–2075, cells `i mod 24`, horizon 1050, open-loop 50-step chunks, gated EGL skin, consecutive (8-step) skin history, terminal success; three arms, seed 0, batch 8, chunk 50, lr 1e-5, 2000 epochs; seeds and cells identical across arms (paired exact McNemar, first arm only vs second arm only).
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 12/50 (24 %) | 12 | 10/50 (20 %) | 18/50 (36 %) | 8/50 | 23 | 6 |
+| PACT-raw | 12/50 (24 %) | 13 | **0/50** | 25/50 (50 %) | 8/50 | 23 | 3 |
+| PACT-readout | 11/50 (22 %) | 11 | 1/50 (2 %) | **27/50 (54 %)** | 5/50 | 21 | 0 |
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions |
+|---|---|---|---|---|
+| ACT vs PACT-readout | 9 vs 0, p = 0.004 | 3 vs 12, p = 0.035 | 9 vs 8, p = 1.0 | 6 vs 3, p = 0.51 |
+| ACT vs PACT-raw | 10 vs 0, p = 0.002 | 3 vs 10, p = 0.092 | 7 vs 7, p = 1.0 | 5 vs 5, p = 1.0 |
+| PACT-raw vs PACT-readout | 0 vs 1, p = 1.0 | 4 vs 6, p = 0.75 | 8 vs 7, p = 1.0 | 5 vs 2, p = 0.45 |
+
+Evidence: `reports/eval_summaries/pact_place_corridor_v10_11c_100_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000_tstrain.json`.
+
+### 3.13 Four-object bench, T-1010 (2026-09-24)
+
+Four live household objects (two bottles, two plates) and a static pendant, 215 demonstrations, table + wrist. Table camera rendered at the training field of view (58°, same pose as `exo_camera_1`; §2.9). Construction redraws 6 of 50. Evaluator `eval_act_place.py` (the `eval_act_v1011d.py` protocol with the world swapped; fast path), 50 rollouts, seeds 2026–2075, cells `i mod 24`, horizon 1050, open-loop 50-step chunks, gated EGL skin, consecutive (8-step) skin history, terminal success; three arms, seed 0, batch 8, chunk 50, lr 1e-5, 2000 epochs; seeds and cells identical across arms (paired exact McNemar, first arm only vs second arm only).
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 25/50 (50 %) | 26 | 2/50 (4 %) | 32/50 (64 %) | 18/50 | 18 | 1 |
+| PACT-raw | 23/50 (46 %) | 28 | 1/50 (2 %) | 35/50 (70 %) | 17/50 | 15 | 0 |
+| PACT-readout | 31/50 (62 %) | 31 | 1/50 (2 %) | 34/50 (68 %) | 21/50 | 15 | 0 |
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions |
+|---|---|---|---|---|
+| ACT vs PACT-readout | 1 vs 0, p = 1.0 | 6 vs 8, p = 0.79 | 8 vs 14, p = 0.29 | 7 vs 10, p = 0.63 |
+| ACT vs PACT-raw | 1 vs 0, p = 1.0 | 6 vs 9, p = 0.61 | 10 vs 8, p = 0.82 | 8 vs 7, p = 1.0 |
+| PACT-raw vs PACT-readout | 0 vs 0, p = 1.0 | 6 vs 5, p = 1.0 | 8 vs 16, p = 0.15 | 8 vs 12, p = 0.50 |
+
+Evidence: `reports/eval_summaries/pact_place_corridor_v1010_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
+
+### 3.14 Spaced bench, hub data, T-107h (2026-09-24)
+
+Eight tall objects spread over the bench (`pact_pick_n_place_v2/data/v107_spaced`, 200 demonstrations, exo + wrist; not the 210-demonstration T-107 set). Construction redraws 33 of 50. Evaluator `eval_act_place.py` (the `eval_act_v1011d.py` protocol with the world swapped; fast path), 50 rollouts, seeds 2026–2075, cells `i mod 24`, horizon 1050, open-loop 50-step chunks, gated EGL skin, consecutive (8-step) skin history, terminal success; three arms, seed 0, batch 8, chunk 50, lr 1e-5, 2000 epochs; seeds and cells identical across arms (paired exact McNemar, first arm only vs second arm only).
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 24/50 (48 %) | 24 | 5/50 (10 %) | 20/50 (40 %) | 8/50 | 27 | 1 |
+| PACT-raw | 26/50 (52 %) | 29 | 3/50 (6 %) | 29/50 (58 %) | 14/50 | 18 | 0 |
+| PACT-readout | 29/50 (58 %) | 32 | 1/50 (2 %) | 26/50 (52 %) | 16/50 | 24 | 0 |
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions |
+|---|---|---|---|---|
+| ACT vs PACT-readout | 4 vs 0, p = 0.125 | 10 vs 16, p = 0.33 | 6 vs 11, p = 0.33 | 4 vs 12, p = 0.077 |
+| ACT vs PACT-raw | 4 vs 2, p = 0.69 | 10 vs 19, p = 0.14 | 9 vs 11, p = 0.82 | 5 vs 11, p = 0.21 |
+| PACT-raw vs PACT-readout | 2 vs 0, p = 0.50 | 11 vs 8, p = 0.65 | 11 vs 14, p = 0.69 | 8 vs 10, p = 0.82 |
+
+Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
+
+### 3.15 Runs not done
 
 | run | set | why | status |
 |---|---|---|---|
@@ -784,9 +864,7 @@ contact in any arm. Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v6_{A
 | hallway PACT-raw s1, PACT-readout s1 n = 50 | H-B | second training seed | checkpoints trained; evaluation dirs empty |
 | hallway readout `--history consecutive` n = 50 | H-B | remove the history mismatch | not run |
 | hallway sensor dropout: readout keep 0.5 / 0.25 / 0, raw keep 0.75 / 0.5 / 0.25 / 0, n = 50 each | H-B-keep | inference-time dependence on the skin; keep 0 is the mandatory control | readout keep 0.75 done; keep 0.5 at 6/50; rest not run. ≈ 1 h per cell on the fast path (`SENSOR_KEEP_FRACS="0.5 0.25 0" EXP=PACT_READOUT ./scripts/exp/eval_v1_hallway.sh`; the partial keep50 dir must be moved aside first — no resume) |
-| v1010 (3 arms × 2 seeds), v1011c (3 arms) | T-1010 / T-1011c | further task families | checkpoints trained; evaluator wired 2026-09-22 (`eval_v1010.sh`, table camera at 58°; `eval_v1011c.sh`, demo-side cups); not run |
-| v12 three arms n = 50 | T-v12 | kitchen-clutter bench | running 2026-09-23 (≈ 30/50 per arm) |
-| v107_spaced hub three arms | T-107h | spaced bench, hub data, exo camera | not trained |
+| v1010 second training seed (3 arms) | T-1010 | seed variation | checkpoints trained; not evaluated |
 | T-1011d rerun, cup on the demo side (`--target_support train`) | T-1011d | removes the 21/50 bar-side cups no demonstration covers | not run |
 | T-107 rerun, table camera at 58° | T-107 | removes the 45° / 58° camera mismatch | not run |
 | v1011d three arms, full randomise (`--clutter_xy_scale 1`) n = 50 | T-1011d | the easy-scale table is optimistic vs the training distribution | checkpoints trained; not run. ≈ 2 h per PACT arm on the fast path |

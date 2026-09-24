@@ -1,6 +1,6 @@
 # Results — every closed-loop eval on disk
 
-Snapshot 2026-09-23 22:45 (v12 still running). Built from `eval_output/*/episodes.jsonl` (recounted per episode) and
+Snapshot 2026-09-24 07:45. Built from `eval_output/*/episodes.jsonl` (recounted per episode) and
 `reports/eval_summaries/*.json`. Refresh the ledger with `python scripts/exp_tracker.py`
 (writes `reports/experiments_evals.csv`). Facts only; statistics and caveats are in `PAPER.md` §3.
 
@@ -24,18 +24,19 @@ Snapshot 2026-09-23 22:45 (v12 still running). Built from `eval_output/*/episode
 
 Train = `policy_best.ckpt` on disk (bs8, chunk 50, lr 1e-5, 2000 epochs; v6 chunk 100).
 Eval = closed-loop run; numbers are success / bar hit / coll-free out of n.
+Status as of 2026-09-24 08:20. Next after this batch: ablations on v1011c and v6 (skin keep 0 / 0.5, query-only history).
 
 | code | what it is | ACT | PACT-raw | PACT-readout | next |
 |---|---|---|---|---|---|
 | v5 | hallway corridor, side bar, no clutter; wrist (152 demos) | s0, s1 trained · s1 eval 15 / 20 / 30 | s0, s1 · s0 eval 21 / 13 / 37 | s0, s1 · s0 eval 21 / 9 / 41 | optional: ACT s0, raw s1, readout s1 |
-| v5_ext | same corridor, 193 more demos; wrist | not trained | not trained | not trained | optional |
+| v5_ext | same corridor, 193 more demos; wrist | s0 training (epoch ~200/2000, ETA ~09:45 Sep 24) | s0 training (same) | s0 training (same) | running: train → `eval_v5_ext.sh` (ETA ~12:00) |
 | v107 | V10.7 pendant + V9.5 clutter (48 demos); no evaluator | not trained | not trained | not trained | optional (train only) |
-| v107_spaced hub | spaced bench, 8 tall objects (200 demos); exo + wrist | not trained | not trained | not trained | **train, then eval** |
+| v107_spaced hub | spaced bench, 8 tall objects (200 demos); exo + wrist | s0 · 24 / 5 / 20 | s0 · 26 / 3 / 29 | s0 · 29 / 1 / 26 | done |
 | v107_spaced batman | same bench (210 demos); table + wrist | s0 · eval 13 / 8 / 19 (cam 45°) | s0 · 0 / 9 / 19 (45°) | s0 · 2 / 6 / 20 (45°) | optional: `eval_v107_spaced_batman.sh` (58°) |
-| v1010 | four household objects + pendant (215 demos); table + wrist | s0, s1 · not evaluated | s0, s1 · not evaluated | s0, s1 · not evaluated | **eval** `eval_v1010.sh` |
-| v1011c | six fixed-seat clutter bodies (99 demos); exo + wrist | s0 · not evaluated | s0 · not evaluated | s0 · not evaluated | **eval** `eval_v1011c.sh` |
-| v1011d | v1011c clutter, positions randomized (200 demos); exo + wrist | s0 · 13 / 18 / 15 (cup either side) | s0 · 12 / 3 / 26 | s0 · 13 / 10 / 22 | **eval** `eval_v1011d_tstrain.sh` (demo-side cups) |
-| v12 | one bottle + ten standing kitchen objects (165 demos); exo + wrist | s0 · running 47/50: 28 / 6 / 32 | s0 · running 49/50: 25 / 0 / 43 | s0 · running 49/50: 26 / 3 / 36 | finishing tonight |
+| v1010 | four household objects + pendant (215 demos); table + wrist | s0, s1 · s0 eval 25 / 2 / 32 | s0, s1 · s0 eval 23 / 1 / 35 | s0, s1 · s0 eval 31 / 1 / 34 | optional: s1 evals |
+| v1011c | six fixed-seat clutter bodies (99 demos); exo + wrist | s0 · 12 / 10 / 18 | s0 · 12 / 0 / 25 | s0 · 11 / 1 / 27 | done (demo-side cups) |
+| v1011d | v1011c clutter, positions randomized (200 demos); exo + wrist | s0 · 13 / 18 / 15 (cup either side) | s0 · 12 / 3 / 26 | s0 · 13 / 10 / 22 | running: `eval_v1011d_tstrain.sh` (demo-side cups), 2–4/50 eps at 08:20, ETA ~10:30–11:00 |
+| v12 | one bottle + ten standing kitchen objects (165 demos); exo + wrist | s0 · 30 / 7 / 34 | s0 · 26 / 0 / 44 | s0 · 26 / 3 / 36 | done |
 | v6 | two route bottles, V10.10 corridor (200 demos); exo + wrist; chunk 100 | s0 · 20 / 5 / 28 | s0 · 21 / 1 / 29 | s0 · 21 / 1 / 38 | done |
 | v12.1, table_smoke | 5- / 10-demo preview and schema sets | converted only | | | — |
 
@@ -107,11 +108,18 @@ Counts are `k/n (%)`. All rows are chunk 50 unless the chunk column says otherwi
 | v6 | T-v6, `eval_act_place.py`, seeds 2026+ | ACT (0) | 100 | 50 | 20 (40%) | 13 (26%) | 5 (10%) | 28 (56%) | 20 | `pact_pick_n_place_v2_v6_ACT_s0_*` |
 | v6 | T-v6 | PACT-raw (0) | 100 | 50 | 21 (42%) | 11 (22%) | 1 (2%) | 29 (58%) | 21 | `pact_pick_n_place_v2_v6_PACT_RAW_s0_*` |
 | v6 | T-v6 | PACT-readout (0) | 100 | 50 | 21 (42%) | 19 (38%) | 1 (2%) | 38 (76%) | 23 | `pact_pick_n_place_v2_v6_PACT_READOUT_s0_*` |
-| v12 | T-v12, running (partial) | ACT (0) | 50 | 47 | 28 (60%) | 22 (47%) | 6 (13%) | 32 (68%) | 28 | `pact_pick_n_place_v2_v12_ACT_s0_*` |
-| v12 | T-v12, running (partial) | PACT-raw (0) | 50 | 49 | 25 (51%) | 23 (47%) | 0 (0%) | 43 (88%) | 25 | `pact_pick_n_place_v2_v12_PACT_RAW_s0_*` |
-| v12 | T-v12, running (partial) | PACT-readout (0) | 50 | 49 | 26 (53%) | 19 (39%) | 3 (6%) | 36 (73%) | 28 | `pact_pick_n_place_v2_v12_PACT_READOUT_s0_*` |
-| v1010 | — | 3 arms × 2 seeds trained | 50 | 0 | not evaluated | | | | | `eval_v1010.sh` |
-| v1011c | — | 3 arms × s0 trained | 50 | 0 | not evaluated | | | | | `eval_v1011c.sh` |
+| v12 | T-v12, `eval_act_place.py`, seeds 2026+ | ACT (0) | 50 | 50 | 30 (60%) | 23 (46%) | 7 (14%) | 34 (68%) | 30 | `pact_pick_n_place_v2_v12_ACT_s0_*` |
+| v12 | T-v12 | PACT-raw (0) | 50 | 50 | 26 (52%) | 24 (48%) | 0 (0%) | 44 (88%) | 26 | `pact_pick_n_place_v2_v12_PACT_RAW_s0_*` |
+| v12 | T-v12 | PACT-readout (0) | 50 | 50 | 26 (52%) | 19 (38%) | 3 (6%) | 36 (72%) | 28 | `pact_pick_n_place_v2_v12_PACT_READOUT_s0_*` |
+| v1010 | T-1010, `eval_act_place.py`, table cam 58°, seeds 2026+ | ACT (0) | 50 | 50 | 25 (50%) | 18 (36%) | 2 (4%) | 32 (64%) | 26 | `pact_place_corridor_v1010_ACT_s0_*` |
+| v1010 | T-1010 | PACT-raw (0) | 50 | 50 | 23 (46%) | 17 (34%) | 1 (2%) | 35 (70%) | 28 | `pact_place_corridor_v1010_PACT_RAW_s0_*` |
+| v1010 | T-1010 | PACT-readout (0) | 50 | 50 | 31 (62%) | 21 (42%) | 1 (2%) | 34 (68%) | 31 | `pact_place_corridor_v1010_PACT_READOUT_s0_*` |
+| v1011c | T-1011c, demo-side cups (`_tstrain`), seeds 2026+ | ACT (0) | 50 | 50 | 12 (24%) | 8 (16%) | 10 (20%) | 18 (36%) | 12 | `pact_place_corridor_v10_11c_100_ACT_s0_*_tstrain` |
+| v1011c | T-1011c | PACT-raw (0) | 50 | 50 | 12 (24%) | 8 (16%) | 0 (0%) | 25 (50%) | 13 | `…_PACT_RAW_s0_*_tstrain` |
+| v1011c | T-1011c | PACT-readout (0) | 50 | 50 | 11 (22%) | 5 (10%) | 1 (2%) | 27 (54%) | 11 | `…_PACT_READOUT_s0_*_tstrain` |
+| v107_spaced hub | T-107h, exo + wrist, seeds 2026+ | ACT (0) | 50 | 50 | 24 (48%) | 8 (16%) | 5 (10%) | 20 (40%) | 24 | `pact_pick_n_place_v2_v107_spaced_ACT_s0_*` |
+| v107_spaced hub | T-107h | PACT-raw (0) | 50 | 50 | 26 (52%) | 14 (28%) | 3 (6%) | 29 (58%) | 29 | `pact_pick_n_place_v2_v107_spaced_PACT_RAW_s0_*` |
+| v107_spaced hub | T-107h | PACT-readout (0) | 50 | 50 | 29 (58%) | 16 (32%) | 1 (2%) | 26 (52%) | 32 | `pact_pick_n_place_v2_v107_spaced_PACT_READOUT_s0_*` |
 
 Source column: plain names are `eval_output/<name>/`; `*.json` are in `reports/eval_summaries/`.
 
@@ -119,6 +127,12 @@ Source column: plain names are `eval_output/<name>/`; `*.json` are in `reports/e
 
 - v6: paired McNemar, readout vs ACT coll-free 11 vs 1 (p = 0.006), clutter-contact episodes 1 vs 10
   (p = 0.012); placement flat. v6 is chunk 100 (all other rows 50). PAPER.md §3.10.
+- v12: paired McNemar, raw vs ACT bar hit 0 vs 7 (p = 0.016), coll-free 12 vs 2 (p = 0.013);
+  readout vs ACT n.s. (bar 1 vs 5, p = 0.22; coll-free 8 vs 6); placement flat. PAPER.md §3.11.
+- v1011c (demo-side cups): bar hit ACT vs readout 9 vs 0 (p = 0.004), ACT vs raw 10 vs 0 (p = 0.002);
+  coll-free ACT vs readout 3 vs 12 (p = 0.035); placement flat. PAPER.md §3.12.
+- v1010: no significant difference on any metric (bar hits 2 / 1 / 1). PAPER.md §3.13.
+- v107_spaced hub: trends only (readout bar 1 vs ACT 5, p = 0.125; strict 16 vs 8, p = 0.077). PAPER.md §3.14.
 - v1011d cup side: 21 of the 50 T-1011d cups start on the bar side; every arm placed 0/21 there
   (demos only have the cup away from the bar). `--target_support train` fixes the sampler.
 - v2 blur ladder: null at n = 25 (±40 points noise). v2 checkpoints and data were deleted
