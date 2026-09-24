@@ -1,6 +1,6 @@
 # Results — every closed-loop eval on disk
 
-Snapshot 2026-09-22. Built from `eval_output/*/episodes.jsonl` (recounted per episode) and
+Snapshot 2026-09-23 22:45 (v12 still running). Built from `eval_output/*/episodes.jsonl` (recounted per episode) and
 `reports/eval_summaries/*.json`. Refresh the ledger with `python scripts/exp_tracker.py`
 (writes `reports/experiments_evals.csv`). Facts only; statistics and caveats are in `PAPER.md` §3.
 
@@ -19,6 +19,25 @@ Snapshot 2026-09-22. Built from `eval_output/*/episodes.jsonl` (recounted per ep
 | v12 | kitchen | `pact_pick_n_place_v2_v12` | exo + wrist | 1050 |
 
 `v1` / `v2` are the fume-hood task-directory suffixes; the full map for v5 onward is README §0.1.
+
+## Status by environment
+
+Train = `policy_best.ckpt` on disk (bs8, chunk 50, lr 1e-5, 2000 epochs; v6 chunk 100).
+Eval = closed-loop run; numbers are success / bar hit / coll-free out of n.
+
+| code | what it is | ACT | PACT-raw | PACT-readout | next |
+|---|---|---|---|---|---|
+| v5 | hallway corridor, side bar, no clutter; wrist (152 demos) | s0, s1 trained · s1 eval 15 / 20 / 30 | s0, s1 · s0 eval 21 / 13 / 37 | s0, s1 · s0 eval 21 / 9 / 41 | optional: ACT s0, raw s1, readout s1 |
+| v5_ext | same corridor, 193 more demos; wrist | not trained | not trained | not trained | optional |
+| v107 | V10.7 pendant + V9.5 clutter (48 demos); no evaluator | not trained | not trained | not trained | optional (train only) |
+| v107_spaced hub | spaced bench, 8 tall objects (200 demos); exo + wrist | not trained | not trained | not trained | **train, then eval** |
+| v107_spaced batman | same bench (210 demos); table + wrist | s0 · eval 13 / 8 / 19 (cam 45°) | s0 · 0 / 9 / 19 (45°) | s0 · 2 / 6 / 20 (45°) | optional: `eval_v107_spaced_batman.sh` (58°) |
+| v1010 | four household objects + pendant (215 demos); table + wrist | s0, s1 · not evaluated | s0, s1 · not evaluated | s0, s1 · not evaluated | **eval** `eval_v1010.sh` |
+| v1011c | six fixed-seat clutter bodies (99 demos); exo + wrist | s0 · not evaluated | s0 · not evaluated | s0 · not evaluated | **eval** `eval_v1011c.sh` |
+| v1011d | v1011c clutter, positions randomized (200 demos); exo + wrist | s0 · 13 / 18 / 15 (cup either side) | s0 · 12 / 3 / 26 | s0 · 13 / 10 / 22 | **eval** `eval_v1011d_tstrain.sh` (demo-side cups) |
+| v12 | one bottle + ten standing kitchen objects (165 demos); exo + wrist | s0 · running 47/50: 28 / 6 / 32 | s0 · running 49/50: 25 / 0 / 43 | s0 · running 49/50: 26 / 3 / 36 | finishing tonight |
+| v6 | two route bottles, V10.10 corridor (200 demos); exo + wrist; chunk 100 | s0 · 20 / 5 / 28 | s0 · 21 / 1 / 29 | s0 · 21 / 1 / 38 | done |
+| v12.1, table_smoke | 5- / 10-demo preview and schema sets | converted only | | | — |
 
 ## Metrics
 
@@ -85,15 +104,21 @@ Counts are `k/n (%)`. All rows are chunk 50 unless the chunk column says otherwi
 | v1011d → v1010 | OOD: v1011d ckpt on v1010 sampler, horizon 800 | PACT-raw (0) | 50 | 48 | 0 (0%) | 0 (0%) | 3 (6%) | 32 (67%) | 0 | `pact_pick_n_place_v2_v1011d_raw_s0_n48` |
 | v1011d → v1010 | OOD, horizon 1050 | PACT-raw (0) | 50 | 48 | 0 (0%) | 0 (0%) | 0 (0%) | 37 (77%) | 0 | `…_raw_s0_n48_horizon1050` |
 | v1011d → v1010 | OOD, ray-based proximity | PACT-raw (0) | 50 | 50 | 0 (0%) | 0 (0%) | 0 (0%) | 28 (56%) | 0 | `v1011d_speedcheck_n50` |
+| v6 | T-v6, `eval_act_place.py`, seeds 2026+ | ACT (0) | 100 | 50 | 20 (40%) | 13 (26%) | 5 (10%) | 28 (56%) | 20 | `pact_pick_n_place_v2_v6_ACT_s0_*` |
+| v6 | T-v6 | PACT-raw (0) | 100 | 50 | 21 (42%) | 11 (22%) | 1 (2%) | 29 (58%) | 21 | `pact_pick_n_place_v2_v6_PACT_RAW_s0_*` |
+| v6 | T-v6 | PACT-readout (0) | 100 | 50 | 21 (42%) | 19 (38%) | 1 (2%) | 38 (76%) | 23 | `pact_pick_n_place_v2_v6_PACT_READOUT_s0_*` |
+| v12 | T-v12, running (partial) | ACT (0) | 50 | 47 | 28 (60%) | 22 (47%) | 6 (13%) | 32 (68%) | 28 | `pact_pick_n_place_v2_v12_ACT_s0_*` |
+| v12 | T-v12, running (partial) | PACT-raw (0) | 50 | 49 | 25 (51%) | 23 (47%) | 0 (0%) | 43 (88%) | 25 | `pact_pick_n_place_v2_v12_PACT_RAW_s0_*` |
+| v12 | T-v12, running (partial) | PACT-readout (0) | 50 | 49 | 26 (53%) | 19 (39%) | 3 (6%) | 36 (73%) | 28 | `pact_pick_n_place_v2_v12_PACT_READOUT_s0_*` |
 | v1010 | — | 3 arms × 2 seeds trained | 50 | 0 | not evaluated | | | | | `eval_v1010.sh` |
 | v1011c | — | 3 arms × s0 trained | 50 | 0 | not evaluated | | | | | `eval_v1011c.sh` |
-| v6 | — | trained | 50 | 0 | not evaluated | | | | | `eval_v6.sh` |
-| v12 | — | trained | 50 | 0 | not evaluated | | | | | `eval_v12.sh` |
 
 Source column: plain names are `eval_output/<name>/`; `*.json` are in `reports/eval_summaries/`.
 
 ## Notes
 
+- v6: paired McNemar, readout vs ACT coll-free 11 vs 1 (p = 0.006), clutter-contact episodes 1 vs 10
+  (p = 0.012); placement flat. v6 is chunk 100 (all other rows 50). PAPER.md §3.10.
 - v1011d cup side: 21 of the 50 T-1011d cups start on the bar side; every arm placed 0/21 there
   (demos only have the cup away from the bar). `--target_support train` fixes the sampler.
 - v2 blur ladder: null at n = 25 (±40 points noise). v2 checkpoints and data were deleted

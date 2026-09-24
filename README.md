@@ -51,6 +51,7 @@ training seed 0, hallway eval has no bar jitter. New in PAPER.md: T-107 paired t
 `pact_trunk` arm, hallway readout sensor-dropout keep 0.75 = 23/14/36 (n.s. vs keep 1; keep 0
 control not run), per-run training table. T-1011d and keep75 summaries
 copied to `reports/eval_summaries/`.
+**T-v6** (2026-09-23, V10.10 two-object, 200 demos, exo+wrist, **chunk 100**, `eval_act_place.py --env v6`, seeds 2026–2075, cycle_24, consecutive history, n=50): ACT 20/5/28, PACT-raw 21/1/29, **PACT-readout 21/1/38** (place / bar / collision-free); readout vs ACT contact-free McNemar 1 vs 11, p = 0.006; placement flat — `eval_output/pact_pick_n_place_v2_v6_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs100_lr1e-5_e2000/`, PAPER.md §3.10. **T-v12** running (≈ 30/50 per arm).
 **T-1011d-old** (PACT-raw only, Sep 3 ckpt, `eval_act_v1011d.py`): full randomize 7/10/20 (ever 10) —
 `eval_output/simple_v1011d_smoke_video/`; easy 0.25 14/3/22 — `eval_output/simple_v1011d_easy025_n50/`;
 wrist-only **aborted at 4/50** on 2026-09-07 (0/4) — `eval_output/simple_v1011d_wrist_only_n50/`.
@@ -154,6 +155,8 @@ change. Training a *new* model only needs a **new `--run` name**.
 
 <a id="env-codes"></a>
 ### 0.1 Every dataset by environment code (2026-09-22)
+
+**Status by environment and every eval number: [`README_RESULTS.md`](README_RESULTS.md).**
 
 Raw dumps live on `/mnt/laptop/data/` (there is no `data/` link in this checkout; pass the
 path). Every dump is converted. Env code = the tag in the paper table; it is in every `TASK`,

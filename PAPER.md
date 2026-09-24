@@ -749,6 +749,33 @@ v1011d PACT-raw checkpoint evaluated on the four-object (V10.10) sampler: 0/48 p
 horizon 800 and at 1050; ray-based proximity speed check 0/50.
 Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v1011d_raw_s0_n48_horizon*.json`.
 
+### 3.10 Two-object corridor, T-v6 (2026-09-23)
+
+V10.10 corridor with only the two route bottles live (`Soap_Bottle_30`, `Soap_Bottle_11`); 200
+demonstrations (`pact_pick_n_place_v2/data/v6`, 100 left / 100 right, 24 cells), exo + wrist.
+Three arms, seed 0, batch 8, **chunk 100** (every other set uses 50), lr 1e-5, 2000 epochs.
+Evaluator `eval_act_place.py --env v6` (the `eval_act_v1011d.py` protocol with the v6 world;
+fast path), 50 rollouts, seeds 2026–2075, cells `i mod 24`, horizon 1050, open-loop 100-step
+chunks, gated EGL skin, consecutive (8-step) skin history, terminal success. Seeds, cells and
+sides identical across arms; construction redraws 6 of 50, identical across arms.
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 20/50 (40 %) | 20 | 5/50 (10 %) | 28/50 (56 %) | 13/50 | 20 | 1 |
+| PACT-raw | 21/50 (42 %) | 21 | 1/50 (2 %) | 29/50 (58 %) | 11/50 | 20 | 0 |
+| PACT-readout | 21/50 (42 %) | 23 | 1/50 (2 %) | **38/50 (76 %)** | 19/50 | 11 | 1 |
+
+Paired exact McNemar (first arm only vs second arm only):
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions | clutter-contact episodes |
+|---|---|---|---|---|---|
+| ACT vs PACT-readout | 4 vs 0, p = 0.125 | 1 vs 11, p = 0.006 | 10 vs 11, p = 1.0 | 5 vs 11, p = 0.21 | 10 vs 1, p = 0.012 |
+| ACT vs PACT-raw | 4 vs 0, p = 0.125 | 8 vs 9, p = 1.0 | 7 vs 8, p = 1.0 | 8 vs 6, p = 0.79 | 8 vs 8, p = 1.0 |
+| PACT-raw vs PACT-readout | 0 vs 0, p = 1.0 | 2 vs 11, p = 0.022 | 10 vs 10, p = 1.0 | 4 vs 12, p = 0.077 | 11 vs 2, p = 0.022 |
+
+Unpaired Fisher, contact-free: ACT vs readout p = 0.057; raw vs readout p = 0.088. No mounted-fixture
+contact in any arm. Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v6_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs100_lr1e-5_e2000.json`.
+
 ### 3.9 Runs not done
 
 | run | set | why | status |
@@ -757,7 +784,11 @@ Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v1011d_raw_s0_n48_horizon
 | hallway PACT-raw s1, PACT-readout s1 n = 50 | H-B | second training seed | checkpoints trained; evaluation dirs empty |
 | hallway readout `--history consecutive` n = 50 | H-B | remove the history mismatch | not run |
 | hallway sensor dropout: readout keep 0.5 / 0.25 / 0, raw keep 0.75 / 0.5 / 0.25 / 0, n = 50 each | H-B-keep | inference-time dependence on the skin; keep 0 is the mandatory control | readout keep 0.75 done; keep 0.5 at 6/50; rest not run. ≈ 1 h per cell on the fast path (`SENSOR_KEEP_FRACS="0.5 0.25 0" EXP=PACT_READOUT ./scripts/exp/eval_v1_hallway.sh`; the partial keep50 dir must be moved aside first — no resume) |
-| v1010 (3 arms × 2 seeds), v1011c (3 arms) | T-1010 / T-1011c | further task families | checkpoints only; evaluators unwired |
+| v1010 (3 arms × 2 seeds), v1011c (3 arms) | T-1010 / T-1011c | further task families | checkpoints trained; evaluator wired 2026-09-22 (`eval_v1010.sh`, table camera at 58°; `eval_v1011c.sh`, demo-side cups); not run |
+| v12 three arms n = 50 | T-v12 | kitchen-clutter bench | running 2026-09-23 (≈ 30/50 per arm) |
+| v107_spaced hub three arms | T-107h | spaced bench, hub data, exo camera | not trained |
+| T-1011d rerun, cup on the demo side (`--target_support train`) | T-1011d | removes the 21/50 bar-side cups no demonstration covers | not run |
+| T-107 rerun, table camera at 58° | T-107 | removes the 45° / 58° camera mismatch | not run |
 | v1011d three arms, full randomise (`--clutter_xy_scale 1`) n = 50 | T-1011d | the easy-scale table is optimistic vs the training distribution | checkpoints trained; not run. ≈ 2 h per PACT arm on the fast path |
 | v1011d three arms, easy scale, fast-path repeat n = 50 | T-1011d | rerun noise at full n; confirms the fast path on paper seeds | not run |
 | v1011d wrist-only n = 50 | T-1011d | wrist-only ablation | 4/50 completed |
