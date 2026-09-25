@@ -34,6 +34,9 @@ CKPT_NAME=policy_best.ckpt
 WANDB_PROJECT=PC_ACT_experiments_eval
 # Per-link keep rate. 1=all, 0=drop all, 0.5=Poisson 50% on each link.
 SENSOR_KEEP_FRAC="${SENSOR_KEEP_FRAC:-1}"
+# Policy cameras fed as black frames at inference (skin + qpos unchanged): all, or names
+# from CAMERAS, space-separated. Output dir gets _blind (all) or _no<cam> (exo_camera_1 -> _noexo).
+BLANK_CAMERAS="${BLANK_CAMERAS:-}"
 SAVE_FIRST_FRAME="${SAVE_FIRST_FRAME:-1}"
 SENSOR_MASK_FIXED=0
 # 1 = original slow path (per-substep skin-camera poses + object_image_points). A/B only.
@@ -49,6 +52,9 @@ OUT_TAG=""
 if [ "$PCT" -ne 100 ]; then
   OUT_TAG="_keep${PCT}"
 fi
+for C in ${BLANK_CAMERAS}; do
+  if [ "$C" = "all" ]; then OUT_TAG="${OUT_TAG}_blind"; else OUT_TAG="${OUT_TAG}_no${C%%_*}"; fi
+done
 if [ "${TABLE_CAMERA_FOV}" != "58" ]; then
   OUT_TAG="${OUT_TAG}_fov${TABLE_CAMERA_FOV}"
 fi
@@ -77,6 +83,9 @@ if [ "${SENSOR_MASK_FIXED}" = "1" ]; then
 fi
 if [ "${EAGER_CAMERAS}" = "1" ]; then
   EXTRA+=(--eager_cameras --keep_export_sensors)
+fi
+if [ -n "${BLANK_CAMERAS}" ]; then
+  EXTRA+=(--blank_cameras ${BLANK_CAMERAS})
 fi
 
 python eval_act_place.py --env "$ENV" \

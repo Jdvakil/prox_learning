@@ -152,6 +152,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_camera_blank
 import pact_eval_lazy_cameras
 import pact_eval_sensor_keep
 import pact_eval_wandb
@@ -720,6 +721,7 @@ class FrozenACTPolicy(pact_eval_sensor_keep.SensorKeepMixin, InferencePolicy):
         self._sensor_mask_fixed = False
         self._sensor_keep_mask = None
         self._sensor_keep_info = None
+        self._blank_cameras: tuple[str, ...] = ()
 
     def reset(self) -> None:
         self._step = 0
@@ -850,6 +852,7 @@ class FrozenACTPolicy(pact_eval_sensor_keep.SensorKeepMixin, InferencePolicy):
                 img = (img * 255).astype(np.uint8) if img.max() <= 1.0 else img.astype(np.uint8)
             if img.shape[:2] != (pc.image_h, pc.image_w):
                 img = cv2.resize(img, (pc.image_w, pc.image_h), interpolation=cv2.INTER_AREA)
+            img = pact_eval_camera_blank.apply(img, cam, self._blank_cameras)
             cams.append(img.astype(np.float32) / 255.0)
         image = np.stack(cams, axis=0)
         image = np.transpose(image, (0, 3, 1, 2))
@@ -1188,6 +1191,7 @@ def parse_args() -> argparse.Namespace:
         default="/home/jaydv/code/prox_learning/eval_output/eval_act",
     )
     pact_eval_sensor_keep.add_cli_flags(p)
+    pact_eval_camera_blank.add_cli_flags(p)
     pact_eval_wandb.add_cli_flags(p)
     pact_eval_lazy_cameras.add_cli_flags(p)
     return p.parse_args()
@@ -1228,6 +1232,7 @@ def main() -> None:
         raise SystemExit(f"[eval_act] missing {stats_path}")
 
     cameras = _resolve_cameras(args, ckpt_dir)
+    pact_eval_camera_blank.resolve(args, cameras)
     weights = _load_state_dict(ckpt_path)
     chunk = _chunk_from_weights(weights)
     if args.chunk_size is not None and int(args.chunk_size) != chunk:
@@ -1295,11 +1300,16 @@ def main() -> None:
     _EPISODE_METRICS.clear()
     _METRICS_JSONL = output_dir / "episodes.jsonl"
     summary_path = output_dir / "eval_summary.json"
-    keep_protocol = pact_eval_sensor_keep.protocol_fields(args)
+    keep_protocol = {
+        **pact_eval_sensor_keep.protocol_fields(args),
+        **pact_eval_camera_blank.protocol_fields(args),
+    }
     if summary_path.is_file():
         saved = json.loads(summary_path.read_text())
         old = saved.get("protocol") or {}
-        mismatch = pact_eval_sensor_keep.keep_fields_mismatch(old, keep_protocol)
+        mismatch = pact_eval_sensor_keep.keep_fields_mismatch(
+            old, keep_protocol
+        ) or pact_eval_camera_blank.blank_mismatch(old, keep_protocol)
         if mismatch:
             raise SystemExit(
                 f"[eval_act] refuse resume into {summary_path.parent}: {mismatch}. "
@@ -1314,6 +1324,13 @@ def main() -> None:
         mask_seed=pact_eval_sensor_keep.resolved_mask_seed(args),
         mask_fixed=bool(args.sensor_mask_fixed),
     )
+    policy._blank_cameras = tuple(args.blank_cameras)
+    if policy._blank_cameras:
+        print(
+            f"[eval_act] --blank_cameras {list(policy._blank_cameras)}: policy sees "
+            "all-black RGB for these cameras (env still renders them).",
+            flush=True,
+        )
     horizon = int(eval_cfg.task_horizon)
     sampler = sampler_cls(eval_cfg)
     history_label = _history_json_label(args.history)
@@ -1391,7 +1408,8 @@ def main() -> None:
         f"sampler={sampler_cls.__name__} xml={Path(xml).name} cameras={cameras} "
         f"horizon={horizon} n={args.num_rollouts} skin={args.skin} "
         f"history={history_label} sensor_keep_frac={args.sensor_keep_frac} "
-        f"sensor_mask_fixed={int(bool(args.sensor_mask_fixed))}",
+        f"sensor_mask_fixed={int(bool(args.sensor_mask_fixed))} "
+        f"blank_cameras={list(args.blank_cameras)}",
         flush=True,
     )
 

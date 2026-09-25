@@ -29,6 +29,9 @@ SENSOR_KEEP_FRACS="${SENSOR_KEEP_FRACS:-0.75 0.5 0.25 0}"
 SAVE_FIRST_FRAME="${SAVE_FIRST_FRAME:-1}"
 SENSOR_MASK_FIXED="${SENSOR_MASK_FIXED:-0}"
 SENSOR_MASK_SEED="${SENSOR_MASK_SEED:-}"
+# Policy cameras fed as black frames at inference (skin + qpos unchanged): all, or names
+# from CAMERAS, space-separated. Output dir gets _blind (all) or _no<cam> (exo_camera_1 -> _noexo).
+BLANK_CAMERAS="${BLANK_CAMERAS:-}"
 # 1 = original slow path: per-substep pose refresh of the 40 skin cameras and
 # per-step object_image_points segmentation renders. A/B only. Not a protocol field.
 EAGER_CAMERAS="${EAGER_CAMERAS:-0}"
@@ -49,6 +52,9 @@ for P in ${SENSOR_KEEP_FRACS}; do
   if [ "${SENSOR_MASK_FIXED}" = "1" ]; then
     OUT_TAG="${OUT_TAG}_fixed"
   fi
+  for C in ${BLANK_CAMERAS}; do
+    if [ "$C" = "all" ]; then OUT_TAG="${OUT_TAG}_blind"; else OUT_TAG="${OUT_TAG}_no${C%%_*}"; fi
+  done
   OUTPUT_DIR=/home/jaydv/code/prox_learning/eval_output/${RUN}${OUT_TAG}
   EXTRA=()
   EXTRA+=(--sensor_keep_frac "${P}")
@@ -60,6 +66,9 @@ for P in ${SENSOR_KEEP_FRACS}; do
   fi
   if [ "${EAGER_CAMERAS}" = "1" ]; then
     EXTRA+=(--eager_cameras --keep_export_sensors)
+  fi
+  if [ -n "${BLANK_CAMERAS}" ]; then
+    EXTRA+=(--blank_cameras ${BLANK_CAMERAS})
   fi
   if [ -n "${SENSOR_MASK_SEED}" ]; then
     EXTRA+=(--sensor_mask_seed "${SENSOR_MASK_SEED}")

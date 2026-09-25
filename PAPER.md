@@ -856,7 +856,47 @@ Eight tall objects spread over the bench (`pact_pick_n_place_v2/data/v107_spaced
 
 Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v107_spaced_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
 
-### 3.15 Runs not done
+### 3.15 Randomised clutter, cup on the demonstration side, T-1011d-ts (2026-09-24)
+
+Same three T-1011d checkpoints (§3.3), same seeds 0–49, clutter position scale 0.25. The V10.11 sampler's cup draws outside the demonstration support (cup under the bar) are redrawn (`--target_support train`, `eval_v1011d_tstrain.sh`); `target_in_train_support` = 1 in 150/150 records; cup start xy and bar side (26 L / 24 R) identical across arms. Evaluator `eval_act_place.py --env v1011d` (the `eval_act_v1011d.py` protocol; fast path), horizon 1050, open-loop 50-step chunks, gated EGL skin, consecutive (8-step) skin history, terminal success; paired exact McNemar, first arm only vs second arm only.
+
+| arm | placement | ever placed | hazard contact | contact-free | placement without counted collisions | episodes with clutter contact | episodes with other-environment contact |
+|---|---|---|---|---|---|---|---|
+| ACT | 21/50 (42 %) | 22 | 12/50 (24 %) | 24/50 (48 %) | 16/50 | 17 | 10 |
+| PACT-raw | 18/50 (36 %) | 20 | **3/50 (6 %)** | 31/50 (62 %) | 16/50 | 14 | 3 |
+| PACT-readout | 19/50 (38 %) | 19 | 6/50 (12 %) | 32/50 (64 %) | 17/50 | 12 | 0 |
+
+| comparison | hazard contact | contact-free | placement | placement without counted collisions |
+|---|---|---|---|---|
+| ACT vs PACT-readout | 7 vs 1, p = 0.070 | 3 vs 11, p = 0.057 | 10 vs 8, p = 0.81 | 8 vs 9, p = 1.0 |
+| ACT vs PACT-raw | 10 vs 1, p = 0.012 | 7 vs 14, p = 0.19 | 11 vs 8, p = 0.65 | 9 vs 9, p = 1.0 |
+| PACT-raw vs PACT-readout | 2 vs 5, p = 0.45 | 8 vs 9, p = 1.0 | 8 vs 9, p = 1.0 | 9 vs 10, p = 1.0 |
+
+Bar-contact frames (Wilcoxon signed-rank vs ACT): raw p = 0.004, readout p = 0.055; hazard frames (bar + clutter + other environment): raw p < 0.001, readout p = 0.002. Replaces the cup-either-side T-1011d set (§3.3) in README_RESULTS.md §1.
+
+Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v1011d_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000_tstrain.json`.
+
+### 3.16 Hallway, extended data, v5_ext (2026-09-24)
+
+Same corridor as §3.1 with 193 demonstrations (`pact_place_corridor_v5_ext`, wrist camera only). H-B protocol: `eval_act.py --task hallway`, house index 1, seeds 2026–2075, horizon 800, query-step skin history (`history_mode = query_steps_train_mismatch`), gated EGL skin, terminal success; bar side 22 L / 28 R identical across arms. Three arms, all train seed 0, batch 8, chunk 50, lr 1e-5, 2000 epochs; paired exact McNemar.
+
+| arm | placement | ever placed | bar hit | contact-free | placement without counted collisions | episodes with other-environment contact |
+|---|---|---|---|---|---|---|
+| ACT | 14/50 (28 %) | 14 | 18/50 (36 %) | 32/50 (64 %) | 12/50 | 0 |
+| PACT-raw | 22/50 (44 %) | 23 | 15/50 (30 %) | 35/50 (70 %) | 20/50 | 0 |
+| PACT-readout | 21/50 (42 %) | 23 | **11/50 (22 %)** | **38/50 (76 %)** | 19/50 | 1 |
+
+| comparison | bar hit | contact-free | placement | placement without counted collisions |
+|---|---|---|---|---|
+| ACT vs PACT-readout | 7 vs 0, p = 0.016 | 0 vs 6, p = 0.031 | 5 vs 12, p = 0.14 | 3 vs 10, p = 0.092 |
+| ACT vs PACT-raw | 8 vs 5, p = 0.58 | 5 vs 8, p = 0.58 | 9 vs 17, p = 0.17 | 7 vs 15, p = 0.13 |
+| PACT-raw vs PACT-readout | 7 vs 3, p = 0.34 | 4 vs 7, p = 0.55 | 8 vs 7, p = 1.0 | 6 vs 5, p = 1.0 |
+
+Bar-contact frames summed over 50 episodes: ACT 140,763, PACT-raw 47,394, PACT-readout 20,523.
+
+Evidence: `reports/eval_summaries/pact_place_corridor_v5_ext_{ACT,PACT_RAW,PACT_READOUT}_s0_bs8_cs50_lr1e-5_e2000.json`.
+
+### 3.17 Runs not done
 
 | run | set | why | status |
 |---|---|---|---|
@@ -865,7 +905,7 @@ Evidence: `reports/eval_summaries/pact_pick_n_place_v2_v107_spaced_{ACT,PACT_RAW
 | hallway readout `--history consecutive` n = 50 | H-B | remove the history mismatch | not run |
 | hallway sensor dropout: readout keep 0.5 / 0.25 / 0, raw keep 0.75 / 0.5 / 0.25 / 0, n = 50 each | H-B-keep | inference-time dependence on the skin; keep 0 is the mandatory control | readout keep 0.75 done; keep 0.5 at 6/50; rest not run. ≈ 1 h per cell on the fast path (`SENSOR_KEEP_FRACS="0.5 0.25 0" EXP=PACT_READOUT ./scripts/exp/eval_v1_hallway.sh`; the partial keep50 dir must be moved aside first — no resume) |
 | v1010 second training seed (3 arms) | T-1010 | seed variation | checkpoints trained; not evaluated |
-| T-1011d rerun, cup on the demo side (`--target_support train`) | T-1011d | removes the 21/50 bar-side cups no demonstration covers | not run |
+| T-1011d rerun, cup on the demo side (`--target_support train`) | T-1011d | removes the 21/50 bar-side cups no demonstration covers | done, §3.15 |
 | T-107 rerun, table camera at 58° | T-107 | removes the 45° / 58° camera mismatch | not run |
 | v1011d three arms, full randomise (`--clutter_xy_scale 1`) n = 50 | T-1011d | the easy-scale table is optimistic vs the training distribution | checkpoints trained; not run. ≈ 2 h per PACT arm on the fast path |
 | v1011d three arms, easy scale, fast-path repeat n = 50 | T-1011d | rerun noise at full n; confirms the fast path on paper seeds | not run |

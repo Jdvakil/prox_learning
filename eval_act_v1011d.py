@@ -149,6 +149,7 @@ from molmo_spaces.policy.base_policy import InferencePolicy
 from molmo_spaces.tasks.pact_place_contact_audit import PactPlaceContactAudit
 from policy import ACTPolicy
 from utils import set_seed
+import pact_eval_camera_blank
 import pact_eval_lazy_cameras
 import pact_eval_sensor_keep
 import pact_eval_wandb
@@ -747,6 +748,7 @@ class FrozenACTPolicy(pact_eval_sensor_keep.SensorKeepMixin, InferencePolicy):
         self._sensor_mask_fixed = False
         self._sensor_keep_mask = None
         self._sensor_keep_info = None
+        self._blank_cameras: tuple[str, ...] = ()
 
     def reset(self) -> None:
         self._step = 0
@@ -897,6 +899,7 @@ class FrozenACTPolicy(pact_eval_sensor_keep.SensorKeepMixin, InferencePolicy):
                 img = (img * 255).astype(np.uint8) if img.max() <= 1.0 else img.astype(np.uint8)
             if img.shape[:2] != (pc.image_h, pc.image_w):
                 img = cv2.resize(img, (pc.image_w, pc.image_h), interpolation=cv2.INTER_AREA)
+            img = pact_eval_camera_blank.apply(img, cam, self._blank_cameras)
             cams.append(img.astype(np.float32) / 255.0)
         image = np.stack(cams, axis=0)
         image = np.transpose(image, (0, 3, 1, 2))
@@ -1147,6 +1150,7 @@ def _protocol_identity(args: argparse.Namespace, exec_horizon: int) -> dict:
         ),
         "cameras": cameras,
         **pact_eval_sensor_keep.protocol_fields(args),
+        **pact_eval_camera_blank.protocol_fields(args),
     }
 
 
@@ -1155,7 +1159,15 @@ def _refuse_resume_mismatch(summary_path: Path, protocol: dict) -> None:
         return
     saved = json.loads(summary_path.read_text())
     old = saved.get("protocol") or {}
+    blank = pact_eval_camera_blank.blank_mismatch(old, protocol)
+    if blank:
+        raise SystemExit(
+            f"{_LOG} refuse resume into {summary_path.parent}: {blank}. "
+            "Use a new --output_dir."
+        )
     for key, value in protocol.items():
+        if key == "blank_cameras":
+            continue
         old_val = old.get(key)
         if old_val is None and key == "clutter_xy_scale":
             old_val = 1.0
@@ -1634,6 +1646,7 @@ def parse_args() -> argparse.Namespace:
     )
     pact_eval_lazy_cameras.add_cli_flags(p)
     pact_eval_sensor_keep.add_cli_flags(p)
+    pact_eval_camera_blank.add_cli_flags(p)
     pact_eval_wandb.add_cli_flags(p)
     return p.parse_args()
 
@@ -1679,6 +1692,7 @@ def main() -> None:
         raise SystemExit(f"{_LOG} missing {stats_path}")
 
     cameras = _resolve_cameras(args, ckpt_dir)
+    pact_eval_camera_blank.resolve(args, cameras)
     args.cameras = list(cameras)
     if "wrist_camera" not in cameras:
         raise SystemExit(
@@ -1771,6 +1785,13 @@ def main() -> None:
         mask_seed=pact_eval_sensor_keep.resolved_mask_seed(args),
         mask_fixed=bool(args.sensor_mask_fixed),
     )
+    policy._blank_cameras = tuple(args.blank_cameras)
+    if policy._blank_cameras:
+        print(
+            f"{_LOG} --blank_cameras {list(policy._blank_cameras)}: policy sees all-black "
+            "RGB for these cameras (env still renders them).",
+            flush=True,
+        )
     horizon = int(eval_cfg.task_horizon)
     sampler = sampler_cls(eval_cfg)
     history_label = _history_json_label(args.history)
@@ -1796,6 +1817,7 @@ def main() -> None:
             "clutter_xy_scale": protocol["clutter_xy_scale"],
             "sensor_keep_frac": protocol["sensor_keep_frac"],
             "sensor_mask_fixed": protocol["sensor_mask_fixed"],
+            "blank_cameras": list(args.blank_cameras),
             "sensor_mask_seed": pact_eval_sensor_keep.resolved_mask_seed(args),
             "save_first_frame": bool(args.save_first_frame),
         },
@@ -1830,6 +1852,7 @@ def main() -> None:
             "scene_xmls": [p.name for p in xml_paths],
             "scene_xml": str(xml),
             "camera_names": list(cameras),
+            "blank_cameras": list(args.blank_cameras),
             "house_ind": args.house_ind,
             "house_schedule": protocol["house_schedule"],
             "num_rollouts": args.num_rollouts,
@@ -1876,7 +1899,8 @@ def main() -> None:
         f"save_video={int(bool(args.save_video))} "
         f"clutter_xy_scale={protocol['clutter_xy_scale']} "
         f"sensor_keep_frac={args.sensor_keep_frac} "
-        f"sensor_mask_fixed={int(bool(args.sensor_mask_fixed))}",
+        f"sensor_mask_fixed={int(bool(args.sensor_mask_fixed))} "
+        f"blank_cameras={list(args.blank_cameras)}",
         flush=True,
     )
 

@@ -1,143 +1,324 @@
-# Results — every closed-loop eval on disk
+# Results
 
-Snapshot 2026-09-24 07:45. Built from `eval_output/*/episodes.jsonl` (recounted per episode) and
-`reports/eval_summaries/*.json`. Refresh the ledger with `python scripts/exp_tracker.py`
-(writes `reports/experiments_evals.csv`). Facts only; statistics and caveats are in `PAPER.md` §3.
+Updated 2026-09-25 08:45. Every number is recounted from `eval_output/<run>/episodes.jsonl`
+(copies in `reports/eval_summaries/`). Every row is 50 test runs; counts are out of 50. Inside one
+environment, all three models see the same 50 scenes.
 
-## Environment codes
+Three models per environment, same recipe (batch 8, lr 1e-5, 2000 epochs, chunk 50; v6 chunk 100):
 
-| code | environment | dataset / TASK | cams | horizon |
-|---|---|---|---|---|
-| v1 | fume-hood obstacle pick, first version (June 2026) | `obstacle_pact` (deleted) | – | 200 |
-| v2 | fume-hood obstacle pick, camera-hidden bar study (July 2026) | `obstacle_pact_v2` / `obstacle_prox_v2` (deleted 2026-08-24) | – | 200 |
-| v5 | hallway place corridor | `pact_place_corridor_v5` (shells `*_v1_hallway.sh`) | wrist | 800 |
-| v107_spaced | spaced bench (batman, 210 eps) | `pact_place_corridor_v107_spaced` | table + wrist | 1050 |
-| v1010 | four-object bench | `pact_place_corridor_v1010` | table + wrist | 1050 |
-| v1011c | clutter geometry, 99 eps | `pact_place_corridor_v10_11c_100` | exo + wrist | 1050 |
-| v1011d | randomised clutter | `pact_pick_n_place_v2_v1011d` | exo + wrist | 1050 |
-| v6 | two-object V10.10 | `pact_pick_n_place_v2_v6` | exo + wrist | 1050 |
-| v12 | kitchen | `pact_pick_n_place_v2_v12` | exo + wrist | 1050 |
+- **ACT** — cameras only.
+- **PACT-raw** — cameras + raw skin readings.
+- **PACT-readout** — cameras + skin through a small learned encoder.
 
-`v1` / `v2` are the fume-hood task-directory suffixes; the full map for v5 onward is README §0.1.
+## Status
 
-## Status by environment
+| env | clutter | what it is | demos | ACT | PACT-raw | PACT-readout | ablations |
+|---|---|---|---|---|---|---|---|
+| v5 | 0 (one side bar) | hallway corridor, wrist camera | 152 | done | done | done | skin off, skin 75 %, cameras off done; readout 2nd seed (normal, skin off, cameras off) done |
+| v5_ext | 0 (one side bar) | same hallway, more demos | 193 | done | done | done | — |
+| v6 | 2 bottles | corridor bench, two bottles on the route | 200 | done | done | done | skin off, skin 50 %, skin history, cameras off done |
+| v107_spaced | 8 tall objects | spaced bench (hub recording) | 200 | done | done | done | — |
+| v107_spaced batman | 8 tall objects | same bench, own recording, table camera | 210 | trained; eval invalid (camera fov mismatch) | same | same | rerun at fov 58 not started |
+| v1010 | 4 objects + pendant | bench with household objects, table camera | 215 | done | done | done | ACT 2nd seed done; raw, readout 2nd seed not evaluated |
+| v1011c | 6 | mixed clutter, fixed seats | 99 | done | done | done | skin off, skin history, ACT 2nd seed done |
+| v1011d | 6 | same clutter, positions randomised | 200 | done | done | done | skin off, cup-side check, ACT 2nd seed done |
+| v12 | 11 (1 bottle + 10 kitchen items) | kitchen bench | 165 | done | done | done | raw skin off done |
+| v107 | pendant + clutter | 48 demos, no evaluator exists | 48 | nothing | nothing | nothing | — |
+| v12.1, table_smoke | — | 5 / 10 demo test sets | 5 / 10 | nothing | nothing | nothing | — |
 
-Train = `policy_best.ckpt` on disk (bs8, chunk 50, lr 1e-5, 2000 epochs; v6 chunk 100).
-Eval = closed-loop run; numbers are success / bar hit / coll-free out of n.
-Status as of 2026-09-24 08:20. Next after this batch: ablations on v1011c and v6 (skin keep 0 / 0.5, query-only history).
-
-| code | what it is | ACT | PACT-raw | PACT-readout | next |
-|---|---|---|---|---|---|
-| v5 | hallway corridor, side bar, no clutter; wrist (152 demos) | s0, s1 trained · s1 eval 15 / 20 / 30 | s0, s1 · s0 eval 21 / 13 / 37 | s0, s1 · s0 eval 21 / 9 / 41 | optional: ACT s0, raw s1, readout s1 |
-| v5_ext | same corridor, 193 more demos; wrist | s0 training (epoch ~200/2000, ETA ~09:45 Sep 24) | s0 training (same) | s0 training (same) | running: train → `eval_v5_ext.sh` (ETA ~12:00) |
-| v107 | V10.7 pendant + V9.5 clutter (48 demos); no evaluator | not trained | not trained | not trained | optional (train only) |
-| v107_spaced hub | spaced bench, 8 tall objects (200 demos); exo + wrist | s0 · 24 / 5 / 20 | s0 · 26 / 3 / 29 | s0 · 29 / 1 / 26 | done |
-| v107_spaced batman | same bench (210 demos); table + wrist | s0 · eval 13 / 8 / 19 (cam 45°) | s0 · 0 / 9 / 19 (45°) | s0 · 2 / 6 / 20 (45°) | optional: `eval_v107_spaced_batman.sh` (58°) |
-| v1010 | four household objects + pendant (215 demos); table + wrist | s0, s1 · s0 eval 25 / 2 / 32 | s0, s1 · s0 eval 23 / 1 / 35 | s0, s1 · s0 eval 31 / 1 / 34 | optional: s1 evals |
-| v1011c | six fixed-seat clutter bodies (99 demos); exo + wrist | s0 · 12 / 10 / 18 | s0 · 12 / 0 / 25 | s0 · 11 / 1 / 27 | done (demo-side cups) |
-| v1011d | v1011c clutter, positions randomized (200 demos); exo + wrist | s0 · 13 / 18 / 15 (cup either side) | s0 · 12 / 3 / 26 | s0 · 13 / 10 / 22 | running: `eval_v1011d_tstrain.sh` (demo-side cups), 2–4/50 eps at 08:20, ETA ~10:30–11:00 |
-| v12 | one bottle + ten standing kitchen objects (165 demos); exo + wrist | s0 · 30 / 7 / 34 | s0 · 26 / 0 / 44 | s0 · 26 / 3 / 36 | done |
-| v6 | two route bottles, V10.10 corridor (200 demos); exo + wrist; chunk 100 | s0 · 20 / 5 / 28 | s0 · 21 / 1 / 29 | s0 · 21 / 1 / 38 | done |
-| v12.1, table_smoke | 5- / 10-demo preview and schema sets | converted only | | | — |
+done = trained and evaluated on 50 runs. trained = checkpoint exists, no eval. nothing = not trained.
 
 ## Metrics
 
-- **Success** — task done at the final step (placement for v5+; pick for v1 / v2).
-- **Strict** — success and zero counted collisions in the episode.
-- **Bar hit** — any robot–hazard-bar contact. Hazard avoidance = 1 − bar hit.
-- **Coll-free** — zero counted contacts (collision avoidance rate). v1 / v2 count any
-  robot–environment contact (no bar-only split), so the bar-hit column is "–".
-- **Ever** — placement judge true at any step.
+- **Success** — cup is on the tray at the end of the run. Bumps along the way don't matter.
+- **Collision-free** — the robot touched nothing it shouldn't (bar, clutter, walls, fixtures).
+  Touching the cup, tray, floor or itself is fine.
+- **Strict** — success and collision-free in the same run.
+- **Contact time** — seconds per run with the robot (or the carried cup) touching bar, clutter or
+  walls. Checked every 2 ms over the whole run (69 s bench, 53 s hallway). In brackets: change vs
+  ACT in the same environment.
+- **vs ACT** — metrics where the PACT model differs from ACT on the same 50 scenes with p < 0.05
+  (paired exact McNemar for counts, Wilcoxon for contact time). ↑ = more, ↓ = less.
 
-Counts are `k/n (%)`. All rows are chunk 50 unless the chunk column says otherwise.
+## Main results
 
-## All results
+### Bench environments
 
-| code | set | arm (train seed) | chunk | n | success | strict | bar hit | coll-free | ever | source |
-|---|---|---|---|---|---|---|---|---|---|---|
-| v1 | A, 2000 epochs | ACT | 50 | 20 | 7 (35%) | 4 (20%) | – | 14 (70%) | – | wandb `rq7cwlqy` (no JSON) |
-| v1 | B, 2000 epochs | ACT | 100 | 20 | 8 (40%) | 3 (15%) | – | 8 (40%) | – | wandb `c7v2nugl` (no JSON) |
-| v1 | C, 5000 epochs | ACT | 100 | 20 | 6 (30%) | 5 (25%) | – | 16 (80%) | – | wandb `san7y9rp` (no JSON) |
-| v2 | O-INV, no bar | ACT | 100 | 50 | 11 (22%) | 4 (8%) | – | 20 (40%) | – | `vanilla_v2_free.json` |
-| v2 | O-INV, visible bar | ACT | 100 | 50 | 14 (28%) | 8 (16%) | – | 18 (36%) | – | `vanilla_v2_visible.json` |
-| v2 | O-INV, camera-hidden bar | ACT | 100 | 50 | 18 (36%) | 7 (14%) | – | 17 (34%) | – | `vanilla_v2_invisible.json` |
-| v2 | O-INV, no bar | PACT-raw (old design) | 100 | 50 | 9 (18%) | 4 (8%) | – | 21 (42%) | – | `pact_raw_v2_free.json` |
-| v2 | O-INV, visible bar | PACT-raw (old design) | 100 | 50 | 8 (16%) | 5 (10%) | – | 25 (50%) | – | `pact_raw_v2_visible.json` |
-| v2 | O-INV, camera-hidden bar | PACT-raw (old design) | 100 | 50 | 15 (30%) | 10 (20%) | – | 30 (60%) | – | `pact_raw_v2_invisible.json` |
-| v2 | O-INV, no bar | PACT-trunk | 100 | 50 | 17 (34%) | 8 (16%) | – | 18 (36%) | – | `pact_trunk_v2_free.json` |
-| v2 | O-INV, visible bar | PACT-trunk | 100 | 50 | 16 (32%) | 9 (18%) | – | 21 (42%) | – | `pact_trunk_v2_visible.json` |
-| v2 | O-INV, camera-hidden bar | PACT-trunk | 100 | 50 | 17 (34%) | 5 (10%) | – | 14 (28%) | – | `pact_trunk_v2_invisible.json` |
-| v2 | train-blur σ=2, no bar | ACT | 100 | 25 | 1 (4%) | 0 (0%) | – | 13 (52%) | – | `*_blurC2_v2_free.json` |
-| v2 | train-blur σ=2, visible | ACT | 100 | 25 | 2 (8%) | 2 (8%) | – | 12 (48%) | – | `*_blurC2_v2_visible.json` |
-| v2 | train-blur σ=2, hidden | ACT | 100 | 25 | 0 (0%) | 0 (0%) | – | 13 (52%) | – | `*_blurC2_v2_invisible.json` |
-| v2 | train-blur σ=4, no bar | ACT | 100 | 25 | 10 (40%) | 3 (12%) | – | 4 (16%) | – | `*_blurC4_v2_free.json` |
-| v2 | train-blur σ=4, visible | ACT | 100 | 25 | 6 (24%) | 2 (8%) | – | 4 (16%) | – | `*_blurC4_v2_visible.json` |
-| v2 | train-blur σ=4, hidden | ACT | 100 | 25 | 10 (40%) | 1 (4%) | – | 3 (12%) | – | `*_blurC4_v2_invisible.json` |
-| v2 | train-blur σ=8, no bar | ACT | 100 | 25 | 6 (24%) | 4 (16%) | – | 18 (72%) | – | `*_blurC8_v2_free.json` |
-| v2 | train-blur σ=8, visible | ACT | 100 | 25 | 6 (24%) | 4 (16%) | – | 8 (32%) | – | `*_blurC8_v2_visible.json` |
-| v2 | train-blur σ=8, hidden | ACT | 100 | 25 | 6 (24%) | 2 (8%) | – | 8 (32%) | – | `*_blurC8_v2_invisible.json` |
-| v5 | H-A, legacy evaluator, random house | ACT (0) | 50 | 50 | 14 (28%) | 13 (26%) | 17 (34%) | 33 (66%) | 14 | `place_corridor_vanilla_s0_n50` |
-| v5 | H-A | PACT-raw (0) | 50 | 50 | 21 (42%) | 17 (34%) | 18 (36%) | 32 (64%) | 21 | `place_corridor_raw_s0_n50` |
-| v5 | H-A | PACT-readout (0) | 50 | 50 | 20 (40%) | 20 (40%) | 6 (12%) | 44 (88%) | 20 | `place_corridor_readout_s0_n50_fast` |
-| v5 | H-A, early n=20 | ACT (0) | 50 | 20 | 3 (15%) | 3 (15%) | 6 (30%) | 14 (70%) | 3 | `place_corridor_vanilla_s0` |
-| v5 | H-A, early n=20 | PACT-raw (0) | 50 | 20 | 7 (35%) | 6 (30%) | 4 (20%) | 16 (80%) | 7 | `place_corridor_raw_s0` |
-| v5 | H-A, early n=20 | PACT-readout (0) | 50 | 20 | 5 (25%) | 4 (20%) | 6 (30%) | 14 (70%) | 5 | `place_corridor_readout_s0_n20` |
-| v5 | H-A, stopped at 36/50 | PACT-readout (0) | 50 | 36 | 13 (36%) | 13 (36%) | 12 (33%) | 24 (67%) | 13 | `place_corridor_readout_s0_n50` |
-| v5 | H-A, `n8_test` random house | PACT-readout (0) | 50 | 20 | 3 (15%) | 2 (10%) | 13 (65%) | 7 (35%) | 3 | `place_corridor_readout_s0_n8_test` |
-| v5 | H-B, `eval_act.py`, house 1 | ACT (1) | 50 | 50 | 15 (30%) | 12 (24%) | 20 (40%) | 30 (60%) | 15 | `pact_place_corridor_v5_ACT_s1_*` |
-| v5 | H-B | PACT-raw (0) | 50 | 50 | 21 (42%) | 19 (38%) | 13 (26%) | 37 (74%) | 21 | `pact_place_corridor_v5_PACT_RAW_s0_*` |
-| v5 | H-B | PACT-readout (0) | 50 | 50 | 21 (42%) | 19 (38%) | 9 (18%) | 41 (82%) | 24 | `pact_place_corridor_v5_PACT_READOUT_s0_*` |
-| v5 | H-B, sensor keep 0.75 | PACT-readout (0) | 50 | 50 | 23 (46%) | 22 (44%) | 14 (28%) | 36 (72%) | 23 | `…_PACT_READOUT_s0_*_keep75` |
-| v5 | H-B, sensor keep 0.5 (partial) | PACT-readout (0) | 50 | 6 | 2 (33%) | 2 (33%) | 2 (33%) | 4 (67%) | 2 | `…_PACT_READOUT_s0_*_keep50` |
-| v5 | H-B | ACT (0) | 50 | 2 | 1 (50%) | 1 (50%) | 0 (0%) | 2 (100%) | 1 | `pact_place_corridor_v5_ACT_s0_*` |
-| v5 | H-C, Aug ckpt on `eval_act.py` | PACT-readout (0) | 50 | 50 | 18 (36%) | 18 (36%) | 7 (14%) | 43 (86%) | 19 | `simple_hallway_n50` |
-| v107_spaced | T-107 (eval cam fov 45, train 58) | ACT (0) | 50 | 50 | 13 (26%) | 7 (14%) | 8 (16%) | 19 (38%) | 14 | `pact_place_corridor_v107_spaced_ACT_s0_*` |
-| v107_spaced | T-107 | PACT-raw (0) | 50 | 50 | 0 (0%) | 0 (0%) | 9 (18%) | 19 (38%) | 0 | `pact_place_corridor_v107_spaced_PACT_RAW_s0_*` |
-| v107_spaced | T-107 | PACT-readout (0) | 50 | 50 | 2 (4%) | 2 (4%) | 6 (12%) | 20 (40%) | 3 | `pact_place_corridor_v107_spaced_PACT_READOUT_s0_*` |
-| v1011d | T-1011d, clutter 0.25 | ACT (0) | 50 | 50 | 13 (26%) | 9 (18%) | 18 (36%) | 15 (30%) | 13 | `pact_pick_n_place_v2_v1011d_ACT_s0_*` |
-| v1011d | T-1011d, clutter 0.25 | PACT-raw (0) | 50 | 50 | 12 (24%) | 11 (22%) | 3 (6%) | 26 (52%) | 12 | `pact_pick_n_place_v2_v1011d_PACT_RAW_s0_*` |
-| v1011d | T-1011d, clutter 0.25 | PACT-readout (0) | 50 | 50 | 13 (26%) | 11 (22%) | 10 (20%) | 22 (44%) | 14 | `pact_pick_n_place_v2_v1011d_PACT_READOUT_s0_*` |
-| v1011d | old Sep 3 ckpt, clutter 1.0 | PACT-raw (0) | 50 | 50 | 7 (14%) | 4 (8%) | 10 (20%) | 20 (40%) | 10 | `simple_v1011d_smoke_video` |
-| v1011d | old Sep 3 ckpt, clutter 0.25 | PACT-raw (0) | 50 | 50 | 14 (28%) | 11 (22%) | 3 (6%) | 22 (44%) | 14 | `simple_v1011d_easy025_n50` |
-| v1011d | old Sep 3 ckpt, wrist only (partial) | PACT-raw (0) | 50 | 4 | 0 (0%) | 0 (0%) | 3 (75%) | 1 (25%) | 0 | `simple_v1011d_wrist_only_n50` |
-| v1011d | rerun noise, episodes 0–23, run a | PACT-readout (0) | 50 | 24 | 4 (17%) | 4 (17%) | 6 (25%) | 11 (46%) | 4 | `_ab_lazy24_a` |
-| v1011d | rerun noise, episodes 0–23, run b | PACT-readout (0) | 50 | 24 | 2 (8%) | 2 (8%) | 6 (25%) | 11 (46%) | 2 | `_ab_lazy24_b` |
-| v1011d → v1010 | OOD: v1011d ckpt on v1010 sampler, horizon 800 | PACT-raw (0) | 50 | 48 | 0 (0%) | 0 (0%) | 3 (6%) | 32 (67%) | 0 | `pact_pick_n_place_v2_v1011d_raw_s0_n48` |
-| v1011d → v1010 | OOD, horizon 1050 | PACT-raw (0) | 50 | 48 | 0 (0%) | 0 (0%) | 0 (0%) | 37 (77%) | 0 | `…_raw_s0_n48_horizon1050` |
-| v1011d → v1010 | OOD, ray-based proximity | PACT-raw (0) | 50 | 50 | 0 (0%) | 0 (0%) | 0 (0%) | 28 (56%) | 0 | `v1011d_speedcheck_n50` |
-| v6 | T-v6, `eval_act_place.py`, seeds 2026+ | ACT (0) | 100 | 50 | 20 (40%) | 13 (26%) | 5 (10%) | 28 (56%) | 20 | `pact_pick_n_place_v2_v6_ACT_s0_*` |
-| v6 | T-v6 | PACT-raw (0) | 100 | 50 | 21 (42%) | 11 (22%) | 1 (2%) | 29 (58%) | 21 | `pact_pick_n_place_v2_v6_PACT_RAW_s0_*` |
-| v6 | T-v6 | PACT-readout (0) | 100 | 50 | 21 (42%) | 19 (38%) | 1 (2%) | 38 (76%) | 23 | `pact_pick_n_place_v2_v6_PACT_READOUT_s0_*` |
-| v12 | T-v12, `eval_act_place.py`, seeds 2026+ | ACT (0) | 50 | 50 | 30 (60%) | 23 (46%) | 7 (14%) | 34 (68%) | 30 | `pact_pick_n_place_v2_v12_ACT_s0_*` |
-| v12 | T-v12 | PACT-raw (0) | 50 | 50 | 26 (52%) | 24 (48%) | 0 (0%) | 44 (88%) | 26 | `pact_pick_n_place_v2_v12_PACT_RAW_s0_*` |
-| v12 | T-v12 | PACT-readout (0) | 50 | 50 | 26 (52%) | 19 (38%) | 3 (6%) | 36 (72%) | 28 | `pact_pick_n_place_v2_v12_PACT_READOUT_s0_*` |
-| v1010 | T-1010, `eval_act_place.py`, table cam 58°, seeds 2026+ | ACT (0) | 50 | 50 | 25 (50%) | 18 (36%) | 2 (4%) | 32 (64%) | 26 | `pact_place_corridor_v1010_ACT_s0_*` |
-| v1010 | T-1010 | PACT-raw (0) | 50 | 50 | 23 (46%) | 17 (34%) | 1 (2%) | 35 (70%) | 28 | `pact_place_corridor_v1010_PACT_RAW_s0_*` |
-| v1010 | T-1010 | PACT-readout (0) | 50 | 50 | 31 (62%) | 21 (42%) | 1 (2%) | 34 (68%) | 31 | `pact_place_corridor_v1010_PACT_READOUT_s0_*` |
-| v1011c | T-1011c, demo-side cups (`_tstrain`), seeds 2026+ | ACT (0) | 50 | 50 | 12 (24%) | 8 (16%) | 10 (20%) | 18 (36%) | 12 | `pact_place_corridor_v10_11c_100_ACT_s0_*_tstrain` |
-| v1011c | T-1011c | PACT-raw (0) | 50 | 50 | 12 (24%) | 8 (16%) | 0 (0%) | 25 (50%) | 13 | `…_PACT_RAW_s0_*_tstrain` |
-| v1011c | T-1011c | PACT-readout (0) | 50 | 50 | 11 (22%) | 5 (10%) | 1 (2%) | 27 (54%) | 11 | `…_PACT_READOUT_s0_*_tstrain` |
-| v107_spaced hub | T-107h, exo + wrist, seeds 2026+ | ACT (0) | 50 | 50 | 24 (48%) | 8 (16%) | 5 (10%) | 20 (40%) | 24 | `pact_pick_n_place_v2_v107_spaced_ACT_s0_*` |
-| v107_spaced hub | T-107h | PACT-raw (0) | 50 | 50 | 26 (52%) | 14 (28%) | 3 (6%) | 29 (58%) | 29 | `pact_pick_n_place_v2_v107_spaced_PACT_RAW_s0_*` |
-| v107_spaced hub | T-107h | PACT-readout (0) | 50 | 50 | 29 (58%) | 16 (32%) | 1 (2%) | 26 (52%) | 32 | `pact_pick_n_place_v2_v107_spaced_PACT_READOUT_s0_*` |
+| env | model | success | strict | collision-free | contact time (s/run) | vs ACT |
+|---|---|---|---|---|---|---|
+| v12 | ACT | 30 | 23 | 34 | 2.1 | – |
+| v12 | PACT-raw | 26 | 24 | 44 | 1.2 (−41 %) | collision-free ↑ (p = 0.013), contact ↓ (p = 0.010) |
+| v12 | PACT-readout | 26 | 19 | 36 | 1.9 (−11 %) | none |
+| v6 | ACT | 20 | 13 | 28 | 7.8 | – |
+| v6 | PACT-raw | 21 | 11 | 29 | 1.6 (−79 %) | contact ↓ (p = 0.037) |
+| v6 | PACT-readout | 21 | 19 | 38 | 3.0 (−61 %) | collision-free ↑ (p = 0.006), contact ↓ (p = 0.004) |
+| v1010 | ACT | 25 | 18 | 32 | 2.5 | – |
+| v1010 | PACT-raw | 23 | 17 | 35 | 0.8 (−68 %) | none |
+| v1010 | PACT-readout | 31 | 21 | 34 | 1.6 (−35 %) | none |
+| v1011c | ACT | 12 | 8 | 18 | 8.7 | – |
+| v1011c | PACT-raw | 12 | 8 | 25 | 4.9 (−44 %) | contact ↓ (p = 0.002) |
+| v1011c | PACT-readout | 11 | 5 | 27 | 6.0 (−31 %) | collision-free ↑ (p = 0.035), contact ↓ (p = 0.015) |
+| v107_spaced | ACT | 24 | 8 | 20 | 1.9 | – |
+| v107_spaced | PACT-raw | 26 | 14 | 29 | 2.7 (+44 %) | none |
+| v107_spaced | PACT-readout | 29 | 16 | 26 | 0.7 (−64 %) | contact ↓ (p = 0.012) |
+| v1011d | ACT | 21 | 16 | 24 | 7.2 | – |
+| v1011d | PACT-raw | 18 | 16 | 31 | 2.0 (−73 %) | contact ↓ (p < 0.001) |
+| v1011d | PACT-readout | 19 | 17 | 32 | 2.6 (−65 %) | contact ↓ (p = 0.002) |
 
-Source column: plain names are `eval_output/<name>/`; `*.json` are in `reports/eval_summaries/`.
+v1011d: cup always on the side the demos used (see ablation below). v1010: table camera at the
+training field of view (58°).
 
-## Notes
+### Hallway (v5) — different eval script, wrist camera only
 
-- v6: paired McNemar, readout vs ACT coll-free 11 vs 1 (p = 0.006), clutter-contact episodes 1 vs 10
-  (p = 0.012); placement flat. v6 is chunk 100 (all other rows 50). PAPER.md §3.10.
-- v12: paired McNemar, raw vs ACT bar hit 0 vs 7 (p = 0.016), coll-free 12 vs 2 (p = 0.013);
-  readout vs ACT n.s. (bar 1 vs 5, p = 0.22; coll-free 8 vs 6); placement flat. PAPER.md §3.11.
-- v1011c (demo-side cups): bar hit ACT vs readout 9 vs 0 (p = 0.004), ACT vs raw 10 vs 0 (p = 0.002);
-  coll-free ACT vs readout 3 vs 12 (p = 0.035); placement flat. PAPER.md §3.12.
-- v1010: no significant difference on any metric (bar hits 2 / 1 / 1). PAPER.md §3.13.
-- v107_spaced hub: trends only (readout bar 1 vs ACT 5, p = 0.125; strict 16 vs 8, p = 0.077). PAPER.md §3.14.
-- v1011d cup side: 21 of the 50 T-1011d cups start on the bar side; every arm placed 0/21 there
-  (demos only have the cup away from the bar). `--target_support train` fixes the sampler.
-- v2 blur ladder: null at n = 25 (±40 points noise). v2 checkpoints and data were deleted
-  2026-08-24; JSONs only.
-- v1 numbers live only in wandb (`act-obstacle-baseline-eval`); no JSON on disk.
-- Excluded: `_verify_*` / `_parity_*` / `_smoke_*` wiring checks (horizon 1–5 steps),
-  n = 10 `*_diag10` diagnostics, DIRTY `…_keep0_smoke` / `…_keep50_smoke`, empty dirs
-  (v5 raw s1, readout s1, raw keep75). Avoid-v1 (2026-08-24) has README prose only, no JSON.
+| env | model | success | strict | collision-free | contact time (s/run) | vs ACT |
+|---|---|---|---|---|---|---|
+| v5 | ACT (training seed 1) | 15 | 12 | 30 | 4.3 | – |
+| v5 | PACT-raw | 21 | 19 | 37 | 0.7 (−84 %) | collision-free ↑ (p = 0.039), contact ↓ (p = 0.002) |
+| v5 | PACT-readout | 21 | 19 | 41 | 0.6 (−87 %) | collision-free ↑ (p < 0.001), contact ↓ (p < 0.001) |
+| v5 | PACT-readout (training seed 1) | 22 | 21 | 44 | 0.3 (−93 %) | strict ↑ (p = 0.049), collision-free ↑ (p < 0.001), contact ↓ (p < 0.001) |
+| v5_ext | ACT | 14 | 12 | 32 | 5.6 | – |
+| v5_ext | PACT-raw | 22 | 20 | 35 | 1.9 (−66 %) | contact ↓ (p = 0.014) |
+| v5_ext | PACT-readout | 21 | 19 | 38 | 0.8 (−85 %) | collision-free ↑ (p = 0.031), contact ↓ (p < 0.001) |
+
+v5 ACT is training seed 1 (its seed-0 eval has only 2 runs); PACT models are seed 0, except the
+readout seed-1 row, which is seed-matched to ACT: collision-free 14 vs 0 (p < 0.001), strict 13 vs 4
+(p = 0.049), contact time Wilcoxon p < 0.001. In the
+hallway, the only thing to hit is the bar, so collision-free = runs that never touched the bar.
+
+## Ablations
+
+### Skin switched off at test time
+
+Same trained model, same 50 scenes, every skin sensor blanked to "nothing near" before the policy
+sees it. ACT row for reference.
+
+| env | model | skin | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|---|
+| v1011c | ACT | – | 12 | 8 | 18 | 8.7 |
+| v1011c | PACT-raw | on | 12 | 8 | 25 | 4.9 |
+| v1011c | PACT-raw | off | 12 | 7 | 26 | 4.1 |
+| v1011c | PACT-readout | on | 11 | 5 | 27 | 6.0 |
+| v1011c | PACT-readout | off | 8 | 5 | 30 | 3.2 |
+| v6 | ACT | – | 20 | 13 | 28 | 7.8 |
+| v6 | PACT-raw | on | 21 | 11 | 29 | 1.6 |
+| v6 | PACT-raw | off | 24 | 15 | 32 | 3.0 |
+| v6 | PACT-readout | on | 21 | 19 | 38 | 3.0 |
+| v6 | PACT-readout | off | 22 | 18 | 32 | 4.8 |
+| v5 hallway | ACT | – | 15 | 12 | 30 | 4.3 |
+| v5 hallway | PACT-readout | on | 21 | 19 | 41 | 0.6 |
+| v5 hallway | PACT-readout | off | 14 | 12 | 30 | 4.7 |
+| v5 hallway | PACT-readout, 2nd training seed | on | 22 | 21 | 44 | 0.3 |
+| v5 hallway | PACT-readout, 2nd training seed | off | 16 | 15 | 34 | 1.7 |
+| v1011d | ACT | – | 21 | 16 | 24 | 7.2 |
+| v1011d | PACT-raw | on | 18 | 16 | 31 | 2.0 |
+| v1011d | PACT-raw | off | 22 | 19 | 32 | 3.7 |
+| v1011d | PACT-readout | on | 19 | 17 | 32 | 2.6 |
+| v1011d | PACT-readout | off | 23 | 17 | 30 | 2.2 |
+| v12 | ACT | – | 30 | 23 | 34 | 2.1 |
+| v12 | PACT-raw | on | 26 | 24 | 44 | 1.2 |
+| v12 | PACT-raw | off | 24 | 20 | 39 | 2.5 |
+
+Read: hallway readout without skin scores the same as ACT on every metric (collision-free 41 → 30,
+paired p = 0.007). The 2nd readout training seed repeats it: 44 → 34 (10 vs 0,
+p = 0.002), then level with ACT on collision-free (p = 0.42). v1011c and v1011d models keep their numbers with the skin blanked and still have
+less contact time than ACT (paired Wilcoxon p ≤ 0.006, all four); collision-free vs ACT stays
+significant on v1011c (raw p = 0.039, readout p < 0.001), not on v1011d (p = 0.15 / 0.18). v6
+readout loses 6 collision-free runs (p = 0.11) and its contact time goes up. v12 raw without skin:
+contact time doubles (1.2 → 2.5 s, Wilcoxon p = 0.016), collision-free 44 → 39 (5 vs 0, p = 0.062);
+no longer different from ACT on collision-free (p = 0.27) or contact time (p = 0.067).
+
+### Skin partly switched off
+
+| env | model | sensors kept | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|---|
+| v5 hallway | PACT-readout | 100 % | 21 | 19 | 41 | 0.6 |
+| v5 hallway | PACT-readout | 75 % | 23 | 22 | 36 | 1.7 |
+| v5 hallway | PACT-readout | 0 % | 14 | 12 | 30 | 4.7 |
+| v6 | PACT-raw | 100 % | 21 | 11 | 29 | 1.6 |
+| v6 | PACT-raw | 50 % | 22 | 12 | 30 | 5.2 |
+| v6 | PACT-raw | 0 % | 24 | 15 | 32 | 3.0 |
+| v6 | PACT-readout | 100 % | 21 | 19 | 38 | 3.0 |
+| v6 | PACT-readout | 50 % | 19 | 16 | 34 | 4.1 |
+| v6 | PACT-readout | 0 % | 22 | 18 | 32 | 4.8 |
+
+v6 50 % vs 100 %, same scenes: no paired difference (readout collision-free 4 vs 0, p = 0.125). Sensors
+kept averaged 0.507. Hallway 75 % vs 100 %: no paired difference (collision-free 1 vs 6, p = 0.125;
+success 5 vs 7, p = 0.77). The sensor mask is redrawn per run (random per-link keep).
+
+### Skin history at test time
+
+Bench models normally see the last 8 skin readings (as in training). This run gives them only the
+current reading.
+
+| env | model | skin readings | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|---|
+| v1011c | PACT-readout | last 8 | 11 | 5 | 27 | 6.0 |
+| v1011c | PACT-readout | current only | 15 | 8 | 28 | 5.7 |
+| v6 | PACT-readout | last 8 | 21 | 19 | 38 | 3.0 |
+| v6 | PACT-readout | current only | 23 | 18 | 34 | 1.6 |
+
+Current only vs last 8, same scenes: no paired difference (v1011c success 0 vs 4, p = 0.125; v6
+collision-free 4 vs 0, p = 0.125).
+
+### Second ACT training seed
+
+Does ACT do as badly with a different training seed? Same recipe, training seed 1, same 50 scenes.
+PACT rows are the seed-0 models from the main table; % is contact time vs ACT seed 1.
+
+| env | model | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|
+| v1011c | ACT seed 0 | 12 | 8 | 18 | 8.7 |
+| v1011c | ACT seed 1 | 10 | 7 | 24 | 8.0 |
+| v1011c | PACT-raw | 12 | 8 | 25 | 4.9 (−39 %) |
+| v1011c | PACT-readout | 11 | 5 | 27 | 6.0 (−25 %) |
+| v1011d | ACT seed 0 | 21 | 16 | 24 | 7.2 |
+| v1011d | ACT seed 1 | 17 | 13 | 24 | 5.1 |
+| v1011d | PACT-raw | 18 | 16 | 31 | 2.0 (−61 %) |
+| v1011d | PACT-readout | 19 | 17 | 32 | 2.6 (−49 %) |
+| v1010 | ACT seed 0 | 25 | 18 | 32 | 2.5 |
+| v1010 | ACT seed 1 | 25 | 17 | 36 | 0.3 |
+| v1010 | PACT-raw | 23 | 17 | 35 | 0.8 (+167 %) |
+| v1010 | PACT-readout | 31 | 21 | 34 | 1.6 (+433 %) |
+
+Read: v1011d repeats: PACT contact time still below ACT seed 1 (Wilcoxon raw p = 0.004, readout
+p = 0.020; collision-free readout 11 vs 3, p = 0.057). v1011c does not: ACT seed 1 reaches 24
+collision-free, and PACT vs ACT seed 1 is n.s. on every metric (contact time raw p = 0.094, readout
+p = 0.24). v1010: seed 1 has almost no contact; no difference vs PACT is significant. No success or
+strict difference is significant anywhere. v1010 table camera at 58° for both seeds.
+
+### Cameras switched off at test time (blind)
+
+Same trained model, same 50 scenes, every policy camera fed as a black frame (`BLANK_CAMERAS=all`);
+skin and joint angles unchanged. Nothing can be placed without a camera, so read collision-free
+and contact time only.
+
+| env | model | cameras | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|---|
+| v5 hallway | ACT | on | 15 | 12 | 30 | 4.3 |
+| v5 hallway | ACT | off | 0 | 0 | 23 | 4.8 |
+| v5 hallway | PACT-raw | on | 21 | 19 | 37 | 0.7 |
+| v5 hallway | PACT-raw | off | 0 | 0 | 5 | 32.3 |
+| v5 hallway | PACT-readout | on | 21 | 19 | 41 | 0.6 |
+| v5 hallway | PACT-readout | off | 0 | 0 | 43 | 2.3 |
+| v5 hallway | PACT-readout, 2nd training seed | on | 22 | 21 | 44 | 0.3 |
+| v5 hallway | PACT-readout, 2nd training seed | off | 0 | 0 | 14 | 24.5 |
+| v6 | ACT | on | 20 | 13 | 28 | 7.8 |
+| v6 | ACT | off | 0 | 0 | 0 | 62.9 |
+| v6 | PACT-raw | on | 21 | 11 | 29 | 1.6 |
+| v6 | PACT-raw | off | 0 | 0 | 3 | 55.0 |
+| v6 | PACT-readout | on | 21 | 19 | 38 | 3.0 |
+| v6 | PACT-readout | off | 0 | 0 | 0 | 43.1 |
+
+Read: blind hallway readout stays collision-free as often as with cameras (41 → 43, paired 7 vs 9,
+p = 0.80) and beats blind ACT (25 vs 5, p < 0.001; contact time Wilcoxon p = 0.009). Blind raw
+collapses (37 → 5, p < 0.001), worse than blind ACT. v6: every model fails blind (0–3 of 50
+collision-free); the skin alone does not carry the bench task.
+
+The blind hallway result does not repeat on the 2nd readout training seed: 14 collision-free vs 43
+for seed 0 (paired 1 vs 30, p < 0.001), and not better than blind ACT (11 vs 20, p = 0.15).
+
+### Cup position, v1011d
+
+The v1011d scene generator puts the cup on either side of the bar, but 199 of 200 demos have it
+away from the bar. With the cup under the bar no model ever placed it (0 of 21 for all three).
+
+| cup | model | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|
+| either side (21 of 50 under the bar) | ACT | 13 | 9 | 15 | 11.8 |
+| either side | PACT-raw | 12 | 11 | 26 | 3.8 |
+| either side | PACT-readout | 13 | 11 | 22 | 7.1 |
+| demo side only (main table) | ACT | 21 | 16 | 24 | 7.2 |
+| demo side only | PACT-raw | 18 | 16 | 31 | 2.0 |
+| demo side only | PACT-readout | 19 | 17 | 32 | 2.6 |
+
+### Hallway repeats (older checkpoints and evaluator)
+
+| set | model | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|
+| H-A: Aug checkpoints, old evaluator, random scenes | ACT | 14 | 13 | 33 | 5.3 |
+| H-A | PACT-raw | 21 | 17 | 32 | 1.0 |
+| H-A | PACT-readout | 20 | 20 | 44 | 0.4 |
+| H-C: Aug readout checkpoint on the current evaluator | PACT-readout | 18 | 18 | 43 | 0.7 |
+| H-B (main table): Sep 10 checkpoints | ACT | 15 | 12 | 30 | 4.3 |
+| H-B | PACT-raw | 21 | 19 | 37 | 0.7 |
+| H-B | PACT-readout | 21 | 19 | 41 | 0.6 |
+
+H-A has no scene seeds, so its three models did not see the same scenes. Earlier H-A runs with 20
+test runs each: ACT 3 / 3 / 14, PACT-raw 7 / 6 / 16, PACT-readout 5 / 4 / 14 (success / strict /
+collision-free).
+
+### Camera mismatch (invalid, do not cite)
+
+v107_spaced batman (210 demos, table camera): eval rendered the table camera at 45°, training
+used 58°, and gave the skin models query-spaced history. Rerun at 58° (`eval_v107_spaced_batman.sh`)
+not started.
+
+| env | model | success | strict | collision-free | contact time (s/run) |
+|---|---|---|---|---|---|
+| v107_spaced batman | ACT | 13 | 7 | 19 | 11.4 |
+| v107_spaced batman | PACT-raw | 0 | 0 | 19 | 4.8 |
+| v107_spaced batman | PACT-readout | 2 | 2 | 20 | 11.4 |
+
+### Older and side runs (not in the main tables)
+
+| run | model | runs | success | strict | collision-free | contact time (s/run) | why not main |
+|---|---|---|---|---|---|---|---|
+| v1011d, Sep 3 checkpoint, clutter spread 0.25, query-spaced history | PACT-raw | 50 | 14 | 11 | 22 | 7.8 | old checkpoint; raw only |
+| v1011d, Sep 3 checkpoint, clutter spread 1.0 (full), query-spaced history | PACT-raw | 50 | 7 | 4 | 20 | 5.3 | old checkpoint; raw only |
+| v1011d Sep 3 checkpoint on the v1010 scene generator, horizon 800 | PACT-raw | 48 | 0 | 0 | 32 | 0.8 | wrong scenes (out of distribution); no seeds |
+| same, horizon 1050 | PACT-raw | 48 | 0 | 0 | 37 | 1.0 | same |
+| same, ray-cast skin | PACT-raw | 50 | 0 | 0 | 28 | 1.6 | same |
+| v1011d cup either side, first 24 scenes, run 1 | PACT-readout | 24 | 5 | 4 | 11 | 6.5 | repeat-run noise check |
+| same, run 2 | PACT-readout | 24 | 4 | 4 | 11 | 5.7 | same |
+| same, run 3 | PACT-readout | 24 | 2 | 2 | 11 | 6.0 | same |
+
+Noise check: the same checkpoint on the same 24 scenes three times gives success 5 / 4 / 2 and
+collision-free 11 every time. Treat success gaps of ±3 in 24 runs as noise.
+
+Not counted anywhere (too short or broken): hallway ACT seed 0 (2 runs), hallway readout keep 50 %
+(stopped at 6), hallway readout H-A stopped at 36 (13 / 13 / 24), hallway `n8_test` (20 runs, random
+house: 3 / 2 / 7), v1011d wrist-only (stopped at 4), `*_keep0_smoke` / `*_keep50_smoke` (duplicate
+runs), and every `_verify_*`, `_parity_*`, `_equiv_*`, `_ab_*`, `_iso_*`, `_port_*`, `_smoke_*`
+wiring check (1–24 runs).
+
+### Old task (fume-hood pick, June–July 2026, deleted)
+
+Different task and metric (any robot–environment contact); success = pick. 50 runs each.
+
+| condition | model | success | collision-free |
+|---|---|---|---|
+| no bar | ACT | 11 | 20 |
+| no bar | PACT-raw (old design) | 9 | 21 |
+| no bar | PACT-trunk | 17 | 18 |
+| bar visible | ACT | 14 | 18 |
+| bar visible | PACT-raw (old design) | 8 | 25 |
+| bar visible | PACT-trunk | 16 | 21 |
+| bar hidden from camera | ACT | 18 | 17 |
+| bar hidden from camera | PACT-raw (old design) | 15 | 30 |
+| bar hidden from camera | PACT-trunk | 17 | 14 |
+
+Camera blur on ACT (σ = 2 / 4 / 8, 25 runs each): success 1 / 10 / 6 (no bar), 2 / 6 / 6
+(visible), 0 / 10 / 6 (hidden). First v1 baseline (20 runs, W&B only): success 7 / 8 / 6 for
+chunk 50 / chunk 100 / 5000 epochs.
+
+## Running now (08:10, 2026-09-25)
+
+Nothing.
+
+## Not run
+
+- v1010 raw and readout, 2nd training seed (checkpoints exist).
+- Hallway raw 2nd seed.
+- v107_spaced batman rerun at fov 58.
+- v1011d with full clutter randomisation (`CLUTTER_XY_SCALE=1`).
+- Hallway with 8-reading skin history; hallway skin 50 % / 25 %.
+- v1011c skin 50 % (skin off already changed nothing there).
+- v5_ext skin off / cameras off (`eval_v5_ext.sh` has no knob for either).
+
+## Run folders
+
+Main results: `eval_output/<TASK>_<ARM>_s0_bs8_cs50_lr1e-5_e2000` (v6: `cs100`; v1011c and v1011d
+end in `_tstrain`). Ablations add `_keep0`, `_keep50`, `_keep75`, `_hquery`, `_blind`; 2nd
+training seed = `_s1_`; hallway seed-1 readout runs end in `_keep100` / `_keep0` / `_keep100_blind`. Hallway H-A / H-C:
+`place_corridor_*_s0_n50*`, `simple_hallway_n50`. Old task: `reports/eval_summaries/*_v2_*.json`.
+Env code → dataset → script map: README §0.1. Ledger: `python scripts/exp_tracker.py`.

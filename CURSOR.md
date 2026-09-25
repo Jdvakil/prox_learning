@@ -22,6 +22,40 @@ Newest session at the top.
 
 ---
 
+## 2026-09-24 — camera-blank ablation flag
+
+- New `scripts/pact_eval_camera_blank.py`; `--blank_cameras all|<names>` on `eval_act.py`, `eval_act_v1011d.py` (so `eval_act_place.py`). Policy RGB for those cameras = all-black; skin, qpos, env rendering unchanged. Protocol key only when set; resume guard both ways.
+- `BLANK_CAMERAS` knob on eval_v6 / v12 / v1010 / v1011c / v1011d_tstrain / v107_spaced_hub / v107_spaced_batman / v1_hallway shells; dir suffix `_blind` or `_no<cam>`.
+- Smoke (scratchpad, 1 ep, horizon 60): v6 readout and hallway readout run; summary protocol records `blank_cameras`; non-blank rerun into the blank dir refused. README: "Camera blank" paragraph next to the sensor-keep sweep.
+
+## 2026-09-24 — README_RESULTS.md verified and restructured
+
+- **When:** user asked to verify every number in `README_RESULTS.md` and simplify it so the
+  results section can be written from it.
+- **Why:** the old file mixed two evaluation protocols (bench `eval_act_place.py` with the
+  train-matched 8-step consecutive skin history; hallway `eval_act.py` with query-step history)
+  and superseded / invalid runs (T-107 fov-45 batman, old Sep 3 checkpoints, OOD, partials) in
+  one 60-row table.
+- **What:** recounted every `eval_output/*/episodes.jsonl` and `reports/eval_summaries/*.json`
+  (v1 via W&B `act-obstacle-baseline-eval`); every count and every McNemar / Fisher in the
+  notes and PAPER.md §3 reproduce. No number changed. Rewrote `README_RESULTS.md`: protocol
+  families up front; §1 bench (v12, v6, v1010, v1011c, v107_spaced hub, v1011d) with paired
+  tests; §2 hallway (H-B, keep 0.75, H-C, H-A); §3 patterns as facts; §4 excluded runs with the
+  reason; §5 in progress / not run; §6 metrics; appendix A env codes, appendix B every citable
+  run. README §0.1 already links the file.
+- **What (later same day):** added README_RESULTS.md §1.3 contact frames (coauthor's
+  hazardous-collision-frames metric): per arm bar / clutter / other-environment 2 ms frames from
+  `episodes.jsonl`, time share at 33 frames per 66 ms policy step (PAPER.md §1.2), Wilcoxon
+  signed-rank vs ACT.
+- **How:** exact McNemar = two-sided binomial on discordant pairs keyed by `seed`; Fisher
+  two-sided on marginals. Scratch scripts not kept.
+- **Not done:** v1011d `_tstrain` (23–27/50) and v5_ext (19–30/50) evals still running at
+  10:15 — §5 counts are partial. T-107 batman rerun at 58° not run. The v1011d cup-side split
+  (21/50 bar-side cups) is not recountable from `episodes.jsonl` (pre-patch records lack
+  `target_start_xy`); §1 footnote cites PAPER.md §3.3's scene rebuild.
+
+---
+
 ## 2026-09-22 — convert every dump, env-coded train/eval shells, eval_act_place.py
 
 - **When:** User: every dataset in `/mnt/laptop/data` needs ACT data; train all of them with the `scripts/exp` shells; evaluate on the fast eval for the paper; keep the env code (v5, v12, …) on everything. Mid-session the user pushed the v6 environment to molmospaces main.
